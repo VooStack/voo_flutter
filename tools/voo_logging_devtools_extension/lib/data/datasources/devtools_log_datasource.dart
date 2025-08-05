@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:devtools_extensions/devtools_extensions.dart';
+// ignore: depend_on_referenced_packages
 import 'package:vm_service/vm_service.dart' as vm;
 import 'package:voo_logging/core/domain/enums/log_level.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
