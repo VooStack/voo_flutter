@@ -1,0 +1,26 @@
+name: voo_logging_devtools_extension
+description: 'A new Flutter project.'
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  devtools_extensions: ^0.4.0
+  devtools_app_shared: ^0.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

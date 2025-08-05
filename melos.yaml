@@ -1,0 +1,4 @@
+name: VooFlutter
+packages:
+  - apps/*
+  - packages/*
