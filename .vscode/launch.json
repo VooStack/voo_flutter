@@ -5,89 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "VooFlutter",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "voo_core",
-      "cwd": "packages/voo_core",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "voo_core (profile mode)",
-      "cwd": "packages/voo_core",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "profile"
-    },
-    {
-      "name": "voo_core (release mode)",
-      "cwd": "packages/voo_core",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release"
-    },
-    {
-      "name": "voo_logging",
-      "cwd": "packages/voo_logging",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "voo_logging (profile mode)",
-      "cwd": "packages/voo_logging",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "profile"
-    },
-    {
-      "name": "voo_logging (release mode)",
-      "cwd": "packages/voo_logging",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release"
-    },
-    {
-      "name": "voo_logging_devtools_extension",
-      "cwd": "tools/voo_logging_devtools_extension",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "voo_logging_devtools_extension (profile mode)",
-      "cwd": "tools/voo_logging_devtools_extension",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "profile"
-    },
-    {
-      "name": "voo_logging_devtools_extension (release mode)",
-      "cwd": "tools/voo_logging_devtools_extension",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release"
-    },
-    {
       "name": "example",
       "cwd": "packages/voo_logging/example",
       "request": "launch",
       "type": "dart"
-    },
-    {
-      "name": "example (profile mode)",
-      "cwd": "packages/voo_logging/example",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "profile"
-    },
-    {
-      "name": "example (release mode)",
-      "cwd": "packages/voo_logging/example",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "release"
     }
   ]
 }
