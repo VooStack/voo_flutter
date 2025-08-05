@@ -1,6 +1,6 @@
-import 'package:voo_logging/features/devtools_extension/data/datasources/devtools_log_datasource.dart';
-import 'package:voo_logging/features/devtools_extension/data/datasources/simple_log_datasource.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/data/datasources/devtools_log_datasource.dart';
+import 'package:voo_logging_devtools_extension/data/datasources/simple_log_datasource.dart';
 
 /// Wrapper to make SimpleLogDataSource implement DevToolsLogDataSource
 class SimpleDevToolsLogDataSource implements DevToolsLogDataSource {

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
 
 class LogRateIndicator extends StatefulWidget {
   const LogRateIndicator({super.key});

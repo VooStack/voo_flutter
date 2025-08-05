@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
 
 class LogEntryTile extends StatelessWidget {
   final LogEntryModel log;

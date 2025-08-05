@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/category_badge.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/timestamp_text.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_entry.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/category_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/timestamp_text.dart';
 
 /// Molecule widget that combines log entry metadata
 class LogEntryHeader extends StatelessWidget {

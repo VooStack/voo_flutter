@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/level_filters_widget.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/dropdown_field.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/dropdown_field.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/level_filters_widget.dart';
 
 class LogFilterBar extends StatefulWidget {
   const LogFilterBar({super.key});
@@ -97,10 +97,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
                   } else {
                     newLevels.add(level);
                   }
-                  context.read<LogBloc>().add(FilterLogsChanged(
-                    levels: newLevels.isEmpty ? null : newLevels,
-                    category: state.selectedCategory,
-                  ));
+                  context.read<LogBloc>().add(FilterLogsChanged(levels: newLevels.isEmpty ? null : newLevels, category: state.selectedCategory));
                 },
               ),
               const SizedBox(height: 12),
@@ -112,10 +109,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
                       value: state.selectedCategory,
                       items: state.categories,
                       onChanged: (value) {
-                        context.read<LogBloc>().add(FilterLogsChanged(
-                          levels: state.selectedLevels,
-                          category: value,
-                        ));
+                        context.read<LogBloc>().add(FilterLogsChanged(levels: state.selectedLevels, category: value));
                       },
                     ),
                   ),
@@ -127,5 +121,4 @@ class _LogFilterBarState extends State<LogFilterBar> {
       ),
     );
   }
-
 }

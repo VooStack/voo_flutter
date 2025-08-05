@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_entry_tile.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_statistics_card.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_rate_indicator.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_export_dialog.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_entry_tile.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_export_dialog.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_rate_indicator.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_statistics_card.dart';
 
 class VooLoggerPage extends StatefulWidget {
   const VooLoggerPage({super.key});
@@ -39,15 +39,11 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
           // Schedule scroll after the frame is rendered to ensure new logs are displayed
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
+              _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
             }
           });
         }
-        
+
         // Close details panel if selected log is cleared
         if (_showDetails && state.selectedLog == null) {
           setState(() => _showDetails = false);
@@ -150,10 +146,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
           children: [
             Icon(Icons.inbox, size: 64, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3)),
             const SizedBox(height: 16),
-            Text(
-              'No logs to display',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
-            ),
+            Text('No logs to display', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5))),
           ],
         ),
       );
@@ -201,17 +194,12 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
   Future<void> _exportLogs(BuildContext context) async {
     final state = context.read<LogBloc>().state;
     final logsToExport = state.filteredLogs.isNotEmpty ? state.filteredLogs : state.logs;
-    
+
     if (logsToExport.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No logs to export'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No logs to export'), duration: Duration(seconds: 2)));
       return;
     }
-    
+
     await showDialog(
       context: context,
       builder: (context) => LogExportDialog(logs: logsToExport),
@@ -227,9 +215,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             ? SizedBox(
                 width: 400,
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: SingleChildScrollView(
-                  child: LogStatisticsCard(statistics: state.statistics!),
-                ),
+                child: SingleChildScrollView(child: LogStatisticsCard(statistics: state.statistics!)),
               )
             : const Text('No statistics available'),
         actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/detail_section.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/info_row.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_detail_header.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/info_row.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_detail_header.dart';
 
 class LogDetailsPanel extends StatelessWidget {
   final LogEntryModel log;
@@ -66,10 +66,7 @@ class LogDetailsPanel extends StatelessWidget {
                       content: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
-                        child: SelectableText(
-                          const JsonEncoder.withIndent('  ').convert(log.metadata),
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                        ),
+                        child: SelectableText(const JsonEncoder.withIndent('  ').convert(log.metadata), style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
                       ),
                     ),
                   ],
@@ -81,7 +78,6 @@ class LogDetailsPanel extends StatelessWidget {
       ),
     );
   }
-
 
   void _copyAllToClipboard(BuildContext context) {
     final buffer = StringBuffer();

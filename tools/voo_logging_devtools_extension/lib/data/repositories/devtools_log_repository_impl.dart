@@ -1,7 +1,7 @@
 import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/devtools_extension/data/datasources/devtools_log_datasource.dart';
-import 'package:voo_logging/features/devtools_extension/domain/repositories/devtools_log_repository.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/data/datasources/devtools_log_datasource.dart';
+import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
 
 class DevToolsLogRepositoryImpl implements DevToolsLogRepository {
   final DevToolsLogDataSource dataSource;

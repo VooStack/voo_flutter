@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_row.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/stat_item.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/stat_row.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/stat_card.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_row.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/stat_item.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/stat_row.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/stat_card.dart';
 
 class LogStatisticsCard extends StatelessWidget {
   final LogStatistics statistics;
@@ -60,10 +60,7 @@ class LogStatisticsCard extends StatelessWidget {
 
     return StatCard(
       title: 'Top Categories',
-      children: sortedCategories
-          .take(5)
-          .map((entry) => StatRow(label: entry.key, value: entry.value.toString()))
-          .toList(),
+      children: sortedCategories.take(5).map((entry) => StatRow(label: entry.key, value: entry.value.toString())).toList(),
     );
   }
 
@@ -72,13 +69,9 @@ class LogStatisticsCard extends StatelessWidget {
 
     return StatCard(
       title: 'Top Tags',
-      children: sortedTags
-          .take(5)
-          .map((entry) => StatRow(label: entry.key, value: entry.value.toString()))
-          .toList(),
+      children: sortedTags.take(5).map((entry) => StatRow(label: entry.key, value: entry.value.toString())).toList(),
     );
   }
-
 
   String _formatDuration(Duration duration) {
     if (duration.inDays > 0) {
