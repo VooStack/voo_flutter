@@ -2,3 +2,4 @@ name: VooFlutter
 packages:
   - apps/*
   - packages/*
+  - tools/*

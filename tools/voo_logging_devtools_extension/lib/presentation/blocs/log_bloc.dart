@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging/features/devtools_extension/domain/repositories/devtools_log_repository.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model_extensions.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_statistics_extensions.dart';
+import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
 
 class LogBloc extends Bloc<LogEvent, LogState> {
   final DevToolsLogRepository repository;
@@ -47,13 +47,8 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
       final filteredLogs = _applyFilters(cachedLogs, state);
       final statistics = LogStatisticsExtensions.fromLogs(cachedLogs.map((log) => log.toEntity()).toList());
-      
-      emit(state.copyWith(
-        logs: cachedLogs,
-        isLoading: false,
-        filteredLogs: filteredLogs,
-        statistics: statistics,
-      ));
+
+      emit(state.copyWith(logs: cachedLogs, isLoading: false, filteredLogs: filteredLogs, statistics: statistics));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -62,12 +57,8 @@ class LogBloc extends Bloc<LogEvent, LogState> {
   Future<void> _onFilterLogsChanged(FilterLogsChanged event, Emitter<LogState> emit) async {
     final newState = state.copyWith(selectedLevels: event.levels, selectedCategory: event.category);
     final filteredLogs = _applyFilters(state.logs, newState);
-    
-    emit(
-      newState.copyWith(
-        filteredLogs: filteredLogs,
-      ),
-    );
+
+    emit(newState.copyWith(filteredLogs: filteredLogs));
   }
 
   void _onLogReceived(LogReceived event, Emitter<LogState> emit) {
@@ -79,12 +70,8 @@ class LogBloc extends Bloc<LogEvent, LogState> {
     log('Total logs: ${updatedLogs.length}, Filtered: ${filtered.length}', name: 'LogBloc', level: 800);
 
     final statistics = LogStatisticsExtensions.fromLogs(updatedLogs.map((log) => log.toEntity()).toList());
-    
-    emit(state.copyWith(
-      logs: updatedLogs,
-      filteredLogs: filtered,
-      statistics: statistics,
-    ));
+
+    emit(state.copyWith(logs: updatedLogs, filteredLogs: filtered, statistics: statistics));
   }
 
   void _onSelectLog(SelectLog event, Emitter<LogState> emit) {
@@ -97,12 +84,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
   Future<void> _onClearLogs(ClearLogs event, Emitter<LogState> emit) async {
     repository.clearLogs();
-    emit(state.copyWith(
-      logs: [],
-      filteredLogs: [],
-      statistics: LogStatisticsExtensions.fromLogs([]),
-      clearSelectedLog: true,
-    ));
+    emit(state.copyWith(logs: [], filteredLogs: [], statistics: LogStatisticsExtensions.fromLogs([]), clearSelectedLog: true));
   }
 
   void _onToggleAutoScroll(ToggleAutoScroll event, Emitter<LogState> emit) {
