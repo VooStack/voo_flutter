@@ -12,3 +12,7 @@ scripts:
   validate_logging:
     description: Validate the voo_logging_devtools_extension package.
     run: melos exec --scope voo_logging_devtools_extension -- dart run devtools_extensions validate --package=../../packages/voo_logging
+
+  publish_logging:
+    description: Publish the voo_logging_devtools_extension package.
+    run: melos exec --scope voo_logging_devtools_extension -- dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_logging/extension/devtools && melos exec --scope voo_logging -- dart pub publish

@@ -9,6 +9,13 @@
       "cwd": "packages/voo_logging/example",
       "request": "launch",
       "type": "dart"
+    },
+    {
+      "name": "logging dev tools (sim)",
+      "cwd": "tools/logging_dev_tools",
+      "request": "launch",
+      "type": "dart",
+      "args": ["--dart-define=use_simulated_environment=true"]
     }
   ]
 }

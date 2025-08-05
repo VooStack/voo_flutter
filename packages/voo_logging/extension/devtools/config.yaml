@@ -1,5 +1,5 @@
 name: voo_logging
 version: 0.0.6
-issueTracker: https://github.com/voostack/voo_logging/issues
+issueTracker: https://github.com/voostack/voo_flutter/issues
 materialIconCodePoint: '0xe0b1'
 requiresConnection: false
