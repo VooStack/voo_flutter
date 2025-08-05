@@ -3,3 +3,8 @@ packages:
   - apps/*
   - packages/*
   - tools/*
+
+scripts:
+  prepare_logging:
+    description: Prepare the voo_logging_devtools_extension package by fetching dependencies.
+    run: melos exec --scope voo_logging_devtools_extension -- dart run devtools_extensions build_and_copy --source=. --dest=extension/devtools
