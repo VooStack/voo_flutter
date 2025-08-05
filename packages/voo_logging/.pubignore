@@ -1,1 +1,29 @@
-!build
+# Exclude the main build directory
+build/
+
+# Keep the DevTools extension build (don't ignore it)
+!extension/devtools/build/
+
+# Exclude example build and platform directories
+example/build/
+example/android/
+example/ios/
+example/linux/
+example/macos/
+example/windows/
+
+# Exclude web directory build
+web/
+
+# Exclude IDE files
+*.iml
+.idea/
+.vscode/
+
+# Exclude temporary files
+*.lock
+mason-lock.json
+mason.yaml
+
+# Exclude DevTools options at root
+devtools_options.yaml
