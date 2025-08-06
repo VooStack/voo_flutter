@@ -5,6 +5,8 @@ import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/pages/network_tab.dart';
+import 'package:voo_logging_devtools_extension/presentation/pages/performance_tab.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_entry_tile.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_export_dialog.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_rate_indicator.dart';
@@ -19,13 +21,21 @@ class VooLoggerPage extends StatefulWidget {
   State<VooLoggerPage> createState() => _VooLoggerPageState();
 }
 
-class _VooLoggerPageState extends State<VooLoggerPage> {
+class _VooLoggerPageState extends State<VooLoggerPage> with TickerProviderStateMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -54,20 +64,37 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
         body: Column(
           children: [
             _buildToolbar(context, theme, state),
-            const LogFilterBar(),
+            _buildTabBar(theme),
             Expanded(
-              child: Container(
-                color: theme.colorScheme.surface,
-                child: Row(
-                  children: [
-                    Expanded(child: _buildLogsList(state)),
-                    if (_showDetails && state.selectedLog != null)
-                      SizedBox(
-                        width: 400,
-                        child: LogDetailsPanel(log: state.selectedLog!, onClose: () => setState(() => _showDetails = false)),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Logs Tab
+                  Column(
+                    children: [
+                      const LogFilterBar(),
+                      Expanded(
+                        child: Container(
+                          color: theme.colorScheme.surface,
+                          child: Row(
+                            children: [
+                              Expanded(child: _buildLogsList(state)),
+                              if (_showDetails && state.selectedLog != null)
+                                SizedBox(
+                                  width: 400,
+                                  child: LogDetailsPanel(log: state.selectedLog!, onClose: () => setState(() => _showDetails = false)),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
-                  ],
-                ),
+                    ],
+                  ),
+                  // Network Tab
+                  _buildNetworkTab(theme),
+                  // Performance Tab
+                  _buildPerformanceTab(theme),
+                ],
               ),
             ),
           ],
@@ -221,6 +248,33 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
         actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
     );
+  }
+
+  Widget _buildTabBar(ThemeData theme) => Container(
+    decoration: BoxDecoration(
+      color: theme.colorScheme.surface,
+      border: Border(bottom: BorderSide(color: theme.dividerColor)),
+    ),
+    child: TabBar(
+      tabAlignment: TabAlignment.fill,
+      controller: _tabController,
+      labelColor: theme.colorScheme.primary,
+      unselectedLabelColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+      indicatorColor: theme.colorScheme.primary,
+      tabs: const [
+        Tab(text: 'Logs', icon: Icon(Icons.list, size: 18)),
+        Tab(text: 'Network', icon: Icon(Icons.cloud_outlined, size: 18)),
+        Tab(text: 'Performance', icon: Icon(Icons.speed, size: 18)),
+      ],
+    ),
+  );
+
+  Widget _buildNetworkTab(ThemeData theme) {
+    return const NetworkTab();
+  }
+
+  Widget _buildPerformanceTab(ThemeData theme) {
+    return const PerformanceTab();
   }
 
   void _generateTestLog(BuildContext context) {

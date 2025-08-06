@@ -10,14 +10,17 @@ A comprehensive, production-ready logging package for Flutter and Dart applicati
 ## 🚀 Features
 
 - **🎯 Simple API** - Intuitive methods for different log levels (verbose, debug, info, warning, error, fatal)
-- **🔧 DevTools Integration** - Real-time log viewing and filtering in Flutter DevTools
+- **🔧 DevTools Integration** - Real-time log viewing with dedicated Network and Performance tabs
 - **💾 Persistent Storage** - Logs survive app restarts using Sembast database
 - **🏷️ Rich Context** - Categories, tags, metadata, user tracking, and session management
 - **⚡ High Performance** - Non-blocking async operations with efficient indexing
+- **🌐 Network Monitoring** - Built-in network request/response logging with optional interceptors
+- **📈 Performance Tracking** - Track operation durations and performance metrics
 - **🌐 Cross-Platform** - Works on iOS, Android, Web, macOS, Windows, and Linux
 - **📊 Statistics** - Built-in analytics for log patterns and error tracking
 - **🔍 Advanced Filtering** - Filter by level, time range, category, tag, or text search
 - **📤 Export Options** - Export logs as JSON or CSV for external analysis
+- **🔌 Dio Integration** - Ready-to-use Dio interceptor for automatic network logging
 
 ## 📦 Installation
 
@@ -103,14 +106,118 @@ VooLogger.error('Payment failed',
 );
 ```
 
+### Network Request Monitoring
+
+```dart
+// Log network requests manually
+await VooLogger.networkRequest(
+  'GET',
+  'https://api.example.com/users',
+  headers: {'Authorization': 'Bearer token'},
+  metadata: {'userId': 'user_123'}
+);
+
+// Log network responses
+await VooLogger.networkResponse(
+  200,
+  'https://api.example.com/users',
+  Duration(milliseconds: 456),
+  headers: {'Content-Type': 'application/json'},
+  contentLength: 2048,
+  metadata: {'cached': false}
+);
+
+// Or use the NetworkInterceptor
+final interceptor = VooNetworkInterceptor();
+await interceptor.onRequest(
+  method: 'POST',
+  url: 'https://api.example.com/data',
+  headers: headers,
+  body: requestBody,
+);
+```
+
+### Dio Integration
+
+```dart
+import 'package:dio/dio.dart';
+import 'package:voo_logging/voo_logging.dart';
+
+final dio = Dio();
+final vooInterceptor = VooDioInterceptor();
+
+// Add to Dio
+dio.interceptors.add(InterceptorsWrapper(
+  onRequest: (options, handler) => vooInterceptor.onRequest(options, handler),
+  onResponse: (response, handler) => vooInterceptor.onResponse(response, handler),
+  onError: (error, handler) => vooInterceptor.onError(error, handler),
+));
+
+// Now all Dio requests are automatically logged!
+```
+
+### Performance Tracking
+
+```dart
+// Log performance metrics directly
+VooLogger.performance(
+  'DatabaseQuery',
+  Duration(milliseconds: 456),
+  metrics: {
+    'rowCount': 1000,
+    'cacheHit': false,
+    'queryType': 'SELECT'
+  }
+);
+
+// Track async operations automatically
+final result = await PerformanceTracker.track<String>(
+  operation: 'FetchUserData',
+  operationType: 'api',
+  action: () async {
+    // Your async code here
+    final response = await api.getUser();
+    return response.data;
+  },
+  metrics: {
+    'endpoint': '/api/user',
+    'method': 'GET'
+  }
+);
+
+// Track synchronous operations
+final sum = PerformanceTracker.trackSync<int>(
+  operation: 'CalculateSum',
+  operationType: 'computation',
+  action: () {
+    int sum = 0;
+    for (int i = 0; i < 1000000; i++) {
+      sum += i;
+    }
+    return sum;
+  },
+  metrics: {'iterations': 1000000}
+);
+
+// Manual tracking with PerformanceTracker
+final tracker = PerformanceTracker(
+  operation: 'DataProcessing',
+  operationType: 'batch',
+);
+// ... do work ...
+tracker.addMetric('processedItems', 500);
+tracker.addMetric('errors', 0);
+await tracker.complete();
+```
+
 ### User and Session Tracking
 
 ```dart
 // Set user context (persists across all logs)
 VooLogger.setUserId('user_123');
 
-// Get current session ID
-final sessionId = VooLogger.currentSessionId;
+// Start a new session
+VooLogger.startNewSession();
 
 // Clear user context on logout
 VooLogger.clearUserId();
@@ -209,21 +316,24 @@ print('Number of logs: ${storageInfo.logCount}');
 
 ## 🔧 DevTools Extension
 
-The package includes a powerful DevTools extension for real-time log monitoring and analysis.
+The package includes a powerful DevTools extension for real-time log monitoring and analysis with dedicated tabs for different log types.
 
 ### Features:
-- 📊 Real-time log streaming
-- 🔍 Advanced filtering and search
-- 📈 Visual statistics and charts
+- 📊 **Logs Tab** - Real-time log streaming with advanced filtering
+- 🌐 **Network Tab** - Monitor HTTP requests/responses with timing and size info
+- 📈 **Performance Tab** - Track operation durations and identify bottlenecks
+- 🔍 Advanced filtering and search across all tabs
+- 📊 Visual statistics and charts
 - 🎨 Syntax highlighting for metadata
-- 📤 Export functionality
+- 📤 Export functionality for all log types
 - 🔄 Auto-scroll and pause options
 
 ### Using DevTools:
 1. Run your app in debug mode
 2. Open Flutter DevTools
 3. Navigate to the "Voo Logger" tab
-4. Start monitoring your logs!
+4. Switch between Logs, Network, and Performance tabs
+5. Start monitoring your application!
 
 ## ⚙️ Configuration
 

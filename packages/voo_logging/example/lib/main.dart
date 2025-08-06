@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:voo_logging/voo_logging.dart';
 
@@ -173,9 +176,11 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
           Text('Common Scenarios', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 16),
           ListTile(leading: const Icon(Icons.network_wifi), title: const Text('Simulate Network Request'), onTap: _simulateNetworkRequest),
+          ListTile(leading: const Icon(Icons.cloud_download), title: const Text('Simulate Multiple API Calls'), onTap: _simulateMultipleApiCalls),
           ListTile(leading: const Icon(Icons.person), title: const Text('Log User Action'), onTap: _logUserAction),
           ListTile(leading: const Icon(Icons.error_outline), title: const Text('Simulate Error'), onTap: _simulateError),
           ListTile(leading: const Icon(Icons.speed), title: const Text('Log Performance Metric'), onTap: _logPerformance),
+          ListTile(leading: const Icon(Icons.timer), title: const Text('Track Async Operation'), onTap: _trackAsyncOperation),
           ListTile(leading: const Icon(Icons.speed), title: const Text('Log Large Error'), onTap: _logLargeError),
           ListTile(leading: const Icon(Icons.bug_report), title: const Text('Generate Multiple Logs'), onTap: _generateMultipleLogs),
         ],
@@ -261,25 +266,75 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   }
 
   Future<void> _simulateNetworkRequest() async {
+    // Example of using the NetworkInterceptor
+    const interceptor = VooNetworkInterceptor();
+    
     // Log the request
-    await VooLogger.networkRequest(
-      'GET',
-      'https://api.example.com/users',
+    await interceptor.onRequest(
+      method: 'GET',
+      url: 'https://api.example.com/users',
       headers: {'Authorization': 'Bearer token123', 'Content-Type': 'application/json'},
       metadata: {'userId': 'user123', 'requestId': DateTime.now().millisecondsSinceEpoch.toString()},
     );
 
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 1234));
+
     // Log the response
-    await VooLogger.networkResponse(
-      200,
-      'https://api.example.com/users',
-      const Duration(milliseconds: 1234),
+    await interceptor.onResponse(
+      statusCode: 200,
+      url: 'https://api.example.com/users',
+      duration: const Duration(milliseconds: 1234),
       headers: {'Content-Type': 'application/json', 'X-Request-ID': '12345'},
+      body: {'users': <dynamic>[], 'total': 25},
       contentLength: 2048,
       metadata: {'itemCount': 25, 'cached': false},
     );
 
-    _showSnackBar('Network request logged');
+    _showSnackBar('Network request logged with interceptor');
+  }
+
+  Future<void> _simulateMultipleApiCalls() async {
+    final random = Random();
+    final endpoints = [
+      '/api/users',
+      '/api/products',
+      '/api/orders',
+      '/api/analytics',
+      '/api/settings',
+    ];
+    
+    final methods = ['GET', 'POST', 'PUT', 'DELETE'];
+    
+    for (int i = 0; i < 10; i++) {
+      final endpoint = endpoints[random.nextInt(endpoints.length)];
+      final method = methods[random.nextInt(methods.length)];
+      final statusCode = random.nextBool() ? 200 : (random.nextBool() ? 404 : 500);
+      final duration = Duration(milliseconds: random.nextInt(3000) + 100);
+      
+      // Log request
+      await VooLogger.networkRequest(
+        method,
+        'https://api.example.com$endpoint',
+        headers: {'Authorization': 'Bearer token', 'X-Request-ID': 'req_$i'},
+        metadata: {'attempt': '${i + 1}'},
+      );
+      
+      // Simulate delay
+      await Future.delayed(Duration(milliseconds: random.nextInt(100)));
+      
+      // Log response
+      await VooLogger.networkResponse(
+        statusCode,
+        'https://api.example.com$endpoint',
+        duration,
+        headers: {'Content-Type': 'application/json'},
+        contentLength: random.nextInt(10000),
+        metadata: {'cached': random.nextBool()},
+      );
+    }
+    
+    _showSnackBar('10 API calls simulated');
   }
 
   void _logUserAction() {
@@ -310,13 +365,76 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   }
 
   void _logPerformance() {
+    // Example 1: Direct performance logging
     VooLogger.performance(
       'DatabaseQuery',
       const Duration(milliseconds: 456),
       metrics: {'rowCount': 1000, 'cacheHit': false, 'queryType': 'SELECT', 'table': 'users'},
     );
 
-    _showSnackBar('Performance metric logged');
+    // Example 2: Using PerformanceTracker manually
+    final tracker = PerformanceTracker(
+      operation: 'DataProcessing',
+      operationType: 'batch',
+      metrics: {'itemCount': 1000},
+    );
+    
+    // Simulate some work
+    Future.delayed(const Duration(milliseconds: 250), () {
+      tracker.addMetric('processedItems', 500);
+      tracker.addMetric('errors', 0);
+      tracker.complete();
+    });
+
+    _showSnackBar('Performance metrics logged');
+  }
+
+  Future<void> _trackAsyncOperation() async {
+    try {
+      // Example of tracking an async operation with PerformanceTracker
+      final result = await PerformanceTracker.track<String>(
+        operation: 'FetchUserData',
+        operationType: 'api',
+        action: () async {
+          // Simulate API call
+          await Future.delayed(const Duration(milliseconds: 1500));
+          
+          // Simulate random success/failure
+          if (Random().nextBool()) {
+            return 'User data fetched successfully';
+          } else {
+            throw Exception('Failed to fetch user data');
+          }
+        },
+        metrics: {
+          'endpoint': '/api/user/profile',
+          'method': 'GET',
+        },
+      );
+      
+      _showSnackBar('Operation tracked: $result');
+    } catch (e) {
+      _showSnackBar('Operation failed (tracked): $e');
+    }
+
+    // Example of tracking synchronous operation
+    final syncResult = PerformanceTracker.trackSync<int>(
+      operation: 'CalculateSum',
+      operationType: 'computation',
+      action: () {
+        int sum = 0;
+        for (int i = 0; i < 1000000; i++) {
+          sum += i;
+        }
+        return sum;
+      },
+      metrics: {
+        'iterations': 1000000,
+        'algorithm': 'linear',
+      },
+    );
+    
+    await VooLogger.info('Sync calculation result: $syncResult', category: 'Performance');
   }
 
   Future<void> _logLargeError() async {
