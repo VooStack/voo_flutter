@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:voo_logging/voo_logging.dart';
+import 'dio_example.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -177,6 +178,18 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
           const SizedBox(height: 16),
           ListTile(leading: const Icon(Icons.network_wifi), title: const Text('Simulate Network Request'), onTap: _simulateNetworkRequest),
           ListTile(leading: const Icon(Icons.cloud_download), title: const Text('Simulate Multiple API Calls'), onTap: _simulateMultipleApiCalls),
+          ListTile(
+            leading: const Icon(Icons.http),
+            title: const Text('Dio Interceptor Example'),
+            subtitle: const Text('Test real HTTP requests with auto-logging'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DioExampleScreen()),
+              );
+            },
+          ),
           ListTile(leading: const Icon(Icons.person), title: const Text('Log User Action'), onTap: _logUserAction),
           ListTile(leading: const Icon(Icons.error_outline), title: const Text('Simulate Error'), onTap: _simulateError),
           ListTile(leading: const Icon(Icons.speed), title: const Text('Log Performance Metric'), onTap: _logPerformance),

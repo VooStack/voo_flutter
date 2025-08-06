@@ -26,7 +26,7 @@ class VooDioInterceptor {
 
   /// Call this in Dio's onRequest interceptor
   /// The options parameter should be RequestOptions from Dio
-  Future<void> onRequest(dynamic options, dynamic handler) async {
+  void onRequest(dynamic options, dynamic handler) {
     try {
       // Store start time for duration calculation
       final startTime = DateTime.now();
@@ -53,12 +53,15 @@ class VooDioInterceptor {
         'receiveTimeout': options.receiveTimeout?.inMilliseconds,
       };
       
-      await interceptor.onRequest(
+      interceptor.onRequest(
         method: method,
         url: url,
         headers: headers,
         body: options.data,
-        metadata: metadata,
+        metadata: {
+          ...metadata,
+          'requestHeaders': headers,
+        },
       );
     } catch (_) {
       // Ignore logging errors to not break the request
@@ -70,7 +73,7 @@ class VooDioInterceptor {
 
   /// Call this in Dio's onResponse interceptor
   /// The response parameter should be Response from Dio
-  Future<void> onResponse(dynamic response, dynamic handler) async {
+  void onResponse(dynamic response, dynamic handler) {
     try {
       DateTime? startTime;
       if (response.requestOptions?.extra is Map) {
@@ -101,7 +104,7 @@ class VooDioInterceptor {
         contentLength = int.tryParse(contentLengthHeader);
       }
       
-      await interceptor.onResponse(
+      interceptor.onResponse(
         statusCode: statusCode,
         url: url,
         duration: duration,
@@ -110,6 +113,7 @@ class VooDioInterceptor {
         contentLength: contentLength,
         metadata: {
           'statusMessage': response.statusMessage?.toString(),
+          'responseHeaders': headers,
         },
       );
     } catch (_) {
@@ -122,7 +126,7 @@ class VooDioInterceptor {
 
   /// Call this in Dio's onError interceptor
   /// The error parameter should be DioException/DioError from Dio
-  Future<void> onError(dynamic error, dynamic handler) async {
+  void onError(dynamic error, dynamic handler) {
     try {
       final String url = error.requestOptions?.uri?.toString() ?? '';
       
@@ -149,7 +153,7 @@ class VooDioInterceptor {
           });
         }
         
-        await interceptor.onResponse(
+        interceptor.onResponse(
           statusCode: statusCode,
           url: url,
           duration: duration,
@@ -158,6 +162,7 @@ class VooDioInterceptor {
           metadata: {
             'error': error.message?.toString(),
             'type': error.type?.toString(),
+            'responseHeaders': headers,
           },
         );
       } else {
@@ -165,7 +170,7 @@ class VooDioInterceptor {
         final errorObject = error.error ?? error;
         final stackTrace = error.stackTrace as StackTrace?;
         
-        await interceptor.onError(
+        interceptor.onError(
           url: url,
           error: errorObject as Object,
           stackTrace: stackTrace,

@@ -56,7 +56,7 @@ class VooNetworkInterceptor implements NetworkInterceptor {
       });
     }
     if (body != null) {
-      metadataMap['body'] = body.toString();
+      metadataMap['requestBody'] = body.toString();
     }
     metadataMap['timestamp'] = DateTime.now().toIso8601String();
     
@@ -96,7 +96,7 @@ class VooNetworkInterceptor implements NetworkInterceptor {
       });
     }
     if (body != null) {
-      metadataMap['body'] = body.toString();
+      metadataMap['responseBody'] = body as Object;
     }
     metadataMap['timestamp'] = DateTime.now().toIso8601String();
     

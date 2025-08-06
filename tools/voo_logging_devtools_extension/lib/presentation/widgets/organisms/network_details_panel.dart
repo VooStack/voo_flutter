@@ -27,7 +27,9 @@ class NetworkDetailsPanel extends StatelessWidget {
     final url = metadata['url'] as String? ?? log.message;
     final statusCode = metadata['statusCode'] as int?;
     final duration = metadata['duration'] as int?;
-    final requestHeaders = metadata['requestHeaders'] as Map<String, dynamic>?;
+    // Headers might be in the metadata directly for requests
+    final requestHeaders = metadata['headers'] as Map<String, dynamic>? ?? 
+                           metadata['requestHeaders'] as Map<String, dynamic>?;
     final responseHeaders = metadata['responseHeaders'] as Map<String, dynamic>?;
     final requestBody = metadata['requestBody'];
     final responseBody = metadata['responseBody'];

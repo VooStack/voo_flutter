@@ -1,3 +1,15 @@
+## 0.0.14
+
+* **BREAKING**: VooDioInterceptor methods now return `void` instead of `Future<void>` for proper Dio compatibility
+* Enhanced network interceptor to properly track request and response data separately
+* Added proper request body tracking as `requestBody` in metadata
+* Added proper response body tracking as `responseBody` in metadata
+* Fixed DevTools extension to display both request and response bodies in network details
+* Added comprehensive Dio example with multiple test scenarios
+* Added extensive test coverage for VooDioInterceptor
+* Fixed type casting error in network interceptor for response body
+* Improved header tracking for both requests and responses
+
 ## 0.0.13
 
 * Added network monitoring tab with request/response tracking
