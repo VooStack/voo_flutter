@@ -28,7 +28,7 @@ class _PerformanceFilterBarState extends State<PerformanceFilterBar> {
 
     return BlocBuilder<PerformanceBloc, PerformanceState>(
       builder: (context, state) => Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           border: Border(bottom: BorderSide(color: theme.dividerColor)),
