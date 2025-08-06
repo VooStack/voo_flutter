@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/network_request_tile.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_filter_bar.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_list.dart';
 
 class NetworkTab extends StatefulWidget {
   const NetworkTab({super.key});
@@ -14,9 +14,12 @@ class NetworkTab extends StatefulWidget {
   State<NetworkTab> createState() => _NetworkTabState();
 }
 
-class _NetworkTabState extends State<NetworkTab> {
+class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -26,6 +29,7 @@ class _NetworkTabState extends State<NetworkTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final theme = Theme.of(context);
 
     return BlocConsumer<NetworkBloc, NetworkState>(
@@ -42,7 +46,21 @@ class _NetworkTabState extends State<NetworkTab> {
               color: theme.colorScheme.surface,
               child: Row(
                 children: [
-                  Expanded(child: _buildNetworkList(state)),
+                  Expanded(
+                    child: NetworkList(
+                      logs: state.filteredNetworkLogs,
+                      selectedLogId: state.selectedLog?.id,
+                      scrollController: _scrollController,
+                      isLoading: state.isLoading,
+                      error: state.error,
+                      onLogTap: (log) {
+                        context.read<NetworkBloc>().add(SelectNetworkLog(log));
+                        if (!_showDetails) {
+                          setState(() => _showDetails = true);
+                        }
+                      },
+                    ),
+                  ),
                   if (_showDetails && state.selectedLog != null)
                     SizedBox(
                       width: 400,
@@ -57,74 +75,6 @@ class _NetworkTabState extends State<NetworkTab> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildNetworkList(NetworkState state) {
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state.error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text('Error loading network logs', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(state.error!, style: Theme.of(context).textTheme.bodySmall),
-          ],
-        ),
-      );
-    }
-
-    final logs = state.filteredNetworkLogs;
-
-    if (logs.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.cloud_off, size: 64, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3)),
-            const SizedBox(height: 16),
-            Text(
-              'No network requests',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Network requests will appear here when logged',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-                  ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: logs.length,
-      itemBuilder: (context, index) {
-        final log = logs[index];
-        final isSelected = state.selectedLog?.id == log.id;
-
-        return NetworkRequestTile(
-          log: log,
-          selected: isSelected,
-          onTap: () {
-            context.read<NetworkBloc>().add(SelectNetworkLog(log));
-            if (!_showDetails) {
-              setState(() => _showDetails = true);
-            }
-          },
-        );
-      },
     );
   }
 }
