@@ -1,3 +1,8 @@
+## 0.0.15
+
+* Improved code formatting in VooDioInterceptor for better readability
+* Applied dart format to ensure consistent code style
+
 ## 0.0.14
 
 * **BREAKING**: VooDioInterceptor methods now return `void` instead of `Future<void>` for proper Dio compatibility
