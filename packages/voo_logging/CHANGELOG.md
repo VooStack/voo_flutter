@@ -1,3 +1,10 @@
+## 0.0.11
+
+* Fixed DevTools extension not receiving logs from VooLogger
+* Replaced SimpleDevToolsLogDataSource with proper DevToolsLogDataSourceImpl that connects to VM Service
+* Removed unused stub implementations (SimpleLogDataSource and SimpleDevToolsLogDataSource)
+* DevTools extension now properly listens to structured logs via VM Service streaming
+
 ## 0.0.10
 
 * Added CLAUDE.md to .gitignore to prevent committing documentation files

@@ -160,6 +160,9 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
       // Send as a structured log that the DevTools extension can parse
       developer.log(jsonEncode(structuredData), name: 'VooLogger', level: entry.level.priority, time: entry.timestamp);
+      
+      // Also try postEvent for better DevTools integration
+      developer.postEvent('voo_logger_event', structuredData);
     } catch (e) {
       // Fallback to regular logging if structured logging fails
       developer.log('Error sending structured log: $e', name: 'VooLogger', level: 1000);

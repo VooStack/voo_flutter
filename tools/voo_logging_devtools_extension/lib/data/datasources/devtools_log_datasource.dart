@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:devtools_extensions/devtools_extensions.dart';
-// ignore: depend_on_referenced_packages
+
 import 'package:vm_service/vm_service.dart' as vm;
 import 'package:voo_logging/core/domain/enums/log_level.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
@@ -22,7 +22,6 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
   StreamSubscription<vm.Event>? _loggingSubscription;
 
   DevToolsLogDataSourceImpl({this.maxCacheSize = 10000}) {
-    // Add an initial log immediately
     _addLog(
       LogEntryModel(
         'devtools_init_immediate',
@@ -31,53 +30,44 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
         LogLevel.info,
         'System',
         'DevTools',
-        {'status': 'initializing'}, // metadata
-        null, // error
-        null, // stackTrace
-        null, // userId
-        null, // sessionId
+        {'status': 'initializing'},
+        null,
+        null,
+        null,
+        null,
       ),
     );
 
-    _listenToExtensionEvents();
+    _initializeConnection();
   }
 
-  Future<void> _listenToExtensionEvents() async {
-    try {
-      developer.log('DevTools extension starting...', name: 'VooLoggerDevTools');
+  Future<void> _initializeConnection() async {
+    await _tryConnect();
 
-      // Wait for service manager
-      developer.log('Waiting for serviceManager...', name: 'VooLoggerDevTools');
-
-      if (!serviceManager.connectedState.value.connected) {
-        developer.log('No service connection, waiting...', name: 'VooLoggerDevTools');
-        await serviceManager.onServiceAvailable;
+    serviceManager.connectedState.addListener(() {
+      if (serviceManager.connectedState.value.connected) {
+        _tryConnect();
       }
+    });
+  }
+
+  Future<void> _tryConnect() async {
+    try {
+      developer.log('Attempting to connect to VM Service...', name: 'VooLoggerDevTools');
 
       final service = serviceManager.service;
       if (service == null) {
-        developer.log('ERROR: VM Service is null after waiting!', name: 'VooLoggerDevTools', level: 1000);
-        _addLog(
-          LogEntryModel(
-            'error_no_service',
-            DateTime.now(),
-            'ERROR: Could not connect to VM Service',
-            LogLevel.error,
-            'System',
-            'DevTools',
-            {'error': 'no_vm_service'},
-            null,
-            null,
-            null,
-            null,
-          ),
-        );
+        developer.log('Service not yet available, will retry when connected', name: 'VooLoggerDevTools');
         return;
       }
 
-      developer.log('VM Service available, setting up logging stream...', name: 'VooLoggerDevTools');
+      if (_loggingSubscription != null) {
+        developer.log('Already connected to logging stream', name: 'VooLoggerDevTools');
+        return;
+      }
 
-      // Enable the logging stream
+      developer.log('VM Service available, setting up streams...', name: 'VooLoggerDevTools');
+
       try {
         await service.streamListen(vm.EventStreams.kLogging);
         developer.log('Logging stream enabled', name: 'VooLoggerDevTools');
@@ -85,56 +75,74 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
         developer.log('Error enabling logging stream: $e', name: 'VooLoggerDevTools');
       }
 
-      // Listen to logging events
+      try {
+        await service.streamListen(vm.EventStreams.kExtension);
+        developer.log('Extension stream enabled', name: 'VooLoggerDevTools');
+
+        service.onExtensionEvent.listen((vm.Event event) {
+          developer.log('Extension event received: ${event.extensionKind}', name: 'VooLoggerDevTools');
+
+          if (event.extensionKind == 'voo_logger_event' && event.extensionData != null) {
+            final data = event.extensionData!.data;
+            if (data['__voo_logger__'] == true) {
+              developer.log('Handling VooLogger extension event', name: 'VooLoggerDevTools');
+              _handleStructuredLog(data);
+            }
+          }
+        });
+      } catch (e) {
+        developer.log('Error enabling extension stream: $e', name: 'VooLoggerDevTools');
+      }
+
       _loggingSubscription = service.onLoggingEvent.listen((vm.Event event) {
         if (event.logRecord != null) {
           final record = event.logRecord!;
           final loggerName = record.loggerName?.valueAsString ?? '';
+          final message = record.message?.valueAsString ?? '';
 
-          // Check if this is a VooLogger log
-          if (loggerName.contains('VooLogger') || loggerName.contains('voo_logger') || loggerName == 'AwesomeLogger') {
-            final message = record.message?.valueAsString ?? '';
+          developer.log('Received log event - Logger: "$loggerName", Message: "${message.length > 100 ? "${message.substring(0, 100)}..." : message}"', name: 'VooLoggerDevTools');
 
-            // Try to parse structured log data from the message
-            if (message.startsWith('{') && message.endsWith('}')) {
-              try {
-                final data = jsonDecode(message) as Map<String, dynamic>;
-                if (data['__voo_logger__'] == true) {
-                  _handleStructuredLog(data);
-                  return;
-                }
-              } catch (_) {
-                // Not JSON, treat as regular message
+          if (message.startsWith('{') && message.endsWith('}')) {
+            try {
+              final data = jsonDecode(message) as Map<String, dynamic>;
+              if (data['__voo_logger__'] == true) {
+                developer.log('Found VooLogger structured log!', name: 'VooLoggerDevTools');
+                _handleStructuredLog(data);
+                return;
               }
+            } catch (e) {
+              developer.log('Failed to parse JSON: $e', name: 'VooLoggerDevTools');
             }
-
-            // Create log entry from regular logging
-            final time = record.time;
-            final level = record.level;
-
-            final logEntry = LogEntryModel(
-              DateTime.now().millisecondsSinceEpoch.toString(),
-              DateTime.fromMillisecondsSinceEpoch(time ?? DateTime.now().millisecondsSinceEpoch),
-              message,
-              _mapLogLevel(level ?? 800),
-              loggerName,
-              null, // tag
-              null, // metadata
-              record.error?.valueAsString,
-              record.stackTrace?.valueAsString,
-              null, // userId
-              null, // sessionId
-            );
-
-            _addLog(logEntry);
-            developer.log('Log captured: $message', name: 'VooLoggerDevTools');
           }
+
+          if (!loggerName.contains('VooLogger') && !message.contains('__voo_logger__')) {
+            return;
+          }
+
+          final time = record.time;
+          final level = record.level;
+
+          final logEntry = LogEntryModel(
+            DateTime.now().millisecondsSinceEpoch.toString(),
+            DateTime.fromMillisecondsSinceEpoch(time ?? DateTime.now().millisecondsSinceEpoch),
+            message,
+            _mapLogLevel(level ?? 800),
+            loggerName,
+            null,
+            null,
+            record.error?.valueAsString,
+            record.stackTrace?.valueAsString,
+            null,
+            null,
+          );
+
+          _addLog(logEntry);
+          developer.log('Log captured (fallback): $message', name: 'VooLoggerDevTools');
         }
       });
 
       developer.log('Extension event listener setup complete', name: 'VooLoggerDevTools');
 
-      // Send initial connection log
       _addLog(
         LogEntryModel(
           'devtools_init',
@@ -143,15 +151,31 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
           LogLevel.info,
           'System',
           'DevTools',
-          {'initialized': true}, // metadata
-          null, // error
-          null, // stackTrace
-          null, // userId
-          null, // sessionId
+          {'initialized': true},
+          null,
+          null,
+          null,
+          null,
         ),
       );
     } catch (e, stack) {
-      developer.log('Error in _listenToExtensionEvents: $e\n$stack', name: 'VooLoggerDevTools', level: 1000);
+      developer.log('Error in _tryConnect: $e\n$stack', name: 'VooLoggerDevTools', level: 1000);
+
+      _addLog(
+        LogEntryModel(
+          'error_${DateTime.now().millisecondsSinceEpoch}',
+          DateTime.now(),
+          'Error connecting to VM Service: $e',
+          LogLevel.error,
+          'System',
+          'DevTools',
+          {'error': e.toString()},
+          null,
+          null,
+          null,
+          null,
+        ),
+      );
     }
   }
 
@@ -179,7 +203,6 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
 
     developer.log('Added log to cache: ${log.message} (Total: ${_cachedLogs.length})', name: 'VooLoggerDevTools', level: 800);
 
-    // Maintain cache size
     if (_cachedLogs.length > maxCacheSize) {
       _cachedLogs.removeAt(0);
     }
@@ -223,7 +246,6 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
   }
 
   LogLevel _mapLogLevel(int level) {
-    // Map dart:developer log levels to LogLevel
     if (level >= 1000) return LogLevel.error;
     if (level >= 900) return LogLevel.warning;
     if (level >= 800) return LogLevel.info;
