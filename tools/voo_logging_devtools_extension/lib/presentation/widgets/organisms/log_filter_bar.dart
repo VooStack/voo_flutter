@@ -69,11 +69,11 @@ class _LogFilterBarState extends State<LogFilterBar> {
                             )
                           : null,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 TextButton.icon(
                   icon: Icon(_showAdvancedFilters ? Icons.filter_list_off : Icons.filter_list),
                   label: Text(_showAdvancedFilters ? 'Hide Filters' : 'Show Filters'),
@@ -86,7 +86,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
               ],
             ),
             if (_showAdvancedFilters) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               LevelFiltersWidget(
                 selectedLevels: state.selectedLevels ?? [],
                 onLevelToggled: (level) {

@@ -18,7 +18,7 @@ class LogEntryTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: selected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
           border: Border(bottom: BorderSide(color: theme.dividerColor.withValues(alpha: 0.2))),
