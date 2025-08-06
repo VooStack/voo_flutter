@@ -1,3 +1,11 @@
+## 0.0.12
+
+* Fixed category filtering in DevTools extension to show all unique categories from logs
+* Removed duplicate "All" option in category dropdown filter
+* Categories are now properly extracted from all logs instead of just filtered logs
+* Category list updates dynamically when new logs with new categories are received
+* "All" category option now correctly shows all logs regardless of category
+
 ## 0.0.11
 
 * Fixed DevTools extension not receiving logs from VooLogger
