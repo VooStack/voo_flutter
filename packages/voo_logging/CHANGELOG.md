@@ -1,3 +1,12 @@
+## 0.0.10
+
+* Added CLAUDE.md to .gitignore to prevent committing documentation files
+* Improved documentation and development instructions
+
+## 0.0.9
+
+* Release updates and maintenance improvements
+
 ## 0.0.8
 
 * Removed test/debug logging that was appearing in production
