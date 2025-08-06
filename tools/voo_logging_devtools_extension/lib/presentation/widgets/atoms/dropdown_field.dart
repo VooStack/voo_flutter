@@ -23,10 +23,7 @@ class DropdownField extends StatelessWidget {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      items: [
-        const DropdownMenuItem(child: Text('All')),
-        ...items.map((item) => DropdownMenuItem(value: item, child: Text(item))),
-      ],
+      items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
       onChanged: onChanged,
       );
 }

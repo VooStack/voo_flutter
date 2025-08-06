@@ -84,7 +84,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
     ),
     child: Row(
       children: [
-        Icon(Icons.bug_report, size: 32, color: theme.colorScheme.primary),
+        Icon(Icons.logo_dev_sharp, size: 32, color: theme.colorScheme.primary),
         const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,16 +104,16 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
   Widget _buildToolbarActions(BuildContext context, ThemeData theme, LogState state) => Row(
     children: [
       IconButton(
-        icon: Icon(state.autoScroll ? Icons.pause : Icons.play_arrow),
+        icon: Icon(state.autoScroll ? Icons.pause : Icons.play_arrow, size: 20, color: theme.colorScheme.primary),
         onPressed: () {
           context.read<LogBloc>().add(ToggleAutoScroll());
         },
         tooltip: state.autoScroll ? 'Pause auto-scroll' : 'Resume auto-scroll',
       ),
-      IconButton(icon: const Icon(Icons.clear_all), onPressed: () => _clearLogs(context), tooltip: 'Clear logs'),
-      IconButton(icon: const Icon(Icons.download), onPressed: () => _exportLogs(context), tooltip: 'Export logs'),
-      IconButton(icon: const Icon(Icons.bar_chart), onPressed: () => _showStatistics(context, state), tooltip: 'Show statistics'),
-      IconButton(icon: const Icon(Icons.bug_report), onPressed: () => _generateTestLog(context), tooltip: 'Generate test log'),
+      IconButton(icon: const Icon(Icons.clear_all, size: 20), onPressed: () => _clearLogs(context), tooltip: 'Clear logs'),
+      IconButton(icon: const Icon(Icons.download, size: 20), onPressed: () => _exportLogs(context), tooltip: 'Export logs'),
+      IconButton(icon: const Icon(Icons.bar_chart, size: 20), onPressed: () => _showStatistics(context, state), tooltip: 'Show statistics'),
+      IconButton(icon: const Icon(Icons.bug_report, size: 20), onPressed: () => _generateTestLog(context), tooltip: 'Generate test log'),
     ],
   );
 

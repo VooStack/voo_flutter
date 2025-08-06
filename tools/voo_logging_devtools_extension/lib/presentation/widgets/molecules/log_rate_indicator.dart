@@ -57,6 +57,7 @@ class _LogRateIndicatorState extends State<LogRateIndicator> {
         final avgRate = _rateHistory.isEmpty ? 0.0 : _rateHistory.reduce((a, b) => a + b) / _rateHistory.length;
 
         return Container(
+          clipBehavior: Clip.hardEdge,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),

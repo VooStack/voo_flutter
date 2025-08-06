@@ -34,7 +34,13 @@ class LogBloc extends Bloc<LogEvent, LogState> {
   }
 
   void _onStreamChanged(StreamChanged event, Emitter<LogState> emit) {
-    logStreamSubscription = event.stream.listen((log) => add(LogReceived(log)), onError: (Object error) => emit(state.copyWith(error: error.toString())));
+    logStreamSubscription = event.stream.listen((log) {
+      final category = log.category ?? 'Uncategorized';
+      if (!state.categories.contains(category)) {
+        emit(state.copyWith(categories: [...state.categories, category]));
+      }
+      add(LogReceived(log));
+    }, onError: (Object error) => emit(state.copyWith(error: error.toString())));
   }
 
   Future<void> _onLoadLogs(LoadLogs event, Emitter<LogState> emit) async {
@@ -47,8 +53,10 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
       final filteredLogs = _applyFilters(cachedLogs, state);
       final statistics = LogStatisticsExtensions.fromLogs(cachedLogs.map((log) => log.toEntity()).toList());
+      final uniqueCategories = cachedLogs.where((log) => log.category != null && log.category != 'All').map((log) => log.category!).toSet().toList()..sort();
+      final categories = ['All', ...uniqueCategories];
 
-      emit(state.copyWith(logs: cachedLogs, isLoading: false, filteredLogs: filteredLogs, statistics: statistics));
+      emit(state.copyWith(logs: cachedLogs, isLoading: false, filteredLogs: filteredLogs, statistics: statistics, categories: categories));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
@@ -71,7 +79,15 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
     final statistics = LogStatisticsExtensions.fromLogs(updatedLogs.map((log) => log.toEntity()).toList());
 
-    emit(state.copyWith(logs: updatedLogs, filteredLogs: filtered, statistics: statistics));
+    // Update categories if a new category is found
+    var updatedCategories = state.categories;
+    if (event.log.category != null && event.log.category != 'All' && !state.categories.contains(event.log.category)) {
+      // Extract all unique categories from all logs (excluding 'All') and keep 'All' at the beginning
+      final allCategories = updatedLogs.where((log) => log.category != null && log.category != 'All').map((log) => log.category!).toSet().toList()..sort();
+      updatedCategories = ['All', ...allCategories];
+    }
+
+    emit(state.copyWith(logs: updatedLogs, filteredLogs: filtered, statistics: statistics, categories: updatedCategories));
   }
 
   void _onSelectLog(SelectLog event, Emitter<LogState> emit) {
@@ -108,8 +124,8 @@ class LogBloc extends Bloc<LogEvent, LogState> {
       filtered = filtered.where((log) => state.selectedLevels!.contains(log.level)).toList();
     }
 
-    // Apply category filter
-    if (state.selectedCategory != null && state.selectedCategory!.isNotEmpty) {
+    // Apply category filter (skip if "All" is selected)
+    if (state.selectedCategory != null && state.selectedCategory!.isNotEmpty && state.selectedCategory != 'All') {
       filtered = filtered.where((log) => log.category == state.selectedCategory).toList();
     }
 

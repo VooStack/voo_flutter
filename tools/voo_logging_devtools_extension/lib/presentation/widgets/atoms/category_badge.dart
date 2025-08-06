@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Atomic widget for displaying log categories
 class CategoryBadge extends StatelessWidget {
   final String category;
   final Color? color;

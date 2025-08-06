@@ -13,10 +13,8 @@ class VooLoggerDevToolsExtension extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Voo Logger DevTools',
-      theme: ThemeData.dark(),
-      home: const DevToolsExtension(
-        child: AppWrapper(),
-      ),
+      theme: ThemeData.from(colorScheme: ColorScheme.fromSwatch().copyWith(primary: Color(0xffa2d399))),
+      home: const DevToolsExtension(child: AppWrapper()),
     );
   }
 }

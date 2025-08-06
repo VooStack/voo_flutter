@@ -176,6 +176,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
           ListTile(leading: const Icon(Icons.person), title: const Text('Log User Action'), onTap: _logUserAction),
           ListTile(leading: const Icon(Icons.error_outline), title: const Text('Simulate Error'), onTap: _simulateError),
           ListTile(leading: const Icon(Icons.speed), title: const Text('Log Performance Metric'), onTap: _logPerformance),
+          ListTile(leading: const Icon(Icons.speed), title: const Text('Log Large Error'), onTap: _logLargeError),
           ListTile(leading: const Icon(Icons.bug_report), title: const Text('Generate Multiple Logs'), onTap: _generateMultipleLogs),
         ],
       ),
@@ -316,6 +317,24 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
     );
 
     _showSnackBar('Performance metric logged');
+  }
+
+  Future<void> _logLargeError() async {
+    final largeError = StringBuffer('This is a very large error message. ' * 1000);
+    try {
+      throw Exception(largeError.toString());
+    } catch (e, stackTrace) {
+      await VooLogger.error(
+        'Large error occurred in the example app',
+        error: e,
+        stackTrace: stackTrace,
+        category: 'LargeError',
+        tag: 'LargeErrorTest',
+        metadata: {'errorSize': largeError.length, 'screen': 'LoggingExamplePage'},
+      );
+    }
+
+    _showSnackBar('Large error logged with stack trace');
   }
 
   Future<void> _generateMultipleLogs() async {
