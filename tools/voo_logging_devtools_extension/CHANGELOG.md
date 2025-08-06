@@ -1,3 +1,33 @@
+## 0.1.0
+
+### 🎉 Major Features
+* **Network Monitoring Tab** - New dedicated tab for monitoring HTTP requests and responses
+  * Real-time network request tracking
+  * Request/response details with headers and body
+  * Status code indicators and timing information
+  * Filter by method, status, and URL search
+* **Performance Tab** - New dedicated tab for performance metrics
+  * Track operation durations and identify bottlenecks
+  * Average duration calculations per operation
+  * Filter slow operations (>1s)
+  * Visual performance indicators
+* **Tab Navigation** - New tab-based navigation for better organization
+  * Logs, Network, and Performance tabs
+  * Clean tab switching with preserved state
+
+### 🛠️ Improvements
+* Enhanced atomic design architecture for all UI components
+* Added specialized BLoCs for Network and Performance state management
+* Created reusable atoms: NetworkMethodChip, NetworkStatusBadge, PerformanceIndicator
+* Created filter bars specific to each tab's needs
+* Added detailed panels for network and performance log inspection
+
+### 🔧 Technical Changes
+* Implemented NetworkBloc and PerformanceBloc for dedicated state management
+* Created domain entities for NetworkLogEntry and PerformanceLogEntry
+* Added proper filtering and search capabilities per tab
+* Improved component reusability with atomic design patterns
+
 ## 0.0.11
 
 * Fixed critical issue where extension wasn't receiving logs from VooLogger
