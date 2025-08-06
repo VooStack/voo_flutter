@@ -1,3 +1,9 @@
+## 0.0.8
+
+* Removed test/debug logging that was appearing in production
+* Removed polling test logs from DevTools extension
+* Cleaned up unnecessary debug log statements
+
 ## 0.0.7
 
 * Fixed DevTools extension loading issue for published package
