@@ -78,7 +78,6 @@ class LoggerRepositoryImpl extends LoggerRepository {
     String? sessionId,
   }) async {
     if (!_enabled || level.priority < _minimumLevel.priority) {
-      await log('Log skipped: $message');
       return;
     }
 

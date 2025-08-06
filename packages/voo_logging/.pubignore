@@ -3,6 +3,7 @@ build/
 
 # Keep the DevTools extension build (don't ignore it)
 !extension/devtools/build/
+!extension/devtools/build/**
 
 # Exclude example build and platform directories
 example/build/

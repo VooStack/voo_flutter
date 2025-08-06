@@ -1,3 +1,9 @@
+## 0.0.7
+
+* Fixed DevTools extension loading issue for published package
+* Corrected .pubignore to include main.dart.js in published package
+* Ensured all extension build files are properly distributed
+
 ## 0.0.6
 
 * fixed .gitignore to allow build folder for dev tools output
