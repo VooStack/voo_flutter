@@ -100,7 +100,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
     _logStreamController.add(entry);
 
-    await _storage?.insertLog(entry).catchError((Object error) => developer.log('Failed to store log: $error', name: 'AwesomeLogger', level: 1000));
+    await _storage?.insertLog(entry).catchError((_) => null);
   }
 
   Map<String, dynamic>? _enrichMetadata(Map<String, dynamic>? userMetadata) {
@@ -163,9 +163,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
       
       // Also try postEvent for better DevTools integration
       developer.postEvent('voo_logger_event', structuredData);
-    } catch (e) {
-      // Fallback to regular logging if structured logging fails
-      developer.log('Error sending structured log: $e', name: 'VooLogger', level: 1000);
+    } catch (_) {
+      // Silent fail - logging is best effort
     }
   }
 

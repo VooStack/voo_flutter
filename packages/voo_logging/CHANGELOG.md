@@ -1,9 +1,12 @@
 ## 0.0.11
 
 * Fixed DevTools extension not receiving logs from VooLogger
-* Replaced SimpleDevToolsLogDataSource with proper DevToolsLogDataSourceImpl that connects to VM Service
-* Removed unused stub implementations (SimpleLogDataSource and SimpleDevToolsLogDataSource)
+* Refactored DevTools extension to follow clean architecture principles
+* Split datasource into interface and implementation for better separation of concerns
+* Removed all debug logging for cleaner production code
+* Simplified VM Service connection with automatic retry mechanism
 * DevTools extension now properly listens to structured logs via VM Service streaming
+* Removed unused stub implementations and unnecessary files
 
 ## 0.0.10
 

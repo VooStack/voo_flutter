@@ -1,10 +1,13 @@
 ## 0.0.11
 
 * Fixed critical issue where extension wasn't receiving logs from VooLogger
-* Replaced SimpleDevToolsLogDataSource stub with proper DevToolsLogDataSourceImpl
-* Now correctly connects to VM Service and listens to logging stream
-* Removed unused SimpleLogDataSource and SimpleDevToolsLogDataSource files
+* Major refactoring to follow clean architecture principles
+* Split datasource into interface (domain layer) and implementation (data layer)
+* Removed all debug logging for production-ready code
+* Simplified VM Service connection with automatic retry mechanism
 * Extension now properly receives and displays structured logs from VooLogger
+* Removed unused files and unnecessary complexity
+* Better separation of concerns with one class per file
 
 ## 0.0.10
 

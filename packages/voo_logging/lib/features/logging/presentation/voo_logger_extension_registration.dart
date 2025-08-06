@@ -10,9 +10,7 @@ void registerVooLoggerExtension() {
       'ext.voo_logger.getVersion',
       (method, parameters) async => developer.ServiceExtensionResponse.result('{"version": "1.0.0", "supported": true}'),
     );
-
-    developer.log('Voo Logger extension registered successfully', name: 'VooLogger', level: 800);
-  } catch (e) {
-    developer.log('Failed to register Voo Logger extension: $e', name: 'VooLogger', level: 1000);
+  } catch (_) {
+    // Silent fail - extension registration is optional
   }
 }
