@@ -1,3 +1,12 @@
+## 0.0.13
+
+* Added network monitoring tab with request/response tracking
+* Added performance monitoring tab with metrics visualization
+* Improved UI components with consistent spacing constants
+* Enhanced state management for tab switching to maintain state
+* Updated padding and layout across all components for better UI consistency
+* Improved DevTools extension with dedicated network and performance features
+
 ## 0.0.12
 
 * Fixed category filtering in DevTools extension to show all unique categories from logs
