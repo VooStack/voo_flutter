@@ -129,6 +129,21 @@ scripts:
       echo "Run the following command:"
       echo "cd packages/voo_performance && dart pub publish"
       echo "================================================"
+  
+  publish_all:
+    description: Publish all packages to pub.dev (requires manual confirmation for each).
+    run: |
+      echo "================================================"
+      echo "Publishing all packages to pub.dev"
+      echo "Run these commands in order:"
+      echo ""
+      echo "1. cd packages/voo_core && dart pub publish"
+      echo "2. cd packages/voo_logging && dart pub publish"  
+      echo "3. cd packages/voo_analytics && dart pub publish"
+      echo "4. cd packages/voo_performance && dart pub publish"
+      echo ""
+      echo "Note: voo_devtools_extension is internal and not published"
+      echo "================================================"
 
   # Test commands
   test_all:
