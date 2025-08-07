@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_analytics/src/domain/repositories/analytics_repository.dart';
 import 'package:voo_analytics/src/data/repositories/analytics_repository_impl.dart';
+import 'package:voo_analytics/src/presentation/widgets/route_aware_touch_tracker.dart';
 
 class VooAnalyticsPlugin extends VooPlugin {
   static VooAnalyticsPlugin? _instance;
   AnalyticsRepository? repository;
+  AnalyticsRouteObserver? _routeObserver;
   bool _initialized = false;
 
   VooAnalyticsPlugin._();
@@ -24,6 +27,11 @@ class VooAnalyticsPlugin extends VooPlugin {
   String get version => '0.0.1';
 
   bool get isInitialized => _initialized;
+  
+  RouteObserver<ModalRoute> get routeObserver {
+    _routeObserver ??= AnalyticsRouteObserver();
+    return _routeObserver!;
+  }
 
   Future<void> initialize({
     bool enableTouchTracking = true,

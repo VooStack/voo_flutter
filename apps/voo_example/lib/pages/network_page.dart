@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_performance/voo_performance.dart';
-import 'package:voo_performance/src/interceptors/performance_dio_interceptor.dart';
 
 class NetworkPage extends StatefulWidget {
   const NetworkPage({super.key});

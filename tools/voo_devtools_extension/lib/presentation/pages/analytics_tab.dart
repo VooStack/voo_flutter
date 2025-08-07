@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/an
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_list.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/heat_map_visualization.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/route_heat_map.dart';
 
 class AnalyticsTab extends StatefulWidget {
   const AnalyticsTab({super.key});
@@ -110,9 +113,9 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
       return Center(child: Text('Error: ${state.error}', style: Theme.of(context).textTheme.bodyLarge));
     }
 
-    final heatMapPoints = _extractHeatMapPoints(state.filteredEvents);
+    final routeDataMap = _extractRouteData(state.filteredEvents);
 
-    if (heatMapPoints.isEmpty) {
+    if (routeDataMap.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -130,72 +133,69 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: HeatMapVisualization(points: heatMapPoints, screenName: _getCurrentScreen(state.filteredEvents), showGrid: true, gridSize: 20),
-    );
+    return RouteHeatMap(routeDataMap: routeDataMap);
   }
 
-  List<HeatMapPoint> _extractHeatMapPoints(List<dynamic> events) {
-    final points = <HeatMapPoint>[];
-    
-    // Find the max dimensions to normalize coordinates
-    double maxX = 1.0;
-    double maxY = 1.0;
-    
-    // First pass to find max dimensions
+  Map<String, RouteData> _extractRouteData(List<dynamic> events) {
+    final routeDataMap = <String, RouteData>{};
+    final routeScreenshots = <String, Uint8List>{};
+    final routeSizes = <String, Size>{};
+
+    // First pass: collect screenshots and route metadata
+    for (final event in events) {
+      final metadata = event.metadata as Map<String, dynamic>?;
+      if (metadata != null && metadata['type'] == 'route_screenshot') {
+        final route = metadata['route'] as String? ?? '/';
+        final screenshotData = metadata['screenshot'] as String?;
+        final width = metadata['width'] as int?;
+        final height = metadata['height'] as int?;
+
+        if (screenshotData != null && screenshotData.startsWith('data:image/png;base64,')) {
+          try {
+            final base64String = screenshotData.substring('data:image/png;base64,'.length);
+            final bytes = base64Decode(base64String);
+            routeScreenshots[route] = bytes;
+            if (width != null && height != null) {
+              routeSizes[route] = Size(width.toDouble(), height.toDouble());
+            }
+          } catch (e) {
+            // Ignore decode errors
+          }
+        }
+      }
+    }
+
+    // Second pass: collect touch events by route
     for (final event in events) {
       final metadata = event.metadata as Map<String, dynamic>?;
       if (metadata != null && metadata['type'] == 'touch_event') {
+        final route = metadata['screen'] as String? ?? '/';
         final x = (metadata['x'] is num) ? metadata['x'].toDouble() : null;
         final y = (metadata['y'] is num) ? metadata['y'].toDouble() : null;
+
         if (x != null && y != null) {
-          maxX = x > maxX ? x : maxX;
-          maxY = y > maxY ? y : maxY;
-        }
-      }
-    }
-    
-    // Add some padding to max values
-    maxX = maxX > 0 ? maxX * 1.1 : 500;
-    maxY = maxY > 0 ? maxY * 1.1 : 800;
+          // Get or create route data
+          final existingData = routeDataMap[route];
+          final screenSize = routeSizes[route] ?? const Size(400, 800);
 
-    for (final event in events) {
-      final metadata = event.metadata as Map<String, dynamic>?;
-      if (metadata != null && metadata['type'] == 'touch_event') {
-        final x = (metadata['x'] is num) ? metadata['x'].toDouble() : null;
-        final y = (metadata['y'] is num) ? metadata['y'].toDouble() : null;
-        
-        if (x != null && y != null) {
-          // Normalize coordinates to 0-1 range
-          points.add(
-            HeatMapPoint(
-              x: x / maxX,
-              y: y / maxY,
-              intensity: 0.7,
-              screenName: metadata['screen'] as String?,
-              timestamp: event.timestamp ?? DateTime.now(),
-            ),
-          );
-        }
-      }
-    }
-    
-    return points;
-  }
+          final point = HeatMapPoint(x: x / screenSize.width, y: y / screenSize.height, intensity: 0.7, screenName: route, timestamp: event.timestamp ?? DateTime.now());
 
-  String? _getCurrentScreen(List<dynamic> events) {
-    if (events.isEmpty) return null;
-
-    for (final event in events) {
-      if (event is Map<String, dynamic>) {
-        final metadata = event['metadata'] as Map<String, dynamic>?;
-        if (metadata != null && metadata['screen'] != null) {
-          return metadata['screen'] as String;
+          if (existingData != null) {
+            existingData.touchPoints.add(point);
+          } else {
+            routeDataMap[route] = RouteData(
+              routeName: route,
+              touchPoints: [point],
+              screenshot: routeScreenshots[route],
+              screenSize: screenSize,
+              firstSeen: event.timestamp ?? DateTime.now(),
+              lastSeen: event.timestamp ?? DateTime.now(),
+            );
+          }
         }
       }
     }
 
-    return null;
+    return routeDataMap;
   }
 }

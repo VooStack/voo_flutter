@@ -80,9 +80,11 @@ class _LoggingPageState extends State<LoggingPage> {
     _messageController.clear();
     _loadRecentLogs();
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Logged: $message'), backgroundColor: _getColorForLevel(_selectedLevel), duration: const Duration(seconds: 2)));
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Logged: $message'), backgroundColor: _getColorForLevel(_selectedLevel), duration: const Duration(seconds: 2)));
+    }
   }
 
   void _clearLogs() async {

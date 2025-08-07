@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:voo_analytics/voo_analytics.dart';
-import 'package:voo_analytics/src/data/repositories/analytics_repository_impl.dart';
 import 'package:voo_logging/voo_logging.dart';
 
 class AnalyticsPage extends StatefulWidget {
@@ -22,14 +21,19 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   @override
   void initState() {
     super.initState();
-    // Access the repository from the plugin or create a new one
-    if (VooAnalyticsPlugin.instance.repository != null) {
-      _analyticsRepository = VooAnalyticsPlugin.instance.repository!;
-    } else {
-      // Create a new repository if plugin doesn't have one
-      _analyticsRepository = AnalyticsRepositoryImpl();
-      _analyticsRepository.initialize();
+    // Initialize analytics if not already done
+    _initializeAnalytics();
+  }
+  
+  Future<void> _initializeAnalytics() async {
+    if (!VooAnalyticsPlugin.instance.isInitialized) {
+      await VooAnalyticsPlugin.instance.initialize(
+        enableTouchTracking: true,
+        enableEventLogging: true,
+        enableUserProperties: true,
+      );
     }
+    _analyticsRepository = VooAnalyticsPlugin.instance.repository!;
     _loadAnalyticsData();
   }
 

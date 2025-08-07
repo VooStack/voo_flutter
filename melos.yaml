@@ -4,7 +4,53 @@ packages:
   - packages/*
   - tools/*
 
+command:
+  version:
+    # Generate a workspace-level changelog
+    workspaceChangelog: true
+    
+    # Restrict versioning to main branch only
+    branch: main
+    
+    # Update dependent packages automatically  
+    updateGitTagRefs: true        # Update git tag references in pubspec.yaml
+    
+    # Commit message template for version updates
+    message: |
+      chore(release): publish packages
+      
+      {new_package_versions}
+    
+    # Configure hooks for custom actions during versioning
+    hooks:
+      preCommit: |
+        # Run tests before committing version changes
+        melos run test_all
+        # Update example app dependencies
+        cd apps/voo_example && flutter pub get
+
 scripts:
+  # Version management commands
+  version:
+    description: Version packages using conventional commits.
+    run: melos version
+  
+  version_prerelease:
+    description: Create prerelease versions for packages with changes.
+    run: melos version --prerelease
+  
+  version_graduate:
+    description: Graduate prerelease packages to stable versions.
+    run: melos version --graduate
+  
+  version_check:
+    description: Check which packages would be versioned without making changes.
+    run: melos version --no-git-tag-version --no-git-commit-version
+  
+  changelog:
+    description: Generate changelogs without versioning.
+    run: melos version --no-git-tag-version --yes
+  
   get:
     description: Get dependencies for all packages.
     run: melos bootstrap
@@ -18,19 +64,19 @@ scripts:
     description: Prepare the voo_logging_devtools_extension package by fetching dependencies.
     run: |
       cd tools/voo_devtools_extension && flutter pub get
-      
+
   build_logging_extension:
     description: Build the voo logging DevTools extension and copy to voo_logging package.
     run: |
       cd tools/voo_devtools_extension && \
       dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_logging/extension/devtools
-      
+
   validate_logging_extension:
     description: Validate the voo_logging DevTools extension.
     run: |
       cd tools/voo_devtools_extension && \
       dart run devtools_extensions validate --package=../../packages/voo_logging
-      
+
   prepare_core_devtools:
     description: Prepare the voo_devtools_extension package for voo_core.
     run: |

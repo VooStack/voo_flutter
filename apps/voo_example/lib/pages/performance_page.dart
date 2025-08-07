@@ -162,7 +162,9 @@ class _PerformancePageState extends State<PerformancePage> {
     });
 
     await VooLogger.info('Performance metrics cleared');
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Metrics cleared')));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Metrics cleared')));
+    }
   }
 
   @override

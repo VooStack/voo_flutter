@@ -32,10 +32,33 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: 'Voo Logging Example',
-    theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
-    home: const LoggingExamplePage(),
+  Widget build(BuildContext context) => RouteAwareTouchTracker(
+    child: MaterialApp(
+      title: 'Voo Logging Example',
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+      navigatorObservers: [VooAnalyticsPlugin.instance.routeObserver],
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        Widget page;
+        switch (settings.name) {
+          case '/':
+            page = const LoggingExamplePage();
+            break;
+          case '/dio':
+            page = const DioExampleScreen();
+            break;
+          case '/analytics':
+            page = const AnalyticsExamplePage();
+            break;
+          case '/performance':
+            page = const PerformanceExamplePage();
+            break;
+          default:
+            page = const LoggingExamplePage();
+        }
+        return MaterialPageRoute(builder: (context) => page, settings: settings);
+      },
+    ),
   );
 }
 
@@ -198,10 +221,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
             subtitle: const Text('Test real HTTP requests with auto-logging'),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DioExampleScreen()),
-              );
+              Navigator.pushNamed(context, '/dio');
             },
           ),
           ListTile(
@@ -210,10 +230,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
             subtitle: const Text('Test touch tracking and custom events'),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AnalyticsExamplePage()),
-              );
+              Navigator.pushNamed(context, '/analytics');
             },
           ),
           ListTile(
@@ -222,10 +239,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
             subtitle: const Text('Test performance traces and metrics'),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PerformanceExamplePage()),
-              );
+              Navigator.pushNamed(context, '/performance');
             },
           ),
           ListTile(leading: const Icon(Icons.person), title: const Text('Log User Action'), onTap: _logUserAction),
@@ -319,7 +333,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   Future<void> _simulateNetworkRequest() async {
     // Example of using the NetworkInterceptor
     const interceptor = VooNetworkInterceptor();
-    
+
     // Log the request
     await interceptor.onRequest(
       method: 'GET',
@@ -347,22 +361,16 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
 
   Future<void> _simulateMultipleApiCalls() async {
     final random = Random();
-    final endpoints = [
-      '/api/users',
-      '/api/products',
-      '/api/orders',
-      '/api/analytics',
-      '/api/settings',
-    ];
-    
+    final endpoints = ['/api/users', '/api/products', '/api/orders', '/api/analytics', '/api/settings'];
+
     final methods = ['GET', 'POST', 'PUT', 'DELETE'];
-    
+
     for (int i = 0; i < 10; i++) {
       final endpoint = endpoints[random.nextInt(endpoints.length)];
       final method = methods[random.nextInt(methods.length)];
       final statusCode = random.nextBool() ? 200 : (random.nextBool() ? 404 : 500);
       final duration = Duration(milliseconds: random.nextInt(3000) + 100);
-      
+
       // Log request
       await VooLogger.networkRequest(
         method,
@@ -370,10 +378,10 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
         headers: {'Authorization': 'Bearer token', 'X-Request-ID': 'req_$i'},
         metadata: {'attempt': '${i + 1}'},
       );
-      
+
       // Simulate delay
       await Future.delayed(Duration(milliseconds: random.nextInt(100)));
-      
+
       // Log response
       await VooLogger.networkResponse(
         statusCode,
@@ -384,7 +392,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
         metadata: {'cached': random.nextBool()},
       );
     }
-    
+
     _showSnackBar('10 API calls simulated');
   }
 
@@ -430,28 +438,21 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
     try {
       // Track operation with timing
       final stopwatch = Stopwatch()..start();
-      
+
       // Simulate API call
       await Future.delayed(const Duration(milliseconds: 1500));
-      
+
       stopwatch.stop();
-      
+
       // Simulate random success/failure
-      final result = Random().nextBool() 
-          ? 'User data fetched successfully'
-          : 'Failed to fetch user data';
-      
+      final result = Random().nextBool() ? 'User data fetched successfully' : 'Failed to fetch user data';
+
       await VooLogger.info(
         'API call completed in ${stopwatch.elapsedMilliseconds}ms',
         category: 'Performance',
-        metadata: {
-          'endpoint': '/api/user/profile',
-          'method': 'GET',
-          'duration_ms': stopwatch.elapsedMilliseconds,
-          'result': result,
-        },
+        metadata: {'endpoint': '/api/user/profile', 'method': 'GET', 'duration_ms': stopwatch.elapsedMilliseconds, 'result': result},
       );
-      
+
       _showSnackBar('Operation tracked: $result');
     } catch (e) {
       _showSnackBar('Operation failed: $e');
@@ -464,16 +465,11 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
       sum += i;
     }
     stopwatch.stop();
-    
+
     await VooLogger.info(
       'Sync calculation completed in ${stopwatch.elapsedMilliseconds}ms',
       category: 'Performance',
-      metadata: {
-        'iterations': 1000000,
-        'algorithm': 'linear',
-        'duration_ms': stopwatch.elapsedMilliseconds,
-        'result': sum,
-      },
+      metadata: {'iterations': 1000000, 'algorithm': 'linear', 'duration_ms': stopwatch.elapsedMilliseconds, 'result': sum},
     );
   }
 
