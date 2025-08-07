@@ -1,6 +1,8 @@
 /// Logging feature barrel file
 /// Main logging functionality exports
 
+// ignore_for_file: directives_ordering
+
 // Data - Models
 export 'data/models/log_entry_model.dart';
 export 'data/models/log_entry_model_extensions.dart';
