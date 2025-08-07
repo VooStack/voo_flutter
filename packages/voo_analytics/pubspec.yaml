@@ -1,6 +1,6 @@
 name: voo_analytics
 description: Analytics and heat map tracking package for Flutter applications.
-version: 0.0.1
+version: 0.0.2
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_analytics
 
@@ -11,8 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  voo_core:
-  voo_logging:
+  voo_core: ^0.0.2
+  voo_logging: ^0.0.15
   json_annotation: ^4.9.0
   equatable: ^2.0.5
   path: ^1.9.1

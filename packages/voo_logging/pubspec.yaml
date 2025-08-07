@@ -1,6 +1,6 @@
 name: voo_logging
 description: A comprehensive logging package for Flutter and Dart applications with DevTools integration.
-version: 0.0.15
+version: 0.0.16
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_logging
 
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  voo_core:
+  voo_core: ^0.0.2
   json_annotation: ^4.9.0
   equatable: ^2.0.5
   sembast: ^3.8.5+1

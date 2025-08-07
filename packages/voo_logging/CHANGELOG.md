@@ -1,3 +1,11 @@
+## 0.0.16
+
+* Updated voo_core dependency to ^0.0.2
+* Enhanced DevTools extension with improved network and performance panels
+* Added comprehensive logging panels for better debugging experience
+* Improved integration with voo_analytics and voo_performance packages
+* Enhanced overall package stability and compatibility
+
 ## 0.0.15
 
 * Improved code formatting in VooDioInterceptor for better readability
