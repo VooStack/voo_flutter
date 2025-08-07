@@ -2,14 +2,28 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:voo_analytics/voo_analytics.dart';
+import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
+import 'package:voo_logging_example/analytics_example.dart';
 import 'package:voo_logging_example/dio_example.dart';
+import 'package:voo_logging_example/performance_example.dart';
+import 'package:voo_performance/voo_performance.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Voo Core
+  await Voo.initializeApp();
+
   // Initialize VooLogger
   await VooLogger.initialize(appName: 'Voo Logging Example', appVersion: '1.0.0', userId: 'user123');
+
+  // Initialize VooAnalytics
+  await VooAnalyticsPlugin.instance.initialize();
+
+  // Initialize VooPerformance
+  await VooPerformancePlugin.instance.initialize();
 
   runApp(const MyApp());
 }
@@ -187,6 +201,30 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const DioExampleScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.analytics),
+            title: const Text('Analytics Example'),
+            subtitle: const Text('Test touch tracking and custom events'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AnalyticsExamplePage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.speed),
+            title: const Text('Performance Example'),
+            subtitle: const Text('Test performance traces and metrics'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PerformanceExamplePage()),
               );
             },
           ),

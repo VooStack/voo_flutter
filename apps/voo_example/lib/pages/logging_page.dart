@@ -278,8 +278,9 @@ class _LoggingPageState extends State<LoggingPage> {
                                   subtitle: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('${log.level.name.toUpperCase()} • ${_formatTime(log.timestamp)}', style: TextStyle(fontSize: 12)),
-                                      if (log.metadata != null && log.metadata!.isNotEmpty) Text('Metadata: ${log.metadata}', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                                      Text('${log.level.name.toUpperCase()} • ${_formatTime(log.timestamp)}', style: const TextStyle(fontSize: 12)),
+                                      if (log.metadata != null && log.metadata!.isNotEmpty)
+                                        Text('Metadata: ${log.metadata}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
                                     ],
                                   ),
                                   isThreeLine: log.metadata != null && log.metadata!.isNotEmpty,

@@ -102,11 +102,15 @@ class VooPerformancePlugin extends VooPlugin {
     // Send performance trace to VooLogger
     VooLogger.info(
       'Performance trace: ${trace.name}',
-      category: 'performance',
+      category: 'Performance',
       metadata: {
+        'operation': trace.name,
+        'operationType': trace.attributes['operation_type'] ?? 'trace',
+        'duration': trace.duration?.inMilliseconds ?? 0,
         'duration_ms': trace.duration?.inMilliseconds ?? 0,
         'attributes': trace.attributes,
         'metrics': trace.metrics,
+        'timestamp': trace.startTime.toIso8601String(),
       },
     );
     
@@ -117,6 +121,25 @@ class VooPerformancePlugin extends VooPlugin {
 
   void recordNetworkMetric(NetworkMetric metric) {
     _networkMetrics.add(metric);
+    
+    // Send network metric to VooLogger for DevTools streaming
+    VooLogger.info(
+      'Network request: ${metric.method} ${metric.url}',
+      category: 'Performance',
+      metadata: {
+        'operation': 'network_request',
+        'operationType': 'network',
+        'url': metric.url,
+        'method': metric.method,
+        'statusCode': metric.statusCode,
+        'duration': metric.duration.inMilliseconds,
+        'duration_ms': metric.duration.inMilliseconds,
+        'requestSize': metric.requestSize,
+        'responseSize': metric.responseSize,
+        'timestamp': metric.timestamp.toIso8601String(),
+        ...?metric.metadata,
+      },
+    );
     
     if (_networkMetrics.length > 1000) {
       _networkMetrics.removeRange(0, 100);
