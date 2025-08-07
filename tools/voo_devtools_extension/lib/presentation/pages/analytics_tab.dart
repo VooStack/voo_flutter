@@ -138,28 +138,49 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
 
   List<HeatMapPoint> _extractHeatMapPoints(List<dynamic> events) {
     final points = <HeatMapPoint>[];
-
+    
+    // Find the max dimensions to normalize coordinates
+    double maxX = 1.0;
+    double maxY = 1.0;
+    
+    // First pass to find max dimensions
     for (final event in events) {
-      if (event is Map<String, dynamic>) {
-        final metadata = event['metadata'] as Map<String, dynamic>?;
-        if (metadata != null && metadata['type'] == 'touch_event') {
-          final x = metadata['x'] as double?;
-          final y = metadata['y'] as double?;
-          if (x != null && y != null) {
-            points.add(
-              HeatMapPoint(
-                x: x / 1000,
-                y: y / 1000,
-                intensity: 0.5,
-                screenName: metadata['screen'] as String?,
-                timestamp: DateTime.tryParse(event['timestamp'] ?? '') ?? DateTime.now(),
-              ),
-            );
-          }
+      final metadata = event.metadata as Map<String, dynamic>?;
+      if (metadata != null && metadata['type'] == 'touch_event') {
+        final x = (metadata['x'] is num) ? metadata['x'].toDouble() : null;
+        final y = (metadata['y'] is num) ? metadata['y'].toDouble() : null;
+        if (x != null && y != null) {
+          maxX = x > maxX ? x : maxX;
+          maxY = y > maxY ? y : maxY;
         }
       }
     }
+    
+    // Add some padding to max values
+    maxX = maxX > 0 ? maxX * 1.1 : 500;
+    maxY = maxY > 0 ? maxY * 1.1 : 800;
 
+    for (final event in events) {
+      final metadata = event.metadata as Map<String, dynamic>?;
+      if (metadata != null && metadata['type'] == 'touch_event') {
+        final x = (metadata['x'] is num) ? metadata['x'].toDouble() : null;
+        final y = (metadata['y'] is num) ? metadata['y'].toDouble() : null;
+        
+        if (x != null && y != null) {
+          // Normalize coordinates to 0-1 range
+          points.add(
+            HeatMapPoint(
+              x: x / maxX,
+              y: y / maxY,
+              intensity: 0.7,
+              screenName: metadata['screen'] as String?,
+              timestamp: event.timestamp ?? DateTime.now(),
+            ),
+          );
+        }
+      }
+    }
+    
     return points;
   }
 

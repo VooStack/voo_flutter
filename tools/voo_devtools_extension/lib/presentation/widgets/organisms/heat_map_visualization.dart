@@ -201,24 +201,26 @@ class HeatMapPainter extends CustomPainter {
   void _drawHeatMap(Canvas canvas, Size size) {
     final aggregatedPoints = _aggregatePoints(size);
 
+    // Draw heat blobs
     for (final entry in aggregatedPoints.entries) {
       final point = entry.key;
       final intensity = entry.value;
 
       final paint = Paint()
         ..color = _getHeatColor(intensity)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 10 + intensity * 20);
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15 + intensity * 25);
 
-      final radius = 10 + intensity * 30;
+      final radius = 20 + intensity * 40;
       canvas.drawCircle(Offset(point.dx * size.width, point.dy * size.height), radius, paint);
     }
 
+    // Draw individual points
     for (final point in points) {
       final paint = Paint()
-        ..color = _getHeatColor(point.intensity).withValues(alpha: 0.8)
+        ..color = _getHeatColor(point.intensity).withValues(alpha: 0.6)
         ..style = PaintingStyle.fill;
 
-      canvas.drawCircle(Offset(point.x * size.width, point.y * size.height), 3, paint);
+      canvas.drawCircle(Offset(point.x * size.width, point.y * size.height), 4, paint);
     }
   }
 
@@ -231,12 +233,14 @@ class HeatMapPainter extends CustomPainter {
       final cellY = (point.y * size.height / cellSize).floor() * cellSize / size.height;
       final cellKey = Offset(cellX, cellY);
 
-      aggregated[cellKey] = (aggregated[cellKey] ?? 0) + point.intensity;
+      // Count the number of points in each cell
+      aggregated[cellKey] = (aggregated[cellKey] ?? 0) + 1;
     }
 
-    final maxIntensity = aggregated.values.fold(0.0, math.max);
-    if (maxIntensity > 0) {
-      aggregated.updateAll((key, value) => value / maxIntensity);
+    // Normalize intensity based on the number of points
+    final maxCount = aggregated.values.fold(1.0, math.max);
+    if (maxCount > 1) {
+      aggregated.updateAll((key, value) => math.min(1.0, value / (maxCount * 0.5)));
     }
 
     return aggregated;

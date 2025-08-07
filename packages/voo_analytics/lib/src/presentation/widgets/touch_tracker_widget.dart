@@ -20,15 +20,25 @@ class TouchTrackerWidget extends StatefulWidget {
 }
 
 class _TouchTrackerWidgetState extends State<TouchTrackerWidget> {
+  Offset? _lastPosition;
+  
   void _logTouchEvent(Offset position, TouchType type, {String? widgetType, String? widgetKey}) {
     if (!widget.enabled || !VooAnalyticsPlugin.instance.isInitialized) {
       return;
     }
 
+    // Use last known position for end events if position is zero
+    final effectivePosition = (position == Offset.zero && _lastPosition != null) ? _lastPosition! : position;
+    
+    // Update last position if not zero
+    if (position != Offset.zero) {
+      _lastPosition = position;
+    }
+
     final event = TouchEvent(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       timestamp: DateTime.now(),
-      position: position,
+      position: effectivePosition,
       screenName: widget.screenName,
       type: type,
       widgetType: widgetType,
@@ -67,11 +77,16 @@ class _TouchTrackerWidgetState extends State<TouchTrackerWidget> {
         }
       },
       onScaleUpdate: (details) {
-        if (details.pointerCount == 1) {
-          _logTouchEvent(details.localFocalPoint, TouchType.panUpdate);
-        } else {
-          _logTouchEvent(details.localFocalPoint, TouchType.scaleUpdate);
+        // Throttle update events - only log every 10th update to avoid overwhelming
+        if (DateTime.now().millisecondsSinceEpoch % 10 == 0) {
+          if (details.pointerCount == 1) {
+            _logTouchEvent(details.localFocalPoint, TouchType.panUpdate);
+          } else {
+            _logTouchEvent(details.localFocalPoint, TouchType.scaleUpdate);
+          }
         }
+        // Always update last position
+        _lastPosition = details.localFocalPoint;
       },
       onScaleEnd: (details) {
         if (details.pointerCount == 1) {
