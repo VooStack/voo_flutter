@@ -24,6 +24,7 @@ class LoggerTabBar extends StatelessWidget {
           Tab(text: 'Logs', icon: Icon(Icons.list, size: 18)),
           Tab(text: 'Network', icon: Icon(Icons.cloud_outlined, size: 18)),
           Tab(text: 'Performance', icon: Icon(Icons.speed, size: 18)),
+          Tab(text: 'Analytics', icon: Icon(Icons.analytics_outlined, size: 18)),
         ],
       ),
     );

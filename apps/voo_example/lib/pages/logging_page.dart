@@ -44,9 +44,9 @@ class _LoggingPageState extends State<LoggingPage> {
       level: _selectedLevel,
       message: message,
       category: 'LoggingPage',
-      metadata: {'source': 'LoggingPage'},
+      metadata: const {'source': 'LoggingPage'},
     );
-    
+
     // Log using VooLogger
     switch (_selectedLevel) {
       case LogLevel.verbose:
@@ -68,7 +68,7 @@ class _LoggingPageState extends State<LoggingPage> {
         await VooLogger.fatal(message);
         break;
     }
-    
+
     // Add to local list for display
     setState(() {
       _recentLogs.insert(0, logEntry);
@@ -79,14 +79,10 @@ class _LoggingPageState extends State<LoggingPage> {
 
     _messageController.clear();
     _loadRecentLogs();
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Logged: $message'),
-        backgroundColor: _getColorForLevel(_selectedLevel),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Logged: $message'), backgroundColor: _getColorForLevel(_selectedLevel), duration: const Duration(seconds: 2)));
   }
 
   void _clearLogs() async {
@@ -95,18 +91,14 @@ class _LoggingPageState extends State<LoggingPage> {
       _recentLogs = [];
     });
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logs cleared')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs cleared')));
     }
   }
 
   void _exportLogs() async {
     await VooLogger.exportLogs();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logs exported')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs exported')));
     }
   }
 
@@ -134,21 +126,9 @@ class _LoggingPageState extends State<LoggingPage> {
         title: const Text('Logging Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadRecentLogs,
-            tooltip: 'Refresh logs',
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: _clearLogs,
-            tooltip: 'Clear all logs',
-          ),
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: _exportLogs,
-            tooltip: 'Export logs',
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadRecentLogs, tooltip: 'Refresh logs'),
+          IconButton(icon: const Icon(Icons.delete_sweep), onPressed: _clearLogs, tooltip: 'Clear all logs'),
+          IconButton(icon: const Icon(Icons.download), onPressed: _exportLogs, tooltip: 'Export logs'),
         ],
       ),
       body: Column(
@@ -162,21 +142,11 @@ class _LoggingPageState extends State<LoggingPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Create Log Entry',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Create Log Entry', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     TextField(
                       controller: _messageController,
-                      decoration: const InputDecoration(
-                        labelText: 'Log Message',
-                        hintText: 'Enter a message to log',
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: const InputDecoration(labelText: 'Log Message', hintText: 'Enter a message to log', border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -184,10 +154,7 @@ class _LoggingPageState extends State<LoggingPage> {
                         Expanded(
                           child: DropdownButtonFormField<LogLevel>(
                             value: _selectedLevel,
-                            decoration: const InputDecoration(
-                              labelText: 'Log Level',
-                              border: OutlineInputBorder(),
-                            ),
+                            decoration: const InputDecoration(labelText: 'Log Level', border: OutlineInputBorder()),
                             items: LogLevel.values.map((level) {
                               return DropdownMenuItem(
                                 value: level,
@@ -197,10 +164,7 @@ class _LoggingPageState extends State<LoggingPage> {
                                       width: 12,
                                       height: 12,
                                       margin: const EdgeInsets.only(right: 8),
-                                      decoration: BoxDecoration(
-                                        color: _getColorForLevel(level),
-                                        shape: BoxShape.circle,
-                                      ),
+                                      decoration: BoxDecoration(color: _getColorForLevel(level), shape: BoxShape.circle),
                                     ),
                                     Text(level.name.toUpperCase()),
                                   ],
@@ -221,12 +185,7 @@ class _LoggingPageState extends State<LoggingPage> {
                           onPressed: _logMessage,
                           icon: const Icon(Icons.send),
                           label: const Text('Log'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
-                            ),
-                          ),
+                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16)),
                         ),
                       ],
                     ),
@@ -235,7 +194,7 @@ class _LoggingPageState extends State<LoggingPage> {
               ),
             ),
           ),
-          
+
           // Example Actions
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -284,7 +243,7 @@ class _LoggingPageState extends State<LoggingPage> {
               ],
             ),
           ),
-          
+
           // Recent Logs
           Expanded(
             child: Container(
@@ -295,27 +254,14 @@ class _LoggingPageState extends State<LoggingPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Recent Logs',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '${_recentLogs.length} entries',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
+                      const Text('Recent Logs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text('${_recentLogs.length} entries', style: TextStyle(color: Colors.grey[600])),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Expanded(
                     child: _recentLogs.isEmpty
-                        ? const Center(
-                            child: Text('No logs yet. Create some logs above!'),
-                          )
+                        ? const Center(child: Text('No logs yet. Create some logs above!'))
                         : ListView.builder(
                             itemCount: _recentLogs.length,
                             itemBuilder: (context, index) {
@@ -326,24 +272,14 @@ class _LoggingPageState extends State<LoggingPage> {
                                   leading: Container(
                                     width: 8,
                                     height: 40,
-                                    decoration: BoxDecoration(
-                                      color: _getColorForLevel(log.level),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
+                                    decoration: BoxDecoration(color: _getColorForLevel(log.level), borderRadius: BorderRadius.circular(4)),
                                   ),
                                   title: Text(log.message),
                                   subtitle: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        '${log.level.name.toUpperCase()} • ${_formatTime(log.timestamp)}',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                      if (log.metadata != null && log.metadata!.isNotEmpty)
-                                        Text(
-                                          'Metadata: ${log.metadata}',
-                                          style: TextStyle(fontSize: 11, color: Colors.grey),
-                                        ),
+                                      Text('${log.level.name.toUpperCase()} • ${_formatTime(log.timestamp)}', style: TextStyle(fontSize: 12)),
+                                      if (log.metadata != null && log.metadata!.isNotEmpty) Text('Metadata: ${log.metadata}', style: TextStyle(fontSize: 11, color: Colors.grey)),
                                     ],
                                   ),
                                   isThreeLine: log.metadata != null && log.metadata!.isNotEmpty,
@@ -368,9 +304,9 @@ class _LoggingPageState extends State<LoggingPage> {
       level: level,
       message: message,
       category: 'LoggingPage',
-      metadata: {'source': 'Test'},
+      metadata: const {'source': 'Test'},
     );
-    
+
     setState(() {
       _recentLogs.insert(0, logEntry);
       if (_recentLogs.length > 10) {

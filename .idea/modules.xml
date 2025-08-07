@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/packages/voo_analytics/melos_voo_analytics.iml" filepath="$PROJECT_DIR$/packages/voo_analytics/melos_voo_analytics.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/voo_core/melos_voo_core.iml" filepath="$PROJECT_DIR$/packages/voo_core/melos_voo_core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apps/voo_example/melos_voo_example.iml" filepath="$PROJECT_DIR$/apps/voo_example/melos_voo_example.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/voo_logging/melos_voo_logging.iml" filepath="$PROJECT_DIR$/packages/voo_logging/melos_voo_logging.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/voo_devtools_extension/melos_voo_logging_devtools_extension.iml" filepath="$PROJECT_DIR$/tools/voo_devtools_extension/melos_voo_logging_devtools_extension.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/voo_performance/melos_voo_performance.iml" filepath="$PROJECT_DIR$/packages/voo_performance/melos_voo_performance.iml" />

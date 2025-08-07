@@ -7,44 +7,16 @@ import 'package:voo_example/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Voo Core
-  await Voo.initializeApp(
-    options: const VooOptions(
-      enableDebugLogging: true,
-      autoRegisterPlugins: true,
-    ),
-  );
-  
+  await Voo.initializeApp(options: const VooOptions(enableDebugLogging: true, autoRegisterPlugins: true));
+
   // Initialize individual plugins
-  await VooLoggingPlugin.instance.initialize(
-    maxEntries: 10000,
-    enableConsoleOutput: true,
-    enableFileStorage: true,
-  );
-  
-  await VooAnalyticsPlugin.instance.initialize(
-    enableTouchTracking: true,
-    enableEventLogging: true,
-    enableUserProperties: true,
-  );
-  
-  await VooPerformancePlugin.instance.initialize(
-    enableNetworkMonitoring: true,
-    enableTraceMonitoring: true,
-    enableAutoAppStartTrace: true,
-  );
-  
-  // Initialize VooLogger
-  await VooLogger.initialize(
-    appName: 'VooExample',
-    appVersion: '1.0.0',
-    userId: 'example_user',
-    minimumLevel: LogLevel.debug,
-  );
-  
+  await VooLoggingPlugin.instance.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
+  await VooAnalyticsPlugin.instance.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+  await VooPerformancePlugin.instance.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
+  await VooLogger.initialize(appName: 'VooExample', appVersion: '1.0.0', userId: 'example_user', minimumLevel: LogLevel.debug);
+
   VooLogger.info('VooExample app initialized');
-  
+
   runApp(const VooExampleApp());
 }
 
@@ -55,10 +27,7 @@ class VooExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Voo Flutter Example',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
       home: const HomePage(),
     );
   }

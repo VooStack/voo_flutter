@@ -37,51 +37,11 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     // Get touch events from analytics repository
     final events = await _analyticsRepository.getTouchEvents();
     final heatMap = await _analyticsRepository.getHeatMapData();
-    
+
     setState(() {
       _touchEvents = events.take(20).toList(); // Show last 20 events
       _heatMapData = heatMap;
     });
-  }
-
-  void _trackEvent(TouchType eventType, Offset position) async {
-    if (!_isTrackingEnabled) return;
-    
-    final event = TouchEvent(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      timestamp: DateTime.now(),
-      position: position,
-      screenName: 'AnalyticsPage',
-      widgetType: 'InteractiveArea',
-      type: eventType,
-      metadata: const {
-        'page': 'AnalyticsPage',
-        'widget': 'InteractiveArea',
-      },
-    );
-    
-    await _analyticsRepository.logTouchEvent(event);
-    await VooLogger.info('Analytics event tracked: ${eventType.name} at ${position.dx.toStringAsFixed(1)}, ${position.dy.toStringAsFixed(1)}');
-    
-    setState(() {
-      switch (eventType) {
-        case TouchType.tap:
-          _tapCount++;
-          break;
-        case TouchType.longPress:
-          _longPressCount++;
-          break;
-        case TouchType.panStart:
-        case TouchType.panUpdate:
-        case TouchType.panEnd:
-          _swipeCount++;
-          break;
-        default:
-          break;
-      }
-    });
-    
-    _loadAnalyticsData();
   }
 
   void _clearAnalytics() async {
@@ -95,9 +55,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     });
     await VooLogger.info('Analytics data cleared');
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Analytics data cleared')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Analytics data cleared')));
     }
   }
 
@@ -108,16 +66,8 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         title: const Text('Analytics Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadAnalyticsData,
-            tooltip: 'Refresh data',
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: _clearAnalytics,
-            tooltip: 'Clear analytics',
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadAnalyticsData, tooltip: 'Refresh data'),
+          IconButton(icon: const Icon(Icons.delete_sweep), onPressed: _clearAnalytics, tooltip: 'Clear analytics'),
         ],
       ),
       body: SingleChildScrollView(
@@ -140,7 +90,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Statistics
             Card(
               child: Padding(
@@ -148,13 +98,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Interaction Statistics',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Interaction Statistics', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -169,7 +113,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Interactive Area with TouchTracker
             Card(
               child: Padding(
@@ -177,77 +121,39 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Interactive Touch Area',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Interactive Touch Area', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Tap, long press, or swipe in the area below',
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                    const Text('Tap, long press, or swipe in the area below', style: TextStyle(color: Colors.grey)),
                     const SizedBox(height: 16),
                     TouchTrackerWidget(
                       screenName: 'AnalyticsPage',
-                      child: GestureDetector(
-                        onTapDown: (details) {
-                          _trackEvent(TouchType.tap, details.localPosition);
-                        },
-                        onLongPressStart: (details) {
-                          _trackEvent(TouchType.longPress, details.localPosition);
-                        },
-                        onPanUpdate: (details) {
-                          _trackEvent(TouchType.panUpdate, details.localPosition);
-                        },
-                        child: Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.deepPurple.shade100,
-                                Colors.deepPurple.shade50,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.deepPurple.shade200,
-                              width: 2,
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
-                              // Heat map visualization
-                              if (_heatMapData != null)
-                                ..._buildHeatMapOverlay(),
-                              
-                              // Instructions
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.touch_app,
-                                      size: 48,
-                                      color: Colors.deepPurple.shade300,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Touch here to track interactions',
-                                      style: TextStyle(
-                                        color: Colors.deepPurple.shade600,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                      child: Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [Colors.deepPurple.shade100, Colors.deepPurple.shade50], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.deepPurple.shade200, width: 2),
+                        ),
+                        child: Stack(
+                          children: [
+                            // Heat map visualization
+                            if (_heatMapData != null) ..._buildHeatMapOverlay(),
+
+                            // Instructions
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.touch_app, size: 48, color: Colors.deepPurple.shade300),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Touch here to track interactions',
+                                    style: TextStyle(color: Colors.deepPurple.shade600, fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -256,7 +162,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Recent Events
             Card(
               child: Padding(
@@ -267,26 +173,14 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Recent Touch Events',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${_touchEvents.length} events',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
+                        const Text('Recent Touch Events', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('${_touchEvents.length} events', style: TextStyle(color: Colors.grey[600])),
                       ],
                     ),
                     const SizedBox(height: 16),
                     if (_touchEvents.isEmpty)
                       const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: Text('No touch events recorded yet'),
-                        ),
+                        child: Padding(padding: EdgeInsets.all(32), child: Text('No touch events recorded yet')),
                       )
                     else
                       SizedBox(
@@ -298,16 +192,10 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                             return ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: _getEventColor(event.type),
-                                child: Icon(
-                                  _getEventIcon(event.type),
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
+                                child: Icon(_getEventIcon(event.type), color: Colors.white, size: 20),
                               ),
                               title: Text(event.type.name.toUpperCase()),
-                              subtitle: Text(
-                                'Position: (${event.position.dx.toStringAsFixed(1)}, ${event.position.dy.toStringAsFixed(1)}) • ${_formatTime(event.timestamp)}',
-                              ),
+                              subtitle: Text('Position: (${event.position.dx.toStringAsFixed(1)}, ${event.position.dy.toStringAsFixed(1)}) • ${_formatTime(event.timestamp)}'),
                               dense: true,
                             );
                           },
@@ -329,44 +217,31 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         Container(
           width: 60,
           height: 60,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
           child: Center(
             child: Text(
               value.toString(),
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
             ),
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
     );
   }
 
   List<Widget> _buildHeatMapOverlay() {
     if (_heatMapData == null || _heatMapData!.isEmpty) return [];
-    
+
     final points = _heatMapData!['points'] as List<dynamic>? ?? [];
-    
+
     return points.map((point) {
       final pointMap = point as Map<String, dynamic>;
       final intensity = (pointMap['intensity'] ?? 0.5) as double;
       final x = (pointMap['x'] ?? 0.0) as double;
       final y = (pointMap['y'] ?? 0.0) as double;
-      
+
       return Positioned(
         left: x - 10,
         top: y - 10,
@@ -375,7 +250,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
           height: 20,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.red.withOpacity(intensity * 0.3),
+            color: Colors.red.withValues(alpha: intensity * 0.3),
           ),
         ),
       );

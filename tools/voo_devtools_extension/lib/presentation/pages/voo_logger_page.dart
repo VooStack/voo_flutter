@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/presentation/pages/logs_tab.dart';
 import 'package:voo_logging_devtools_extension/presentation/pages/network_tab.dart';
 import 'package:voo_logging_devtools_extension/presentation/pages/performance_tab.dart';
+import 'package:voo_logging_devtools_extension/presentation/pages/analytics_tab.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logger_tab_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logger_toolbar.dart';
 
@@ -18,7 +19,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -42,6 +43,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> with TickerProviderStateM
                 LogsTab(),
                 NetworkTab(),
                 PerformanceTab(),
+                AnalyticsTab(),
               ],
             ),
           ),

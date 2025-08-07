@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:voo_core/voo_core.dart';
+import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_analytics/src/domain/repositories/analytics_repository.dart';
 import 'package:voo_analytics/src/data/repositories/analytics_repository_impl.dart';
 
@@ -64,6 +65,13 @@ class VooAnalyticsPlugin extends VooPlugin {
       );
     }
     await repository!.logEvent(name, parameters: parameters);
+    
+    // Send analytics event to VooLogger
+    VooLogger.info(
+      'Analytics event: $name',
+      category: 'analytics',
+      metadata: parameters ?? {},
+    );
   }
 
   Future<void> setUserProperty(String name, String value) async {

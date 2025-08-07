@@ -9,6 +9,8 @@ import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.d
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
+import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/pages/voo_logger_page.dart';
 
 /// Wrapper widget that initializes dependencies after DevToolsExtension
@@ -25,6 +27,7 @@ class _AppWrapperState extends State<AppWrapper> {
   late final LogBloc logBloc;
   late final NetworkBloc networkBloc;
   late final PerformanceBloc performanceBloc;
+  late final AnalyticsBloc analyticsBloc;
 
   @override
   void initState() {
@@ -35,6 +38,7 @@ class _AppWrapperState extends State<AppWrapper> {
     logBloc = LogBloc(repository: repository)..add(LoadLogs());
     networkBloc = NetworkBloc(repository: repository)..add(LoadNetworkLogs());
     performanceBloc = PerformanceBloc(repository: repository)..add(LoadPerformanceLogs());
+    analyticsBloc = AnalyticsBloc(repository: repository)..add(LoadAnalyticsEvents());
   }
 
   @override
@@ -42,6 +46,7 @@ class _AppWrapperState extends State<AppWrapper> {
     logBloc.close();
     networkBloc.close();
     performanceBloc.close();
+    analyticsBloc.close();
     dataSource.dispose();
     super.dispose();
   }
@@ -53,6 +58,7 @@ class _AppWrapperState extends State<AppWrapper> {
         BlocProvider.value(value: logBloc),
         BlocProvider.value(value: networkBloc),
         BlocProvider.value(value: performanceBloc),
+        BlocProvider.value(value: analyticsBloc),
       ],
       child: const VooLoggerPage(),
     );

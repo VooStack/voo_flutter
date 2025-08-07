@@ -58,23 +58,27 @@ class _TouchTrackerWidgetState extends State<TouchTrackerWidget> {
       onLongPressStart: (details) {
         _logTouchEvent(details.localPosition, TouchType.longPress);
       },
-      onPanStart: (details) {
-        _logTouchEvent(details.localPosition, TouchType.panStart);
-      },
-      onPanUpdate: (details) {
-        _logTouchEvent(details.localPosition, TouchType.panUpdate);
-      },
-      onPanEnd: (details) {
-        _logTouchEvent(Offset.zero, TouchType.panEnd);
-      },
       onScaleStart: (details) {
-        _logTouchEvent(details.localFocalPoint, TouchType.scaleStart);
+        // Scale gestures handle both pan and scale
+        if (details.pointerCount == 1) {
+          _logTouchEvent(details.localFocalPoint, TouchType.panStart);
+        } else {
+          _logTouchEvent(details.localFocalPoint, TouchType.scaleStart);
+        }
       },
       onScaleUpdate: (details) {
-        _logTouchEvent(details.localFocalPoint, TouchType.scaleUpdate);
+        if (details.pointerCount == 1) {
+          _logTouchEvent(details.localFocalPoint, TouchType.panUpdate);
+        } else {
+          _logTouchEvent(details.localFocalPoint, TouchType.scaleUpdate);
+        }
       },
       onScaleEnd: (details) {
-        _logTouchEvent(Offset.zero, TouchType.scaleEnd);
+        if (details.pointerCount == 1) {
+          _logTouchEvent(Offset.zero, TouchType.panEnd);
+        } else {
+          _logTouchEvent(Offset.zero, TouchType.scaleEnd);
+        }
       },
       child: widget.child,
     );

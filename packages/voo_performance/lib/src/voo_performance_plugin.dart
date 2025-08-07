@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:voo_core/voo_core.dart';
+import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_performance/src/domain/entities/performance_trace.dart';
 import 'package:voo_performance/src/domain/entities/network_metric.dart';
 
@@ -42,6 +43,10 @@ class VooPerformancePlugin extends VooPlugin {
       );
     }
 
+    // Set initialized flag before creating traces
+    _initialized = true;
+    Voo.registerPlugin(this);
+
     if (enableAutoAppStartTrace) {
       final appStartTrace = newTrace('app_start');
       appStartTrace.start();
@@ -49,9 +54,6 @@ class VooPerformancePlugin extends VooPlugin {
         appStartTrace.stop();
       });
     }
-
-    Voo.registerPlugin(this);
-    _initialized = true;
 
     if (kDebugMode) {
       print('[VooPerformance] Initialized with network monitoring: $enableNetworkMonitoring');
@@ -96,6 +98,17 @@ class VooPerformancePlugin extends VooPlugin {
     );
     
     _performanceMetrics.add(metrics);
+    
+    // Send performance trace to VooLogger
+    VooLogger.info(
+      'Performance trace: ${trace.name}',
+      category: 'performance',
+      metadata: {
+        'duration_ms': trace.duration?.inMilliseconds ?? 0,
+        'attributes': trace.attributes,
+        'metrics': trace.metrics,
+      },
+    );
     
     if (_performanceMetrics.length > 1000) {
       _performanceMetrics.removeRange(0, 100);

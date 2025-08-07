@@ -17,7 +17,7 @@ class _NetworkPageState extends State<NetworkPage> {
   bool _isLoading = false;
   String? _lastResponse;
   String? _lastError;
-  
+
   @override
   void initState() {
     super.initState();
@@ -25,65 +25,61 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   void _setupDio() {
-    _dio = Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ));
-    
+    _dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 10), receiveTimeout: const Duration(seconds: 10)));
+
     // Add VooLogging interceptor using InterceptorsWrapper
     final vooInterceptor = VooDioInterceptor();
     // Use VooPerformanceDioInterceptor instead of PerformanceDioInterceptor
     final perfInterceptor = VooPerformanceDioInterceptor();
-    
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) => vooInterceptor.onRequest(options, handler),
-      onResponse: (response, handler) => vooInterceptor.onResponse(response, handler),
-      onError: (error, handler) => vooInterceptor.onError(error, handler),
-    ));
-    
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) => perfInterceptor.onRequest(options, handler),
-      onResponse: (response, handler) => perfInterceptor.onResponse(response, handler),
-      onError: (error, handler) => perfInterceptor.onError(error, handler),
-    ));
-    
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) => vooInterceptor.onRequest(options, handler),
+        onResponse: (response, handler) => vooInterceptor.onResponse(response, handler),
+        onError: (error, handler) => vooInterceptor.onError(error, handler),
+      ),
+    );
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) => perfInterceptor.onRequest(options, handler),
+        onResponse: (response, handler) => perfInterceptor.onResponse(response, handler),
+        onError: (error, handler) => perfInterceptor.onError(error, handler),
+      ),
+    );
+
     // Add custom interceptor for UI updates
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        setState(() {
-          _requestHistory.insert(0, {
-            'method': options.method,
-            'url': options.uri.toString(),
-            'timestamp': DateTime.now(),
-            'status': 'pending',
-          });
-        });
-        handler.next(options);
-      },
-      onResponse: (response, handler) {
-        if (_requestHistory.isNotEmpty) {
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
           setState(() {
-            _requestHistory[0]['status'] = 'success';
-            _requestHistory[0]['statusCode'] = response.statusCode;
-            _requestHistory[0]['responseTime'] = 
-                DateTime.now().difference(_requestHistory[0]['timestamp'] as DateTime).inMilliseconds;
+            _requestHistory.insert(0, {'method': options.method, 'url': options.uri.toString(), 'timestamp': DateTime.now(), 'status': 'pending'});
           });
-        }
-        handler.next(response);
-      },
-      onError: (error, handler) {
-        if (_requestHistory.isNotEmpty) {
-          setState(() {
-            _requestHistory[0]['status'] = 'error';
-            _requestHistory[0]['error'] = error.message;
-            _requestHistory[0]['responseTime'] = 
-                DateTime.now().difference(_requestHistory[0]['timestamp'] as DateTime).inMilliseconds;
-          });
-        }
-        handler.next(error);
-      },
-    ));
-    
+          handler.next(options);
+        },
+        onResponse: (response, handler) {
+          if (_requestHistory.isNotEmpty) {
+            setState(() {
+              _requestHistory[0]['status'] = 'success';
+              _requestHistory[0]['statusCode'] = response.statusCode;
+              _requestHistory[0]['responseTime'] = DateTime.now().difference(_requestHistory[0]['timestamp'] as DateTime).inMilliseconds;
+            });
+          }
+          handler.next(response);
+        },
+        onError: (error, handler) {
+          if (_requestHistory.isNotEmpty) {
+            setState(() {
+              _requestHistory[0]['status'] = 'error';
+              _requestHistory[0]['error'] = error.message;
+              _requestHistory[0]['responseTime'] = DateTime.now().difference(_requestHistory[0]['timestamp'] as DateTime).inMilliseconds;
+            });
+          }
+          handler.next(error);
+        },
+      ),
+    );
+
     VooLogger.info('Dio client configured with Voo interceptors').then((_) {});
   }
 
@@ -122,11 +118,7 @@ class _NetworkPageState extends State<NetworkPage> {
     try {
       final response = await _dio.post(
         'https://jsonplaceholder.typicode.com/posts',
-        data: {
-          'title': 'VooFlutter Test',
-          'body': 'Testing Dio interceptors with VooFlutter packages',
-          'userId': 1,
-        },
+        data: {'title': 'VooFlutter Test', 'body': 'Testing Dio interceptors with VooFlutter packages', 'userId': 1},
       );
       setState(() {
         _lastResponse = response.data.toString();
@@ -154,12 +146,7 @@ class _NetworkPageState extends State<NetworkPage> {
     try {
       final response = await _dio.put(
         'https://jsonplaceholder.typicode.com/posts/1',
-        data: {
-          'id': 1,
-          'title': 'Updated VooFlutter Test',
-          'body': 'Updated content with VooFlutter monitoring',
-          'userId': 1,
-        },
+        data: {'id': 1, 'title': 'Updated VooFlutter Test', 'body': 'Updated content with VooFlutter monitoring', 'userId': 1},
       );
       setState(() {
         _lastResponse = response.data.toString();
@@ -241,13 +228,7 @@ class _NetworkPageState extends State<NetworkPage> {
       appBar: AppBar(
         title: const Text('Network Interceptors Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: _clearHistory,
-            tooltip: 'Clear history',
-          ),
-        ],
+        actions: [IconButton(icon: const Icon(Icons.delete_sweep), onPressed: _clearHistory, tooltip: 'Clear history')],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -274,7 +255,7 @@ class _NetworkPageState extends State<NetworkPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Request Buttons
             Card(
               child: Padding(
@@ -282,13 +263,7 @@ class _NetworkPageState extends State<NetworkPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Test Network Requests',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Test Network Requests', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     Wrap(
                       spacing: 8,
@@ -298,46 +273,31 @@ class _NetworkPageState extends State<NetworkPage> {
                           onPressed: _isLoading ? null : _makeGetRequest,
                           icon: const Icon(Icons.download),
                           label: const Text('GET'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
                         ),
                         ElevatedButton.icon(
                           onPressed: _isLoading ? null : _makePostRequest,
                           icon: const Icon(Icons.upload),
                           label: const Text('POST'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                          ),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white),
                         ),
                         ElevatedButton.icon(
                           onPressed: _isLoading ? null : _makePutRequest,
                           icon: const Icon(Icons.edit),
                           label: const Text('PUT'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            foregroundColor: Colors.white,
-                          ),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white),
                         ),
                         ElevatedButton.icon(
                           onPressed: _isLoading ? null : _makeDeleteRequest,
                           icon: const Icon(Icons.delete),
                           label: const Text('DELETE'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                          ),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
                         ),
                         ElevatedButton.icon(
                           onPressed: _isLoading ? null : _makeFailingRequest,
                           icon: const Icon(Icons.error),
                           label: const Text('Fail (404)'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey,
-                            foregroundColor: Colors.white,
-                          ),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey, foregroundColor: Colors.white),
                         ),
                       ],
                     ),
@@ -346,22 +306,16 @@ class _NetworkPageState extends State<NetworkPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Loading Indicator
             if (_isLoading)
-              Card(
+              const Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: const [
-                      CircularProgressIndicator(),
-                      SizedBox(width: 16),
-                      Text('Making request...'),
-                    ],
-                  ),
+                  padding: EdgeInsets.all(16),
+                  child: Row(children: [CircularProgressIndicator(), SizedBox(width: 16), Text('Making request...')]),
                 ),
               ),
-            
+
             // Response/Error Display
             if (_lastResponse != null || _lastError != null) ...[
               Card(
@@ -373,17 +327,11 @@ class _NetworkPageState extends State<NetworkPage> {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            _lastError != null ? Icons.error : Icons.check_circle,
-                            color: _lastError != null ? Colors.red : Colors.green,
-                          ),
+                          Icon(_lastError != null ? Icons.error : Icons.check_circle, color: _lastError != null ? Colors.red : Colors.green),
                           const SizedBox(width: 8),
                           Text(
                             _lastError != null ? 'Error Response' : 'Success Response',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: _lastError != null ? Colors.red : Colors.green,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: _lastError != null ? Colors.red : Colors.green),
                           ),
                         ],
                       ),
@@ -395,13 +343,7 @@ class _NetworkPageState extends State<NetworkPage> {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.grey.shade300),
                         ),
-                        child: SelectableText(
-                          _lastError ?? _lastResponse ?? '',
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 12,
-                          ),
-                        ),
+                        child: SelectableText(_lastError ?? _lastResponse ?? '', style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
                       ),
                     ],
                   ),
@@ -409,7 +351,7 @@ class _NetworkPageState extends State<NetworkPage> {
               ),
               const SizedBox(height: 16),
             ],
-            
+
             // Request History
             Card(
               child: Padding(
@@ -420,26 +362,14 @@ class _NetworkPageState extends State<NetworkPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Request History',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${_requestHistory.length} requests',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
+                        const Text('Request History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('${_requestHistory.length} requests', style: TextStyle(color: Colors.grey[600])),
                       ],
                     ),
                     const SizedBox(height: 16),
                     if (_requestHistory.isEmpty)
                       const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: Text('No requests made yet'),
-                        ),
+                        child: Padding(padding: EdgeInsets.all(32), child: Text('No requests made yet')),
                       )
                     else
                       ListView.builder(
@@ -452,36 +382,24 @@ class _NetworkPageState extends State<NetworkPage> {
                           final method = request['method'] as String;
                           final url = request['url'] as String;
                           final responseTime = request['responseTime'] as int?;
-                          
+
                           return Card(
                             margin: const EdgeInsets.only(bottom: 8),
                             child: ListTile(
                               leading: Container(
                                 width: 40,
                                 height: 40,
-                                decoration: BoxDecoration(
-                                  color: _getMethodColor(method).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                                decoration: BoxDecoration(color: _getMethodColor(method).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                                 child: Center(
                                   child: Text(
                                     method,
-                                    style: TextStyle(
-                                      color: _getMethodColor(method),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                    ),
+                                    style: TextStyle(color: _getMethodColor(method), fontWeight: FontWeight.bold, fontSize: 10),
                                   ),
                                 ),
                               ),
-                              title: Text(
-                                url.split('/').last,
-                                style: const TextStyle(fontSize: 14),
-                              ),
+                              title: Text(url.split('/').last, style: const TextStyle(fontSize: 14)),
                               subtitle: Text(
-                                status == 'pending' 
-                                    ? 'In progress...'
-                                    : '${responseTime}ms • ${request['statusCode'] ?? 'Error'}',
+                                status == 'pending' ? 'In progress...' : '${responseTime}ms • ${request['statusCode'] ?? 'Error'}',
                                 style: const TextStyle(fontSize: 12),
                               ),
                               trailing: _getStatusIcon(status),
@@ -517,15 +435,11 @@ class _NetworkPageState extends State<NetworkPage> {
   Widget _getStatusIcon(String status) {
     switch (status) {
       case 'pending':
-        return const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        );
+        return const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2));
       case 'success':
-        return Icon(Icons.check_circle, color: Colors.green, size: 20);
+        return const Icon(Icons.check_circle, color: Colors.green, size: 20);
       case 'error':
-        return Icon(Icons.error, color: Colors.red, size: 20);
+        return const Icon(Icons.error, color: Colors.red, size: 20);
       default:
         return const SizedBox();
     }

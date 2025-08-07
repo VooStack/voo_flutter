@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   voo_core:
+  voo_logging:
   json_annotation: ^4.9.0
   equatable: ^2.0.5
 
