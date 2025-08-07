@@ -1,3 +1,24 @@
+## 0.0.17
+
+* **New Feature**: Added Pretty Logging with beautiful, structured console output
+* Added `PrettyLogFormatter` class for formatting logs with colors, borders, and emojis
+* Added `LoggingConfig` class to customize logging appearance and behavior
+* Enhanced `VooLogger.initialize()` to accept optional `LoggingConfig` parameter
+* Added support for ANSI colors in console output (automatically detected)
+* Added emoji icons for each log level (💬 🐛 ℹ️ ⚠️ ❌ 💀)
+* Added box-drawing characters for structured log display
+* Added configurable options:
+  - `enablePrettyLogs`: Toggle pretty formatting on/off
+  - `showEmojis`: Show/hide emoji icons
+  - `showTimestamp`: Include/exclude timestamps
+  - `showColors`: Enable/disable ANSI colors
+  - `showBorders`: Show/hide decorative borders
+  - `lineLength`: Configure maximum line width for wrapping
+* Improved metadata display with formatted key-value pairs
+* Enhanced error and stack trace formatting
+* Updated example app with pretty logging toggle and demonstrations
+* Updated documentation with pretty logging examples and configuration
+
 ## 0.0.16
 
 * Updated voo_core dependency to ^0.0.2

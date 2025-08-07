@@ -13,9 +13,41 @@ void main() async {
   await VooLoggingPlugin.instance.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
   await VooAnalyticsPlugin.instance.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
   await VooPerformancePlugin.instance.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
-  await VooLogger.initialize(appName: 'VooExample', appVersion: '1.0.0', userId: 'example_user', minimumLevel: LogLevel.debug);
+  // Initialize VooLogger with pretty logging configuration
+  await VooLogger.initialize(
+    appName: 'VooExample',
+    appVersion: '1.0.0',
+    userId: 'example_user',
+    minimumLevel: LogLevel.verbose,
+    config: const LoggingConfig(
+      enablePrettyLogs: true,  // Enable pretty formatted logs
+      showEmojis: true,         // Show emoji icons for log levels
+      showTimestamp: true,      // Include timestamps in logs
+      showColors: true,         // Use ANSI colors in console
+      showBorders: true,        // Show decorative borders
+      lineLength: 120,          // Maximum line width
+      minimumLevel: LogLevel.verbose,
+      enabled: true,
+    ),
+  );
 
-  VooLogger.info('VooExample app initialized');
+  // Demonstrate different log levels with pretty formatting
+  VooLogger.verbose('VooExample app starting up...');
+  VooLogger.debug('Debug mode enabled with pretty logging');
+  VooLogger.info('VooExample app initialized successfully');
+  VooLogger.warning('This is a sample warning message to demonstrate formatting');
+  
+  // Example with metadata
+  VooLogger.info(
+    'Application started',
+    category: 'System',
+    tag: 'Startup',
+    metadata: {
+      'platform': 'Flutter',
+      'environment': 'development',
+      'features': ['logging', 'analytics', 'performance'],
+    },
+  );
 
   runApp(const VooExampleApp());
 }

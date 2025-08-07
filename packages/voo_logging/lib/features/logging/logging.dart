@@ -6,6 +6,7 @@ export 'data/models/log_entry_model.dart';
 export 'data/models/log_entry_model_extensions.dart';
 // Domain - Entities
 export 'domain/entities/log_entry.dart';
+export 'domain/entities/logging_config.dart';
 // Domain - Extensions
 export 'domain/entities/log_entry_extensions.dart';
 export 'domain/entities/log_filter.dart';

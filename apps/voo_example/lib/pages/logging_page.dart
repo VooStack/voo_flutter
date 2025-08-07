@@ -12,6 +12,7 @@ class _LoggingPageState extends State<LoggingPage> {
   final TextEditingController _messageController = TextEditingController();
   LogLevel _selectedLevel = LogLevel.info;
   List<LogEntry> _recentLogs = [];
+  bool _prettyLogsEnabled = true;
 
   @override
   void initState() {
@@ -197,6 +198,40 @@ class _LoggingPageState extends State<LoggingPage> {
             ),
           ),
 
+          // Pretty Logs Toggle
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Card(
+              child: SwitchListTile(
+                title: const Text('Pretty Logs'),
+                subtitle: const Text('Enable formatted logs with borders and emojis'),
+                value: _prettyLogsEnabled,
+                onChanged: (value) async {
+                  setState(() {
+                    _prettyLogsEnabled = value;
+                  });
+                  // Re-initialize VooLogger with new config
+                  await VooLogger.initialize(
+                    config: LoggingConfig(
+                      enablePrettyLogs: value,
+                      showEmojis: value,
+                      showTimestamp: true,
+                      showColors: value,
+                      showBorders: value,
+                      lineLength: 120,
+                      minimumLevel: LogLevel.verbose,
+                    ),
+                  );
+                  VooLogger.info(
+                    value ? 'Pretty logs enabled' : 'Pretty logs disabled',
+                    metadata: {'prettyLogs': value},
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+
           // Example Actions
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -240,6 +275,37 @@ class _LoggingPageState extends State<LoggingPage> {
                       await VooLogger.error('Exception caught', error: e, stackTrace: stack);
                       _addLocalLog(LogLevel.error, 'Exception caught: $e');
                     }
+                  },
+                ),
+                ActionChip(
+                  label: const Text('Test with Metadata'),
+                  onPressed: () async {
+                    await VooLogger.info(
+                      'User performed action',
+                      category: 'UserAction',
+                      tag: 'Button',
+                      metadata: {
+                        'action': 'test_button_click',
+                        'timestamp': DateTime.now().toIso8601String(),
+                        'userId': 'test_user_123',
+                        'sessionId': 'session_456',
+                        'device': 'iOS Simulator',
+                        'appVersion': '1.0.0',
+                      },
+                    );
+                    _addLocalLog(LogLevel.info, 'User performed action with metadata');
+                  },
+                ),
+                ActionChip(
+                  label: const Text('Test All Levels'),
+                  onPressed: () async {
+                    await VooLogger.verbose('This is a verbose log - very detailed information');
+                    await VooLogger.debug('This is a debug log - debugging information');
+                    await VooLogger.info('This is an info log - general information');
+                    await VooLogger.warning('This is a warning log - something to watch out for');
+                    await VooLogger.error('This is an error log - something went wrong');
+                    await VooLogger.fatal('This is a fatal log - critical failure');
+                    _addLocalLog(LogLevel.info, 'Tested all log levels');
                   },
                 ),
               ],

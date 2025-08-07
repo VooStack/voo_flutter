@@ -10,6 +10,7 @@ A comprehensive, production-ready logging package for Flutter and Dart applicati
 ## 🚀 Features
 
 - **🎯 Simple API** - Intuitive methods for different log levels (verbose, debug, info, warning, error, fatal)
+- **🎨 Pretty Logging** - Beautiful, structured console output with colors, borders, and emojis (can be disabled)
 - **🔧 DevTools Integration** - Real-time log viewing with dedicated Network and Performance tabs
 - **💾 Persistent Storage** - Logs survive app restarts using Sembast database
 - **🏷️ Rich Context** - Categories, tags, metadata, user tracking, and session management
@@ -42,8 +43,22 @@ flutter pub get
 import 'package:voo_logging/voo_logging.dart';
 
 void main() async {
-  // Initialize the logger
+  // Initialize the logger with default settings
   await VooLogger.initialize();
+  
+  // Or initialize with pretty logging configuration
+  await VooLogger.initialize(
+    appName: 'MyApp',
+    appVersion: '1.0.0',
+    config: const LoggingConfig(
+      enablePrettyLogs: true,  // Enable beautiful formatted logs
+      showEmojis: true,         // Show emoji icons for log levels
+      showTimestamp: true,      // Include timestamps
+      showColors: true,         // Use colors in console
+      showBorders: true,        // Show decorative borders
+      lineLength: 120,          // Maximum line width
+    ),
+  );
   
   // Start logging!
   VooLogger.info('App started successfully');
@@ -103,6 +118,43 @@ VooLogger.error('Payment failed',
     'provider': 'stripe',
     'errorCode': 'insufficient_funds',
   }
+);
+```
+
+### Pretty Logging
+
+VooLogger supports beautiful, structured console output with colors, borders, and emojis:
+
+```dart
+// Enable pretty logging
+await VooLogger.initialize(
+  config: const LoggingConfig(
+    enablePrettyLogs: true,   // Toggle pretty formatting
+    showEmojis: true,         // 💬 🐛 ℹ️ ⚠️ ❌ 💀
+    showTimestamp: true,      // HH:MM:SS.mmm
+    showColors: true,         // ANSI color support
+    showBorders: true,        // Box drawing characters
+    lineLength: 120,          // Wrap long lines
+  ),
+);
+
+// Pretty logs will display like this:
+// ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+// │ ℹ️  INFO     │ 14:32:15.123 │ [System][Startup]                                                                          │
+// ├────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+// │ Application started successfully                                                                                     │
+// ├────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+// │ 📊 Metadata:                                                                                                         │
+// │   • platform: Flutter                                                                                                │
+// │   • environment: development                                                                                         │
+// │   • version: 1.0.0                                                                                                   │
+// └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+// Disable pretty logs for production
+await VooLogger.initialize(
+  config: const LoggingConfig(
+    enablePrettyLogs: false,  // Simple one-line output
+  ),
 );
 ```
 

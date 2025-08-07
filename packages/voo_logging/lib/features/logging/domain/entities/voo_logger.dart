@@ -7,16 +7,32 @@ class VooLogger {
   final LoggerRepository _repository = LoggerRepositoryImpl();
   Stream<LogEntry> get stream => _repository.stream;
   LoggerRepository get repository => _repository;
+  LoggingConfig? _config;
   VooLogger._internal();
 
   static final VooLogger instance = VooLogger._internal();
+  
+  static LoggingConfig get config => instance._config ?? const LoggingConfig();
 
-  static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose}) async {
+  static Future<void> initialize({
+    String? appName, 
+    String? appVersion, 
+    String? userId, 
+    LogLevel minimumLevel = LogLevel.verbose,
+    LoggingConfig? config,
+  }) async {
     if (instance._initialized) return;
 
     instance._initialized = true;
+    instance._config = config ?? const LoggingConfig();
 
-    await instance._repository.initialize(appName: appName, appVersion: appVersion, userId: userId, minimumLevel: minimumLevel);
+    await instance._repository.initialize(
+      appName: appName, 
+      appVersion: appVersion, 
+      userId: userId, 
+      minimumLevel: instance._config!.minimumLevel,
+      config: instance._config,
+    );
   }
 
   static Future<void> verbose(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {

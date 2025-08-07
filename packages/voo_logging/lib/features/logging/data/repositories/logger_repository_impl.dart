@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'dart:math';
 
 import 'package:voo_logging/features/logging/data/datasources/local_log_storage.dart';
+import 'package:voo_logging/features/logging/domain/utils/pretty_log_formatter.dart';
 import 'package:voo_logging/voo_logging.dart';
 
 class LoggerRepositoryImpl extends LoggerRepository {
@@ -15,6 +16,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
   String? _appName;
   String? _appVersion;
   int _logCounter = 0;
+  LoggingConfig _config = const LoggingConfig();
+  late PrettyLogFormatter _formatter;
 
   final _random = Random();
 
@@ -35,13 +38,16 @@ class LoggerRepositoryImpl extends LoggerRepository {
     String? appName,
     String? appVersion,
     bool enabled = true,
+    LoggingConfig? config,
   }) async {
-    _minimumLevel = minimumLevel;
+    _config = config ?? LoggingConfig(minimumLevel: minimumLevel);
+    _formatter = _config.formatter;
+    _minimumLevel = _config.minimumLevel;
     _currentUserId = userId;
     _currentSessionId = sessionId ?? _generateSessionId();
     _appName = appName;
     _appVersion = appVersion;
-    _enabled = enabled;
+    _enabled = _config.enabled;
 
     _storage = LocalLogStorage();
 
@@ -49,7 +55,14 @@ class LoggerRepositoryImpl extends LoggerRepository {
       'VooLogger initialized',
       category: 'System',
       tag: 'Init',
-      metadata: {'minimumLevel': minimumLevel.name, 'userId': userId, 'sessionId': _currentSessionId, 'appName': appName, 'appVersion': appVersion},
+      metadata: {
+        'minimumLevel': _config.minimumLevel.name,
+        'userId': userId,
+        'sessionId': _currentSessionId,
+        'appName': appName,
+        'appVersion': appVersion,
+        'prettyLogs': _config.enablePrettyLogs,
+      },
     );
   }
 
@@ -119,17 +132,16 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
   void _logToDevTools(LogEntry entry) {
     try {
-      var formattedMessage = entry.message;
-      if (entry.tag != null) {
-        formattedMessage = '[${entry.tag}] $formattedMessage';
-      }
+      // Use pretty formatter for console output
+      final formattedMessage = _formatter.format(entry);
 
+      // Always use developer.log but with formatted output
       developer.log(
         formattedMessage,
         name: entry.category ?? 'VooLogger',
         level: entry.level.priority,
-        error: entry.error,
-        stackTrace: entry.stackTrace != null ? StackTrace.fromString(entry.stackTrace!) : null,
+        error: _config.enablePrettyLogs ? null : entry.error, // Don't duplicate error in pretty mode
+        stackTrace: _config.enablePrettyLogs ? null : (entry.stackTrace != null ? StackTrace.fromString(entry.stackTrace!) : null),
         sequenceNumber: entry.timestamp.millisecondsSinceEpoch,
         time: entry.timestamp,
         zone: Zone.current,
@@ -160,7 +172,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
       // Send as a structured log that the DevTools extension can parse
       developer.log(jsonEncode(structuredData), name: 'VooLogger', level: entry.level.priority, time: entry.timestamp);
-      
+
       // Also try postEvent for better DevTools integration
       developer.postEvent('voo_logger_event', structuredData);
     } catch (_) {
