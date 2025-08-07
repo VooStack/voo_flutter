@@ -1,4 +1,4 @@
-## 0.0.17
+## 0.0.18
 
 * **New Feature**: Added Pretty Logging with beautiful, structured console output
 * Added `PrettyLogFormatter` class for formatting logs with colors, borders, and emojis
@@ -18,6 +18,11 @@
 * Enhanced error and stack trace formatting
 * Updated example app with pretty logging toggle and demonstrations
 * Updated documentation with pretty logging examples and configuration
+
+## 0.0.17
+
+* Minor improvements and bug fixes
+* Internal code optimizations
 
 ## 0.0.16
 
