@@ -13,18 +13,41 @@ scripts:
     description: Clean all packages.
     run: melos clean
 
-  # Core package commands
-  prepare_devtools:
-    description: Prepare the voo_devtools_extension package by fetching dependencies.
-    run: melos exec --scope voo_devtools_extension -- dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_core/extension/devtools
+  # DevTools extension commands
+  prepare_logging_devtools:
+    description: Prepare the voo_logging_devtools_extension package by fetching dependencies.
+    run: |
+      cd tools/voo_devtools_extension && flutter pub get
+      
+  build_logging_extension:
+    description: Build the voo logging DevTools extension and copy to voo_logging package.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_logging/extension/devtools
+      
+  validate_logging_extension:
+    description: Validate the voo_logging DevTools extension.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions validate --package=../../packages/voo_logging
+      
+  prepare_core_devtools:
+    description: Prepare the voo_devtools_extension package for voo_core.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_core/extension/devtools
 
-  validate_devtools:
-    description: Validate the voo_devtools_extension package.
-    run: melos exec --scope voo_devtools_extension -- dart run devtools_extensions validate --package=../../packages/voo_core
+  validate_core_devtools:
+    description: Validate the voo_core DevTools extension.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions validate --package=../../packages/voo_core
 
   build_devtools_extension:
-    description: Build the voo DevTools extension.
-    run: melos exec --scope voo_devtools_extension -- dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_core/extension/devtools
+    description: Build DevTools extensions for all packages.
+    run: |
+      melos run build_logging_extension && \
+      melos run prepare_core_devtools
 
   # Publishing commands for each package
   publish_core:
@@ -37,10 +60,11 @@ scripts:
       echo "================================================"
 
   publish_logging:
-    description: Publish the voo_logging package (requires manual confirmation).
+    description: Build and publish the voo_logging package (requires manual confirmation).
     run: |
+      melos run build_logging_extension
       echo "================================================"
-      echo "Run the following command:"
+      echo "Build complete! Now run the following command:"
       echo "cd packages/voo_logging && dart pub publish"
       echo "================================================"
 
@@ -78,28 +102,28 @@ scripts:
   analyze:
     description: Analyze all packages.
     run: melos exec -- dart analyze
-  
+
   # Example app commands
   run_example:
     description: Run the VooFlutter example app.
     run: cd apps/voo_example && flutter run
-  
+
   test_example:
     description: Run tests for the example app.
     run: cd apps/voo_example && flutter test
-  
+
   test_example_integration:
     description: Run integration tests for the example app.
     run: cd apps/voo_example && flutter test test/integration_test.dart
-  
+
   build_example_ios:
     description: Build the example app for iOS.
     run: cd apps/voo_example && flutter build ios --no-codesign
-  
+
   build_example_android:
     description: Build the example app for Android.
     run: cd apps/voo_example && flutter build apk
-  
+
   build_example_web:
     description: Build the example app for web.
     run: cd apps/voo_example && flutter build web

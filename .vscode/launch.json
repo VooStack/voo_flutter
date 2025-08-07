@@ -12,8 +12,8 @@
       "args": ["--print-dtd"]
     },
     {
-      "name": "(sim) logging dev tools",
-      "cwd": "tools/voo_logging_devtools_extension",
+      "name": "Dev Tools",
+      "cwd": "tools/voo_devtools_extension",
       "request": "launch",
       "type": "dart",
       "args": [

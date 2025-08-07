@@ -14,7 +14,7 @@ The foundation package for the Voo Flutter ecosystem. This package provides the 
 
 ```yaml
 dependencies:
-  voo_core: ^0.0.1
+  voo_core: ^0.0.2
 ```
 
 ## Usage
