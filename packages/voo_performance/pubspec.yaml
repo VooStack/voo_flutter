@@ -15,6 +15,7 @@ dependencies:
   voo_logging: ^0.0.15
   json_annotation: ^4.9.0
   equatable: ^2.0.5
+  dio: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -23,7 +24,6 @@ dev_dependencies:
   json_serializable: ^6.10.0
   build_runner: ^2.4.14
   test: ^1.24.0
-  dio: ^5.0.0
 
 flutter:
   uses-material-design: true
