@@ -1,8 +1,21 @@
 name: voo_performance
-description: Performance monitoring package for Flutter applications.
+description: High-performance monitoring, profiling, and optimization toolkit for Flutter apps with real-time metrics, frame rendering analysis, memory tracking, DevTools integration, and production-ready performance diagnostics.
 version: 0.0.1
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_performance
+issue_tracker: https://github.com/voostack/voo_flutter/issues
+documentation: https://voostack.com/docs/performance
+
+topics:
+  - performance
+  - monitoring
+  - profiling
+  - optimization
+  - devtools
+
+funding:
+  - https://github.com/sponsors/voostack
+  - https://voostack.com/support
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
