@@ -310,19 +310,6 @@ class LoggerRepositoryImpl extends LoggerRepository {
     );
   }
 
-  @override
-  Future<void> performance(String operation, Duration duration, {Map<String, dynamic>? metrics}) async {
-    final level = duration.inMilliseconds > 1000 ? LogLevel.warning : LogLevel.info;
-
-    await log(
-      '$operation completed in ${duration.inMilliseconds}ms',
-      level: level,
-      category: 'Performance',
-      tag: operation,
-      metadata: {'operation': operation, 'duration': duration.inMilliseconds, 'metrics': metrics},
-    );
-  }
-
   void close() {
     _logStreamController.close();
   }

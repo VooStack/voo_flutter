@@ -1,0 +1,29 @@
+name: voo_performance
+description: Performance monitoring package for Flutter applications.
+version: 0.0.2
+homepage: https://voostack.com
+repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_performance
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voo_core: ^0.0.2
+  voo_logging: ^0.0.15
+  json_annotation: ^4.9.0
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  json_serializable: ^6.10.0
+  build_runner: ^2.4.14
+  test: ^1.24.0
+  dio: ^5.0.0
+
+flutter:
+  uses-material-design: true

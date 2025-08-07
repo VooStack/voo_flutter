@@ -1,5 +1,4 @@
 import 'package:voo_logging/features/logging/data/repositories/logger_repository_impl.dart';
-import 'package:voo_logging/features/logging/presentation/voo_logger_extension_registration.dart';
 import 'package:voo_logging/voo_logging.dart';
 
 class VooLogger {
@@ -14,9 +13,6 @@ class VooLogger {
 
   static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose}) async {
     if (instance._initialized) return;
-
-    // Register the extension for DevTools
-    registerVooLoggerExtension();
 
     instance._initialized = true;
 
@@ -100,12 +96,6 @@ class VooLogger {
     await instance._repository.networkResponse(i, s, duration, headers: headers, contentLength: contentLength, metadata: metadata);
   }
 
-  static void performance(String s, Duration duration, {required Map<String, Object> metrics}) {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    instance._repository.performance(s, duration, metrics: metrics);
-  }
 
   static Future getStatistics() async {
     if (!instance._initialized) {

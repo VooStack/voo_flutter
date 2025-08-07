@@ -1,0 +1,41 @@
+name: voo_example
+description: 'An example app demonstrating all VooFlutter packages working together'
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  voo_core:
+    path: ../../packages/voo_core
+  voo_logging:
+    path: ../../packages/voo_logging
+  voo_analytics:
+    path: ../../packages/voo_analytics
+  voo_performance:
+    path: ../../packages/voo_performance
+
+  cupertino_icons: ^1.0.8
+
+  dio: ^5.7.0
+
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+
+  intl: ^0.20.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  integration_test:
+    sdk: flutter
+  test: ^1.25.2
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true

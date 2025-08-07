@@ -2,14 +2,28 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:voo_analytics/voo_analytics.dart';
+import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
-import 'dio_example.dart';
+import 'package:voo_logging_example/analytics_example.dart';
+import 'package:voo_logging_example/dio_example.dart';
+import 'package:voo_logging_example/performance_example.dart';
+import 'package:voo_performance/voo_performance.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Voo Core
+  await Voo.initializeApp();
+
   // Initialize VooLogger
   await VooLogger.initialize(appName: 'Voo Logging Example', appVersion: '1.0.0', userId: 'user123');
+
+  // Initialize VooAnalytics
+  await VooAnalyticsPlugin.instance.initialize();
+
+  // Initialize VooPerformance
+  await VooPerformancePlugin.instance.initialize();
 
   runApp(const MyApp());
 }
@@ -18,10 +32,33 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: 'Voo Logging Example',
-    theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
-    home: const LoggingExamplePage(),
+  Widget build(BuildContext context) => RouteAwareTouchTracker(
+    child: MaterialApp(
+      title: 'Voo Logging Example',
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+      navigatorObservers: [VooAnalyticsPlugin.instance.routeObserver],
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        Widget page;
+        switch (settings.name) {
+          case '/':
+            page = const LoggingExamplePage();
+            break;
+          case '/dio':
+            page = const DioExampleScreen();
+            break;
+          case '/analytics':
+            page = const AnalyticsExamplePage();
+            break;
+          case '/performance':
+            page = const PerformanceExamplePage();
+            break;
+          default:
+            page = const LoggingExamplePage();
+        }
+        return MaterialPageRoute(builder: (context) => page, settings: settings);
+      },
+    ),
   );
 }
 
@@ -184,10 +221,25 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
             subtitle: const Text('Test real HTTP requests with auto-logging'),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DioExampleScreen()),
-              );
+              Navigator.pushNamed(context, '/dio');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.analytics),
+            title: const Text('Analytics Example'),
+            subtitle: const Text('Test touch tracking and custom events'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.pushNamed(context, '/analytics');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.speed),
+            title: const Text('Performance Example'),
+            subtitle: const Text('Test performance traces and metrics'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.pushNamed(context, '/performance');
             },
           ),
           ListTile(leading: const Icon(Icons.person), title: const Text('Log User Action'), onTap: _logUserAction),
@@ -281,7 +333,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   Future<void> _simulateNetworkRequest() async {
     // Example of using the NetworkInterceptor
     const interceptor = VooNetworkInterceptor();
-    
+
     // Log the request
     await interceptor.onRequest(
       method: 'GET',
@@ -309,22 +361,16 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
 
   Future<void> _simulateMultipleApiCalls() async {
     final random = Random();
-    final endpoints = [
-      '/api/users',
-      '/api/products',
-      '/api/orders',
-      '/api/analytics',
-      '/api/settings',
-    ];
-    
+    final endpoints = ['/api/users', '/api/products', '/api/orders', '/api/analytics', '/api/settings'];
+
     final methods = ['GET', 'POST', 'PUT', 'DELETE'];
-    
+
     for (int i = 0; i < 10; i++) {
       final endpoint = endpoints[random.nextInt(endpoints.length)];
       final method = methods[random.nextInt(methods.length)];
       final statusCode = random.nextBool() ? 200 : (random.nextBool() ? 404 : 500);
       final duration = Duration(milliseconds: random.nextInt(3000) + 100);
-      
+
       // Log request
       await VooLogger.networkRequest(
         method,
@@ -332,10 +378,10 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
         headers: {'Authorization': 'Bearer token', 'X-Request-ID': 'req_$i'},
         metadata: {'attempt': '${i + 1}'},
       );
-      
+
       // Simulate delay
       await Future.delayed(Duration(milliseconds: random.nextInt(100)));
-      
+
       // Log response
       await VooLogger.networkResponse(
         statusCode,
@@ -346,7 +392,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
         metadata: {'cached': random.nextBool()},
       );
     }
-    
+
     _showSnackBar('10 API calls simulated');
   }
 
@@ -378,76 +424,53 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   }
 
   void _logPerformance() {
-    // Example 1: Direct performance logging
-    VooLogger.performance(
-      'DatabaseQuery',
-      const Duration(milliseconds: 456),
-      metrics: {'rowCount': 1000, 'cacheHit': false, 'queryType': 'SELECT', 'table': 'users'},
+    // Log performance as info with metadata
+    VooLogger.info(
+      'DatabaseQuery completed in 456ms',
+      category: 'Performance',
+      metadata: {'duration_ms': 456, 'rowCount': 1000, 'cacheHit': false, 'queryType': 'SELECT', 'table': 'users'},
     );
-
-    // Example 2: Using PerformanceTracker manually
-    final tracker = PerformanceTracker(
-      operation: 'DataProcessing',
-      operationType: 'batch',
-      metrics: {'itemCount': 1000},
-    );
-    
-    // Simulate some work
-    Future.delayed(const Duration(milliseconds: 250), () {
-      tracker.addMetric('processedItems', 500);
-      tracker.addMetric('errors', 0);
-      tracker.complete();
-    });
 
     _showSnackBar('Performance metrics logged');
   }
 
   Future<void> _trackAsyncOperation() async {
     try {
-      // Example of tracking an async operation with PerformanceTracker
-      final result = await PerformanceTracker.track<String>(
-        operation: 'FetchUserData',
-        operationType: 'api',
-        action: () async {
-          // Simulate API call
-          await Future.delayed(const Duration(milliseconds: 1500));
-          
-          // Simulate random success/failure
-          if (Random().nextBool()) {
-            return 'User data fetched successfully';
-          } else {
-            throw Exception('Failed to fetch user data');
-          }
-        },
-        metrics: {
-          'endpoint': '/api/user/profile',
-          'method': 'GET',
-        },
+      // Track operation with timing
+      final stopwatch = Stopwatch()..start();
+
+      // Simulate API call
+      await Future.delayed(const Duration(milliseconds: 1500));
+
+      stopwatch.stop();
+
+      // Simulate random success/failure
+      final result = Random().nextBool() ? 'User data fetched successfully' : 'Failed to fetch user data';
+
+      await VooLogger.info(
+        'API call completed in ${stopwatch.elapsedMilliseconds}ms',
+        category: 'Performance',
+        metadata: {'endpoint': '/api/user/profile', 'method': 'GET', 'duration_ms': stopwatch.elapsedMilliseconds, 'result': result},
       );
-      
+
       _showSnackBar('Operation tracked: $result');
     } catch (e) {
-      _showSnackBar('Operation failed (tracked): $e');
+      _showSnackBar('Operation failed: $e');
     }
 
     // Example of tracking synchronous operation
-    final syncResult = PerformanceTracker.trackSync<int>(
-      operation: 'CalculateSum',
-      operationType: 'computation',
-      action: () {
-        int sum = 0;
-        for (int i = 0; i < 1000000; i++) {
-          sum += i;
-        }
-        return sum;
-      },
-      metrics: {
-        'iterations': 1000000,
-        'algorithm': 'linear',
-      },
+    final stopwatch = Stopwatch()..start();
+    int sum = 0;
+    for (int i = 0; i < 1000000; i++) {
+      sum += i;
+    }
+    stopwatch.stop();
+
+    await VooLogger.info(
+      'Sync calculation completed in ${stopwatch.elapsedMilliseconds}ms',
+      category: 'Performance',
+      metadata: {'iterations': 1000000, 'algorithm': 'linear', 'duration_ms': stopwatch.elapsedMilliseconds, 'result': sum},
     );
-    
-    await VooLogger.info('Sync calculation result: $syncResult', category: 'Performance');
   }
 
   Future<void> _logLargeError() async {

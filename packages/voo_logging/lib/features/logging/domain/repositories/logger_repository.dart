@@ -22,8 +22,6 @@ abstract class LoggerRepository {
 
   Future<void> networkResponse(int i, String s, Duration duration, {Map<String, String> headers, int contentLength, Map<String, Object> metadata});
 
-  void performance(String s, Duration duration, {Map<String, Object> metrics});
-
   void userAction(String s, {String screen, Map<String, Object> properties});
 
   Future<void> fatal(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata});

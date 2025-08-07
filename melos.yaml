@@ -4,26 +4,106 @@ packages:
   - packages/*
   - tools/*
 
+command:
+  version:
+    # Generate a workspace-level changelog
+    workspaceChangelog: true
+    
+    # Restrict versioning to main branch only
+    branch: main
+    
+    # Update dependent packages automatically  
+    updateGitTagRefs: true        # Update git tag references in pubspec.yaml
+    
+    # Commit message template for version updates
+    message: |
+      chore(release): publish packages
+      
+      {new_package_versions}
+    
+    # Configure hooks for custom actions during versioning
+    hooks:
+      preCommit: |
+        # Run tests before committing version changes
+        melos run test_all
+        # Update example app dependencies
+        cd apps/voo_example && flutter pub get
+
 scripts:
+  # Version management commands
+  version:
+    description: Version packages using conventional commits.
+    run: melos version
+  
+  version_prerelease:
+    description: Create prerelease versions for packages with changes.
+    run: melos version --prerelease
+  
+  version_graduate:
+    description: Graduate prerelease packages to stable versions.
+    run: melos version --graduate
+  
+  version_check:
+    description: Check which packages would be versioned without making changes.
+    run: melos version --no-git-tag-version --no-git-commit-version
+  
+  changelog:
+    description: Generate changelogs without versioning.
+    run: melos version --no-git-tag-version --yes
+  
   get:
     description: Get dependencies for all packages.
-    run: melos get
+    run: melos bootstrap
 
   clean:
     description: Clean all packages.
     run: melos clean
 
-  prepare_logging:
+  # DevTools extension commands
+  prepare_logging_devtools:
     description: Prepare the voo_logging_devtools_extension package by fetching dependencies.
-    run: melos exec --scope voo_logging_devtools_extension -- dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_logging/extension/devtools
-
-  validate_logging:
-    description: Validate the voo_logging_devtools_extension package.
-    run: melos exec --scope voo_logging_devtools_extension -- dart run devtools_extensions validate --package=../../packages/voo_logging
+    run: |
+      cd tools/voo_devtools_extension && flutter pub get
 
   build_logging_extension:
-    description: Build the voo_logging DevTools extension.
-    run: melos exec --scope voo_logging_devtools_extension -- dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_logging/extension/devtools
+    description: Build the voo logging DevTools extension and copy to voo_logging package.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_logging/extension/devtools
+
+  validate_logging_extension:
+    description: Validate the voo_logging DevTools extension.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions validate --package=../../packages/voo_logging
+
+  prepare_core_devtools:
+    description: Prepare the voo_devtools_extension package for voo_core.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_core/extension/devtools
+
+  validate_core_devtools:
+    description: Validate the voo_core DevTools extension.
+    run: |
+      cd tools/voo_devtools_extension && \
+      dart run devtools_extensions validate --package=../../packages/voo_core
+
+  build_devtools_extension:
+    description: Build DevTools extensions for all packages.
+    run: |
+      melos run build_logging_extension && \
+      melos run prepare_core_devtools
+
+  # Publishing commands for each package
+  publish_core:
+    description: Build and publish the voo_core package (requires manual confirmation).
+    run: |
+      melos run build_devtools_extension
+      echo "================================================"
+      echo "Build complete! Now run the following command:"
+      echo "cd packages/voo_core && dart pub publish"
+      echo "================================================"
 
   publish_logging:
     description: Build and publish the voo_logging package (requires manual confirmation).
@@ -33,4 +113,63 @@ scripts:
       echo "Build complete! Now run the following command:"
       echo "cd packages/voo_logging && dart pub publish"
       echo "================================================"
-      echo "Note: Publishing requires manual confirmation and cannot be automated through melos."
+
+  publish_analytics:
+    description: Publish the voo_analytics package (requires manual confirmation).
+    run: |
+      echo "================================================"
+      echo "Run the following command:"
+      echo "cd packages/voo_analytics && dart pub publish"
+      echo "================================================"
+
+  publish_performance:
+    description: Publish the voo_performance package (requires manual confirmation).
+    run: |
+      echo "================================================"
+      echo "Run the following command:"
+      echo "cd packages/voo_performance && dart pub publish"
+      echo "================================================"
+
+  # Test commands
+  test_all:
+    description: Run tests for all packages.
+    run: melos run test --no-select
+
+  test:
+    description: Run tests for selected packages.
+    run: melos exec -- flutter test
+
+  # Build runner commands
+  build_runner_all:
+    description: Run build_runner for all packages that need it.
+    run: melos exec --depends-on="build_runner" -- dart run build_runner build --delete-conflicting-outputs
+
+  # Analyze
+  analyze:
+    description: Analyze all packages.
+    run: melos exec -- dart analyze
+
+  # Example app commands
+  run_example:
+    description: Run the VooFlutter example app.
+    run: cd apps/voo_example && flutter run
+
+  test_example:
+    description: Run tests for the example app.
+    run: cd apps/voo_example && flutter test
+
+  test_example_integration:
+    description: Run integration tests for the example app.
+    run: cd apps/voo_example && flutter test test/integration_test.dart
+
+  build_example_ios:
+    description: Build the example app for iOS.
+    run: cd apps/voo_example && flutter build ios --no-codesign
+
+  build_example_android:
+    description: Build the example app for Android.
+    run: cd apps/voo_example && flutter build apk
+
+  build_example_web:
+    description: Build the example app for web.
+    run: cd apps/voo_example && flutter build web

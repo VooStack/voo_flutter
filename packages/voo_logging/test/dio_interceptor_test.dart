@@ -96,7 +96,6 @@ void main() {
             method: 'GET',
             url: 'https://api.example.com/api/users',
             headers: {'Authorization': 'Bearer token123'},
-            body: null,
             metadata: argThat(
               allOf(
                 containsPair('baseUrl', 'https://api.example.com'),
@@ -336,10 +335,7 @@ void main() {
 
       test('should handle error logging failures gracefully', () {
         // Arrange
-        final error = DioException(
-          requestOptions: RequestOptions(path: '/api/test'),
-          type: DioExceptionType.unknown,
-        );
+        final error = DioException(requestOptions: RequestOptions(path: '/api/test'));
 
         when(
           mockNetworkInterceptor.onError(url: anyNamed('url'), error: anyNamed('error'), stackTrace: anyNamed('stackTrace'), metadata: anyNamed('metadata')),
@@ -376,9 +372,9 @@ void main() {
         final vooInterceptor = VooDioInterceptor();
 
         // These should be assignable to Dio's handler types
-        void Function(RequestOptions, RequestInterceptorHandler) onRequest = vooInterceptor.onRequest;
-        void Function(Response, ResponseInterceptorHandler) onResponse = vooInterceptor.onResponse;
-        void Function(DioException, ErrorInterceptorHandler) onError = vooInterceptor.onError;
+        final void Function(RequestOptions, RequestInterceptorHandler) onRequest = vooInterceptor.onRequest;
+        final void Function(Response, ResponseInterceptorHandler) onResponse = vooInterceptor.onResponse;
+        final void Function(DioException, ErrorInterceptorHandler) onError = vooInterceptor.onError;
 
         // If this compiles, the signatures are correct
         expect(onRequest, isNotNull);
