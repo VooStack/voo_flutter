@@ -43,7 +43,11 @@ Future<void> main() async {
     }
 
     if (counter % 5 == 0) {
-      VooLogger.performance('Database query', const Duration(milliseconds: 123), metrics: {'rows': 100, 'cache_hit': true});
+      VooLogger.info(
+        'Database query completed in 123ms',
+        category: 'Performance',
+        metadata: {'duration_ms': 123, 'rows': 100, 'cache_hit': true},
+      );
     }
 
     // Stop after 20 iterations

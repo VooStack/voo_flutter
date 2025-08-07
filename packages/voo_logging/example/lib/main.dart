@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:voo_logging/voo_logging.dart';
-import 'dio_example.dart';
+import 'package:voo_logging_example/dio_example.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -378,76 +378,65 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   }
 
   void _logPerformance() {
-    // Example 1: Direct performance logging
-    VooLogger.performance(
-      'DatabaseQuery',
-      const Duration(milliseconds: 456),
-      metrics: {'rowCount': 1000, 'cacheHit': false, 'queryType': 'SELECT', 'table': 'users'},
+    // Log performance as info with metadata
+    VooLogger.info(
+      'DatabaseQuery completed in 456ms',
+      category: 'Performance',
+      metadata: {'duration_ms': 456, 'rowCount': 1000, 'cacheHit': false, 'queryType': 'SELECT', 'table': 'users'},
     );
-
-    // Example 2: Using PerformanceTracker manually
-    final tracker = PerformanceTracker(
-      operation: 'DataProcessing',
-      operationType: 'batch',
-      metrics: {'itemCount': 1000},
-    );
-    
-    // Simulate some work
-    Future.delayed(const Duration(milliseconds: 250), () {
-      tracker.addMetric('processedItems', 500);
-      tracker.addMetric('errors', 0);
-      tracker.complete();
-    });
 
     _showSnackBar('Performance metrics logged');
   }
 
   Future<void> _trackAsyncOperation() async {
     try {
-      // Example of tracking an async operation with PerformanceTracker
-      final result = await PerformanceTracker.track<String>(
-        operation: 'FetchUserData',
-        operationType: 'api',
-        action: () async {
-          // Simulate API call
-          await Future.delayed(const Duration(milliseconds: 1500));
-          
-          // Simulate random success/failure
-          if (Random().nextBool()) {
-            return 'User data fetched successfully';
-          } else {
-            throw Exception('Failed to fetch user data');
-          }
-        },
-        metrics: {
+      // Track operation with timing
+      final stopwatch = Stopwatch()..start();
+      
+      // Simulate API call
+      await Future.delayed(const Duration(milliseconds: 1500));
+      
+      stopwatch.stop();
+      
+      // Simulate random success/failure
+      final result = Random().nextBool() 
+          ? 'User data fetched successfully'
+          : 'Failed to fetch user data';
+      
+      await VooLogger.info(
+        'API call completed in ${stopwatch.elapsedMilliseconds}ms',
+        category: 'Performance',
+        metadata: {
           'endpoint': '/api/user/profile',
           'method': 'GET',
+          'duration_ms': stopwatch.elapsedMilliseconds,
+          'result': result,
         },
       );
       
       _showSnackBar('Operation tracked: $result');
     } catch (e) {
-      _showSnackBar('Operation failed (tracked): $e');
+      _showSnackBar('Operation failed: $e');
     }
 
     // Example of tracking synchronous operation
-    final syncResult = PerformanceTracker.trackSync<int>(
-      operation: 'CalculateSum',
-      operationType: 'computation',
-      action: () {
-        int sum = 0;
-        for (int i = 0; i < 1000000; i++) {
-          sum += i;
-        }
-        return sum;
-      },
-      metrics: {
+    final stopwatch = Stopwatch()..start();
+    int sum = 0;
+    for (int i = 0; i < 1000000; i++) {
+      sum += i;
+    }
+    stopwatch.stop();
+    
+    await VooLogger.info(
+      'Sync calculation completed in ${stopwatch.elapsedMilliseconds}ms',
+      category: 'Performance',
+      metadata: {
         'iterations': 1000000,
         'algorithm': 'linear',
+        'duration_ms': stopwatch.elapsedMilliseconds,
+        'result': sum,
       },
     );
-    
-    await VooLogger.info('Sync calculation result: $syncResult', category: 'Performance');
   }
 
   Future<void> _logLargeError() async {

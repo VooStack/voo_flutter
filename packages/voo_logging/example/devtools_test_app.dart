@@ -54,7 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // Test performance logging
-    VooLogger.performance('Button handler', const Duration(milliseconds: 50), metrics: {'counter': _counter});
+    VooLogger.info(
+      'Button handler completed in 50ms',
+      category: 'Performance',
+      metadata: {'duration_ms': 50, 'counter': _counter},
+    );
   }
 
   @override

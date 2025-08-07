@@ -1,39 +1,174 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Voo Core
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+The foundation package for the Voo Flutter ecosystem. This package provides the core initialization system and plugin architecture that all other Voo packages depend on.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- 🚀 Centralized initialization system
+- 🔌 Plugin registration and management
+- 🛠️ Shared utilities and base classes
+- 📊 Performance metrics interfaces
+- 🎯 Analytics event definitions
 
-## Getting started
+## Installation
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+```yaml
+dependencies:
+  voo_core: ^0.0.1
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+### Basic Initialization
 
 ```dart
-const like = 'sample';
+import 'package:voo_core/voo_core.dart';
+
+void main() async {
+  // Initialize Voo Core
+  await Voo.initializeApp(
+    options: VooOptions(
+      enableDebugLogging: true,
+      autoRegisterPlugins: true,
+    ),
+  );
+  
+  runApp(MyApp());
+}
 ```
 
-## Additional information
+### Using with Other Voo Packages
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Voo Core is required by all other Voo packages. When you use packages like `voo_logging`, `voo_analytics`, or `voo_performance`, they will automatically register themselves with Voo Core:
+
+```dart
+import 'package:voo_core/voo_core.dart';
+import 'package:voo_logging/voo_logging.dart';
+import 'package:voo_analytics/voo_analytics.dart';
+import 'package:voo_performance/voo_performance.dart';
+
+void main() async {
+  // Initialize core first
+  await Voo.initializeApp();
+  
+  // Initialize only the packages you need
+  await VooLoggingPlugin.instance.initialize();
+  await VooAnalyticsPlugin.instance.initialize();
+  await VooPerformancePlugin.instance.initialize();
+  
+  runApp(MyApp());
+}
+```
+
+### Creating Custom Plugins
+
+You can create your own plugins that integrate with the Voo ecosystem:
+
+```dart
+class MyCustomPlugin extends VooPlugin {
+  @override
+  String get name => 'my_custom_plugin';
+  
+  @override
+  String get version => '1.0.0';
+  
+  @override
+  FutureOr<void> onCoreInitialized() {
+    // Called when Voo Core is initialized
+    print('My plugin is ready!');
+  }
+  
+  @override
+  void dispose() {
+    // Cleanup resources
+  }
+}
+
+// Register your plugin
+Voo.registerPlugin(MyCustomPlugin());
+```
+
+## Platform Utils
+
+The package includes platform detection utilities:
+
+```dart
+import 'package:voo_core/voo_core.dart';
+
+if (PlatformUtils.isMobile) {
+  // Mobile-specific code
+}
+
+if (PlatformUtils.isWeb) {
+  // Web-specific code
+}
+
+print('Running on: ${PlatformUtils.platformName}');
+```
+
+## Base Interceptor
+
+Create network interceptors that work across all Voo packages:
+
+```dart
+class MyInterceptor extends BaseInterceptor {
+  @override
+  bool get enabled => true;
+  
+  @override
+  FutureOr<void> onRequest({
+    required String method,
+    required String url,
+    Map<String, String>? headers,
+    dynamic body,
+    Map<String, dynamic>? metadata,
+  }) {
+    // Handle request
+  }
+  
+  @override
+  FutureOr<void> onResponse({
+    required int statusCode,
+    required String url,
+    required Duration duration,
+    Map<String, String>? headers,
+    dynamic body,
+    int? contentLength,
+    Map<String, dynamic>? metadata,
+  }) {
+    // Handle response
+  }
+  
+  @override
+  FutureOr<void> onError({
+    required String url,
+    required Object error,
+    StackTrace? stackTrace,
+    Map<String, dynamic>? metadata,
+  }) {
+    // Handle error
+  }
+}
+```
+
+## API Reference
+
+### Voo Class
+
+- `initializeApp({VooOptions? options})` - Initialize the Voo Core system
+- `registerPlugin(VooPlugin plugin)` - Register a plugin
+- `unregisterPlugin(String pluginName)` - Unregister a plugin
+- `getPlugin<T>(String name)` - Get a registered plugin by name
+- `hasPlugin(String name)` - Check if a plugin is registered
+- `dispose()` - Dispose all plugins and cleanup
+
+### VooOptions
+
+- `enableDebugLogging` - Enable debug logging (default: true in debug mode)
+- `autoRegisterPlugins` - Auto-register plugins when they're imported (default: true)
+- `customConfig` - Custom configuration map
+- `initializationTimeout` - Timeout for initialization (default: 10 seconds)
+
+## License
+
+MIT
