@@ -78,3 +78,28 @@ scripts:
   analyze:
     description: Analyze all packages.
     run: melos exec -- dart analyze
+  
+  # Example app commands
+  run_example:
+    description: Run the VooFlutter example app.
+    run: cd apps/voo_example && flutter run
+  
+  test_example:
+    description: Run tests for the example app.
+    run: cd apps/voo_example && flutter test
+  
+  test_example_integration:
+    description: Run integration tests for the example app.
+    run: cd apps/voo_example && flutter test test/integration_test.dart
+  
+  build_example_ios:
+    description: Build the example app for iOS.
+    run: cd apps/voo_example && flutter build ios --no-codesign
+  
+  build_example_android:
+    description: Build the example app for Android.
+    run: cd apps/voo_example && flutter build apk
+  
+  build_example_web:
+    description: Build the example app for web.
+    run: cd apps/voo_example && flutter build web
