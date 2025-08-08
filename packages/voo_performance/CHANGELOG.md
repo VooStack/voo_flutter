@@ -1,3 +1,15 @@
+## 0.1.0
+
+* **BREAKING CHANGE**: Now requires voo_core ^0.1.0
+* Added automatic cloud sync support for performance metrics
+* Introduced PerformanceSyncEntity for cloud synchronization
+* Integrated with CloudSyncManager from voo_core
+* Performance traces and network metrics are automatically synced to cloud
+* Added support for batch syncing of performance data
+* Enhanced VooPerformancePlugin to support cloud sync
+* Improved offline-first architecture with automatic retry
+* Network metrics now include cloud sync capabilities
+
 ## 0.0.2
 
 * Updated dependencies (voo_core ^0.0.2, voo_logging ^0.0.15)

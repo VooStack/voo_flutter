@@ -85,7 +85,7 @@ class VooPerformancePlugin extends VooPlugin {
     return trace;
   }
 
-  void recordTrace(PerformanceTrace trace) async {
+  Future<void> recordTrace(PerformanceTrace trace) async {
     _activeTraces.remove(trace.id);
     
     final metrics = PerformanceMetrics(
@@ -127,7 +127,7 @@ class VooPerformancePlugin extends VooPlugin {
     }
   }
 
-  void recordNetworkMetric(NetworkMetric metric) async {
+  Future<void> recordNetworkMetric(NetworkMetric metric) async {
     _networkMetrics.add(metric);
     
     // Send network metric to VooLogger for DevTools streaming
