@@ -43,6 +43,11 @@ class CloudSyncManager {
       return;
     }
     
+    // Don't add to queue if we're disposing
+    if (_syncTimer == null) {
+      return;
+    }
+    
     await _syncQueue.add(entity);
     
     if (_syncQueue.size >= options.batchSize) {
@@ -102,6 +107,7 @@ class CloudSyncManager {
   
   void dispose() {
     _syncTimer?.cancel();
+    _syncTimer = null;
     _httpClient?.close();
     _syncQueue.dispose();
     _instance = null;

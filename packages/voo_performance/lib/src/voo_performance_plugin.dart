@@ -51,8 +51,11 @@ class VooPerformancePlugin extends VooPlugin {
     if (enableAutoAppStartTrace) {
       final appStartTrace = newTrace('app_start');
       appStartTrace.start();
+      // Don't await this - let it complete in background
       Future.delayed(const Duration(milliseconds: 100), () {
-        appStartTrace.stop();
+        if (_initialized) {
+          appStartTrace.stop();
+        }
       });
     }
 

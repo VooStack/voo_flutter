@@ -81,7 +81,9 @@ class SyncQueue {
   }
   
   void dispose() {
-    _sizeController.close();
+    if (!_sizeController.isClosed) {
+      _sizeController.close();
+    }
     _storage.dispose();
   }
 }
