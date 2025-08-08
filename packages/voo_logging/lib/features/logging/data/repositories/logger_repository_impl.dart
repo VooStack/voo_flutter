@@ -27,9 +27,53 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
   @override
   Stream<LogEntry> get stream async* {
-    yield LogEntry(id: 'initial', timestamp: DateTime.now(), message: 'Logger streaming started', level: LogLevel.info);
+    try {
+      // Send initial log to indicate stream is active
+      yield LogEntry(
+        id: 'stream_init_${DateTime.now().millisecondsSinceEpoch}',
+        timestamp: DateTime.now(),
+        message: 'VooLogger stream initialized successfully',
+        level: LogLevel.info,
+        category: 'System',
+        tag: 'Stream',
+      );
 
-    yield* _logStreamController.stream;
+      // Handle stream errors gracefully
+      yield* _logStreamController.stream.handleError((error, stackTrace) {
+        // Log the error internally if possible
+        developer.log(
+          'VooLogger stream error: $error',
+          name: 'VooLogger',
+          error: error,
+          stackTrace: stackTrace,
+          level: 800, // Warning level
+        );
+        
+        // Create an error log entry
+        return LogEntry(
+          id: 'stream_error_${DateTime.now().millisecondsSinceEpoch}',
+          timestamp: DateTime.now(),
+          message: 'Stream error occurred: ${error.toString()}',
+          level: LogLevel.error,
+          category: 'System',
+          tag: 'StreamError',
+          error: error,
+          stackTrace: stackTrace.toString(),
+        );
+      });
+    } catch (e, stackTrace) {
+      // If stream initialization fails completely, yield an error entry
+      yield LogEntry(
+        id: 'stream_init_error_${DateTime.now().millisecondsSinceEpoch}',
+        timestamp: DateTime.now(),
+        message: 'Failed to initialize VooLogger stream: ${e.toString()}',
+        level: LogLevel.error,
+        category: 'System',
+        tag: 'StreamInitError',
+        error: e,
+        stackTrace: stackTrace.toString(),
+      );
+    }
   }
 
   @override
@@ -111,11 +155,29 @@ class LoggerRepositoryImpl extends LoggerRepository {
     );
 
     _logToDevTools(entry);
-    if (_config.enableDevToolsJson) {
-      _sendStructuredLogToDevTools(entry);
-    }
+    _sendStructuredLogToDevTools(entry);
 
-    _logStreamController.add(entry);
+    // Safely add to stream controller with error handling
+    if (!_logStreamController.isClosed) {
+      try {
+        _logStreamController.add(entry);
+      } catch (e) {
+        // If stream is closed or errored, log to developer console as fallback
+        developer.log(
+          'Failed to add log to stream: ${e.toString()}',
+          name: 'VooLogger',
+          error: e,
+          level: 900, // Error level
+        );
+      }
+    } else {
+      // Stream is closed, log a warning
+      developer.log(
+        'VooLogger stream is closed. Log entry not added to stream.',
+        name: 'VooLogger',
+        level: 800, // Warning level
+      );
+    }
 
     await _storage?.insertLog(entry).catchError((_) => null);
     
@@ -181,10 +243,12 @@ class LoggerRepositoryImpl extends LoggerRepository {
         },
       };
 
-      // Send as a structured log that the DevTools extension can parse
-      developer.log(jsonEncode(structuredData), name: 'VooLogger', level: entry.level.priority, time: entry.timestamp);
+      // Only send JSON to console if explicitly enabled
+      if (_config.enableDevToolsJson) {
+        developer.log(jsonEncode(structuredData), name: 'VooLogger', level: entry.level.priority, time: entry.timestamp);
+      }
 
-      // Also try postEvent for better DevTools integration
+      // Always send postEvent for DevTools integration (doesn't appear in console)
       developer.postEvent('voo_logger_event', structuredData);
     } catch (_) {
       // Silent fail - logging is best effort
@@ -334,6 +398,34 @@ class LoggerRepositoryImpl extends LoggerRepository {
   }
 
   void close() {
-    _logStreamController.close();
+    try {
+      if (!_logStreamController.isClosed) {
+        // Send a final log before closing
+        final finalEntry = LogEntry(
+          id: 'stream_close_${DateTime.now().millisecondsSinceEpoch}',
+          timestamp: DateTime.now(),
+          message: 'VooLogger stream closing',
+          level: LogLevel.info,
+          category: 'System',
+          tag: 'StreamClose',
+        );
+        
+        _logStreamController.add(finalEntry);
+        _logStreamController.close();
+        
+        developer.log(
+          'VooLogger stream closed successfully',
+          name: 'VooLogger',
+          level: 100, // Info level
+        );
+      }
+    } catch (e) {
+      developer.log(
+        'Error closing VooLogger stream: ${e.toString()}',
+        name: 'VooLogger',
+        error: e,
+        level: 900, // Error level
+      );
+    }
   }
 }

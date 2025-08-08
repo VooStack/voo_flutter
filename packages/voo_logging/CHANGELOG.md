@@ -1,10 +1,17 @@
+## 0.1.2
+
+* Fixed DevTools integration to always receive logs via postEvent regardless of console settings
+* Added comprehensive error handling for logging stream initialization and lifecycle
+* Stream errors are now gracefully handled and logged appropriately
+* Added stream close detection to prevent errors when adding logs to closed streams
+* Improved stream initialization with success/error reporting
+
 ## 0.1.1
 
 * Added `enableDevToolsJson` configuration option to control JSON output in console
 * Fixed duplicate log entries appearing in console (formatted + JSON)
 * JSON logs for DevTools integration can now be disabled while keeping pretty formatting
 * Default behavior now shows only formatted logs in console (JSON disabled by default)
-* DevTools integration remains functional even with JSON console output disabled
 
 ## 0.1.0
 
