@@ -1,3 +1,14 @@
+## 0.1.0
+
+* **BREAKING CHANGE**: Now requires voo_core ^0.1.0
+* Added automatic cloud sync support for log entries
+* Introduced LogSyncEntity for cloud synchronization
+* Integrated with CloudSyncManager from voo_core
+* Logs are automatically queued for sync when API key is configured
+* Added support for batch syncing to reduce network overhead
+* Enhanced repository to support cloud sync without breaking existing functionality
+* Improved offline-first architecture with automatic retry
+
 ## 0.0.18
 
 * **New Feature**: Added Pretty Logging with beautiful, structured console output

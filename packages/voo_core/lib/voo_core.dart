@@ -6,3 +6,5 @@ export 'package:voo_core/src/utils/platform_utils.dart';
 export 'package:voo_core/src/interceptors/base_interceptor.dart';
 export 'package:voo_core/src/metrics/performance_metrics.dart';
 export 'package:voo_core/src/analytics/analytics_event.dart';
+export 'package:voo_core/src/cloud/cloud_sync_manager.dart';
+export 'package:voo_core/src/cloud/sync_entity.dart';

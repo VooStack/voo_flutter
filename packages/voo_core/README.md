@@ -9,6 +9,7 @@ The foundation package for the Voo Flutter ecosystem. This package provides the 
 - 🛠️ Shared utilities and base classes
 - 📊 Performance metrics interfaces
 - 🎯 Analytics event definitions
+- ☁️ Optional cloud sync for telemetry data
 
 ## Installation
 
@@ -36,6 +37,36 @@ void main() async {
   runApp(MyApp());
 }
 ```
+
+### Cloud Sync (Optional)
+
+Enable cloud sync to automatically send telemetry data to your Voo cloud service:
+
+```dart
+import 'package:voo_core/voo_core.dart';
+
+void main() async {
+  await Voo.initializeApp(
+    options: VooOptions(
+      // Cloud sync configuration
+      apiKey: 'your-api-key-here',
+      enableCloudSync: true,
+      apiEndpoint: 'https://api.vooflutter.com/v1', // Optional, uses default if not provided
+      syncInterval: Duration(minutes: 1), // How often to sync
+      batchSize: 100, // Max items per sync batch
+    ),
+  );
+  
+  runApp(MyApp());
+}
+```
+
+When cloud sync is enabled:
+- All logs, analytics events, and performance metrics are automatically queued for sync
+- Data is sent in efficient batches to reduce network overhead
+- Failed syncs are retried with exponential backoff
+- Data is persisted locally using Sembast database until successfully synced
+- Duplicate data is automatically filtered to prevent re-sending
 
 ### Using with Other Voo Packages
 
@@ -168,6 +199,11 @@ class MyInterceptor extends BaseInterceptor {
 - `autoRegisterPlugins` - Auto-register plugins when they're imported (default: true)
 - `customConfig` - Custom configuration map
 - `initializationTimeout` - Timeout for initialization (default: 10 seconds)
+- `apiKey` - API key for cloud services (optional)
+- `apiEndpoint` - Custom API endpoint (optional, defaults to https://api.vooflutter.com/v1)
+- `enableCloudSync` - Enable cloud synchronization (default: false)
+- `syncInterval` - How often to sync data (default: 1 minute)
+- `batchSize` - Maximum items per sync batch (default: 100)
 
 ## License
 

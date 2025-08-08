@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:voo_core/voo_core.dart';
+import 'package:voo_analytics/src/data/models/analytics_sync_entity.dart';
 import 'package:voo_analytics/src/domain/entities/touch_event.dart';
 import 'package:voo_analytics/src/domain/entities/heat_map_data.dart';
 import 'package:voo_analytics/src/domain/repositories/analytics_repository.dart';
@@ -124,6 +126,22 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       },
     );
     
+    // Sync to cloud if enabled
+    final options = Voo.options;
+    if (options != null && options.enableCloudSync && options.apiKey != null) {
+      final syncEntity = AnalyticsSyncEntity(
+        id: '${timestamp.millisecondsSinceEpoch}_$name',
+        timestamp: timestamp,
+        eventType: 'custom_event',
+        eventData: {
+          'event_name': name,
+          'parameters': parameters ?? {},
+          'user_id': _userId,
+        },
+      );
+      await CloudSyncManager.instance.addToQueue(syncEntity);
+    }
+    
     if (kDebugMode) {
       print('[VooAnalytics] Event logged: $name');
     }
@@ -156,6 +174,25 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         'timestamp': event.timestamp.toIso8601String(),
       },
     );
+    
+    // Sync to cloud if enabled
+    final options = Voo.options;
+    if (options != null && options.enableCloudSync && options.apiKey != null) {
+      final syncEntity = AnalyticsSyncEntity(
+        id: '${event.timestamp.millisecondsSinceEpoch}_touch_${event.screenName}',
+        timestamp: event.timestamp,
+        eventType: 'touch_event',
+        eventData: {
+          'touch_type': event.type.name,
+          'screen': event.screenName,
+          'position': {'x': event.position.dx, 'y': event.position.dy},
+          'widget_type': event.widgetType,
+          'widget_key': event.widgetKey,
+          'user_id': _userId,
+        },
+      );
+      await CloudSyncManager.instance.addToQueue(syncEntity);
+    }
   }
 
   @override

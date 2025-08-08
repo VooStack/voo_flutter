@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:voo_core/src/voo_options.dart';
 import 'package:voo_core/src/voo_plugin.dart';
 import 'package:voo_core/src/exceptions/voo_exception.dart';
+import 'package:voo_core/src/cloud/cloud_sync_manager.dart';
 
 class Voo {
   static Voo? _instance;
@@ -23,6 +24,11 @@ class Voo {
     _options = options ?? const VooOptions();
     _instance = Voo._();
     _initialized = true;
+
+    // Initialize cloud sync if enabled
+    if (_options!.enableCloudSync && _options!.apiKey != null) {
+      await CloudSyncManager.instance.initialize();
+    }
 
     // Core initialized
 
@@ -69,6 +75,12 @@ class Voo {
       plugin.dispose();
     }
     _plugins.clear();
+    
+    // Dispose cloud sync manager
+    if (_options?.enableCloudSync == true) {
+      CloudSyncManager.instance.dispose();
+    }
+    
     _initialized = false;
     _instance = null;
     _options = null;

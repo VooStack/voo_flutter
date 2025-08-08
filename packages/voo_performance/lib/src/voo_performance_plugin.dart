@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
+import 'package:voo_performance/src/data/models/performance_sync_entity.dart';
 import 'package:voo_performance/src/domain/entities/performance_trace.dart';
 import 'package:voo_performance/src/domain/entities/network_metric.dart';
 
@@ -84,7 +85,7 @@ class VooPerformancePlugin extends VooPlugin {
     return trace;
   }
 
-  void recordTrace(PerformanceTrace trace) {
+  void recordTrace(PerformanceTrace trace) async {
     _activeTraces.remove(trace.id);
     
     final metrics = PerformanceMetrics(
@@ -114,12 +115,19 @@ class VooPerformancePlugin extends VooPlugin {
       },
     );
     
+    // Sync to cloud if enabled
+    final options = Voo.options;
+    if (options != null && options.enableCloudSync && options.apiKey != null) {
+      final syncEntity = PerformanceSyncEntity.fromTrace(trace: trace);
+      await CloudSyncManager.instance.addToQueue(syncEntity);
+    }
+    
     if (_performanceMetrics.length > 1000) {
       _performanceMetrics.removeRange(0, 100);
     }
   }
 
-  void recordNetworkMetric(NetworkMetric metric) {
+  void recordNetworkMetric(NetworkMetric metric) async {
     _networkMetrics.add(metric);
     
     // Send network metric to VooLogger for DevTools streaming
@@ -140,6 +148,13 @@ class VooPerformancePlugin extends VooPlugin {
         ...?metric.metadata,
       },
     );
+    
+    // Sync to cloud if enabled
+    final options = Voo.options;
+    if (options != null && options.enableCloudSync && options.apiKey != null) {
+      final syncEntity = PerformanceSyncEntity.fromNetworkMetric(metric: metric);
+      await CloudSyncManager.instance.addToQueue(syncEntity);
+    }
     
     if (_networkMetrics.length > 1000) {
       _networkMetrics.removeRange(0, 100);
