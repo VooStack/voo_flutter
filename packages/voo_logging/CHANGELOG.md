@@ -1,3 +1,11 @@
+## 0.1.1
+
+* Added `enableDevToolsJson` configuration option to control JSON output in console
+* Fixed duplicate log entries appearing in console (formatted + JSON)
+* JSON logs for DevTools integration can now be disabled while keeping pretty formatting
+* Default behavior now shows only formatted logs in console (JSON disabled by default)
+* DevTools integration remains functional even with JSON console output disabled
+
 ## 0.1.0
 
 * **BREAKING CHANGE**: Now requires voo_core ^0.1.0

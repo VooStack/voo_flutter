@@ -111,7 +111,9 @@ class LoggerRepositoryImpl extends LoggerRepository {
     );
 
     _logToDevTools(entry);
-    _sendStructuredLogToDevTools(entry);
+    if (_config.enableDevToolsJson) {
+      _sendStructuredLogToDevTools(entry);
+    }
 
     _logStreamController.add(entry);
 

@@ -28,6 +28,7 @@ void main() async {
       lineLength: 120,          // Maximum line width
       minimumLevel: LogLevel.verbose,
       enabled: true,
+      enableDevToolsJson: false, // Disable JSON logs in console output
     ),
   );
 

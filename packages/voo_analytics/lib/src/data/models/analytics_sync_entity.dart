@@ -1,28 +1,11 @@
 import 'package:voo_core/voo_core.dart';
 
 class AnalyticsSyncEntity extends SyncEntity {
-  AnalyticsSyncEntity({
-    required String id,
-    required DateTime timestamp,
-    required String eventType,
-    required Map<String, dynamic> eventData,
-    super.isSynced,
-    super.retryCount,
-  }) : super(
-          id: id,
-          type: 'analytics',
-          timestamp: timestamp,
-          data: {
-            'eventType': eventType,
-            ...eventData,
-          },
-        );
-  
+  AnalyticsSyncEntity({required super.id, required super.timestamp, required String eventType, required Map<String, dynamic> eventData, super.isSynced, super.retryCount})
+    : super(type: 'analytics', data: {'eventType': eventType, ...eventData});
+
   @override
-  SyncEntity copyWith({
-    bool? isSynced,
-    int? retryCount,
-  }) {
+  SyncEntity copyWith({bool? isSynced, int? retryCount}) {
     return AnalyticsSyncEntity(
       id: id,
       timestamp: timestamp,

@@ -12,6 +12,7 @@ class LoggingConfig {
   final int lineLength;
   final LogLevel minimumLevel;
   final bool enabled;
+  final bool enableDevToolsJson;
   
   const LoggingConfig({
     this.enablePrettyLogs = true,
@@ -22,6 +23,7 @@ class LoggingConfig {
     this.lineLength = 120,
     this.minimumLevel = LogLevel.verbose,
     this.enabled = true,
+    this.enableDevToolsJson = false,
   });
   
   PrettyLogFormatter get formatter => PrettyLogFormatter(
@@ -42,6 +44,7 @@ class LoggingConfig {
     int? lineLength,
     LogLevel? minimumLevel,
     bool? enabled,
+    bool? enableDevToolsJson,
   }) => LoggingConfig(
       enablePrettyLogs: enablePrettyLogs ?? this.enablePrettyLogs,
       showEmojis: showEmojis ?? this.showEmojis,
@@ -51,6 +54,7 @@ class LoggingConfig {
       lineLength: lineLength ?? this.lineLength,
       minimumLevel: minimumLevel ?? this.minimumLevel,
       enabled: enabled ?? this.enabled,
+      enableDevToolsJson: enableDevToolsJson ?? this.enableDevToolsJson,
     );
   
   @override
@@ -64,7 +68,8 @@ class LoggingConfig {
         other.showBorders == showBorders &&
         other.lineLength == lineLength &&
         other.minimumLevel == minimumLevel &&
-        other.enabled == enabled;
+        other.enabled == enabled &&
+        other.enableDevToolsJson == enableDevToolsJson;
   }
   
   @override
@@ -77,5 +82,6 @@ class LoggingConfig {
     lineLength,
     minimumLevel,
     enabled,
+    enableDevToolsJson,
   );
 }
