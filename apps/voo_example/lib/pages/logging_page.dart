@@ -156,7 +156,7 @@ class _LoggingPageState extends State<LoggingPage> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<LogLevel>(
-                            value: _selectedLevel,
+                            initialValue: _selectedLevel,
                             decoration: const InputDecoration(labelText: 'Log Level', border: OutlineInputBorder()),
                             items: LogLevel.values.map((level) {
                               return DropdownMenuItem(

@@ -39,7 +39,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
       );
 
       // Handle stream errors gracefully
-      yield* _logStreamController.stream.handleError((error, stackTrace) {
+      yield* _logStreamController.stream.handleError((Object error, StackTrace stackTrace) {
         // Log the error internally if possible
         developer.log(
           'VooLogger stream error: $error',
@@ -48,7 +48,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
           stackTrace: stackTrace,
           level: 800, // Warning level
         );
-        
+
         // Create an error log entry
         return LogEntry(
           id: 'stream_error_${DateTime.now().millisecondsSinceEpoch}',
@@ -180,7 +180,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
     }
 
     await _storage?.insertLog(entry).catchError((_) => null);
-    
+
     // Sync to cloud if enabled
     final options = Voo.options;
     if (options != null && options.enableCloudSync && options.apiKey != null) {
@@ -409,10 +409,10 @@ class LoggerRepositoryImpl extends LoggerRepository {
           category: 'System',
           tag: 'StreamClose',
         );
-        
+
         _logStreamController.add(finalEntry);
         _logStreamController.close();
-        
+
         developer.log(
           'VooLogger stream closed successfully',
           name: 'VooLogger',

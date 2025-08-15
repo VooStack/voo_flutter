@@ -29,15 +29,9 @@ class _LogExportDialogState extends State<LogExportDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${widget.logs.length} logs will be exported',
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text('${widget.logs.length} logs will be exported', style: theme.textTheme.bodyMedium),
             const SizedBox(height: 16),
-            Text(
-              'Export Format',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('Export Format', style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
             ...ExportFormat.values.map(
               (format) => RadioListTile<ExportFormat>(
@@ -54,10 +48,7 @@ class _LogExportDialogState extends State<LogExportDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Options',
-              style: theme.textTheme.titleSmall,
-            ),
+            Text('Options', style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
             CheckboxListTile(
               title: const Text('Include metadata'),
@@ -83,15 +74,8 @@ class _LogExportDialogState extends State<LogExportDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        FilledButton.icon(
-          icon: const Icon(Icons.content_copy),
-          label: const Text('Copy to Clipboard'),
-          onPressed: () => _exportToClipboard(context),
-        ),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        FilledButton.icon(icon: const Icon(Icons.content_copy), label: const Text('Copy to Clipboard'), onPressed: () => _exportToClipboard(context)),
       ],
     );
   }
@@ -99,15 +83,10 @@ class _LogExportDialogState extends State<LogExportDialog> {
   Future<void> _exportToClipboard(BuildContext context) async {
     final exportedData = _exportLogs();
     await Clipboard.setData(ClipboardData(text: exportedData));
-    
+
     if (context.mounted) {
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${widget.logs.length} logs copied to clipboard'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${widget.logs.length} logs copied to clipboard'), duration: const Duration(seconds: 2)));
     }
   }
 
@@ -124,14 +103,7 @@ class _LogExportDialogState extends State<LogExportDialog> {
 
   String _exportAsJson() {
     final logs = widget.logs.map((log) {
-      final json = {
-        'id': log.id,
-        'timestamp': log.timestamp.toIso8601String(),
-        'level': log.level.name,
-        'message': log.message,
-        'category': log.category,
-        'tag': log.tag,
-      };
+      final json = {'id': log.id, 'timestamp': log.timestamp.toIso8601String(), 'level': log.level.name, 'message': log.message, 'category': log.category, 'tag': log.tag};
 
       if (_includeMetadata && log.metadata != null) {
         json['metadata'] = log.metadata!.toString();
@@ -148,16 +120,12 @@ class _LogExportDialogState extends State<LogExportDialog> {
       return json;
     }).toList();
 
-    return const JsonEncoder.withIndent('  ').convert({
-      'exportedAt': DateTime.now().toIso8601String(),
-      'totalLogs': logs.length,
-      'logs': logs,
-    });
+    return const JsonEncoder.withIndent('  ').convert({'exportedAt': DateTime.now().toIso8601String(), 'totalLogs': logs.length, 'logs': logs});
   }
 
   String _exportAsCsv() {
     final buffer = StringBuffer();
-    
+
     // Header
     buffer.write('Timestamp,Level,Category,Tag,Message');
     if (_includeMetadata) buffer.write(',Metadata');
@@ -171,15 +139,15 @@ class _LogExportDialogState extends State<LogExportDialog> {
       buffer.write(',${_escapeCsv(log.category ?? '')}');
       buffer.write(',${_escapeCsv(log.tag ?? '')}');
       buffer.write(',${_escapeCsv(log.message)}');
-      
+
       if (_includeMetadata) {
         buffer.write(',${_escapeCsv(log.metadata?.toString() ?? '')}');
       }
-      
+
       if (_includeStackTrace) {
         buffer.write(',${_escapeCsv(log.stackTrace ?? '')}');
       }
-      
+
       buffer.writeln();
     }
 
@@ -188,7 +156,7 @@ class _LogExportDialogState extends State<LogExportDialog> {
 
   String _exportAsPlainText() {
     final buffer = StringBuffer();
-    
+
     buffer.writeln('=== Log Export ===');
     buffer.writeln('Exported at: ${DateTime.now()}');
     buffer.writeln('Total logs: ${widget.logs.length}');
@@ -196,24 +164,24 @@ class _LogExportDialogState extends State<LogExportDialog> {
 
     for (final log in widget.logs) {
       buffer.writeln('[$log.timestamp}] [${log.level.name.toUpperCase()}] ${log.category ?? 'General'} - ${log.message}');
-      
+
       if (log.tag != null) {
         buffer.writeln('  Tag: ${log.tag}');
       }
-      
+
       if (_includeMetadata && log.metadata != null) {
         buffer.writeln('  Metadata: ${log.metadata}');
       }
-      
+
       if (_includeStackTrace && log.stackTrace != null) {
         buffer.writeln('  Stack trace:');
         buffer.writeln('  ${log.stackTrace!.split('\n').join('\n  ')}');
       }
-      
+
       if (log.error != null) {
         buffer.writeln('  Error: ${log.error}');
       }
-      
+
       buffer.writeln();
     }
 

@@ -9,3 +9,5 @@ export 'package:voo_core/src/analytics/analytics_event.dart';
 export 'package:voo_core/src/cloud/cloud_sync_manager.dart';
 export 'package:voo_core/src/cloud/sync_entity.dart';
 export 'package:voo_core/src/cloud/sync_entity_impl.dart';
+export 'package:voo_core/src/devstack/devstack_config.dart';
+export 'package:voo_core/src/devstack/devstack_telemetry.dart';

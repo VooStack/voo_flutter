@@ -121,7 +121,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedLevel,
+                  initialValue: _selectedLevel,
                   decoration: const InputDecoration(labelText: 'Log Level', border: OutlineInputBorder()),
                   items: _logLevels.map((level) => DropdownMenuItem(value: level, child: Text(level.toUpperCase()))).toList(),
                   onChanged: (value) {
@@ -134,7 +134,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
               const SizedBox(width: 16),
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
                   items: _categories.map((category) => DropdownMenuItem(value: category, child: Text(category))).toList(),
                   onChanged: (value) {

@@ -1,3 +1,19 @@
+## 0.1.1
+
+* Added DevStack API integration support
+* Enhanced CloudSyncManager with comprehensive debug capabilities:
+  - Debug mode with detailed logging
+  - Debug log buffer for telemetry inspection
+  - Sync status monitoring
+  - Pretty-printed status display
+* Added DevStackTelemetry helper class for easy DevStack configuration
+* Added DevStackConfig for DevStack-specific settings
+* Improved telemetry sync with better error reporting
+* Added Organization ID support in headers
+* Enhanced request body with project metadata
+* Fixed linting issues - replaced print statements with debugPrint
+* Added comprehensive documentation for DevStack integration
+
 ## 0.1.0
 
 * **BREAKING CHANGE**: Minimum Flutter version is now 3.0.0

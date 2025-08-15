@@ -67,7 +67,7 @@ class _NetworkFilterBarState extends State<NetworkFilterBar> {
             SizedBox(
               width: 120,
               child: DropdownButtonFormField<String>(
-                value: _selectedMethod,
+                initialValue: _selectedMethod,
                 decoration: InputDecoration(
                   labelText: 'Method',
                   isDense: true,
@@ -96,7 +96,7 @@ class _NetworkFilterBarState extends State<NetworkFilterBar> {
             SizedBox(
               width: 120,
               child: DropdownButtonFormField<String>(
-                value: _selectedStatus,
+                initialValue: _selectedStatus,
                 decoration: InputDecoration(
                   labelText: 'Status',
                   isDense: true,
