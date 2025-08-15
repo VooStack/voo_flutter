@@ -1,3 +1,14 @@
+## 0.1.4
+
+* Fixed performance metrics routing to correct endpoint:
+  - Added support for `performance_trace` and `network_metric` types
+  - Properly route performance data to `/metrics/batch` endpoint
+  - Format metrics with proper structure for DevStack API
+* Enhanced metrics request formatting:
+  - Include required fields (sessionId, deviceId, platform, appVersion)
+  - Convert all tags to strings as required by API
+  - Handle performance-specific fields (duration_ms, attributes)
+
 ## 0.1.3
 
 * Fixed DateTime serialization in CloudSyncManager:

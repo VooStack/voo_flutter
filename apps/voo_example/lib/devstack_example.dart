@@ -28,7 +28,7 @@ void main() async {
 
   print('Initializing DevStack telemetry...');
   print('Endpoint: $endpoint');
-  
+
   // Initialize DevStack telemetry
   await DevStackTelemetry.initialize(
     apiKey: devStackApiKey,
@@ -43,23 +43,11 @@ void main() async {
   print('✓ DevStack telemetry initialized');
 
   // Initialize individual plugins
-  await VooLoggingPlugin.instance.initialize(
-    maxEntries: 10000,
-    enableConsoleOutput: true,
-    enableFileStorage: true,
-  );
-  
-  await VooAnalyticsPlugin.instance.initialize(
-    enableTouchTracking: true,
-    enableEventLogging: true,
-    enableUserProperties: true,
-  );
-  
-  await VooPerformancePlugin.instance.initialize(
-    enableNetworkMonitoring: true,
-    enableTraceMonitoring: true,
-    enableAutoAppStartTrace: true,
-  );
+  await VooLoggingPlugin.instance.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
+
+  await VooAnalyticsPlugin.instance.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+
+  await VooPerformancePlugin.instance.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
 
   // Initialize VooLogger
   await VooLogger.initialize(
@@ -67,23 +55,13 @@ void main() async {
     appVersion: '1.0.0',
     userId: 'example_user',
     minimumLevel: LogLevel.verbose,
-    config: const LoggingConfig(
-      enablePrettyLogs: true,
-      showEmojis: true,
-      showTimestamp: true,
-      showColors: true,
-      minimumLevel: LogLevel.verbose,
-      enabled: true,
-    ),
+    config: const LoggingConfig(enablePrettyLogs: true, showEmojis: true, showTimestamp: true, showColors: true, minimumLevel: LogLevel.verbose, enabled: true),
   );
 
   VooLogger.info('VooExample app initialized with DevStack telemetry');
-  
+
   // Log analytics event
-  VooAnalyticsPlugin.instance.logEvent('app_started', parameters: {
-    'source': 'main',
-    'telemetry_enabled': true,
-  });
+  VooAnalyticsPlugin.instance.logEvent('app_started', parameters: {'source': 'main', 'telemetry_enabled': true});
 
   runApp(const VooExampleApp());
 }
@@ -95,10 +73,7 @@ class VooExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Voo Flutter Example',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
       home: const HomePage(),
     );
   }
