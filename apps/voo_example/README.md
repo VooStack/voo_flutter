@@ -45,6 +45,7 @@ This example app showcases the integration of:
 ### Prerequisites
 - Flutter SDK ^3.8.0
 - Dart SDK ^3.8.0
+- DevStack API (optional, for telemetry backend)
 
 ### Installation
 
@@ -58,19 +59,61 @@ cd apps/voo_example
 flutter pub get
 ```
 
+3. **DevStack Integration Setup (Optional)**:
+   
+   If you want to use DevStack telemetry backend:
+   
+   a. Copy the environment template:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   b. Edit `.env` with your DevStack credentials:
+   ```env
+   DEVSTACK_API_KEY=your_api_key_here
+   DEVSTACK_PROJECT_ID=your_project_id_here
+   DEVSTACK_ORGANIZATION_ID=your_organization_id_here
+   DEVSTACK_API_ENDPOINT=http://localhost:5001/api/v1
+   ```
+   
+   c. For different environments:
+   - **Local development**: `http://localhost:5001/api/v1`
+   - **Android emulator**: `http://10.0.2.2:5001/api/v1`
+   - **iOS simulator**: `http://[YOUR_HOST_IP]:5001/api/v1`
+   - **Production**: `https://api.devstack.com/api/v1`
+
 ### Running the App
 
-#### Run on iOS Simulator:
+#### Standard Example (without DevStack):
+```bash
+flutter run
+```
+
+#### DevStack Integration Examples:
+
+Run the DevStack-enabled example:
+```bash
+flutter run lib/devstack_example.dart
+```
+
+Run the comprehensive DevStack test:
+```bash
+flutter run lib/devstack_full_test.dart
+```
+
+#### Platform-specific:
+
+Run on iOS Simulator:
 ```bash
 flutter run -d ios
 ```
 
-#### Run on Android Emulator:
+Run on Android Emulator:
 ```bash
 flutter run -d android
 ```
 
-#### Run on Web:
+Run on Web:
 ```bash
 flutter run -d chrome
 ```
@@ -98,6 +141,8 @@ flutter test --coverage
 voo_example/
 ├── lib/
 │   ├── main.dart                 # App entry point and initialization
+│   ├── devstack_example.dart     # DevStack integration example
+│   ├── devstack_full_test.dart   # Comprehensive DevStack test
 │   └── pages/
 │       ├── home_page.dart        # Main navigation hub
 │       ├── logging_page.dart     # Logging features demo
@@ -107,6 +152,9 @@ voo_example/
 ├── test/
 │   ├── widget_test.dart         # Widget and unit tests
 │   └── integration_test.dart    # Integration tests
+├── .env.example                  # Environment variables template
+├── .env                          # Your DevStack credentials (gitignored)
+├── .gitignore                    # Git ignore rules
 └── pubspec.yaml                  # Package dependencies
 ```
 
@@ -125,6 +173,23 @@ await Voo.init(
     VooAnalyticsPlugin(),
     VooPerformancePlugin(),
   ],
+);
+```
+
+### DevStack Integration
+```dart
+// Load environment variables
+await dotenv.load(fileName: ".env");
+
+// Initialize DevStack telemetry
+await DevStackTelemetry.initialize(
+  apiKey: dotenv.env['DEVSTACK_API_KEY']!,
+  projectId: dotenv.env['DEVSTACK_PROJECT_ID']!,
+  organizationId: dotenv.env['DEVSTACK_ORGANIZATION_ID']!,
+  endpoint: dotenv.env['DEVSTACK_API_ENDPOINT']!,
+  enableDebugMode: true,
+  syncInterval: const Duration(seconds: 30),
+  batchSize: 50,
 );
 ```
 

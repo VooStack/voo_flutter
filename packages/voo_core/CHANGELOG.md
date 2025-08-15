@@ -1,3 +1,22 @@
+## 0.1.3
+
+* Fixed DateTime serialization in CloudSyncManager:
+  - Convert DateTime objects to ISO 8601 strings for JSON serialization
+  - Added `_sanitizeMetadata` helper to recursively handle DateTime in nested objects
+* Fixed headers type to be `Map<String, String>` instead of `Map<String, dynamic>`
+* Added default 'General' category for logs when category is null
+* Improved error handling and debug logging
+
+## 0.1.2
+
+* Fixed CloudSyncManager to use correct DevStack API endpoints:
+  - Logs sent to `/logs/batch`
+  - Metrics sent to `/metrics/batch`
+  - Errors sent to `/errors/batch`
+  - Analytics events sent to `/analytics/events/batch`
+* Improved telemetry batching by grouping items by type
+* Enhanced error handling for individual endpoint failures
+
 ## 0.1.1
 
 * Added DevStack API integration support

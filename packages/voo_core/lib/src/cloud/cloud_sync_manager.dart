@@ -78,44 +78,194 @@ class CloudSyncManager {
         return;
       }
       
-      final endpoint = options.apiEndpoint ?? 'https://api.vooflutter.com/v1';
-      final url = '$endpoint/telemetry/batch';
-      final requestBody = {
-        'batch': batch.map((e) => e.toJson()).toList(),
-        'timestamp': DateTime.now().toIso8601String(),
-        'projectId': options.customConfig['projectId'] ?? 'unknown',
-      };
+      // Group telemetry by type for DevStack API
+      final logItems = <SyncEntity>[];
+      final metricItems = <SyncEntity>[];
+      final errorItems = <SyncEntity>[];
+      final analyticsItems = <SyncEntity>[];
       
-      _logDebug('Syncing ${batch.length} items to $url');
-      _logDebug('Request headers: ${options.apiKey != null ? "API Key present" : "No API key"}');
-      
-      if (_debugMode) {
-        _logDebug('Request body: ${jsonEncode(requestBody)}');
+      for (final item in batch) {
+        final type = item.type;
+        if (type == 'log') {
+          logItems.add(item);
+        } else if (type == 'metric' || type == 'performance') {
+          metricItems.add(item);
+        } else if (type == 'error') {
+          errorItems.add(item);
+        } else if (type == 'analytics' || type == 'event') {
+          analyticsItems.add(item);
+        } else {
+          // Default to logs for unknown types
+          logItems.add(item);
+        }
       }
       
-      final response = await _httpClient!.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': options.apiKey!,
-          if (options.customConfig['organizationId'] != null)
-            'X-Organization-Id': options.customConfig['organizationId'],
-        },
-        body: jsonEncode(requestBody),
-      );
+      final endpoint = options.apiEndpoint ?? 'https://api.vooflutter.com/v1';
+      final projectId = options.customConfig['projectId'] ?? 'unknown';
+      final timestamp = DateTime.now().toIso8601String();
       
-      _logDebug('Response status: ${response.statusCode}');
-      _logDebug('Response body: ${response.body}');
+      final headers = <String, String>{
+        'Content-Type': 'application/json',
+        'X-API-Key': options.apiKey!,
+      };
+      if (options.customConfig['organizationId'] != null) {
+        headers['X-Organization-Id'] = options.customConfig['organizationId'].toString();
+      }
       
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        await _syncQueue.markAsSynced(batch.map((e) => e.id).toList());
-        _logDebug('Successfully synced ${batch.length} items');
-      } else {
-        await _syncQueue.markAsFailed(batch.map((e) => e.id).toList());
-        _logDebug('Failed to sync batch: ${response.statusCode} - ${response.body}');
+      final successfulIds = <String>[];
+      final failedIds = <String>[];
+      
+      // Send logs
+      if (logItems.isNotEmpty) {
+        final url = '$endpoint/logs/batch';
+        final requestBody = {
+          'projectId': projectId,
+          'logs': logItems.map((e) {
+            final data = e.data as Map<String, dynamic>;
+            return {
+              'level': data['level'] ?? 'info',
+              'message': data['message'] ?? '',
+              'timestamp': e.timestamp.toIso8601String(),
+              'category': data['category'] ?? 'General',  // Default to 'General' if null
+              'metadata': _sanitizeMetadata(data['metadata'] as Map<String, dynamic>?),
+            };
+          }).toList(),
+        };
+        
+        _logDebug('Syncing ${logItems.length} logs to $url');
+        if (_debugMode) {
+          _logDebug('Request body: ${jsonEncode(requestBody)}');
+        }
+        
+        final response = await _httpClient!.post(
+          Uri.parse(url),
+          headers: headers,
+          body: jsonEncode(requestBody),
+        );
+        
+        _logDebug('Logs response: ${response.statusCode}');
+        
+        if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+          successfulIds.addAll(logItems.map((e) => e.id));
+        } else {
+          failedIds.addAll(logItems.map((e) => e.id));
+          _logDebug('Failed to sync logs: ${response.statusCode} - ${response.body}');
+        }
+      }
+      
+      // Send metrics
+      if (metricItems.isNotEmpty) {
+        final url = '$endpoint/metrics/batch';
+        final requestBody = {
+          'projectId': projectId,
+          'metrics': metricItems.map((e) {
+            final data = e.data as Map<String, dynamic>;
+            return {
+              'name': data['name'] ?? 'unknown',
+              'value': data['value'] ?? 0,
+              'timestamp': e.timestamp.toIso8601String(),
+              'type': data['type'] ?? 'gauge',
+              'tags': data['tags'] ?? {},
+            };
+          }).toList(),
+        };
+        
+        _logDebug('Syncing ${metricItems.length} metrics to $url');
+        
+        final response = await _httpClient!.post(
+          Uri.parse(url),
+          headers: headers,
+          body: jsonEncode(requestBody),
+        );
+        
+        _logDebug('Metrics response: ${response.statusCode}');
+        
+        if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+          successfulIds.addAll(metricItems.map((e) => e.id));
+        } else {
+          failedIds.addAll(metricItems.map((e) => e.id));
+        }
+      }
+      
+      // Send errors
+      if (errorItems.isNotEmpty) {
+        final url = '$endpoint/errors/batch';
+        final requestBody = {
+          'projectId': projectId,
+          'errors': errorItems.map((e) {
+            final data = e.data as Map<String, dynamic>;
+            return {
+              'message': data['message'] ?? '',
+              'stackTrace': data['stackTrace'],
+              'timestamp': e.timestamp.toIso8601String(),
+              'severity': data['severity'] ?? 'error',
+              'metadata': _sanitizeMetadata(data['metadata'] as Map<String, dynamic>?),
+            };
+          }).toList(),
+        };
+        
+        _logDebug('Syncing ${errorItems.length} errors to $url');
+        
+        final response = await _httpClient!.post(
+          Uri.parse(url),
+          headers: headers,
+          body: jsonEncode(requestBody),
+        );
+        
+        _logDebug('Errors response: ${response.statusCode}');
+        
+        if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+          successfulIds.addAll(errorItems.map((e) => e.id));
+        } else {
+          failedIds.addAll(errorItems.map((e) => e.id));
+        }
+      }
+      
+      // Send analytics events
+      if (analyticsItems.isNotEmpty) {
+        final url = '$endpoint/analytics/events/batch';
+        final requestBody = {
+          'projectId': projectId,
+          'events': analyticsItems.map((e) {
+            final data = e.data as Map<String, dynamic>;
+            return {
+              'name': data['name'] ?? 'unknown',
+              'timestamp': e.timestamp.toIso8601String(),
+              'properties': data['properties'] ?? {},
+              'userId': data['userId'],
+              'sessionId': data['sessionId'],
+            };
+          }).toList(),
+        };
+        
+        _logDebug('Syncing ${analyticsItems.length} analytics events to $url');
+        
+        final response = await _httpClient!.post(
+          Uri.parse(url),
+          headers: headers,
+          body: jsonEncode(requestBody),
+        );
+        
+        _logDebug('Analytics response: ${response.statusCode}');
+        
+        if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+          successfulIds.addAll(analyticsItems.map((e) => e.id));
+        } else {
+          failedIds.addAll(analyticsItems.map((e) => e.id));
+        }
+      }
+      
+      // Mark items as synced or failed
+      if (successfulIds.isNotEmpty) {
+        await _syncQueue.markAsSynced(successfulIds);
+        _logDebug('Successfully synced ${successfulIds.length} items');
+      }
+      
+      if (failedIds.isNotEmpty) {
+        await _syncQueue.markAsFailed(failedIds);
+        _logDebug('Failed to sync ${failedIds.length} items');
         if (kDebugMode) {
-          print('[CloudSync] Failed to sync batch: ${response.statusCode}');
-          print('[CloudSync] Response: ${response.body}');
+          print('[CloudSync] Failed to sync ${failedIds.length} items');
         }
       }
     } catch (e, stackTrace) {
@@ -164,6 +314,31 @@ class CloudSyncManager {
   
   static void clearDebugLog() {
     _debugLog.clear();
+  }
+  
+  // Helper function to sanitize metadata for JSON serialization
+  static Map<String, dynamic> _sanitizeMetadata(Map<String, dynamic>? metadata) {
+    if (metadata == null) return {};
+    
+    final sanitized = <String, dynamic>{};
+    metadata.forEach((key, value) {
+      if (value == null) {
+        sanitized[key] = null;
+      } else if (value is DateTime) {
+        sanitized[key] = value.toIso8601String();
+      } else if (value is Map) {
+        sanitized[key] = _sanitizeMetadata(value as Map<String, dynamic>);
+      } else if (value is List) {
+        sanitized[key] = value.map((item) {
+          if (item is DateTime) return item.toIso8601String();
+          if (item is Map) return _sanitizeMetadata(item as Map<String, dynamic>);
+          return item;
+        }).toList();
+      } else {
+        sanitized[key] = value;
+      }
+    });
+    return sanitized;
   }
   
   static void _logDebug(String message) {

@@ -16,10 +16,10 @@ import 'package:voo_performance/voo_performance.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO: Replace these with your actual DevStack credentials
-  const String devStackApiKey = 'YOUR_DEVSTACK_API_KEY'; // e.g., 'ds_test_xxxxxxxxxxxx'
-  const String projectId = 'YOUR_PROJECT_ID'; // e.g., '984d43b8-70c6-4d49-996e-a6c24ea42de9'
-  const String organizationId = 'YOUR_ORGANIZATION_ID'; // e.g., '0d1652a4-4251-4c8b-9930-238ec735c236'
+  // DevStack credentials for VooTest project
+  const String devStackApiKey = 'ds_test_V--xoos6S8Q6SlEi2Rb_wFENHFdl2gzV6mB9SfWo-Tk';
+  const String projectId = '21d20d74-22ef-46b2-8fb2-58c4ac13eb96'; // VooTest project
+  const String organizationId = '0d1652a4-4251-4c8b-9930-238ec735c236'; // VooStack org
 
   // Initialize DevStack telemetry with debug mode enabled
   await DevStackTelemetry.initialize(
