@@ -1,4 +1,4 @@
-import 'span.dart';
+import 'package:voo_telemetry/src/traces/span.dart';
 
 /// Processor for spans (placeholder)
 abstract class SpanProcessor {

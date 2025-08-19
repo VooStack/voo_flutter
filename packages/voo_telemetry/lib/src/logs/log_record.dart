@@ -26,6 +26,7 @@ class LogRecord {
   /// Convert to OTLP format
   Map<String, dynamic> toOtlp() {
     return {
+      // Convert microseconds to nanoseconds (multiply by 1000)
       'timeUnixNano': timestamp.microsecondsSinceEpoch * 1000,
       if (observedTimestamp != null)
         'observedTimeUnixNano': observedTimestamp!.microsecondsSinceEpoch * 1000,

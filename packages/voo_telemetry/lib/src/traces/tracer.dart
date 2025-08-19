@@ -1,5 +1,5 @@
-import 'span.dart';
-import 'trace_provider.dart';
+import 'package:voo_telemetry/src/traces/span.dart';
+import 'package:voo_telemetry/src/traces/trace_provider.dart';
 
 /// Tracer for creating and managing spans
 class Tracer {

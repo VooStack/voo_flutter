@@ -1,6 +1,5 @@
-import 'dart:typed_data';
 import 'package:uuid/uuid.dart';
-import 'span_context.dart';
+import 'package:voo_telemetry/src/traces/span_context.dart';
 
 /// Represents a span in a distributed trace
 class Span {
@@ -33,13 +32,9 @@ class Span {
           spanId: spanId ?? _generateSpanId(),
         );
   
-  static String _generateTraceId() {
-    return const Uuid().v4().replaceAll('-', '');
-  }
+  static String _generateTraceId() => const Uuid().v4().replaceAll('-', '');
   
-  static String _generateSpanId() {
-    return const Uuid().v4().replaceAll('-', '').substring(0, 16);
-  }
+  static String _generateSpanId() => const Uuid().v4().replaceAll('-', '').substring(0, 16);
   
   /// Set an attribute on the span
   void setAttribute(String key, dynamic value) {
@@ -96,8 +91,7 @@ class Span {
   }
   
   /// Convert to OTLP format
-  Map<String, dynamic> toOtlp() {
-    return {
+  Map<String, dynamic> toOtlp() => {
       'traceId': _hexToBytes(traceId),
       'spanId': _hexToBytes(spanId.padRight(16, '0')),
       if (parentSpanId != null)
@@ -114,7 +108,6 @@ class Span {
       'links': links.map((l) => l.toOtlp()).toList(),
       'status': status.toOtlp(),
     };
-  }
   
   List<int> _hexToBytes(String hex) {
     final bytes = <int>[];
@@ -152,8 +145,7 @@ class SpanEvent {
     required this.attributes,
   });
   
-  Map<String, dynamic> toOtlp() {
-    return {
+  Map<String, dynamic> toOtlp() => {
       'name': name,
       'timeUnixNano': timestamp.microsecondsSinceEpoch * 1000,
       'attributes': attributes.entries.map((e) => {
@@ -161,7 +153,6 @@ class SpanEvent {
         'value': _convertValue(e.value),
       }).toList(),
     };
-  }
   
   Map<String, dynamic> _convertValue(dynamic value) {
     if (value is String) {
@@ -190,8 +181,7 @@ class SpanLink {
     this.attributes = const {},
   });
   
-  Map<String, dynamic> toOtlp() {
-    return {
+  Map<String, dynamic> toOtlp() => {
       'traceId': _hexToBytes(traceId),
       'spanId': _hexToBytes(spanId.padRight(16, '0')),
       'attributes': attributes.entries.map((e) => {
@@ -199,7 +189,6 @@ class SpanLink {
         'value': _convertValue(e.value),
       }).toList(),
     };
-  }
   
   List<int> _hexToBytes(String hex) {
     final bytes = <int>[];
@@ -246,12 +235,10 @@ class SpanStatus {
   SpanStatus.ok() : code = StatusCode.ok, description = null;
   SpanStatus.error({this.description}) : code = StatusCode.error;
   
-  Map<String, dynamic> toOtlp() {
-    return {
+  Map<String, dynamic> toOtlp() => {
       'code': code.value,
       if (description != null) 'message': description,
     };
-  }
 }
 
 /// Status code

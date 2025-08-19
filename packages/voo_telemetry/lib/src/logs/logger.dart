@@ -1,6 +1,5 @@
-import 'log_record.dart';
-import 'logger_provider.dart';
-import '../traces/trace_provider.dart';
+import 'package:voo_telemetry/src/logs/log_record.dart';
+import 'package:voo_telemetry/src/logs/logger_provider.dart';
 
 /// Logger for creating log records
 class Logger {

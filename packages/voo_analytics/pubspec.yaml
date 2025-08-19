@@ -1,6 +1,6 @@
 name: voo_analytics
-description: "[DEPRECATED] Use voo_telemetry instead. Analytics and heat map tracking package for Flutter applications."
-version: 2.0.0
+description: '[DEPRECATED] Use voo_telemetry instead. Analytics and heat map tracking package for Flutter applications.'
+version: 0.1.1
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_analytics
 

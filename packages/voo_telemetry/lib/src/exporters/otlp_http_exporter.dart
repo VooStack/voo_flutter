@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import '../core/telemetry_resource.dart';
+import 'package:voo_telemetry/src/core/telemetry_resource.dart';
 
 /// OTLP HTTP exporter for sending telemetry data
 class OTLPHttpExporter {

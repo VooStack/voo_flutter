@@ -1,11 +1,16 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'core/telemetry_config.dart';
-import 'core/telemetry_resource.dart';
-import 'traces/trace_provider.dart';
-import 'metrics/meter_provider.dart';
-import 'logs/logger_provider.dart';
-import 'exporters/otlp_http_exporter.dart';
+
+import 'package:voo_telemetry/src/core/telemetry_config.dart';
+import 'package:voo_telemetry/src/core/telemetry_resource.dart';
+import 'package:voo_telemetry/src/exporters/otlp_http_exporter.dart';
+import 'package:voo_telemetry/src/logs/logger.dart';
+import 'package:voo_telemetry/src/logs/logger_provider.dart';
+import 'package:voo_telemetry/src/metrics/meter.dart';
+import 'package:voo_telemetry/src/metrics/meter_provider.dart';
+import 'package:voo_telemetry/src/traces/trace_provider.dart';
+import 'package:voo_telemetry/src/traces/tracer.dart';
 
 /// Main entry point for VooTelemetry OpenTelemetry integration
 class VooTelemetry {

@@ -1,4 +1,4 @@
-import 'otlp_exporter.dart';
+import 'package:voo_telemetry/src/exporters/otlp_exporter.dart';
 
 /// OTLP gRPC exporter (placeholder for future implementation)
 class OTLPGrpcExporter extends OTLPExporter {

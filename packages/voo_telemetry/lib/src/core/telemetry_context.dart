@@ -1,4 +1,4 @@
-import '../traces/span.dart';
+import 'package:voo_telemetry/src/traces/span.dart';
 
 /// Context for telemetry operations
 class TelemetryContext {

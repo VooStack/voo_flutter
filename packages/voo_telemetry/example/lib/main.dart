@@ -1,6 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:voo_telemetry/voo_telemetry.dart';
-import 'package:dio/dio.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +15,6 @@ void main() async {
       'deployment.environment': 'development',
       'app.platform': 'flutter',
     },
-    batchInterval: const Duration(seconds: 30),
     debug: true,
   );
   
@@ -26,8 +25,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
       title: 'VooTelemetry Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -35,7 +33,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const TelemetryDemoPage(),
     );
-  }
 }
 
 class TelemetryDemoPage extends StatefulWidget {
@@ -99,7 +96,7 @@ class _TelemetryDemoPageState extends State<TelemetryDemoPage> {
         
         // Simulate some work
         span.addEvent('Starting processing');
-        await Future.delayed(const Duration(milliseconds: 500));
+        await Future<void>.delayed(const Duration(milliseconds: 500));
         
         span.addEvent('Fetching data');
         await _fetchData(span);
@@ -200,8 +197,7 @@ class _TelemetryDemoPageState extends State<TelemetryDemoPage> {
   }
   
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('VooTelemetry Demo'),
@@ -310,7 +306,6 @@ class _TelemetryDemoPageState extends State<TelemetryDemoPage> {
         child: const Icon(Icons.info_outline),
       ),
     );
-  }
   
   @override
   void dispose() {
