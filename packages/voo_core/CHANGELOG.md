@@ -1,3 +1,31 @@
+## 2.0.0
+
+**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
+
+* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
+* **DEPRECATED**: All functionality moved to `voo_telemetry` package
+* Migrate to `voo_telemetry` for:
+  - OpenTelemetry-compliant traces, metrics, and logs
+  - OTLP export to any compatible backend
+  - Better performance and reliability
+  - Active maintenance and support
+
+### Migration Guide
+
+Replace in pubspec.yaml:
+```yaml
+# Before
+dependencies:
+  voo_core: ^0.1.4
+  voo_logging: ^0.1.0
+  voo_analytics: ^0.1.0
+  voo_performance: ^0.1.0
+
+# After
+dependencies:
+  voo_telemetry: ^2.0.0
+```
+
 ## 0.1.4
 
 * Fixed performance metrics routing to correct endpoint:

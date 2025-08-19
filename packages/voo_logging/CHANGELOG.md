@@ -1,3 +1,27 @@
+## 2.0.0
+
+**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
+
+* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
+* **DEPRECATED**: All functionality moved to `voo_telemetry` package
+* Use `voo_telemetry` for:
+  - OpenTelemetry-compliant structured logging
+  - Automatic trace context correlation
+  - OTLP export to any compatible backend
+  - Better performance and reliability
+
+### Migration Guide
+
+```dart
+// Before
+import 'package:voo_logging/voo_logging.dart';
+VooLogger.log('message', level: LogLevel.info);
+
+// After
+import 'package:voo_telemetry/voo_telemetry.dart';
+VooTelemetry.instance.getLogger().info('message');
+```
+
 ## 0.1.2
 
 * Fixed DevTools integration to always receive logs via postEvent regardless of console settings

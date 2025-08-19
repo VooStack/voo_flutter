@@ -102,7 +102,7 @@ class CloudSyncManager {
 
       final endpoint = options.apiEndpoint ?? 'https://api.vooflutter.com/v1';
       final projectId = options.customConfig['projectId'] ?? 'unknown';
-      final timestamp = DateTime.now().toIso8601String();
+      // final timestamp = DateTime.now().toIso8601String();
 
       final headers = <String, String>{'Content-Type': 'application/json', 'X-API-Key': options.apiKey!};
       if (options.customConfig['organizationId'] != null) {
@@ -246,13 +246,17 @@ class CloudSyncManager {
           'events': analyticsItems.map((e) {
             final data = e.data;
             return {
-              'name': data['name'] ?? 'unknown',
+              'name': data['event_name'] ?? data['name'] ?? 'unknown',
               'timestamp': e.timestamp.toIso8601String(),
-              'properties': data['properties'] ?? {},
+              'properties': data['parameters'] ?? data['properties'] ?? {},
               'userId': data['userId'],
-              'sessionId': data['sessionId'],
+              'sessionId': options.customConfig['sessionId'] ?? '',
             };
           }).toList(),
+          'sessionId': options.customConfig['sessionId'] ?? '',
+          'deviceId': options.customConfig['deviceId'] ?? '',
+          'platform': options.customConfig['platform'] ?? '',
+          'appVersion': options.customConfig['appVersion'] ?? '',
         };
 
         _logDebug('Syncing ${analyticsItems.length} analytics events to $url');
