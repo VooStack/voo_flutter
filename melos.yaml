@@ -94,6 +94,13 @@ scripts:
     run: |
       cd tools/voo_devtools_extension && flutter pub get && \
       dart run devtools_extensions build_and_copy --source=. --dest=../../packages/voo_core/extension/devtools
+  
+  build_devtools_extension_wasm:
+    description: Build DevTools extension with WASM support.
+    run: |
+      cd tools/voo_devtools_extension && flutter pub get && \
+      flutter build web --wasm --no-web-resources-cdn && \
+      cp -r build/web/* ../../packages/voo_core/extension/devtools/
 
   # Publishing commands for each package
   publish_core:
