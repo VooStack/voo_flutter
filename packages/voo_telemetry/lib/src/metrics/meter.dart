@@ -1,5 +1,5 @@
-import 'instruments.dart';
-import 'meter_provider.dart';
+import 'package:voo_telemetry/src/metrics/instruments.dart';
+import 'package:voo_telemetry/src/metrics/meter_provider.dart';
 
 /// Meter for creating metric instruments
 class Meter {

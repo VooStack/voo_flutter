@@ -1,5 +1,5 @@
-import 'meter.dart';
-import 'metric.dart';
+import 'package:voo_telemetry/src/metrics/meter.dart';
+import 'package:voo_telemetry/src/metrics/metric.dart';
 
 /// Counter instrument for monotonic values
 class Counter {

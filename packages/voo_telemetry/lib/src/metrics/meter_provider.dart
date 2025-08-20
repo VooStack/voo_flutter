@@ -3,8 +3,8 @@ import 'package:synchronized/synchronized.dart';
 import 'package:voo_telemetry/src/core/telemetry_config.dart';
 import 'package:voo_telemetry/src/core/telemetry_resource.dart';
 import 'package:voo_telemetry/src/exporters/otlp_http_exporter.dart';
-import 'meter.dart';
-import 'metric.dart';
+import 'package:voo_telemetry/src/metrics/meter.dart';
+import 'package:voo_telemetry/src/metrics/metric.dart';
 
 /// Provider for metrics telemetry
 class MeterProvider {

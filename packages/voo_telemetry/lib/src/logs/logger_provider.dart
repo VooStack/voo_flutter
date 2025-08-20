@@ -3,8 +3,8 @@ import 'package:synchronized/synchronized.dart';
 import 'package:voo_telemetry/src/core/telemetry_config.dart';
 import 'package:voo_telemetry/src/core/telemetry_resource.dart';
 import 'package:voo_telemetry/src/exporters/otlp_http_exporter.dart';
-import 'log_record.dart';
-import 'logger.dart';
+import 'package:voo_telemetry/src/logs/log_record.dart';
+import 'package:voo_telemetry/src/logs/logger.dart';
 
 /// Provider for log telemetry
 class LoggerProvider {

@@ -1,6 +1,11 @@
 # VooTelemetry
 
-A comprehensive OpenTelemetry integration package for Flutter applications, providing seamless telemetry collection and export to any OTLP-compatible backend.
+[![pub package](https://img.shields.io/pub/v/voo_telemetry.svg)](https://pub.dev/packages/voo_telemetry)
+[![Flutter](https://img.shields.io/badge/Flutter-%02%2002B.svg?logo=Flutter&logoColor=white)](https://flutter.dev)
+[![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Compliant-brightgreen)](https://opentelemetry.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive OpenTelemetry SDK for Flutter applications, providing distributed tracing, metrics collection, and structured logging with OTLP (OpenTelemetry Protocol) export capabilities.
 
 ## Features
 

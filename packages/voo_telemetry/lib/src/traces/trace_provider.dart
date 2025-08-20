@@ -3,8 +3,8 @@ import 'package:synchronized/synchronized.dart';
 import 'package:voo_telemetry/src/core/telemetry_config.dart';
 import 'package:voo_telemetry/src/core/telemetry_resource.dart';
 import 'package:voo_telemetry/src/exporters/otlp_http_exporter.dart';
-import 'span.dart';
-import 'tracer.dart';
+import 'package:voo_telemetry/src/traces/span.dart';
+import 'package:voo_telemetry/src/traces/tracer.dart';
 
 /// Provider for trace telemetry
 class TraceProvider {
