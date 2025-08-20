@@ -105,8 +105,20 @@ class NetworkRequestModel {
   String get displayStatus {
     if (error != null) return 'Error';
     if (statusCode != null) return statusCode.toString();
-    if (isInProgress) return 'Pending';
+    if (isInProgress) {
+      // Check if request is stale (pending for more than 30 seconds)
+      final age = DateTime.now().difference(timestamp);
+      if (age.inSeconds > 30) return 'Timeout';
+      return 'Pending';
+    }
     return 'Unknown';
+  }
+  
+  /// Check if request has timed out (pending for more than 30 seconds)
+  bool get hasTimedOut {
+    if (!isInProgress) return false;
+    final age = DateTime.now().difference(timestamp);
+    return age.inSeconds > 30;
   }
 
   /// Get display duration

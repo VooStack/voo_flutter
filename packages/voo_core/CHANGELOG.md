@@ -1,3 +1,12 @@
+## 0.3.3
+
+* Fixed DevTools extension network tab freezing issues:
+  - Fixed CircularProgressIndicator blocking UI with AlwaysStoppedAnimation
+  - Added null safety for pending request body formatting
+  - Added timeout detection for requests pending >30 seconds
+  - Enhanced UI feedback for pending and timeout states
+  - Fixed freezing when clicking on incomplete network requests
+
 ## 0.3.2
 
 * Updated DevTools extension branding from "Voo DevTools" to "Dev Stack"

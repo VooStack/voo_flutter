@@ -62,6 +62,54 @@ class NetworkDetailsPanel extends StatelessWidget {
                 MethodBadge(method: method),
                 const SizedBox(width: AppTheme.spacingSm),
                 if (statusCode != null) StatusBadge(statusCode: statusCode),
+                if (networkRequest.isInProgress) ...[
+                  const SizedBox(width: AppTheme.spacingSm),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: networkRequest.hasTimedOut 
+                          ? Colors.orange.withValues(alpha: 0.1)
+                          : Colors.blue.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                      border: Border.all(
+                        color: networkRequest.hasTimedOut
+                            ? Colors.orange.withValues(alpha: 0.3)
+                            : Colors.blue.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!networkRequest.hasTimedOut) ...[
+                          SizedBox(
+                            width: 12,
+                            height: 12,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ] else ...[
+                          Icon(
+                            Icons.timer_off_outlined,
+                            size: 14,
+                            color: Colors.orange,
+                          ),
+                        ],
+                        const SizedBox(width: 6),
+                        Text(
+                          networkRequest.hasTimedOut ? 'Timeout' : 'Pending',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: networkRequest.hasTimedOut 
+                                ? Colors.orange 
+                                : Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: AppTheme.spacingMd),
@@ -243,14 +291,19 @@ class NetworkDetailsPanel extends StatelessWidget {
     return Colors.red;
   }
 
-  String _formatBody(String body) {
+  String _formatBody(dynamic body) {
+    if (body == null) return '';
+    
+    final bodyStr = body.toString();
+    if (bodyStr.isEmpty) return '';
+    
     try {
       // Try to parse as JSON for pretty printing
-      final json = jsonDecode(body);
+      final json = jsonDecode(bodyStr);
       return UniversalDetailsPanel.formatJson(json);
     } catch (_) {
       // Return as-is if not JSON
-      return body;
+      return bodyStr;
     }
   }
 }

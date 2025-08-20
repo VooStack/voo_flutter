@@ -139,28 +139,40 @@ class NetworkRequestTile extends StatelessWidget {
   }
 
   Widget _buildLoadingIndicator(ThemeData theme) {
+    final hasTimedOut = request.hasTimedOut;
+    final color = hasTimedOut ? Colors.orange : Colors.blue;
+    final text = hasTimedOut ? 'Timeout' : 'Pending';
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 10,
-            height: 10,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          if (!hasTimedOut) ...[
+            SizedBox(
+              width: 10,
+              height: 10,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: color,
+              ),
             ),
-          ),
+          ] else ...[
+            Icon(
+              Icons.timer_off_outlined,
+              size: 12,
+              color: color,
+            ),
+          ],
           const SizedBox(width: 6),
           Text(
-            'Pending',
+            text,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: Colors.blue,
+              color: color,
               fontWeight: FontWeight.bold,
               fontSize: 10,
             ),
