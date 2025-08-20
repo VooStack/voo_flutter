@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["devstack", "fixnum", "kvlist", "sembast", "Sparkline"]
+  "cSpell.words": [
+    "devstack",
+    "fixnum",
+    "kvlist",
+    "sembast",
+    "Sparkline",
+    "Traceparent",
+    "Tracestate"
+  ]
 }

@@ -27,13 +27,11 @@ class SpanContext {
 
   /// Convert to W3C traceparent header
   String toTraceparent() {
-    final version = '00';
+    const version = '00';
     final flags = traceFlags.toRadixString(16).padLeft(2, '0');
     return '$version-$traceId-$spanId-$flags';
   }
 
   /// Create from W3C tracestate header
-  static String? parseTracestate(String? tracestate) {
-    return tracestate;
-  }
+  static String? parseTracestate(String? tracestate) => tracestate;
 }

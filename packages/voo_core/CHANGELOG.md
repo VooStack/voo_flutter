@@ -1,3 +1,9 @@
+## 0.3.2
+
+* Updated DevTools extension branding from "Voo DevTools" to "Dev Stack"
+* Fixed DevTools extension web configuration for local development
+* Added proper Flutter buildConfig setup in index.html
+
 ## 0.3.1
  * fixed dev tools name to match the entire stack
 

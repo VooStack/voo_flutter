@@ -20,10 +20,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     on<SelectNetworkLog>(_onSelectNetworkLog);
   }
 
-  Future<void> _onLoadNetworkLogs(
-    LoadNetworkLogs event,
-    Emitter<NetworkState> emit,
-  ) async {
+  Future<void> _onLoadNetworkLogs(LoadNetworkLogs event, Emitter<NetworkState> emit) async {
     emit(state.copyWith(isLoading: true));
 
     try {
@@ -32,25 +29,16 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
 
       // Get cached logs that are network-related
       final cachedLogs = repository.getCachedLogs();
-      final networkLogs = cachedLogs
-          .where((log) => log.category == 'Network')
-          .toList();
+      final networkLogs = cachedLogs.where((log) => log.category == 'Network').toList();
 
       // Process logs into network requests
       for (final log in networkLogs) {
         _processNetworkLog(log);
       }
 
-      final requests = _requestMap.values.toList()
-        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      final requests = _requestMap.values.toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-      emit(
-        state.copyWith(
-          networkRequests: requests,
-          filteredNetworkRequests: _applyFilters(requests),
-          isLoading: false,
-        ),
-      );
+      emit(state.copyWith(networkRequests: requests, filteredNetworkRequests: _applyFilters(requests), isLoading: false));
 
       // Subscribe to new logs
       await _logSubscription?.cancel();
@@ -64,25 +52,16 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     }
   }
 
-  void _onNetworkLogReceived(
-    NetworkLogReceived event,
-    Emitter<NetworkState> emit,
-  ) {
+  void _onNetworkLogReceived(NetworkLogReceived event, Emitter<NetworkState> emit) {
     // Process the new log
     _processNetworkLog(event.log);
 
     // Get all requests sorted by timestamp
-    final requests = _requestMap.values.toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final requests = _requestMap.values.toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
     final filteredRequests = _applyFilters(requests);
 
-    emit(
-      state.copyWith(
-        networkRequests: requests,
-        filteredNetworkRequests: filteredRequests,
-      ),
-    );
+    emit(state.copyWith(networkRequests: requests, filteredNetworkRequests: filteredRequests));
   }
 
   void _processNetworkLog(LogEntryModel log) {
@@ -114,40 +93,16 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
 
   void _onClearNetworkLogs(ClearNetworkLogs event, Emitter<NetworkState> emit) {
     _requestMap.clear();
-    emit(
-      state.copyWith(
-        networkRequests: [],
-        filteredNetworkRequests: [],
-        selectedRequest: () => null,
-      ),
-    );
+    emit(state.copyWith(networkRequests: [], filteredNetworkRequests: [], selectedRequest: () => null));
   }
 
-  void _onFilterNetworkLogs(
-    FilterNetworkLogs event,
-    Emitter<NetworkState> emit,
-  ) {
-    final filteredRequests = _applyFilters(
-      state.networkRequests,
-      method: event.method,
-      statusFilter: event.statusFilter,
-      searchQuery: event.searchQuery,
-    );
+  void _onFilterNetworkLogs(FilterNetworkLogs event, Emitter<NetworkState> emit) {
+    final filteredRequests = _applyFilters(state.networkRequests, method: event.method, statusFilter: event.statusFilter, searchQuery: event.searchQuery);
 
-    emit(
-      state.copyWith(
-        filteredNetworkRequests: filteredRequests,
-        methodFilter: event.method,
-        statusFilter: event.statusFilter,
-        searchQuery: event.searchQuery,
-      ),
-    );
+    emit(state.copyWith(filteredNetworkRequests: filteredRequests, methodFilter: event.method, statusFilter: event.statusFilter, searchQuery: event.searchQuery));
   }
 
-  void _onSelectNetworkRequest(
-    SelectNetworkRequest event,
-    Emitter<NetworkState> emit,
-  ) {
+  void _onSelectNetworkRequest(SelectNetworkRequest event, Emitter<NetworkState> emit) {
     emit(state.copyWith(selectedRequest: () => event.request));
   }
 
@@ -161,12 +116,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     }
   }
 
-  List<NetworkRequestModel> _applyFilters(
-    List<NetworkRequestModel> requests, {
-    String? method,
-    String? statusFilter,
-    String? searchQuery,
-  }) {
+  List<NetworkRequestModel> _applyFilters(List<NetworkRequestModel> requests, {String? method, String? statusFilter, String? searchQuery}) {
     method ??= state.methodFilter;
     statusFilter ??= state.statusFilter;
     searchQuery ??= state.searchQuery;
@@ -205,9 +155,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final query = searchQuery.toLowerCase();
       filtered = filtered.where((request) {
-        return request.url.toLowerCase().contains(query) ||
-            request.method.toLowerCase().contains(query) ||
-            request.displayStatus.toLowerCase().contains(query);
+        return request.url.toLowerCase().contains(query) || request.method.toLowerCase().contains(query) || request.displayStatus.toLowerCase().contains(query);
       }).toList();
     }
 
