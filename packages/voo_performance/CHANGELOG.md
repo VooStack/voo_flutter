@@ -1,3 +1,27 @@
+## 0.1.1
+
+**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
+
+* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
+* **DEPRECATED**: All functionality moved to `voo_telemetry` package
+* Use `voo_telemetry` for:
+  - OpenTelemetry-compliant distributed tracing
+  - Automatic instrumentation for HTTP, gRPC, and more
+  - OTLP export to any compatible backend
+  - Better performance and reliability
+
+### Migration Guide
+
+```dart
+// Before
+import 'package:voo_performance/voo_performance.dart';
+VooPerformance.startTrace('operation');
+
+// After
+import 'package:voo_telemetry/voo_telemetry.dart';
+final span = VooTelemetry.instance.getTracer().startSpan('operation');
+```
+
 ## 0.1.0
 
 * **BREAKING CHANGE**: Now requires voo_core ^0.1.0

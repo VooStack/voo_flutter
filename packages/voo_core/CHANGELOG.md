@@ -1,4 +1,4 @@
-## 2.0.0
+## 0.1.5
 
 **⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
 

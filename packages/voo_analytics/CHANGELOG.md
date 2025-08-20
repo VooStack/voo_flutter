@@ -1,3 +1,27 @@
+## 0.1.1
+
+**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
+
+* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
+* **DEPRECATED**: All functionality moved to `voo_telemetry` package
+* Use `voo_telemetry` for:
+  - OpenTelemetry-compliant metrics and traces
+  - Automatic trace context correlation
+  - OTLP export to any compatible backend
+  - Better performance and reliability
+
+### Migration Guide
+
+```dart
+// Before
+import 'package:voo_analytics/voo_analytics.dart';
+VooAnalytics.trackEvent('event_name', properties: {...});
+
+// After
+import 'package:voo_telemetry/voo_telemetry.dart';
+VooTelemetry.instance.trackEvent('event_name', properties: {...});
+```
+
 ## 0.1.0
 
 * **BREAKING CHANGE**: Now requires voo_core ^0.1.0

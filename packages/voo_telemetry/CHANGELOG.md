@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0] - 2024-01-15
+## [0.0.1] - 2024-01-15
 
 ### 🎉 Major Release - Complete OpenTelemetry Implementation
 
@@ -36,7 +36,7 @@ This is a complete rewrite of the VooFlutter telemetry system to align with Open
 
 ### 📦 Migration Guide
 
-#### Before (v1.x)
+#### Before (legacy packages)
 ```dart
 VooLogger.initialize(apiKey: 'key', endpoint: 'url');
 VooLogger.log('message');
@@ -46,7 +46,7 @@ VooAnalytics.trackEvent('event', properties: {});
 VooPerformance.startTrace('trace');
 ```
 
-#### After (v2.0)
+#### After (v0.0.1)
 ```dart
 await VooTelemetry.initialize(
   endpoint: 'https://your-api.com',
@@ -68,7 +68,7 @@ VooTelemetry.instance.getMeter().createCounter('events').increment();
 
 ### 🚀 DevStack API Integration
 
-This version is designed to work with DevStack API v2.0+ which provides:
+This version is designed to work with DevStack API which provides:
 - Native OTLP ingestion endpoints
 - GCP Cloud Operations integration
 - Real-time telemetry processing
@@ -94,13 +94,3 @@ This version is designed to work with DevStack API v2.0+ which provides:
 - Offline storage with SQLite
 - Custom exporters support
 
----
-
-## [1.0.0] - Previous Versions
-
-Legacy implementation with separate packages:
-- `voo_logging`: Application logging
-- `voo_analytics`: Event tracking
-- `voo_performance`: Performance monitoring
-
-**Note**: Version 1.x is deprecated. Please migrate to v2.0.0 for continued support.
