@@ -80,7 +80,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Voo DevTools',
+                            'Dev Stack',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: colorScheme.primary,

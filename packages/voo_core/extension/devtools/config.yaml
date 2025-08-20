@@ -1,5 +1,5 @@
 name: dev_stack
-version: 0.0.9
+version: 0.3.0
 issueTracker: https://github.com/voostack/voo_flutter/issues
 materialIconCodePoint: '0xf5f3'
 requiresConnection: false

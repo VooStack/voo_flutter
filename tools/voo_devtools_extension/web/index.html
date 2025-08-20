@@ -38,14 +38,24 @@
 <body>
   <script>
     window.addEventListener('load', function(ev) {
+      // Set build configuration
+      _flutter.buildConfig = {
+        engineRevision: 'auto',
+        builds: [{
+          compileTarget: 'dartdevc',
+          renderer: 'html',
+          mainWasmPath: 'main.dart.wasm',
+          jsSrcPath: 'main.dart.js'
+        }]
+      };
+      
       // Download main.dart.js
       _flutter.loader.load({
         serviceWorkerSettings: {
           serviceWorkerVersion: '{{flutter_service_worker_version}}',
         },
         config: {
-          renderer: 'canvaskit',
-          canvasKitVariant: 'auto',
+          renderer: 'html',
         }
       });
     });

@@ -60,9 +60,7 @@ class _PerformancePageState extends State<PerformancePage> {
       setState(() {
         _totalTraces++;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Trace "$name" started')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Trace "$name" started')));
     }
   }
 
@@ -71,23 +69,14 @@ class _PerformancePageState extends State<PerformancePage> {
       _currentTrace!.stop();
       final duration = _currentTrace!.duration;
       if (duration != null) {
-        await VooLogger.info(
-          'Performance trace stopped: ${_currentTrace!.name} (${duration.inMilliseconds}ms)',
-        );
+        await VooLogger.info('Performance trace stopped: ${_currentTrace!.name} (${duration.inMilliseconds}ms)');
 
         // Update average response time
         if (mounted) {
           setState(() {
-            _averageResponseTime =
-                (_averageResponseTime * (_totalTraces - 1) +
-                    duration.inMilliseconds) /
-                _totalTraces;
+            _averageResponseTime = (_averageResponseTime * (_totalTraces - 1) + duration.inMilliseconds) / _totalTraces;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Trace stopped: ${duration.inMilliseconds}ms'),
-            ),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Trace stopped: ${duration.inMilliseconds}ms')));
         }
       }
 
@@ -118,10 +107,7 @@ class _PerformancePageState extends State<PerformancePage> {
         for (int i = 0; i < 5; i++) {
           await Future.delayed(const Duration(milliseconds: 200));
           if (_currentTrace != null) {
-            _currentTrace!.putMetric(
-              'step_$i',
-              (Random().nextDouble() * 100).toInt(),
-            );
+            _currentTrace!.putMetric('step_$i', (Random().nextDouble() * 100).toInt());
           }
         }
       },
@@ -171,9 +157,7 @@ class _PerformancePageState extends State<PerformancePage> {
 
     _stopTrace();
 
-    await VooLogger.info(
-      'Network request completed: ${metric.method} ${metric.url} - ${metric.statusCode} (${metric.duration.inMilliseconds}ms)',
-    );
+    await VooLogger.info('Network request completed: ${metric.method} ${metric.url} - ${metric.statusCode} (${metric.duration.inMilliseconds}ms)');
   }
 
   void _clearMetrics() async {
@@ -187,9 +171,7 @@ class _PerformancePageState extends State<PerformancePage> {
 
     await VooLogger.info('Performance metrics cleared');
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Metrics cleared')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Metrics cleared')));
     }
   }
 
@@ -199,13 +181,7 @@ class _PerformancePageState extends State<PerformancePage> {
       appBar: AppBar(
         title: const Text('Performance Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: _clearMetrics,
-            tooltip: 'Clear metrics',
-          ),
-        ],
+        actions: [IconButton(icon: const Icon(Icons.delete_sweep), onPressed: _clearMetrics, tooltip: 'Clear metrics')],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -219,13 +195,7 @@ class _PerformancePageState extends State<PerformancePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Real-time Performance',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Real-time Performance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     _buildMetricRow('CPU Usage', _cpuUsage, 100, Colors.blue),
                     const SizedBox(height: 12),
@@ -245,35 +215,14 @@ class _PerformancePageState extends State<PerformancePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Performance Statistics',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Performance Statistics', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildStatCard(
-                          'Total Traces',
-                          _totalTraces.toString(),
-                          Icons.timeline,
-                          Colors.purple,
-                        ),
-                        _buildStatCard(
-                          'Avg Response',
-                          '${_averageResponseTime.toStringAsFixed(0)}ms',
-                          Icons.speed,
-                          Colors.teal,
-                        ),
-                        _buildStatCard(
-                          'Network Calls',
-                          _networkMetrics.length.toString(),
-                          Icons.network_check,
-                          Colors.indigo,
-                        ),
+                        _buildStatCard('Total Traces', _totalTraces.toString(), Icons.timeline, Colors.purple),
+                        _buildStatCard('Avg Response', '${_averageResponseTime.toStringAsFixed(0)}ms', Icons.speed, Colors.teal),
+                        _buildStatCard('Network Calls', _networkMetrics.length.toString(), Icons.network_check, Colors.indigo),
                       ],
                     ),
                   ],
@@ -289,47 +238,22 @@ class _PerformancePageState extends State<PerformancePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Performance Testing',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Performance Testing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: [
                         ElevatedButton.icon(
-                          onPressed: _isSimulating
-                              ? null
-                              : _simulateHeavyOperation,
-                          icon: _isSimulating
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(Icons.memory),
-                          label: Text(
-                            _isSimulating ? 'Simulating...' : 'Heavy Operation',
-                          ),
+                          onPressed: _isSimulating ? null : _simulateHeavyOperation,
+                          icon: _isSimulating ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.memory),
+                          label: Text(_isSimulating ? 'Simulating...' : 'Heavy Operation'),
                         ),
-                        ElevatedButton.icon(
-                          onPressed: _simulateNetworkRequest,
-                          icon: const Icon(Icons.cloud_download),
-                          label: const Text('Network Request'),
-                        ),
+                        ElevatedButton.icon(onPressed: _simulateNetworkRequest, icon: const Icon(Icons.cloud_download), label: const Text('Network Request')),
                         ElevatedButton.icon(
                           onPressed: () {
                             _startTrace('custom_trace');
-                            Future.delayed(
-                              const Duration(seconds: 1),
-                              _stopTrace,
-                            );
+                            Future.delayed(const Duration(seconds: 1), _stopTrace);
                           },
                           icon: const Icon(Icons.timer),
                           label: const Text('Custom Trace'),
@@ -340,17 +264,10 @@ class _PerformancePageState extends State<PerformancePage> {
                       const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                         child: Row(
                           children: [
-                            const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
+                            const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                             const SizedBox(width: 12),
                             Text('Active trace: ${_currentTrace!.name}'),
                           ],
@@ -373,26 +290,14 @@ class _PerformancePageState extends State<PerformancePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Network Metrics',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${_networkMetrics.length} requests',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
+                        const Text('Network Metrics', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('${_networkMetrics.length} requests', style: TextStyle(color: Colors.grey[600])),
                       ],
                     ),
                     const SizedBox(height: 16),
                     if (_networkMetrics.isEmpty)
                       const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: Text('No network metrics yet'),
-                        ),
+                        child: Padding(padding: EdgeInsets.all(32), child: Text('No network metrics yet')),
                       )
                     else
                       ListView.builder(
@@ -407,38 +312,17 @@ class _PerformancePageState extends State<PerformancePage> {
                               leading: Container(
                                 width: 40,
                                 height: 40,
-                                decoration: BoxDecoration(
-                                  color: _getStatusColor(
-                                    metric.statusCode,
-                                  ).withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                                decoration: BoxDecoration(color: _getStatusColor(metric.statusCode).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
                                 child: Center(
                                   child: Text(
                                     metric.statusCode.toString(),
-                                    style: TextStyle(
-                                      color: _getStatusColor(metric.statusCode),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
+                                    style: TextStyle(color: _getStatusColor(metric.statusCode), fontWeight: FontWeight.bold, fontSize: 12),
                                   ),
                                 ),
                               ),
-                              title: Text(
-                                '${metric.method} ${metric.url.split('/').last}',
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              subtitle: Text(
-                                '${metric.duration.inMilliseconds}ms • ${_formatBytes(metric.responseSize ?? 0)}',
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                              trailing: Text(
-                                _formatTime(metric.timestamp),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
+                              title: Text('${metric.method} ${metric.url.split('/').last}', style: const TextStyle(fontSize: 14)),
+                              subtitle: Text('${metric.duration.inMilliseconds}ms • ${_formatBytes(metric.responseSize ?? 0)}', style: const TextStyle(fontSize: 12)),
+                              trailing: Text(_formatTime(metric.timestamp), style: TextStyle(fontSize: 11, color: Colors.grey[600])),
                             ),
                           );
                         },
@@ -464,48 +348,30 @@ class _PerformancePageState extends State<PerformancePage> {
           children: [
             Text(label),
             Text(
-              label == 'FPS'
-                  ? value.toStringAsFixed(1)
-                  : '${value.toStringAsFixed(1)}%',
+              label == 'FPS' ? value.toStringAsFixed(1) : '${value.toStringAsFixed(1)}%',
               style: TextStyle(fontWeight: FontWeight.bold, color: color),
             ),
           ],
         ),
         const SizedBox(height: 4),
-        LinearProgressIndicator(
-          value: percentage,
-          backgroundColor: color.withValues(alpha: 0.1),
-          valueColor: AlwaysStoppedAnimation<Color>(color),
-        ),
+        LinearProgressIndicator(value: percentage, backgroundColor: color.withValues(alpha: 0.1), valueColor: AlwaysStoppedAnimation<Color>(color)),
       ],
     );
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Column(
       children: [
         Container(
           width: 60,
           height: 60,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
           child: Icon(icon, color: color, size: 28),
         ),
         const SizedBox(height: 8),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
         ),
         Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[600])),
       ],
