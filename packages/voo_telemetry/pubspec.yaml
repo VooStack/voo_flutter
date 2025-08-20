@@ -3,6 +3,12 @@ description: OpenTelemetry integration for VooFlutter with support for traces, m
 version: 0.0.1
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_telemetry
+topics:
+  - flutter
+  - opentelemetry
+  - observability
+  - tracing
+  - otlp
 
 environment:
   sdk: '>=3.8.0 <4.0.0'

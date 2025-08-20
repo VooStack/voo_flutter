@@ -7,11 +7,11 @@ issue_tracker: https://github.com/voostack/voo_flutter/issues
 documentation: https://voostack.com/docs/performance
 
 topics:
+  - flutter
   - performance
   - monitoring
+  - apm
   - profiling
-  - optimization
-  - devtools
 
 funding:
   - https://github.com/sponsors/voostack
