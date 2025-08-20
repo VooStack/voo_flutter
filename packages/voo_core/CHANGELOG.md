@@ -1,3 +1,6 @@
+## 0.3.1
+ * fixed dev tools name to match the entire stack
+
 ## 0.3.0
 
 * Added WASM support for web platform
