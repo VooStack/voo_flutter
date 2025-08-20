@@ -17,6 +17,9 @@ class NetworkTab extends StatefulWidget {
 class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
+  double _detailsPanelWidth = 400.0;
+  final double _minDetailsPanelWidth = 300.0;
+  final double _maxDetailsPanelWidth = 600.0;
 
   @override
   bool get wantKeepAlive => true;
@@ -34,7 +37,7 @@ class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMi
 
     return BlocConsumer<NetworkBloc, NetworkState>(
       listener: (context, state) {
-        if (_showDetails && state.selectedLog == null) {
+        if (_showDetails && state.selectedRequest == null) {
           setState(() => _showDetails = false);
         }
       },
@@ -48,27 +51,53 @@ class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMi
                 children: [
                   Expanded(
                     child: NetworkList(
-                      logs: state.filteredNetworkLogs,
-                      selectedLogId: state.selectedLog?.id,
+                      requests: state.filteredNetworkRequests,
+                      selectedRequestId: state.selectedRequest?.id,
                       scrollController: _scrollController,
                       isLoading: state.isLoading,
                       error: state.error,
-                      onLogTap: (log) {
-                        context.read<NetworkBloc>().add(SelectNetworkLog(log));
+                      onRequestTap: (request) {
+                        context.read<NetworkBloc>().add(SelectNetworkRequest(request));
                         if (!_showDetails) {
                           setState(() => _showDetails = true);
                         }
                       },
                     ),
                   ),
-                  if (_showDetails && state.selectedLog != null)
+                  if (_showDetails && state.selectedRequest != null) ...[
+                    // Resizable divider
+                    MouseRegion(
+                      cursor: SystemMouseCursors.resizeColumn,
+                      child: GestureDetector(
+                        onHorizontalDragUpdate: (details) {
+                          setState(() {
+                            _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
+                              _minDetailsPanelWidth,
+                              _maxDetailsPanelWidth,
+                            );
+                          });
+                        },
+                        child: Container(
+                          width: 4,
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Container(
+                              width: 1,
+                              color: theme.colorScheme.outlineVariant,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Details panel
                     SizedBox(
-                      width: 400,
+                      width: _detailsPanelWidth,
                       child: NetworkDetailsPanel(
-                        log: state.selectedLog!,
+                        request: state.selectedRequest!,
                         onClose: () => setState(() => _showDetails = false),
                       ),
                     ),
+                  ],
                 ],
               ),
             ),

@@ -385,27 +385,28 @@ class LoggerRepositoryImpl extends LoggerRepository {
   }
 
   @override
-  Future<List<LogEntry>> getLogs({LogFilter? filter}) async {
-    // For now, return empty list - can be implemented with actual storage later
-    return [];
-  }
+  Future<List<LogEntry>> getLogs({LogFilter? filter}) async => [];
 
   @override
   Future<List<Map<String, dynamic>>> exportLogs() async {
     final logs = await getLogs();
-    return logs.map((LogEntry log) => {
-      'id': log.id,
-      'timestamp': log.timestamp.toIso8601String(),
-      'level': log.level.name,
-      'message': log.message,
-      'category': log.category,
-      'tag': log.tag,
-      'userId': log.userId,
-      'sessionId': log.sessionId,
-      'metadata': log.metadata,
-      'error': log.error?.toString(),
-      'stackTrace': log.stackTrace,
-    }).toList();
+    return logs
+        .map(
+          (LogEntry log) => {
+            'id': log.id,
+            'timestamp': log.timestamp.toIso8601String(),
+            'level': log.level.name,
+            'message': log.message,
+            'category': log.category,
+            'tag': log.tag,
+            'userId': log.userId,
+            'sessionId': log.sessionId,
+            'metadata': log.metadata,
+            'error': log.error?.toString(),
+            'stackTrace': log.stackTrace,
+          },
+        )
+        .toList();
   }
 
   void close() {

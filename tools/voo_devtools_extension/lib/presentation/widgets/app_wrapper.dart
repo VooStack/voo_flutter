@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voo_logging_devtools_extension/core/services/package_detection_service.dart';
 import 'package:voo_logging_devtools_extension/data/datasources/devtools_log_datasource_impl.dart';
 import 'package:voo_logging_devtools_extension/data/repositories/devtools_log_repository_impl.dart';
 import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
@@ -11,7 +12,7 @@ import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bl
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/voo_logger_page.dart';
+import 'package:voo_logging_devtools_extension/presentation/pages/adaptive_voo_page.dart';
 
 /// Wrapper widget that initializes dependencies after DevToolsExtension
 class AppWrapper extends StatefulWidget {
@@ -22,6 +23,7 @@ class AppWrapper extends StatefulWidget {
 }
 
 class _AppWrapperState extends State<AppWrapper> {
+  late final PackageDetectionService packageDetectionService;
   late final DevToolsLogDataSourceImpl dataSource;
   late final DevToolsLogRepository repository;
   late final LogBloc logBloc;
@@ -32,17 +34,25 @@ class _AppWrapperState extends State<AppWrapper> {
   @override
   void initState() {
     super.initState();
+    // Initialize package detection service
+    packageDetectionService = PackageDetectionService();
+    packageDetectionService.startMonitoring();
+
     // Initialize after DevToolsExtension has set up serviceManager
     dataSource = DevToolsLogDataSourceImpl();
     repository = DevToolsLogRepositoryImpl(dataSource: dataSource);
-    logBloc = LogBloc(repository: repository)..add(LoadLogs());
-    networkBloc = NetworkBloc(repository: repository)..add(LoadNetworkLogs());
-    performanceBloc = PerformanceBloc(repository: repository)..add(LoadPerformanceLogs());
-    analyticsBloc = AnalyticsBloc(repository: repository)..add(LoadAnalyticsEvents());
+
+    // Initialize BLoCs (they will be used conditionally based on available plugins)
+    logBloc = LogBloc(repository: repository);
+    networkBloc = NetworkBloc(repository: repository);
+    performanceBloc = PerformanceBloc(repository: repository);
+    analyticsBloc = AnalyticsBloc(repository: repository);
   }
 
   @override
   void dispose() {
+    packageDetectionService.stopMonitoring();
+    packageDetectionService.dispose();
     logBloc.close();
     networkBloc.close();
     performanceBloc.close();
@@ -60,7 +70,27 @@ class _AppWrapperState extends State<AppWrapper> {
         BlocProvider.value(value: performanceBloc),
         BlocProvider.value(value: analyticsBloc),
       ],
-      child: const VooLoggerPage(),
+      child: StreamBuilder<Map<String, bool>>(
+        stream: packageDetectionService.packageStatusStream,
+        initialData: packageDetectionService.packageStatus,
+        builder: (context, snapshot) {
+          final packageStatus = snapshot.data ?? {};
+
+          // Load data for available packages
+          if (packageStatus['voo_logging'] == true) {
+            logBloc.add(LoadLogs());
+          }
+          if (packageStatus['voo_analytics'] == true) {
+            analyticsBloc.add(LoadAnalyticsEvents());
+          }
+          if (packageStatus['voo_performance'] == true) {
+            networkBloc.add(LoadNetworkLogs());
+            performanceBloc.add(LoadPerformanceLogs());
+          }
+
+          return AdaptiveVooPage(pluginStatus: packageStatus);
+        },
+      ),
     );
   }
 }

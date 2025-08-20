@@ -12,25 +12,19 @@ class VooLogger {
   VooLogger._internal();
 
   static final VooLogger instance = VooLogger._internal();
-  
+
   static LoggingConfig get config => instance._config ?? const LoggingConfig();
 
-  static Future<void> initialize({
-    String? appName, 
-    String? appVersion, 
-    String? userId, 
-    LogLevel minimumLevel = LogLevel.verbose,
-    LoggingConfig? config,
-  }) async {
+  static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose, LoggingConfig? config}) async {
     if (instance._initialized) return;
 
     instance._initialized = true;
     instance._config = config ?? const LoggingConfig();
 
     await instance._repository.initialize(
-      appName: appName, 
-      appVersion: appVersion, 
-      userId: userId, 
+      appName: appName,
+      appVersion: appVersion,
+      userId: userId,
       minimumLevel: instance._config!.minimumLevel,
       config: instance._config,
     );
@@ -99,15 +93,11 @@ class VooLogger {
     instance._repository.userAction(s, screen: screen, properties: properties);
   }
 
-  Future<List<LogEntry>> getLogs({LogFilter? filter}) async {
-    return await _repository.getLogs(filter: filter);
-  }
+  Future<List<LogEntry>> getLogs({LogFilter? filter}) async => _repository.getLogs(filter: filter);
 
   Future<void> clearLogs() async {
     await _repository.clearLogs();
   }
 
-  Future<LogStatistics> getStatistics() async {
-    return await _repository.getStatistics();
-  }
+  Future<LogStatistics> getStatistics() async => _repository.getStatistics();
 }

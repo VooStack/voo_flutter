@@ -3,7 +3,6 @@ import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_analytics/voo_analytics.dart';
 import 'package:voo_performance/voo_performance.dart';
-import 'package:voo_telemetry/voo_telemetry.dart';
 import 'package:voo_example/pages/home_page.dart';
 
 void main() async {
@@ -11,7 +10,7 @@ void main() async {
 
   // Step 1: Initialize Voo Core (like Firebase Core)
   // This acts as the central initialization point for all Voo packages
-  final app = await Voo.initializeApp(
+  await Voo.initializeApp(
     options: VooOptions.development(
       appName: 'VooExample',
       appVersion: '1.0.0',
@@ -19,40 +18,17 @@ void main() async {
     ),
   );
 
-  print('✅ Voo Core initialized: ${app.name}');
-
   // Step 2: Initialize local packages (work without cloud)
   // These packages provide local functionality
   await VooLoggingPlugin.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
-  print('✅ VooLogging initialized (local logging)');
 
   await VooAnalyticsPlugin.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
-  print('✅ VooAnalytics initialized (local analytics)');
 
   await VooPerformancePlugin.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
-  print('✅ VooPerformance initialized (local performance monitoring)');
 
   // Step 3: Optionally initialize VooTelemetry for cloud syncing
   // This is only needed if you want to sync data to the cloud
   const enableCloudSync = false; // Set to true to enable cloud syncing
-
-  if (enableCloudSync) {
-    try {
-      await VooTelemetryPlugin.initialize(
-        endpoint: 'https://api.voostack.com/v1/telemetry', // Your OTLP endpoint
-        apiKey: 'your-api-key-here', // Your API key
-        batchInterval: const Duration(seconds: 30),
-        maxBatchSize: 100,
-        debug: true,
-      );
-      print('✅ VooTelemetry initialized (cloud syncing enabled)');
-    } catch (e) {
-      print('⚠️ VooTelemetry initialization failed: $e');
-      print('   Continuing with local-only mode');
-    }
-  } else {
-    print('ℹ️ Cloud syncing disabled - running in local-only mode');
-  }
 
   // Step 4: Use the packages normally
   // The packages work locally whether or not cloud syncing is enabled

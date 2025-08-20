@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,18 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     
     await _saveData();
     
+    // Send to DevTools
+    _sendToDevTools(
+      category: 'Analytics',
+      message: 'Analytics event: $name',
+      metadata: {
+        'type': 'analytics_event',
+        'eventName': name,
+        ...?parameters,
+        'timestamp': timestamp.toIso8601String(),
+      },
+    );
+    
     if (kDebugMode) {
       print('[VooAnalytics] Event logged: $name');
     }
@@ -128,6 +141,24 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     }
     
     await _saveData();
+    
+    // Send to DevTools
+    _sendToDevTools(
+      category: 'Analytics',
+      message: 'Touch event at (${event.x.toStringAsFixed(1)}, ${event.y.toStringAsFixed(1)})',
+      metadata: {
+        'type': 'touch_event',
+        'x': event.x,
+        'y': event.y,
+        'screenName': event.screenName,
+        'screen': event.route ?? event.screenName,
+        'touchType': event.type.name,
+        'timestamp': event.timestamp.toIso8601String(),
+        'route': event.route,
+        'widgetKey': event.widgetKey,
+        'widgetType': event.widgetType,
+      },
+    );
     
     if (kDebugMode) {
       print('[VooAnalytics] Touch event tracked at (${event.x}, ${event.y})');
@@ -250,5 +281,32 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   @override
   void dispose() {
     // Clean up resources if needed
+  }
+  
+  void _sendToDevTools({
+    required String category,
+    required String message,
+    Map<String, dynamic>? metadata,
+  }) {
+    try {
+      final timestamp = DateTime.now();
+      final structuredData = {
+        '__voo_logger__': true,
+        'entry': {
+          'id': '${category.toLowerCase()}_${timestamp.millisecondsSinceEpoch}',
+          'timestamp': timestamp.toIso8601String(),
+          'message': message,
+          'level': 'info',
+          'category': category,
+          'tag': 'VooAnalytics',
+          'metadata': metadata,
+        },
+      };
+      
+      // Send via postEvent for DevTools extension
+      developer.postEvent('voo_logger_event', structuredData);
+    } catch (_) {
+      // Silent fail - logging is best effort
+    }
   }
 }

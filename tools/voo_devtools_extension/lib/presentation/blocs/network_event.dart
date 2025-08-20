@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 
 abstract class NetworkEvent extends Equatable {
   const NetworkEvent();
@@ -36,6 +37,17 @@ class FilterNetworkLogs extends NetworkEvent {
   List<Object?> get props => [method, statusFilter, searchQuery];
 }
 
+class SelectNetworkRequest extends NetworkEvent {
+  final NetworkRequestModel? request;
+
+  const SelectNetworkRequest(this.request);
+
+  @override
+  List<Object?> get props => [request];
+}
+
+// Keep old event for compatibility
+@Deprecated('Use SelectNetworkRequest instead')
 class SelectNetworkLog extends NetworkEvent {
   final LogEntryModel? log;
 

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -94,16 +95,18 @@ class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker> with Ro
   }
 
   void _sendScreenshotToAnalytics(Uint8List imageBytes, int width, int height) {
+    // Convert to base64 for transmission
+    final base64String = 'data:image/png;base64,${base64Encode(imageBytes)}';
+    
     // Store screenshot data in analytics
     VooAnalyticsPlugin.instance.logEvent(
       'route_screenshot',
       parameters: {
         'route': _currentRoute,
+        'screenshot': base64String,
         'width': width,
         'height': height,
         'timestamp': DateTime.now().toIso8601String(),
-        // Note: In production, you'd likely store the image elsewhere
-        // and just reference it here
       },
     );
   }

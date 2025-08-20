@@ -10,7 +10,7 @@ class TelemetryConfig {
   final Duration retryDelay;
   final bool enableCompression;
   final Map<String, String> headers;
-  
+
   TelemetryConfig({
     required this.endpoint,
     this.apiKey,
@@ -22,12 +22,8 @@ class TelemetryConfig {
     this.retryDelay = const Duration(seconds: 1),
     this.enableCompression = true,
     Map<String, String>? headers,
-  }) : headers = {
-          'Content-Type': 'application/json',
-          if (apiKey != null) 'X-API-Key': apiKey,
-          ...?headers,
-        };
-  
+  }) : headers = {'Content-Type': 'application/json', if (apiKey != null) 'X-API-Key': apiKey, ...?headers};
+
   /// Create a copy with updated values
   TelemetryConfig copyWith({
     String? endpoint,
@@ -40,18 +36,16 @@ class TelemetryConfig {
     Duration? retryDelay,
     bool? enableCompression,
     Map<String, String>? headers,
-  }) {
-    return TelemetryConfig(
-      endpoint: endpoint ?? this.endpoint,
-      apiKey: apiKey ?? this.apiKey,
-      batchInterval: batchInterval ?? this.batchInterval,
-      maxBatchSize: maxBatchSize ?? this.maxBatchSize,
-      debug: debug ?? this.debug,
-      timeout: timeout ?? this.timeout,
-      maxRetries: maxRetries ?? this.maxRetries,
-      retryDelay: retryDelay ?? this.retryDelay,
-      enableCompression: enableCompression ?? this.enableCompression,
-      headers: headers ?? this.headers,
-    );
-  }
+  }) => TelemetryConfig(
+    endpoint: endpoint ?? this.endpoint,
+    apiKey: apiKey ?? this.apiKey,
+    batchInterval: batchInterval ?? this.batchInterval,
+    maxBatchSize: maxBatchSize ?? this.maxBatchSize,
+    debug: debug ?? this.debug,
+    timeout: timeout ?? this.timeout,
+    maxRetries: maxRetries ?? this.maxRetries,
+    retryDelay: retryDelay ?? this.retryDelay,
+    enableCompression: enableCompression ?? this.enableCompression,
+    headers: headers ?? this.headers,
+  );
 }

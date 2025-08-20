@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 
 class NetworkState extends Equatable {
-  final List<LogEntryModel> networkLogs;
-  final List<LogEntryModel> filteredNetworkLogs;
-  final LogEntryModel? selectedLog;
+  final List<NetworkRequestModel> networkRequests;
+  final List<NetworkRequestModel> filteredNetworkRequests;
+  final NetworkRequestModel? selectedRequest;
   final bool isLoading;
   final String? error;
   final String? methodFilter;
@@ -12,9 +12,9 @@ class NetworkState extends Equatable {
   final String? searchQuery;
 
   const NetworkState({
-    this.networkLogs = const [],
-    this.filteredNetworkLogs = const [],
-    this.selectedLog,
+    this.networkRequests = const [],
+    this.filteredNetworkRequests = const [],
+    this.selectedRequest,
     this.isLoading = false,
     this.error,
     this.methodFilter,
@@ -23,9 +23,9 @@ class NetworkState extends Equatable {
   });
 
   NetworkState copyWith({
-    List<LogEntryModel>? networkLogs,
-    List<LogEntryModel>? filteredNetworkLogs,
-    LogEntryModel? selectedLog,
+    List<NetworkRequestModel>? networkRequests,
+    List<NetworkRequestModel>? filteredNetworkRequests,
+    NetworkRequestModel? selectedRequest,
     bool? isLoading,
     String? error,
     String? methodFilter,
@@ -33,9 +33,9 @@ class NetworkState extends Equatable {
     String? searchQuery,
   }) {
     return NetworkState(
-      networkLogs: networkLogs ?? this.networkLogs,
-      filteredNetworkLogs: filteredNetworkLogs ?? this.filteredNetworkLogs,
-      selectedLog: selectedLog,
+      networkRequests: networkRequests ?? this.networkRequests,
+      filteredNetworkRequests: filteredNetworkRequests ?? this.filteredNetworkRequests,
+      selectedRequest: selectedRequest,
       isLoading: isLoading ?? this.isLoading,
       error: error,
       methodFilter: methodFilter ?? this.methodFilter,
@@ -46,9 +46,9 @@ class NetworkState extends Equatable {
 
   @override
   List<Object?> get props => [
-        networkLogs,
-        filteredNetworkLogs,
-        selectedLog,
+        networkRequests,
+        filteredNetworkRequests,
+        selectedRequest,
         isLoading,
         error,
         methodFilter,

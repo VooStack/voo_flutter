@@ -4,9 +4,7 @@ import 'package:voo_telemetry/src/core/telemetry_config.dart';
 void main() {
   group('TelemetryConfig', () {
     test('should create with required parameters', () {
-      final config = TelemetryConfig(
-        endpoint: 'https://api.example.com',
-      );
+      final config = TelemetryConfig(endpoint: 'https://api.example.com');
 
       expect(config.endpoint, 'https://api.example.com');
       expect(config.apiKey, isNull);
@@ -48,27 +46,16 @@ void main() {
     });
 
     test('should add API key to headers when provided', () {
-      final config = TelemetryConfig(
-        endpoint: 'https://api.example.com',
-        apiKey: 'secret-key',
-      );
+      final config = TelemetryConfig(endpoint: 'https://api.example.com', apiKey: 'secret-key');
 
       expect(config.headers['X-API-Key'], 'secret-key');
       expect(config.headers['Content-Type'], 'application/json');
     });
 
     test('copyWith should create new instance with updated values', () {
-      final original = TelemetryConfig(
-        endpoint: 'https://api.example.com',
-        apiKey: 'original-key',
-        debug: false,
-      );
+      final original = TelemetryConfig(endpoint: 'https://api.example.com', apiKey: 'original-key');
 
-      final updated = original.copyWith(
-        endpoint: 'https://new.example.com',
-        debug: true,
-        maxBatchSize: 150,
-      );
+      final updated = original.copyWith(endpoint: 'https://new.example.com', debug: true, maxBatchSize: 150);
 
       // Original should remain unchanged
       expect(original.endpoint, 'https://api.example.com');
@@ -84,9 +71,7 @@ void main() {
     });
 
     test('copyWith should preserve null apiKey', () {
-      final config = TelemetryConfig(
-        endpoint: 'https://api.example.com',
-      );
+      final config = TelemetryConfig(endpoint: 'https://api.example.com');
 
       final updated = config.copyWith(debug: true);
 

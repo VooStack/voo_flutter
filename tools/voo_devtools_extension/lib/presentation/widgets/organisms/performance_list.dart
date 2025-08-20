@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/performance_metric_tile.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_performance_placeholder.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';

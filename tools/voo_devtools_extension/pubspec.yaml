@@ -1,9 +1,9 @@
 name: voo_logging_devtools_extension
-description: 'A new Flutter project.'
+description: 'Unified DevTools extension for all Voo packages'
 
 publish_to: 'none'
 
-version: 0.0.1
+version: 1.0.0
 
 environment:
   sdk: ^3.8.1
@@ -16,7 +16,8 @@ dependencies:
   devtools_extensions: ^0.4.0
   devtools_app_shared: ^0.4.0
   flutter_bloc: ^9.1.1
-  voo_logging:
+  equatable: ^2.0.5
+  voo_core:
 
 dev_dependencies:
   flutter_test:

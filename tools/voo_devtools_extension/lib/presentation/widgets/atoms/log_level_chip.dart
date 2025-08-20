@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
 
 class LogLevelChip extends StatelessWidget {
   final LogLevel level;
@@ -39,6 +38,10 @@ class LogLevelChip extends StatelessWidget {
         return Colors.red;
       case LogLevel.fatal:
         return Colors.purple;
+      case LogLevel.network:
+        return Colors.cyan;
+      case LogLevel.navigation:
+        return Colors.indigo;
     }
   }
 }

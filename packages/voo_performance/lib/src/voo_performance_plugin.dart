@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 import 'package:voo_core/voo_core.dart';
 import 'package:voo_performance/src/domain/entities/performance_trace.dart';
@@ -106,6 +107,20 @@ class VooPerformancePlugin extends VooPlugin {
     if (_performanceMetrics.length > 1000) {
       _performanceMetrics.removeRange(0, 100);
     }
+    
+    // Send to DevTools
+    _sendToDevTools(
+      category: 'Performance',
+      message: 'Performance trace: ${trace.name}',
+      metadata: {
+        'operationType': 'trace',
+        'operation': trace.name,
+        'duration': trace.duration?.inMilliseconds ?? 0,
+        'startTime': trace.startTime.toIso8601String(),
+        ...trace.attributes,
+        if (trace.metrics.isNotEmpty) 'metrics': trace.metrics,
+      },
+    );
   }
 
   Future<void> recordNetworkMetric(NetworkMetric metric) async {
@@ -113,6 +128,50 @@ class VooPerformancePlugin extends VooPlugin {
     
     if (_networkMetrics.length > 1000) {
       _networkMetrics.removeRange(0, 100);
+    }
+    
+    // Send to DevTools
+    _sendToDevTools(
+      category: 'Network',
+      message: '${metric.method} ${metric.url}',
+      metadata: {
+        'operationType': 'network',
+        'operation': '${metric.method} ${Uri.parse(metric.url).path}',
+        'method': metric.method,
+        'url': metric.url,
+        'statusCode': metric.statusCode,
+        'duration': metric.duration.inMilliseconds,
+        'requestSize': metric.requestSize,
+        'responseSize': metric.responseSize,
+        'timestamp': metric.timestamp.toIso8601String(),
+      },
+    );
+  }
+  
+  void _sendToDevTools({
+    required String category,
+    required String message,
+    Map<String, dynamic>? metadata,
+  }) {
+    try {
+      final timestamp = DateTime.now();
+      final structuredData = {
+        '__voo_logger__': true,
+        'entry': {
+          'id': '${category.toLowerCase()}_${timestamp.millisecondsSinceEpoch}',
+          'timestamp': timestamp.toIso8601String(),
+          'message': message,
+          'level': 'info',
+          'category': category,
+          'tag': 'VooPerformance',
+          'metadata': metadata,
+        },
+      };
+      
+      // Send via postEvent for DevTools extension
+      developer.postEvent('voo_logger_event', structuredData);
+    } catch (_) {
+      // Silent fail - logging is best effort
     }
   }
 

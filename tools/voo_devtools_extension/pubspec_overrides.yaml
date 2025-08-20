@@ -1,6 +1,4 @@
-# melos_managed_dependency_overrides: voo_logging,voo_core
+# melos_managed_dependency_overrides: voo_core
 dependency_overrides:
-  voo_logging:
-    path: ../../packages/voo_logging
   voo_core:
     path: ../../packages/voo_core

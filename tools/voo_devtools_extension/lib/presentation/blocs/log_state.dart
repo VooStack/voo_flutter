@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_statistics.dart';
 
 class LogState extends Equatable {
   final List<LogEntryModel> logs;

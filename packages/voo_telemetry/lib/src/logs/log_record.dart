@@ -9,7 +9,7 @@ class LogRecord {
   String? traceId;
   String? spanId;
   int traceFlags;
-  
+
   LogRecord({
     required this.severityNumber,
     required this.severityText,
@@ -20,31 +20,23 @@ class LogRecord {
     this.traceId,
     this.spanId,
     this.traceFlags = 0,
-  })  : timestamp = timestamp ?? DateTime.now(),
-        attributes = attributes ?? {};
-  
+  }) : timestamp = timestamp ?? DateTime.now(),
+       attributes = attributes ?? {};
+
   /// Convert to OTLP format
-  Map<String, dynamic> toOtlp() {
-    return {
-      // Convert microseconds to nanoseconds (multiply by 1000)
-      'timeUnixNano': timestamp.microsecondsSinceEpoch * 1000,
-      if (observedTimestamp != null)
-        'observedTimeUnixNano': observedTimestamp!.microsecondsSinceEpoch * 1000,
-      'severityNumber': severityNumber.value,
-      'severityText': severityText,
-      'body': {'stringValue': body},
-      'attributes': attributes.entries
-          .map((e) => {
-                'key': e.key,
-                'value': _convertValue(e.value),
-              })
-          .toList(),
-      if (traceId != null) 'traceId': _hexToBytes(traceId!),
-      if (spanId != null) 'spanId': _hexToBytes(spanId!.padRight(16, '0')),
-      'flags': traceFlags,
-    };
-  }
-  
+  Map<String, dynamic> toOtlp() => {
+    // Convert microseconds to nanoseconds (multiply by 1000)
+    'timeUnixNano': timestamp.microsecondsSinceEpoch * 1000,
+    if (observedTimestamp != null) 'observedTimeUnixNano': observedTimestamp!.microsecondsSinceEpoch * 1000,
+    'severityNumber': severityNumber.value,
+    'severityText': severityText,
+    'body': {'stringValue': body},
+    'attributes': attributes.entries.map((e) => {'key': e.key, 'value': _convertValue(e.value)}).toList(),
+    if (traceId != null) 'traceId': _hexToBytes(traceId!),
+    if (spanId != null) 'spanId': _hexToBytes(spanId!.padRight(16, '0')),
+    'flags': traceFlags,
+  };
+
   List<int> _hexToBytes(String hex) {
     final bytes = <int>[];
     for (int i = 0; i < hex.length; i += 2) {
@@ -53,7 +45,7 @@ class LogRecord {
     }
     return bytes;
   }
-  
+
   Map<String, dynamic> _convertValue(dynamic value) {
     if (value is String) {
       return {'stringValue': value};
@@ -65,20 +57,13 @@ class LogRecord {
       return {'doubleValue': value};
     } else if (value is List) {
       return {
-        'arrayValue': {
-          'values': value.map((v) => _convertValue(v)).toList(),
-        }
+        'arrayValue': {'values': value.map(_convertValue).toList()},
       };
     } else if (value is Map) {
       return {
         'kvlistValue': {
-          'values': value.entries
-              .map((e) => {
-                    'key': e.key.toString(),
-                    'value': _convertValue(e.value),
-                  })
-              .toList(),
-        }
+          'values': value.entries.map((e) => {'key': e.key.toString(), 'value': _convertValue(e.value)}).toList(),
+        },
       };
     } else {
       return {'stringValue': value.toString()};
@@ -113,7 +98,7 @@ enum SeverityNumber {
   fatal2(22),
   fatal3(23),
   fatal4(24);
-  
+
   final int value;
   const SeverityNumber(this.value);
 }

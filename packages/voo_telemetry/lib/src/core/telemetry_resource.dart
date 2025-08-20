@@ -3,23 +3,14 @@ class TelemetryResource {
   final String serviceName;
   final String serviceVersion;
   final Map<String, dynamic> attributes;
-  
-  TelemetryResource({
-    required this.serviceName,
-    required this.serviceVersion,
-    Map<String, dynamic>? attributes,
-  }) : attributes = attributes ?? {};
-  
+
+  TelemetryResource({required this.serviceName, required this.serviceVersion, Map<String, dynamic>? attributes}) : attributes = attributes ?? {};
+
   /// Convert to OTLP resource format
-  Map<String, dynamic> toOtlp() {
-    return {
-      'attributes': attributes.entries.map((e) => {
-        'key': e.key,
-        'value': _convertValue(e.value),
-      }).toList(),
-    };
-  }
-  
+  Map<String, dynamic> toOtlp() => {
+    'attributes': attributes.entries.map((e) => {'key': e.key, 'value': _convertValue(e.value)}).toList(),
+  };
+
   Map<String, dynamic> _convertValue(dynamic value) {
     if (value is String) {
       return {'stringValue': value};
@@ -31,18 +22,13 @@ class TelemetryResource {
       return {'doubleValue': value};
     } else if (value is List) {
       return {
-        'arrayValue': {
-          'values': value.map((v) => _convertValue(v)).toList(),
-        }
+        'arrayValue': {'values': value.map(_convertValue).toList()},
       };
     } else if (value is Map) {
       return {
         'kvlistValue': {
-          'values': value.entries.map((e) => {
-            'key': e.key.toString(),
-            'value': _convertValue(e.value),
-          }).toList(),
-        }
+          'values': value.entries.map((e) => {'key': e.key.toString(), 'value': _convertValue(e.value)}).toList(),
+        },
       };
     } else {
       return {'stringValue': value.toString()};

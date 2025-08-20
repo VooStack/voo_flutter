@@ -1,12 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_header.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section_with_actions.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/performance_indicator.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
+import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
 
 class PerformanceDetailsPanel extends StatelessWidget {
   final LogEntryModel log;
@@ -23,245 +18,346 @@ class PerformanceDetailsPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final metadata = log.metadata ?? {};
     final durationMs = metadata['duration'] as int? ?? 0;
-    final duration = Duration(milliseconds: durationMs);
     final operation = metadata['operation'] as String? ?? log.message;
     final operationType = metadata['operationType'] as String?;
     final metrics = metadata['metrics'] as Map<String, dynamic>?;
     final startTime = metadata['startTime'] as String?;
     final endTime = metadata['endTime'] as String?;
+    
+    // Determine performance color
+    final performanceColor = _getPerformanceColor(durationMs);
+    
+    // Build sections
+    final sections = <DetailSection>[];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border(left: BorderSide(color: theme.dividerColor)),
-      ),
-      child: Column(
-        children: [
-          DetailHeader(
-            title: 'Performance Details',
-            onClose: onClose,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+    // Performance Overview section
+    sections.add(
+      DetailSection(
+        title: 'Performance Overview',
+        content: Row(
+          children: [
+            _buildPerformanceIndicator(context, durationMs),
+            const SizedBox(width: AppTheme.spacingLg),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Performance Overview
-                  Row(
-                    children: [
-                      PerformanceIndicator(duration: duration),
-                      const SizedBox(width: 12),
-                      if (operationType != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            operationType,
-                            style: theme.textTheme.labelMedium,
-                          ),
-                        ),
-                    ],
+                  Text(
+                    operation,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 16),
-
-                  // Operation Section
-                  DetailSection(
-                    title: 'Operation',
-                    content: SelectableText(
-                      operation,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ),
-
-                  // Timing Details
-                  const SizedBox(height: 16),
-                  DetailSection(
-                    title: 'Timing',
-                    content: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildInfoRow('Duration', _formatDuration(duration)),
-                        if (startTime != null)
-                          _buildInfoRow('Start Time', startTime),
-                        if (endTime != null)
-                          _buildInfoRow('End Time', endTime),
-                        _buildInfoRow('Logged At', log.timestamp.toString()),
-                      ],
-                    ),
-                  ),
-
-                  // Metrics Section
-                  if (metrics != null && metrics.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    DetailSectionWithActions(
-                      title: 'Metrics',
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.copy, size: 18),
-                          onPressed: () => _copyToClipboard(context, _formatJson(metrics)),
-                          tooltip: 'Copy metrics',
-                        ),
-                      ],
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: metrics.entries.map((entry) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      entry.key,
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: SelectableText(
-                                      _formatValue(entry.value),
-                                      style: theme.textTheme.bodySmall,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ],
-
-                  // Additional Metadata
-                  if (metadata.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    DetailSectionWithActions(
-                      title: 'Additional Data',
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.copy, size: 18),
-                          onPressed: () => _copyToClipboard(context, _formatJson(metadata)),
-                          tooltip: 'Copy all data',
-                        ),
-                      ],
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: SelectableText(
-                          _formatJson(metadata),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-
-                  // Error Section
-                  if (log.error != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Error',
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                        ),
-                        child: SelectableText(
-                          log.error.toString(),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.red,
-                            fontFamily: 'monospace',
-                          ),
-                        ),
+                  if (operationType != null) ...[
+                    const SizedBox(height: AppTheme.spacingXs),
+                    Text(
+                      operationType,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+    
+    // Timing Details section
+    sections.add(
+      DetailSection(
+        title: 'Timing Details',
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            UniversalDetailsPanel.buildKeyValueRow(
+              'Duration',
+              _formatDuration(durationMs),
             ),
+            if (startTime != null)
+              UniversalDetailsPanel.buildKeyValueRow(
+                'Start Time',
+                startTime,
+              ),
+            if (endTime != null)
+              UniversalDetailsPanel.buildKeyValueRow(
+                'End Time',
+                endTime,
+              ),
+            UniversalDetailsPanel.buildKeyValueRow(
+              'Logged At',
+              log.timestamp.toIso8601String(),
+            ),
+          ],
+        ),
+      ),
+    );
+    
+    // Metrics section
+    if (metrics != null && metrics.isNotEmpty) {
+      sections.add(
+        DetailSection(
+          title: 'Performance Metrics',
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: metrics.entries.map((entry) {
+              return UniversalDetailsPanel.buildKeyValueRow(
+                entry.key,
+                _formatValue(entry.value),
+                monospace: entry.value is num,
+              );
+            }).toList(),
           ),
-          Expanded(
+        ),
+      );
+    }
+    
+    // Additional metadata
+    if (metadata.isNotEmpty) {
+      final filteredMetadata = Map<String, dynamic>.from(metadata)
+        ..remove('duration')
+        ..remove('operation')
+        ..remove('operationType')
+        ..remove('startTime')
+        ..remove('endTime')
+        ..remove('metrics');
+      
+      if (filteredMetadata.isNotEmpty) {
+        sections.add(
+          DetailSection(
+            title: 'Additional Data',
+            content: UniversalDetailsPanel.buildCodeBlock(
+              context,
+              UniversalDetailsPanel.formatJson(filteredMetadata),
+            ),
+            collapsible: true,
+            initiallyExpanded: false,
+          ),
+        );
+      }
+    }
+    
+    // Error section
+    if (log.error != null) {
+      sections.add(
+        DetailSection(
+          title: 'Error',
+          content: Container(
+            padding: const EdgeInsets.all(AppTheme.spacingMd),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              border: Border.all(
+                color: theme.colorScheme.error.withValues(alpha: 0.5),
+              ),
+            ),
             child: SelectableText(
-              value,
-              style: const TextStyle(fontSize: 12),
+              log.error!,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    
+    // Stack trace section
+    if (log.stackTrace != null) {
+      sections.add(
+        DetailSection(
+          title: 'Stack Trace',
+          content: UniversalDetailsPanel.buildCodeBlock(
+            context,
+            log.stackTrace!,
+          ),
+          collapsible: true,
+          initiallyExpanded: false,
+        ),
+      );
+    }
+    
+    return UniversalDetailsPanel(
+      title: 'Performance Details',
+      headerBadges: [
+        _buildDurationBadge(context, durationMs),
+        if (operationType != null)
+          _buildOperationTypeBadge(context, operationType),
+      ],
+      sections: sections,
+      onClose: onClose,
+      accentColor: performanceColor,
+    );
+  }
+
+  Widget _buildPerformanceIndicator(BuildContext context, int durationMs) {
+    final theme = Theme.of(context);
+    final color = _getPerformanceColor(durationMs);
+    final label = _getPerformanceLabel(durationMs);
+    
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          colors: [
+            color.withValues(alpha: 0.2),
+            color.withValues(alpha: 0.05),
+          ],
+        ),
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: color.withValues(alpha: 0.5),
+          width: 2,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _formatDuration(durationMs),
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
             ),
           ),
         ],
       ),
     );
   }
-
-  String _formatDuration(Duration duration) {
-    final ms = duration.inMilliseconds;
-    if (ms < 1000) {
-      return '${ms}ms';
+  
+  Widget _buildDurationBadge(BuildContext context, int durationMs) {
+    final theme = Theme.of(context);
+    final color = _getPerformanceColor(durationMs);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            _formatDuration(durationMs),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildOperationTypeBadge(BuildContext context, String type) {
+    final theme = Theme.of(context);
+    final (icon, color) = _getOperationTypeInfo(type);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            type,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Color _getPerformanceColor(int durationMs) {
+    if (durationMs < 100) {
+      return Colors.green;
+    } else if (durationMs < 500) {
+      return Colors.blue;
+    } else if (durationMs < 1000) {
+      return Colors.amber;
+    } else if (durationMs < 3000) {
+      return Colors.orange;
     } else {
-      return '${(ms / 1000).toStringAsFixed(2)}s';
+      return Colors.red;
+    }
+  }
+  
+  String _getPerformanceLabel(int durationMs) {
+    if (durationMs < 100) {
+      return 'Fast';
+    } else if (durationMs < 500) {
+      return 'Normal';
+    } else if (durationMs < 1000) {
+      return 'Moderate';
+    } else if (durationMs < 3000) {
+      return 'Slow';
+    } else {
+      return 'Very Slow';
+    }
+  }
+  
+  (IconData, Color) _getOperationTypeInfo(String type) {
+    switch (type.toLowerCase()) {
+      case 'network':
+        return (Icons.wifi_outlined, Colors.blue);
+      case 'database':
+        return (Icons.storage_outlined, Colors.purple);
+      case 'render':
+        return (Icons.brush_outlined, Colors.green);
+      case 'computation':
+        return (Icons.memory_outlined, Colors.orange);
+      case 'custom':
+        return (Icons.timer_outlined, Colors.indigo);
+      default:
+        return (Icons.speed_outlined, Colors.grey);
+    }
+  }
+
+  String _formatDuration(int durationMs) {
+    if (durationMs < 1000) {
+      return '${durationMs}ms';
+    } else {
+      return '${(durationMs / 1000).toStringAsFixed(1)}s';
     }
   }
 
   String _formatValue(dynamic value) {
     if (value is Map || value is List) {
-      return _formatJson(value);
+      return UniversalDetailsPanel.formatJson(value);
     }
     return value.toString();
-  }
-
-  String _formatJson(dynamic json) {
-    try {
-      if (json is String) {
-        return json;
-      }
-      const encoder = JsonEncoder.withIndent('  ');
-      return encoder.convert(json);
-    } catch (_) {
-      return json.toString();
-    }
-  }
-
-  void _copyToClipboard(BuildContext context, String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 2),
-      ),
-    );
   }
 }

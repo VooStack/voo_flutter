@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_statistics.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_row.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/stat_item.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/stat_row.dart';
@@ -22,22 +22,21 @@ class LogStatisticsCard extends StatelessWidget {
         _buildSummary(theme),
         const SizedBox(height: 16),
         _buildLevelBreakdown(theme),
-        if (statistics.categoryCounts.isNotEmpty) ...[const SizedBox(height: 16), _buildTopCategories(theme)],
-        if (statistics.tagCounts.isNotEmpty) ...[const SizedBox(height: 16), _buildTopTags(theme)],
+        if (statistics.logCountByCategory.isNotEmpty) ...[const SizedBox(height: 16), _buildTopCategories(theme)],
       ],
     );
   }
 
   Widget _buildSummary(ThemeData theme) {
-    final duration = statistics.newestLog != null && statistics.oldestLog != null ? statistics.newestLog!.difference(statistics.oldestLog!) : null;
+    final duration = statistics.lastLogTime != null && statistics.firstLogTime != null ? statistics.lastLogTime!.difference(statistics.firstLogTime!) : null;
 
     return StatCard(
       title: 'Summary',
       children: [
         StatItem(label: 'Total Logs', value: statistics.totalLogs.toString()),
         if (duration != null) StatItem(label: 'Duration', value: _formatDuration(duration)),
-        if (statistics.oldestLog != null) StatItem(label: 'First Log', value: _formatDateTime(statistics.oldestLog!)),
-        if (statistics.newestLog != null) StatItem(label: 'Last Log', value: _formatDateTime(statistics.newestLog!)),
+        if (statistics.firstLogTime != null) StatItem(label: 'First Log', value: _formatDateTime(statistics.firstLogTime!)),
+        if (statistics.lastLogTime != null) StatItem(label: 'Last Log', value: _formatDateTime(statistics.lastLogTime!)),
       ],
     );
   }
@@ -46,7 +45,7 @@ class LogStatisticsCard extends StatelessWidget {
     title: 'Log Levels',
     children: LogLevel.values
         .map((level) {
-          final count = statistics.levelCounts[level.name] ?? 0;
+          final count = statistics.logCountByLevel[level] ?? 0;
           if (count == 0) return null;
           return LogLevelRow(level: level, count: count);
         })
@@ -56,20 +55,11 @@ class LogStatisticsCard extends StatelessWidget {
   );
 
   Widget _buildTopCategories(ThemeData theme) {
-    final sortedCategories = statistics.categoryCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final sortedCategories = statistics.logCountByCategory.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return StatCard(
       title: 'Top Categories',
       children: sortedCategories.take(5).map((entry) => StatRow(label: entry.key, value: entry.value.toString())).toList(),
-    );
-  }
-
-  Widget _buildTopTags(ThemeData theme) {
-    final sortedTags = statistics.tagCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-    return StatCard(
-      title: 'Top Tags',
-      children: sortedTags.take(5).map((entry) => StatRow(label: entry.key, value: entry.value.toString())).toList(),
     );
   }
 

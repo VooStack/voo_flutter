@@ -14,40 +14,28 @@ class LoggerProvider {
   final Map<String, Logger> _loggers = {};
   final List<LogRecord> _pendingLogs = [];
   final _lock = Lock();
-  
-  LoggerProvider({
-    required this.resource,
-    required this.exporter,
-    required this.config,
-  });
-  
+
+  LoggerProvider({required this.resource, required this.exporter, required this.config});
+
   /// Initialize the logger provider
   Future<void> initialize() async {
     // Any initialization logic
   }
-  
+
   /// Get or create a logger
-  Logger getLogger(String name) {
-    return _loggers.putIfAbsent(
-      name,
-      () => Logger(
-        name: name,
-        provider: this,
-      ),
-    );
-  }
-  
+  Logger getLogger(String name) => _loggers.putIfAbsent(name, () => Logger(name: name, provider: this));
+
   /// Add a log record to be exported
   void addLogRecord(LogRecord logRecord) {
     _lock.synchronized(() {
       _pendingLogs.add(logRecord);
-      
+
       if (_pendingLogs.length >= config.maxBatchSize) {
         flush();
       }
     });
   }
-  
+
   /// Flush pending logs
   Future<void> flush() async {
     final logsToExport = await _lock.synchronized(() {
@@ -55,13 +43,13 @@ class LoggerProvider {
       _pendingLogs.clear();
       return logs;
     });
-    
+
     if (logsToExport.isEmpty) return;
-    
+
     final otlpLogs = logsToExport.map((l) => l.toOtlp()).toList();
     await exporter.exportLogs(otlpLogs, resource);
   }
-  
+
   /// Shutdown the provider
   Future<void> shutdown() async {
     await flush();

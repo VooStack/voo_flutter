@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/network_method_chip.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/network_status_badge.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/timestamp_text.dart';
+import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/duration_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/status_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/modern_list_tile.dart';
 
 class NetworkRequestTile extends StatelessWidget {
-  final LogEntryModel log;
+  final NetworkRequestModel request;
   final bool selected;
   final VoidCallback onTap;
 
   const NetworkRequestTile({
     super.key,
-    required this.log,
+    required this.request,
     required this.selected,
     required this.onTap,
   });
@@ -19,89 +20,168 @@ class NetworkRequestTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final metadata = log.metadata ?? {};
-    final method = metadata['method'] as String? ?? 'GET';
-    final url = metadata['url'] as String? ?? log.message;
-    final statusCode = metadata['statusCode'] as int?;
-    final duration = metadata['duration'] as int?;
-    final responseSize = metadata['contentLength'] as int?;
+    final uri = Uri.tryParse(request.url);
+    final path = uri?.path ?? request.url;
+    final host = uri?.host ?? '';
+    
+    // Determine status color for the tile
+    Color? selectedColor;
+    if (request.error != null) {
+      selectedColor = Colors.red;
+    } else if (request.statusCode != null && request.statusCode! >= 400) {
+      selectedColor = Colors.orange;
+    } else if (request.isInProgress) {
+      selectedColor = Colors.blue;
+    }
 
-    return Material(
-      color: selected ? theme.colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: theme.dividerColor),
-              left: BorderSide(
-                color: selected ? theme.colorScheme.primary : Colors.transparent,
-                width: 3,
-              ),
-            ),
-          ),
-          child: Row(
+    return ModernListTile(
+      isSelected: selected,
+      selectedColor: selectedColor,
+      onTap: onTap,
+      leading: MethodBadge(
+        method: request.method,
+        compact: true,
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              NetworkMethodChip(method: method),
-              const SizedBox(width: 12),
-              if (statusCode != null) ...[
-                NetworkStatusBadge(statusCode: statusCode),
-                const SizedBox(width: 12),
-              ],
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _truncateUrl(url),
-                      style: theme.textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        TimestampText(timestamp: log.timestamp),
-                        if (duration != null) ...[
-                          const SizedBox(width: 16),
-                          Text(
-                            '${duration}ms',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: duration > 1000 ? Colors.orange : theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                        if (responseSize != null && responseSize > 0) ...[
-                          const SizedBox(width: 16),
-                          Text(
-                            _formatBytes(responseSize),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
+                child: Text(
+                  path.isEmpty ? '/' : path,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
+              if (request.isInProgress) ...[
+                _buildLoadingIndicator(theme),
+              ] else if (request.statusCode != null) ...[
+                StatusBadge(
+                  statusCode: request.statusCode!,
+                  compact: true,
+                ),
+              ] else if (request.error != null) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                  ),
+                  child: Text(
+                    'ERROR',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
-        ),
+          if (host.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              host,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                fontSize: 11,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
+      ),
+      subtitle: Row(
+        children: [
+          Icon(
+            Icons.schedule,
+            size: 12,
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            _formatTime(request.timestamp),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+            ),
+          ),
+          if (request.duration != null && !request.isInProgress) ...[
+            const SizedBox(width: 12),
+            DurationBadge(
+              milliseconds: request.duration!,
+              showIcon: false,
+            ),
+          ],
+          if (request.displaySize != '-') ...[
+            const SizedBox(width: 12),
+            Icon(
+              Icons.data_usage,
+              size: 12,
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              request.displaySize,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
 
-  String _truncateUrl(String url) {
-    if (url.length > 80) {
-      return '${url.substring(0, 80)}...';
-    }
-    return url;
+  Widget _buildLoadingIndicator(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.blue.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 10,
+            height: 10,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            'Pending',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  String _formatBytes(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  String _formatTime(DateTime timestamp) {
+    final now = DateTime.now();
+    final diff = now.difference(timestamp);
+    
+    if (diff.inSeconds < 60) {
+      return 'just now';
+    } else if (diff.inMinutes < 60) {
+      return '${diff.inMinutes}m ago';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours}h ago';
+    } else {
+      return '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
@@ -140,17 +140,13 @@ class _ToolbarActions extends StatelessWidget {
     context.read<LogBloc>().add(
       LogReceived(
         LogEntryModel(
-          'test_${DateTime.now().millisecondsSinceEpoch}',
-          DateTime.now(),
-          'Test log generated from UI at ${DateTime.now()}',
-          LogLevel.info,
-          'Test',
-          'UITest',
-          {'source': 'manual_test'},
-          null,
-          null,
-          null,
-          null,
+          id: 'test_${DateTime.now().millisecondsSinceEpoch}',
+          timestamp: DateTime.now(),
+          message: 'Test log generated from UI at ${DateTime.now()}',
+          level: LogLevel.info,
+          category: 'Test',
+          tag: 'UITest',
+          metadata: {'source': 'manual_test'},
         ),
       ),
     );

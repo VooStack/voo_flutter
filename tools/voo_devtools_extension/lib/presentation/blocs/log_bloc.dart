@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model_extensions.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_statistics_extensions.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_statistics.dart';
 import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
@@ -52,7 +51,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
       log('LoadLogs - Found ${cachedLogs.length} cached logs', name: 'LogBloc', level: 800);
 
       final filteredLogs = _applyFilters(cachedLogs, state);
-      final statistics = LogStatisticsExtensions.fromLogs(cachedLogs.map((log) => log.toEntity()).toList());
+      final statistics = LogStatistics.fromLogEntries(cachedLogs);
       final uniqueCategories = cachedLogs.where((log) => log.category != null && log.category != 'All').map((log) => log.category!).toSet().toList()..sort();
       final categories = ['All', ...uniqueCategories];
 
@@ -77,7 +76,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
     log('Total logs: ${updatedLogs.length}, Filtered: ${filtered.length}', name: 'LogBloc', level: 800);
 
-    final statistics = LogStatisticsExtensions.fromLogs(updatedLogs.map((log) => log.toEntity()).toList());
+    final statistics = LogStatistics.fromLogEntries(updatedLogs);
 
     // Update categories if a new category is found
     var updatedCategories = state.categories;
@@ -100,7 +99,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
   Future<void> _onClearLogs(ClearLogs event, Emitter<LogState> emit) async {
     repository.clearLogs();
-    emit(state.copyWith(logs: [], filteredLogs: [], statistics: LogStatisticsExtensions.fromLogs([]), clearSelectedLog: true));
+    emit(state.copyWith(logs: [], filteredLogs: [], statistics: LogStatistics.empty(), clearSelectedLog: true));
   }
 
   void _onToggleAutoScroll(ToggleAutoScroll event, Emitter<LogState> emit) {

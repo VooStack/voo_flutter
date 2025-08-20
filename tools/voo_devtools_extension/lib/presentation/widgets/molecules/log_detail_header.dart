@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
 
 class LogDetailHeader extends StatelessWidget {

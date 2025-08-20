@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:vm_service/vm_service.dart' as vm;
-import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/domain/datasources/devtools_log_datasource.dart';
 
 /// Implementation of DevTools log data source that connects to VM Service
@@ -73,33 +73,25 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
       // Add connection success log
       _addLog(
         LogEntryModel(
-          'connected_${DateTime.now().millisecondsSinceEpoch}',
-          DateTime.now(),
-          'DevTools extension connected',
-          LogLevel.info,
-          'System',
-          'DevTools',
-          {'connected': true},
-          null,
-          null,
-          null,
-          null,
+          id: 'connected_${DateTime.now().millisecondsSinceEpoch}',
+          timestamp: DateTime.now(),
+          message: 'DevTools extension connected',
+          level: LogLevel.info,
+          category: 'System',
+          tag: 'DevTools',
+          metadata: {'connected': true},
         ),
       );
     } catch (e) {
       _addLog(
         LogEntryModel(
-          'error_${DateTime.now().millisecondsSinceEpoch}',
-          DateTime.now(),
-          'Connection error: $e',
-          LogLevel.error,
-          'System',
-          'DevTools',
-          {'error': e.toString()},
-          null,
-          null,
-          null,
-          null,
+          id: 'error_${DateTime.now().millisecondsSinceEpoch}',
+          timestamp: DateTime.now(),
+          message: 'Connection error: $e',
+          level: LogLevel.error,
+          category: 'System',
+          tag: 'DevTools',
+          metadata: {'error': e.toString()},
         ),
       );
     }
@@ -138,17 +130,15 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
       final entry = data['entry'] as Map<String, dynamic>;
 
       final logEntry = LogEntryModel(
-        entry['id'] as String,
-        DateTime.parse(entry['timestamp'] as String),
-        entry['message'] as String,
-        _parseLogLevel(entry['level'] as String),
-        entry['category'] as String?,
-        entry['tag'] as String?,
-        entry['metadata'] as Map<String, dynamic>?,
-        entry['error']?.toString(),
-        entry['stackTrace'] as String?,
-        entry['userId'] as String?,
-        entry['sessionId'] as String?,
+        id: entry['id'] as String,
+        timestamp: DateTime.parse(entry['timestamp'] as String),
+        message: entry['message'] as String,
+        level: _parseLogLevel(entry['level'] as String),
+        category: entry['category'] as String?,
+        tag: entry['tag'] as String?,
+        metadata: entry['metadata'] as Map<String, dynamic>?,
+        error: entry['error']?.toString(),
+        stackTrace: entry['stackTrace'] as String?,
       );
 
       _addLog(logEntry);

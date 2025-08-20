@@ -19,7 +19,7 @@ class SpanContext {
   factory SpanContext.fromTraceparent(String traceparent) {
     final parts = traceparent.split('-');
     if (parts.length != 4) {
-      throw FormatException('Invalid traceparent format');
+      throw const FormatException('Invalid traceparent format');
     }
     
     return SpanContext(

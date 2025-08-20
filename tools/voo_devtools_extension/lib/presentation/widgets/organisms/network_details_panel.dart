@@ -2,37 +2,40 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_header.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section_with_actions.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/network_method_chip.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/network_status_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/status_badge.dart';
 
 class NetworkDetailsPanel extends StatelessWidget {
-  final LogEntryModel log;
+  final LogEntryModel? log;
+  final NetworkRequestModel? request;
   final VoidCallback onClose;
 
-  const NetworkDetailsPanel({
-    super.key,
-    required this.log,
-    required this.onClose,
-  });
+  const NetworkDetailsPanel({super.key, this.log, this.request, required this.onClose}) : assert(log != null || request != null, 'Either log or request must be provided');
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final metadata = log.metadata ?? {};
-    final method = metadata['method'] as String? ?? 'GET';
-    final url = metadata['url'] as String? ?? log.message;
-    final statusCode = metadata['statusCode'] as int?;
-    final duration = metadata['duration'] as int?;
-    // Headers might be in the metadata directly for requests
-    final requestHeaders = metadata['headers'] as Map<String, dynamic>? ?? 
-                           metadata['requestHeaders'] as Map<String, dynamic>?;
-    final responseHeaders = metadata['responseHeaders'] as Map<String, dynamic>?;
-    final requestBody = metadata['requestBody'];
-    final responseBody = metadata['responseBody'];
+
+    // Use request if available, otherwise convert log to request
+    final networkRequest = request ?? (log != null ? NetworkRequestModel.fromLogEntry(log!) : null);
+    if (networkRequest == null) {
+      return Container(); // Should never happen due to assert
+    }
+
+    final method = networkRequest.method;
+    final url = networkRequest.url;
+    final statusCode = networkRequest.statusCode;
+    final duration = networkRequest.duration;
+    final requestHeaders = networkRequest.requestHeaders;
+    final responseHeaders = networkRequest.responseHeaders;
+    final requestBody = networkRequest.requestBody;
+    final responseBody = networkRequest.responseBody;
+    final error = networkRequest.error;
 
     return Container(
       decoration: BoxDecoration(
@@ -41,10 +44,7 @@ class NetworkDetailsPanel extends StatelessWidget {
       ),
       child: Column(
         children: [
-          DetailHeader(
-            title: 'Network Request Details',
-            onClose: onClose,
-          ),
+          DetailHeader(title: 'Network Request Details', onClose: onClose),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -54,19 +54,13 @@ class NetworkDetailsPanel extends StatelessWidget {
                   // Request Overview
                   Row(
                     children: [
-                      NetworkMethodChip(method: method),
+                      MethodBadge(method: method),
                       const SizedBox(width: 12),
-                      if (statusCode != null) ...[
-                        NetworkStatusBadge(statusCode: statusCode),
-                        const SizedBox(width: 12),
-                      ],
+                      if (statusCode != null) ...[StatusBadge(statusCode: statusCode), const SizedBox(width: 12)],
                       if (duration != null)
                         Text(
                           '${duration}ms',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: duration > 1000 ? Colors.orange : null,
-                          ),
+                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: duration > 1000 ? Colors.orange : null),
                         ),
                     ],
                   ),
@@ -75,10 +69,7 @@ class NetworkDetailsPanel extends StatelessWidget {
                   // URL Section
                   DetailSection(
                     title: 'URL',
-                    content: SelectableText(
-                      url,
-                      style: theme.textTheme.bodyMedium,
-                    ),
+                    content: SelectableText(url, style: theme.textTheme.bodyMedium),
                   ),
 
                   // Timing
@@ -88,10 +79,7 @@ class NetworkDetailsPanel extends StatelessWidget {
                       title: 'Timing',
                       content: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildInfoRow('Duration', '${duration}ms'),
-                          _buildInfoRow('Timestamp', log.timestamp.toString()),
-                        ],
+                        children: [_buildInfoRow('Duration', '${duration}ms'), _buildInfoRow('Timestamp', networkRequest.timestamp.toString())],
                       ),
                     ),
                   ],
@@ -99,10 +87,7 @@ class NetworkDetailsPanel extends StatelessWidget {
                   // Request Headers
                   if (requestHeaders != null && requestHeaders.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Request Headers',
-                      content: _buildHeadersList(requestHeaders),
-                    ),
+                    DetailSection(title: 'Request Headers', content: _buildHeadersList(requestHeaders)),
                   ],
 
                   // Request Body
@@ -111,24 +96,12 @@ class NetworkDetailsPanel extends StatelessWidget {
                     DetailSectionWithActions(
                       title: 'Request Body',
                       actions: [
-                        IconButton(
-                          icon: const Icon(Icons.copy, size: 18),
-                          onPressed: () => _copyToClipboard(context, requestBody.toString()),
-                          tooltip: 'Copy request body',
-                        ),
+                        IconButton(icon: const Icon(Icons.copy, size: 18), onPressed: () => _copyToClipboard(context, requestBody.toString()), tooltip: 'Copy request body'),
                       ],
                       content: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: SelectableText(
-                          _formatJson(requestBody),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                          ),
-                        ),
+                        decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(4)),
+                        child: SelectableText(_formatJson(requestBody), style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
                       ),
                     ),
                   ],
@@ -136,10 +109,7 @@ class NetworkDetailsPanel extends StatelessWidget {
                   // Response Headers
                   if (responseHeaders != null && responseHeaders.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Response Headers',
-                      content: _buildHeadersList(responseHeaders),
-                    ),
+                    DetailSection(title: 'Response Headers', content: _buildHeadersList(responseHeaders)),
                   ],
 
                   // Response Body
@@ -148,30 +118,18 @@ class NetworkDetailsPanel extends StatelessWidget {
                     DetailSectionWithActions(
                       title: 'Response Body',
                       actions: [
-                        IconButton(
-                          icon: const Icon(Icons.copy, size: 18),
-                          onPressed: () => _copyToClipboard(context, responseBody.toString()),
-                          tooltip: 'Copy response body',
-                        ),
+                        IconButton(icon: const Icon(Icons.copy, size: 18), onPressed: () => _copyToClipboard(context, responseBody.toString()), tooltip: 'Copy response body'),
                       ],
                       content: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: SelectableText(
-                          _formatJson(responseBody),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                          ),
-                        ),
+                        decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(4)),
+                        child: SelectableText(_formatJson(responseBody), style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
                       ),
                     ),
                   ],
 
                   // Error Section
-                  if (log.error != null) ...[
+                  if (error != null) ...[
                     const SizedBox(height: 16),
                     DetailSection(
                       title: 'Error',
@@ -183,11 +141,8 @@ class NetworkDetailsPanel extends StatelessWidget {
                           border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                         ),
                         child: SelectableText(
-                          log.error.toString(),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.red,
-                            fontFamily: 'monospace',
-                          ),
+                          error,
+                          style: theme.textTheme.bodySmall?.copyWith(color: Colors.red, fontFamily: 'monospace'),
                         ),
                       ),
                     ),
@@ -209,17 +164,9 @@ class NetworkDetailsPanel extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            ),
+            child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
           ),
-          Expanded(
-            child: SelectableText(
-              value,
-              style: const TextStyle(fontSize: 12),
-            ),
-          ),
+          Expanded(child: SelectableText(value, style: const TextStyle(fontSize: 12))),
         ],
       ),
     );
@@ -249,11 +196,6 @@ class NetworkDetailsPanel extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied to clipboard'), duration: Duration(seconds: 2)));
   }
 }

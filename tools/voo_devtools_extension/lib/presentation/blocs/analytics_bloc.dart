@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_state.dart';
-import 'package:voo_logging/voo_logging.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 
 class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
   final DevToolsLogRepository repository;
@@ -26,14 +26,27 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
       // Get initial cached logs
       final cachedLogs = repository.getCachedLogs();
       final analyticsLogs = cachedLogs
-          .where((log) => log.category == 'analytics' || log.message.contains('analytics') || log.message.contains('event') || log.message.contains('track'))
+          .where((log) => 
+              log.category?.toLowerCase() == 'analytics' || 
+              log.tag == 'VooAnalytics' ||
+              (log.metadata?['type'] == 'touch_event') ||
+              (log.metadata?['type'] == 'analytics_event') ||
+              (log.metadata?['type'] == 'route_screenshot') ||
+              log.message.contains('Touch event') ||
+              log.message.contains('Analytics event'))
           .toList();
 
       add(FilterAnalyticsEvents(analyticsLogs));
 
       // Listen to new logs
       _logsSubscription = repository.logStream.listen((log) {
-        if (log.category == 'analytics' || log.message.contains('analytics') || log.message.contains('event') || log.message.contains('track')) {
+        if (log.category?.toLowerCase() == 'analytics' || 
+            log.tag == 'VooAnalytics' ||
+            (log.metadata?['type'] == 'touch_event') ||
+            (log.metadata?['type'] == 'analytics_event') ||
+            (log.metadata?['type'] == 'route_screenshot') ||
+            log.message.contains('Touch event') ||
+            log.message.contains('Analytics event')) {
           final updatedLogs = [...state.allEvents, log];
           add(FilterAnalyticsEvents(updatedLogs));
         }

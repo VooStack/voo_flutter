@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/info_row.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_detail_header.dart';
@@ -39,8 +38,6 @@ class LogDetailsPanel extends StatelessWidget {
                   InfoRow(label: 'Level', value: log.level.displayName),
                   if (log.category != null) InfoRow(label: 'Category', value: log.category!),
                   if (log.tag != null) InfoRow(label: 'Tag', value: log.tag!),
-                  if (log.userId != null) InfoRow(label: 'User ID', value: log.userId!),
-                  if (log.sessionId != null) InfoRow(label: 'Session ID', value: log.sessionId!),
                   if (log.error != null) ...[
                     const SizedBox(height: 16),
                     DetailSection(
@@ -86,8 +83,6 @@ class LogDetailsPanel extends StatelessWidget {
     buffer.writeln('Level: ${log.level.displayName}');
     if (log.category != null) buffer.writeln('Category: ${log.category}');
     if (log.tag != null) buffer.writeln('Tag: ${log.tag}');
-    if (log.userId != null) buffer.writeln('User ID: ${log.userId}');
-    if (log.sessionId != null) buffer.writeln('Session ID: ${log.sessionId}');
     buffer.writeln('\nMessage:\n${log.message}');
 
     if (log.error != null) {

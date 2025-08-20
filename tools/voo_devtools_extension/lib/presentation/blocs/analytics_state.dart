@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 
 class AnalyticsState extends Equatable {
   final List<LogEntryModel> allEvents;
@@ -9,14 +9,7 @@ class AnalyticsState extends Equatable {
   final String? error;
   final String searchQuery;
 
-  const AnalyticsState({
-    this.allEvents = const [],
-    this.filteredEvents = const [],
-    this.selectedEvent,
-    this.isLoading = false,
-    this.error,
-    this.searchQuery = '',
-  });
+  const AnalyticsState({this.allEvents = const [], this.filteredEvents = const [], this.selectedEvent, this.isLoading = false, this.error, this.searchQuery = ''});
 
   AnalyticsState copyWith({
     List<LogEntryModel>? allEvents,
@@ -37,12 +30,5 @@ class AnalyticsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        allEvents,
-        filteredEvents,
-        selectedEvent,
-        isLoading,
-        error,
-        searchQuery,
-      ];
+  List<Object?> get props => [allEvents, filteredEvents, selectedEvent, isLoading, error, searchQuery];
 }

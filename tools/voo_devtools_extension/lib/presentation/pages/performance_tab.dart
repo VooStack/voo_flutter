@@ -18,6 +18,9 @@ class PerformanceTab extends StatefulWidget {
 class _PerformanceTabState extends State<PerformanceTab> with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
+  double _detailsPanelWidth = 400.0;
+  final double _minDetailsPanelWidth = 300.0;
+  final double _maxDetailsPanelWidth = 600.0;
 
   @override
   bool get wantKeepAlive => true;
@@ -64,14 +67,40 @@ class _PerformanceTabState extends State<PerformanceTab> with AutomaticKeepAlive
                       },
                     ),
                   ),
-                  if (_showDetails && state.selectedLog != null)
+                  if (_showDetails && state.selectedLog != null) ...[
+                    // Resizable divider
+                    MouseRegion(
+                      cursor: SystemMouseCursors.resizeColumn,
+                      child: GestureDetector(
+                        onHorizontalDragUpdate: (details) {
+                          setState(() {
+                            _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
+                              _minDetailsPanelWidth,
+                              _maxDetailsPanelWidth,
+                            );
+                          });
+                        },
+                        child: Container(
+                          width: 4,
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Container(
+                              width: 1,
+                              color: theme.colorScheme.outlineVariant,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Details panel
                     SizedBox(
-                      width: 400,
+                      width: _detailsPanelWidth,
                       child: PerformanceDetailsPanel(
                         log: state.selectedLog!,
                         onClose: () => setState(() => _showDetails = false),
                       ),
                     ),
+                  ],
                 ],
               ),
             ),

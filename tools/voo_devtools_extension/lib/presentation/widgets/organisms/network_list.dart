@@ -1,54 +1,102 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/network_request_tile.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_network_placeholder.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class NetworkList extends StatelessWidget {
-  final List<LogEntryModel> logs;
+  // Support both old and new interfaces
+  final List<LogEntryModel>? logs;
+  final List<NetworkRequestModel>? requests;
   final String? selectedLogId;
+  final String? selectedRequestId;
   final ScrollController scrollController;
   final bool isLoading;
   final String? error;
-  final Function(LogEntryModel) onLogTap;
+  final Function(LogEntryModel)? onLogTap;
+  final Function(NetworkRequestModel)? onRequestTap;
 
   const NetworkList({
     super.key,
-    required this.logs,
+    this.logs,
+    this.requests,
     this.selectedLogId,
+    this.selectedRequestId,
     required this.scrollController,
     required this.isLoading,
     this.error,
-    required this.onLogTap,
-  });
+    this.onLogTap,
+    this.onRequestTap,
+  }) : assert(
+         (logs != null && onLogTap != null) || 
+         (requests != null && onRequestTap != null),
+         'Either logs/onLogTap or requests/onRequestTap must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (error != null) {
-      return ErrorPlaceholder(error: 'Error loading network logs\n$error');
+      return ErrorPlaceholder(error: 'Error loading network data\n$error');
     }
 
-    if (logs.isEmpty) {
-      return const EmptyNetworkPlaceholder();
+    // Handle new request-based interface
+    if (requests != null && onRequestTap != null) {
+      if (requests!.isEmpty) {
+        return const EmptyNetworkPlaceholder();
+      }
+
+      return Container(
+        color: theme.colorScheme.surface,
+        child: ListView.builder(
+          controller: scrollController,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemCount: requests!.length,
+          itemBuilder: (context, index) {
+            final request = requests![index];
+            final isSelected = selectedRequestId == request.id;
+
+            return NetworkRequestTile(
+              request: request,
+              selected: isSelected,
+              onTap: () => onRequestTap!(request),
+            );
+          },
+        ),
+      );
     }
 
-    return ListView.builder(
-      controller: scrollController,
-      itemCount: logs.length,
-      itemBuilder: (context, index) {
-        final log = logs[index];
-        final isSelected = selectedLogId == log.id;
+    // Handle legacy log-based interface
+    if (logs != null && onLogTap != null) {
+      if (logs!.isEmpty) {
+        return const EmptyNetworkPlaceholder();
+      }
 
-        return NetworkRequestTile(
-          log: log,
-          selected: isSelected,
-          onTap: () => onLogTap(log),
-        );
-      },
-    );
+      return ListView.builder(
+        controller: scrollController,
+        itemCount: logs!.length,
+        itemBuilder: (context, index) {
+          final log = logs![index];
+          final isSelected = selectedLogId == log.id;
+          
+          // Convert log to request for the tile
+          final request = NetworkRequestModel.fromLogEntry(log);
+
+          return NetworkRequestTile(
+            request: request,
+            selected: isSelected,
+            onTap: () => onLogTap!(log),
+          );
+        },
+      );
+    }
+
+    return const EmptyNetworkPlaceholder();
   }
 }

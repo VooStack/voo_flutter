@@ -22,6 +22,9 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
   final _scrollController = ScrollController();
   bool _showDetails = false;
   bool _showHeatMap = false;
+  double _detailsPanelWidth = 400.0;
+  final double _minDetailsPanelWidth = 300.0;
+  final double _maxDetailsPanelWidth = 600.0;
 
   @override
   bool get wantKeepAlive => true;
@@ -90,11 +93,40 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
                             },
                           ),
                         ),
-                        if (_showDetails && state.selectedEvent != null)
-                          SizedBox(
-                            width: 400,
-                            child: AnalyticsDetailsPanel(event: state.selectedEvent!, onClose: () => setState(() => _showDetails = false)),
+                        if (_showDetails && state.selectedEvent != null) ...[
+                          // Resizable divider
+                          MouseRegion(
+                            cursor: SystemMouseCursors.resizeColumn,
+                            child: GestureDetector(
+                              onHorizontalDragUpdate: (details) {
+                                setState(() {
+                                  _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
+                                    _minDetailsPanelWidth,
+                                    _maxDetailsPanelWidth,
+                                  );
+                                });
+                              },
+                              child: Container(
+                                width: 4,
+                                color: Colors.transparent,
+                                child: Center(
+                                  child: Container(
+                                    width: 1,
+                                    color: theme.colorScheme.outlineVariant,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
+                          // Details panel
+                          SizedBox(
+                            width: _detailsPanelWidth,
+                            child: AnalyticsDetailsPanel(
+                              event: state.selectedEvent!,
+                              onClose: () => setState(() => _showDetails = false),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
             ),
