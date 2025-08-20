@@ -56,14 +56,14 @@ class NetworkMetric extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        url,
-        method,
-        statusCode,
-        duration,
-        timestamp,
-        requestSize,
-        responseSize,
-        metadata,
-      ];
+    id,
+    url,
+    method,
+    statusCode,
+    duration,
+    timestamp,
+    requestSize,
+    responseSize,
+    metadata,
+  ];
 }

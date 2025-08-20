@@ -80,10 +80,10 @@ enum LogLevel {
 extension LogLevelExtensions on LogLevel {
   /// Check if this level is considered an error
   bool get isError => this == LogLevel.error || this == LogLevel.fatal;
-  
+
   /// Check if this level is considered a warning
   bool get isWarning => this == LogLevel.warning;
-  
+
   /// Get priority for sorting (higher = more important)
   int get priority {
     switch (this) {
@@ -110,9 +110,9 @@ extension LogLevelExtensions on LogLevel {
 /// Helper class for log level colors
 class LogLevelColor {
   final int value;
-  
+
   const LogLevelColor(this.value);
-  
+
   /// Create from log level
   factory LogLevelColor.fromLevel(LogLevel level) {
     return LogLevelColor(level.color);

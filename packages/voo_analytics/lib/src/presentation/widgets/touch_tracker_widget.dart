@@ -21,15 +21,22 @@ class TouchTrackerWidget extends StatefulWidget {
 
 class _TouchTrackerWidgetState extends State<TouchTrackerWidget> {
   Offset? _lastPosition;
-  
-  void _logTouchEvent(Offset position, TouchType type, {String? widgetType, String? widgetKey}) {
+
+  void _logTouchEvent(
+    Offset position,
+    TouchType type, {
+    String? widgetType,
+    String? widgetKey,
+  }) {
     if (!widget.enabled || !VooAnalyticsPlugin.instance.isInitialized) {
       return;
     }
 
     // Use last known position for end events if position is zero
-    final effectivePosition = (position == Offset.zero && _lastPosition != null) ? _lastPosition! : position;
-    
+    final effectivePosition = (position == Offset.zero && _lastPosition != null)
+        ? _lastPosition!
+        : position;
+
     // Update last position if not zero
     if (position != Offset.zero) {
       _lastPosition = position;
@@ -128,8 +135,9 @@ class TouchableWidget extends StatelessWidget {
               position.dy + size.height / 2,
             );
 
-            final screenName = ModalRoute.of(context)?.settings.name ?? 'unknown';
-            
+            final screenName =
+                ModalRoute.of(context)?.settings.name ?? 'unknown';
+
             final event = TouchEvent(
               id: DateTime.now().microsecondsSinceEpoch.toString(),
               timestamp: DateTime.now(),
@@ -141,9 +149,9 @@ class TouchableWidget extends StatelessWidget {
             );
 
             final repository = VooAnalyticsPlugin.instance.repository;
-    if (repository is AnalyticsRepositoryImpl) {
-      repository.logTouchEvent(event);
-    }
+            if (repository is AnalyticsRepositoryImpl) {
+              repository.logTouchEvent(event);
+            }
           }
         }
         onTap?.call();

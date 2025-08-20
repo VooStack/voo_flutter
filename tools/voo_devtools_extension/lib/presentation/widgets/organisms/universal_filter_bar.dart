@@ -46,18 +46,16 @@ class UniversalFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
-      height: AppTheme.filterBarHeight,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingLg,
-        vertical: AppTheme.spacingSm,
-      ),
+      height: 56,
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border(
           bottom: BorderSide(
-            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+            width: 0.5,
           ),
         ),
       ),
@@ -70,7 +68,9 @@ class UniversalFilterBar extends StatelessWidget {
               child: Container(
                 height: 36,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  ),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   border: Border.all(
                     color: theme.colorScheme.outline.withValues(alpha: 0.2),
@@ -82,12 +82,16 @@ class UniversalFilterBar extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: searchHint,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      color: theme.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.5,
+                      ),
                     ),
                     prefixIcon: Icon(
                       Icons.search,
                       size: 18,
-                      color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      color: theme.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.5,
+                      ),
                     ),
                     suffixIcon: searchQuery?.isNotEmpty == true
                         ? IconButton(
@@ -112,7 +116,7 @@ class UniversalFilterBar extends StatelessWidget {
             ),
             const SizedBox(width: AppTheme.spacingMd),
           ],
-          
+
           // Filter chips
           if (showFilters && filterOptions.isNotEmpty) ...[
             Expanded(
@@ -129,31 +133,37 @@ class UniversalFilterBar extends StatelessWidget {
                       isSelected: selectedFilter == null,
                       onSelected: (_) => onFilterChanged(null),
                     ),
-                    ...filterOptions.map((option) => Padding(
-                      padding: const EdgeInsets.only(left: AppTheme.spacingSm),
-                      child: _buildFilterChip(
-                        context,
-                        label: option.label,
-                        value: option.value,
-                        icon: option.icon,
-                        color: option.color,
-                        isSelected: selectedFilter == option.value,
-                        onSelected: (_) => onFilterChanged(option.value),
+                    ...filterOptions.map(
+                      (option) => Padding(
+                        padding: const EdgeInsets.only(
+                          left: AppTheme.spacingSm,
+                        ),
+                        child: _buildFilterChip(
+                          context,
+                          label: option.label,
+                          value: option.value,
+                          icon: option.icon,
+                          color: option.color,
+                          isSelected: selectedFilter == option.value,
+                          onSelected: (_) => onFilterChanged(option.value),
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(width: AppTheme.spacingMd),
           ],
-          
+
           // Additional actions
-          ...additionalActions.map((action) => Padding(
-            padding: const EdgeInsets.only(left: AppTheme.spacingSm),
-            child: action,
-          )),
-          
+          ...additionalActions.map(
+            (action) => Padding(
+              padding: const EdgeInsets.only(left: AppTheme.spacingSm),
+              child: action,
+            ),
+          ),
+
           // Clear button
           if (onClear != null) ...[
             const SizedBox(width: AppTheme.spacingSm),
@@ -180,7 +190,7 @@ class UniversalFilterBar extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     final chipColor = color ?? theme.colorScheme.primary;
-    
+
     return FilterChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
@@ -189,14 +199,18 @@ class UniversalFilterBar extends StatelessWidget {
             Icon(
               icon,
               size: 14,
-              color: isSelected ? chipColor : theme.colorScheme.onSurfaceVariant,
+              color: isSelected
+                  ? chipColor
+                  : theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 4),
           ],
           Text(
             label,
             style: theme.textTheme.labelMedium?.copyWith(
-              color: isSelected ? chipColor : theme.colorScheme.onSurfaceVariant,
+              color: isSelected
+                  ? chipColor
+                  : theme.colorScheme.onSurfaceVariant,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -207,7 +221,7 @@ class UniversalFilterBar extends StatelessWidget {
       selectedColor: chipColor.withValues(alpha: 0.15),
       backgroundColor: theme.colorScheme.surface,
       side: BorderSide(
-        color: isSelected 
+        color: isSelected
             ? chipColor.withValues(alpha: 0.5)
             : theme.colorScheme.outline.withValues(alpha: 0.3),
         width: isSelected ? 1.5 : 1,

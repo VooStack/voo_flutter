@@ -8,7 +8,7 @@ class PrettyLogFormatter {
   final bool showColors;
   final bool showBorders;
   final int lineLength;
-  
+
   const PrettyLogFormatter({
     this.enabled = true,
     this.showEmojis = true,
@@ -22,33 +22,33 @@ class PrettyLogFormatter {
     if (!enabled) {
       return _formatSimple(entry);
     }
-    
+
     return _formatPretty(entry);
   }
 
   String _formatSimple(LogEntry entry) {
     final buffer = StringBuffer();
-    
+
     if (showTimestamp) {
       buffer.write('[${_formatTimestamp(entry.timestamp)}] ');
     }
-    
+
     buffer.write('[${entry.level.name.toUpperCase()}] ');
-    
+
     if (entry.category != null) {
       buffer.write('[${entry.category}] ');
     }
-    
+
     if (entry.tag != null) {
       buffer.write('[${entry.tag}] ');
     }
-    
+
     buffer.write(entry.message);
-    
+
     if (entry.error != null) {
       buffer.write(' | Error: ${entry.error}');
     }
-    
+
     return buffer.toString();
   }
 
@@ -57,32 +57,32 @@ class PrettyLogFormatter {
     final color = _getAnsiColor(entry.level);
     const resetColor = '\x1B[0m';
     const boldColor = '\x1B[1m';
-    
+
     // Top border
     if (showBorders) {
       buffer.writeln(_createBorder('┌', '─', '┐', color));
     }
-    
+
     // Header line with emoji, level, timestamp
     buffer.write(showColors ? color : '');
-    
+
     if (showBorders) {
       buffer.write('│ ');
     }
-    
+
     if (showEmojis) {
       buffer.write('${entry.level.icon}  ');
     }
-    
+
     buffer.write(showColors ? boldColor : '');
     buffer.write(entry.level.name.toUpperCase().padRight(7));
     buffer.write(showColors ? resetColor : '');
     buffer.write(showColors ? color : '');
-    
+
     if (showTimestamp) {
       buffer.write(' │ ${_formatTimestamp(entry.timestamp)}');
     }
-    
+
     if (entry.category != null || entry.tag != null) {
       buffer.write(' │ ');
       if (entry.category != null) {
@@ -92,7 +92,7 @@ class PrettyLogFormatter {
         buffer.write('[${entry.tag}]');
       }
     }
-    
+
     if (showBorders) {
       final headerLength = _stripAnsi(buffer.toString().split('\n').last).length;
       final padding = lineLength - headerLength - 1;
@@ -101,14 +101,14 @@ class PrettyLogFormatter {
       }
       buffer.write('│');
     }
-    
+
     buffer.writeln(showColors ? resetColor : '');
-    
+
     // Message section
     if (showBorders) {
       buffer.writeln(_createBorder('├', '─', '┤', color));
     }
-    
+
     // Wrap and format message
     final messageLines = _wrapText(entry.message, lineLength - 4);
     for (final line in messageLines) {
@@ -127,13 +127,13 @@ class PrettyLogFormatter {
       }
       buffer.writeln(showColors ? resetColor : '');
     }
-    
+
     // Metadata section
     if (entry.metadata != null && entry.metadata!.isNotEmpty) {
       if (showBorders) {
         buffer.writeln(_createBorder('├', '─', '┤', color));
       }
-      
+
       buffer.write(showColors ? color : '');
       if (showBorders) {
         buffer.write('│ ');
@@ -147,7 +147,7 @@ class PrettyLogFormatter {
         buffer.write(' │');
       }
       buffer.writeln(showColors ? resetColor : '');
-      
+
       entry.metadata!.forEach((key, value) {
         final metadataLine = '  • $key: $value';
         final wrappedLines = _wrapText(metadataLine, lineLength - 4);
@@ -169,13 +169,13 @@ class PrettyLogFormatter {
         }
       });
     }
-    
+
     // Error section
     if (entry.error != null) {
       if (showBorders) {
         buffer.writeln(_createBorder('├', '─', '┤', color));
       }
-      
+
       final errorColor = showColors ? '\x1B[91m' : ''; // Bright red
       buffer.write(errorColor);
       if (showBorders) {
@@ -191,7 +191,7 @@ class PrettyLogFormatter {
         buffer.write(' │');
       }
       buffer.writeln(showColors ? resetColor : '');
-      
+
       if (entry.stackTrace != null) {
         final stackLines = entry.stackTrace!.split('\n').take(5);
         for (final line in stackLines) {
@@ -231,12 +231,12 @@ class PrettyLogFormatter {
         }
       }
     }
-    
+
     // Bottom border
     if (showBorders) {
       buffer.writeln(_createBorder('└', '─', '┘', color));
     }
-    
+
     return buffer.toString();
   }
 
@@ -250,11 +250,11 @@ class PrettyLogFormatter {
     if (text.length <= maxLength) {
       return [text];
     }
-    
+
     final lines = <String>[];
     final words = text.split(' ');
     var currentLine = '';
-    
+
     for (final word in words) {
       if (currentLine.isEmpty) {
         currentLine = word;
@@ -265,11 +265,11 @@ class PrettyLogFormatter {
         currentLine = word;
       }
     }
-    
+
     if (currentLine.isNotEmpty) {
       lines.add(currentLine);
     }
-    
+
     return lines;
   }
 
@@ -279,7 +279,7 @@ class PrettyLogFormatter {
     if (!showColors || !_supportsAnsiColors()) {
       return '';
     }
-    
+
     switch (level) {
       case LogLevel.verbose:
         return '\x1B[90m'; // Bright black (gray)
@@ -300,19 +300,19 @@ class PrettyLogFormatter {
     if (Platform.isAndroid || Platform.isIOS) {
       return false;
     }
-    
+
     // Check if we're in a terminal that supports colors
     final term = Platform.environment['TERM'];
     if (term == null || term == 'dumb') {
       return false;
     }
-    
+
     // Check for common CI environments that might not support colors
     final ci = Platform.environment['CI'];
     if (ci == 'true') {
       return false;
     }
-    
+
     return stdout.supportsAnsiEscapes;
   }
 

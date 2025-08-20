@@ -27,11 +27,7 @@ class FilterNetworkLogs extends NetworkEvent {
   final String? statusFilter;
   final String? searchQuery;
 
-  const FilterNetworkLogs({
-    this.method,
-    this.statusFilter,
-    this.searchQuery,
-  });
+  const FilterNetworkLogs({this.method, this.statusFilter, this.searchQuery});
 
   @override
   List<Object?> get props => [method, statusFilter, searchQuery];

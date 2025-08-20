@@ -7,19 +7,30 @@ class LogLevelChip extends StatelessWidget {
   final bool selected;
   final VoidCallback? onTap;
 
-  const LogLevelChip({super.key, required this.level, this.selected = false, this.onTap});
+  const LogLevelChip({
+    super.key,
+    required this.level,
+    this.selected = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) => FilterChip(
     label: Text(
       level.displayName,
-      style: TextStyle(color: selected ? Colors.white : _getColor(level), fontSize: 12, fontWeight: FontWeight.w500),
+      style: TextStyle(
+        color: selected ? Colors.white : _getColor(level),
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
     ),
     selected: selected,
     onSelected: onTap != null ? (_) => onTap!() : null,
     backgroundColor: _getColor(level).withValues(alpha: 0.1),
     selectedColor: _getColor(level),
-    side: BorderSide(color: _getColor(level).withValues(alpha: selected ? 1 : 0.3)),
+    side: BorderSide(
+      color: _getColor(level).withValues(alpha: selected ? 1 : 0.3),
+    ),
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
   );

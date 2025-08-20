@@ -5,17 +5,13 @@ class MethodBadge extends StatelessWidget {
   final String method;
   final bool compact;
 
-  const MethodBadge({
-    super.key,
-    required this.method,
-    this.compact = false,
-  });
+  const MethodBadge({super.key, required this.method, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = _getMethodColor(method);
-    
+
     if (compact) {
       return Container(
         width: 40,
@@ -42,10 +38,7 @@ class MethodBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.1),
-            color.withValues(alpha: 0.05),
-          ],
+          colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

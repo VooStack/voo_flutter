@@ -9,7 +9,8 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
   final DevToolsLogRepository repository;
   StreamSubscription<LogEntryModel>? _logSubscription;
 
-  PerformanceBloc({required this.repository}) : super(const PerformanceState()) {
+  PerformanceBloc({required this.repository})
+    : super(const PerformanceState()) {
     on<LoadPerformanceLogs>(_onLoadPerformanceLogs);
     on<PerformanceLogReceived>(_onPerformanceLogReceived);
     on<ClearPerformanceLogs>(_onClearPerformanceLogs);
@@ -17,22 +18,29 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
     on<SelectPerformanceLog>(_onSelectPerformanceLog);
   }
 
-  Future<void> _onLoadPerformanceLogs(LoadPerformanceLogs event, Emitter<PerformanceState> emit) async {
+  Future<void> _onLoadPerformanceLogs(
+    LoadPerformanceLogs event,
+    Emitter<PerformanceState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true));
 
     try {
       // Get cached logs that are performance-related
       final cachedLogs = repository.getCachedLogs();
-      final performanceLogs = cachedLogs.where((log) => log.category == 'Performance').toList();
+      final performanceLogs = cachedLogs
+          .where((log) => log.category == 'Performance')
+          .toList();
 
       final averages = _calculateAverageDurations(performanceLogs);
 
-      emit(state.copyWith(
-        performanceLogs: performanceLogs,
-        filteredPerformanceLogs: performanceLogs,
-        averageDurations: averages,
-        isLoading: false,
-      ));
+      emit(
+        state.copyWith(
+          performanceLogs: performanceLogs,
+          filteredPerformanceLogs: performanceLogs,
+          averageDurations: averages,
+          isLoading: false,
+        ),
+      );
 
       // Subscribe to new logs
       await _logSubscription?.cancel();
@@ -42,35 +50,45 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
         }
       });
     } catch (e) {
-      emit(state.copyWith(
-        error: e.toString(),
-        isLoading: false,
-      ));
+      emit(state.copyWith(error: e.toString(), isLoading: false));
     }
   }
 
-  void _onPerformanceLogReceived(PerformanceLogReceived event, Emitter<PerformanceState> emit) {
+  void _onPerformanceLogReceived(
+    PerformanceLogReceived event,
+    Emitter<PerformanceState> emit,
+  ) {
     final updatedLogs = [...state.performanceLogs, event.log];
     final filteredLogs = _applyFilters(updatedLogs);
     final averages = _calculateAverageDurations(updatedLogs);
-    
-    emit(state.copyWith(
-      performanceLogs: updatedLogs,
-      filteredPerformanceLogs: filteredLogs,
-      averageDurations: averages,
-    ));
+
+    emit(
+      state.copyWith(
+        performanceLogs: updatedLogs,
+        filteredPerformanceLogs: filteredLogs,
+        averageDurations: averages,
+      ),
+    );
   }
 
-  void _onClearPerformanceLogs(ClearPerformanceLogs event, Emitter<PerformanceState> emit) {
-    emit(state.copyWith(
-      performanceLogs: [],
-      filteredPerformanceLogs: [],
-      selectedLog: null,
-      averageDurations: {},
-    ));
+  void _onClearPerformanceLogs(
+    ClearPerformanceLogs event,
+    Emitter<PerformanceState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        performanceLogs: [],
+        filteredPerformanceLogs: [],
+        selectedLog: null,
+        averageDurations: {},
+      ),
+    );
   }
 
-  void _onFilterPerformanceLogs(FilterPerformanceLogs event, Emitter<PerformanceState> emit) {
+  void _onFilterPerformanceLogs(
+    FilterPerformanceLogs event,
+    Emitter<PerformanceState> emit,
+  ) {
     final filteredLogs = _applyFilters(
       state.performanceLogs,
       operationType: event.operationType,
@@ -78,15 +96,20 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
       searchQuery: event.searchQuery,
     );
 
-    emit(state.copyWith(
-      filteredPerformanceLogs: filteredLogs,
-      operationTypeFilter: event.operationType,
-      showSlowOnly: event.showSlowOnly ?? state.showSlowOnly,
-      searchQuery: event.searchQuery,
-    ));
+    emit(
+      state.copyWith(
+        filteredPerformanceLogs: filteredLogs,
+        operationTypeFilter: event.operationType,
+        showSlowOnly: event.showSlowOnly ?? state.showSlowOnly,
+        searchQuery: event.searchQuery,
+      ),
+    );
   }
 
-  void _onSelectPerformanceLog(SelectPerformanceLog event, Emitter<PerformanceState> emit) {
+  void _onSelectPerformanceLog(
+    SelectPerformanceLog event,
+    Emitter<PerformanceState> emit,
+  ) {
     emit(state.copyWith(selectedLog: event.log));
   }
 
@@ -124,7 +147,10 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
       final query = searchQuery.toLowerCase();
       filtered = filtered.where((log) {
         return log.message.toLowerCase().contains(query) ||
-            (log.metadata?['operation']?.toString().toLowerCase().contains(query) ?? false);
+            (log.metadata?['operation']?.toString().toLowerCase().contains(
+                  query,
+                ) ??
+                false);
       }).toList();
     }
 
@@ -137,7 +163,7 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
     for (final log in logs) {
       final operation = log.metadata?['operation'] as String? ?? 'Unknown';
       final duration = log.metadata?['duration'] as int?;
-      
+
       if (duration != null) {
         operationDurations.putIfAbsent(operation, () => []).add(duration);
       }
@@ -146,7 +172,8 @@ class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
     final averages = <String, double>{};
     operationDurations.forEach((operation, durations) {
       if (durations.isNotEmpty) {
-        averages[operation] = durations.reduce((a, b) => a + b) / durations.length;
+        averages[operation] =
+            durations.reduce((a, b) => a + b) / durations.length;
       }
     });
 

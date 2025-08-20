@@ -1,13 +1,7 @@
 import 'package:voo_logging/features/logging/domain/entities/voo_logger.dart';
 
 abstract class NetworkInterceptor {
-  Future<void> onRequest({
-    required String method,
-    required String url,
-    Map<String, String>? headers,
-    dynamic body,
-    Map<String, dynamic>? metadata,
-  });
+  Future<void> onRequest({required String method, required String url, Map<String, String>? headers, dynamic body, Map<String, dynamic>? metadata});
 
   Future<void> onResponse({
     required int statusCode,
@@ -19,12 +13,7 @@ abstract class NetworkInterceptor {
     Map<String, dynamic>? metadata,
   });
 
-  Future<void> onError({
-    required String url,
-    required Object error,
-    StackTrace? stackTrace,
-    Map<String, dynamic>? metadata,
-  });
+  Future<void> onError({required String url, required Object error, StackTrace? stackTrace, Map<String, dynamic>? metadata});
 }
 
 class VooNetworkInterceptor implements NetworkInterceptor {
@@ -33,39 +22,22 @@ class VooNetworkInterceptor implements NetworkInterceptor {
   const VooNetworkInterceptor({this.enabled = true});
 
   @override
-  Future<void> onRequest({
-    required String method,
-    required String url,
-    Map<String, String>? headers,
-    dynamic body,
-    Map<String, dynamic>? metadata,
-  }) async {
+  Future<void> onRequest({required String method, required String url, Map<String, String>? headers, dynamic body, Map<String, dynamic>? metadata}) async {
     if (!enabled) return;
-    
-    final Map<String, String> requestHeaders = {};
-    if (headers != null) {
-      headers.forEach((key, value) {
-        requestHeaders[key] = value.toString();
-      });
-    }
-    
-    final Map<String, String> metadataMap = {};
+
+    final Map<String, dynamic> fullMetadata = {
+      'method': method,
+      'url': url,
+      'requestHeaders': headers ?? {},
+      'requestBody': body,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+
     if (metadata != null) {
-      metadata.forEach((key, value) {
-        metadataMap[key] = value?.toString() ?? '';
-      });
+      fullMetadata.addAll(metadata);
     }
-    if (body != null) {
-      metadataMap['requestBody'] = body.toString();
-    }
-    metadataMap['timestamp'] = DateTime.now().toIso8601String();
-    
-    await VooLogger.networkRequest(
-      method,
-      url,
-      headers: requestHeaders,
-      metadata: metadataMap,
-    );
+
+    await VooLogger.info('$method $url', category: 'Network', tag: 'Request', metadata: fullMetadata);
   }
 
   @override
@@ -79,57 +51,33 @@ class VooNetworkInterceptor implements NetworkInterceptor {
     Map<String, dynamic>? metadata,
   }) async {
     if (!enabled) return;
-    
-    final Map<String, String> responseHeaders = {};
-    if (headers != null) {
-      headers.forEach((key, value) {
-        responseHeaders[key] = value.toString();
-      });
-    }
-    
-    final Map<String, Object> metadataMap = {};
+
+    final Map<String, Object> fullMetadata = {
+      'statusCode': statusCode,
+      'url': url,
+      'method': (metadata?['method'] as String?) ?? 'GET',
+      'duration': duration.inMilliseconds,
+      'contentLength': contentLength ?? 0,
+      'responseHeaders': (headers ?? <String, String>{}) as Object,
+      if (body != null) 'responseBody': body as Object,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+
     if (metadata != null) {
       metadata.forEach((key, value) {
-        if (value != null) {
-          metadataMap[key] = value as Object;
+        if (value != null && key != 'method') {
+          fullMetadata[key] = value as Object;
         }
       });
     }
-    if (body != null) {
-      metadataMap['responseBody'] = body as Object;
-    }
-    metadataMap['timestamp'] = DateTime.now().toIso8601String();
-    
-    await VooLogger.info(
-      'HTTP $statusCode $url (${duration.inMilliseconds}ms)',
-      category: 'Network',
-      tag: 'Response',
-      metadata: {
-        'statusCode': statusCode,
-        'url': url,
-        'duration': duration.inMilliseconds,
-        'contentLength': contentLength ?? 0,
-        ...metadataMap,
-      },
-    );
+
+    await VooLogger.info('HTTP $statusCode $url (${duration.inMilliseconds}ms)', category: 'Network', tag: 'Response', metadata: fullMetadata);
   }
 
   @override
-  Future<void> onError({
-    required String url,
-    required Object error,
-    StackTrace? stackTrace,
-    Map<String, dynamic>? metadata,
-  }) async {
+  Future<void> onError({required String url, required Object error, StackTrace? stackTrace, Map<String, dynamic>? metadata}) async {
     if (!enabled) return;
-    
-    await VooLogger.error(
-      'Network error: $url',
-      error: error,
-      stackTrace: stackTrace,
-      category: 'Network',
-      tag: 'Error',
-      metadata: metadata,
-    );
+
+    await VooLogger.error('Network error: $url', error: error, stackTrace: stackTrace, category: 'Network', tag: 'Error', metadata: metadata);
   }
 }

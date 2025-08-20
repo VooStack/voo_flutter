@@ -18,7 +18,11 @@ class DevToolsLogRepositoryImpl implements DevToolsLogRepository {
   void clearLogs() => dataSource.clearCache();
 
   @override
-  List<LogEntryModel> filterLogs({List<LogLevel>? levels, String? searchQuery, String? category}) {
+  List<LogEntryModel> filterLogs({
+    List<LogLevel>? levels,
+    String? searchQuery,
+    String? category,
+  }) {
     var logs = getCachedLogs();
 
     if (levels != null && levels.isNotEmpty) {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_list.dart';
@@ -14,7 +15,8 @@ class NetworkTab extends StatefulWidget {
   State<NetworkTab> createState() => _NetworkTabState();
 }
 
-class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMixin {
+class _NetworkTabState extends State<NetworkTab>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
   double _detailsPanelWidth = 400.0;
@@ -43,6 +45,30 @@ class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMi
       },
       builder: (context, state) => Column(
         children: [
+          // Page header
+          PageHeader(
+            icon: Icons.wifi,
+            title: 'Network',
+            subtitle: 'Network request monitoring',
+            iconColor: Colors.cyan,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  context.read<NetworkBloc>().add(LoadNetworkLogs());
+                },
+                tooltip: 'Refresh',
+              ),
+              IconButton(
+                icon: const Icon(Icons.download_outlined),
+                onPressed: () {
+                  // Export functionality
+                },
+                tooltip: 'Export',
+              ),
+            ],
+          ),
+          // Filter bar
           const NetworkFilterBar(),
           Expanded(
             child: Container(
@@ -57,7 +83,9 @@ class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMi
                       isLoading: state.isLoading,
                       error: state.error,
                       onRequestTap: (request) {
-                        context.read<NetworkBloc>().add(SelectNetworkRequest(request));
+                        context.read<NetworkBloc>().add(
+                          SelectNetworkRequest(request),
+                        );
                         if (!_showDetails) {
                           setState(() => _showDetails = true);
                         }
@@ -71,10 +99,11 @@ class _NetworkTabState extends State<NetworkTab> with AutomaticKeepAliveClientMi
                       child: GestureDetector(
                         onHorizontalDragUpdate: (details) {
                           setState(() {
-                            _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
-                              _minDetailsPanelWidth,
-                              _maxDetailsPanelWidth,
-                            );
+                            _detailsPanelWidth =
+                                (_detailsPanelWidth - details.delta.dx).clamp(
+                                  _minDetailsPanelWidth,
+                                  _maxDetailsPanelWidth,
+                                );
                           });
                         },
                         child: Container(

@@ -82,9 +82,13 @@ class _LoggingPageState extends State<LoggingPage> {
     _loadRecentLogs();
 
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Logged: $message'), backgroundColor: _getColorForLevel(_selectedLevel), duration: const Duration(seconds: 2)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Logged: $message'),
+          backgroundColor: _getColorForLevel(_selectedLevel),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -95,7 +99,9 @@ class _LoggingPageState extends State<LoggingPage> {
       _recentLogs = [];
     });
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Display cleared')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Display cleared')));
     }
   }
 
@@ -103,7 +109,9 @@ class _LoggingPageState extends State<LoggingPage> {
     // Export logs functionality would need to be implemented via repository
     // For now, show a placeholder message
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Export feature coming soon')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Export feature coming soon')),
+      );
     }
   }
 
@@ -131,9 +139,21 @@ class _LoggingPageState extends State<LoggingPage> {
         title: const Text('Logging Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadRecentLogs, tooltip: 'Refresh logs'),
-          IconButton(icon: const Icon(Icons.delete_sweep), onPressed: _clearLogs, tooltip: 'Clear all logs'),
-          IconButton(icon: const Icon(Icons.download), onPressed: _exportLogs, tooltip: 'Export logs'),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadRecentLogs,
+            tooltip: 'Refresh logs',
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_sweep),
+            onPressed: _clearLogs,
+            tooltip: 'Clear all logs',
+          ),
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: _exportLogs,
+            tooltip: 'Export logs',
+          ),
         ],
       ),
       body: Column(
@@ -147,11 +167,21 @@ class _LoggingPageState extends State<LoggingPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Create Log Entry', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Create Log Entry',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: _messageController,
-                      decoration: const InputDecoration(labelText: 'Log Message', hintText: 'Enter a message to log', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                        labelText: 'Log Message',
+                        hintText: 'Enter a message to log',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -159,7 +189,10 @@ class _LoggingPageState extends State<LoggingPage> {
                         Expanded(
                           child: DropdownButtonFormField<LogLevel>(
                             initialValue: _selectedLevel,
-                            decoration: const InputDecoration(labelText: 'Log Level', border: OutlineInputBorder()),
+                            decoration: const InputDecoration(
+                              labelText: 'Log Level',
+                              border: OutlineInputBorder(),
+                            ),
                             items: LogLevel.values.map((level) {
                               return DropdownMenuItem(
                                 value: level,
@@ -169,7 +202,10 @@ class _LoggingPageState extends State<LoggingPage> {
                                       width: 12,
                                       height: 12,
                                       margin: const EdgeInsets.only(right: 8),
-                                      decoration: BoxDecoration(color: _getColorForLevel(level), shape: BoxShape.circle),
+                                      decoration: BoxDecoration(
+                                        color: _getColorForLevel(level),
+                                        shape: BoxShape.circle,
+                                      ),
                                     ),
                                     Text(level.name.toUpperCase()),
                                   ],
@@ -190,7 +226,12 @@ class _LoggingPageState extends State<LoggingPage> {
                           onPressed: _logMessage,
                           icon: const Icon(Icons.send),
                           label: const Text('Log'),
-                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16)),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -206,7 +247,9 @@ class _LoggingPageState extends State<LoggingPage> {
             child: Card(
               child: SwitchListTile(
                 title: const Text('Pretty Logs'),
-                subtitle: const Text('Enable formatted logs with borders and emojis'),
+                subtitle: const Text(
+                  'Enable formatted logs with borders and emojis',
+                ),
                 value: _prettyLogsEnabled,
                 onChanged: (value) async {
                   setState(() {
@@ -244,28 +287,42 @@ class _LoggingPageState extends State<LoggingPage> {
                   label: const Text('Test Debug'),
                   onPressed: () async {
                     await VooLogger.debug('Debug test at ${DateTime.now()}');
-                    _addLocalLog(LogLevel.debug, 'Debug test at ${DateTime.now()}');
+                    _addLocalLog(
+                      LogLevel.debug,
+                      'Debug test at ${DateTime.now()}',
+                    );
                   },
                 ),
                 ActionChip(
                   label: const Text('Test Info'),
                   onPressed: () async {
                     await VooLogger.info('Info test at ${DateTime.now()}');
-                    _addLocalLog(LogLevel.info, 'Info test at ${DateTime.now()}');
+                    _addLocalLog(
+                      LogLevel.info,
+                      'Info test at ${DateTime.now()}',
+                    );
                   },
                 ),
                 ActionChip(
                   label: const Text('Test Warning'),
                   onPressed: () async {
-                    await VooLogger.warning('Warning test at ${DateTime.now()}');
-                    _addLocalLog(LogLevel.warning, 'Warning test at ${DateTime.now()}');
+                    await VooLogger.warning(
+                      'Warning test at ${DateTime.now()}',
+                    );
+                    _addLocalLog(
+                      LogLevel.warning,
+                      'Warning test at ${DateTime.now()}',
+                    );
                   },
                 ),
                 ActionChip(
                   label: const Text('Test Error'),
                   onPressed: () async {
                     await VooLogger.error('Error test at ${DateTime.now()}');
-                    _addLocalLog(LogLevel.error, 'Error test at ${DateTime.now()}');
+                    _addLocalLog(
+                      LogLevel.error,
+                      'Error test at ${DateTime.now()}',
+                    );
                   },
                 ),
                 ActionChip(
@@ -274,7 +331,11 @@ class _LoggingPageState extends State<LoggingPage> {
                     try {
                       throw Exception('Test exception');
                     } catch (e, stack) {
-                      await VooLogger.error('Exception caught', error: e, stackTrace: stack);
+                      await VooLogger.error(
+                        'Exception caught',
+                        error: e,
+                        stackTrace: stack,
+                      );
                       _addLocalLog(LogLevel.error, 'Exception caught: $e');
                     }
                   },
@@ -295,18 +356,33 @@ class _LoggingPageState extends State<LoggingPage> {
                         'appVersion': '1.0.0',
                       },
                     );
-                    _addLocalLog(LogLevel.info, 'User performed action with metadata');
+                    _addLocalLog(
+                      LogLevel.info,
+                      'User performed action with metadata',
+                    );
                   },
                 ),
                 ActionChip(
                   label: const Text('Test All Levels'),
                   onPressed: () async {
-                    await VooLogger.verbose('This is a verbose log - very detailed information');
-                    await VooLogger.debug('This is a debug log - debugging information');
-                    await VooLogger.info('This is an info log - general information');
-                    await VooLogger.warning('This is a warning log - something to watch out for');
-                    await VooLogger.error('This is an error log - something went wrong');
-                    await VooLogger.fatal('This is a fatal log - critical failure');
+                    await VooLogger.verbose(
+                      'This is a verbose log - very detailed information',
+                    );
+                    await VooLogger.debug(
+                      'This is a debug log - debugging information',
+                    );
+                    await VooLogger.info(
+                      'This is an info log - general information',
+                    );
+                    await VooLogger.warning(
+                      'This is a warning log - something to watch out for',
+                    );
+                    await VooLogger.error(
+                      'This is an error log - something went wrong',
+                    );
+                    await VooLogger.fatal(
+                      'This is a fatal log - critical failure',
+                    );
                     _addLocalLog(LogLevel.info, 'Tested all log levels');
                   },
                 ),
@@ -324,14 +400,25 @@ class _LoggingPageState extends State<LoggingPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Recent Logs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text('${_recentLogs.length} entries', style: TextStyle(color: Colors.grey[600])),
+                      const Text(
+                        'Recent Logs',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '${_recentLogs.length} entries',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Expanded(
                     child: _recentLogs.isEmpty
-                        ? const Center(child: Text('No logs yet. Create some logs above!'))
+                        ? const Center(
+                            child: Text('No logs yet. Create some logs above!'),
+                          )
                         : ListView.builder(
                             itemCount: _recentLogs.length,
                             itemBuilder: (context, index) {
@@ -342,18 +429,34 @@ class _LoggingPageState extends State<LoggingPage> {
                                   leading: Container(
                                     width: 8,
                                     height: 40,
-                                    decoration: BoxDecoration(color: _getColorForLevel(log.level), borderRadius: BorderRadius.circular(4)),
+                                    decoration: BoxDecoration(
+                                      color: _getColorForLevel(log.level),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
                                   ),
                                   title: Text(log.message),
                                   subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text('${log.level.name.toUpperCase()} • ${_formatTime(log.timestamp)}', style: const TextStyle(fontSize: 12)),
-                                      if (log.metadata != null && log.metadata!.isNotEmpty)
-                                        Text('Metadata: ${log.metadata}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                                      Text(
+                                        '${log.level.name.toUpperCase()} • ${_formatTime(log.timestamp)}',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      if (log.metadata != null &&
+                                          log.metadata!.isNotEmpty)
+                                        Text(
+                                          'Metadata: ${log.metadata}',
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                     ],
                                   ),
-                                  isThreeLine: log.metadata != null && log.metadata!.isNotEmpty,
+                                  isThreeLine:
+                                      log.metadata != null &&
+                                      log.metadata!.isNotEmpty,
                                 ),
                               );
                             },

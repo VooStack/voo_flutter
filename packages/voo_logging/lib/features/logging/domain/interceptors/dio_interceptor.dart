@@ -99,7 +99,7 @@ class VooDioInterceptor {
         headers: headers,
         body: response.data,
         contentLength: contentLength,
-        metadata: {'statusMessage': response.statusMessage?.toString(), 'responseHeaders': headers},
+        metadata: {'method': response.requestOptions?.method ?? 'GET', 'statusMessage': response.statusMessage?.toString(), 'responseHeaders': headers},
       );
     } catch (_) {
       // Ignore logging errors to not break the response
@@ -142,7 +142,12 @@ class VooDioInterceptor {
           duration: duration,
           headers: headers,
           body: error.response?.data,
-          metadata: {'error': error.message?.toString(), 'type': error.type?.toString(), 'responseHeaders': headers},
+          metadata: {
+            'method': error.requestOptions?.method ?? 'GET',
+            'error': error.message?.toString(),
+            'type': error.type?.toString(),
+            'responseHeaders': headers,
+          },
         );
       } else {
         // No response, log as error

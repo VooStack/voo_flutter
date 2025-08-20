@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/network_request_tile.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_network_placeholder.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_state_widget.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class NetworkList extends StatelessWidget {
@@ -29,15 +29,15 @@ class NetworkList extends StatelessWidget {
     this.onLogTap,
     this.onRequestTap,
   }) : assert(
-         (logs != null && onLogTap != null) || 
-         (requests != null && onRequestTap != null),
+         (logs != null && onLogTap != null) ||
+             (requests != null && onRequestTap != null),
          'Either logs/onLogTap or requests/onRequestTap must be provided',
        );
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -49,7 +49,11 @@ class NetworkList extends StatelessWidget {
     // Handle new request-based interface
     if (requests != null && onRequestTap != null) {
       if (requests!.isEmpty) {
-        return const EmptyNetworkPlaceholder();
+        return const EmptyStateWidget(
+          icon: Icons.wifi_off_outlined,
+          title: 'No Network Requests',
+          message: 'Network requests will appear here when made',
+        );
       }
 
       return Container(
@@ -75,7 +79,11 @@ class NetworkList extends StatelessWidget {
     // Handle legacy log-based interface
     if (logs != null && onLogTap != null) {
       if (logs!.isEmpty) {
-        return const EmptyNetworkPlaceholder();
+        return const EmptyStateWidget(
+          icon: Icons.wifi_off_outlined,
+          title: 'No Network Requests',
+          message: 'Network requests will appear here when made',
+        );
       }
 
       return ListView.builder(
@@ -84,7 +92,7 @@ class NetworkList extends StatelessWidget {
         itemBuilder: (context, index) {
           final log = logs![index];
           final isSelected = selectedLogId == log.id;
-          
+
           // Convert log to request for the tile
           final request = NetworkRequestModel.fromLogEntry(log);
 
@@ -97,6 +105,10 @@ class NetworkList extends StatelessWidget {
       );
     }
 
-    return const EmptyNetworkPlaceholder();
+    return const EmptyStateWidget(
+      icon: Icons.wifi_off_outlined,
+      title: 'No Network Requests',
+      message: 'Network requests will appear here when made',
+    );
   }
 }

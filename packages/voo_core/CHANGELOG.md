@@ -1,14 +1,19 @@
-## 0.1.5
+## 0.3.0
 
-**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
+* Added WASM support for web platform
+* Improved documentation and API comments
+* Added comprehensive examples
+* Enhanced pub.dev score compliance
+* Performance optimizations
+* Restored active maintenance - package is no longer deprecated
+* Enhanced plugin architecture for better extensibility
 
-* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
-* **DEPRECATED**: All functionality moved to `voo_telemetry` package
-* Migrate to `voo_telemetry` for:
-  - OpenTelemetry-compliant traces, metrics, and logs
-  - OTLP export to any compatible backend
-  - Better performance and reliability
-  - Active maintenance and support
+## 0.2.0
+
+* Improved plugin system architecture
+* Added shared utilities and base classes
+* Enhanced platform detection utilities
+* Better integration with other voo packages
 
 ### Migration Guide
 

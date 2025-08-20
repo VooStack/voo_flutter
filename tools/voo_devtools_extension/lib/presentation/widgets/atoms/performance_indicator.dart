@@ -13,17 +13,14 @@ class PerformanceIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _getDurationColor(duration);
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 8,
           height: 8,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
         if (showLabel) ...[
           const SizedBox(width: 4),

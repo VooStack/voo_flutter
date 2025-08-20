@@ -29,7 +29,10 @@ class _LogExportDialogState extends State<LogExportDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${widget.logs.length} logs will be exported', style: theme.textTheme.bodyMedium),
+            Text(
+              '${widget.logs.length} logs will be exported',
+              style: theme.textTheme.bodyMedium,
+            ),
             const SizedBox(height: 16),
             Text('Export Format', style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
@@ -74,8 +77,15 @@ class _LogExportDialogState extends State<LogExportDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-        FilledButton.icon(icon: const Icon(Icons.content_copy), label: const Text('Copy to Clipboard'), onPressed: () => _exportToClipboard(context)),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton.icon(
+          icon: const Icon(Icons.content_copy),
+          label: const Text('Copy to Clipboard'),
+          onPressed: () => _exportToClipboard(context),
+        ),
       ],
     );
   }
@@ -86,7 +96,12 @@ class _LogExportDialogState extends State<LogExportDialog> {
 
     if (context.mounted) {
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${widget.logs.length} logs copied to clipboard'), duration: const Duration(seconds: 2)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${widget.logs.length} logs copied to clipboard'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -103,7 +118,14 @@ class _LogExportDialogState extends State<LogExportDialog> {
 
   String _exportAsJson() {
     final logs = widget.logs.map((log) {
-      final json = {'id': log.id, 'timestamp': log.timestamp.toIso8601String(), 'level': log.level.name, 'message': log.message, 'category': log.category, 'tag': log.tag};
+      final json = {
+        'id': log.id,
+        'timestamp': log.timestamp.toIso8601String(),
+        'level': log.level.name,
+        'message': log.message,
+        'category': log.category,
+        'tag': log.tag,
+      };
 
       if (_includeMetadata && log.metadata != null) {
         json['metadata'] = log.metadata!.toString();
@@ -120,7 +142,11 @@ class _LogExportDialogState extends State<LogExportDialog> {
       return json;
     }).toList();
 
-    return const JsonEncoder.withIndent('  ').convert({'exportedAt': DateTime.now().toIso8601String(), 'totalLogs': logs.length, 'logs': logs});
+    return const JsonEncoder.withIndent('  ').convert({
+      'exportedAt': DateTime.now().toIso8601String(),
+      'totalLogs': logs.length,
+      'logs': logs,
+    });
   }
 
   String _exportAsCsv() {
@@ -163,7 +189,9 @@ class _LogExportDialogState extends State<LogExportDialog> {
     buffer.writeln('');
 
     for (final log in widget.logs) {
-      buffer.writeln('[$log.timestamp}] [${log.level.name.toUpperCase()}] ${log.category ?? 'General'} - ${log.message}');
+      buffer.writeln(
+        '[$log.timestamp}] [${log.level.name.toUpperCase()}] ${log.category ?? 'General'} - ${log.message}',
+      );
 
       if (log.tag != null) {
         buffer.writeln('  Tag: ${log.tag}');

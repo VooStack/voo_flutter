@@ -22,10 +22,10 @@ class PerformanceListTile extends StatelessWidget {
     final durationMs = metadata['duration'] as int? ?? 0;
     final operation = metadata['operation'] as String? ?? log.message;
     final operationType = metadata['operationType'] as String?;
-    
+
     // Determine performance color based on duration
     final (color, performanceLabel) = _getPerformanceInfo(durationMs);
-    
+
     return UniversalListTile(
       id: log.id,
       title: operation,
@@ -36,8 +36,7 @@ class PerformanceListTile extends StatelessWidget {
       trailingBadges: [
         if (operationType != null)
           _buildOperationTypeBadge(context, operationType),
-        if (durationMs > 1000)
-          _buildSlowBadge(context),
+        if (durationMs > 1000) _buildSlowBadge(context),
       ],
       metadata: {
         'duration': _formatDuration(durationMs),
@@ -52,35 +51,29 @@ class PerformanceListTile extends StatelessWidget {
     );
   }
 
-  Widget _buildPerformanceBadge(BuildContext context, int durationMs, Color color) {
+  Widget _buildPerformanceBadge(
+    BuildContext context,
+    int durationMs,
+    Color color,
+  ) {
     final theme = Theme.of(context);
     final label = _formatDuration(durationMs);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.15),
-            color.withValues(alpha: 0.1),
-          ],
+          colors: [color.withValues(alpha: 0.15), color.withValues(alpha: 0.1)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.timer_outlined,
-            size: 16,
-            color: color,
-          ),
+          Icon(Icons.timer_outlined, size: 16, color: color),
           const SizedBox(height: 2),
           Text(
             label,
@@ -98,16 +91,13 @@ class PerformanceListTile extends StatelessWidget {
   Widget _buildOperationTypeBadge(BuildContext context, String type) {
     final theme = Theme.of(context);
     final (icon, color) = _getOperationTypeInfo(type);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -129,7 +119,7 @@ class PerformanceListTile extends StatelessWidget {
 
   Widget _buildSlowBadge(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
@@ -143,11 +133,7 @@ class PerformanceListTile extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.warning_amber_outlined,
-            size: 12,
-            color: Colors.orange,
-          ),
+          Icon(Icons.warning_amber_outlined, size: 12, color: Colors.orange),
           const SizedBox(width: 2),
           Text(
             'SLOW',

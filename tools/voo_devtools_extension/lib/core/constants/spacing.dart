@@ -16,42 +16,45 @@ class AppSpacing {
   static const edgeInsetsAll8 = EdgeInsets.all(paddingSmall);
   static const edgeInsetsAll12 = EdgeInsets.all(paddingMedium);
   static const edgeInsetsAll16 = EdgeInsets.all(paddingLarge);
-  
+
   // Container padding (used in filter bars, toolbars, cards)
   static const containerPadding = EdgeInsets.all(paddingLarge);
-  
+
   // Tile padding (used in list items)
   static const tilePadding = EdgeInsets.symmetric(
     horizontal: paddingLarge,
     vertical: paddingMedium,
   );
-  
+
   // Input field content padding
   static const inputContentPadding = EdgeInsets.symmetric(
     horizontal: paddingMedium,
     vertical: paddingSmall,
   );
-  
+
   // Card content padding
   static const cardPadding = EdgeInsets.all(paddingLarge);
-  
+
   // Card margin
   static const cardMargin = EdgeInsets.symmetric(
     horizontal: paddingLarge,
     vertical: paddingSmall,
   );
-  
+
   // Standard gaps between elements
   static const gapSmall = SizedBox(height: paddingSmall, width: paddingSmall);
-  static const gapMedium = SizedBox(height: paddingMedium, width: paddingMedium);
+  static const gapMedium = SizedBox(
+    height: paddingMedium,
+    width: paddingMedium,
+  );
   static const gapLarge = SizedBox(height: paddingLarge, width: paddingLarge);
-  
+
   // Vertical gaps
   static const vGap4 = SizedBox(height: paddingXSmall);
   static const vGap8 = SizedBox(height: paddingSmall);
   static const vGap12 = SizedBox(height: paddingMedium);
   static const vGap16 = SizedBox(height: paddingLarge);
-  
+
   // Horizontal gaps
   static const hGap4 = SizedBox(width: paddingXSmall);
   static const hGap8 = SizedBox(width: paddingSmall);

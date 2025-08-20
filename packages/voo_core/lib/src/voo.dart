@@ -30,7 +30,7 @@ class Voo {
     }
 
     _options = options ?? const VooOptions();
-    
+
     if (!_initialized) {
       _initialized = true;
     }
@@ -116,13 +116,13 @@ class Voo {
       await plugin.dispose();
     }
     _plugins.clear();
-    
+
     // Dispose all apps
     for (final app in _apps.values) {
       await app.dispose();
     }
     _apps.clear();
-    
+
     _initialized = false;
     _options = null;
   }
@@ -173,7 +173,7 @@ class VooApp {
   Future<void> delete() async {
     await dispose();
     Voo._apps.remove(name);
-    
+
     // Notify plugins about app deletion
     for (final plugin in Voo._plugins.values) {
       await plugin.onAppDeleted(this);

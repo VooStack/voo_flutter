@@ -28,14 +28,14 @@ class PerformanceDioInterceptor extends BaseInterceptor {
     if (trackTraces) {
       final trace = VooPerformancePlugin.instance.newHttpTrace(url, method);
       trace.start();
-      
+
       if (body != null) {
         final bodySize = _calculateSize(body);
         if (bodySize > 0) {
           trace.putMetric('request_size', bodySize);
         }
       }
-      
+
       metadata?['performance_trace'] = trace;
     }
 
@@ -57,7 +57,7 @@ class PerformanceDioInterceptor extends BaseInterceptor {
     if (trackTraces && metadata?['performance_trace'] != null) {
       final trace = metadata!['performance_trace'] as PerformanceTrace;
       trace.putMetric('status_code', statusCode);
-      
+
       if (contentLength != null && contentLength > 0) {
         trace.putMetric('response_size', contentLength);
       } else if (body != null) {
@@ -66,7 +66,7 @@ class PerformanceDioInterceptor extends BaseInterceptor {
           trace.putMetric('response_size', bodySize);
         }
       }
-      
+
       trace.stop();
     }
 
@@ -77,16 +77,19 @@ class PerformanceDioInterceptor extends BaseInterceptor {
         method: metadata?['method'] as String? ?? 'GET',
         statusCode: statusCode,
         duration: duration,
-        timestamp: metadata?['performance_start_time'] as DateTime? ?? DateTime.now(),
+        timestamp:
+            metadata?['performance_start_time'] as DateTime? ?? DateTime.now(),
         requestSize: metadata?['request_size'] as int?,
         responseSize: contentLength ?? _calculateSize(body),
         metadata: {
           if (headers != null) 'response_headers': headers,
           if (metadata != null)
-            ...Map.fromEntries(metadata.entries.where((e) => !e.key.startsWith('performance_'))),
+            ...Map.fromEntries(
+              metadata.entries.where((e) => !e.key.startsWith('performance_')),
+            ),
         },
       );
-      
+
       VooPerformancePlugin.instance.recordNetworkMetric(metric);
     }
   }
@@ -109,10 +112,10 @@ class PerformanceDioInterceptor extends BaseInterceptor {
 
     if (trackMetrics) {
       final startTime = metadata?['performance_start_time'] as DateTime?;
-      final duration = startTime != null 
+      final duration = startTime != null
           ? DateTime.now().difference(startTime)
           : Duration.zero;
-      
+
       final metric = NetworkMetric(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         url: url,
@@ -124,17 +127,19 @@ class PerformanceDioInterceptor extends BaseInterceptor {
           'error': error.toString(),
           if (stackTrace != null) 'stack_trace': stackTrace.toString(),
           if (metadata != null)
-            ...Map.fromEntries(metadata.entries.where((e) => !e.key.startsWith('performance_'))),
+            ...Map.fromEntries(
+              metadata.entries.where((e) => !e.key.startsWith('performance_')),
+            ),
         },
       );
-      
+
       VooPerformancePlugin.instance.recordNetworkMetric(metric);
     }
   }
 
   int _calculateSize(dynamic data) {
     if (data == null) return 0;
-    
+
     try {
       if (data is String) {
         return data.length;
@@ -159,10 +164,10 @@ class VooPerformanceDioInterceptor {
     bool trackTraces = true,
     bool trackMetrics = true,
   }) : interceptor = PerformanceDioInterceptor(
-          enabled: enabled,
-          trackTraces: trackTraces,
-          trackMetrics: trackMetrics,
-        );
+         enabled: enabled,
+         trackTraces: trackTraces,
+         trackMetrics: trackMetrics,
+       );
 
   void onRequest(dynamic options, dynamic handler) {
     try {
@@ -195,7 +200,8 @@ class VooPerformanceDioInterceptor {
       );
 
       if (options.extra is Map && metadata['performance_trace'] != null) {
-        (options.extra as Map)['performance_trace'] = metadata['performance_trace'];
+        (options.extra as Map)['performance_trace'] =
+            metadata['performance_trace'];
       }
     } catch (_) {}
 
@@ -206,14 +212,14 @@ class VooPerformanceDioInterceptor {
     try {
       DateTime? startTime;
       PerformanceTrace? trace;
-      
+
       if (response.requestOptions?.extra is Map) {
         final extra = response.requestOptions.extra as Map;
         startTime = extra['performance_start_time'] as DateTime?;
         trace = extra['performance_trace'] as PerformanceTrace?;
       }
 
-      final duration = startTime != null 
+      final duration = startTime != null
           ? DateTime.now().difference(startTime)
           : Duration.zero;
 
@@ -230,7 +236,9 @@ class VooPerformanceDioInterceptor {
       }
 
       int? contentLength;
-      final contentLengthHeader = response.headers?.value('content-length')?.toString();
+      final contentLengthHeader = response.headers
+          ?.value('content-length')
+          ?.toString();
       if (contentLengthHeader != null) {
         contentLength = int.tryParse(contentLengthHeader);
       }
@@ -258,7 +266,7 @@ class VooPerformanceDioInterceptor {
       final String url = error.requestOptions?.uri?.toString() ?? '';
       DateTime? startTime;
       PerformanceTrace? trace;
-      
+
       if (error.requestOptions?.extra is Map) {
         final extra = error.requestOptions.extra as Map;
         startTime = extra['performance_start_time'] as DateTime?;
@@ -266,7 +274,7 @@ class VooPerformanceDioInterceptor {
       }
 
       if (error.response != null) {
-        final duration = startTime != null 
+        final duration = startTime != null
             ? DateTime.now().difference(startTime)
             : Duration.zero;
 

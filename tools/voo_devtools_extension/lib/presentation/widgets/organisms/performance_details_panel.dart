@@ -23,10 +23,10 @@ class PerformanceDetailsPanel extends StatelessWidget {
     final metrics = metadata['metrics'] as Map<String, dynamic>?;
     final startTime = metadata['startTime'] as String?;
     final endTime = metadata['endTime'] as String?;
-    
+
     // Determine performance color
     final performanceColor = _getPerformanceColor(durationMs);
-    
+
     // Build sections
     final sections = <DetailSection>[];
 
@@ -66,7 +66,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         ),
       ),
     );
-    
+
     // Timing Details section
     sections.add(
       DetailSection(
@@ -79,15 +79,9 @@ class PerformanceDetailsPanel extends StatelessWidget {
               _formatDuration(durationMs),
             ),
             if (startTime != null)
-              UniversalDetailsPanel.buildKeyValueRow(
-                'Start Time',
-                startTime,
-              ),
+              UniversalDetailsPanel.buildKeyValueRow('Start Time', startTime),
             if (endTime != null)
-              UniversalDetailsPanel.buildKeyValueRow(
-                'End Time',
-                endTime,
-              ),
+              UniversalDetailsPanel.buildKeyValueRow('End Time', endTime),
             UniversalDetailsPanel.buildKeyValueRow(
               'Logged At',
               log.timestamp.toIso8601String(),
@@ -96,7 +90,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         ),
       ),
     );
-    
+
     // Metrics section
     if (metrics != null && metrics.isNotEmpty) {
       sections.add(
@@ -115,7 +109,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     // Additional metadata
     if (metadata.isNotEmpty) {
       final filteredMetadata = Map<String, dynamic>.from(metadata)
@@ -125,7 +119,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         ..remove('startTime')
         ..remove('endTime')
         ..remove('metrics');
-      
+
       if (filteredMetadata.isNotEmpty) {
         sections.add(
           DetailSection(
@@ -140,7 +134,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         );
       }
     }
-    
+
     // Error section
     if (log.error != null) {
       sections.add(
@@ -165,7 +159,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     // Stack trace section
     if (log.stackTrace != null) {
       sections.add(
@@ -180,7 +174,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     return UniversalDetailsPanel(
       title: 'Performance Details',
       headerBadges: [
@@ -198,22 +192,16 @@ class PerformanceDetailsPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final color = _getPerformanceColor(durationMs);
     final label = _getPerformanceLabel(durationMs);
-    
+
     return Container(
       width: 80,
       height: 80,
       decoration: BoxDecoration(
         gradient: RadialGradient(
-          colors: [
-            color.withValues(alpha: 0.2),
-            color.withValues(alpha: 0.05),
-          ],
+          colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.05)],
         ),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: color.withValues(alpha: 0.5),
-          width: 2,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 2),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -228,28 +216,23 @@ class PerformanceDetailsPanel extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: color,
-            ),
+            style: theme.textTheme.labelSmall?.copyWith(color: color),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildDurationBadge(BuildContext context, int durationMs) {
     final theme = Theme.of(context);
     final color = _getPerformanceColor(durationMs);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -268,20 +251,17 @@ class PerformanceDetailsPanel extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildOperationTypeBadge(BuildContext context, String type) {
     final theme = Theme.of(context);
     final (icon, color) = _getOperationTypeInfo(type);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -300,7 +280,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
       ),
     );
   }
-  
+
   Color _getPerformanceColor(int durationMs) {
     if (durationMs < 100) {
       return Colors.green;
@@ -314,7 +294,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
       return Colors.red;
     }
   }
-  
+
   String _getPerformanceLabel(int durationMs) {
     if (durationMs < 100) {
       return 'Fast';
@@ -328,7 +308,7 @@ class PerformanceDetailsPanel extends StatelessWidget {
       return 'Very Slow';
     }
   }
-  
+
   (IconData, Color) _getOperationTypeInfo(String type) {
     switch (type.toLowerCase()) {
       case 'network':

@@ -17,7 +17,10 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
     on<SearchAnalyticsEvents>(_onSearchAnalyticsEvents);
   }
 
-  Future<void> _onLoadAnalyticsEvents(LoadAnalyticsEvents event, Emitter<AnalyticsState> emit) async {
+  Future<void> _onLoadAnalyticsEvents(
+    LoadAnalyticsEvents event,
+    Emitter<AnalyticsState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
@@ -26,21 +29,23 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
       // Get initial cached logs
       final cachedLogs = repository.getCachedLogs();
       final analyticsLogs = cachedLogs
-          .where((log) => 
-              log.category?.toLowerCase() == 'analytics' || 
-              log.tag == 'VooAnalytics' ||
-              (log.metadata?['type'] == 'touch_event') ||
-              (log.metadata?['type'] == 'analytics_event') ||
-              (log.metadata?['type'] == 'route_screenshot') ||
-              log.message.contains('Touch event') ||
-              log.message.contains('Analytics event'))
+          .where(
+            (log) =>
+                log.category?.toLowerCase() == 'analytics' ||
+                log.tag == 'VooAnalytics' ||
+                (log.metadata?['type'] == 'touch_event') ||
+                (log.metadata?['type'] == 'analytics_event') ||
+                (log.metadata?['type'] == 'route_screenshot') ||
+                log.message.contains('Touch event') ||
+                log.message.contains('Analytics event'),
+          )
           .toList();
 
       add(FilterAnalyticsEvents(analyticsLogs));
 
       // Listen to new logs
       _logsSubscription = repository.logStream.listen((log) {
-        if (log.category?.toLowerCase() == 'analytics' || 
+        if (log.category?.toLowerCase() == 'analytics' ||
             log.tag == 'VooAnalytics' ||
             (log.metadata?['type'] == 'touch_event') ||
             (log.metadata?['type'] == 'analytics_event') ||
@@ -56,21 +61,39 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
     }
   }
 
-  void _onFilterAnalyticsEvents(FilterAnalyticsEvents event, Emitter<AnalyticsState> emit) {
+  void _onFilterAnalyticsEvents(
+    FilterAnalyticsEvents event,
+    Emitter<AnalyticsState> emit,
+  ) {
     final filtered = _applyFilters(event.events);
-    emit(state.copyWith(allEvents: event.events, filteredEvents: filtered, isLoading: false));
+    emit(
+      state.copyWith(
+        allEvents: event.events,
+        filteredEvents: filtered,
+        isLoading: false,
+      ),
+    );
   }
 
-  void _onSelectAnalyticsEvent(SelectAnalyticsEvent event, Emitter<AnalyticsState> emit) {
+  void _onSelectAnalyticsEvent(
+    SelectAnalyticsEvent event,
+    Emitter<AnalyticsState> emit,
+  ) {
     emit(state.copyWith(selectedEvent: event.event));
   }
 
-  void _onClearAnalyticsEvents(ClearAnalyticsEvents event, Emitter<AnalyticsState> emit) {
+  void _onClearAnalyticsEvents(
+    ClearAnalyticsEvents event,
+    Emitter<AnalyticsState> emit,
+  ) {
     emit(const AnalyticsState());
     repository.clearLogs();
   }
 
-  void _onSearchAnalyticsEvents(SearchAnalyticsEvents event, Emitter<AnalyticsState> emit) {
+  void _onSearchAnalyticsEvents(
+    SearchAnalyticsEvents event,
+    Emitter<AnalyticsState> emit,
+  ) {
     emit(state.copyWith(searchQuery: event.query));
     final filtered = _applyFilters(state.allEvents);
     emit(state.copyWith(filteredEvents: filtered));
@@ -83,9 +106,17 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
       filtered = filtered
           .where(
             (e) =>
-                e.message.toLowerCase().contains(state.searchQuery.toLowerCase()) ||
-                e.category?.toLowerCase().contains(state.searchQuery.toLowerCase()) == true ||
-                e.metadata?.toString().toLowerCase().contains(state.searchQuery.toLowerCase()) == true,
+                e.message.toLowerCase().contains(
+                  state.searchQuery.toLowerCase(),
+                ) ||
+                e.category?.toLowerCase().contains(
+                      state.searchQuery.toLowerCase(),
+                    ) ==
+                    true ||
+                e.metadata?.toString().toLowerCase().contains(
+                      state.searchQuery.toLowerCase(),
+                    ) ==
+                    true,
           )
           .toList();
     }

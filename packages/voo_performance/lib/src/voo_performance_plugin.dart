@@ -33,7 +33,7 @@ class VooPerformancePlugin extends VooPlugin {
     bool enableAutoAppStartTrace = true,
   }) async {
     final plugin = instance;
-    
+
     if (plugin._initialized) {
       return;
     }
@@ -61,7 +61,9 @@ class VooPerformancePlugin extends VooPlugin {
     }
 
     if (kDebugMode) {
-      debugPrint('[VooPerformance] Initialized with network monitoring: $enableNetworkMonitoring');
+      debugPrint(
+        '[VooPerformance] Initialized with network monitoring: $enableNetworkMonitoring',
+      );
     }
   }
 
@@ -73,10 +75,7 @@ class VooPerformancePlugin extends VooPlugin {
       );
     }
 
-    final trace = PerformanceTrace(
-      name: name,
-      startTime: DateTime.now(),
-    );
+    final trace = PerformanceTrace(name: name, startTime: DateTime.now());
     trace.setStopCallback(recordTrace);
     _activeTraces[trace.id] = trace;
     return trace;
@@ -91,7 +90,7 @@ class VooPerformancePlugin extends VooPlugin {
 
   Future<void> recordTrace(PerformanceTrace trace) async {
     _activeTraces.remove(trace.id);
-    
+
     final metrics = PerformanceMetrics(
       timestamp: trace.startTime,
       duration: trace.duration ?? Duration.zero,
@@ -101,13 +100,13 @@ class VooPerformancePlugin extends VooPlugin {
         if (trace.metrics.isNotEmpty) 'metrics': trace.metrics,
       },
     );
-    
+
     _performanceMetrics.add(metrics);
-    
+
     if (_performanceMetrics.length > 1000) {
       _performanceMetrics.removeRange(0, 100);
     }
-    
+
     // Send to DevTools
     _sendToDevTools(
       category: 'Performance',
@@ -125,11 +124,11 @@ class VooPerformancePlugin extends VooPlugin {
 
   Future<void> recordNetworkMetric(NetworkMetric metric) async {
     _networkMetrics.add(metric);
-    
+
     if (_networkMetrics.length > 1000) {
       _networkMetrics.removeRange(0, 100);
     }
-    
+
     // Send to DevTools
     _sendToDevTools(
       category: 'Network',
@@ -147,7 +146,7 @@ class VooPerformancePlugin extends VooPlugin {
       },
     );
   }
-  
+
   void _sendToDevTools({
     required String category,
     required String message,
@@ -167,7 +166,7 @@ class VooPerformancePlugin extends VooPlugin {
           'metadata': metadata,
         },
       };
-      
+
       // Send via postEvent for DevTools extension
       developer.postEvent('voo_logger_event', structuredData);
     } catch (_) {
@@ -179,13 +178,14 @@ class VooPerformancePlugin extends VooPlugin {
     final avgResponseTime = _networkMetrics.isEmpty
         ? 0
         : _networkMetrics
-            .map((m) => m.duration.inMilliseconds)
-            .reduce((a, b) => a + b) / _networkMetrics.length;
+                  .map((m) => m.duration.inMilliseconds)
+                  .reduce((a, b) => a + b) /
+              _networkMetrics.length;
 
     final errorRate = _networkMetrics.isEmpty
         ? 0
         : _networkMetrics.where((m) => m.statusCode >= 400).length /
-            _networkMetrics.length;
+              _networkMetrics.length;
 
     return {
       'network': {

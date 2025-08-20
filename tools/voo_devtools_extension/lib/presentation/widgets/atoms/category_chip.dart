@@ -18,17 +18,14 @@ class CategoryChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final chipColor = color ?? _getCategoryColor(category);
-    
+
     if (compact) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: chipColor.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-          border: Border.all(
-            color: chipColor.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: chipColor.withValues(alpha: 0.3), width: 1),
         ),
         child: Text(
           category,
@@ -53,19 +50,12 @@ class CategoryChip extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(
-          color: chipColor.withValues(alpha: 0.4),
-          width: 1,
-        ),
+        border: Border.all(color: chipColor.withValues(alpha: 0.4), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getCategoryIcon(category),
-            size: 14,
-            color: chipColor,
-          ),
+          Icon(_getCategoryIcon(category), size: 14, color: chipColor),
           const SizedBox(width: 4),
           Text(
             category,

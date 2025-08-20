@@ -4,11 +4,7 @@ import 'package:voo_telemetry/src/logs/log_record.dart';
 void main() {
   group('LogRecord', () {
     test('should create log record with required parameters', () {
-      final record = LogRecord(
-        severityNumber: SeverityNumber.info,
-        severityText: 'INFO',
-        body: 'Test log message',
-      );
+      final record = LogRecord(severityNumber: SeverityNumber.info, severityText: 'INFO', body: 'Test log message');
 
       expect(record.severityNumber, SeverityNumber.info);
       expect(record.severityText, 'INFO');
@@ -24,7 +20,7 @@ void main() {
     test('should create log record with all parameters', () {
       final timestamp = DateTime.now();
       final observedTimestamp = timestamp.add(const Duration(milliseconds: 100));
-      
+
       final record = LogRecord(
         severityNumber: SeverityNumber.error,
         severityText: 'ERROR',
@@ -106,10 +102,7 @@ void main() {
           'double': 45.67,
           'bool': false,
           'list': ['a', 'b', 'c'],
-          'nested_map': {
-            'key1': 'value1',
-            'key2': 2,
-          },
+          'nested_map': {'key1': 'value1', 'key2': 2},
           'null_value': null,
         },
       );
@@ -158,7 +151,7 @@ void main() {
       );
 
       final otlp = record.toOtlp();
-      
+
       // Check traceId bytes
       final traceIdBytes = otlp['traceId'] as List<int>;
       expect(traceIdBytes.length, 16);
@@ -175,16 +168,11 @@ void main() {
     });
 
     test('should pad short span IDs', () {
-      final record = LogRecord(
-        severityNumber: SeverityNumber.info,
-        severityText: 'INFO',
-        body: 'Test',
-        spanId: '12345678',
-      );
+      final record = LogRecord(severityNumber: SeverityNumber.info, severityText: 'INFO', body: 'Test', spanId: '12345678');
 
       final otlp = record.toOtlp();
       final spanIdBytes = otlp['spanId'] as List<int>;
-      
+
       // Should pad with zeros and convert correctly
       expect(spanIdBytes.length, 8);
     });
@@ -192,7 +180,7 @@ void main() {
     test('should include observed timestamp when provided', () {
       final timestamp = DateTime.parse('2024-01-01T12:00:00Z');
       final observedTimestamp = DateTime.parse('2024-01-01T12:00:01Z');
-      
+
       final record = LogRecord(
         severityNumber: SeverityNumber.info,
         severityText: 'INFO',

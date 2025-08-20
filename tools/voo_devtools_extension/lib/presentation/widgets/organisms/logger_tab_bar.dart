@@ -18,13 +18,18 @@ class LoggerTabBar extends StatelessWidget {
         isScrollable: true,
         controller: tabController,
         labelColor: theme.colorScheme.primary,
-        unselectedLabelColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+        unselectedLabelColor: theme.colorScheme.onSurface.withValues(
+          alpha: 0.6,
+        ),
         indicatorColor: theme.colorScheme.primary,
         tabs: const [
           Tab(text: 'Logs', icon: Icon(Icons.list, size: 18)),
           Tab(text: 'Network', icon: Icon(Icons.cloud_outlined, size: 18)),
           Tab(text: 'Performance', icon: Icon(Icons.speed, size: 18)),
-          Tab(text: 'Analytics', icon: Icon(Icons.analytics_outlined, size: 18)),
+          Tab(
+            text: 'Analytics',
+            icon: Icon(Icons.analytics_outlined, size: 18),
+          ),
         ],
       ),
     );

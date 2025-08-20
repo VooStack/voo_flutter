@@ -11,7 +11,7 @@ class RouteAwareTouchTracker extends StatefulWidget {
   final Widget child;
   final bool enabled;
   final bool captureScreenshots;
-  
+
   const RouteAwareTouchTracker({
     super.key,
     required this.child,
@@ -23,7 +23,8 @@ class RouteAwareTouchTracker extends StatefulWidget {
   State<RouteAwareTouchTracker> createState() => _RouteAwareTouchTrackerState();
 }
 
-class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker> with RouteAware {
+class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker>
+    with RouteAware {
   final GlobalKey _repaintBoundaryKey = GlobalKey();
   RouteObserver<ModalRoute>? _routeObserver;
   String _currentRoute = '/';
@@ -70,19 +71,21 @@ class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker> with Ro
 
   Future<void> _captureScreenshot() async {
     if (!widget.captureScreenshots || _hasCaptureedScreenForRoute) return;
-    
+
     // Wait for the frame to render
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     if (!mounted) return;
-    
+
     try {
-      final boundary = _repaintBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      final boundary =
+          _repaintBoundaryKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
       if (boundary == null) return;
-      
+
       final image = await boundary.toImage(pixelRatio: 1.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      
+
       if (byteData != null) {
         final bytes = byteData.buffer.asUint8List();
         _sendScreenshotToAnalytics(bytes, image.width, image.height);
@@ -97,7 +100,7 @@ class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker> with Ro
   void _sendScreenshotToAnalytics(Uint8List imageBytes, int width, int height) {
     // Convert to base64 for transmission
     final base64String = 'data:image/png;base64,${base64Encode(imageBytes)}';
-    
+
     // Store screenshot data in analytics
     VooAnalyticsPlugin.instance.logEvent(
       'route_screenshot',
@@ -152,7 +155,7 @@ class AnalyticsRouteObserver extends RouteObserver<ModalRoute<dynamic>> {
 
   void _logRouteChange(Route<dynamic>? route, String action) {
     final routeName = route?.settings.name ?? 'unknown';
-    
+
     VooAnalyticsPlugin.instance.logEvent(
       'route_$action',
       parameters: {

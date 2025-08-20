@@ -1,6 +1,6 @@
 name: voo_analytics
 description: 'Local analytics and heat map tracking package for Flutter applications with touch event capture.'
-version: 0.2.0
+version: 0.3.0
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_analytics
 topics:

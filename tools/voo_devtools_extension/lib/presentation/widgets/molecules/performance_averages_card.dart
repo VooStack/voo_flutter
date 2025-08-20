@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 
 class PerformanceAveragesCard extends StatelessWidget {
   final Map<String, double> averageDurations;
-  
-  const PerformanceAveragesCard({
-    super.key,
-    required this.averageDurations,
-  });
+
+  const PerformanceAveragesCard({super.key, required this.averageDurations});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),

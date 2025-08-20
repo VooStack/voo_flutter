@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_analytics_placeholder.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_state_widget.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/analytics_event_tile.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/analytics_list_tile.dart';
 
 class AnalyticsList extends StatelessWidget {
   final List<LogEntryModel> events;
@@ -33,7 +33,11 @@ class AnalyticsList extends StatelessWidget {
     }
 
     if (events.isEmpty) {
-      return const EmptyAnalyticsPlaceholder();
+      return const EmptyStateWidget(
+        icon: Icons.analytics_outlined,
+        title: 'No Analytics Events',
+        message: 'Analytics events will appear here as they are tracked',
+      );
     }
 
     return ListView.builder(
@@ -43,7 +47,7 @@ class AnalyticsList extends StatelessWidget {
         final event = events[index];
         final isSelected = event.id == selectedEventId;
 
-        return AnalyticsEventTile(
+        return AnalyticsListTile(
           event: event,
           isSelected: isSelected,
           onTap: () => onEventTap(event),

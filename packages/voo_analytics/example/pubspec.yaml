@@ -1,0 +1,22 @@
+name: voo_analytics_example
+description: Example app for voo_analytics package
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voo_analytics:
+    path: ../
+  voo_core:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -9,10 +9,10 @@ class PlatformUtils {
   static bool get isWindows => !kIsWeb && Platform.isWindows;
   static bool get isLinux => !kIsWeb && Platform.isLinux;
   static bool get isFuchsia => !kIsWeb && Platform.isFuchsia;
-  
+
   static bool get isMobile => isAndroid || isIOS;
   static bool get isDesktop => isMacOS || isWindows || isLinux;
-  
+
   static String get platformName {
     if (isWeb) return 'Web';
     if (isAndroid) return 'Android';

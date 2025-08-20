@@ -18,30 +18,50 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // DevStack credentials for VooTest project
-  const String devStackApiKey = 'ds_test_V--xoos6S8Q6SlEi2Rb_wFENHFdl2gzV6mB9SfWo-Tk';
-  const String projectId = '21d20d74-22ef-46b2-8fb2-58c4ac13eb96'; // VooTest project
-  const String organizationId = '0d1652a4-4251-4c8b-9930-238ec735c236'; // VooStack org
+  const String devStackApiKey =
+      'ds_test_V--xoos6S8Q6SlEi2Rb_wFENHFdl2gzV6mB9SfWo-Tk';
+  const String projectId =
+      '21d20d74-22ef-46b2-8fb2-58c4ac13eb96'; // VooTest project
+  const String organizationId =
+      '0d1652a4-4251-4c8b-9930-238ec735c236'; // VooStack org
 
   // Initialize Voo Core first
   await Voo.initializeApp(
-    options: VooOptions.development(appName: 'VooExample-DevStack', appVersion: '1.0.0'),
+    options: VooOptions.development(
+      appName: 'VooExample-DevStack',
+      appVersion: '1.0.0',
+    ),
   );
 
   // Initialize VooTelemetry with debug mode enabled
   await VooTelemetryPlugin.initialize(
     endpoint: 'http://localhost:5001/api/v1',
     apiKey: devStackApiKey,
-    batchInterval: const Duration(seconds: 10), // Sync every 10 seconds for testing
+    batchInterval: const Duration(
+      seconds: 10,
+    ), // Sync every 10 seconds for testing
     maxBatchSize: 10, // Small batch size for testing
     debug: true, // Enable to see what's being sent
   );
 
   // Initialize individual plugins
-  await VooLoggingPlugin.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
+  await VooLoggingPlugin.initialize(
+    maxEntries: 10000,
+    enableConsoleOutput: true,
+    enableFileStorage: true,
+  );
 
-  await VooAnalyticsPlugin.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+  await VooAnalyticsPlugin.initialize(
+    enableTouchTracking: true,
+    enableEventLogging: true,
+    enableUserProperties: true,
+  );
 
-  await VooPerformancePlugin.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
+  await VooPerformancePlugin.initialize(
+    enableNetworkMonitoring: true,
+    enableTraceMonitoring: true,
+    enableAutoAppStartTrace: true,
+  );
 
   // Initialize VooLogger
   await VooLogger.initialize(
@@ -73,11 +93,19 @@ void main() async {
     'Application started with DevStack telemetry',
     category: 'System',
     tag: 'Startup',
-    metadata: {'apiKey': '${devStackApiKey.substring(0, 10)}****', 'projectId': projectId, 'organizationId': organizationId, 'syncEnabled': true},
+    metadata: {
+      'apiKey': '${devStackApiKey.substring(0, 10)}****',
+      'projectId': projectId,
+      'organizationId': organizationId,
+      'syncEnabled': true,
+    },
   );
 
   // Track some analytics events
-  VooAnalyticsPlugin.instance.logEvent('app_started', parameters: {'telemetry_enabled': true, 'destination': 'devstack'});
+  VooAnalyticsPlugin.instance.logEvent(
+    'app_started',
+    parameters: {'telemetry_enabled': true, 'destination': 'devstack'},
+  );
 
   // Force a sync after a short delay to test
   Future.delayed(const Duration(seconds: 2), () async {
@@ -102,7 +130,10 @@ class VooExampleDevStackApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Voo Flutter - DevStack Example',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), useMaterial3: true),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('DevStack Telemetry Example'),
@@ -150,9 +181,17 @@ class _VooTelemetryDemoPageState extends State<VooTelemetryDemoPage> {
       _logCounter++;
     });
 
-    VooLogger.info('Test log #$_logCounter from DevStack demo', metadata: {'counter': _logCounter, 'timestamp': DateTime.now().toIso8601String()});
+    VooLogger.info(
+      'Test log #$_logCounter from DevStack demo',
+      metadata: {
+        'counter': _logCounter,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Generated log #$_logCounter')));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Generated log #$_logCounter')));
   }
 
   void _generateEvent() {
@@ -160,9 +199,14 @@ class _VooTelemetryDemoPageState extends State<VooTelemetryDemoPage> {
       _eventCounter++;
     });
 
-    VooAnalyticsPlugin.instance.logEvent('test_event', parameters: {'counter': _eventCounter, 'source': 'devstack_demo'});
+    VooAnalyticsPlugin.instance.logEvent(
+      'test_event',
+      parameters: {'counter': _eventCounter, 'source': 'devstack_demo'},
+    );
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Generated event #$_eventCounter')));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Generated event #$_eventCounter')));
   }
 
   Future<void> _checkSyncStatus() async {
@@ -183,10 +227,18 @@ class _VooTelemetryDemoPageState extends State<VooTelemetryDemoPage> {
             Text('Debug Mode: Enabled'),
             Text('Telemetry is managed by VooTelemetry'),
             SizedBox(height: 8),
-            Text('Check console logs for detailed information', style: TextStyle(fontSize: 12)),
+            Text(
+              'Check console logs for detailed information',
+              style: TextStyle(fontSize: 12),
+            ),
           ],
         ),
-        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }
@@ -199,27 +251,47 @@ class _VooTelemetryDemoPageState extends State<VooTelemetryDemoPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('DevStack Telemetry Demo', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text(
+              'DevStack Telemetry Demo',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 32),
 
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(children: [Text('Logs Generated: $_logCounter'), Text('Events Generated: $_eventCounter')]),
+                child: Column(
+                  children: [
+                    Text('Logs Generated: $_logCounter'),
+                    Text('Events Generated: $_eventCounter'),
+                  ],
+                ),
               ),
             ),
 
             const SizedBox(height: 24),
 
-            ElevatedButton.icon(onPressed: _generateLog, icon: const Icon(Icons.note_add), label: const Text('Generate Log')),
+            ElevatedButton.icon(
+              onPressed: _generateLog,
+              icon: const Icon(Icons.note_add),
+              label: const Text('Generate Log'),
+            ),
 
             const SizedBox(height: 12),
 
-            ElevatedButton.icon(onPressed: _generateEvent, icon: const Icon(Icons.analytics), label: const Text('Generate Analytics Event')),
+            ElevatedButton.icon(
+              onPressed: _generateEvent,
+              icon: const Icon(Icons.analytics),
+              label: const Text('Generate Analytics Event'),
+            ),
 
             const SizedBox(height: 12),
 
-            ElevatedButton.icon(onPressed: _checkSyncStatus, icon: const Icon(Icons.info_outline), label: const Text('Check Sync Status')),
+            ElevatedButton.icon(
+              onPressed: _checkSyncStatus,
+              icon: const Icon(Icons.info_outline),
+              label: const Text('Check Sync Status'),
+            ),
 
             const SizedBox(height: 12),
 
@@ -227,7 +299,9 @@ class _VooTelemetryDemoPageState extends State<VooTelemetryDemoPage> {
               onPressed: () async {
                 await VooTelemetryPlugin.instance.flush();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sync triggered!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Sync triggered!')),
+                  );
                 }
               },
               icon: const Icon(Icons.sync),

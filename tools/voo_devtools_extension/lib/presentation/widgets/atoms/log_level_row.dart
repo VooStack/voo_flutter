@@ -7,7 +7,12 @@ class LogLevelRow extends StatelessWidget {
   final int count;
   final EdgeInsetsGeometry? padding;
 
-  const LogLevelRow({super.key, required this.level, required this.count, this.padding});
+  const LogLevelRow({
+    super.key,
+    required this.level,
+    required this.count,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +25,12 @@ class LogLevelRow extends StatelessWidget {
           LogLevelIndicator(level: level),
           const SizedBox(width: 8),
           Expanded(child: Text(level.displayName)),
-          Text(count.toString(), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            count.toString(),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

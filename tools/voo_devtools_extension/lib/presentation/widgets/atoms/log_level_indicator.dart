@@ -6,16 +6,12 @@ class LogLevelIndicator extends StatelessWidget {
   final LogLevel level;
   final double size;
 
-  const LogLevelIndicator({
-    super.key,
-    required this.level,
-    this.size = 12,
-  });
+  const LogLevelIndicator({super.key, required this.level, this.size = 12});
 
   @override
   Widget build(BuildContext context) {
     final levelColor = LogLevelColor.fromLevel(level);
-    
+
     return Container(
       width: size,
       height: size,

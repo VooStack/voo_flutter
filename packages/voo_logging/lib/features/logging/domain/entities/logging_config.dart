@@ -13,7 +13,7 @@ class LoggingConfig {
   final LogLevel minimumLevel;
   final bool enabled;
   final bool enableDevToolsJson;
-  
+
   const LoggingConfig({
     this.enablePrettyLogs = true,
     this.showEmojis = true,
@@ -25,7 +25,7 @@ class LoggingConfig {
     this.enabled = true,
     this.enableDevToolsJson = false,
   });
-  
+
   PrettyLogFormatter get formatter => PrettyLogFormatter(
     enabled: enablePrettyLogs,
     showEmojis: showEmojis,
@@ -34,7 +34,7 @@ class LoggingConfig {
     showBorders: showBorders,
     lineLength: lineLength,
   );
-  
+
   LoggingConfig copyWith({
     bool? enablePrettyLogs,
     bool? showEmojis,
@@ -46,17 +46,17 @@ class LoggingConfig {
     bool? enabled,
     bool? enableDevToolsJson,
   }) => LoggingConfig(
-      enablePrettyLogs: enablePrettyLogs ?? this.enablePrettyLogs,
-      showEmojis: showEmojis ?? this.showEmojis,
-      showTimestamp: showTimestamp ?? this.showTimestamp,
-      showColors: showColors ?? this.showColors,
-      showBorders: showBorders ?? this.showBorders,
-      lineLength: lineLength ?? this.lineLength,
-      minimumLevel: minimumLevel ?? this.minimumLevel,
-      enabled: enabled ?? this.enabled,
-      enableDevToolsJson: enableDevToolsJson ?? this.enableDevToolsJson,
-    );
-  
+    enablePrettyLogs: enablePrettyLogs ?? this.enablePrettyLogs,
+    showEmojis: showEmojis ?? this.showEmojis,
+    showTimestamp: showTimestamp ?? this.showTimestamp,
+    showColors: showColors ?? this.showColors,
+    showBorders: showBorders ?? this.showBorders,
+    lineLength: lineLength ?? this.lineLength,
+    minimumLevel: minimumLevel ?? this.minimumLevel,
+    enabled: enabled ?? this.enabled,
+    enableDevToolsJson: enableDevToolsJson ?? this.enableDevToolsJson,
+  );
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -71,17 +71,7 @@ class LoggingConfig {
         other.enabled == enabled &&
         other.enableDevToolsJson == enableDevToolsJson;
   }
-  
+
   @override
-  int get hashCode => Object.hash(
-    enablePrettyLogs,
-    showEmojis,
-    showTimestamp,
-    showColors,
-    showBorders,
-    lineLength,
-    minimumLevel,
-    enabled,
-    enableDevToolsJson,
-  );
+  int get hashCode => Object.hash(enablePrettyLogs, showEmojis, showTimestamp, showColors, showBorders, lineLength, minimumLevel, enabled, enableDevToolsJson);
 }

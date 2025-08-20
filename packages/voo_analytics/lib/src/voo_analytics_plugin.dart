@@ -26,7 +26,7 @@ class VooAnalyticsPlugin extends VooPlugin {
   String get version => '0.2.0';
 
   bool get isInitialized => _initialized;
-  
+
   RouteObserver<ModalRoute> get routeObserver {
     _routeObserver ??= AnalyticsRouteObserver();
     return _routeObserver!;
@@ -38,7 +38,7 @@ class VooAnalyticsPlugin extends VooPlugin {
     bool enableUserProperties = true,
   }) async {
     final plugin = instance;
-    
+
     if (plugin._initialized) {
       return;
     }
@@ -62,7 +62,9 @@ class VooAnalyticsPlugin extends VooPlugin {
     plugin._initialized = true;
 
     if (kDebugMode) {
-      debugPrint('[VooAnalytics] Initialized with touch tracking: $enableTouchTracking');
+      debugPrint(
+        '[VooAnalytics] Initialized with touch tracking: $enableTouchTracking',
+      );
     }
   }
 

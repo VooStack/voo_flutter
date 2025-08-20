@@ -27,11 +27,7 @@ class DurationBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showIcon) ...[
-            Icon(
-              Icons.schedule,
-              size: 12,
-              color: color,
-            ),
+            Icon(Icons.schedule, size: 12, color: color),
             const SizedBox(width: 4),
           ],
           Text(

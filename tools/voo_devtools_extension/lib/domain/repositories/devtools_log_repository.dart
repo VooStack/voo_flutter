@@ -5,5 +5,9 @@ abstract class DevToolsLogRepository {
   Stream<LogEntryModel> get logStream;
   List<LogEntryModel> getCachedLogs();
   void clearLogs();
-  List<LogEntryModel> filterLogs({List<LogLevel>? levels, String? searchQuery, String? category});
+  List<LogEntryModel> filterLogs({
+    List<LogLevel>? levels,
+    String? searchQuery,
+    String? category,
+  });
 }

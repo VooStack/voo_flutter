@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/info_row.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_detail_header.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/category_chip.dart';
+import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
 
 class LogDetailsPanel extends StatelessWidget {
   final LogEntryModel log;
@@ -16,90 +14,125 @@ class LogDetailsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final metadata = log.metadata ?? {};
+    final levelColor = Color(log.level.color);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border(left: BorderSide(color: theme.dividerColor)),
+    // Build sections
+    final sections = <DetailSection>[];
+
+    // Log Information section
+    sections.add(
+      DetailSection(
+        title: 'Log Information',
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                LogLevelChip(level: log.level),
+                const SizedBox(width: AppTheme.spacingSm),
+                if (log.category != null)
+                  CategoryChip(category: log.category!, compact: false),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingMd),
+            UniversalDetailsPanel.buildKeyValueRow(
+              'Timestamp',
+              log.timestamp.toIso8601String(),
+            ),
+            UniversalDetailsPanel.buildKeyValueRow(
+              'Level',
+              log.level.displayName,
+            ),
+            if (log.category != null)
+              UniversalDetailsPanel.buildKeyValueRow('Category', log.category!),
+            if (log.tag != null)
+              UniversalDetailsPanel.buildKeyValueRow('Tag', log.tag!),
+          ],
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LogDetailHeader(log: log, onCopyAll: () => _copyAllToClipboard(context), onClose: onClose),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DetailSection(title: 'Message', content: SelectableText(log.message)),
-                  const SizedBox(height: 16),
-                  InfoRow(label: 'Timestamp', value: log.timestamp.toIso8601String()),
-                  InfoRow(label: 'Level', value: log.level.displayName),
-                  if (log.category != null) InfoRow(label: 'Category', value: log.category!),
-                  if (log.tag != null) InfoRow(label: 'Tag', value: log.tag!),
-                  if (log.error != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Error',
-                      content: SelectableText(log.error.toString(), style: TextStyle(color: theme.colorScheme.error)),
-                    ),
-                  ],
-                  if (log.stackTrace != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Stack Trace',
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
-                        child: SelectableText(log.stackTrace!, style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
-                      ),
-                    ),
-                  ],
-                  if (log.metadata != null && log.metadata!.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Metadata',
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
-                        child: SelectableText(const JsonEncoder.withIndent('  ').convert(log.metadata), style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
-                      ),
-                    ),
-                  ],
-                ],
+    );
+
+    // Message section
+    sections.add(
+      DetailSection(
+        title: 'Message',
+        content: SelectableText(log.message, style: theme.textTheme.bodyMedium),
+      ),
+    );
+
+    // Metadata section
+    if (metadata.isNotEmpty) {
+      sections.add(
+        DetailSection(
+          title: 'Metadata',
+          content: UniversalDetailsPanel.buildCodeBlock(
+            context,
+            UniversalDetailsPanel.formatJson(metadata),
+          ),
+          collapsible: true,
+          initiallyExpanded: false,
+        ),
+      );
+    }
+
+    // Error section
+    if (log.error != null) {
+      sections.add(
+        DetailSection(
+          title: 'Error',
+          content: Container(
+            padding: const EdgeInsets.all(AppTheme.spacingMd),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              border: Border.all(
+                color: theme.colorScheme.error.withValues(alpha: 0.5),
+              ),
+            ),
+            child: SelectableText(
+              log.error!,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.error,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      );
+    }
+
+    // Stack trace section
+    if (log.stackTrace != null) {
+      sections.add(
+        DetailSection(
+          title: 'Stack Trace',
+          content: UniversalDetailsPanel.buildCodeBlock(
+            context,
+            log.stackTrace!,
+          ),
+          collapsible: true,
+          initiallyExpanded: false,
+        ),
+      );
+    }
+
+    return UniversalDetailsPanel(
+      title: _getTitle(log),
+      headerBadges: [
+        LogLevelChip(level: log.level),
+        if (log.category != null)
+          CategoryChip(category: log.category!, compact: true),
+      ],
+      sections: sections,
+      onClose: onClose ?? () {},
+      accentColor: levelColor,
     );
   }
 
-  void _copyAllToClipboard(BuildContext context) {
-    final buffer = StringBuffer();
-    buffer.writeln('=== LOG DETAILS ===');
-    buffer.writeln('Timestamp: ${log.timestamp.toIso8601String()}');
-    buffer.writeln('Level: ${log.level.displayName}');
-    if (log.category != null) buffer.writeln('Category: ${log.category}');
-    if (log.tag != null) buffer.writeln('Tag: ${log.tag}');
-    buffer.writeln('\nMessage:\n${log.message}');
-
-    if (log.error != null) {
-      buffer.writeln('\nError:\n${log.error}');
+  String _getTitle(LogEntryModel log) {
+    if (log.category != null) {
+      return '${log.level.displayName} - ${log.category}';
     }
-
-    if (log.stackTrace != null) {
-      buffer.writeln('\nStack Trace:\n${log.stackTrace}');
-    }
-
-    if (log.metadata != null && log.metadata!.isNotEmpty) {
-      buffer.writeln('\nMetadata:');
-      buffer.writeln(const JsonEncoder.withIndent('  ').convert(log.metadata));
-    }
-
-    Clipboard.setData(ClipboardData(text: buffer.toString()));
-
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Log details copied to clipboard'), duration: Duration(seconds: 2)));
+    return log.level.displayName;
   }
 }

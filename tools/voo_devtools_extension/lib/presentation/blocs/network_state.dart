@@ -25,7 +25,7 @@ class NetworkState extends Equatable {
   NetworkState copyWith({
     List<NetworkRequestModel>? networkRequests,
     List<NetworkRequestModel>? filteredNetworkRequests,
-    NetworkRequestModel? selectedRequest,
+    NetworkRequestModel? Function()? selectedRequest,
     bool? isLoading,
     String? error,
     String? methodFilter,
@@ -34,8 +34,11 @@ class NetworkState extends Equatable {
   }) {
     return NetworkState(
       networkRequests: networkRequests ?? this.networkRequests,
-      filteredNetworkRequests: filteredNetworkRequests ?? this.filteredNetworkRequests,
-      selectedRequest: selectedRequest,
+      filteredNetworkRequests:
+          filteredNetworkRequests ?? this.filteredNetworkRequests,
+      selectedRequest: selectedRequest != null
+          ? selectedRequest()
+          : this.selectedRequest,
       isLoading: isLoading ?? this.isLoading,
       error: error,
       methodFilter: methodFilter ?? this.methodFilter,
@@ -46,13 +49,13 @@ class NetworkState extends Equatable {
 
   @override
   List<Object?> get props => [
-        networkRequests,
-        filteredNetworkRequests,
-        selectedRequest,
-        isLoading,
-        error,
-        methodFilter,
-        statusFilter,
-        searchQuery,
-      ];
+    networkRequests,
+    filteredNetworkRequests,
+    selectedRequest,
+    isLoading,
+    error,
+    methodFilter,
+    statusFilter,
+    searchQuery,
+  ];
 }

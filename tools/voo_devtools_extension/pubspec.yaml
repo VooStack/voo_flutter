@@ -1,9 +1,11 @@
 name: voo_logging_devtools_extension
 description: 'Unified DevTools extension for all Voo packages'
+homepage: https://github.com/your-org/VooFlutter/tree/main/tools/voo_devtools_extension
+repository: https://github.com/your-org/VooFlutter
 
 publish_to: 'none'
 
-version: 1.0.0
+version: 1.1.0
 
 environment:
   sdk: ^3.8.1

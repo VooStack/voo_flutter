@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logs_list.dart';
@@ -40,7 +41,11 @@ class _LogsTabState extends State<LogsTab> with AutomaticKeepAliveClientMixin {
         if (state.autoScroll && _scrollController.hasClients) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
-              _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
             }
           });
         }
@@ -51,6 +56,32 @@ class _LogsTabState extends State<LogsTab> with AutomaticKeepAliveClientMixin {
       },
       builder: (context, state) => Column(
         children: [
+          // Page header
+          PageHeader(
+            icon: Icons.list_alt,
+            title: 'Logging',
+            subtitle: 'Application logs and debugging',
+            iconColor: Colors.blue,
+            actions: [
+              IconButton(
+                icon: Icon(state.autoScroll ? Icons.pause : Icons.play_arrow),
+                onPressed: () {
+                  context.read<LogBloc>().add(ToggleAutoScroll());
+                },
+                tooltip: state.autoScroll
+                    ? 'Pause auto-scroll'
+                    : 'Resume auto-scroll',
+              ),
+              IconButton(
+                icon: const Icon(Icons.download_outlined),
+                onPressed: () {
+                  // Export functionality
+                },
+                tooltip: 'Export',
+              ),
+            ],
+          ),
+          // Filter bar
           const LogFilterBar(),
           Expanded(
             child: Container(
@@ -79,10 +110,11 @@ class _LogsTabState extends State<LogsTab> with AutomaticKeepAliveClientMixin {
                       child: GestureDetector(
                         onHorizontalDragUpdate: (details) {
                           setState(() {
-                            _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
-                              _minDetailsPanelWidth,
-                              _maxDetailsPanelWidth,
-                            );
+                            _detailsPanelWidth =
+                                (_detailsPanelWidth - details.delta.dx).clamp(
+                                  _minDetailsPanelWidth,
+                                  _maxDetailsPanelWidth,
+                                );
                           });
                         },
                         child: Container(

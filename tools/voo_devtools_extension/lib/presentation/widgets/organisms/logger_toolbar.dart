@@ -15,7 +15,7 @@ class LoggerToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return BlocBuilder<LogBloc, LogState>(
       builder: (context, state) => Container(
         padding: const EdgeInsets.all(16),
@@ -25,13 +25,20 @@ class LoggerToolbar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.logo_dev_sharp, size: 32, color: theme.colorScheme.primary),
+            Icon(
+              Icons.logo_dev_sharp,
+              size: 32,
+              color: theme.colorScheme.primary,
+            ),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Voo Logger', style: theme.textTheme.headlineSmall),
-                Text('${state.statistics?.totalLogs ?? state.logs.length} logs captured', style: theme.textTheme.bodySmall),
+                Text(
+                  '${state.statistics?.totalLogs ?? state.logs.length} logs captured',
+                  style: theme.textTheme.bodySmall,
+                ),
               ],
             ),
             const Spacer(),
@@ -50,15 +57,21 @@ class _ToolbarActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final state = context.watch<LogBloc>().state;
-    
+
     return Row(
       children: [
         IconButton(
-          icon: Icon(state.autoScroll ? Icons.pause : Icons.play_arrow, size: 20, color: theme.colorScheme.primary),
+          icon: Icon(
+            state.autoScroll ? Icons.pause : Icons.play_arrow,
+            size: 20,
+            color: theme.colorScheme.primary,
+          ),
           onPressed: () {
             context.read<LogBloc>().add(ToggleAutoScroll());
           },
-          tooltip: state.autoScroll ? 'Pause auto-scroll' : 'Resume auto-scroll',
+          tooltip: state.autoScroll
+              ? 'Pause auto-scroll'
+              : 'Resume auto-scroll',
         ),
         IconButton(
           icon: const Icon(Icons.clear_all, size: 20),
@@ -91,8 +104,14 @@ class _ToolbarActions extends StatelessWidget {
         title: const Text('Clear Logs'),
         content: const Text('Are you sure you want to clear all logs?'),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('Clear')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Clear'),
+          ),
         ],
       ),
     );
@@ -104,11 +123,16 @@ class _ToolbarActions extends StatelessWidget {
 
   Future<void> _exportLogs(BuildContext context) async {
     final state = context.read<LogBloc>().state;
-    final logsToExport = state.filteredLogs.isNotEmpty ? state.filteredLogs : state.logs;
+    final logsToExport = state.filteredLogs.isNotEmpty
+        ? state.filteredLogs
+        : state.logs;
 
     if (logsToExport.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No logs to export'), duration: Duration(seconds: 2)),
+        const SnackBar(
+          content: Text('No logs to export'),
+          duration: Duration(seconds: 2),
+        ),
       );
       return;
     }
@@ -128,10 +152,17 @@ class _ToolbarActions extends StatelessWidget {
             ? SizedBox(
                 width: 400,
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: SingleChildScrollView(child: LogStatisticsCard(statistics: state.statistics!)),
+                child: SingleChildScrollView(
+                  child: LogStatisticsCard(statistics: state.statistics!),
+                ),
               )
             : const Text('No statistics available'),
-        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }
@@ -152,7 +183,10 @@ class _ToolbarActions extends StatelessWidget {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Test log generated'), duration: Duration(seconds: 1)),
+      const SnackBar(
+        content: Text('Test log generated'),
+        duration: Duration(seconds: 1),
+      ),
     );
   }
 }

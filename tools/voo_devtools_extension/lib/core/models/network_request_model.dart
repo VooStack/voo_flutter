@@ -44,10 +44,11 @@ class NetworkRequestModel {
   factory NetworkRequestModel.fromLogEntry(LogEntryModel log) {
     final metadata = log.metadata ?? {};
     final isResponse = metadata['statusCode'] != null;
-    
+
     // Generate consistent ID based on URL and timestamp
-    final baseId = '${metadata['url']}_${log.timestamp.millisecondsSinceEpoch ~/ 1000}';
-    
+    final baseId =
+        '${metadata['url']}_${log.timestamp.millisecondsSinceEpoch ~/ 1000}';
+
     return NetworkRequestModel(
       id: baseId,
       url: metadata['url'] ?? log.message,
@@ -97,9 +98,7 @@ class NetworkRequestModel {
   bool isSameRequest(NetworkRequestModel other) {
     // Same URL and method within 5 seconds
     final timeDiff = timestamp.difference(other.timestamp).abs();
-    return url == other.url && 
-           method == other.method && 
-           timeDiff.inSeconds < 5;
+    return url == other.url && method == other.method && timeDiff.inSeconds < 5;
   }
 
   /// Get display status

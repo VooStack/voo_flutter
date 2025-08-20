@@ -32,8 +32,8 @@ class LogStatistics {
 
   /// Get error count
   int get errorCount {
-    return (logCountByLevel[LogLevel.error] ?? 0) + 
-           (logCountByLevel[LogLevel.fatal] ?? 0);
+    return (logCountByLevel[LogLevel.error] ?? 0) +
+        (logCountByLevel[LogLevel.fatal] ?? 0);
   }
 
   /// Get warning count
@@ -54,7 +54,7 @@ class LogStatistics {
   /// Get the most common category
   String? get mostCommonCategory {
     if (logCountByCategory.isEmpty) return null;
-    
+
     var maxEntry = logCountByCategory.entries.first;
     for (var entry in logCountByCategory.entries) {
       if (entry.value > maxEntry.value) {
@@ -70,7 +70,7 @@ class LogStatistics {
 
     final logCountByLevel = <LogLevel, int>{};
     final logCountByCategory = <String, int>{};
-    
+
     DateTime? firstTime;
     DateTime? lastTime;
 
@@ -78,11 +78,11 @@ class LogStatistics {
       // Count by level
       final level = entry.level as LogLevel;
       logCountByLevel[level] = (logCountByLevel[level] ?? 0) + 1;
-      
+
       // Count by category
       final category = entry.category as String? ?? 'Uncategorized';
       logCountByCategory[category] = (logCountByCategory[category] ?? 0) + 1;
-      
+
       // Track time range
       final timestamp = entry.timestamp as DateTime;
       if (firstTime == null || timestamp.isBefore(firstTime)) {
@@ -119,20 +119,20 @@ extension LogStatisticsExtensions on LogStatistics {
   String get summary {
     final parts = <String>[];
     parts.add('Total: $totalLogs');
-    
+
     if (errorCount > 0) {
       parts.add('Errors: $errorCount');
     }
     if (warningCount > 0) {
       parts.add('Warnings: $warningCount');
     }
-    
+
     return parts.join(' | ');
   }
 
   /// Check if there are any errors
   bool get hasErrors => errorCount > 0;
-  
+
   /// Check if there are any warnings
   bool get hasWarnings => warningCount > 0;
 }

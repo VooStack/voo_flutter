@@ -15,28 +15,54 @@ void main() async {
 
   // Initialize Voo Core
   await Voo.initializeApp(
-    options: VooOptions.development(appName: 'Test-Analytics-Performance', appVersion: '1.0.0'),
+    options: VooOptions.development(
+      appName: 'Test-Analytics-Performance',
+      appVersion: '1.0.0',
+    ),
   );
   if (kDebugMode) {
     print('✅ Voo Core initialized');
   }
 
   // Initialize plugins
-  await VooLoggingPlugin.initialize(maxEntries: 1000, enableConsoleOutput: true);
+  await VooLoggingPlugin.initialize(
+    maxEntries: 1000,
+    enableConsoleOutput: true,
+  );
 
-  await VooAnalyticsPlugin.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+  await VooAnalyticsPlugin.initialize(
+    enableTouchTracking: true,
+    enableEventLogging: true,
+    enableUserProperties: true,
+  );
 
-  await VooPerformancePlugin.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
+  await VooPerformancePlugin.initialize(
+    enableNetworkMonitoring: true,
+    enableTraceMonitoring: true,
+    enableAutoAppStartTrace: true,
+  );
 
   // Test Analytics
 
   // Log some events
-  await VooAnalyticsPlugin.instance.logEvent('test_event_1', parameters: {'test_param': 'value1', 'timestamp': DateTime.now().toIso8601String()});
+  await VooAnalyticsPlugin.instance.logEvent(
+    'test_event_1',
+    parameters: {
+      'test_param': 'value1',
+      'timestamp': DateTime.now().toIso8601String(),
+    },
+  );
 
-  await VooAnalyticsPlugin.instance.logEvent('test_event_2', parameters: {'test_param': 'value2', 'count': 42});
+  await VooAnalyticsPlugin.instance.logEvent(
+    'test_event_2',
+    parameters: {'test_param': 'value2', 'count': 42},
+  );
 
   // Set user properties
-  await VooAnalyticsPlugin.instance.setUserProperty('test_property', 'test_value');
+  await VooAnalyticsPlugin.instance.setUserProperty(
+    'test_property',
+    'test_value',
+  );
 
   // Set user ID
   await VooAnalyticsPlugin.instance.setUserId('test_user_123');
@@ -60,7 +86,10 @@ void main() async {
   trace1.stop();
 
   // Create an HTTP trace
-  final httpTrace = VooPerformancePlugin.instance.newHttpTrace('https://api.example.com/test', 'GET');
+  final httpTrace = VooPerformancePlugin.instance.newHttpTrace(
+    'https://api.example.com/test',
+    'GET',
+  );
   httpTrace.start();
 
   await Future.delayed(const Duration(milliseconds: 50));

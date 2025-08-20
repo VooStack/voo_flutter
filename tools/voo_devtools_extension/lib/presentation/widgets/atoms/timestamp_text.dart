@@ -8,7 +8,10 @@ class TimestampText extends StatelessWidget {
   const TimestampText({super.key, required this.timestamp, this.style});
 
   @override
-  Widget build(BuildContext context) => Text(_formatTime(timestamp), style: style ?? Theme.of(context).textTheme.bodySmall);
+  Widget build(BuildContext context) => Text(
+    _formatTime(timestamp),
+    style: style ?? Theme.of(context).textTheme.bodySmall,
+  );
 
   String _formatTime(DateTime time) {
     final now = DateTime.now();

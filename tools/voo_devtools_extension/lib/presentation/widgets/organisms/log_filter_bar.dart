@@ -4,8 +4,7 @@ import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/dropdown_field.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/level_filters_widget.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_filter_bar.dart';
 
 class LogFilterBar extends StatefulWidget {
   const LogFilterBar({super.key});
@@ -15,110 +14,87 @@ class LogFilterBar extends StatefulWidget {
 }
 
 class _LogFilterBarState extends State<LogFilterBar> {
-  final _searchController = TextEditingController();
-  bool _showAdvancedFilters = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final state = context.read<LogBloc>().state;
-    _searchController.text = state.searchQuery;
-    _searchController.addListener(_onSearchChanged);
-  }
-
-  @override
-  void dispose() {
-    _searchController.removeListener(_onSearchChanged);
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onSearchChanged() {
-    context.read<LogBloc>().add(SearchQueryChanged(_searchController.text));
-  }
+  String? _searchQuery;
+  LogLevel? _selectedLevel;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocBuilder<LogBloc, LogState>(
-      builder: (context, state) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          border: Border(bottom: BorderSide(color: theme.dividerColor)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search logs... (use /pattern/ for regex)',
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _searchController.clear();
-                                _onSearchChanged();
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                TextButton.icon(
-                  icon: Icon(_showAdvancedFilters ? Icons.filter_list_off : Icons.filter_list),
-                  label: Text(_showAdvancedFilters ? 'Hide Filters' : 'Show Filters'),
-                  onPressed: () {
-                    setState(() {
-                      _showAdvancedFilters = !_showAdvancedFilters;
-                    });
-                  },
-                ),
-              ],
+      builder: (context, state) {
+        return UniversalFilterBar(
+          searchHint: 'Search logs... (use /pattern/ for regex)',
+          searchQuery: _searchQuery ?? state.searchQuery,
+          onSearchChanged: (value) {
+            setState(() => _searchQuery = value);
+            context.read<LogBloc>().add(SearchQueryChanged(value ?? ''));
+          },
+          filterOptions: [
+            FilterOption(
+              label: 'Verbose',
+              value: 'verbose',
+              color: Color(LogLevel.verbose.color),
             ),
-            if (_showAdvancedFilters) ...[
-              const SizedBox(height: 12),
-              LevelFiltersWidget(
-                selectedLevels: state.selectedLevels ?? [],
-                onLevelToggled: (level) {
-                  final selectedLevels = state.selectedLevels ?? [];
-                  final newLevels = List<LogLevel>.from(selectedLevels);
-                  if (selectedLevels.contains(level)) {
-                    newLevels.remove(level);
-                  } else {
-                    newLevels.add(level);
-                  }
-                  context.read<LogBloc>().add(FilterLogsChanged(levels: newLevels.isEmpty ? null : newLevels, category: state.selectedCategory));
-                },
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownField(
-                      label: 'Category',
-                      value: state.selectedCategory,
-                      items: state.categories,
-                      onChanged: (value) {
-                        context.read<LogBloc>().add(FilterLogsChanged(levels: state.selectedLevels, category: value));
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            FilterOption(
+              label: 'Debug',
+              value: 'debug',
+              color: Color(LogLevel.debug.color),
+            ),
+            FilterOption(
+              label: 'Info',
+              value: 'info',
+              color: Color(LogLevel.info.color),
+            ),
+            FilterOption(
+              label: 'Warning',
+              value: 'warning',
+              color: Color(LogLevel.warning.color),
+            ),
+            FilterOption(
+              label: 'Error',
+              value: 'error',
+              color: Color(LogLevel.error.color),
+            ),
+            FilterOption(
+              label: 'Fatal',
+              value: 'fatal',
+              color: Color(LogLevel.fatal.color),
+            ),
           ],
-        ),
-      ),
+          selectedFilter: _selectedLevel?.name,
+          onFilterChanged: (value) {
+            setState(() {
+              if (value != null) {
+                _selectedLevel = LogLevel.values.firstWhere(
+                  (level) => level.name == value,
+                  orElse: () => LogLevel.info,
+                );
+              } else {
+                _selectedLevel = null;
+              }
+            });
+
+            // Update filter
+            final levels = _selectedLevel != null
+                ? [_selectedLevel!]
+                : LogLevel.values;
+            context.read<LogBloc>().add(FilterLogsChanged(levels: levels));
+          },
+          additionalActions: [
+            // Clear logs button
+            TextButton.icon(
+              icon: const Icon(Icons.delete_outline, size: 18),
+              label: const Text('Clear Logs'),
+              onPressed: () {
+                context.read<LogBloc>().add(ClearLogs());
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ],
+          onClear: null, // Don't show the universal clear button
+        );
+      },
     );
   }
 }

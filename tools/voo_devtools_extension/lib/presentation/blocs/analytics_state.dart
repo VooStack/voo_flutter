@@ -9,7 +9,14 @@ class AnalyticsState extends Equatable {
   final String? error;
   final String searchQuery;
 
-  const AnalyticsState({this.allEvents = const [], this.filteredEvents = const [], this.selectedEvent, this.isLoading = false, this.error, this.searchQuery = ''});
+  const AnalyticsState({
+    this.allEvents = const [],
+    this.filteredEvents = const [],
+    this.selectedEvent,
+    this.isLoading = false,
+    this.error,
+    this.searchQuery = '',
+  });
 
   AnalyticsState copyWith({
     List<LogEntryModel>? allEvents,
@@ -30,5 +37,12 @@ class AnalyticsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [allEvents, filteredEvents, selectedEvent, isLoading, error, searchQuery];
+  List<Object?> get props => [
+    allEvents,
+    filteredEvents,
+    selectedEvent,
+    isLoading,
+    error,
+    searchQuery,
+  ];
 }

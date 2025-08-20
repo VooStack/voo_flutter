@@ -53,30 +53,29 @@ class _PerformanceFilterBarState extends State<PerformanceFilterBar> {
           _onFilterChanged();
         },
         additionalActions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline, size: 20),
+          // Clear performance logs button
+          TextButton.icon(
+            icon: const Icon(Icons.delete_outline, size: 18),
+            label: const Text('Clear Logs'),
             onPressed: () => _clearLogs(context),
-            tooltip: 'Clear performance logs',
-            splashRadius: 20,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
           ),
         ],
-        onClear: () {
-          setState(() {
-            _searchQuery = null;
-            _showSlowOnly = false;
-          });
-          context.read<PerformanceBloc>().add(ClearPerformanceLogs());
-        },
+        onClear: null, // Don't show the universal clear button
       ),
     );
   }
 
   void _onFilterChanged() {
-    context.read<PerformanceBloc>().add(FilterPerformanceLogs(
-      operationType: null,
-      showSlowOnly: _showSlowOnly,
-      searchQuery: _searchQuery,
-    ));
+    context.read<PerformanceBloc>().add(
+      FilterPerformanceLogs(
+        operationType: null,
+        showSlowOnly: _showSlowOnly,
+        searchQuery: _searchQuery,
+      ),
+    );
   }
 
   Future<void> _clearLogs(BuildContext context) async {
@@ -87,7 +86,9 @@ class _PerformanceFilterBarState extends State<PerformanceFilterBar> {
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         ),
         title: const Text('Clear Performance Logs'),
-        content: const Text('Are you sure you want to clear all performance logs?'),
+        content: const Text(
+          'Are you sure you want to clear all performance logs?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),

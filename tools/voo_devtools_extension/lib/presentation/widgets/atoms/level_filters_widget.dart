@@ -6,7 +6,11 @@ class LevelFiltersWidget extends StatelessWidget {
   final List<LogLevel> selectedLevels;
   final void Function(LogLevel level) onLevelToggled;
 
-  const LevelFiltersWidget({super.key, required this.selectedLevels, required this.onLevelToggled});
+  const LevelFiltersWidget({
+    super.key,
+    required this.selectedLevels,
+    required this.onLevelToggled,
+  });
 
   @override
   Widget build(BuildContext context) => Wrap(
@@ -15,7 +19,11 @@ class LevelFiltersWidget extends StatelessWidget {
     children: LogLevel.values.map((level) {
       final isSelected = selectedLevels.contains(level);
 
-      return LogLevelChip(level: level, selected: isSelected, onTap: () => onLevelToggled(level));
+      return LogLevelChip(
+        level: level,
+        selected: isSelected,
+        onTap: () => onLevelToggled(level),
+      );
     }).toList(),
   );
 }

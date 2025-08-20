@@ -18,10 +18,7 @@ import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/em
 class AdaptiveVooPage extends StatefulWidget {
   final Map<String, bool> pluginStatus;
 
-  const AdaptiveVooPage({
-    super.key,
-    required this.pluginStatus,
-  });
+  const AdaptiveVooPage({super.key, required this.pluginStatus});
 
   @override
   State<AdaptiveVooPage> createState() => _AdaptiveVooPageState();
@@ -38,10 +35,10 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     // Build list of available tabs
     final availableTabs = _buildAvailableTabs();
-    
+
     if (availableTabs.isEmpty) {
       return _buildNoPluginsView(context);
     }
@@ -102,7 +99,9 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                             _isNavCollapsed = !_isNavCollapsed;
                           });
                         },
-                        tooltip: _isNavCollapsed ? 'Expand menu' : 'Collapse menu',
+                        tooltip: _isNavCollapsed
+                            ? 'Expand menu'
+                            : 'Collapse menu',
                       ),
                     ],
                   ),
@@ -114,22 +113,22 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                     itemCount: availableTabs.length,
                     itemBuilder: (context, index) {
                       final tab = availableTabs[index];
-                      final info = PluginDetectionService.getPluginInfo(tab.pluginName);
+                      final info = PluginDetectionService.getPluginInfo(
+                        tab.pluginName,
+                      );
                       final isSelected = _selectedIndex == index;
-                      
+
                       return ListTile(
                         selected: isSelected,
-                        selectedTileColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                        selectedTileColor: colorScheme.primaryContainer
+                            .withValues(alpha: 0.3),
                         leading: _getIconForPlugin(
                           tab.pluginName,
                           selected: isSelected,
                           size: 20,
                         ),
                         title: !_isNavCollapsed
-                            ? Text(
-                                info.name,
-                                overflow: TextOverflow.ellipsis,
-                              )
+                            ? Text(info.name, overflow: TextOverflow.ellipsis)
                             : null,
                         onTap: () {
                           setState(() {
@@ -200,10 +199,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outlineVariant,
-            width: 1,
-          ),
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
         ),
       ),
       child: Row(
@@ -274,47 +270,43 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
 
   List<TabInfo> _buildAvailableTabs() {
     final tabs = <TabInfo>[];
-    
+
     if (widget.pluginStatus['voo_logging'] == true) {
-      tabs.add(TabInfo(
-        pluginName: 'voo_logging',
-        content: const LogsTab(),
-      ));
+      tabs.add(TabInfo(pluginName: 'voo_logging', content: const LogsTab()));
     }
-    
+
     if (widget.pluginStatus['voo_analytics'] == true) {
-      tabs.add(TabInfo(
-        pluginName: 'voo_analytics',
-        content: const AnalyticsTab(),
-      ));
+      tabs.add(
+        TabInfo(pluginName: 'voo_analytics', content: const AnalyticsTab()),
+      );
     }
-    
+
     // Separate Network and Performance into individual tabs
     if (widget.pluginStatus['voo_performance'] == true) {
-      tabs.add(TabInfo(
-        pluginName: 'voo_network',
-        content: const NetworkTab(),
-      ));
-      
-      tabs.add(TabInfo(
-        pluginName: 'voo_performance',
-        content: const PerformanceTab(),
-      ));
+      tabs.add(TabInfo(pluginName: 'voo_network', content: const NetworkTab()));
+
+      tabs.add(
+        TabInfo(pluginName: 'voo_performance', content: const PerformanceTab()),
+      );
     }
-    
+
     if (widget.pluginStatus['voo_telemetry'] == true) {
-      tabs.add(TabInfo(
-        pluginName: 'voo_telemetry',
-        content: const Center(
-          child: Text('Telemetry view coming soon'),
+      tabs.add(
+        TabInfo(
+          pluginName: 'voo_telemetry',
+          content: const Center(child: Text('Telemetry view coming soon')),
         ),
-      ));
+      );
     }
-    
+
     return tabs;
   }
 
-  Widget _getIconForPlugin(String pluginName, {double size = 24, bool selected = false}) {
+  Widget _getIconForPlugin(
+    String pluginName, {
+    double size = 24,
+    bool selected = false,
+  }) {
     IconData iconData;
     switch (pluginName) {
       case 'voo_logging':
@@ -330,16 +322,15 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
         iconData = selected ? Icons.speed : Icons.speed_outlined;
         break;
       case 'voo_telemetry':
-        iconData = selected ? Icons.satellite_alt : Icons.satellite_alt_outlined;
+        iconData = selected
+            ? Icons.satellite_alt
+            : Icons.satellite_alt_outlined;
         break;
       default:
         iconData = Icons.extension;
     }
-    
-    return Icon(
-      iconData,
-      size: size,
-    );
+
+    return Icon(iconData, size: size);
   }
 
   void _refreshCurrentTab(String pluginName) {
@@ -358,10 +349,12 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
         context.read<AnalyticsBloc>().add(LoadAnalyticsEvents());
         break;
     }
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Refreshing ${PluginDetectionService.getPluginInfo(pluginName).name}...'),
+        content: Text(
+          'Refreshing ${PluginDetectionService.getPluginInfo(pluginName).name}...',
+        ),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -369,7 +362,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
 
   void _clearCurrentTab(String pluginName) {
     final pluginInfo = PluginDetectionService.getPluginInfo(pluginName);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -383,7 +376,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
-              
+
               // Clear data based on plugin
               switch (pluginName) {
                 case 'voo_logging':
@@ -399,7 +392,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                   context.read<AnalyticsBloc>().add(ClearAnalyticsEvents());
                   break;
               }
-              
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('${pluginInfo.name} data cleared')),
               );
@@ -413,7 +406,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
 
   void _exportCurrentTab(String pluginName) {
     final pluginInfo = PluginDetectionService.getPluginInfo(pluginName);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -455,14 +448,16 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
       ),
     );
   }
-  
+
   void _performExport(String pluginName, String format) {
     // TODO: Implement actual export functionality
     // For now, just show success message
     final pluginInfo = PluginDetectionService.getPluginInfo(pluginName);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${pluginInfo.name} data exported as ${format.toUpperCase()}'),
+        content: Text(
+          '${pluginInfo.name} data exported as ${format.toUpperCase()}',
+        ),
         action: SnackBarAction(
           label: 'Open',
           onPressed: () {
@@ -478,8 +473,5 @@ class TabInfo {
   final String pluginName;
   final Widget content;
 
-  TabInfo({
-    required this.pluginName,
-    required this.content,
-  });
+  TabInfo({required this.pluginName, required this.content});
 }

@@ -19,13 +19,13 @@ class AnalyticsDetailsPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final metadata = event.metadata ?? {};
     final eventType = metadata['type'] as String?;
-    
+
     // Determine event type styling
     final (icon, color) = _getEventTypeInfo(eventType);
-    
+
     // Build sections
     final sections = <DetailSection>[];
-    
+
     // Event Information section
     sections.add(
       DetailSection(
@@ -52,15 +52,12 @@ class AnalyticsDetailsPanel extends StatelessWidget {
               event.level.displayName,
             ),
             if (event.tag != null)
-              UniversalDetailsPanel.buildKeyValueRow(
-                'Tag',
-                event.tag!,
-              ),
+              UniversalDetailsPanel.buildKeyValueRow('Tag', event.tag!),
           ],
         ),
       ),
     );
-    
+
     // Event-specific details
     if (eventType == 'touch_event') {
       sections.add(
@@ -122,7 +119,10 @@ class AnalyticsDetailsPanel extends StatelessWidget {
                 ),
               if (metadata['parameters'] != null) ...[
                 const SizedBox(height: AppTheme.spacingSm),
-                const Text('Parameters:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'Parameters:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: AppTheme.spacingXs),
                 UniversalDetailsPanel.buildCodeBlock(
                   context,
@@ -134,7 +134,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     // Message section
     sections.add(
       DetailSection(
@@ -145,7 +145,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
         ),
       ),
     );
-    
+
     // Metadata section
     if (metadata.isNotEmpty) {
       sections.add(
@@ -160,7 +160,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     // Error section
     if (event.error != null) {
       sections.add(
@@ -185,7 +185,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     // Stack trace section
     if (event.stackTrace != null) {
       sections.add(
@@ -200,12 +200,11 @@ class AnalyticsDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     return UniversalDetailsPanel(
       title: _getEventTitle(event, eventType),
       headerBadges: [
-        if (eventType != null)
-          _buildEventTypeBadge(context, eventType),
+        if (eventType != null) _buildEventTypeBadge(context, eventType),
         if (event.category != null)
           CategoryChip(category: event.category!, compact: true),
       ],
@@ -214,7 +213,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
       accentColor: color,
     );
   }
-  
+
   String _getEventTitle(LogEntryModel event, String? eventType) {
     if (eventType == 'touch_event') {
       return 'Touch Event';
@@ -226,7 +225,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
     }
     return 'Analytics Event';
   }
-  
+
   (IconData, Color) _getEventTypeInfo(String? type) {
     switch (type) {
       case 'touch_event':
@@ -243,21 +242,18 @@ class AnalyticsDetailsPanel extends StatelessWidget {
         return (Icons.insights_outlined, Colors.grey);
     }
   }
-  
+
   Widget _buildEventTypeBadge(BuildContext context, String type) {
     final theme = Theme.of(context);
     final displayName = _getEventTypeDisplayName(type);
     final (icon, color) = _getEventTypeInfo(type);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -276,7 +272,7 @@ class AnalyticsDetailsPanel extends StatelessWidget {
       ),
     );
   }
-  
+
   String _getEventTypeDisplayName(String type) {
     switch (type) {
       case 'touch_event':

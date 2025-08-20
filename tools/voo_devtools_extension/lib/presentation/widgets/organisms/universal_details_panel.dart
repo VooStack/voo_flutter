@@ -40,7 +40,7 @@ class UniversalDetailsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -54,17 +54,23 @@ class UniversalDetailsPanel extends StatelessWidget {
         children: [
           // Header
           _buildHeader(context),
-          
+
           // Content
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(AppTheme.spacingLg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: sections.map((section) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
-                  child: _buildSection(context, section),
-                )).toList(),
+                children: sections
+                    .map(
+                      (section) => Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppTheme.spacingLg,
+                        ),
+                        child: _buildSection(context, section),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ),
@@ -75,7 +81,7 @@ class UniversalDetailsPanel extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       height: AppTheme.headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
@@ -114,10 +120,16 @@ class UniversalDetailsPanel extends StatelessWidget {
                 if (headerBadges.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Row(
-                    children: headerBadges.map((badge) => Padding(
-                      padding: const EdgeInsets.only(right: AppTheme.spacingSm),
-                      child: badge,
-                    )).toList(),
+                    children: headerBadges
+                        .map(
+                          (badge) => Padding(
+                            padding: const EdgeInsets.only(
+                              right: AppTheme.spacingSm,
+                            ),
+                            child: badge,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ],
               ],
@@ -143,7 +155,7 @@ class UniversalDetailsPanel extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, DetailSection section) {
     final theme = Theme.of(context);
-    
+
     if (section.collapsible) {
       return Theme(
         data: theme.copyWith(dividerColor: Colors.transparent),
@@ -156,7 +168,7 @@ class UniversalDetailsPanel extends StatelessWidget {
         ),
       );
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -169,7 +181,7 @@ class UniversalDetailsPanel extends StatelessWidget {
 
   Widget _buildSectionTitle(BuildContext context, DetailSection section) {
     final theme = Theme.of(context);
-    
+
     return Row(
       children: [
         Text(
@@ -188,16 +200,16 @@ class UniversalDetailsPanel extends StatelessWidget {
   void _copyAllToClipboard(BuildContext context) {
     final buffer = StringBuffer();
     buffer.writeln('=== $title ===');
-    
+
     for (final section in sections) {
       buffer.writeln('\n${section.title}:');
       // Extract text from section content
       // This is simplified - in production you'd want a more robust text extraction
       buffer.writeln(section.content.toString());
     }
-    
+
     Clipboard.setData(ClipboardData(text: buffer.toString()));
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Copied to clipboard'),
@@ -207,7 +219,11 @@ class UniversalDetailsPanel extends StatelessWidget {
   }
 
   /// Helper method to create a key-value row
-  static Widget buildKeyValueRow(String key, String value, {bool monospace = false}) {
+  static Widget buildKeyValueRow(
+    String key,
+    String value, {
+    bool monospace = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -217,10 +233,7 @@ class UniversalDetailsPanel extends StatelessWidget {
             width: 120,
             child: Text(
               key,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
             ),
           ),
           Expanded(
@@ -238,9 +251,13 @@ class UniversalDetailsPanel extends StatelessWidget {
   }
 
   /// Helper method to create a code block
-  static Widget buildCodeBlock(BuildContext context, String code, {String? language}) {
+  static Widget buildCodeBlock(
+    BuildContext context,
+    String code, {
+    String? language,
+  }) {
     final theme = Theme.of(context);
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.spacingMd),
@@ -251,10 +268,7 @@ class UniversalDetailsPanel extends StatelessWidget {
           color: theme.colorScheme.outline.withValues(alpha: 0.2),
         ),
       ),
-      child: SelectableText(
-        code,
-        style: AppTheme.getMonospaceStyle(context),
-      ),
+      child: SelectableText(code, style: AppTheme.getMonospaceStyle(context)),
     );
   }
 

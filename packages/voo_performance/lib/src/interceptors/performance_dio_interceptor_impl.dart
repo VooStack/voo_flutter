@@ -5,8 +5,15 @@ import 'package:voo_performance/src/interceptors/performance_dio_interceptor.dar
 class PerformanceDioInterceptorImpl extends Interceptor {
   final PerformanceDioInterceptor _performanceInterceptor;
 
-  PerformanceDioInterceptorImpl({bool enabled = true, bool trackTraces = true, bool trackMetrics = true})
-    : _performanceInterceptor = PerformanceDioInterceptor(enabled: enabled, trackTraces: trackTraces, trackMetrics: trackMetrics);
+  PerformanceDioInterceptorImpl({
+    bool enabled = true,
+    bool trackTraces = true,
+    bool trackMetrics = true,
+  }) : _performanceInterceptor = PerformanceDioInterceptor(
+         enabled: enabled,
+         trackTraces: trackTraces,
+         trackMetrics: trackMetrics,
+       );
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -27,9 +34,12 @@ class PerformanceDioInterceptorImpl extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     final requestOptions = response.requestOptions;
-    final metadata = requestOptions.extra['performance_metadata'] as Map<String, dynamic>?;
+    final metadata =
+        requestOptions.extra['performance_metadata'] as Map<String, dynamic>?;
     final startTime = metadata?['performance_start_time'] as DateTime?;
-    final duration = startTime != null ? DateTime.now().difference(startTime) : Duration.zero;
+    final duration = startTime != null
+        ? DateTime.now().difference(startTime)
+        : Duration.zero;
 
     _performanceInterceptor.onResponse(
       statusCode: response.statusCode ?? 0,
@@ -37,7 +47,9 @@ class PerformanceDioInterceptorImpl extends Interceptor {
       duration: duration,
       headers: response.headers.map.map((k, v) => MapEntry(k, v.join(', '))),
       body: response.data,
-      contentLength: int.tryParse(response.headers.value('content-length') ?? '0'),
+      contentLength: int.tryParse(
+        response.headers.value('content-length') ?? '0',
+      ),
       metadata: metadata,
     );
 
@@ -47,9 +59,15 @@ class PerformanceDioInterceptorImpl extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final requestOptions = err.requestOptions;
-    final metadata = requestOptions.extra['performance_metadata'] as Map<String, dynamic>?;
+    final metadata =
+        requestOptions.extra['performance_metadata'] as Map<String, dynamic>?;
 
-    _performanceInterceptor.onError(url: requestOptions.uri.toString(), error: err, stackTrace: err.stackTrace, metadata: metadata);
+    _performanceInterceptor.onError(
+      url: requestOptions.uri.toString(),
+      error: err,
+      stackTrace: err.stackTrace,
+      metadata: metadata,
+    );
 
     handler.next(err);
   }

@@ -8,7 +8,7 @@ class NetworkMethodChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _getMethodColor(method);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(

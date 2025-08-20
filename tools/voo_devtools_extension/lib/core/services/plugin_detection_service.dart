@@ -4,12 +4,15 @@ import 'package:flutter/foundation.dart';
 
 /// Service for detecting which Voo plugins are initialized
 class PluginDetectionService {
-  static final PluginDetectionService _instance = PluginDetectionService._internal();
+  static final PluginDetectionService _instance =
+      PluginDetectionService._internal();
   factory PluginDetectionService() => _instance;
   PluginDetectionService._internal();
 
-  final _pluginStatusController = StreamController<Map<String, bool>>.broadcast();
-  Stream<Map<String, bool>> get pluginStatusStream => _pluginStatusController.stream;
+  final _pluginStatusController =
+      StreamController<Map<String, bool>>.broadcast();
+  Stream<Map<String, bool>> get pluginStatusStream =>
+      _pluginStatusController.stream;
 
   Map<String, bool> _pluginStatus = {
     'voo_logging': false,
@@ -132,11 +135,7 @@ class PluginDetectionService {
           description: 'Unified telemetry data',
         );
       default:
-        return PluginInfo(
-          name: pluginName,
-          icon: '🔧',
-          description: 'Plugin',
-        );
+        return PluginInfo(name: pluginName, icon: '🔧', description: 'Plugin');
     }
   }
 

@@ -67,5 +67,19 @@ class LogState extends Equatable {
   );
 
   @override
-  List<Object?> get props => [logs, filteredLogs, selectedLog, selectedLevels, selectedCategory, isLoading, error, autoScroll, statistics, categories, tags, sessions, searchQuery];
+  List<Object?> get props => [
+    logs,
+    filteredLogs,
+    selectedLog,
+    selectedLevels,
+    selectedCategory,
+    isLoading,
+    error,
+    autoScroll,
+    statistics,
+    categories,
+    tags,
+    sessions,
+    searchQuery,
+  ];
 }

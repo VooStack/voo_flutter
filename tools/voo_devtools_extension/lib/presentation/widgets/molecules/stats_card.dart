@@ -56,9 +56,13 @@ class StatsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(StatItem stat, ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildStatItem(
+    StatItem stat,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
     final color = stat.color ?? colorScheme.primary;
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -69,11 +73,7 @@ class StatsCard extends StatelessWidget {
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              stat.icon,
-              size: 20,
-              color: color,
-            ),
+            child: Icon(stat.icon, size: 20, color: color),
           ),
           const SizedBox(width: 12),
         ],

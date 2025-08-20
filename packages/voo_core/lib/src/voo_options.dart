@@ -6,28 +6,28 @@ import 'package:flutter/foundation.dart';
 class VooOptions {
   /// Enable debug logging for Voo packages.
   final bool enableDebugLogging;
-  
+
   /// Automatically register discovered plugins.
   final bool autoRegisterPlugins;
-  
+
   /// Custom configuration that can be accessed by plugins.
   final Map<String, dynamic> customConfig;
-  
+
   /// Timeout for plugin initialization.
   final Duration initializationTimeout;
-  
+
   /// App name for identification.
   final String? appName;
-  
+
   /// App version for tracking.
   final String? appVersion;
-  
+
   /// Environment (development, staging, production).
   final String environment;
-  
+
   /// Enable local persistence for data.
   final bool enableLocalPersistence;
-  
+
   /// Maximum local storage size in MB.
   final int maxLocalStorageMB;
 
@@ -58,11 +58,13 @@ class VooOptions {
       enableDebugLogging: enableDebugLogging ?? this.enableDebugLogging,
       autoRegisterPlugins: autoRegisterPlugins ?? this.autoRegisterPlugins,
       customConfig: customConfig ?? this.customConfig,
-      initializationTimeout: initializationTimeout ?? this.initializationTimeout,
+      initializationTimeout:
+          initializationTimeout ?? this.initializationTimeout,
       appName: appName ?? this.appName,
       appVersion: appVersion ?? this.appVersion,
       environment: environment ?? this.environment,
-      enableLocalPersistence: enableLocalPersistence ?? this.enableLocalPersistence,
+      enableLocalPersistence:
+          enableLocalPersistence ?? this.enableLocalPersistence,
       maxLocalStorageMB: maxLocalStorageMB ?? this.maxLocalStorageMB,
     );
   }

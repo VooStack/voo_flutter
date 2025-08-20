@@ -5,11 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_state.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_list.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_details_panel.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/heat_map_visualization.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/route_heat_map.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/enhanced_heat_map.dart';
+import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
 
 class AnalyticsTab extends StatefulWidget {
   const AnalyticsTab({super.key});
@@ -18,7 +19,8 @@ class AnalyticsTab extends StatefulWidget {
   State<AnalyticsTab> createState() => _AnalyticsTabState();
 }
 
-class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClientMixin {
+class _AnalyticsTabState extends State<AnalyticsTab>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
   bool _showHeatMap = false;
@@ -48,26 +50,83 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
       },
       builder: (context, state) => Column(
         children: [
+          // Page header
+          PageHeader(
+            icon: Icons.analytics_outlined,
+            title: 'Analytics',
+            subtitle: 'User interaction tracking',
+            iconColor: Colors.indigo,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  context.read<AnalyticsBloc>().add(LoadAnalyticsEvents());
+                },
+                tooltip: 'Refresh',
+              ),
+              IconButton(
+                icon: const Icon(Icons.download_outlined),
+                onPressed: () {
+                  // Export functionality
+                },
+                tooltip: 'Export',
+              ),
+            ],
+          ),
+          // Filter bar with view toggle
           Container(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              border: Border(bottom: BorderSide(color: theme.dividerColor)),
-            ),
-            child: Row(
+            decoration: BoxDecoration(color: theme.colorScheme.surface),
+            child: Column(
               children: [
-                Expanded(child: const AnalyticsFilterBar()),
-                const SizedBox(width: 8),
-                SegmentedButton<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Events'), icon: Icon(Icons.list)),
-                    ButtonSegment(value: true, label: Text('Heat Map'), icon: Icon(Icons.grid_on)),
-                  ],
-                  selected: {_showHeatMap},
-                  onSelectionChanged: (value) {
-                    setState(() => _showHeatMap = value.first);
-                  },
+                const AnalyticsFilterBar(),
+                Container(
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacingLg,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: theme.colorScheme.outlineVariant.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 0.5,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'View:',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.spacingMd),
+                      SegmentedButton<bool>(
+                        segments: const [
+                          ButtonSegment(
+                            value: false,
+                            label: Text('Events'),
+                            icon: Icon(Icons.list, size: 18),
+                          ),
+                          ButtonSegment(
+                            value: true,
+                            label: Text('Heat Map'),
+                            icon: Icon(Icons.grid_on, size: 18),
+                          ),
+                        ],
+                        selected: {_showHeatMap},
+                        onSelectionChanged: (value) {
+                          setState(() => _showHeatMap = value.first);
+                        },
+                        style: ButtonStyle(
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 16),
               ],
             ),
           ),
@@ -86,7 +145,9 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
                             isLoading: state.isLoading,
                             error: state.error,
                             onEventTap: (event) {
-                              context.read<AnalyticsBloc>().add(SelectAnalyticsEvent(event));
+                              context.read<AnalyticsBloc>().add(
+                                SelectAnalyticsEvent(event),
+                              );
                               if (!_showDetails) {
                                 setState(() => _showDetails = true);
                               }
@@ -100,10 +161,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
                             child: GestureDetector(
                               onHorizontalDragUpdate: (details) {
                                 setState(() {
-                                  _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
-                                    _minDetailsPanelWidth,
-                                    _maxDetailsPanelWidth,
-                                  );
+                                  _detailsPanelWidth =
+                                      (_detailsPanelWidth - details.delta.dx)
+                                          .clamp(
+                                            _minDetailsPanelWidth,
+                                            _maxDetailsPanelWidth,
+                                          );
                                 });
                               },
                               child: Container(
@@ -123,7 +186,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
                             width: _detailsPanelWidth,
                             child: AnalyticsDetailsPanel(
                               event: state.selectedEvent!,
-                              onClose: () => setState(() => _showDetails = false),
+                              onClose: () =>
+                                  setState(() => _showDetails = false),
                             ),
                           ),
                         ],
@@ -142,30 +206,22 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
     }
 
     if (state.error != null) {
-      return Center(child: Text('Error: ${state.error}', style: Theme.of(context).textTheme.bodyLarge));
-    }
-
-    final routeDataMap = _extractRouteData(state.filteredEvents);
-
-    if (routeDataMap.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.touch_app_outlined, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
-            const SizedBox(height: 16),
-            Text('No touch events recorded', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(
-              'Touch events will appear here as they are tracked',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-            ),
-          ],
+        child: Text(
+          'Error: ${state.error}',
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       );
     }
 
-    return RouteHeatMap(routeDataMap: routeDataMap);
+    final routeDataMap = _extractRouteData(state.filteredEvents);
+
+    return EnhancedHeatMap(
+      routeDataMap: routeDataMap,
+      height: 600,
+      showControls: true,
+      animated: true,
+    );
   }
 
   Map<String, RouteData> _extractRouteData(List<dynamic> events) {
@@ -182,9 +238,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
         final width = metadata['width'] as int?;
         final height = metadata['height'] as int?;
 
-        if (screenshotData != null && screenshotData.startsWith('data:image/png;base64,')) {
+        if (screenshotData != null &&
+            screenshotData.startsWith('data:image/png;base64,')) {
           try {
-            final base64String = screenshotData.substring('data:image/png;base64,'.length);
+            final base64String = screenshotData.substring(
+              'data:image/png;base64,'.length,
+            );
             final bytes = base64Decode(base64String);
             routeScreenshots[route] = bytes;
             if (width != null && height != null) {
@@ -210,7 +269,13 @@ class _AnalyticsTabState extends State<AnalyticsTab> with AutomaticKeepAliveClie
           final existingData = routeDataMap[route];
           final screenSize = routeSizes[route] ?? const Size(400, 800);
 
-          final point = HeatMapPoint(x: x / screenSize.width, y: y / screenSize.height, intensity: 0.7, screenName: route, timestamp: event.timestamp ?? DateTime.now());
+          final point = HeatMapPoint(
+            x: x / screenSize.width,
+            y: y / screenSize.height,
+            intensity: 0.7,
+            screenName: route,
+            timestamp: event.timestamp ?? DateTime.now(),
+          );
 
           if (existingData != null) {
             existingData.touchPoints.add(point);

@@ -22,7 +22,7 @@ class StatRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: padding ?? const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -31,8 +31,11 @@ class StatRow extends StatelessWidget {
           Text(label, style: labelStyle ?? theme.textTheme.bodyMedium),
           Text(
             value,
-            style: valueStyle ?? 
-                theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+            style:
+                valueStyle ??
+                theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
           ),
         ],
       ),

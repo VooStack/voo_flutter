@@ -8,7 +8,12 @@ class LogEntryTile extends StatelessWidget {
   final bool selected;
   final VoidCallback? onTap;
 
-  const LogEntryTile({super.key, required this.log, this.selected = false, this.onTap});
+  const LogEntryTile({
+    super.key,
+    required this.log,
+    this.selected = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +24,14 @@ class LogEntryTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
-          border: Border(bottom: BorderSide(color: theme.dividerColor.withValues(alpha: 0.2))),
+          color: selected
+              ? theme.colorScheme.primary.withValues(alpha: 0.1)
+              : null,
+          border: Border(
+            bottom: BorderSide(
+              color: theme.dividerColor.withValues(alpha: 0.2),
+            ),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,21 +40,44 @@ class LogEntryTile extends StatelessWidget {
               children: [
                 LogLevelChip(level: log.level),
                 const SizedBox(width: 8),
-                Text(_formatTimestamp(log.timestamp), style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+                Text(
+                  _formatTimestamp(log.timestamp),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
                 if (log.category != null) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: theme.colorScheme.secondary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4)),
-                    child: Text(log.category!, style: theme.textTheme.bodySmall?.copyWith(fontSize: 11)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondary.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      log.category!,
+                      style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
+                    ),
                   ),
                 ],
                 if (log.tag != null) ...[
                   const SizedBox(width: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: theme.colorScheme.tertiary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4)),
-                    child: Text(log.tag!, style: theme.textTheme.bodySmall?.copyWith(fontSize: 11)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.tertiary.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      log.tag!,
+                      style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
+                    ),
                   ),
                 ],
                 const Spacer(),
@@ -52,17 +86,27 @@ class LogEntryTile extends StatelessWidget {
                   onPressed: () => _copyToClipboard(context),
                   tooltip: 'Copy log entry',
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 4),
-            Text(log.message, style: theme.textTheme.bodyMedium, maxLines: selected ? null : 2, overflow: selected ? null : TextOverflow.ellipsis),
+            Text(
+              log.message,
+              style: theme.textTheme.bodyMedium,
+              maxLines: selected ? null : 2,
+              overflow: selected ? null : TextOverflow.ellipsis,
+            ),
             if (log.error != null) ...[
               const SizedBox(height: 4),
               Text(
                 'Error: ${log.error}',
-                style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
                 maxLines: selected ? null : 1,
                 overflow: selected ? null : TextOverflow.ellipsis,
               ),
@@ -106,6 +150,11 @@ class LogEntryTile extends StatelessWidget {
 
     Clipboard.setData(ClipboardData(text: buffer.toString()));
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Log entry copied to clipboard'), duration: Duration(seconds: 2)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Log entry copied to clipboard'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }

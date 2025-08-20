@@ -54,19 +54,29 @@ class _LogRateIndicatorState extends State<LogRateIndicator> {
 
     return BlocBuilder<LogBloc, LogState>(
       builder: (context, state) {
-        final avgRate = _rateHistory.isEmpty ? 0.0 : _rateHistory.reduce((a, b) => a + b) / _rateHistory.length;
+        final avgRate = _rateHistory.isEmpty
+            ? 0.0
+            : _rateHistory.reduce((a, b) => a + b) / _rateHistory.length;
 
         return Container(
           clipBehavior: Clip.hardEdge,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+            color: theme.colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.3,
+            ),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: theme.dividerColor),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [_buildRateIndicator(theme), const SizedBox(width: 16), _buildSparkline(theme), const SizedBox(width: 16), _buildStats(theme, avgRate)],
+            children: [
+              _buildRateIndicator(theme),
+              const SizedBox(width: 16),
+              _buildSparkline(theme),
+              const SizedBox(width: 16),
+              _buildStats(theme, avgRate),
+            ],
           ),
         );
       },
@@ -88,7 +98,13 @@ class _LogRateIndicatorState extends State<LogRateIndicator> {
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 4, spreadRadius: 1)],
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.5),
+                blurRadius: 4,
+                spreadRadius: 1,
+              ),
+            ],
           ),
         ),
         const SizedBox(width: 8),
@@ -98,9 +114,17 @@ class _LogRateIndicatorState extends State<LogRateIndicator> {
           children: [
             Text(
               '${_logsPerSecond.toStringAsFixed(1)} logs/s',
-              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: color),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
-            Text('Current rate', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+            Text(
+              'Current rate',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+            ),
           ],
         ),
       ],
@@ -111,19 +135,32 @@ class _LogRateIndicatorState extends State<LogRateIndicator> {
     width: 200,
     height: 40,
     child: CustomPaint(
-      painter: SparklinePainter(data: _rateHistory, color: theme.colorScheme.primary),
+      painter: SparklinePainter(
+        data: _rateHistory,
+        color: theme.colorScheme.primary,
+      ),
     ),
   );
 
   Widget _buildStats(ThemeData theme, double avgRate) {
-    final maxRate = _rateHistory.isEmpty ? 0.0 : _rateHistory.reduce((a, b) => a > b ? a : b);
+    final maxRate = _rateHistory.isEmpty
+        ? 0.0
+        : _rateHistory.reduce((a, b) => a > b ? a : b);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Avg: ${avgRate.toStringAsFixed(1)}/s', style: theme.textTheme.bodySmall),
-        Text('Peak: ${maxRate.toStringAsFixed(1)}/s', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+        Text(
+          'Avg: ${avgRate.toStringAsFixed(1)}/s',
+          style: theme.textTheme.bodySmall,
+        ),
+        Text(
+          'Peak: ${maxRate.toStringAsFixed(1)}/s',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
       ],
     );
   }
@@ -168,7 +205,9 @@ class SparklinePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final maxValue = data.isEmpty ? 10.0 : data.reduce((a, b) => a > b ? a : b);
-    final adjustedMax = maxValue == 0 ? 10.0 : maxValue * 1.2; // Add 20% padding
+    final adjustedMax = maxValue == 0
+        ? 10.0
+        : maxValue * 1.2; // Add 20% padding
     const minValue = 0.0;
     final range = adjustedMax - minValue;
 
@@ -179,7 +218,9 @@ class SparklinePainter extends CustomPainter {
     for (int i = 0; i < data.length; i++) {
       final x = (i / (_maxHistorySize - 1)) * size.width;
       final normalizedValue = range > 0 ? (data[i] - minValue) / range : 0.5;
-      final y = size.height - (normalizedValue * size.height * 0.9); // Use 90% of height
+      final y =
+          size.height -
+          (normalizedValue * size.height * 0.9); // Use 90% of height
 
       if (i == 0) {
         path.moveTo(x, y);

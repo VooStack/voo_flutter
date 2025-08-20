@@ -38,18 +38,21 @@ class _ModernListTileState extends State<ModernListTile> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     final backgroundColor = widget.isSelected
-        ? (widget.selectedColor ?? theme.colorScheme.primaryContainer).withValues(alpha: isDark ? 0.3 : 0.2)
+        ? (widget.selectedColor ?? theme.colorScheme.primaryContainer)
+              .withValues(alpha: isDark ? 0.3 : 0.2)
         : _isHovered
-            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
-            : Colors.transparent;
+        ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+        : Colors.transparent;
 
     final borderColor = widget.isSelected
-        ? (widget.selectedColor ?? theme.colorScheme.primary).withValues(alpha: 0.5)
+        ? (widget.selectedColor ?? theme.colorScheme.primary).withValues(
+            alpha: 0.5,
+          )
         : _isHovered
-            ? theme.colorScheme.outline.withValues(alpha: 0.3)
-            : theme.colorScheme.outline.withValues(alpha: 0.1);
+        ? theme.colorScheme.outline.withValues(alpha: 0.3)
+        : theme.colorScheme.outline.withValues(alpha: 0.1);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -83,7 +86,9 @@ class _ModernListTileState extends State<ModernListTile> {
             highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
             splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
             child: Padding(
-              padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding:
+                  widget.padding ??
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
                   if (widget.leading != null) ...[
@@ -96,15 +101,18 @@ class _ModernListTileState extends State<ModernListTile> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         DefaultTextStyle(
-                          style: theme.textTheme.bodyMedium ?? const TextStyle(),
+                          style:
+                              theme.textTheme.bodyMedium ?? const TextStyle(),
                           child: widget.title,
                         ),
                         if (widget.subtitle != null) ...[
                           const SizedBox(height: 2),
                           DefaultTextStyle(
-                            style: (theme.textTheme.bodySmall ?? const TextStyle()).copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
+                            style:
+                                (theme.textTheme.bodySmall ?? const TextStyle())
+                                    .copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
                             child: widget.subtitle!,
                           ),
                         ],

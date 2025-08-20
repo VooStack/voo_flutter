@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/performance_metric_tile.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_performance_placeholder.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/performance_list_tile.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_state_widget.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class PerformanceList extends StatelessWidget {
@@ -33,7 +33,11 @@ class PerformanceList extends StatelessWidget {
     }
 
     if (logs.isEmpty) {
-      return const EmptyPerformancePlaceholder();
+      return const EmptyStateWidget(
+        icon: Icons.speed_outlined,
+        title: 'No Performance Metrics',
+        message: 'Performance metrics will appear here when tracked',
+      );
     }
 
     return ListView.builder(
@@ -43,9 +47,9 @@ class PerformanceList extends StatelessWidget {
         final log = logs[index];
         final isSelected = selectedLogId == log.id;
 
-        return PerformanceMetricTile(
+        return PerformanceListTile(
           log: log,
-          selected: isSelected,
+          isSelected: isSelected,
           onTap: () => onLogTap(log),
         );
       },

@@ -2,7 +2,7 @@ import 'dart:async';
 
 abstract class BaseInterceptor {
   bool get enabled;
-  
+
   FutureOr<void> onRequest({
     required String method,
     required String url,

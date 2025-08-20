@@ -12,8 +12,8 @@ class PerformanceTracker {
     required this.operation,
     this.operationType,
     Map<String, dynamic>? metrics,
-  })  : metrics = metrics ?? {},
-        _trace = VooPerformancePlugin.instance.newTrace(operation) {
+  }) : metrics = metrics ?? {},
+       _trace = VooPerformancePlugin.instance.newTrace(operation) {
     _trace.start();
     final opType = operationType;
     if (opType != null) {
@@ -75,10 +75,12 @@ class PerformanceTracker {
       await tracker.complete();
       return result;
     } catch (error, stackTrace) {
-      await tracker.complete(additionalMetrics: {
-        'error': error.toString(),
-        'stackTrace': stackTrace.toString(),
-      });
+      await tracker.complete(
+        additionalMetrics: {
+          'error': error.toString(),
+          'stackTrace': stackTrace.toString(),
+        },
+      );
       rethrow;
     }
   }
@@ -100,10 +102,12 @@ class PerformanceTracker {
       tracker.complete();
       return result;
     } catch (error, stackTrace) {
-      tracker.complete(additionalMetrics: {
-        'error': error.toString(),
-        'stackTrace': stackTrace.toString(),
-      });
+      tracker.complete(
+        additionalMetrics: {
+          'error': error.toString(),
+          'stackTrace': stackTrace.toString(),
+        },
+      );
       rethrow;
     }
   }

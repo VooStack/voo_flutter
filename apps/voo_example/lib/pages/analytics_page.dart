@@ -24,7 +24,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     // Initialize analytics if not already done
     _initializeAnalytics();
   }
-  
+
   Future<void> _initializeAnalytics() async {
     if (!VooAnalyticsPlugin.instance.isInitialized) {
       await VooAnalyticsPlugin.initialize(
@@ -59,7 +59,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     });
     await VooLogger.info('Analytics data cleared');
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Analytics data cleared')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Analytics data cleared')));
     }
   }
 
@@ -70,8 +72,16 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         title: const Text('Analytics Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _loadAnalyticsData, tooltip: 'Refresh data'),
-          IconButton(icon: const Icon(Icons.delete_sweep), onPressed: _clearAnalytics, tooltip: 'Clear analytics'),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadAnalyticsData,
+            tooltip: 'Refresh data',
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_sweep),
+            onPressed: _clearAnalytics,
+            tooltip: 'Clear analytics',
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -89,7 +99,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                   setState(() {
                     _isTrackingEnabled = value;
                   });
-                  VooLogger.info('Touch tracking ${value ? 'enabled' : 'disabled'}');
+                  VooLogger.info(
+                    'Touch tracking ${value ? 'enabled' : 'disabled'}',
+                  );
                 },
               ),
             ),
@@ -102,13 +114,23 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Interaction Statistics', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Interaction Statistics',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildStatCard('Taps', _tapCount, Colors.blue),
-                        _buildStatCard('Long Press', _longPressCount, Colors.orange),
+                        _buildStatCard(
+                          'Long Press',
+                          _longPressCount,
+                          Colors.orange,
+                        ),
                         _buildStatCard('Swipes', _swipeCount, Colors.green),
                       ],
                     ),
@@ -125,18 +147,37 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Interactive Touch Area', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Interactive Touch Area',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 8),
-                    const Text('Tap, long press, or swipe in the area below', style: TextStyle(color: Colors.grey)),
+                    const Text(
+                      'Tap, long press, or swipe in the area below',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                     const SizedBox(height: 16),
                     TouchTrackerWidget(
                       screenName: 'AnalyticsPage',
                       child: Container(
                         height: 200,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [Colors.deepPurple.shade100, Colors.deepPurple.shade50], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.deepPurple.shade100,
+                              Colors.deepPurple.shade50,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.deepPurple.shade200, width: 2),
+                          border: Border.all(
+                            color: Colors.deepPurple.shade200,
+                            width: 2,
+                          ),
                         ),
                         child: Stack(
                           children: [
@@ -148,11 +189,18 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.touch_app, size: 48, color: Colors.deepPurple.shade300),
+                                  Icon(
+                                    Icons.touch_app,
+                                    size: 48,
+                                    color: Colors.deepPurple.shade300,
+                                  ),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Touch here to track interactions',
-                                    style: TextStyle(color: Colors.deepPurple.shade600, fontWeight: FontWeight.w500),
+                                    style: TextStyle(
+                                      color: Colors.deepPurple.shade600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -177,14 +225,26 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Recent Touch Events', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text('${_touchEvents.length} events', style: TextStyle(color: Colors.grey[600])),
+                        const Text(
+                          'Recent Touch Events',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${_touchEvents.length} events',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     if (_touchEvents.isEmpty)
                       const Center(
-                        child: Padding(padding: EdgeInsets.all(32), child: Text('No touch events recorded yet')),
+                        child: Padding(
+                          padding: EdgeInsets.all(32),
+                          child: Text('No touch events recorded yet'),
+                        ),
                       )
                     else
                       SizedBox(
@@ -196,10 +256,16 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                             return ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: _getEventColor(event.type),
-                                child: Icon(_getEventIcon(event.type), color: Colors.white, size: 20),
+                                child: Icon(
+                                  _getEventIcon(event.type),
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                               ),
                               title: Text(event.type.name.toUpperCase()),
-                              subtitle: Text('Position: (${event.position.dx.toStringAsFixed(1)}, ${event.position.dy.toStringAsFixed(1)}) • ${_formatTime(event.timestamp)}'),
+                              subtitle: Text(
+                                'Position: (${event.position.dx.toStringAsFixed(1)}, ${event.position.dy.toStringAsFixed(1)}) • ${_formatTime(event.timestamp)}',
+                              ),
                               dense: true,
                             );
                           },
@@ -221,11 +287,18 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         Container(
           width: 60,
           height: 60,
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
           child: Center(
             child: Text(
               value.toString(),
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
           ),
         ),

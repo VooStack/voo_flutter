@@ -1,3 +1,11 @@
+## 0.3.0
+
+* Added WASM support for web platform
+* Improved documentation and API comments
+* Added comprehensive examples
+* Enhanced pub.dev score compliance
+* Performance optimizations
+
 ## 0.1.1
 
 **⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**

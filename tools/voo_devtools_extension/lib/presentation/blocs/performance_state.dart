@@ -37,7 +37,8 @@ class PerformanceState extends Equatable {
   }) {
     return PerformanceState(
       performanceLogs: performanceLogs ?? this.performanceLogs,
-      filteredPerformanceLogs: filteredPerformanceLogs ?? this.filteredPerformanceLogs,
+      filteredPerformanceLogs:
+          filteredPerformanceLogs ?? this.filteredPerformanceLogs,
       selectedLog: selectedLog,
       isLoading: isLoading ?? this.isLoading,
       error: error,
@@ -50,14 +51,14 @@ class PerformanceState extends Equatable {
 
   @override
   List<Object?> get props => [
-        performanceLogs,
-        filteredPerformanceLogs,
-        selectedLog,
-        isLoading,
-        error,
-        operationTypeFilter,
-        showSlowOnly,
-        searchQuery,
-        averageDurations,
-      ];
+    performanceLogs,
+    filteredPerformanceLogs,
+    selectedLog,
+    isLoading,
+    error,
+    operationTypeFilter,
+    showSlowOnly,
+    searchQuery,
+    averageDurations,
+  ];
 }

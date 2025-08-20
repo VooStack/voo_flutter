@@ -5,7 +5,12 @@ class CategoryBadge extends StatelessWidget {
   final Color? color;
   final TextStyle? textStyle;
 
-  const CategoryBadge({super.key, required this.category, this.color, this.textStyle});
+  const CategoryBadge({
+    super.key,
+    required this.category,
+    this.color,
+    this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,12 @@ class CategoryBadge extends StatelessWidget {
       ),
       child: Text(
         category,
-        style: textStyle ?? theme.textTheme.labelSmall?.copyWith(color: bgColor, fontWeight: FontWeight.w500),
+        style:
+            textStyle ??
+            theme.textTheme.labelSmall?.copyWith(
+              color: bgColor,
+              fontWeight: FontWeight.w500,
+            ),
       ),
     );
   }

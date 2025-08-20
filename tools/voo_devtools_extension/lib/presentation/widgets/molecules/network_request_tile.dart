@@ -23,7 +23,7 @@ class NetworkRequestTile extends StatelessWidget {
     final uri = Uri.tryParse(request.url);
     final path = uri?.path ?? request.url;
     final host = uri?.host ?? '';
-    
+
     // Determine status color for the tile
     Color? selectedColor;
     if (request.error != null) {
@@ -38,10 +38,7 @@ class NetworkRequestTile extends StatelessWidget {
       isSelected: selected,
       selectedColor: selectedColor,
       onTap: onTap,
-      leading: MethodBadge(
-        method: request.method,
-        compact: true,
-      ),
+      leading: MethodBadge(method: request.method, compact: true),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -60,17 +57,19 @@ class NetworkRequestTile extends StatelessWidget {
               if (request.isInProgress) ...[
                 _buildLoadingIndicator(theme),
               ] else if (request.statusCode != null) ...[
-                StatusBadge(
-                  statusCode: request.statusCode!,
-                  compact: true,
-                ),
+                StatusBadge(statusCode: request.statusCode!, compact: true),
               ] else if (request.error != null) ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.red.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: Colors.red.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Text(
                     'ERROR',
@@ -89,7 +88,9 @@ class NetworkRequestTile extends StatelessWidget {
             Text(
               host,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.7,
+                ),
                 fontSize: 11,
               ),
               overflow: TextOverflow.ellipsis,
@@ -113,10 +114,7 @@ class NetworkRequestTile extends StatelessWidget {
           ),
           if (request.duration != null && !request.isInProgress) ...[
             const SizedBox(width: 12),
-            DurationBadge(
-              milliseconds: request.duration!,
-              showIcon: false,
-            ),
+            DurationBadge(milliseconds: request.duration!, showIcon: false),
           ],
           if (request.displaySize != '-') ...[
             const SizedBox(width: 12),
@@ -129,7 +127,9 @@ class NetworkRequestTile extends StatelessWidget {
             Text(
               request.displaySize,
               style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.6,
+                ),
               ),
             ),
           ],
@@ -173,7 +173,7 @@ class NetworkRequestTile extends StatelessWidget {
   String _formatTime(DateTime timestamp) {
     final now = DateTime.now();
     final diff = now.difference(timestamp);
-    
+
     if (diff.inSeconds < 60) {
       return 'just now';
     } else if (diff.inMinutes < 60) {

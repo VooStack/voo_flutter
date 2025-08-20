@@ -21,28 +21,22 @@ class LogListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final levelColor = Color(log.level.color);
-    
+
     return UniversalListTile(
       id: log.id,
       title: log.message,
       subtitle: log.tag,
       category: log.category,
       timestamp: log.timestamp,
-      leadingBadge: LogLevelChip(
-        level: log.level,
-      ),
+      leadingBadge: LogLevelChip(level: log.level),
       trailingBadges: [
         if (log.category != null)
-          CategoryChip(
-            category: log.category!,
-            compact: true,
-          ),
+          CategoryChip(category: log.category!, compact: true),
       ],
       metadata: {
         if (log.metadata?.isNotEmpty == true)
           'metadata': '${log.metadata!.length} items',
-        if (log.error != null)
-          'error': 'Has error',
+        if (log.error != null) 'error': 'Has error',
       },
       isSelected: isSelected,
       onTap: onTap,

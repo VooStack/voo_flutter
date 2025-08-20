@@ -21,10 +21,10 @@ class AnalyticsListTile extends StatelessWidget {
     final metadata = event.metadata ?? {};
     final eventType = metadata['type'] as String?;
     final eventName = metadata['eventName'] as String? ?? event.message;
-    
+
     // Determine event type and styling
     final (icon, color) = _getEventTypeInfo(eventType);
-    
+
     // Build subtitle based on event type
     String? subtitle;
     if (eventType == 'touch_event') {
@@ -40,7 +40,7 @@ class AnalyticsListTile extends StatelessWidget {
     } else {
       subtitle = event.tag;
     }
-    
+
     return UniversalListTile(
       id: event.id,
       title: event.message,
@@ -53,25 +53,14 @@ class AnalyticsListTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(
-            color: color.withValues(alpha: 0.3),
-            width: 1,
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
         ),
-        child: Icon(
-          icon,
-          size: 20,
-          color: color,
-        ),
+        child: Icon(icon, size: 20, color: color),
       ),
       trailingBadges: [
-        if (eventType != null)
-          _buildEventTypeBadge(context, eventType),
+        if (eventType != null) _buildEventTypeBadge(context, eventType),
       ],
-      metadata: {
-        if (metadata.isNotEmpty)
-          'data': '${metadata.length} fields',
-      },
+      metadata: {if (metadata.isNotEmpty) 'data': '${metadata.length} fields'},
       isSelected: isSelected,
       onTap: onTap,
       accentColor: color,
@@ -100,16 +89,13 @@ class AnalyticsListTile extends StatelessWidget {
     final theme = Theme.of(context);
     final displayName = _getEventTypeDisplayName(type);
     final (_, color) = _getEventTypeInfo(type);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Text(
         displayName,

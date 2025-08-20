@@ -4,12 +4,15 @@ import 'package:flutter/foundation.dart';
 
 /// Service for detecting which Voo packages are available in the app
 class PackageDetectionService {
-  static final PackageDetectionService _instance = PackageDetectionService._internal();
+  static final PackageDetectionService _instance =
+      PackageDetectionService._internal();
   factory PackageDetectionService() => _instance;
   PackageDetectionService._internal();
 
-  final _packageStatusController = StreamController<Map<String, bool>>.broadcast();
-  Stream<Map<String, bool>> get packageStatusStream => _packageStatusController.stream;
+  final _packageStatusController =
+      StreamController<Map<String, bool>>.broadcast();
+  Stream<Map<String, bool>> get packageStatusStream =>
+      _packageStatusController.stream;
 
   Map<String, bool> _packageStatus = {
     'voo_logging': false,
@@ -127,7 +130,11 @@ class PackageDetectionService {
             newStatus[entry.key] = result == 'true' || result == true;
           } else {
             // If evaluation fails, try a simpler check
-            newStatus[entry.key] = await _checkPackageViaImport(manager, isolateId, entry.key);
+            newStatus[entry.key] = await _checkPackageViaImport(
+              manager,
+              isolateId,
+              entry.key,
+            );
           }
         } catch (e) {
           // If checking fails, assume package might be available
@@ -167,7 +174,8 @@ class PackageDetectionService {
   ) async {
     try {
       // Try to check if we can access package-specific functionality
-      final checkCode = '''
+      final checkCode =
+          '''
         (() {
           try {
             // Check for package-specific classes

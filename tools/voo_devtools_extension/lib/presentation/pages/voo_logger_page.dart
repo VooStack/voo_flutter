@@ -13,7 +13,8 @@ class VooLoggerPage extends StatefulWidget {
   State<VooLoggerPage> createState() => _VooLoggerPageState();
 }
 
-class _VooLoggerPageState extends State<VooLoggerPage> with TickerProviderStateMixin {
+class _VooLoggerPageState extends State<VooLoggerPage>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override

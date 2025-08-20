@@ -4,13 +4,13 @@ import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart'
 abstract class DevToolsLogDataSource {
   /// Stream of log entries
   Stream<LogEntryModel> get logStream;
-  
+
   /// Get all cached log entries
   List<LogEntryModel> getCachedLogs();
-  
+
   /// Clear the log cache
   void clearCache();
-  
+
   /// Dispose resources
   void dispose();
 }

@@ -20,15 +20,27 @@ class AnalyticsFilterBar extends StatelessWidget {
               SearchAnalyticsEvents(value ?? ''),
             );
           },
-          showFilters: false, // Disable filters for now since state doesn't support it
+          showFilters:
+              false, // Disable filters for now since state doesn't support it
           filterOptions: const [],
           selectedFilter: null,
           onFilterChanged: (value) {
             // Not implemented yet
           },
-          onClear: () {
-            context.read<AnalyticsBloc>().add(ClearAnalyticsEvents());
-          },
+          additionalActions: [
+            // Clear analytics events button
+            TextButton.icon(
+              icon: const Icon(Icons.delete_outline, size: 18),
+              label: const Text('Clear Events'),
+              onPressed: () {
+                context.read<AnalyticsBloc>().add(ClearAnalyticsEvents());
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ],
+          onClear: null, // Don't show the universal clear button
         );
       },
     );

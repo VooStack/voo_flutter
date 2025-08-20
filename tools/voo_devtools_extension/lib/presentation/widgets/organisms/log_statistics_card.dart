@@ -22,21 +22,36 @@ class LogStatisticsCard extends StatelessWidget {
         _buildSummary(theme),
         const SizedBox(height: 16),
         _buildLevelBreakdown(theme),
-        if (statistics.logCountByCategory.isNotEmpty) ...[const SizedBox(height: 16), _buildTopCategories(theme)],
+        if (statistics.logCountByCategory.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildTopCategories(theme),
+        ],
       ],
     );
   }
 
   Widget _buildSummary(ThemeData theme) {
-    final duration = statistics.lastLogTime != null && statistics.firstLogTime != null ? statistics.lastLogTime!.difference(statistics.firstLogTime!) : null;
+    final duration =
+        statistics.lastLogTime != null && statistics.firstLogTime != null
+        ? statistics.lastLogTime!.difference(statistics.firstLogTime!)
+        : null;
 
     return StatCard(
       title: 'Summary',
       children: [
         StatItem(label: 'Total Logs', value: statistics.totalLogs.toString()),
-        if (duration != null) StatItem(label: 'Duration', value: _formatDuration(duration)),
-        if (statistics.firstLogTime != null) StatItem(label: 'First Log', value: _formatDateTime(statistics.firstLogTime!)),
-        if (statistics.lastLogTime != null) StatItem(label: 'Last Log', value: _formatDateTime(statistics.lastLogTime!)),
+        if (duration != null)
+          StatItem(label: 'Duration', value: _formatDuration(duration)),
+        if (statistics.firstLogTime != null)
+          StatItem(
+            label: 'First Log',
+            value: _formatDateTime(statistics.firstLogTime!),
+          ),
+        if (statistics.lastLogTime != null)
+          StatItem(
+            label: 'Last Log',
+            value: _formatDateTime(statistics.lastLogTime!),
+          ),
       ],
     );
   }
@@ -55,11 +70,17 @@ class LogStatisticsCard extends StatelessWidget {
   );
 
   Widget _buildTopCategories(ThemeData theme) {
-    final sortedCategories = statistics.logCountByCategory.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final sortedCategories = statistics.logCountByCategory.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
     return StatCard(
       title: 'Top Categories',
-      children: sortedCategories.take(5).map((entry) => StatRow(label: entry.key, value: entry.value.toString())).toList(),
+      children: sortedCategories
+          .take(5)
+          .map(
+            (entry) => StatRow(label: entry.key, value: entry.value.toString()),
+          )
+          .toList(),
     );
   }
 

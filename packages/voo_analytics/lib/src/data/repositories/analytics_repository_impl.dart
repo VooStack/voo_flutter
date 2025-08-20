@@ -19,10 +19,10 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
 
   @override
   final bool enableTouchTracking;
-  
+
   @override
   final bool enableEventLogging;
-  
+
   @override
   final bool enableUserProperties;
 
@@ -36,7 +36,9 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<void> initialize() async {
     if (!kIsWeb) {
       final directory = await getApplicationDocumentsDirectory();
-      final analyticsDir = Directory(path.join(directory.path, 'voo_analytics'));
+      final analyticsDir = Directory(
+        path.join(directory.path, 'voo_analytics'),
+      );
       if (!await analyticsDir.exists()) {
         await analyticsDir.create(recursive: true);
       }
@@ -50,24 +52,24 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       try {
         final content = await _storageFile!.readAsString();
         final data = jsonDecode(content) as Map<String, dynamic>;
-        
+
         if (data['touch_events'] != null) {
           final events = data['touch_events'] as List;
           _touchEvents.addAll(
             events.map((e) => TouchEvent.fromMap(e as Map<String, dynamic>)),
           );
         }
-        
+
         if (data['events'] != null) {
           _events.addAll(data['events'] as Map<String, dynamic>);
         }
-        
+
         if (data['user_properties'] != null) {
           _userProperties.addAll(
             Map<String, String>.from(data['user_properties'] as Map),
           );
         }
-        
+
         _userId = data['user_id'] as String?;
       } catch (e) {
         if (kDebugMode) {
@@ -98,20 +100,20 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   @override
   Future<void> logEvent(String name, {Map<String, dynamic>? parameters}) async {
     if (!enableEventLogging) return;
-    
+
     final timestamp = DateTime.now();
     final event = {
       'timestamp': timestamp.toIso8601String(),
       'parameters': parameters ?? {},
     };
-    
+
     if (_events[name] == null) {
       _events[name] = [];
     }
     (_events[name] as List).add(event);
-    
+
     await _saveData();
-    
+
     // Send to DevTools
     _sendToDevTools(
       category: 'Analytics',
@@ -123,7 +125,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         'timestamp': timestamp.toIso8601String(),
       },
     );
-    
+
     if (kDebugMode) {
       print('[VooAnalytics] Event logged: $name');
     }
@@ -132,20 +134,21 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   @override
   Future<void> trackTouchEvent(TouchEvent event) async {
     if (!enableTouchTracking) return;
-    
+
     _touchEvents.add(event);
-    
+
     // Keep list bounded
     if (_touchEvents.length > 10000) {
       _touchEvents.removeRange(0, 1000);
     }
-    
+
     await _saveData();
-    
+
     // Send to DevTools
     _sendToDevTools(
       category: 'Analytics',
-      message: 'Touch event at (${event.x.toStringAsFixed(1)}, ${event.y.toStringAsFixed(1)})',
+      message:
+          'Touch event at (${event.x.toStringAsFixed(1)}, ${event.y.toStringAsFixed(1)})',
       metadata: {
         'type': 'touch_event',
         'x': event.x,
@@ -159,7 +162,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         'widgetType': event.widgetType,
       },
     );
-    
+
     if (kDebugMode) {
       print('[VooAnalytics] Touch event tracked at (${event.x}, ${event.y})');
     }
@@ -168,10 +171,10 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   @override
   Future<void> setUserProperty(String name, String value) async {
     if (!enableUserProperties) return;
-    
+
     _userProperties[name] = value;
     await _saveData();
-    
+
     if (kDebugMode) {
       print('[VooAnalytics] User property set: $name = $value');
     }
@@ -181,7 +184,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<void> setUserId(String userId) async {
     _userId = userId;
     await _saveData();
-    
+
     if (kDebugMode) {
       print('[VooAnalytics] User ID set: $userId');
     }
@@ -215,18 +218,20 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     for (final entry in routeEvents.entries) {
       final route = entry.key;
       final events = entry.value;
-      
+
       // Create heat map grid (simplified)
       final List<HeatMapPoint> points = [];
       for (final event in events) {
-        points.add(HeatMapPoint(
-          position: Offset(event.x, event.y),
-          intensity: 1.0,
-          count: 1,
-          primaryType: TouchType.tap,
-        ));
+        points.add(
+          HeatMapPoint(
+            position: Offset(event.x, event.y),
+            intensity: 1.0,
+            count: 1,
+            primaryType: TouchType.tap,
+          ),
+        );
       }
-      
+
       heatMapData[route] = {
         'points': points.map((p) => p.toMap()).toList(),
         'event_count': events.length,
@@ -242,11 +247,11 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     _events.clear();
     _userProperties.clear();
     _userId = null;
-    
+
     if (_storageFile != null && await _storageFile!.exists()) {
       await _storageFile!.delete();
     }
-    
+
     if (kDebugMode) {
       print('[VooAnalytics] All data cleared');
     }
@@ -257,7 +262,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     // Alias for trackTouchEvent for backward compatibility
     await trackTouchEvent(event);
   }
-  
+
   @override
   Future<List<TouchEvent>> getTouchEvents({
     String? screenName,
@@ -277,12 +282,12 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       return true;
     }).toList();
   }
-  
+
   @override
   void dispose() {
     // Clean up resources if needed
   }
-  
+
   void _sendToDevTools({
     required String category,
     required String message,
@@ -302,7 +307,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
           'metadata': metadata,
         },
       };
-      
+
       // Send via postEvent for DevTools extension
       developer.postEvent('voo_logger_event', structuredData);
     } catch (_) {

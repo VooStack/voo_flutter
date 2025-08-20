@@ -1,13 +1,26 @@
+## 0.3.0
+
+* Added WASM support for web platform
+* Improved documentation and API comments
+* Added comprehensive examples
+* Enhanced pub.dev score compliance
+* Performance optimizations
+* Restored active maintenance - package is no longer deprecated
+* Enhanced heat map visualization
+* Improved touch event tracking
+
+## 0.2.0
+
+* Improved analytics event tracking
+* Enhanced route-aware analytics
+* Better integration with DevTools extension
+* Added touch tracking widget components
+
 ## 0.1.1
 
-**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
-
-* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
-* **DEPRECATED**: All functionality moved to `voo_telemetry` package
-* Use `voo_telemetry` for:
-  - OpenTelemetry-compliant metrics and traces
-  - Automatic trace context correlation
-  - OTLP export to any compatible backend
+* Initial analytics implementation
+* Basic heat map functionality
+* Touch event capture system
   - Better performance and reliability
 
 ### Migration Guide

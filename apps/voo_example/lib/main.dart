@@ -14,17 +14,33 @@ void main() async {
     options: VooOptions.development(
       appName: 'VooExample',
       appVersion: '1.0.0',
-      customConfig: const {'enableTouchTracking': true, 'enableEventLogging': true, 'enableAutoAppStartTrace': true},
+      customConfig: const {
+        'enableTouchTracking': true,
+        'enableEventLogging': true,
+        'enableAutoAppStartTrace': true,
+      },
     ),
   );
 
   // Step 2: Initialize local packages (work without cloud)
   // These packages provide local functionality
-  await VooLoggingPlugin.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
+  await VooLoggingPlugin.initialize(
+    maxEntries: 10000,
+    enableConsoleOutput: true,
+    enableFileStorage: true,
+  );
 
-  await VooAnalyticsPlugin.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+  await VooAnalyticsPlugin.initialize(
+    enableTouchTracking: true,
+    enableEventLogging: true,
+    enableUserProperties: true,
+  );
 
-  await VooPerformancePlugin.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
+  await VooPerformancePlugin.initialize(
+    enableNetworkMonitoring: true,
+    enableTraceMonitoring: true,
+    enableAutoAppStartTrace: true,
+  );
 
   // Step 3: Optionally initialize VooTelemetry for cloud syncing
   // This is only needed if you want to sync data to the cloud
@@ -53,10 +69,18 @@ void main() async {
   );
 
   // Example: Analytics (works locally, syncs to cloud if telemetry is enabled)
-  await VooAnalyticsPlugin.instance.logEvent('app_started', parameters: {'timestamp': DateTime.now().toIso8601String(), 'cloud_sync': enableCloudSync});
+  await VooAnalyticsPlugin.instance.logEvent(
+    'app_started',
+    parameters: {
+      'timestamp': DateTime.now().toIso8601String(),
+      'cloud_sync': enableCloudSync,
+    },
+  );
 
   // Example: Performance (works locally, syncs to cloud if telemetry is enabled)
-  final startupTrace = VooPerformancePlugin.instance.newTrace('app_startup_complete');
+  final startupTrace = VooPerformancePlugin.instance.newTrace(
+    'app_startup_complete',
+  );
   startupTrace.start();
 
   // Simulate some startup work
@@ -79,7 +103,10 @@ class VooExampleApp extends StatelessWidget {
       captureScreenshots: true,
       child: MaterialApp(
         title: 'Voo Flutter Example',
-        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
         navigatorObservers: [VooAnalyticsPlugin.instance.routeObserver],
         home: const HomePage(),
       ),

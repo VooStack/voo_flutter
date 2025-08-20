@@ -15,7 +15,9 @@ class StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = _getStatusColor(statusCode);
-    final textColor = color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    final textColor = color.computeLuminance() > 0.5
+        ? Colors.black
+        : Colors.white;
 
     if (compact) {
       return Container(
@@ -44,11 +46,7 @@ class StatusBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            _getStatusIcon(statusCode),
-            size: 14,
-            color: color,
-          ),
+          Icon(_getStatusIcon(statusCode), size: 14, color: color),
           const SizedBox(width: 4),
           Text(
             statusCode.toString(),

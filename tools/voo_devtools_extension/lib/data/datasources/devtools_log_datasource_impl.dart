@@ -27,7 +27,7 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
     try {
       // Wait a bit to ensure DevToolsExtension is initialized
       await Future.delayed(const Duration(milliseconds: 100));
-      
+
       // Try immediate connection
       await _connect();
 
@@ -68,7 +68,9 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
       _loggingSubscription = service.onLoggingEvent.listen(_handleLoggingEvent);
 
       // Listen to extension events
-      _extensionSubscription = service.onExtensionEvent.listen(_handleExtensionEvent);
+      _extensionSubscription = service.onExtensionEvent.listen(
+        _handleExtensionEvent,
+      );
 
       // Add connection success log
       _addLog(
@@ -117,7 +119,8 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
   }
 
   void _handleExtensionEvent(vm.Event event) {
-    if (event.extensionKind == 'voo_logger_event' && event.extensionData != null) {
+    if (event.extensionKind == 'voo_logger_event' &&
+        event.extensionData != null) {
       final data = event.extensionData!.data;
       if (data['__voo_logger__'] == true) {
         _handleStructuredLog(data);

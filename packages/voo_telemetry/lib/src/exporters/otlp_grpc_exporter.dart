@@ -7,7 +7,7 @@ class OTLPGrpcExporter extends OTLPExporter {
     // TODO: Implement gRPC export
     throw UnimplementedError('gRPC export not yet implemented');
   }
-  
+
   @override
   void shutdown() {
     // Cleanup

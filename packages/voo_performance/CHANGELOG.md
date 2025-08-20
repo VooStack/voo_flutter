@@ -1,13 +1,26 @@
+## 0.3.0
+
+* Added WASM support for web platform
+* Improved documentation and API comments
+* Added comprehensive examples
+* Enhanced pub.dev score compliance
+* Performance optimizations
+* Restored active maintenance - package is no longer deprecated
+* Enhanced network performance metrics
+* Improved Dio interceptor integration
+
+## 0.2.0
+
+* Enhanced performance trace tracking
+* Improved network metrics collection
+* Better integration with DevTools extension
+* Added custom performance traces
+
 ## 0.1.1
 
-**⚠️ DEPRECATED: This package is deprecated. Please use `voo_telemetry` instead.**
-
-* **BREAKING CHANGE**: Complete migration to OpenTelemetry standards
-* **DEPRECATED**: All functionality moved to `voo_telemetry` package
-* Use `voo_telemetry` for:
-  - OpenTelemetry-compliant distributed tracing
-  - Automatic instrumentation for HTTP, gRPC, and more
-  - OTLP export to any compatible backend
+* Initial performance monitoring implementation
+* Basic network metrics tracking
+* Dio interceptor for automatic monitoring
   - Better performance and reliability
 
 ### Migration Guide

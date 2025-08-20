@@ -4,12 +4,7 @@ class VooException implements Exception {
   final dynamic details;
   final StackTrace? stackTrace;
 
-  const VooException(
-    this.message, {
-    this.code,
-    this.details,
-    this.stackTrace,
-  });
+  const VooException(this.message, {this.code, this.details, this.stackTrace});
 
   @override
   String toString() {

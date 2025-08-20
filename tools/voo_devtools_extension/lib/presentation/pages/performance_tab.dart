@@ -4,6 +4,7 @@ import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bl
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_state.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/performance_averages_card.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/performance_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/performance_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/performance_list.dart';
@@ -15,7 +16,8 @@ class PerformanceTab extends StatefulWidget {
   State<PerformanceTab> createState() => _PerformanceTabState();
 }
 
-class _PerformanceTabState extends State<PerformanceTab> with AutomaticKeepAliveClientMixin {
+class _PerformanceTabState extends State<PerformanceTab>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   bool _showDetails = false;
   double _detailsPanelWidth = 400.0;
@@ -44,7 +46,32 @@ class _PerformanceTabState extends State<PerformanceTab> with AutomaticKeepAlive
       },
       builder: (context, state) => Column(
         children: [
+          // Page header
+          PageHeader(
+            icon: Icons.speed,
+            title: 'Performance',
+            subtitle: 'Performance metrics and monitoring',
+            iconColor: Colors.orange,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  context.read<PerformanceBloc>().add(LoadPerformanceLogs());
+                },
+                tooltip: 'Refresh',
+              ),
+              IconButton(
+                icon: const Icon(Icons.analytics_outlined),
+                onPressed: () {
+                  // Show analytics
+                },
+                tooltip: 'Analytics',
+              ),
+            ],
+          ),
+          // Filter bar
           const PerformanceFilterBar(),
+          // Average durations card
           if (state.averageDurations.isNotEmpty)
             PerformanceAveragesCard(averageDurations: state.averageDurations),
           Expanded(
@@ -60,7 +87,9 @@ class _PerformanceTabState extends State<PerformanceTab> with AutomaticKeepAlive
                       isLoading: state.isLoading,
                       error: state.error,
                       onLogTap: (log) {
-                        context.read<PerformanceBloc>().add(SelectPerformanceLog(log));
+                        context.read<PerformanceBloc>().add(
+                          SelectPerformanceLog(log),
+                        );
                         if (!_showDetails) {
                           setState(() => _showDetails = true);
                         }
@@ -74,10 +103,11 @@ class _PerformanceTabState extends State<PerformanceTab> with AutomaticKeepAlive
                       child: GestureDetector(
                         onHorizontalDragUpdate: (details) {
                           setState(() {
-                            _detailsPanelWidth = (_detailsPanelWidth - details.delta.dx).clamp(
-                              _minDetailsPanelWidth,
-                              _maxDetailsPanelWidth,
-                            );
+                            _detailsPanelWidth =
+                                (_detailsPanelWidth - details.delta.dx).clamp(
+                                  _minDetailsPanelWidth,
+                                  _maxDetailsPanelWidth,
+                                );
                           });
                         },
                         child: Container(

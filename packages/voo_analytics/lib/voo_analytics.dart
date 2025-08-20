@@ -1,4 +1,3 @@
-
 export 'src/voo_analytics_plugin.dart';
 export 'src/domain/entities/touch_event.dart';
 export 'src/domain/entities/heat_map_data.dart';

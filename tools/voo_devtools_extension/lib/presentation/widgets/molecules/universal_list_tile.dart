@@ -38,7 +38,7 @@ class UniversalListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return ModernListTile(
       isSelected: isSelected,
       selectedColor: accentColor,
@@ -47,21 +47,24 @@ class UniversalListTile extends StatelessWidget {
         horizontal: AppTheme.spacingMd,
         vertical: AppTheme.spacingSm,
       ),
-      leading: leadingBadge ?? (icon != null 
-        ? Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: (accentColor ?? theme.colorScheme.primary).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-            ),
-            child: Icon(
-              icon,
-              size: 18,
-              color: accentColor ?? theme.colorScheme.primary,
-            ),
-          )
-        : null),
+      leading:
+          leadingBadge ??
+          (icon != null
+              ? Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: (accentColor ?? theme.colorScheme.primary)
+                        .withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 18,
+                    color: accentColor ?? theme.colorScheme.primary,
+                  ),
+                )
+              : null),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -77,10 +80,12 @@ class UniversalListTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              ...trailingBadges.map((badge) => Padding(
-                padding: const EdgeInsets.only(left: AppTheme.spacingSm),
-                child: badge,
-              )),
+              ...trailingBadges.map(
+                (badge) => Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.spacingSm),
+                  child: badge,
+                ),
+              ),
             ],
           ),
           if (subtitle != null) ...[
@@ -101,66 +106,76 @@ class UniversalListTile extends StatelessWidget {
   Widget _buildMetadataRow(BuildContext context) {
     final theme = Theme.of(context);
     final items = <Widget>[];
-    
+
     // Add timestamp
-    items.add(Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.schedule,
-          size: 11,
-          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-        ),
-        const SizedBox(width: 3),
-        Text(
-          _formatTime(timestamp),
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            fontSize: 11,
-          ),
-        ),
-      ],
-    ));
-    
-    // Add category if present
-    if (category != null) {
-      items.add(Row(
+    items.add(
+      Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.label_outline,
+            Icons.schedule,
             size: 11,
             color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
           ),
           const SizedBox(width: 3),
           Text(
-            category!,
+            _formatTime(timestamp),
             style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
               fontSize: 11,
             ),
           ),
         ],
-      ));
+      ),
+    );
+
+    // Add category if present
+    if (category != null) {
+      items.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.label_outline,
+              size: 11,
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+            const SizedBox(width: 3),
+            Text(
+              category!,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.6,
+                ),
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      );
     }
-    
+
     // Add first metadata item if exists
     if (metadata.isNotEmpty) {
       final firstEntry = metadata.entries.first;
-      items.add(Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '${firstEntry.key}: ${firstEntry.value}',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-              fontSize: 11,
+      items.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${firstEntry.key}: ${firstEntry.value}',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.6,
+                ),
+                fontSize: 11,
+              ),
             ),
-          ),
-        ],
-      ));
+          ],
+        ),
+      );
     }
-    
+
     return Row(
       children: items.map((item) {
         final index = items.indexOf(item);
@@ -173,7 +188,9 @@ class UniversalListTile extends StatelessWidget {
               height: 3,
               margin: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(
-                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.3,
+                ),
                 shape: BoxShape.circle,
               ),
             ),
@@ -187,7 +204,7 @@ class UniversalListTile extends StatelessWidget {
   String _formatTime(DateTime timestamp) {
     final now = DateTime.now();
     final diff = now.difference(timestamp);
-    
+
     if (diff.inSeconds < 60) {
       return 'just now';
     } else if (diff.inMinutes < 60) {

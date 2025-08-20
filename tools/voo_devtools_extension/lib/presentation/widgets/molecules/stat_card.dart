@@ -6,7 +6,12 @@ class StatCard extends StatelessWidget {
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
 
-  const StatCard({super.key, required this.title, required this.children, this.padding});
+  const StatCard({
+    super.key,
+    required this.title,
+    required this.children,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,12 @@ class StatCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 8),
             ...children,
           ],

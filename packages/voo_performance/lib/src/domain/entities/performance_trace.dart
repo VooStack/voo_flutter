@@ -7,7 +7,8 @@ class PerformanceTrace {
   final Map<String, int> metrics = {};
   void Function(PerformanceTrace)? _onStop;
 
-  PerformanceTrace({required this.name, required this.startTime}) : id = '${name}_${DateTime.now().microsecondsSinceEpoch}';
+  PerformanceTrace({required this.name, required this.startTime})
+    : id = '${name}_${DateTime.now().microsecondsSinceEpoch}';
 
   Duration? get duration {
     if (endTime == null) return null;
@@ -66,5 +67,4 @@ class PerformanceTrace {
       'metrics': metrics,
     };
   }
-
 }

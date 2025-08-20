@@ -23,7 +23,7 @@ class TouchEvent extends Equatable {
     this.metadata,
     this.route,
   });
-  
+
   // Convenience getters for coordinates
   double get x => position.dx;
   double get y => position.dy;
@@ -65,16 +65,16 @@ class TouchEvent extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        timestamp,
-        position,
-        screenName,
-        widgetType,
-        widgetKey,
-        type,
-        metadata,
-        route,
-      ];
+    id,
+    timestamp,
+    position,
+    screenName,
+    widgetType,
+    widgetKey,
+    type,
+    metadata,
+    route,
+  ];
 }
 
 enum TouchType {

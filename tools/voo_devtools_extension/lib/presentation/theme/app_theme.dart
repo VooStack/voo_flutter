@@ -57,16 +57,15 @@ class AppTheme {
 
   // Text styles
   static TextStyle getMonospaceStyle(BuildContext context) {
-    return Theme.of(context).textTheme.bodySmall!.copyWith(
-      fontFamily: 'monospace',
-      fontSize: 12,
-    );
+    return Theme.of(
+      context,
+    ).textTheme.bodySmall!.copyWith(fontFamily: 'monospace', fontSize: 12);
   }
 
   static TextStyle getTitleStyle(BuildContext context) {
-    return Theme.of(context).textTheme.titleMedium!.copyWith(
-      fontWeight: FontWeight.bold,
-    );
+    return Theme.of(
+      context,
+    ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold);
   }
 
   static TextStyle getSubtitleStyle(BuildContext context) {
@@ -76,15 +75,18 @@ class AppTheme {
   }
 
   // Card decoration
-  static BoxDecoration getCardDecoration(BuildContext context, {bool isSelected = false}) {
+  static BoxDecoration getCardDecoration(
+    BuildContext context, {
+    bool isSelected = false,
+  }) {
     final theme = Theme.of(context);
     return BoxDecoration(
-      color: isSelected 
+      color: isSelected
           ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
           : theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(radiusMd),
       border: Border.all(
-        color: isSelected 
+        color: isSelected
             ? theme.colorScheme.primary.withValues(alpha: 0.5)
             : theme.colorScheme.outline.withValues(alpha: 0.2),
         width: isSelected ? 1.5 : 1,

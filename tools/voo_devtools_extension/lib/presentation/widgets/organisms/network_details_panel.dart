@@ -1,28 +1,35 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_header.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/detail_section_with_actions.dart';
+import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/status_badge.dart';
+import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
 
 class NetworkDetailsPanel extends StatelessWidget {
   final LogEntryModel? log;
   final NetworkRequestModel? request;
   final VoidCallback onClose;
 
-  const NetworkDetailsPanel({super.key, this.log, this.request, required this.onClose}) : assert(log != null || request != null, 'Either log or request must be provided');
+  const NetworkDetailsPanel({
+    super.key,
+    this.log,
+    this.request,
+    required this.onClose,
+  }) : assert(
+         log != null || request != null,
+         'Either log or request must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     // Use request if available, otherwise convert log to request
-    final networkRequest = request ?? (log != null ? NetworkRequestModel.fromLogEntry(log!) : null);
+    final networkRequest =
+        request ??
+        (log != null ? NetworkRequestModel.fromLogEntry(log!) : null);
     if (networkRequest == null) {
       return Container(); // Should never happen due to assert
     }
@@ -37,118 +44,181 @@ class NetworkDetailsPanel extends StatelessWidget {
     final responseBody = networkRequest.responseBody;
     final error = networkRequest.error;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border(left: BorderSide(color: theme.dividerColor)),
-      ),
-      child: Column(
-        children: [
-          DetailHeader(title: 'Network Request Details', onClose: onClose),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Request Overview
-                  Row(
-                    children: [
-                      MethodBadge(method: method),
-                      const SizedBox(width: 12),
-                      if (statusCode != null) ...[StatusBadge(statusCode: statusCode), const SizedBox(width: 12)],
-                      if (duration != null)
-                        Text(
-                          '${duration}ms',
-                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: duration > 1000 ? Colors.orange : null),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
+    // Determine accent color based on status
+    final accentColor = _getStatusColor(statusCode);
 
-                  // URL Section
-                  DetailSection(
-                    title: 'URL',
-                    content: SelectableText(url, style: theme.textTheme.bodyMedium),
-                  ),
+    // Build sections
+    final sections = <DetailSection>[];
 
-                  // Timing
-                  if (duration != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Timing',
-                      content: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [_buildInfoRow('Duration', '${duration}ms'), _buildInfoRow('Timestamp', networkRequest.timestamp.toString())],
-                      ),
-                    ),
-                  ],
-
-                  // Request Headers
-                  if (requestHeaders != null && requestHeaders.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(title: 'Request Headers', content: _buildHeadersList(requestHeaders)),
-                  ],
-
-                  // Request Body
-                  if (requestBody != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSectionWithActions(
-                      title: 'Request Body',
-                      actions: [
-                        IconButton(icon: const Icon(Icons.copy, size: 18), onPressed: () => _copyToClipboard(context, requestBody.toString()), tooltip: 'Copy request body'),
-                      ],
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(4)),
-                        child: SelectableText(_formatJson(requestBody), style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
-                      ),
-                    ),
-                  ],
-
-                  // Response Headers
-                  if (responseHeaders != null && responseHeaders.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(title: 'Response Headers', content: _buildHeadersList(responseHeaders)),
-                  ],
-
-                  // Response Body
-                  if (responseBody != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSectionWithActions(
-                      title: 'Response Body',
-                      actions: [
-                        IconButton(icon: const Icon(Icons.copy, size: 18), onPressed: () => _copyToClipboard(context, responseBody.toString()), tooltip: 'Copy response body'),
-                      ],
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(4)),
-                        child: SelectableText(_formatJson(responseBody), style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
-                      ),
-                    ),
-                  ],
-
-                  // Error Section
-                  if (error != null) ...[
-                    const SizedBox(height: 16),
-                    DetailSection(
-                      title: 'Error',
-                      content: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                        ),
-                        child: SelectableText(
-                          error,
-                          style: theme.textTheme.bodySmall?.copyWith(color: Colors.red, fontFamily: 'monospace'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
+    // Request Overview section
+    sections.add(
+      DetailSection(
+        title: 'Request Overview',
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                MethodBadge(method: method),
+                const SizedBox(width: AppTheme.spacingSm),
+                if (statusCode != null) StatusBadge(statusCode: statusCode),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingMd),
+            UniversalDetailsPanel.buildKeyValueRow('URL', url, monospace: true),
+            if (duration != null)
+              UniversalDetailsPanel.buildKeyValueRow(
+                'Duration',
+                '${duration}ms',
               ),
+            UniversalDetailsPanel.buildKeyValueRow(
+              'Timestamp',
+              networkRequest.timestamp.toIso8601String(),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    // Request Headers section
+    if (requestHeaders != null && requestHeaders.isNotEmpty) {
+      sections.add(
+        DetailSection(
+          title: 'Request Headers',
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: requestHeaders.entries.map((entry) {
+              return UniversalDetailsPanel.buildKeyValueRow(
+                entry.key,
+                entry.value.toString(),
+                monospace: true,
+              );
+            }).toList(),
+          ),
+          collapsible: true,
+          initiallyExpanded: false,
+        ),
+      );
+    }
+
+    // Request Body section
+    if (requestBody != null && requestBody.isNotEmpty) {
+      sections.add(
+        DetailSection(
+          title: 'Request Body',
+          content: UniversalDetailsPanel.buildCodeBlock(
+            context,
+            _formatBody(requestBody),
+          ),
+          collapsible: true,
+          initiallyExpanded: false,
+        ),
+      );
+    }
+
+    // Response Headers section
+    if (responseHeaders != null && responseHeaders.isNotEmpty) {
+      sections.add(
+        DetailSection(
+          title: 'Response Headers',
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: responseHeaders.entries.map((entry) {
+              return UniversalDetailsPanel.buildKeyValueRow(
+                entry.key,
+                entry.value.toString(),
+                monospace: true,
+              );
+            }).toList(),
+          ),
+          collapsible: true,
+          initiallyExpanded: false,
+        ),
+      );
+    }
+
+    // Response Body section
+    if (responseBody != null && responseBody.isNotEmpty) {
+      sections.add(
+        DetailSection(
+          title: 'Response Body',
+          content: UniversalDetailsPanel.buildCodeBlock(
+            context,
+            _formatBody(responseBody),
+          ),
+          collapsible: true,
+          initiallyExpanded: true,
+        ),
+      );
+    }
+
+    // Error section
+    if (error != null) {
+      sections.add(
+        DetailSection(
+          title: 'Error',
+          content: Container(
+            padding: const EdgeInsets.all(AppTheme.spacingMd),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.errorContainer.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              border: Border.all(
+                color: theme.colorScheme.error.withValues(alpha: 0.5),
+              ),
+            ),
+            child: SelectableText(
+              error,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return UniversalDetailsPanel(
+      title: _getTitle(method, statusCode),
+      headerBadges: [
+        MethodBadge(method: method),
+        if (statusCode != null) StatusBadge(statusCode: statusCode),
+        if (duration != null) _buildDurationBadge(context, duration),
+      ],
+      sections: sections,
+      onClose: onClose,
+      accentColor: accentColor,
+    );
+  }
+
+  String _getTitle(String method, int? statusCode) {
+    if (statusCode != null) {
+      return '$method Request - $statusCode';
+    }
+    return '$method Request';
+  }
+
+  Widget _buildDurationBadge(BuildContext context, int duration) {
+    final theme = Theme.of(context);
+    final color = _getDurationColor(duration);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            '${duration}ms',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+              fontSize: 10,
             ),
           ),
         ],
@@ -156,46 +226,31 @@ class NetworkDetailsPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-          ),
-          Expanded(child: SelectableText(value, style: const TextStyle(fontSize: 12))),
-        ],
-      ),
-    );
+  Color _getStatusColor(int? statusCode) {
+    if (statusCode == null) return Colors.grey;
+    if (statusCode >= 200 && statusCode < 300) return Colors.green;
+    if (statusCode >= 300 && statusCode < 400) return Colors.blue;
+    if (statusCode >= 400 && statusCode < 500) return Colors.orange;
+    if (statusCode >= 500) return Colors.red;
+    return Colors.grey;
   }
 
-  Widget _buildHeadersList(Map<String, dynamic> headers) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: headers.entries.map((entry) {
-        return _buildInfoRow(entry.key, entry.value.toString());
-      }).toList(),
-    );
+  Color _getDurationColor(int duration) {
+    if (duration < 200) return Colors.green;
+    if (duration < 500) return Colors.blue;
+    if (duration < 1000) return Colors.amber;
+    if (duration < 3000) return Colors.orange;
+    return Colors.red;
   }
 
-  String _formatJson(dynamic json) {
+  String _formatBody(String body) {
     try {
-      if (json is String) {
-        return json;
-      }
-      // Pretty print JSON with 2 spaces indentation
-      const encoder = JsonEncoder.withIndent('  ');
-      return encoder.convert(json);
+      // Try to parse as JSON for pretty printing
+      final json = jsonDecode(body);
+      return UniversalDetailsPanel.formatJson(json);
     } catch (_) {
-      return json.toString();
+      // Return as-is if not JSON
+      return body;
     }
-  }
-
-  void _copyToClipboard(BuildContext context, String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copied to clipboard'), duration: Duration(seconds: 2)));
   }
 }

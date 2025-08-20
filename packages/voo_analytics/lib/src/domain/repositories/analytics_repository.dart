@@ -7,29 +7,29 @@ abstract class AnalyticsRepository {
   bool get enableUserProperties;
 
   Future<void> initialize();
-  
+
   Future<void> logEvent(String name, {Map<String, dynamic>? parameters});
-  
+
   Future<void> trackTouchEvent(TouchEvent event);
-  
+
   Future<void> logTouchEvent(TouchEvent event);
-  
+
   Future<void> setUserProperty(String name, String value);
-  
+
   Future<void> setUserId(String userId);
-  
+
   Future<Map<String, dynamic>> getHeatMapData({
     DateTime? startDate,
     DateTime? endDate,
   });
-  
+
   Future<List<TouchEvent>> getTouchEvents({
     String? screenName,
     DateTime? startDate,
     DateTime? endDate,
   });
-  
+
   Future<void> clearData();
-  
+
   void dispose();
 }

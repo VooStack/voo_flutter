@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.0] - 2024-08-20
+
+* Added WASM support for web platform
+* Improved documentation and API comments
+* Added comprehensive examples
+* Enhanced pub.dev score compliance
+* Performance optimizations
+* Enhanced OTLP export capabilities
+* Improved trace and metric collection
+
 ## [0.0.1] - 2024-01-15
 
 ### 🎉 Major Release - Complete OpenTelemetry Implementation
