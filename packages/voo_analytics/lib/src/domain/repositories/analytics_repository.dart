@@ -10,6 +10,8 @@ abstract class AnalyticsRepository {
   
   Future<void> logEvent(String name, {Map<String, dynamic>? parameters});
   
+  Future<void> trackTouchEvent(TouchEvent event);
+  
   Future<void> logTouchEvent(TouchEvent event);
   
   Future<void> setUserProperty(String name, String value);

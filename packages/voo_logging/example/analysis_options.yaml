@@ -1,4 +1,0 @@
-include: ../analysis_options.yaml
-analyzer:
-  errors:
-    inference_failure_on_untyped_parameter: ignore

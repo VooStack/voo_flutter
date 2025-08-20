@@ -4,6 +4,7 @@ import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_analytics/voo_analytics.dart';
 import 'package:voo_performance/voo_performance.dart';
+import 'package:voo_telemetry/voo_telemetry.dart';
 
 /// Example app configured to send telemetry to DevStack API
 ///
@@ -21,23 +22,26 @@ void main() async {
   const String projectId = '21d20d74-22ef-46b2-8fb2-58c4ac13eb96'; // VooTest project
   const String organizationId = '0d1652a4-4251-4c8b-9930-238ec735c236'; // VooStack org
 
-  // Initialize DevStack telemetry with debug mode enabled
-  await DevStackTelemetry.initialize(
-    apiKey: devStackApiKey,
-    projectId: projectId,
-    organizationId: organizationId,
+  // Initialize Voo Core first
+  await Voo.initializeApp(
+    options: VooOptions.development(appName: 'VooExample-DevStack', appVersion: '1.0.0'),
+  );
+
+  // Initialize VooTelemetry with debug mode enabled
+  await VooTelemetryPlugin.initialize(
     endpoint: 'http://localhost:5001/api/v1',
-    enableDebugMode: true, // Enable to see what's being sent
-    syncInterval: const Duration(seconds: 10), // Sync every 10 seconds for testing
-    batchSize: 10, // Small batch size for testing
+    apiKey: devStackApiKey,
+    batchInterval: const Duration(seconds: 10), // Sync every 10 seconds for testing
+    maxBatchSize: 10, // Small batch size for testing
+    debug: true, // Enable to see what's being sent
   );
 
   // Initialize individual plugins
-  await VooLoggingPlugin.instance.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
+  await VooLoggingPlugin.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
 
-  await VooAnalyticsPlugin.instance.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+  await VooAnalyticsPlugin.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
 
-  await VooPerformancePlugin.instance.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
+  await VooPerformancePlugin.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
 
   // Initialize VooLogger
   await VooLogger.initialize(
@@ -58,8 +62,7 @@ void main() async {
     ),
   );
 
-  // Print initial sync status
-  DevStackTelemetry.printSyncStatus();
+  // Sync status is managed internally by VooTelemetry
 
   // Generate some test telemetry data
   VooLogger.info('DevStack integration initialized successfully');
@@ -81,22 +84,11 @@ void main() async {
     if (kDebugMode) {
       print('\n=== Forcing telemetry sync to DevStack ===');
     }
-    await DevStackTelemetry.forceSync();
+    await VooTelemetryPlugin.instance.flush();
 
-    // Print sync status again
-    DevStackTelemetry.printSyncStatus();
-
-    // Print debug log if in debug mode
-    if (CloudSyncManager.isDebugMode) {
-      if (kDebugMode) {
-        print('\n=== Debug Log ===');
-      }
-      final debugLog = DevStackTelemetry.getDebugLog();
-      for (final entry in debugLog) {
-        if (kDebugMode) {
-          print(entry);
-        }
-      }
+    // Debug logs are available via console output
+    if (kDebugMode) {
+      print('Telemetry data flushed to DevStack');
     }
   });
 
@@ -122,34 +114,34 @@ class VooExampleDevStackApp extends StatelessWidget {
                 if (kDebugMode) {
                   print('Manual sync triggered');
                 }
-                await DevStackTelemetry.forceSync();
-                DevStackTelemetry.printSyncStatus();
+                await VooTelemetryPlugin.instance.flush();
+                // Status is managed internally
               },
               tooltip: 'Force Sync',
             ),
             IconButton(
               icon: const Icon(Icons.info),
               onPressed: () {
-                DevStackTelemetry.printSyncStatus();
+                // Status is logged to console
               },
               tooltip: 'Sync Status',
             ),
           ],
         ),
-        body: const DevStackTelemetryDemoPage(),
+        body: const VooTelemetryDemoPage(),
       ),
     );
   }
 }
 
-class DevStackTelemetryDemoPage extends StatefulWidget {
-  const DevStackTelemetryDemoPage({super.key});
+class VooTelemetryDemoPage extends StatefulWidget {
+  const VooTelemetryDemoPage({super.key});
 
   @override
-  State<DevStackTelemetryDemoPage> createState() => _DevStackTelemetryDemoPageState();
+  State<VooTelemetryDemoPage> createState() => _VooTelemetryDemoPageState();
 }
 
-class _DevStackTelemetryDemoPageState extends State<DevStackTelemetryDemoPage> {
+class _VooTelemetryDemoPageState extends State<VooTelemetryDemoPage> {
   int _logCounter = 0;
   int _eventCounter = 0;
 
@@ -174,7 +166,7 @@ class _DevStackTelemetryDemoPageState extends State<DevStackTelemetryDemoPage> {
   }
 
   Future<void> _checkSyncStatus() async {
-    final status = DevStackTelemetry.getSyncStatus();
+    // Sync status is managed internally by VooTelemetry
 
     if (!mounted) return;
 
@@ -182,17 +174,16 @@ class _DevStackTelemetryDemoPageState extends State<DevStackTelemetryDemoPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('DevStack Sync Status'),
-        content: Column(
+        content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Queue Size: ${status['queueSize']}'),
-            Text('Is Syncing: ${status['isSyncing']}'),
-            Text('Debug Mode: ${status['debugMode']}'),
-            Text('Cloud Sync: ${status['cloudSyncEnabled']}'),
-            Text('API Key: ${status['apiKeyPresent'] ? 'Present' : 'Missing'}'),
-            const SizedBox(height: 8),
-            Text('Endpoint:\n${status['endpoint']}', style: const TextStyle(fontSize: 12)),
+            Text('Status: Active'),
+            Text('Cloud Sync: Enabled'),
+            Text('Debug Mode: Enabled'),
+            Text('Telemetry is managed by VooTelemetry'),
+            SizedBox(height: 8),
+            Text('Check console logs for detailed information', style: TextStyle(fontSize: 12)),
           ],
         ),
         actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
@@ -234,7 +225,7 @@ class _DevStackTelemetryDemoPageState extends State<DevStackTelemetryDemoPage> {
 
             OutlinedButton.icon(
               onPressed: () async {
-                await DevStackTelemetry.forceSync();
+                await VooTelemetryPlugin.instance.flush();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sync triggered!')));
                 }

@@ -27,7 +27,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   
   Future<void> _initializeAnalytics() async {
     if (!VooAnalyticsPlugin.instance.isInitialized) {
-      await VooAnalyticsPlugin.instance.initialize(
+      await VooAnalyticsPlugin.initialize(
         enableTouchTracking: true,
         enableEventLogging: true,
         enableUserProperties: true,

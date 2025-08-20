@@ -17,16 +17,18 @@ class VooLoggingPlugin extends VooPlugin {
   String get name => 'voo_logging';
 
   @override
-  String get version => '0.0.15';
+  String get version => '0.2.0';
 
   bool get isInitialized => _initialized;
 
-  Future<void> initialize({
+  static Future<void> initialize({
     int maxEntries = 10000,
     bool enableConsoleOutput = true,
     bool enableFileStorage = true,
   }) async {
-    if (_initialized) {
+    final plugin = instance;
+    
+    if (plugin._initialized) {
       return;
     }
 
@@ -39,23 +41,22 @@ class VooLoggingPlugin extends VooPlugin {
 
     await VooLogger.initialize();
 
-    Voo.registerPlugin(this);
-    _initialized = true;
+    await Voo.registerPlugin(plugin);
+    plugin._initialized = true;
   }
 
   @override
-  FutureOr<void> onCoreInitialized() {
-    if (!_initialized && Voo.options?.autoRegisterPlugins == true) {
+  FutureOr<void> onAppInitialized(VooApp app) {
+    if (!_initialized && app.options.autoRegisterPlugins) {
       VooLogger.info('VooLogging plugin auto-registered');
     }
   }
 
   @override
-  void dispose() {
+  FutureOr<void> dispose() {
     // Clean up resources
     _initialized = false;
     _instance = null;
-    super.dispose();
   }
 
   @override

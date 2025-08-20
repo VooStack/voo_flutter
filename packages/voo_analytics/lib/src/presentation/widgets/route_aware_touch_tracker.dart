@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:voo_analytics/src/presentation/widgets/touch_tracker_widget.dart';
 import 'package:voo_analytics/src/voo_analytics_plugin.dart';
-import 'package:voo_logging/voo_logging.dart';
 
 /// A widget that tracks touches and captures screenshots for each route
 class RouteAwareTouchTracker extends StatefulWidget {
@@ -85,7 +84,7 @@ class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker> with Ro
       
       if (byteData != null) {
         final bytes = byteData.buffer.asUint8List();
-        _sendScreenshotToDevTools(bytes, image.width, image.height);
+        _sendScreenshotToAnalytics(bytes, image.width, image.height);
         _hasCaptureedScreenForRoute = true;
       }
     } catch (e) {
@@ -94,20 +93,17 @@ class _RouteAwareTouchTrackerState extends State<RouteAwareTouchTracker> with Ro
     }
   }
 
-  void _sendScreenshotToDevTools(Uint8List imageBytes, int width, int height) {
-    // Convert to base64 for transmission
-    final base64Image = Uri.dataFromBytes(imageBytes, mimeType: 'image/png').toString();
-    
-    VooLogger.info(
-      'Route Screenshot: $_currentRoute',
-      category: 'analytics',
-      metadata: {
-        'type': 'route_screenshot',
+  void _sendScreenshotToAnalytics(Uint8List imageBytes, int width, int height) {
+    // Store screenshot data in analytics
+    VooAnalyticsPlugin.instance.logEvent(
+      'route_screenshot',
+      parameters: {
         'route': _currentRoute,
-        'screenshot': base64Image,
         'width': width,
         'height': height,
         'timestamp': DateTime.now().toIso8601String(),
+        // Note: In production, you'd likely store the image elsewhere
+        // and just reference it here
       },
     );
   }
@@ -154,21 +150,12 @@ class AnalyticsRouteObserver extends RouteObserver<ModalRoute<dynamic>> {
   void _logRouteChange(Route<dynamic>? route, String action) {
     final routeName = route?.settings.name ?? 'unknown';
     
-    VooLogger.info(
-      'Route Change: $action -> $routeName',
-      category: 'analytics',
-      metadata: {
-        'type': 'route_change',
-        'route': routeName,
-        'action': action,
-        'timestamp': DateTime.now().toIso8601String(),
-      },
-    );
-    
     VooAnalyticsPlugin.instance.logEvent(
       'route_$action',
       parameters: {
         'route': routeName,
+        'action': action,
+        'timestamp': DateTime.now().toIso8601String(),
       },
     );
   }

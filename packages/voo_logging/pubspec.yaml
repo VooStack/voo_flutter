@@ -1,6 +1,6 @@
 name: voo_logging
-description: '[DEPRECATED] Use voo_telemetry instead. A comprehensive logging package for Flutter and Dart applications.'
-version: 0.1.1
+description: 'Comprehensive local logging package for Flutter applications with persistent storage and DevTools integration.'
+version: 0.2.0
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_logging
 topics:

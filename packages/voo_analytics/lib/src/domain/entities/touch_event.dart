@@ -10,6 +10,7 @@ class TouchEvent extends Equatable {
   final String? widgetKey;
   final TouchType type;
   final Map<String, dynamic>? metadata;
+  final String? route;
 
   const TouchEvent({
     required this.id,
@@ -20,7 +21,12 @@ class TouchEvent extends Equatable {
     this.widgetKey,
     required this.type,
     this.metadata,
+    this.route,
   });
+  
+  // Convenience getters for coordinates
+  double get x => position.dx;
+  double get y => position.dy;
 
   Map<String, dynamic> toMap() {
     return {
@@ -33,6 +39,7 @@ class TouchEvent extends Equatable {
       if (widgetKey != null) 'widget_key': widgetKey,
       'type': type.name,
       if (metadata != null) 'metadata': metadata,
+      if (route != null) 'route': route,
     };
   }
 
@@ -52,6 +59,7 @@ class TouchEvent extends Equatable {
         orElse: () => TouchType.tap,
       ),
       metadata: map['metadata'] as Map<String, dynamic>?,
+      route: map['route'] as String?,
     );
   }
 
@@ -65,6 +73,7 @@ class TouchEvent extends Equatable {
         widgetKey,
         type,
         metadata,
+        route,
       ];
 }
 

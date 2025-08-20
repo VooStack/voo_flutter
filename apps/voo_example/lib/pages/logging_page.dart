@@ -89,19 +89,21 @@ class _LoggingPageState extends State<LoggingPage> {
   }
 
   void _clearLogs() async {
-    await VooLogger.clearLogs();
+    // Clear logs functionality is not directly available in VooLogger
+    // You can clear the local log display
     setState(() {
       _recentLogs = [];
     });
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs cleared')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Display cleared')));
     }
   }
 
   void _exportLogs() async {
-    await VooLogger.exportLogs();
+    // Export logs functionality would need to be implemented via repository
+    // For now, show a placeholder message
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs exported')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Export feature coming soon')));
     }
   }
 

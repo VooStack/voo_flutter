@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:math';
 
-import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/features/logging/data/datasources/local_log_storage.dart';
-import 'package:voo_logging/features/logging/data/models/log_sync_entity.dart';
 import 'package:voo_logging/features/logging/domain/utils/pretty_log_formatter.dart';
 import 'package:voo_logging/voo_logging.dart';
 
@@ -180,13 +178,6 @@ class LoggerRepositoryImpl extends LoggerRepository {
     }
 
     await _storage?.insertLog(entry).catchError((_) => null);
-
-    // Sync to cloud if enabled
-    final options = Voo.options;
-    if (options != null && options.enableCloudSync && options.apiKey != null) {
-      final syncEntity = LogSyncEntity(logEntry: entry);
-      await CloudSyncManager.instance.addToQueue(syncEntity);
-    }
   }
 
   Map<String, dynamic>? _enrichMetadata(Map<String, dynamic>? userMetadata) {
@@ -354,10 +345,6 @@ class LoggerRepositoryImpl extends LoggerRepository {
   }
 
   @override
-  Future<String> exportLogs({List<LogLevel>? levels, DateTime? startTime, DateTime? endTime}) async =>
-      await _storage?.exportLogs(levels: levels, startTime: startTime, endTime: endTime) ?? '{"logs": [], "totalLogs": 0}';
-
-  @override
   Future<void> networkRequest(String method, String url, {Map<String, String>? headers, dynamic body, Map<String, dynamic>? metadata}) async {
     await info(
       '$method $url',
@@ -395,6 +382,30 @@ class LoggerRepositoryImpl extends LoggerRepository {
       tag: 'UserAction',
       metadata: {'action': action, 'screen': screen, 'properties': properties, 'userId': _currentUserId},
     );
+  }
+
+  @override
+  Future<List<LogEntry>> getLogs({LogFilter? filter}) async {
+    // For now, return empty list - can be implemented with actual storage later
+    return [];
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> exportLogs() async {
+    final logs = await getLogs();
+    return logs.map((LogEntry log) => {
+      'id': log.id,
+      'timestamp': log.timestamp.toIso8601String(),
+      'level': log.level.name,
+      'message': log.message,
+      'category': log.category,
+      'tag': log.tag,
+      'userId': log.userId,
+      'sessionId': log.sessionId,
+      'metadata': log.metadata,
+      'error': log.error?.toString(),
+      'stackTrace': log.stackTrace,
+    }).toList();
   }
 
   void close() {

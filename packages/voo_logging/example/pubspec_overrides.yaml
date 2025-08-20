@@ -1,9 +1,0 @@
-dependency_overrides:
-  voo_core:
-    path: ../../voo_core
-  voo_logging:
-    path: ../
-  voo_analytics:
-    path: ../../voo_analytics
-  voo_performance:
-    path: ../../voo_performance

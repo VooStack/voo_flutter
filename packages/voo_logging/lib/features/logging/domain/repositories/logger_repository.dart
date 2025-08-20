@@ -15,24 +15,20 @@ abstract class LoggerRepository {
   Future<void> info(String message, {String? category, String? tag, Map<String, dynamic>? metadata});
   Future<void> warning(String message, {String? category, String? tag, Map<String, dynamic>? metadata});
   Future<void> error(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata});
-
-  Future getStatistics();
-
-  Future exportLogs();
-
-  Future<void> clearLogs();
-
-  void setUserId(String newUserId);
-
-  void startNewSession();
-
-  Future<void> networkResponse(int i, String s, Duration duration, {Map<String, String> headers, int contentLength, Map<String, Object> metadata});
-
-  void userAction(String s, {String screen, Map<String, Object> properties});
-
   Future<void> fatal(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata});
-
-  void log(String s, {LogLevel level, String? category, Map<String, Object> metadata, String? tag});
-
-  Future<void> networkRequest(String s, String t, {Map<String, String> headers, Map<String, String> metadata});
+  
+  void log(String s, {required LogLevel level, String? category, required Map<String, Object> metadata, String? tag});
+  
+  Future<void> networkRequest(String s, String t, {required Map<String, String> headers, required Map<String, String> metadata});
+  Future<void> networkResponse(int i, String s, Duration duration, {required Map<String, String> headers, required int contentLength, required Map<String, Object> metadata});
+  
+  void userAction(String s, {required String screen, required Map<String, Object> properties});
+  
+  Future<LogStatistics> getStatistics();
+  Future<List<LogEntry>> getLogs({LogFilter? filter});
+  Future<List<Map<String, dynamic>>> exportLogs();
+  Future<void> clearLogs();
+  
+  void setUserId(String newUserId);
+  void startNewSession();
 }

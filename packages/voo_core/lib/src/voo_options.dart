@@ -1,27 +1,46 @@
 import 'package:flutter/foundation.dart';
 
+/// Configuration options for Voo initialization.
+/// These options configure the local behavior of Voo packages.
 @immutable
 class VooOptions {
+  /// Enable debug logging for Voo packages.
   final bool enableDebugLogging;
+  
+  /// Automatically register discovered plugins.
   final bool autoRegisterPlugins;
+  
+  /// Custom configuration that can be accessed by plugins.
   final Map<String, dynamic> customConfig;
+  
+  /// Timeout for plugin initialization.
   final Duration initializationTimeout;
-  final String? apiKey;
-  final String? apiEndpoint;
-  final bool enableCloudSync;
-  final Duration syncInterval;
-  final int batchSize;
+  
+  /// App name for identification.
+  final String? appName;
+  
+  /// App version for tracking.
+  final String? appVersion;
+  
+  /// Environment (development, staging, production).
+  final String environment;
+  
+  /// Enable local persistence for data.
+  final bool enableLocalPersistence;
+  
+  /// Maximum local storage size in MB.
+  final int maxLocalStorageMB;
 
   const VooOptions({
     this.enableDebugLogging = kDebugMode,
     this.autoRegisterPlugins = true,
     this.customConfig = const {},
     this.initializationTimeout = const Duration(seconds: 10),
-    this.apiKey,
-    this.apiEndpoint,
-    this.enableCloudSync = false,
-    this.syncInterval = const Duration(minutes: 1),
-    this.batchSize = 100,
+    this.appName,
+    this.appVersion,
+    this.environment = 'development',
+    this.enableLocalPersistence = true,
+    this.maxLocalStorageMB = 100,
   });
 
   VooOptions copyWith({
@@ -29,28 +48,58 @@ class VooOptions {
     bool? autoRegisterPlugins,
     Map<String, dynamic>? customConfig,
     Duration? initializationTimeout,
-    String? apiKey,
-    String? apiEndpoint,
-    bool? enableCloudSync,
-    Duration? syncInterval,
-    int? batchSize,
+    String? appName,
+    String? appVersion,
+    String? environment,
+    bool? enableLocalPersistence,
+    int? maxLocalStorageMB,
   }) {
     return VooOptions(
       enableDebugLogging: enableDebugLogging ?? this.enableDebugLogging,
       autoRegisterPlugins: autoRegisterPlugins ?? this.autoRegisterPlugins,
       customConfig: customConfig ?? this.customConfig,
       initializationTimeout: initializationTimeout ?? this.initializationTimeout,
-      apiKey: apiKey ?? this.apiKey,
-      apiEndpoint: apiEndpoint ?? this.apiEndpoint,
-      enableCloudSync: enableCloudSync ?? this.enableCloudSync,
-      syncInterval: syncInterval ?? this.syncInterval,
-      batchSize: batchSize ?? this.batchSize,
+      appName: appName ?? this.appName,
+      appVersion: appVersion ?? this.appVersion,
+      environment: environment ?? this.environment,
+      enableLocalPersistence: enableLocalPersistence ?? this.enableLocalPersistence,
+      maxLocalStorageMB: maxLocalStorageMB ?? this.maxLocalStorageMB,
+    );
+  }
+
+  /// Create options for production environment.
+  factory VooOptions.production({
+    String? appName,
+    String? appVersion,
+    Map<String, dynamic>? customConfig,
+  }) {
+    return VooOptions(
+      enableDebugLogging: false,
+      environment: 'production',
+      appName: appName,
+      appVersion: appVersion,
+      customConfig: customConfig ?? const {},
+    );
+  }
+
+  /// Create options for development environment.
+  factory VooOptions.development({
+    String? appName,
+    String? appVersion,
+    Map<String, dynamic>? customConfig,
+  }) {
+    return VooOptions(
+      enableDebugLogging: true,
+      environment: 'development',
+      appName: appName,
+      appVersion: appVersion,
+      customConfig: customConfig ?? const {},
     );
   }
 
   @override
   String toString() {
-    return 'VooOptions(enableDebugLogging: $enableDebugLogging, autoRegisterPlugins: $autoRegisterPlugins, customConfig: $customConfig, initializationTimeout: $initializationTimeout, apiKey: ${apiKey != null ? '***' : 'null'}, apiEndpoint: $apiEndpoint, enableCloudSync: $enableCloudSync, syncInterval: $syncInterval, batchSize: $batchSize)';
+    return 'VooOptions(enableDebugLogging: $enableDebugLogging, autoRegisterPlugins: $autoRegisterPlugins, environment: $environment, appName: $appName, appVersion: $appVersion)';
   }
 
   @override
@@ -61,11 +110,11 @@ class VooOptions {
         other.autoRegisterPlugins == autoRegisterPlugins &&
         mapEquals(other.customConfig, customConfig) &&
         other.initializationTimeout == initializationTimeout &&
-        other.apiKey == apiKey &&
-        other.apiEndpoint == apiEndpoint &&
-        other.enableCloudSync == enableCloudSync &&
-        other.syncInterval == syncInterval &&
-        other.batchSize == batchSize;
+        other.appName == appName &&
+        other.appVersion == appVersion &&
+        other.environment == environment &&
+        other.enableLocalPersistence == enableLocalPersistence &&
+        other.maxLocalStorageMB == maxLocalStorageMB;
   }
 
   @override
@@ -75,11 +124,11 @@ class VooOptions {
       autoRegisterPlugins,
       customConfig,
       initializationTimeout,
-      apiKey,
-      apiEndpoint,
-      enableCloudSync,
-      syncInterval,
-      batchSize,
+      appName,
+      appVersion,
+      environment,
+      enableLocalPersistence,
+      maxLocalStorageMB,
     );
   }
 }

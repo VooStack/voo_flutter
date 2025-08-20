@@ -100,13 +100,17 @@ class VooNetworkInterceptor implements NetworkInterceptor {
     }
     metadataMap['timestamp'] = DateTime.now().toIso8601String();
     
-    await VooLogger.networkResponse(
-      statusCode,
-      url,
-      duration,
-      headers: responseHeaders,
-      contentLength: contentLength ?? 0,
-      metadata: metadataMap,
+    await VooLogger.info(
+      'HTTP $statusCode $url (${duration.inMilliseconds}ms)',
+      category: 'Network',
+      tag: 'Response',
+      metadata: {
+        'statusCode': statusCode,
+        'url': url,
+        'duration': duration.inMilliseconds,
+        'contentLength': contentLength ?? 0,
+        ...metadataMap,
+      },
     );
   }
 

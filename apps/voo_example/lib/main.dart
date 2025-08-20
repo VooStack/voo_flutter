@@ -3,43 +3,68 @@ import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_analytics/voo_analytics.dart';
 import 'package:voo_performance/voo_performance.dart';
+import 'package:voo_telemetry/voo_telemetry.dart';
 import 'package:voo_example/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Voo.initializeApp(options: const VooOptions(enableDebugLogging: true, autoRegisterPlugins: true));
 
-  // Initialize individual plugins
-  await VooLoggingPlugin.instance.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
-  await VooAnalyticsPlugin.instance.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
-  await VooPerformancePlugin.instance.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
-  // Initialize VooLogger with pretty logging configuration
-  await VooLogger.initialize(
-    appName: 'VooExample',
-    appVersion: '1.0.0',
-    userId: 'example_user',
-    minimumLevel: LogLevel.verbose,
-    config: const LoggingConfig(
-      enablePrettyLogs: true,  // Enable pretty formatted logs
-      showEmojis: true,         // Show emoji icons for log levels
-      showTimestamp: true,      // Include timestamps in logs
-      showColors: true,         // Use ANSI colors in console
-      showBorders: true,        // Show decorative borders
-      lineLength: 120,          // Maximum line width
-      minimumLevel: LogLevel.verbose,
-      enabled: true,
-      enableDevToolsJson: false, // Disable JSON logs in console output
+  // Step 1: Initialize Voo Core (like Firebase Core)
+  // This acts as the central initialization point for all Voo packages
+  final app = await Voo.initializeApp(
+    options: VooOptions.development(
+      appName: 'VooExample',
+      appVersion: '1.0.0',
+      customConfig: const {'enableTouchTracking': true, 'enableEventLogging': true, 'enableAutoAppStartTrace': true},
     ),
   );
 
-  // Demonstrate different log levels with pretty formatting
-  VooLogger.verbose('VooExample app starting up...');
-  VooLogger.debug('Debug mode enabled with pretty logging');
-  VooLogger.info('VooExample app initialized successfully');
-  VooLogger.warning('This is a sample warning message to demonstrate formatting');
-  
+  print('✅ Voo Core initialized: ${app.name}');
+
+  // Step 2: Initialize local packages (work without cloud)
+  // These packages provide local functionality
+  await VooLoggingPlugin.initialize(maxEntries: 10000, enableConsoleOutput: true, enableFileStorage: true);
+  print('✅ VooLogging initialized (local logging)');
+
+  await VooAnalyticsPlugin.initialize(enableTouchTracking: true, enableEventLogging: true, enableUserProperties: true);
+  print('✅ VooAnalytics initialized (local analytics)');
+
+  await VooPerformancePlugin.initialize(enableNetworkMonitoring: true, enableTraceMonitoring: true, enableAutoAppStartTrace: true);
+  print('✅ VooPerformance initialized (local performance monitoring)');
+
+  // Step 3: Optionally initialize VooTelemetry for cloud syncing
+  // This is only needed if you want to sync data to the cloud
+  const enableCloudSync = false; // Set to true to enable cloud syncing
+
+  if (enableCloudSync) {
+    try {
+      await VooTelemetryPlugin.initialize(
+        endpoint: 'https://api.voostack.com/v1/telemetry', // Your OTLP endpoint
+        apiKey: 'your-api-key-here', // Your API key
+        batchInterval: const Duration(seconds: 30),
+        maxBatchSize: 100,
+        debug: true,
+      );
+      print('✅ VooTelemetry initialized (cloud syncing enabled)');
+    } catch (e) {
+      print('⚠️ VooTelemetry initialization failed: $e');
+      print('   Continuing with local-only mode');
+    }
+  } else {
+    print('ℹ️ Cloud syncing disabled - running in local-only mode');
+  }
+
+  // Step 4: Use the packages normally
+  // The packages work locally whether or not cloud syncing is enabled
+
+  // Example: Logging (works locally, syncs to cloud if telemetry is enabled)
+  await VooLogger.verbose('VooExample app starting up...');
+  await VooLogger.debug('Debug mode enabled');
+  await VooLogger.info('VooExample app initialized successfully');
+  await VooLogger.warning('This is a sample warning message');
+
   // Example with metadata
-  VooLogger.info(
+  await VooLogger.info(
     'Application started',
     category: 'System',
     tag: 'Startup',
@@ -47,8 +72,23 @@ void main() async {
       'platform': 'Flutter',
       'environment': 'development',
       'features': ['logging', 'analytics', 'performance'],
+      'cloudSyncEnabled': enableCloudSync,
     },
   );
+
+  // Example: Analytics (works locally, syncs to cloud if telemetry is enabled)
+  await VooAnalyticsPlugin.instance.logEvent('app_started', parameters: {'timestamp': DateTime.now().toIso8601String(), 'cloud_sync': enableCloudSync});
+
+  // Example: Performance (works locally, syncs to cloud if telemetry is enabled)
+  final startupTrace = VooPerformancePlugin.instance.newTrace('app_startup_complete');
+  startupTrace.start();
+
+  // Simulate some startup work
+  await Future.delayed(const Duration(milliseconds: 100));
+
+  startupTrace.putAttribute('plugins_loaded', '4');
+  startupTrace.putMetric('startup_time_ms', 100);
+  startupTrace.stop();
 
   runApp(const VooExampleApp());
 }
@@ -58,10 +98,15 @@ class VooExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Voo Flutter Example',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
-      home: const HomePage(),
+    return RouteAwareTouchTracker(
+      enabled: true,
+      captureScreenshots: true,
+      child: MaterialApp(
+        title: 'Voo Flutter Example',
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+        navigatorObservers: [VooAnalyticsPlugin.instance.routeObserver],
+        home: const HomePage(),
+      ),
     );
   }
 }

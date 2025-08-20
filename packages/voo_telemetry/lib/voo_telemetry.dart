@@ -34,3 +34,6 @@ export 'src/exporters/otlp_grpc_exporter.dart';
 
 // Main API
 export 'src/voo_telemetry.dart';
+
+// Plugin Integration
+export 'src/voo_telemetry_plugin.dart';

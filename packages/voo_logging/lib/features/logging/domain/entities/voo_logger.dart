@@ -1,6 +1,7 @@
 import 'package:voo_logging/features/logging/data/repositories/logger_repository_impl.dart';
 import 'package:voo_logging/voo_logging.dart';
 
+/// VooLogger provides logging capabilities for Voo applications.
 class VooLogger {
   bool _initialized = false;
   factory VooLogger() => instance;
@@ -98,53 +99,15 @@ class VooLogger {
     instance._repository.userAction(s, screen: screen, properties: properties);
   }
 
-  static Future<void> networkResponse(
-    int i,
-    String s,
-    Duration duration, {
-    required Map<String, String> headers,
-    required int contentLength,
-    required Map<String, Object> metadata,
-  }) async {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    await instance._repository.networkResponse(i, s, duration, headers: headers, contentLength: contentLength, metadata: metadata);
+  Future<List<LogEntry>> getLogs({LogFilter? filter}) async {
+    return await _repository.getLogs(filter: filter);
   }
 
-
-  static Future getStatistics() async {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    return instance._repository.getStatistics();
+  Future<void> clearLogs() async {
+    await _repository.clearLogs();
   }
 
-  static Future exportLogs() async {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    return instance._repository.exportLogs();
-  }
-
-  static Future<void> clearLogs() async {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    await instance._repository.clearLogs();
-  }
-
-  static void setUserId(String newUserId) {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    instance._repository.setUserId(newUserId);
-  }
-
-  static void startNewSession() {
-    if (!instance._initialized) {
-      throw StateError('VooLogger must be initialized before use');
-    }
-    instance._repository.startNewSession();
+  Future<LogStatistics> getStatistics() async {
+    return await _repository.getStatistics();
   }
 }

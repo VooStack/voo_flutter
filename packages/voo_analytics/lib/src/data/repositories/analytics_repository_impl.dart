@@ -5,12 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:voo_core/voo_core.dart';
-import 'package:voo_analytics/src/data/models/analytics_sync_entity.dart';
 import 'package:voo_analytics/src/domain/entities/touch_event.dart';
 import 'package:voo_analytics/src/domain/entities/heat_map_data.dart';
 import 'package:voo_analytics/src/domain/repositories/analytics_repository.dart';
-import 'package:voo_logging/voo_logging.dart';
 
 class AnalyticsRepositoryImpl implements AnalyticsRepository {
   final List<TouchEvent> _touchEvents = [];
@@ -114,84 +111,26 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     
     await _saveData();
     
-    // Send to VooLogger for DevTools streaming
-    VooLogger.info(
-      'Analytics Event: $name',
-      category: 'analytics',
-      metadata: {
-        'type': 'custom_event',
-        'event_name': name,
-        'timestamp': timestamp.toIso8601String(),
-        ...?parameters,
-      },
-    );
-    
-    // Sync to cloud if enabled
-    final options = Voo.options;
-    if (options != null && options.enableCloudSync && options.apiKey != null) {
-      final syncEntity = AnalyticsSyncEntity(
-        id: '${timestamp.millisecondsSinceEpoch}_$name',
-        timestamp: timestamp,
-        eventType: 'custom_event',
-        eventData: {
-          'event_name': name,
-          'parameters': parameters ?? {},
-          'user_id': _userId,
-        },
-      );
-      await CloudSyncManager.instance.addToQueue(syncEntity);
-    }
-    
     if (kDebugMode) {
       print('[VooAnalytics] Event logged: $name');
     }
   }
 
   @override
-  Future<void> logTouchEvent(TouchEvent event) async {
+  Future<void> trackTouchEvent(TouchEvent event) async {
     if (!enableTouchTracking) return;
     
     _touchEvents.add(event);
     
+    // Keep list bounded
     if (_touchEvents.length > 10000) {
       _touchEvents.removeRange(0, 1000);
     }
     
     await _saveData();
     
-    // Send to VooLogger for DevTools streaming
-    VooLogger.info(
-      'Touch Event: ${event.type.name} at ${event.screenName}',
-      category: 'analytics',
-      metadata: {
-        'type': 'touch_event',
-        'touch_type': event.type.name,
-        'screen': event.screenName,
-        'x': event.position.dx,
-        'y': event.position.dy,
-        'widget_type': event.widgetType,
-        'widget_key': event.widgetKey,
-        'timestamp': event.timestamp.toIso8601String(),
-      },
-    );
-    
-    // Sync to cloud if enabled
-    final options = Voo.options;
-    if (options != null && options.enableCloudSync && options.apiKey != null) {
-      final syncEntity = AnalyticsSyncEntity(
-        id: '${event.timestamp.millisecondsSinceEpoch}_touch_${event.screenName}',
-        timestamp: event.timestamp,
-        eventType: 'touch_event',
-        eventData: {
-          'touch_type': event.type.name,
-          'screen': event.screenName,
-          'position': {'x': event.position.dx, 'y': event.position.dy},
-          'widget_type': event.widgetType,
-          'widget_key': event.widgetKey,
-          'user_id': _userId,
-        },
-      );
-      await CloudSyncManager.instance.addToQueue(syncEntity);
+    if (kDebugMode) {
+      print('[VooAnalytics] Touch event tracked at (${event.x}, ${event.y})');
     }
   }
 
@@ -201,12 +140,20 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     
     _userProperties[name] = value;
     await _saveData();
+    
+    if (kDebugMode) {
+      print('[VooAnalytics] User property set: $name = $value');
+    }
   }
 
   @override
   Future<void> setUserId(String userId) async {
     _userId = userId;
     await _saveData();
+    
+    if (kDebugMode) {
+      print('[VooAnalytics] User ID set: $userId');
+    }
   }
 
   @override
@@ -214,69 +161,72 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final start = startDate ?? DateTime.now().subtract(const Duration(days: 7));
-    final end = endDate ?? DateTime.now();
-    
     final filteredEvents = _touchEvents.where((event) {
-      return event.timestamp.isAfter(start) && event.timestamp.isBefore(end);
+      if (startDate != null && event.timestamp.isBefore(startDate)) {
+        return false;
+      }
+      if (endDate != null && event.timestamp.isAfter(endDate)) {
+        return false;
+      }
+      return true;
     }).toList();
-    
-    final Map<String, List<TouchEvent>> groupedByScreen = {};
+
+    // Group by route
+    final Map<String, List<TouchEvent>> routeEvents = {};
     for (final event in filteredEvents) {
-      groupedByScreen.putIfAbsent(event.screenName, () => []).add(event);
+      final route = event.route ?? 'unknown';
+      routeEvents[route] ??= [];
+      routeEvents[route]!.add(event);
     }
-    
-    final Map<String, dynamic> heatMaps = {};
-    
-    for (final entry in groupedByScreen.entries) {
-      final screenName = entry.key;
+
+    // Generate heat map data for each route
+    final Map<String, dynamic> heatMapData = {};
+    for (final entry in routeEvents.entries) {
+      final route = entry.key;
       final events = entry.value;
       
-      final Map<String, dynamic> pointsMap = {};
-      
+      // Create heat map grid (simplified)
+      final List<HeatMapPoint> points = [];
       for (final event in events) {
-        final key = '${event.position.dx.toInt()}_${event.position.dy.toInt()}';
-        
-        if (!pointsMap.containsKey(key)) {
-          pointsMap[key] = {
-            'position': event.position,
-            'count': 0,
-            'types': <TouchType, int>{},
-          };
-        }
-        
-        pointsMap[key]['count']++;
-        final types = pointsMap[key]['types'] as Map<TouchType, int>;
-        types[event.type] = (types[event.type] ?? 0) + 1;
+        points.add(HeatMapPoint(
+          position: Offset(event.x, event.y),
+          intensity: 1.0,
+          count: 1,
+          primaryType: TouchType.tap,
+        ));
       }
       
-      final points = pointsMap.values.map((data) {
-        final types = data['types'] as Map<TouchType, int>;
-        final primaryType = types.entries
-            .reduce((a, b) => a.value > b.value ? a : b)
-            .key;
-        
-        return HeatMapPoint(
-          position: data['position'],
-          intensity: (data['count'] as int) / events.length,
-          count: data['count'] as int,
-          primaryType: primaryType,
-        );
-      }).toList();
-      
-      heatMaps[screenName] = HeatMapData(
-        screenName: screenName,
-        screenSize: const Size(400, 800),
-        points: points,
-        startDate: start,
-        endDate: end,
-        totalEvents: events.length,
-      ).toMap();
+      heatMapData[route] = {
+        'points': points.map((p) => p.toMap()).toList(),
+        'event_count': events.length,
+      };
     }
-    
-    return heatMaps;
+
+    return heatMapData;
   }
 
+  @override
+  Future<void> clearData() async {
+    _touchEvents.clear();
+    _events.clear();
+    _userProperties.clear();
+    _userId = null;
+    
+    if (_storageFile != null && await _storageFile!.exists()) {
+      await _storageFile!.delete();
+    }
+    
+    if (kDebugMode) {
+      print('[VooAnalytics] All data cleared');
+    }
+  }
+
+  @override
+  Future<void> logTouchEvent(TouchEvent event) async {
+    // Alias for trackTouchEvent for backward compatibility
+    await trackTouchEvent(event);
+  }
+  
   @override
   Future<List<TouchEvent>> getTouchEvents({
     String? screenName,
@@ -296,23 +246,9 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       return true;
     }).toList();
   }
-
-  @override
-  Future<void> clearData() async {
-    _touchEvents.clear();
-    _events.clear();
-    _userProperties.clear();
-    _userId = null;
-    
-    if (_storageFile != null && await _storageFile!.exists()) {
-      await _storageFile!.delete();
-    }
-  }
-
+  
   @override
   void dispose() {
-    _touchEvents.clear();
-    _events.clear();
-    _userProperties.clear();
+    // Clean up resources if needed
   }
 }

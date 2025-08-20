@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:voo_core/voo_core.dart';
-import 'package:voo_logging/voo_logging.dart';
-import 'package:voo_performance/src/data/models/performance_sync_entity.dart';
 import 'package:voo_performance/src/domain/entities/performance_trace.dart';
 import 'package:voo_performance/src/domain/entities/network_metric.dart';
 
@@ -24,49 +22,51 @@ class VooPerformancePlugin extends VooPlugin {
   String get name => 'voo_performance';
 
   @override
-  String get version => '0.0.1';
+  String get version => '0.2.0';
 
   bool get isInitialized => _initialized;
 
-  Future<void> initialize({
+  static Future<void> initialize({
     bool enableNetworkMonitoring = true,
     bool enableTraceMonitoring = true,
     bool enableAutoAppStartTrace = true,
   }) async {
-    if (_initialized) {
+    final plugin = instance;
+    
+    if (plugin._initialized) {
       return;
     }
 
     if (!Voo.isInitialized) {
-      throw VooException(
+      throw const VooException(
         'Voo.initializeApp() must be called before initializing VooPerformance',
         code: 'core-not-initialized',
       );
     }
 
     // Set initialized flag before creating traces
-    _initialized = true;
-    Voo.registerPlugin(this);
+    plugin._initialized = true;
+    await Voo.registerPlugin(plugin);
 
     if (enableAutoAppStartTrace) {
-      final appStartTrace = newTrace('app_start');
+      final appStartTrace = plugin.newTrace('app_start');
       appStartTrace.start();
       // Don't await this - let it complete in background
       Future.delayed(const Duration(milliseconds: 100), () {
-        if (_initialized) {
+        if (plugin._initialized) {
           appStartTrace.stop();
         }
       });
     }
 
     if (kDebugMode) {
-      print('[VooPerformance] Initialized with network monitoring: $enableNetworkMonitoring');
+      debugPrint('[VooPerformance] Initialized with network monitoring: $enableNetworkMonitoring');
     }
   }
 
   PerformanceTrace newTrace(String name) {
     if (!_initialized) {
-      throw VooException(
+      throw const VooException(
         'VooPerformance not initialized. Call initialize() first.',
         code: 'not-initialized',
       );
@@ -103,28 +103,6 @@ class VooPerformancePlugin extends VooPlugin {
     
     _performanceMetrics.add(metrics);
     
-    // Send performance trace to VooLogger
-    VooLogger.info(
-      'Performance trace: ${trace.name}',
-      category: 'Performance',
-      metadata: {
-        'operation': trace.name,
-        'operationType': trace.attributes['operation_type'] ?? 'trace',
-        'duration': trace.duration?.inMilliseconds ?? 0,
-        'duration_ms': trace.duration?.inMilliseconds ?? 0,
-        'attributes': trace.attributes,
-        'metrics': trace.metrics,
-        'timestamp': trace.startTime.toIso8601String(),
-      },
-    );
-    
-    // Sync to cloud if enabled
-    final options = Voo.options;
-    if (options != null && options.enableCloudSync && options.apiKey != null) {
-      final syncEntity = PerformanceSyncEntity.fromTrace(trace: trace);
-      await CloudSyncManager.instance.addToQueue(syncEntity);
-    }
-    
     if (_performanceMetrics.length > 1000) {
       _performanceMetrics.removeRange(0, 100);
     }
@@ -132,32 +110,6 @@ class VooPerformancePlugin extends VooPlugin {
 
   Future<void> recordNetworkMetric(NetworkMetric metric) async {
     _networkMetrics.add(metric);
-    
-    // Send network metric to VooLogger for DevTools streaming
-    VooLogger.info(
-      'Network request: ${metric.method} ${metric.url}',
-      category: 'Performance',
-      metadata: {
-        'operation': 'network_request',
-        'operationType': 'network',
-        'url': metric.url,
-        'method': metric.method,
-        'statusCode': metric.statusCode,
-        'duration': metric.duration.inMilliseconds,
-        'duration_ms': metric.duration.inMilliseconds,
-        'requestSize': metric.requestSize,
-        'responseSize': metric.responseSize,
-        'timestamp': metric.timestamp.toIso8601String(),
-        ...?metric.metadata,
-      },
-    );
-    
-    // Sync to cloud if enabled
-    final options = Voo.options;
-    if (options != null && options.enableCloudSync && options.apiKey != null) {
-      final syncEntity = PerformanceSyncEntity.fromNetworkMetric(metric: metric);
-      await CloudSyncManager.instance.addToQueue(syncEntity);
-    }
     
     if (_networkMetrics.length > 1000) {
       _networkMetrics.removeRange(0, 100);
@@ -211,20 +163,30 @@ class VooPerformancePlugin extends VooPlugin {
   }
 
   @override
-  FutureOr<void> onCoreInitialized() {
-    if (!_initialized && Voo.options?.autoRegisterPlugins == true) {
+  FutureOr<void> onAppInitialized(VooApp app) {
+    if (!_initialized && app.options.autoRegisterPlugins) {
       if (kDebugMode) {
-        print('[VooPerformance] Plugin auto-registered');
+        debugPrint('[VooPerformance] Plugin auto-registered');
       }
     }
   }
 
   @override
-  void dispose() {
+  FutureOr<void> onAppDeleted(VooApp app) {
+    // Clean up any app-specific resources if needed
+  }
+
+  @override
+  dynamic getInstanceForApp(VooApp app) {
+    // Return the plugin instance for telemetry to access
+    return this;
+  }
+
+  @override
+  FutureOr<void> dispose() {
     clearMetrics();
     _initialized = false;
     _instance = null;
-    super.dispose();
   }
 
   @override
