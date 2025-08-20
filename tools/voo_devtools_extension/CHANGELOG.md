@@ -1,3 +1,9 @@
+## 1.1.1
+
+### 🐛 Bug Fixes
+* Fixed network request status display issue where completed requests with status codes (e.g., 200) remained showing as "Pending"
+  * Corrected the merge logic in NetworkRequestModel to properly update isComplete and isInProgress flags based on merged status code
+
 ## 0.1.0
 
 ### 🎉 Major Features

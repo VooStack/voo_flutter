@@ -73,12 +73,13 @@ class NetworkRequestModel {
   /// Merge with another network request (typically request + response)
   NetworkRequestModel merge(NetworkRequestModel other) {
     // Prefer response data when available
+    final mergedStatusCode = statusCode ?? other.statusCode;
     return NetworkRequestModel(
       id: id,
       url: url,
       method: method,
       timestamp: timestamp,
-      statusCode: statusCode ?? other.statusCode,
+      statusCode: mergedStatusCode,
       duration: duration ?? other.duration,
       requestSize: requestSize ?? other.requestSize,
       responseSize: responseSize ?? other.responseSize,
@@ -89,8 +90,8 @@ class NetworkRequestModel {
       error: error ?? other.error,
       requestLog: requestLog ?? other.requestLog,
       responseLog: responseLog ?? other.responseLog,
-      isComplete: statusCode != null,
-      isInProgress: statusCode == null,
+      isComplete: mergedStatusCode != null,
+      isInProgress: mergedStatusCode == null,
     );
   }
 

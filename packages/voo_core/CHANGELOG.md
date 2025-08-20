@@ -1,3 +1,9 @@
+## 0.3.4
+
+* Fixed DevTools extension network request status display:
+  - Fixed issue where completed requests with status codes remained showing as "Pending"
+  - Corrected NetworkRequestModel merge logic to properly update completion flags
+
 ## 0.3.3
 
 * Fixed DevTools extension network tab freezing issues:
