@@ -1,12 +1,32 @@
 name: voo_ui
-description: Shared UI components and theme for Voo packages using atomic design pattern
+description: A comprehensive Flutter UI component library with Material 3 design, atomic pattern architecture.
 version: 0.1.0
-homepage: https://github.com/yourusername/voo_ui
-repository: https://github.com/yourusername/voo_ui
+homepage: https://github.com/vooflutter/voo_ui
+repository: https://github.com/vooflutter/voo_ui
+issue_tracker: https://github.com/vooflutter/voo_ui/issues
+documentation: https://github.com/vooflutter/voo_ui/blob/main/README.md
+
+funding:
+  - https://github.com/sponsors/vooflutter
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
+topics:
+  - user-interface
+  - material-design
+  - material3
+  - data-grid
+  - design-system
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:

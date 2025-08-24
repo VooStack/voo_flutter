@@ -1,18 +1,64 @@
 # Voo UI
 
-A comprehensive UI component library for Voo packages featuring a powerful design system and Material Design components. This package provides reusable, well-designed components that ensure consistency across all Voo Flutter applications.
+[![pub package](https://img.shields.io/pub/v/voo_ui.svg)](https://pub.dev/packages/voo_ui)
+[![pub points](https://img.shields.io/pub/points/voo_ui)](https://pub.dev/packages/voo_ui/score)
+[![flutter platform](https://img.shields.io/badge/Platform-Flutter-blue.svg)](https://flutter.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+A comprehensive Flutter UI component library built with Material 3 design principles and atomic design pattern. Voo UI provides production-ready, customizable widgets with built-in theming, responsive design, and accessibility features.
 
-- **VooDesignSystem**: Context-based design system for consistent spacing, sizing, and theming
-- **Material Design Components**: Complete set of Material Design components with Voo styling
-- **Feature-Based Architecture**: Components organized by their functional purpose
-- **Consistent Design System**: Centralized foundations for colors, spacing, and typography
-- **Material 3 Ready**: Built with Material Design 3 principles
-- **Dark Mode Support**: All components work seamlessly in light and dark themes
-- **Highly Customizable**: Components accept various configuration options
+## ✨ Features
 
-## Installation
+### 🎨 Design System
+- **Material 3 Support**: Full Material You (Material 3) theming with dynamic color support
+- **Atomic Design Pattern**: Components organized as atoms, molecules, and organisms
+- **Responsive Design**: Adaptive layouts that work across mobile, tablet, and desktop
+- **Dark Mode**: Built-in dark mode support with seamless transitions
+- **Custom Theming**: Extensive customization through VooDesignSystem
+
+### 📊 Advanced Data Grid
+- **Three Operation Modes**: Local, Remote, and Mixed (hybrid) data handling
+- **Smart Filtering**: Automatic filter input selection based on data type
+- **Multi-Column Sorting**: Sort by multiple columns with visual indicators
+- **Built-in Pagination**: Customizable page sizes with navigation controls
+- **Row Selection**: Single and multiple selection modes
+- **Frozen Columns**: Keep important columns visible while scrolling
+- **Custom Cell Rendering**: Full control over cell appearance and behavior
+- **Performance Optimized**: Efficient rendering for large datasets
+
+### 🧩 Component Library
+
+#### Foundation Components
+- **VooDesignSystem**: Central design token management
+- **VooTheme**: Comprehensive Material 3 theming
+- **VooColors**: Semantic color system with status indicators
+- **VooTypography**: Type scale following Material Design
+- **VooSpacing**: Consistent spacing system
+
+#### Input Components
+- **VooTextField**: Material 3 outlined text field with floating labels
+- **VooButton**: Multiple variants (elevated, outlined, text, tonal)
+- **VooDropdown**: Enhanced dropdown with icons and subtitles
+- **VooSearchBar**: Material 3 search bar with clear action
+
+#### Display Components
+- **VooCard**: Material 3 cards with interaction states
+- **VooListTile**: Enhanced list tiles with selection support
+- **VooStatusBadge**: HTTP status and semantic badges
+- **VooTimestampText**: Intelligent relative time display
+
+#### Layout Components
+- **VooContainer**: Responsive container with animation support
+- **VooPageHeader**: Page headers with actions and icons
+- **VooAppBar**: Enhanced app bar with sliver support
+
+#### Feedback Components
+- **VooEmptyState**: Beautiful empty states with actions
+- **VooStatusBadge**: Color-coded status indicators
+
+## 🚀 Getting Started
+
+### Installation
 
 Add `voo_ui` to your `pubspec.yaml`:
 
@@ -21,11 +67,15 @@ dependencies:
   voo_ui: ^0.1.0
 ```
 
-## Quick Start
+Run the following command:
 
-### Using VooMaterialApp
+```bash
+flutter pub get
+```
 
-Wrap your app with `VooMaterialApp` to automatically inject the VooDesignSystem:
+### Quick Setup
+
+1. **Wrap your app with VooDesignSystem:**
 
 ```dart
 import 'package:voo_ui/voo_ui.dart';
@@ -37,504 +87,144 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return VooDesignSystem(
+      child: MaterialApp(
+        theme: VooTheme.light(),
+        darkTheme: VooTheme.dark(),
+        home: MyHomePage(),
+      ),
+    );
+  }
+}
+```
+
+2. **Or use VooMaterialApp for automatic setup:**
+
+```dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return VooMaterialApp(
       title: 'My Voo App',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      // Optional: Customize the design system
-      designSystem: VooDesignSystemData(
-        spacingUnit: 8.0,
-        radiusUnit: 4.0,
-      ),
+      theme: VooTheme.light(),
+      darkTheme: VooTheme.dark(),
       home: MyHomePage(),
     );
   }
 }
 ```
 
-### Using VooMaterialApp.router
+## 📊 Data Grid Examples
 
-For apps using declarative routing:
-
-```dart
-VooMaterialApp.router(
-  title: 'My Voo App',
-  routerConfig: myRouterConfig,
-  theme: ThemeData.light(),
-  darkTheme: ThemeData.dark(),
-)
-```
-
-## VooDesignSystem
-
-The VooDesignSystem provides context-based access to spacing, sizing, and animation values throughout your app.
-
-### Accessing the Design System
+### Basic Data Grid
 
 ```dart
-// Get the design system from context
-final design = context.vooDesign;
-
-// Use spacing values
-Container(
-  padding: EdgeInsets.all(design.spacingMd),
-  margin: EdgeInsets.symmetric(horizontal: design.spacingLg),
-)
-
-// Use radius values
-Container(
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(design.radiusMd),
-  ),
-)
-
-// Use animation values
-AnimatedContainer(
-  duration: design.animationDuration,
-  curve: design.animationCurve,
-)
-```
-
-### Design System Properties
-
-#### Spacing Values
-- `spacingXs`: Extra small spacing (4.0)
-- `spacingSm`: Small spacing (8.0)
-- `spacingMd`: Medium spacing (12.0)
-- `spacingLg`: Large spacing (16.0)
-- `spacingXl`: Extra large spacing (24.0)
-- `spacingXxl`: 2x extra large spacing (32.0)
-- `spacingXxxl`: 3x extra large spacing (48.0)
-
-#### Radius Values
-- `radiusXs`: Extra small radius (2.0)
-- `radiusSm`: Small radius (4.0)
-- `radiusMd`: Medium radius (8.0)
-- `radiusLg`: Large radius (12.0)
-- `radiusXl`: Extra large radius (16.0)
-- `radiusXxl`: 2x extra large radius (24.0)
-- `radiusFull`: Full radius for circles (999.0)
-
-#### Component Sizes
-- `iconSizeSm`: Small icon (16.0)
-- `iconSizeMd`: Medium icon (20.0)
-- `iconSizeLg`: Large icon (24.0)
-- `iconSizeXl`: Extra large icon (32.0)
-- `iconSizeXxl`: 2x extra large icon (48.0)
-
-#### Component Heights
-- `buttonHeight`: Standard button height (40.0)
-- `inputHeight`: Standard input height (48.0)
-- `appBarHeight`: Standard app bar height (56.0)
-- `filterBarHeight`: Filter bar height (56.0)
-- `listTileHeight`: List tile height (72.0)
-- `headerHeight`: Page header height (80.0)
-
-#### Animation
-- `animationDuration`: Standard animation (300ms)
-- `animationDurationFast`: Fast animation (150ms)
-- `animationDurationSlow`: Slow animation (500ms)
-- `animationCurve`: Standard curve (Curves.easeInOut)
-
-## Components
-
-### App Components
-
-#### VooMaterialApp
-A wrapper around MaterialApp that injects the VooDesignSystem.
-
-```dart
-VooMaterialApp(
-  title: 'My App',
-  theme: ThemeData.light(),
-  darkTheme: ThemeData.dark(),
-  designSystem: VooDesignSystemData.custom(
-    spacingUnit: 10.0,
-    radiusUnit: 5.0,
-  ),
-  home: HomePage(),
-)
-```
-
-### Navigation Components
-
-#### VooAppBar
-An enhanced AppBar with design system integration.
-
-```dart
-Scaffold(
-  appBar: VooAppBar(
-    title: Text('Page Title'),
-    actions: [
-      IconButton(
-        icon: Icon(Icons.search),
-        onPressed: () {},
-      ),
-    ],
-  ),
-)
-```
-
-For sliver usage:
-```dart
-CustomScrollView(
-  slivers: [
-    VooAppBar.sliver(
-      title: Text('Sliver Title'),
-      floating: true,
-      pinned: true,
-    ),
-    // Other slivers...
-  ],
-)
-```
-
-### Input Components
-
-#### VooTextField
-A comprehensive text field with built-in design system styling.
-
-```dart
-VooTextField(
-  label: 'Email',
-  hint: 'Enter your email',
-  prefixIcon: Icons.email,
-  keyboardType: TextInputType.emailAddress,
-  onChanged: (value) {
-    // Handle change
-  },
-  error: validationError,
-)
-```
-
-#### VooDropdown
-A generic dropdown component with custom item rendering.
-
-```dart
-VooDropdown<String>(
-  label: 'Select Option',
-  value: selectedValue,
-  items: [
-    VooDropdownItem(
-      value: 'option1',
-      label: 'Option 1',
-      icon: Icons.looks_one,
-    ),
-    VooDropdownItem(
-      value: 'option2',
-      label: 'Option 2',
-      subtitle: 'Description',
-    ),
-  ],
-  onChanged: (value) {
-    setState(() {
-      selectedValue = value;
-    });
-  },
-)
-```
-
-#### VooButton
-Material Design buttons with multiple variants and sizes.
-
-```dart
-// Elevated button
-VooButton(
-  child: Text('Save'),
-  variant: VooButtonVariant.elevated,
-  size: VooButtonSize.large,
-  icon: Icons.save,
-  onPressed: () {},
-)
-
-// Outlined button
-VooButton(
-  child: Text('Cancel'),
-  variant: VooButtonVariant.outlined,
-  onPressed: () {},
-)
-
-// Text button
-VooButton(
-  child: Text('Learn More'),
-  variant: VooButtonVariant.text,
-  onPressed: () {},
-)
-
-// Tonal button
-VooButton(
-  child: Text('Add to Cart'),
-  variant: VooButtonVariant.tonal,
-  loading: isLoading,
-  onPressed: () {},
-)
-```
-
-#### VooIconButton
-Icon buttons with tooltip support.
-
-```dart
-VooIconButton(
-  icon: Icons.favorite,
-  tooltip: 'Add to favorites',
-  onPressed: () {},
-  selected: isFavorite,
-  selectedColor: Colors.red,
-)
-```
-
-#### VooSearchBar
-A search input with clear functionality.
-
-```dart
-VooSearchBar(
-  hintText: 'Search items...',
-  onSearchChanged: (value) {
-    // Handle search
-  },
-  onClear: () {
-    // Handle clear
-  },
-)
-```
-
-### Display Components
-
-#### VooCard
-Material Design cards with interaction support.
-
-```dart
-VooCard(
-  child: Column(
-    children: [
-      Text('Card Title'),
-      Text('Card content'),
-    ],
-  ),
-  onTap: () {},
-  selected: isSelected,
-  elevation: 4,
-)
-```
-
-#### VooContentCard
-Structured cards with header, content, and footer sections.
-
-```dart
-VooContentCard(
-  header: Text('Card Header'),
-  content: Text('Main content goes here'),
-  footer: Text('Footer information'),
-  actions: [
-    TextButton(
-      child: Text('Action 1'),
-      onPressed: () {},
-    ),
-    TextButton(
-      child: Text('Action 2'),
-      onPressed: () {},
-    ),
-  ],
-  dividerBetweenHeaderAndContent: true,
-)
-```
-
-#### VooListTile
-Enhanced list tiles with selection support.
-
-```dart
-VooListTile(
-  title: Text('Item Title'),
-  subtitle: Text('Item description'),
-  leading: Icon(Icons.folder),
-  trailing: Icon(Icons.arrow_forward),
-  isSelected: isSelected,
-  onTap: () {},
-)
-```
-
-#### VooTimestamp
-Formatted timestamp display.
-
-```dart
-VooTimestamp(
-  timestamp: DateTime.now().subtract(Duration(minutes: 5)),
-  style: TextStyle(fontSize: 12),
-)
-```
-
-### Layout Components
-
-#### VooContainer
-A container with built-in design system spacing.
-
-```dart
-VooContainer(
-  paddingSize: VooSpacingSize.lg,
-  marginSize: VooSpacingSize.md,
-  borderRadiusSize: VooSpacingSize.md,
-  color: Theme.of(context).colorScheme.surface,
-  elevation: 2,
-  child: Text('Content'),
-)
-```
-
-With animation:
-```dart
-VooContainer(
-  animate: true,
-  animationDuration: Duration(milliseconds: 500),
-  width: isExpanded ? 200 : 100,
-  child: Text('Animated content'),
-)
-```
-
-#### VooResponsiveContainer
-Responsive container with max/min constraints.
-
-```dart
-VooResponsiveContainer(
-  maxWidth: 1200,
-  minWidth: 320,
-  paddingSize: VooSpacingSize.xl,
-  centerContent: true,
-  child: YourContent(),
-)
-```
-
-#### VooPageHeader
-Page headers with icon and actions.
-
-```dart
-VooPageHeader(
-  icon: Icons.dashboard,
-  title: 'Dashboard',
-  subtitle: 'View your application metrics',
-  iconColor: Colors.blue,
-  actions: [
-    IconButton(
-      icon: Icon(Icons.refresh),
-      onPressed: () {},
-    ),
-  ],
-)
-```
-
-### Feedback Components
-
-#### VooEmptyState
-Empty state displays for no data scenarios.
-
-```dart
-VooEmptyState(
-  icon: Icons.inbox_outlined,
-  title: 'No Messages',
-  message: 'You have no messages at this time',
-  action: ElevatedButton(
-    onPressed: () {},
-    child: Text('Check Again'),
-  ),
-)
-```
-
-#### VooStatusBadge
-HTTP status code badges.
-
-```dart
-VooStatusBadge(
-  statusCode: 200,
-  compact: false,
-)
-```
-
-## Foundations
-
-### Colors
-```dart
-// Log level colors
-Container(
-  color: VooColors.getLogLevelColor('error'),
-)
-
-// HTTP status colors
-Container(
-  color: VooColors.getHttpStatusColor(404),
-)
-
-// Performance colors
-Container(
-  color: VooColors.getPerformanceColor(250),
-)
-
-// HTTP method colors
-Container(
-  color: VooColors.getHttpMethodColor('POST'),
-)
-```
-
-### Typography
-```dart
-// Text styles
-Text(
-  'Code',
-  style: VooTypography.getMonospaceStyle(context),
-)
-
-Text(
-  'Title',
-  style: VooTypography.getTitleStyle(context),
-)
-
-Text(
-  'Subtitle',
-  style: VooTypography.getSubtitleStyle(context),
-)
-```
-
-### Theme Decorations
-```dart
-// Card decoration
-Container(
-  decoration: VooTheme.getCardDecoration(context, isSelected: true),
-)
-
-// Hover decoration
-Container(
-  decoration: VooTheme.getHoverDecoration(context),
-)
-
-// Surface decoration
-Container(
-  decoration: VooTheme.getSurfaceDecoration(context),
-)
-```
-
-## VooDataGrid
-
-A powerful data grid widget with advanced features including remote filtering, sorting, pagination, and customizable columns.
-
-### Features
-- **Remote Filtering**: Built-in support for server-side filtering with debouncing
-- **Sorting**: Multi-column sorting with visual indicators
-- **Pagination**: Configurable pagination with page size options
-- **Column Management**: Frozen columns, resizable columns, custom cell rendering
-- **Selection**: Single and multiple row selection modes
-- **Performance**: Efficient rendering with virtualization for large datasets
-- **Theming**: Full theme customization with Material Design integration
-
-### Basic Usage
-
-```dart
-// Create your data source
-class MyDataSource extends VooDataGridSource {
+class DataGridExample extends StatefulWidget {
   @override
-  Future<VooDataGridResponse> fetchData({
+  State<DataGridExample> createState() => _DataGridExampleState();
+}
+
+class _DataGridExampleState extends State<DataGridExample> {
+  late final UserDataSource _dataSource;
+  late final VooDataGridController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = UserDataSource();
+    _controller = VooDataGridController(dataSource: _dataSource);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VooDataGrid(
+      controller: _controller,
+      columns: [
+        VooDataColumn(
+          field: 'id',
+          label: 'ID',
+          width: 80,
+          frozen: true,
+          dataType: VooDataColumnType.number,
+        ),
+        VooDataColumn(
+          field: 'name',
+          label: 'Name',
+          dataType: VooDataColumnType.text,
+          filterHint: 'Search by name...',
+        ),
+        VooDataColumn(
+          field: 'email',
+          label: 'Email',
+          dataType: VooDataColumnType.text,
+        ),
+        VooDataColumn(
+          field: 'role',
+          label: 'Role',
+          dataType: VooDataColumnType.select,
+          filterOptions: [
+            VooFilterOption(value: 'admin', label: 'Admin', icon: Icons.admin_panel_settings),
+            VooFilterOption(value: 'user', label: 'User', icon: Icons.person),
+            VooFilterOption(value: 'moderator', label: 'Moderator', icon: Icons.shield),
+          ],
+        ),
+        VooDataColumn(
+          field: 'status',
+          label: 'Status',
+          dataType: VooDataColumnType.select,
+          cellBuilder: (context, value, row) {
+            final color = value == 'active' ? Colors.green : Colors.grey;
+            return Row(
+              children: [
+                Icon(Icons.circle, size: 10, color: color),
+                const SizedBox(width: 8),
+                Text(value, style: TextStyle(color: color)),
+              ],
+            );
+          },
+        ),
+        VooDataColumn(
+          field: 'lastLogin',
+          label: 'Last Login',
+          dataType: VooDataColumnType.date,
+          valueFormatter: (value) {
+            if (value is DateTime) {
+              final diff = DateTime.now().difference(value);
+              if (diff.inDays > 0) return '${diff.inDays} days ago';
+              if (diff.inHours > 0) return '${diff.inHours} hours ago';
+              return '${diff.inMinutes} minutes ago';
+            }
+            return 'Never';
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _dataSource.dispose();
+    super.dispose();
+  }
+}
+```
+
+### Data Source Implementation
+
+```dart
+// Remote data source
+class UserDataSource extends VooDataGridSource {
+  UserDataSource() : super(mode: VooDataGridMode.remote);
+
+  @override
+  Future<VooDataGridResponse> fetchRemoteData({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) async {
-    // Fetch data from your API
+    // Make API call with filters and sorts
     final response = await api.getUsers(
       page: page,
       pageSize: pageSize,
@@ -551,232 +241,214 @@ class MyDataSource extends VooDataGridSource {
   }
 }
 
-// Use the data grid
-class MyDataGridPage extends StatefulWidget {
-  @override
-  State<MyDataGridPage> createState() => _MyDataGridPageState();
+// Local data source
+class LocalDataSource extends VooDataGridSource {
+  LocalDataSource() : super(mode: VooDataGridMode.local);
+  
+  void loadData(List<Map<String, dynamic>> data) {
+    setLocalData(data);
+  }
 }
 
-class _MyDataGridPageState extends State<MyDataGridPage> {
-  late final MyDataSource _dataSource;
-  late final VooDataGridController _controller;
-
+// Mixed mode (remote fetch, local filter/sort)
+class MixedDataSource extends VooDataGridSource {
+  MixedDataSource() : super(mode: VooDataGridMode.mixed);
+  
   @override
-  void initState() {
-    super.initState();
-    _dataSource = MyDataSource();
-    _controller = VooDataGridController(
-      dataSource: _dataSource,
-      columns: [
-        VooDataColumn(
-          field: 'id',
-          label: 'ID',
-          width: 60,
-        ),
-        VooDataColumn(
-          field: 'name',
-          label: 'Name',
-          filterable: true,
-          sortable: true,
-        ),
-        VooDataColumn(
-          field: 'email',
-          label: 'Email',
-          filterable: true,
-        ),
-        VooDataColumn(
-          field: 'status',
-          label: 'Status',
-          dataType: VooDataColumnType.select,
-          filterOptions: [
-            VooFilterOption(value: 'active', label: 'Active'),
-            VooFilterOption(value: 'inactive', label: 'Inactive'),
-          ],
+  Future<VooDataGridResponse> fetchRemoteData({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+  }) async {
+    // Fetch all data once, then filter/sort locally
+    final response = await api.getAllData();
+    return VooDataGridResponse(
+      rows: response.data,
+      totalRows: response.data.length,
+      page: 0,
+      pageSize: 999999,
+    );
+  }
+}
+```
+
+## 🎨 Design System Usage
+
+### Accessing Design Tokens
+
+```dart
+Widget build(BuildContext context) {
+  final design = context.vooDesign;
+  
+  return Container(
+    padding: EdgeInsets.all(design.spacingMd),
+    margin: EdgeInsets.symmetric(horizontal: design.spacingLg),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(design.radiusMd),
+      color: Theme.of(context).colorScheme.surface,
+    ),
+    child: Column(
+      children: [
+        Icon(Icons.star, size: design.iconSizeLg),
+        SizedBox(height: design.spacingMd),
+        Text(
+          'Content',
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return VooDataGrid(
-      controller: _controller,
-      onRowTap: (row) {
-        // Handle row tap
-      },
-    );
-  }
+    ),
+  );
 }
 ```
 
-### Column Configuration
+### Custom Design System
 
 ```dart
-VooDataColumn(
-  field: 'amount',
-  label: 'Amount',
-  width: 120,
-  textAlign: TextAlign.right,
-  sortable: true,
-  filterable: true,
-  dataType: VooDataColumnType.number,
-  // Custom value formatter
-  valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
-  // Custom cell builder
-  cellBuilder: (context, value, row) => Text(
-    '\$${value}',
-    style: TextStyle(
-      color: value > 0 ? Colors.green : Colors.red,
+VooDesignSystem(
+  spacingUnit: 4.0,
+  radiusUnit: 4.0,
+  animationDurationUnit: 100,
+  child: MaterialApp(
+    theme: VooTheme.light(
+      primaryColor: Colors.blue,
+      customColors: {
+        'brand': Colors.purple,
+        'success': Colors.green,
+        'warning': Colors.orange,
+        'danger': Colors.red,
+      },
     ),
+    home: MyApp(),
   ),
-)
-```
-
-### Remote Filtering
-
-The data grid supports various filter operators:
-
-```dart
-VooDataFilter(
-  operator: VooFilterOperator.contains,
-  value: 'search term',
-)
-
-// Available operators:
-// - equals, notEquals
-// - contains, notContains
-// - startsWith, endsWith
-// - greaterThan, greaterThanOrEqual
-// - lessThan, lessThanOrEqual
-// - between, inList, notInList
-// - isNull, isNotNull
-```
-
-### Selection Modes
-
-```dart
-// Enable single selection
-_dataSource.setSelectionMode(VooSelectionMode.single);
-
-// Enable multiple selection
-_dataSource.setSelectionMode(VooSelectionMode.multiple);
-
-// Get selected rows
-final selectedRows = _dataSource.selectedRows;
-```
-
-### Customization
-
-```dart
-VooDataGridController(
-  dataSource: _dataSource,
-  columns: columns,
-  rowHeight: 52,
-  headerHeight: 60,
-  showFilters: true,
-  showGridLines: true,
-  alternatingRowColors: true,
-  columnResizable: true,
-  columnReorderable: false,
-)
-```
-
-### Theme Customization
-
-```dart
-VooDataGrid(
-  controller: _controller,
-  theme: VooDataGridTheme(
-    headerBackgroundColor: Colors.blue.shade50,
-    headerTextColor: Colors.blue.shade900,
-    rowBackgroundColor: Colors.white,
-    alternateRowBackgroundColor: Colors.grey.shade50,
-    selectedRowBackgroundColor: Colors.blue.shade100,
-    hoveredRowBackgroundColor: Colors.grey.shade100,
-    borderColor: Colors.grey.shade300,
-    gridLineColor: Colors.grey.shade200,
-    headerTextStyle: TextStyle(fontWeight: FontWeight.bold),
-    cellTextStyle: TextStyle(fontSize: 14),
-  ),
-)
-```
-
-## Customizing the Design System
-
-You can create a custom design system with your own values:
-
-```dart
-final customDesign = VooDesignSystemData(
-  spacingUnit: 10.0,  // Base spacing unit
-  radiusUnit: 5.0,     // Base radius unit
-  // All other values are computed from these base units
-);
-
-// Or use the custom constructor
-final customDesign = VooDesignSystemData.custom(
-  spacingUnit: 10.0,
-  radiusUnit: 5.0,
-  buttonHeight: 44.0,
-  inputHeight: 52.0,
-  appBarHeight: 60.0,
-  animationDuration: Duration(milliseconds: 250),
-  animationCurve: Curves.easeOut,
 );
 ```
 
-## Architecture
+## 🔮 Roadmap & Future Widgets
 
-The package follows a feature-based architecture for better organization and discoverability:
+### Version 0.2.0
+- ✅ **VooDataGrid**: Advanced data grid with filtering and sorting
+- 🚧 **VooChart**: Custom-built interactive charts with animations
+- 🚧 **VooCalendar**: Material 3 calendar with event support
+- 🚧 **VooDatePicker**: Enhanced date picker with range selection
+- 🚧 **VooTimePicker**: Material 3 time picker
+- 🚧 **VooStepper**: Horizontal and vertical steppers
+- 🚧 **VooTimeline**: Timeline component with custom markers
 
+### Version 0.3.0
+- **VooAvatar**: Avatar with online status and groups
+- **VooChip**: Material 3 chips (input, choice, filter, action)
+- **VooTooltip**: Rich tooltips with custom content
+- **VooBadge**: Notification badges with animations
+- **VooTabs**: Enhanced tab bar with custom indicators
+- **VooBottomSheet**: Draggable bottom sheet with snap points
+- **VooNavigationRail**: Adaptive navigation for tablets
+
+### Version 0.4.0
+- **VooSpeedDial**: FAB with speed dial actions
+- **VooDataTable**: Simplified table for basic use cases
+- **VooTreeView**: Expandable tree view component
+- **VooKanban**: Drag-and-drop kanban board
+- **VooGanttChart**: Project timeline visualization
+- **VooSlider**: Enhanced slider with custom thumbs
+- **VooRating**: Star rating component
+
+### Version 0.5.0
+- **VooForm**: Form builder with validation
+- **VooWizard**: Multi-step wizard with progress
+- **VooUploader**: File upload with progress and preview
+- **VooImageViewer**: Image gallery with zoom
+- **VooVideoPlayer**: Custom video player controls
+- **VooAudioPlayer**: Audio player with waveform
+- **VooColorPicker**: Material 3 color picker
+
+### Version 1.0.0
+- **VooRichTextEditor**: WYSIWYG editor
+- **VooCodeEditor**: Syntax highlighted code editor
+- **VooMarkdownViewer**: Markdown renderer
+- **VooMaps**: Map integration with markers
+- **VooGraphEditor**: Node-based graph editor
+- **VooDashboard**: Dashboard builder components
+- **VooAnalytics**: Analytics dashboard widgets
+
+## 📖 API Documentation
+
+### Design System Properties
+
+#### Spacing Values
+```dart
+context.vooDesign.spacingXs   // 4.0
+context.vooDesign.spacingSm   // 8.0
+context.vooDesign.spacingMd   // 12.0
+context.vooDesign.spacingLg   // 16.0
+context.vooDesign.spacingXl   // 24.0
+context.vooDesign.spacingXxl  // 32.0
+context.vooDesign.spacingXxxl // 48.0
 ```
-lib/src/
-├── app/            # App wrappers and configuration
-│   └── voo_material_app.dart
-├── data/           # Data grid and table components
-│   ├── data_grid.dart           # Main data grid widget
-│   ├── data_grid_column.dart    # Column definitions
-│   ├── data_grid_controller.dart # Grid state management
-│   ├── data_grid_source.dart    # Data source abstraction
-│   ├── data_grid_header.dart    # Header rendering
-│   ├── data_grid_row.dart       # Row rendering
-│   ├── data_grid_filter.dart    # Filter UI components
-│   └── data_grid_pagination.dart # Pagination controls
-├── foundations/    # Core design system elements
-│   ├── colors.dart      # Color palettes and utilities
-│   ├── design_system.dart # VooDesignSystem implementation
-│   ├── spacing.dart     # Spacing and sizing constants
-│   ├── theme.dart       # Theme decorations and utilities
-│   └── typography.dart  # Text styles and typography
-├── display/        # Components for displaying content
-│   ├── card.dart        # Card components
-│   ├── list_tile.dart   # Enhanced list tiles
-│   └── timestamp_text.dart # Time formatting
-├── feedback/       # User feedback components
-│   ├── empty_state.dart # Empty states
-│   └── status_badge.dart # Status indicators
-├── inputs/         # Input and form components
-│   ├── button.dart      # Button components
-│   ├── dropdown.dart    # Dropdown component
-│   ├── search_bar.dart  # Search input
-│   └── text_field.dart  # Text field component
-├── layout/         # Layout and structural components
-│   ├── container.dart   # Container components
-│   └── page_header.dart # Page headers
-└── navigation/     # Navigation components
-    └── app_bar.dart     # App bar component
+
+#### Border Radius
+```dart
+context.vooDesign.radiusXs   // 2.0
+context.vooDesign.radiusSm   // 4.0
+context.vooDesign.radiusMd   // 8.0
+context.vooDesign.radiusLg   // 12.0
+context.vooDesign.radiusXl   // 16.0
+context.vooDesign.radiusXxl  // 24.0
+context.vooDesign.radiusFull // 999.0
 ```
 
-## Contributing
+#### Component Sizes
+```dart
+context.vooDesign.iconSizeSm  // 16.0
+context.vooDesign.iconSizeMd  // 20.0
+context.vooDesign.iconSizeLg  // 24.0
+context.vooDesign.iconSizeXl  // 32.0
+context.vooDesign.iconSizeXxl // 48.0
+```
 
-This package is part of the VooFlutter monorepo. To contribute:
+#### Animation
+```dart
+context.vooDesign.animationDuration     // 300ms
+context.vooDesign.animationDurationFast // 150ms
+context.vooDesign.animationDurationSlow // 500ms
+context.vooDesign.animationCurve        // Curves.easeInOut
+```
 
-1. Follow the feature-based architecture
-2. Place components in the appropriate feature folder
-3. Ensure components work with the VooDesignSystem
-4. Ensure components work in both light and dark themes
-5. Add proper documentation for new components
-6. Test components thoroughly
+## 🤝 Contributing
 
-## License
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-This package is part of the VooFlutter project.
+### Development Setup
+
+1. Clone the repository
+2. Run `flutter pub get`
+3. Run tests with `flutter test`
+4. Submit a pull request
+
+### Code Style
+
+- Follow Effective Dart guidelines
+- Use the provided linter rules
+- Add dartdoc comments for public APIs
+- Include examples for new components
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+- **Documentation**: [https://voo-ui-docs.com](https://voo-ui-docs.com)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/voo_ui/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/voo_ui/discussions)
+
+## 📊 Package Stats
+
+![Pub Version](https://img.shields.io/pub/v/voo_ui)
+![Pub Likes](https://img.shields.io/pub/likes/voo_ui)
+![Pub Points](https://img.shields.io/pub/points/voo_ui)
+![Pub Popularity](https://img.shields.io/pub/popularity/voo_ui)
+
+---
+
+Made with ❤️ by the Voo Team

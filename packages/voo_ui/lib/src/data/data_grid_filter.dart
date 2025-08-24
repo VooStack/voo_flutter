@@ -23,7 +23,6 @@ class VooDataGridFilterRow extends StatefulWidget {
 
 class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
   final Map<String, TextEditingController> _textControllers = {};
-  final Map<String, dynamic> _filterValues = {};
 
   @override
   void dispose() {
@@ -97,7 +96,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
 
     return Container(
       width: width,
-      padding: EdgeInsets.all(design.spacingXs),
+      padding: EdgeInsets.symmetric(horizontal: design.spacingXs, vertical: 4),
       decoration: BoxDecoration(
         border: Border(
           right: BorderSide(
@@ -106,7 +105,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
           ),
         ),
       ),
-      child: _buildFilterInput(context, column, currentFilter, design),
+      child: _buildFilterInput(context, column, currentFilter),
     );
   }
 
@@ -114,7 +113,6 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
     BuildContext context,
     VooDataColumn column,
     VooDataFilter? currentFilter,
-    VooDesignSystemData design,
   ) {
     // Use custom filter builder if provided
     if (column.filterBuilder != null) {
@@ -162,31 +160,41 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
       column.field,
       () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
     );
+    final theme = Theme.of(context);
 
     return Row(
       children: [
         if (column.showFilterOperator) _buildOperatorSelector(column, currentFilter),
         Expanded(
-          child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: column.filterHint ?? 'Filter...',
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-              suffixIcon: currentFilter != null
-                  ? IconButton(
-                      icon: const Icon(Icons.clear, size: 16),
-                      onPressed: () => _clearFilter(column),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    )
-                  : null,
+          child: Container(
+            height: 32,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+              borderRadius: BorderRadius.circular(4),
             ),
-            style: const TextStyle(fontSize: 13),
-            onChanged: (value) => _applyFilter(column, value.isEmpty ? null : value),
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: column.filterHint ?? 'Filter...',
+                hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                border: InputBorder.none,
+                suffixIcon: currentFilter != null
+                    ? InkWell(
+                        onTap: () {
+                          controller.clear();
+                          _clearFilter(column);
+                        },
+                        child: const Icon(Icons.clear, size: 16),
+                      )
+                    : null,
+                suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
+              ),
+              style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+              onChanged: (value) => _applyFilter(column, value.isEmpty ? null : value),
+            ),
           ),
         ),
       ],
@@ -198,38 +206,51 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
       column.field,
       () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
     );
+    final theme = Theme.of(context);
 
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: column.filterHint ?? 'Number...',
-        isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
-        suffixIcon: currentFilter != null
-            ? IconButton(
-                icon: const Icon(Icons.clear, size: 16),
-                onPressed: () => _clearFilter(column),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              )
-            : null,
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
       ),
-      style: const TextStyle(fontSize: 13),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
-      ],
-      onChanged: (value) {
-        final numValue = num.tryParse(value);
-        _applyFilter(column, numValue);
-      },
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: column.filterHint ?? 'Number...',
+          hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          border: InputBorder.none,
+          suffixIcon: currentFilter != null
+              ? InkWell(
+                  onTap: () {
+                    controller.clear();
+                    _clearFilter(column);
+                  },
+                  child: const Icon(Icons.clear, size: 16),
+                )
+              : null,
+          suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
+        ),
+        style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
+        ],
+        onChanged: (value) {
+          final number = num.tryParse(value);
+          _applyFilter(column, number);
+        },
+      ),
     );
   }
 
-  Widget _buildNumberRangeFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+  Widget _buildNumberRangeFilter(
+    VooDataColumn column,
+    VooDataFilter? currentFilter,
+  ) {
     final minController = _textControllers.putIfAbsent(
       '${column.field}_min',
       () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
@@ -238,72 +259,91 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
       '${column.field}_max',
       () => TextEditingController(text: currentFilter?.valueTo?.toString() ?? ''),
     );
+    final theme = Theme.of(context);
 
     return Row(
       children: [
         Expanded(
-          child: TextField(
-            controller: minController,
-            decoration: const InputDecoration(
-              hintText: 'Min',
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              border: OutlineInputBorder(),
+          child: Container(
+            height: 32,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+              borderRadius: BorderRadius.circular(4),
             ),
-            style: const TextStyle(fontSize: 13),
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
-            ],
-            onChanged: (value) {
-              final min = num.tryParse(value);
-              final max = num.tryParse(maxController.text);
-              if (min != null || max != null) {
-                widget.controller.dataSource.applyFilter(
-                  column.field,
-                  VooDataFilter(
-                    operator: VooFilterOperator.between,
-                    value: min,
-                    valueTo: max,
-                  ),
-                );
-              } else {
-                _clearFilter(column);
-              }
-            },
+            child: TextField(
+              controller: minController,
+              decoration: InputDecoration(
+                hintText: 'Min',
+                hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                border: InputBorder.none,
+              ),
+              style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
+              ],
+              onChanged: (value) {
+                final min = num.tryParse(value);
+                final max = num.tryParse(maxController.text);
+                if (min != null || max != null) {
+                  widget.controller.dataSource.applyFilter(
+                    column.field,
+                    VooDataFilter(
+                      operator: VooFilterOperator.between,
+                      value: min,
+                      valueTo: max,
+                    ),
+                  );
+                } else {
+                  _clearFilter(column);
+                }
+              },
+            ),
           ),
         ),
         const SizedBox(width: 4),
         Expanded(
-          child: TextField(
-            controller: maxController,
-            decoration: const InputDecoration(
-              hintText: 'Max',
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              border: OutlineInputBorder(),
+          child: Container(
+            height: 32,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+              borderRadius: BorderRadius.circular(4),
             ),
-            style: const TextStyle(fontSize: 13),
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
-            ],
-            onChanged: (value) {
-              final min = num.tryParse(minController.text);
-              final max = num.tryParse(value);
-              if (min != null || max != null) {
-                widget.controller.dataSource.applyFilter(
-                  column.field,
-                  VooDataFilter(
-                    operator: VooFilterOperator.between,
-                    value: min,
-                    valueTo: max,
-                  ),
-                );
-              } else {
-                _clearFilter(column);
-              }
-            },
+            child: TextField(
+              controller: maxController,
+              decoration: InputDecoration(
+                hintText: 'Max',
+                hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                border: InputBorder.none,
+              ),
+              style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
+              ],
+              onChanged: (value) {
+                final min = num.tryParse(minController.text);
+                final max = num.tryParse(value);
+                if (min != null || max != null) {
+                  widget.controller.dataSource.applyFilter(
+                    column.field,
+                    VooDataFilter(
+                      operator: VooFilterOperator.between,
+                      value: min,
+                      valueTo: max,
+                    ),
+                  );
+                } else {
+                  _clearFilter(column);
+                }
+              },
+            ),
           ),
         ),
       ],
@@ -321,46 +361,43 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
         text: currentFilter?.value != null ? _formatDate(currentFilter!.value as DateTime) : '',
       ),
     );
+    final theme = Theme.of(context);
 
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: column.filterHint ?? 'Select date',
-        isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        border: const OutlineInputBorder(),
-        suffixIcon: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (currentFilter != null)
-              IconButton(
-                icon: const Icon(Icons.clear, size: 16),
-                onPressed: () => _clearFilter(column),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
-            IconButton(
-              icon: const Icon(Icons.calendar_today, size: 16),
-              onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: currentFilter?.value ?? DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
-                );
-                if (date != null) {
-                  controller.text = _formatDate(date);
-                  _applyFilter(column, date);
-                }
-              },
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
-          ],
-        ),
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
       ),
-      style: const TextStyle(fontSize: 13),
-      readOnly: true,
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: column.filterHint ?? 'Select date',
+          hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          border: InputBorder.none,
+          suffixIcon: InkWell(
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: currentFilter?.value ?? DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+              if (date != null) {
+                controller.text = _formatDate(date);
+                _applyFilter(column, date);
+              }
+            },
+            child: const Icon(Icons.calendar_today, size: 16),
+          ),
+          suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
+        ),
+        style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+        readOnly: true,
+      ),
     );
   }
 
@@ -369,103 +406,127 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
     VooDataColumn column,
     VooDataFilter? currentFilter,
   ) {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: () async {
-              final range = await showDateRangePicker(
-                context: context,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-              );
-              if (range != null) {
-                widget.controller.dataSource.applyFilter(
-                  column.field,
-                  VooDataFilter(
-                    operator: VooFilterOperator.between,
-                    value: range.start,
-                    valueTo: range.end,
-                  ),
-                );
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(4),
+    final theme = Theme.of(context);
+
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: InkWell(
+        onTap: () async {
+          final range = await showDateRangePicker(
+            context: context,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2100),
+          );
+          if (range != null) {
+            widget.controller.dataSource.applyFilter(
+              column.field,
+              VooDataFilter(
+                operator: VooFilterOperator.between,
+                value: range.start,
+                valueTo: range.end,
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      currentFilter?.value != null && currentFilter?.valueTo != null
-                          ? '${_formatDate(currentFilter!.value)} - ${_formatDate(currentFilter.valueTo)}'
-                          : column.filterHint ?? 'Select range',
-                      style: const TextStyle(fontSize: 13),
-                    ),
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  currentFilter?.value != null && currentFilter?.valueTo != null
+                      ? '${_formatDate(currentFilter!.value as DateTime)} - ${_formatDate(currentFilter.valueTo as DateTime)}'
+                      : column.filterHint ?? 'Select range',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: currentFilter?.value != null ? theme.textTheme.bodyMedium?.color : theme.hintColor,
                   ),
-                  const Icon(Icons.date_range, size: 16),
-                ],
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
+              Icon(Icons.date_range, size: 16, color: theme.iconTheme.color),
+            ],
           ),
         ),
-        if (currentFilter != null)
-          IconButton(
-            icon: const Icon(Icons.clear, size: 16),
-            onPressed: () => _clearFilter(column),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-      ],
+      ),
     );
   }
 
   Widget _buildDropdownFilter(VooDataColumn column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
     final theme = Theme.of(context);
-    
+
     return Container(
-      height: 36,
+      height: 32,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade400),
-        borderRadius: BorderRadius.circular(4),
         color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton<dynamic>(
             value: currentFilter?.value,
-            hint: Text(
-              column.filterHint ?? 'All',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
+            hint: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                column.filterHint ?? 'All',
+                style: TextStyle(fontSize: 13, color: theme.hintColor),
+              ),
             ),
             items: [
               DropdownMenuItem(
                 value: null,
-                child: Text('All', style: const TextStyle(fontSize: 13)),
+                child: Text('All', style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color)),
               ),
               ...options.map((option) => DropdownMenuItem(
-                value: option.value,
-                child: Row(
-                  children: [
-                    if (option.icon != null) ...[
-                      Icon(option.icon, size: 16),
-                      const SizedBox(width: 8),
-                    ],
-                    Text(option.label, style: const TextStyle(fontSize: 13)),
-                  ],
-                ),
-              )),
+                    value: option.value,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (option.icon != null) ...[
+                          Icon(option.icon, size: 14),
+                          const SizedBox(width: 6),
+                        ],
+                        Flexible(
+                          child: Text(
+                            option.label,
+                            style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
             ],
             onChanged: (value) => _applyFilter(column, value),
             isExpanded: true,
             isDense: true,
-            icon: const Icon(Icons.arrow_drop_down, size: 20),
-            style: const TextStyle(fontSize: 13, color: Colors.black87),
+            icon: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Icon(Icons.arrow_drop_down, size: 18, color: theme.iconTheme.color),
+            ),
+            selectedItemBuilder: (context) => [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text('All', style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color)),
+              ),
+              ...options.map((option) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      option.label,
+                      style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )),
+            ],
+            style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
             dropdownColor: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -477,106 +538,110 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
   Widget _buildMultiSelectFilter(VooDataColumn column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
     final selectedValues = currentFilter?.value is List ? List.from(currentFilter!.value as List) : [];
+    final theme = Theme.of(context);
 
-    return PopupMenuButton<dynamic>(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                selectedValues.isEmpty ? column.filterHint ?? 'Select...' : '${selectedValues.length} selected',
-                style: const TextStyle(fontSize: 13),
-              ),
-            ),
-            const Icon(Icons.arrow_drop_down, size: 16),
-          ],
-        ),
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
       ),
-      itemBuilder: (context) => options.map((option) {
-        final isSelected = selectedValues.contains(option.value);
-        return PopupMenuItem(
-          value: option.value,
+      child: PopupMenuButton<dynamic>(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
-              Checkbox(
-                value: isSelected,
-                onChanged: (_) {},
+              Expanded(
+                child: Text(
+                  selectedValues.isEmpty ? column.filterHint ?? 'Select...' : '${selectedValues.length} selected',
+                  style: TextStyle(fontSize: 13, color: selectedValues.isEmpty ? theme.hintColor : theme.textTheme.bodyMedium?.color),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              if (option.icon != null) ...[
-                Icon(option.icon, size: 16),
-                const SizedBox(width: 8),
-              ],
-              Text(option.label),
+              Icon(Icons.arrow_drop_down, size: 18, color: theme.iconTheme.color),
             ],
           ),
-          onTap: () {
-            setState(() {
-              if (isSelected) {
-                selectedValues.remove(option.value);
-              } else {
-                selectedValues.add(option.value);
-              }
-              _applyFilter(
-                column,
-                selectedValues.isEmpty ? null : selectedValues,
-              );
-            });
-          },
-        );
-      }).toList(),
+        ),
+        itemBuilder: (context) => options.map((option) {
+          final isSelected = selectedValues.contains(option.value);
+          return PopupMenuItem(
+            child: StatefulBuilder(
+              builder: (context, setState) => CheckboxListTile(
+                value: isSelected,
+                onChanged: (checked) {
+                  setState(() {
+                    if (checked == true) {
+                      selectedValues.add(option.value);
+                    } else {
+                      selectedValues.remove(option.value);
+                    }
+                  });
+                  _applyFilter(column, selectedValues.isEmpty ? null : selectedValues);
+                },
+                title: Text(option.label, style: const TextStyle(fontSize: 13)),
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
   Widget _buildCheckboxFilter(VooDataColumn column, VooDataFilter? currentFilter) {
-    return DropdownButton<bool?>(
-      value: currentFilter?.value as bool?,
-      items: const [
-        DropdownMenuItem(value: null, child: Text('All')),
-        DropdownMenuItem(value: true, child: Text('Yes')),
-        DropdownMenuItem(value: false, child: Text('No')),
-      ],
-      onChanged: (value) => _applyFilter(column, value),
-      isExpanded: true,
-      isDense: true,
-      style: const TextStyle(fontSize: 13),
+    return SizedBox(
+      height: 32,
+      child: Center(
+        child: Checkbox(
+          value: currentFilter?.value == true,
+          onChanged: (value) => _applyFilter(column, value),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      ),
     );
   }
 
   Widget _buildOperatorSelector(VooDataColumn column, VooDataFilter? currentFilter) {
     final operators = column.effectiveAllowedFilterOperators;
     final currentOperator = currentFilter?.operator ?? column.effectiveDefaultFilterOperator;
+    final theme = Theme.of(context);
 
     return Container(
       width: 40,
+      height: 32,
       margin: const EdgeInsets.only(right: 4),
-      child: DropdownButton<VooFilterOperator>(
-        value: currentOperator,
-        items: operators
-            .map((op) => DropdownMenuItem(
-                  value: op,
-                  child: Text(_getOperatorSymbol(op)),
-                ))
-            .toList(),
-        onChanged: (op) {
-          if (op != null) {
-            widget.controller.dataSource.applyFilter(
-              column.field,
-              VooDataFilter(
-                operator: op,
-                value: currentFilter?.value,
-                valueTo: currentFilter?.valueTo,
-              ),
-            );
-          }
-        },
-        isExpanded: true,
-        isDense: true,
-        style: const TextStyle(fontSize: 12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<VooFilterOperator>(
+          value: currentOperator,
+          items: operators
+              .map((op) => DropdownMenuItem(
+                    value: op,
+                    child: Center(child: Text(_getOperatorSymbol(op), style: const TextStyle(fontSize: 11))),
+                  ))
+              .toList(),
+          onChanged: (op) {
+            if (op != null) {
+              widget.controller.dataSource.applyFilter(
+                column.field,
+                VooDataFilter(
+                  operator: op,
+                  value: currentFilter?.value,
+                  valueTo: currentFilter?.valueTo,
+                ),
+              );
+            }
+          },
+          isExpanded: true,
+          isDense: true,
+          icon: const SizedBox.shrink(),
+        ),
       ),
     );
   }
@@ -631,20 +696,14 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
 
   void _clearFilter(VooDataColumn column) {
     widget.controller.dataSource.applyFilter(column.field, null);
-    _textControllers[column.field]?.clear();
-    _textControllers['${column.field}_min']?.clear();
-    _textControllers['${column.field}_max']?.clear();
-    setState(() {
-      _filterValues.remove(column.field);
-    });
   }
 
   String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
-  String _getOperatorSymbol(VooFilterOperator op) {
-    switch (op) {
+  String _getOperatorSymbol(VooFilterOperator operator) {
+    switch (operator) {
       case VooFilterOperator.equals:
         return '=';
       case VooFilterOperator.notEquals:

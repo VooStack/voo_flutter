@@ -12,16 +12,13 @@ class VooDataGridController extends ChangeNotifier {
   List<VooDataColumn> get columns => _columns;
 
   /// Visible columns (filtered by visible property)
-  List<VooDataColumn> get visibleColumns => 
-      _columns.where((col) => col.visible).toList();
+  List<VooDataColumn> get visibleColumns => _columns.where((col) => col.visible).toList();
 
   /// Frozen columns
-  List<VooDataColumn> get frozenColumns =>
-      visibleColumns.where((col) => col.frozen).toList();
+  List<VooDataColumn> get frozenColumns => visibleColumns.where((col) => col.frozen).toList();
 
   /// Scrollable columns
-  List<VooDataColumn> get scrollableColumns =>
-      visibleColumns.where((col) => !col.frozen).toList();
+  List<VooDataColumn> get scrollableColumns => visibleColumns.where((col) => !col.frozen).toList();
 
   /// Column widths map
   final Map<String, double> _columnWidths = {};
@@ -147,7 +144,7 @@ class VooDataGridController extends ChangeNotifier {
   /// Reorder columns
   void reorderColumns(int oldIndex, int newIndex) {
     if (!_columnReorderable) return;
-    
+
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
