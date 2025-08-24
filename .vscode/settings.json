@@ -1,7 +1,11 @@
 {
   "cSpell.words": [
+    "combinators",
+    "dartdoc",
     "devstack",
     "fixnum",
+    "interps",
+    "ints",
     "kvlist",
     "sembast",
     "Sparkline",
