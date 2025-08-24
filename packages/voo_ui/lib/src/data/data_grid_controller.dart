@@ -1,0 +1,254 @@
+import 'package:flutter/material.dart';
+import 'package:voo_ui/src/data/data_grid_source.dart';
+import 'package:voo_ui/src/data/data_grid_column.dart';
+
+/// Controller for VooDataGrid
+class VooDataGridController extends ChangeNotifier {
+  /// Data source
+  final VooDataGridSource dataSource;
+
+  /// Columns configuration
+  List<VooDataColumn> _columns = [];
+  List<VooDataColumn> get columns => _columns;
+
+  /// Visible columns (filtered by visible property)
+  List<VooDataColumn> get visibleColumns => 
+      _columns.where((col) => col.visible).toList();
+
+  /// Frozen columns
+  List<VooDataColumn> get frozenColumns =>
+      visibleColumns.where((col) => col.frozen).toList();
+
+  /// Scrollable columns
+  List<VooDataColumn> get scrollableColumns =>
+      visibleColumns.where((col) => !col.frozen).toList();
+
+  /// Column widths map
+  final Map<String, double> _columnWidths = {};
+
+  /// Horizontal scroll controller
+  final ScrollController horizontalScrollController = ScrollController();
+
+  /// Vertical scroll controller
+  final ScrollController verticalScrollController = ScrollController();
+
+  /// Row height
+  double _rowHeight = 48.0;
+  double get rowHeight => _rowHeight;
+
+  /// Header height
+  double _headerHeight = 56.0;
+  double get headerHeight => _headerHeight;
+
+  /// Show column filters
+  bool _showFilters = false;
+  bool get showFilters => _showFilters;
+
+  /// Filter height
+  double _filterHeight = 56.0;
+  double get filterHeight => _filterHeight;
+
+  /// Grid lines visibility
+  bool _showGridLines = true;
+  bool get showGridLines => _showGridLines;
+
+  /// Alternating row colors
+  bool _alternatingRowColors = false;
+  bool get alternatingRowColors => _alternatingRowColors;
+
+  /// Hover effect
+  bool _showHoverEffect = true;
+  bool get showHoverEffect => _showHoverEffect;
+
+  /// Column resizing enabled
+  bool _columnResizable = true;
+  bool get columnResizable => _columnResizable;
+
+  /// Column reordering enabled
+  bool _columnReorderable = false;
+  bool get columnReorderable => _columnReorderable;
+
+  /// Constructor
+  VooDataGridController({
+    required this.dataSource,
+    List<VooDataColumn>? columns,
+    double? rowHeight,
+    double? headerHeight,
+    double? filterHeight,
+    bool? showFilters,
+    bool? showGridLines,
+    bool? alternatingRowColors,
+    bool? showHoverEffect,
+    bool? columnResizable,
+    bool? columnReorderable,
+  }) {
+    _columns = columns ?? [];
+    _rowHeight = rowHeight ?? 48.0;
+    _headerHeight = headerHeight ?? 56.0;
+    _filterHeight = filterHeight ?? 56.0;
+    _showFilters = showFilters ?? false;
+    _showGridLines = showGridLines ?? true;
+    _alternatingRowColors = alternatingRowColors ?? false;
+    _showHoverEffect = showHoverEffect ?? true;
+    _columnResizable = columnResizable ?? true;
+    _columnReorderable = columnReorderable ?? false;
+
+    // Listen to data source changes
+    dataSource.addListener(_onDataSourceChanged);
+  }
+
+  /// Set columns
+  void setColumns(List<VooDataColumn> columns) {
+    _columns = columns;
+    notifyListeners();
+  }
+
+  /// Update column
+  void updateColumn(String field, VooDataColumn column) {
+    final index = _columns.indexWhere((col) => col.field == field);
+    if (index >= 0) {
+      _columns[index] = column;
+      notifyListeners();
+    }
+  }
+
+  /// Toggle column visibility
+  void toggleColumnVisibility(String field) {
+    final index = _columns.indexWhere((col) => col.field == field);
+    if (index >= 0) {
+      _columns[index] = _columns[index].copyWith(
+        visible: !_columns[index].visible,
+      );
+      notifyListeners();
+    }
+  }
+
+  /// Resize column
+  void resizeColumn(String field, double width) {
+    _columnWidths[field] = width;
+    notifyListeners();
+  }
+
+  /// Get column width
+  double getColumnWidth(VooDataColumn column) {
+    if (_columnWidths.containsKey(column.field)) {
+      return _columnWidths[column.field]!;
+    }
+    return column.width ?? _calculateFlexWidth(column);
+  }
+
+  /// Calculate flex width for column
+  double _calculateFlexWidth(VooDataColumn column) {
+    // This will be calculated based on available space
+    // For now, return a default width
+    return 150.0;
+  }
+
+  /// Reorder columns
+  void reorderColumns(int oldIndex, int newIndex) {
+    if (!_columnReorderable) return;
+    
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final column = _columns.removeAt(oldIndex);
+    _columns.insert(newIndex, column);
+    notifyListeners();
+  }
+
+  /// Toggle filters visibility
+  void toggleFilters() {
+    _showFilters = !_showFilters;
+    notifyListeners();
+  }
+
+  /// Set row height
+  void setRowHeight(double height) {
+    _rowHeight = height;
+    notifyListeners();
+  }
+
+  /// Set header height
+  void setHeaderHeight(double height) {
+    _headerHeight = height;
+    notifyListeners();
+  }
+
+  /// Set filter height
+  void setFilterHeight(double height) {
+    _filterHeight = height;
+    notifyListeners();
+  }
+
+  /// Toggle grid lines
+  void toggleGridLines() {
+    _showGridLines = !_showGridLines;
+    notifyListeners();
+  }
+
+  /// Toggle alternating row colors
+  void toggleAlternatingRowColors() {
+    _alternatingRowColors = !_alternatingRowColors;
+    notifyListeners();
+  }
+
+  /// Toggle hover effect
+  void toggleHoverEffect() {
+    _showHoverEffect = !_showHoverEffect;
+    notifyListeners();
+  }
+
+  /// Sort column
+  void sortColumn(String field) {
+    final column = _columns.firstWhere((col) => col.field == field);
+    if (!column.sortable) return;
+
+    final currentSort = dataSource.sorts.firstWhere(
+      (sort) => sort.field == field,
+      orElse: () => VooColumnSort(
+        field: field,
+        direction: VooSortDirection.none,
+      ),
+    );
+
+    VooSortDirection newDirection;
+    switch (currentSort.direction) {
+      case VooSortDirection.none:
+        newDirection = VooSortDirection.ascending;
+        break;
+      case VooSortDirection.ascending:
+        newDirection = VooSortDirection.descending;
+        break;
+      case VooSortDirection.descending:
+        newDirection = VooSortDirection.none;
+        break;
+    }
+
+    dataSource.applySort(field, newDirection);
+  }
+
+  /// Get sort direction for column
+  VooSortDirection getSortDirection(String field) {
+    final sort = dataSource.sorts.firstWhere(
+      (sort) => sort.field == field,
+      orElse: () => VooColumnSort(
+        field: field,
+        direction: VooSortDirection.none,
+      ),
+    );
+    return sort.direction;
+  }
+
+  /// Data source changed handler
+  void _onDataSourceChanged() {
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    dataSource.removeListener(_onDataSourceChanged);
+    horizontalScrollController.dispose();
+    verticalScrollController.dispose();
+    super.dispose();
+  }
+}

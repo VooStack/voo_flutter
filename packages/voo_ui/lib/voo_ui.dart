@@ -1,5 +1,3 @@
-library voo_ui;
-
 // App
 export 'src/app/voo_material_app.dart';
 
@@ -32,10 +30,17 @@ export 'src/layout/page_header.dart';
 // Navigation
 export 'src/navigation/app_bar.dart';
 
+// Data Grid
+export 'src/data/data_grid.dart';
+export 'src/data/data_grid_column.dart';
+export 'src/data/data_grid_controller.dart';
+export 'src/data/data_grid_source.dart';
+
 // Widget Previews
 export 'src/previews/app_previews.dart';
-export 'src/previews/input_previews.dart';
+export 'src/previews/data_grid_previews.dart';
 export 'src/previews/display_previews.dart';
+export 'src/previews/feedback_previews.dart';
+export 'src/previews/input_previews.dart';
 export 'src/previews/layout_previews.dart';
 export 'src/previews/navigation_previews.dart';
-export 'src/previews/feedback_previews.dart';

@@ -509,6 +509,198 @@ Container(
 )
 ```
 
+## VooDataGrid
+
+A powerful data grid widget with advanced features including remote filtering, sorting, pagination, and customizable columns.
+
+### Features
+- **Remote Filtering**: Built-in support for server-side filtering with debouncing
+- **Sorting**: Multi-column sorting with visual indicators
+- **Pagination**: Configurable pagination with page size options
+- **Column Management**: Frozen columns, resizable columns, custom cell rendering
+- **Selection**: Single and multiple row selection modes
+- **Performance**: Efficient rendering with virtualization for large datasets
+- **Theming**: Full theme customization with Material Design integration
+
+### Basic Usage
+
+```dart
+// Create your data source
+class MyDataSource extends VooDataGridSource {
+  @override
+  Future<VooDataGridResponse> fetchData({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+  }) async {
+    // Fetch data from your API
+    final response = await api.getUsers(
+      page: page,
+      pageSize: pageSize,
+      filters: filters,
+      sorts: sorts,
+    );
+    
+    return VooDataGridResponse(
+      rows: response.data,
+      totalRows: response.total,
+      page: page,
+      pageSize: pageSize,
+    );
+  }
+}
+
+// Use the data grid
+class MyDataGridPage extends StatefulWidget {
+  @override
+  State<MyDataGridPage> createState() => _MyDataGridPageState();
+}
+
+class _MyDataGridPageState extends State<MyDataGridPage> {
+  late final MyDataSource _dataSource;
+  late final VooDataGridController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = MyDataSource();
+    _controller = VooDataGridController(
+      dataSource: _dataSource,
+      columns: [
+        VooDataColumn(
+          field: 'id',
+          label: 'ID',
+          width: 60,
+        ),
+        VooDataColumn(
+          field: 'name',
+          label: 'Name',
+          filterable: true,
+          sortable: true,
+        ),
+        VooDataColumn(
+          field: 'email',
+          label: 'Email',
+          filterable: true,
+        ),
+        VooDataColumn(
+          field: 'status',
+          label: 'Status',
+          dataType: VooDataColumnType.select,
+          filterOptions: [
+            VooFilterOption(value: 'active', label: 'Active'),
+            VooFilterOption(value: 'inactive', label: 'Inactive'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VooDataGrid(
+      controller: _controller,
+      onRowTap: (row) {
+        // Handle row tap
+      },
+    );
+  }
+}
+```
+
+### Column Configuration
+
+```dart
+VooDataColumn(
+  field: 'amount',
+  label: 'Amount',
+  width: 120,
+  textAlign: TextAlign.right,
+  sortable: true,
+  filterable: true,
+  dataType: VooDataColumnType.number,
+  // Custom value formatter
+  valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+  // Custom cell builder
+  cellBuilder: (context, value, row) => Text(
+    '\$${value}',
+    style: TextStyle(
+      color: value > 0 ? Colors.green : Colors.red,
+    ),
+  ),
+)
+```
+
+### Remote Filtering
+
+The data grid supports various filter operators:
+
+```dart
+VooDataFilter(
+  operator: VooFilterOperator.contains,
+  value: 'search term',
+)
+
+// Available operators:
+// - equals, notEquals
+// - contains, notContains
+// - startsWith, endsWith
+// - greaterThan, greaterThanOrEqual
+// - lessThan, lessThanOrEqual
+// - between, inList, notInList
+// - isNull, isNotNull
+```
+
+### Selection Modes
+
+```dart
+// Enable single selection
+_dataSource.setSelectionMode(VooSelectionMode.single);
+
+// Enable multiple selection
+_dataSource.setSelectionMode(VooSelectionMode.multiple);
+
+// Get selected rows
+final selectedRows = _dataSource.selectedRows;
+```
+
+### Customization
+
+```dart
+VooDataGridController(
+  dataSource: _dataSource,
+  columns: columns,
+  rowHeight: 52,
+  headerHeight: 60,
+  showFilters: true,
+  showGridLines: true,
+  alternatingRowColors: true,
+  columnResizable: true,
+  columnReorderable: false,
+)
+```
+
+### Theme Customization
+
+```dart
+VooDataGrid(
+  controller: _controller,
+  theme: VooDataGridTheme(
+    headerBackgroundColor: Colors.blue.shade50,
+    headerTextColor: Colors.blue.shade900,
+    rowBackgroundColor: Colors.white,
+    alternateRowBackgroundColor: Colors.grey.shade50,
+    selectedRowBackgroundColor: Colors.blue.shade100,
+    hoveredRowBackgroundColor: Colors.grey.shade100,
+    borderColor: Colors.grey.shade300,
+    gridLineColor: Colors.grey.shade200,
+    headerTextStyle: TextStyle(fontWeight: FontWeight.bold),
+    cellTextStyle: TextStyle(fontSize: 14),
+  ),
+)
+```
+
 ## Customizing the Design System
 
 You can create a custom design system with your own values:
@@ -540,6 +732,15 @@ The package follows a feature-based architecture for better organization and dis
 lib/src/
 ├── app/            # App wrappers and configuration
 │   └── voo_material_app.dart
+├── data/           # Data grid and table components
+│   ├── data_grid.dart           # Main data grid widget
+│   ├── data_grid_column.dart    # Column definitions
+│   ├── data_grid_controller.dart # Grid state management
+│   ├── data_grid_source.dart    # Data source abstraction
+│   ├── data_grid_header.dart    # Header rendering
+│   ├── data_grid_row.dart       # Row rendering
+│   ├── data_grid_filter.dart    # Filter UI components
+│   └── data_grid_pagination.dart # Pagination controls
 ├── foundations/    # Core design system elements
 │   ├── colors.dart      # Color palettes and utilities
 │   ├── design_system.dart # VooDesignSystem implementation
