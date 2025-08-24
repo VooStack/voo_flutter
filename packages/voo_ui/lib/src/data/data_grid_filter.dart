@@ -5,7 +5,6 @@ import 'package:voo_ui/src/data/data_grid_column.dart';
 import 'package:voo_ui/src/data/data_grid.dart';
 import 'package:voo_ui/src/data/data_grid_source.dart';
 import 'package:voo_ui/src/foundations/design_system.dart';
-import 'package:voo_ui/src/inputs/dropdown.dart';
 
 /// Filter row widget for VooDataGrid
 class VooDataGridFilterRow extends StatefulWidget {
@@ -37,7 +36,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Container(
       height: widget.controller.filterHeight,
       decoration: BoxDecoration(
@@ -52,13 +51,11 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
       child: Row(
         children: [
           // Empty space for selection column
-          if (widget.controller.dataSource.selectionMode != VooSelectionMode.none)
-            Container(width: 48),
-          
+          if (widget.controller.dataSource.selectionMode != VooSelectionMode.none) Container(width: 48),
+
           // Frozen column filters
-          for (final column in widget.controller.frozenColumns)
-            _buildFilterCell(context, column, design),
-          
+          for (final column in widget.controller.frozenColumns) _buildFilterCell(context, column, design),
+
           // Scrollable column filters
           Expanded(
             child: SingleChildScrollView(
@@ -66,8 +63,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  for (final column in widget.controller.scrollableColumns)
-                    _buildFilterCell(context, column, design),
+                  for (final column in widget.controller.scrollableColumns) _buildFilterCell(context, column, design),
                 ],
               ),
             ),
@@ -95,10 +91,10 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
         ),
       );
     }
-    
+
     final width = widget.controller.getColumnWidth(column);
     final currentFilter = widget.controller.dataSource.filters[column.field];
-    
+
     return Container(
       width: width,
       padding: EdgeInsets.all(design.spacingXs),
@@ -134,28 +130,28 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
     switch (column.effectiveFilterWidgetType) {
       case VooFilterWidgetType.textField:
         return _buildTextFilter(column, currentFilter);
-      
+
       case VooFilterWidgetType.numberField:
         return _buildNumberFilter(column, currentFilter);
-      
+
       case VooFilterWidgetType.numberRange:
         return _buildNumberRangeFilter(column, currentFilter);
-      
+
       case VooFilterWidgetType.datePicker:
         return _buildDateFilter(context, column, currentFilter);
-      
+
       case VooFilterWidgetType.dateRange:
         return _buildDateRangeFilter(context, column, currentFilter);
-      
+
       case VooFilterWidgetType.dropdown:
         return _buildDropdownFilter(column, currentFilter);
-      
+
       case VooFilterWidgetType.multiSelect:
         return _buildMultiSelectFilter(column, currentFilter);
-      
+
       case VooFilterWidgetType.checkbox:
         return _buildCheckboxFilter(column, currentFilter);
-      
+
       case VooFilterWidgetType.custom:
         return const SizedBox();
     }
@@ -169,8 +165,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
 
     return Row(
       children: [
-        if (column.showFilterOperator)
-          _buildOperatorSelector(column, currentFilter),
+        if (column.showFilterOperator) _buildOperatorSelector(column, currentFilter),
         Expanded(
           child: TextField(
             controller: controller,
@@ -323,9 +318,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
     final controller = _textControllers.putIfAbsent(
       column.field,
       () => TextEditingController(
-        text: currentFilter?.value != null
-            ? _formatDate(currentFilter!.value as DateTime)
-            : '',
+        text: currentFilter?.value != null ? _formatDate(currentFilter!.value as DateTime) : '',
       ),
     );
 
@@ -432,28 +425,58 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
 
   Widget _buildDropdownFilter(VooDataColumn column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
+    final theme = Theme.of(context);
     
-    return VooDropdown<dynamic>(
-      value: currentFilter?.value,
-      items: [
-        const VooDropdownItem(value: null, label: 'All'),
-        ...options.map(
-          (option) => VooDropdownItem(
-            value: option.value,
-            label: option.label,
-            icon: option.icon,
+    return Container(
+      height: 36,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade400),
+        borderRadius: BorderRadius.circular(4),
+        color: theme.colorScheme.surface,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: ButtonTheme(
+          alignedDropdown: true,
+          child: DropdownButton<dynamic>(
+            value: currentFilter?.value,
+            hint: Text(
+              column.filterHint ?? 'All',
+              style: const TextStyle(fontSize: 13, color: Colors.grey),
+            ),
+            items: [
+              DropdownMenuItem(
+                value: null,
+                child: Text('All', style: const TextStyle(fontSize: 13)),
+              ),
+              ...options.map((option) => DropdownMenuItem(
+                value: option.value,
+                child: Row(
+                  children: [
+                    if (option.icon != null) ...[
+                      Icon(option.icon, size: 16),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(option.label, style: const TextStyle(fontSize: 13)),
+                  ],
+                ),
+              )),
+            ],
+            onChanged: (value) => _applyFilter(column, value),
+            isExpanded: true,
+            isDense: true,
+            icon: const Icon(Icons.arrow_drop_down, size: 20),
+            style: const TextStyle(fontSize: 13, color: Colors.black87),
+            dropdownColor: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
-      ],
-      onChanged: (value) => _applyFilter(column, value),
+      ),
     );
   }
 
   Widget _buildMultiSelectFilter(VooDataColumn column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
-    final selectedValues = currentFilter?.value is List
-        ? List.from(currentFilter!.value as List)
-        : [];
+    final selectedValues = currentFilter?.value is List ? List.from(currentFilter!.value as List) : [];
 
     return PopupMenuButton<dynamic>(
       child: Container(
@@ -466,9 +489,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
           children: [
             Expanded(
               child: Text(
-                selectedValues.isEmpty
-                    ? column.filterHint ?? 'Select...'
-                    : '${selectedValues.length} selected',
+                selectedValues.isEmpty ? column.filterHint ?? 'Select...' : '${selectedValues.length} selected',
                 style: const TextStyle(fontSize: 13),
               ),
             ),
@@ -535,10 +556,12 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
       margin: const EdgeInsets.only(right: 4),
       child: DropdownButton<VooFilterOperator>(
         value: currentOperator,
-        items: operators.map((op) => DropdownMenuItem(
-          value: op,
-          child: Text(_getOperatorSymbol(op)),
-        )).toList(),
+        items: operators
+            .map((op) => DropdownMenuItem(
+                  value: op,
+                  child: Text(_getOperatorSymbol(op)),
+                ))
+            .toList(),
         onChanged: (op) {
           if (op != null) {
             widget.controller.dataSource.applyFilter(
@@ -573,20 +596,19 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
 
     // Try to extract unique values from current data
     final uniqueValues = <dynamic>{};
-    for (final row in widget.controller.dataSource.allRows.isNotEmpty
-        ? widget.controller.dataSource.allRows
-        : widget.controller.dataSource.rows) {
-      final value = column.valueGetter?.call(row) ?? 
-                   (row is Map ? row[column.field] : null);
+    for (final row in widget.controller.dataSource.allRows.isNotEmpty ? widget.controller.dataSource.allRows : widget.controller.dataSource.rows) {
+      final value = column.valueGetter?.call(row) ?? (row is Map ? row[column.field] : null);
       if (value != null) {
         uniqueValues.add(value);
       }
     }
 
-    return uniqueValues.map((value) => VooFilterOption(
-      value: value,
-      label: column.valueFormatter?.call(value) ?? value.toString(),
-    )).toList()
+    return uniqueValues
+        .map((value) => VooFilterOption(
+              value: value,
+              label: column.valueFormatter?.call(value) ?? value.toString(),
+            ))
+        .toList()
       ..sort((a, b) => a.label.compareTo(b.label));
   }
 
@@ -596,8 +618,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
       return;
     }
 
-    final operator = widget.controller.dataSource.filters[column.field]?.operator ??
-                     column.effectiveDefaultFilterOperator;
+    final operator = widget.controller.dataSource.filters[column.field]?.operator ?? column.effectiveDefaultFilterOperator;
 
     widget.controller.dataSource.applyFilter(
       column.field,

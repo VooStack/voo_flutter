@@ -158,19 +158,6 @@ class _VooTextFieldState extends State<VooTextField> {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    final hasError = widget.error != null && widget.error!.isNotEmpty;
-
-    // Determine border color based on state
-    Color borderColor;
-    if (!widget.enabled) {
-      borderColor = theme.colorScheme.outline.withValues(alpha: 0.3);
-    } else if (hasError) {
-      borderColor = theme.colorScheme.error;
-    } else if (_isFocused) {
-      borderColor = theme.colorScheme.primary;
-    } else {
-      borderColor = theme.colorScheme.outline;
-    }
 
     // Build prefix widget
     Widget? prefixWidget;
@@ -199,126 +186,123 @@ class _VooTextFieldState extends State<VooTextField> {
       );
     }
 
-    return AnimatedContainer(
-      duration: design.animationDurationFast,
-      curve: design.animationCurve,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.label != null) ...[
-            Text(
-              widget.label!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: hasError
-                    ? theme.colorScheme.error
-                    : _isFocused
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.onSurfaceVariant,
-                fontWeight: _isFocused ? FontWeight.w500 : FontWeight.normal,
-              ),
-            ),
-            SizedBox(height: design.spacingXs),
-          ],
-          Container(
-            height: widget.maxLines != null && widget.maxLines! > 1 ? null : design.inputHeight,
-            decoration: BoxDecoration(
-              color: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(design.radiusMd),
-              border: Border.all(
-                color: borderColor,
-                width: _isFocused ? 2 : 1,
-              ),
-            ),
-            child: TextField(
-              controller: widget.controller,
-              focusNode: _focusNode,
-              decoration: InputDecoration(
-                hintText: widget.hint,
-                hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                ),
-                prefixIcon: prefixWidget != null
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-                        child: prefixWidget,
-                      )
-                    : null,
-                prefixIconConstraints: const BoxConstraints(),
-                suffixIcon: suffixWidget != null
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-                        child: suffixWidget,
-                      )
-                    : null,
-                suffixIconConstraints: const BoxConstraints(),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: design.spacingLg,
-                  vertical: widget.maxLines != null && widget.maxLines! > 1 ? design.spacingMd : 0,
-                ),
-                isDense: true,
-                counterText: '',
-              ),
-              obscureText: widget.obscureText,
-              enabled: widget.enabled,
-              readOnly: widget.readOnly,
-              autofocus: widget.autofocus,
-              maxLines: widget.maxLines,
-              minLines: widget.minLines,
-              maxLength: widget.maxLength,
-              keyboardType: widget.keyboardType,
-              textInputAction: widget.textInputAction,
-              inputFormatters: widget.inputFormatters,
-              onChanged: widget.onChanged,
-              onEditingComplete: widget.onEditingComplete,
-              onSubmitted: widget.onSubmitted,
-              onTap: widget.onTap,
-              textCapitalization: widget.textCapitalization,
-              textAlign: widget.textAlign,
-              textAlignVertical: widget.textAlignVertical,
-              textDirection: widget.textDirection,
-              expands: widget.expands,
-              maxLengthEnforcement: widget.maxLengthEnforcement,
-              showCursor: widget.showCursor,
-              obscuringCharacter: widget.obscuringCharacter,
-              autocorrect: widget.autocorrect,
-              smartDashesType: widget.smartDashesType,
-              smartQuotesType: widget.smartQuotesType,
-              enableSuggestions: widget.enableSuggestions,
-              keyboardAppearance: widget.keyboardAppearance,
-              scrollPadding: widget.scrollPadding,
-              enableInteractiveSelection: widget.enableInteractiveSelection,
-              selectionControls: widget.selectionControls,
-              scrollPhysics: widget.scrollPhysics,
-              scrollController: widget.scrollController,
-              autofillHints: widget.autofillHints,
-              restorationId: widget.restorationId,
-              stylusHandwritingEnabled: widget.scribbleEnabled,
-              enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
-              mouseCursor: widget.mouseCursor,
-              spellCheckConfiguration: widget.spellCheckConfiguration,
-              magnifierConfiguration: widget.magnifierConfiguration,
-              undoController: widget.undoController,
-              onAppPrivateCommand: widget.onAppPrivateCommand,
-              cursorOpacityAnimates: widget.cursorOpacityAnimates,
-              dragStartBehavior: widget.dragStartBehavior,
-              contentInsertionConfiguration: widget.contentInsertionConfiguration,
-              clipBehavior: widget.clipBehavior,
-              canRequestFocus: widget.canRequestFocus,
-            ),
+    return TextField(
+      controller: widget.controller,
+      focusNode: _focusNode,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        hintText: widget.hint,
+        helperText: widget.helper,
+        helperMaxLines: 2,
+        errorText: widget.error,
+        errorMaxLines: 2,
+        prefixIcon: prefixWidget,
+        suffixIcon: suffixWidget,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderSide: BorderSide(
+            color: theme.colorScheme.outline,
           ),
-          if (widget.helper != null || widget.error != null) ...[
-            SizedBox(height: design.spacingXs),
-            Text(
-              widget.error ?? widget.helper ?? '',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: hasError ? theme.colorScheme.error : theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ],
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderSide: BorderSide(
+            color: theme.colorScheme.outline,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderSide: BorderSide(
+            color: theme.colorScheme.primary,
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderSide: BorderSide(
+            color: theme.colorScheme.error,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderSide: BorderSide(
+            color: theme.colorScheme.error,
+            width: 2,
+          ),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderSide: BorderSide(
+            color: theme.colorScheme.outline.withValues(alpha: 0.3),
+          ),
+        ),
+        filled: true,
+        fillColor: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: design.spacingLg,
+          vertical: widget.maxLines != null && widget.maxLines! > 1 ? design.spacingMd : design.spacingMd,
+        ),
+        isDense: false,
+        counterText: '',
+        alignLabelWithHint: widget.maxLines != null && widget.maxLines! > 1,
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+        ),
+        floatingLabelStyle: theme.textTheme.bodySmall?.copyWith(
+          color: widget.error != null
+              ? theme.colorScheme.error
+              : _isFocused
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+        ),
       ),
+      obscureText: widget.obscureText,
+      enabled: widget.enabled,
+      readOnly: widget.readOnly,
+      autofocus: widget.autofocus,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
+      maxLength: widget.maxLength,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      inputFormatters: widget.inputFormatters,
+      onChanged: widget.onChanged,
+      onEditingComplete: widget.onEditingComplete,
+      onSubmitted: widget.onSubmitted,
+      onTap: widget.onTap,
+      textCapitalization: widget.textCapitalization,
+      textAlign: widget.textAlign,
+      textAlignVertical: widget.textAlignVertical,
+      textDirection: widget.textDirection,
+      expands: widget.expands,
+      maxLengthEnforcement: widget.maxLengthEnforcement,
+      showCursor: widget.showCursor,
+      obscuringCharacter: widget.obscuringCharacter,
+      autocorrect: widget.autocorrect,
+      smartDashesType: widget.smartDashesType,
+      smartQuotesType: widget.smartQuotesType,
+      enableSuggestions: widget.enableSuggestions,
+      keyboardAppearance: widget.keyboardAppearance,
+      scrollPadding: widget.scrollPadding,
+      enableInteractiveSelection: widget.enableInteractiveSelection,
+      selectionControls: widget.selectionControls,
+      scrollPhysics: widget.scrollPhysics,
+      scrollController: widget.scrollController,
+      autofillHints: widget.autofillHints,
+      restorationId: widget.restorationId,
+      stylusHandwritingEnabled: widget.scribbleEnabled,
+      enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
+      mouseCursor: widget.mouseCursor,
+      spellCheckConfiguration: widget.spellCheckConfiguration,
+      magnifierConfiguration: widget.magnifierConfiguration,
+      undoController: widget.undoController,
+      onAppPrivateCommand: widget.onAppPrivateCommand,
+      cursorOpacityAnimates: widget.cursorOpacityAnimates,
+      dragStartBehavior: widget.dragStartBehavior,
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
+      clipBehavior: widget.clipBehavior,
+      canRequestFocus: widget.canRequestFocus,
     );
   }
 }
