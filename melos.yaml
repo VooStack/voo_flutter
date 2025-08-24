@@ -72,3 +72,7 @@ scripts:
   test:
     description: Run tests for selected packages.
     run: melos exec -- flutter test
+
+  widget_preview:
+    description: Run widget previews for selected packages.
+    run: flutter widget-preview start
