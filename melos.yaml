@@ -74,5 +74,7 @@ scripts:
     run: melos exec -- flutter test
 
   widget_preview:
+    packageFilters:
+      scope: voo_ui
     description: Run widget previews for selected packages.
     run: flutter widget-preview start
