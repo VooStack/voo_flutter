@@ -47,11 +47,34 @@ class VooDataColumn {
   /// Column data type for filtering
   final VooDataColumnType dataType;
 
-  /// Custom filter options for this column
+  /// Filter widget type (overrides default based on dataType)
+  final VooFilterWidgetType? filterWidgetType;
+
+  /// Custom filter widget builder
+  final Widget Function(
+    BuildContext context,
+    VooDataColumn column,
+    dynamic currentValue,
+    void Function(dynamic value) onChanged,
+  )? filterBuilder;
+
+  /// Custom filter options for select/multiselect columns
   final List<VooFilterOption>? filterOptions;
+
+  /// Placeholder text for filter input
+  final String? filterHint;
+
+  /// Default filter operator for this column
+  final VooFilterOperator? defaultFilterOperator;
+
+  /// Allowed filter operators for this column
+  final List<VooFilterOperator>? allowedFilterOperators;
 
   /// Flex value for flexible columns
   final int flex;
+
+  /// Whether to show filter operator selector
+  final bool showFilterOperator;
 
   const VooDataColumn({
     required this.field,
@@ -69,9 +92,112 @@ class VooDataColumn {
     this.visible = true,
     this.frozen = false,
     this.dataType = VooDataColumnType.text,
+    this.filterWidgetType,
+    this.filterBuilder,
     this.filterOptions,
+    this.filterHint,
+    this.defaultFilterOperator,
+    this.allowedFilterOperators,
     this.flex = 1,
+    this.showFilterOperator = false,
   });
+
+  /// Get the effective filter widget type
+  VooFilterWidgetType get effectiveFilterWidgetType {
+    if (filterWidgetType != null) return filterWidgetType!;
+    
+    switch (dataType) {
+      case VooDataColumnType.text:
+        return VooFilterWidgetType.textField;
+      case VooDataColumnType.number:
+        return VooFilterWidgetType.numberRange;
+      case VooDataColumnType.date:
+        return VooFilterWidgetType.datePicker;
+      case VooDataColumnType.boolean:
+        return VooFilterWidgetType.dropdown;
+      case VooDataColumnType.select:
+        return VooFilterWidgetType.dropdown;
+      case VooDataColumnType.multiSelect:
+        return VooFilterWidgetType.multiSelect;
+      case VooDataColumnType.custom:
+        return VooFilterWidgetType.custom;
+    }
+  }
+
+  /// Get default filter operator for this column type
+  VooFilterOperator get effectiveDefaultFilterOperator {
+    if (defaultFilterOperator != null) return defaultFilterOperator!;
+    
+    switch (dataType) {
+      case VooDataColumnType.text:
+        return VooFilterOperator.contains;
+      case VooDataColumnType.number:
+      case VooDataColumnType.date:
+        return VooFilterOperator.equals;
+      case VooDataColumnType.boolean:
+      case VooDataColumnType.select:
+        return VooFilterOperator.equals;
+      case VooDataColumnType.multiSelect:
+        return VooFilterOperator.inList;
+      case VooDataColumnType.custom:
+        return VooFilterOperator.equals;
+    }
+  }
+
+  /// Get allowed filter operators for this column type
+  List<VooFilterOperator> get effectiveAllowedFilterOperators {
+    if (allowedFilterOperators != null) return allowedFilterOperators!;
+    
+    switch (dataType) {
+      case VooDataColumnType.text:
+        return [
+          VooFilterOperator.equals,
+          VooFilterOperator.notEquals,
+          VooFilterOperator.contains,
+          VooFilterOperator.notContains,
+          VooFilterOperator.startsWith,
+          VooFilterOperator.endsWith,
+          VooFilterOperator.isNull,
+          VooFilterOperator.isNotNull,
+        ];
+      case VooDataColumnType.number:
+      case VooDataColumnType.date:
+        return [
+          VooFilterOperator.equals,
+          VooFilterOperator.notEquals,
+          VooFilterOperator.greaterThan,
+          VooFilterOperator.greaterThanOrEqual,
+          VooFilterOperator.lessThan,
+          VooFilterOperator.lessThanOrEqual,
+          VooFilterOperator.between,
+          VooFilterOperator.isNull,
+          VooFilterOperator.isNotNull,
+        ];
+      case VooDataColumnType.boolean:
+        return [
+          VooFilterOperator.equals,
+          VooFilterOperator.notEquals,
+          VooFilterOperator.isNull,
+          VooFilterOperator.isNotNull,
+        ];
+      case VooDataColumnType.select:
+        return [
+          VooFilterOperator.equals,
+          VooFilterOperator.notEquals,
+          VooFilterOperator.isNull,
+          VooFilterOperator.isNotNull,
+        ];
+      case VooDataColumnType.multiSelect:
+        return [
+          VooFilterOperator.inList,
+          VooFilterOperator.notInList,
+          VooFilterOperator.isNull,
+          VooFilterOperator.isNotNull,
+        ];
+      case VooDataColumnType.custom:
+        return VooFilterOperator.values;
+    }
+  }
 
   /// Creates a copy with optional overrides
   VooDataColumn copyWith({
@@ -90,8 +216,19 @@ class VooDataColumn {
     bool? visible,
     bool? frozen,
     VooDataColumnType? dataType,
+    VooFilterWidgetType? filterWidgetType,
+    Widget Function(
+      BuildContext context,
+      VooDataColumn column,
+      dynamic currentValue,
+      void Function(dynamic value) onChanged,
+    )? filterBuilder,
     List<VooFilterOption>? filterOptions,
+    String? filterHint,
+    VooFilterOperator? defaultFilterOperator,
+    List<VooFilterOperator>? allowedFilterOperators,
     int? flex,
+    bool? showFilterOperator,
   }) {
     return VooDataColumn(
       field: field ?? this.field,
@@ -109,8 +246,14 @@ class VooDataColumn {
       visible: visible ?? this.visible,
       frozen: frozen ?? this.frozen,
       dataType: dataType ?? this.dataType,
+      filterWidgetType: filterWidgetType ?? this.filterWidgetType,
+      filterBuilder: filterBuilder ?? this.filterBuilder,
       filterOptions: filterOptions ?? this.filterOptions,
+      filterHint: filterHint ?? this.filterHint,
+      defaultFilterOperator: defaultFilterOperator ?? this.defaultFilterOperator,
+      allowedFilterOperators: allowedFilterOperators ?? this.allowedFilterOperators,
       flex: flex ?? this.flex,
+      showFilterOperator: showFilterOperator ?? this.showFilterOperator,
     );
   }
 }
@@ -126,16 +269,31 @@ enum VooDataColumnType {
   custom,
 }
 
+/// Filter widget types
+enum VooFilterWidgetType {
+  textField,
+  numberField,
+  numberRange,
+  datePicker,
+  dateRange,
+  dropdown,
+  multiSelect,
+  checkbox,
+  custom,
+}
+
 /// Filter option for select/multiselect columns
 class VooFilterOption {
   final dynamic value;
   final String label;
   final IconData? icon;
+  final Widget? child;
 
   const VooFilterOption({
     required this.value,
     required this.label,
     this.icon,
+    this.child,
   });
 }
 
@@ -155,4 +313,23 @@ class VooColumnSort {
     required this.field,
     required this.direction,
   });
+}
+
+/// Filter operators
+enum VooFilterOperator {
+  equals,
+  notEquals,
+  contains,
+  notContains,
+  startsWith,
+  endsWith,
+  greaterThan,
+  greaterThanOrEqual,
+  lessThan,
+  lessThanOrEqual,
+  between,
+  inList,
+  notInList,
+  isNull,
+  isNotNull,
 }

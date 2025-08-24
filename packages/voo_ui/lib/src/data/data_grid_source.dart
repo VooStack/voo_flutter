@@ -2,13 +2,31 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:voo_ui/src/data/data_grid_column.dart';
 
+/// Data grid operation mode
+enum VooDataGridMode {
+  /// All operations (filtering, sorting, pagination) are handled locally
+  local,
+  /// All operations are handled remotely via API
+  remote,
+  /// Filtering and sorting are local, but data fetching is remote
+  mixed,
+}
+
 /// Abstract data source for VooDataGrid
 abstract class VooDataGridSource extends ChangeNotifier {
-  /// Current page of data
+  /// Operation mode
+  VooDataGridMode _mode = VooDataGridMode.remote;
+  VooDataGridMode get mode => _mode;
+
+  /// All data (for local mode)
+  List<dynamic> _allRows = [];
+  List<dynamic> get allRows => _allRows;
+
+  /// Current page of data (filtered/sorted)
   List<dynamic> _rows = [];
   List<dynamic> get rows => _rows;
 
-  /// Total number of rows (for pagination)
+  /// Total number of rows (after filtering)
   int _totalRows = 0;
   int get totalRows => _totalRows;
 
@@ -47,13 +65,33 @@ abstract class VooDataGridSource extends ChangeNotifier {
   /// Debounce timer for remote filtering
   Timer? _debounceTimer;
 
-  /// Fetch data from remote source
-  Future<VooDataGridResponse> fetchData({
+  /// Constructor
+  VooDataGridSource({VooDataGridMode mode = VooDataGridMode.remote}) {
+    _mode = mode;
+  }
+
+  /// Fetch data from remote source (required for remote and mixed modes)
+  Future<VooDataGridResponse> fetchRemoteData({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
-  });
+  }) async {
+    // Default implementation for local mode
+    throw UnimplementedError('fetchRemoteData must be implemented for remote/mixed modes');
+  }
+
+  /// Set local data (for local mode)
+  void setLocalData(List<dynamic> data) {
+    _allRows = List.from(data);
+    _applyLocalFiltersAndSorts();
+  }
+
+  /// Set operation mode
+  void setMode(VooDataGridMode newMode) {
+    _mode = newMode;
+    loadData();
+  }
 
   /// Load data with current settings
   Future<void> loadData() async {
@@ -62,15 +100,36 @@ abstract class VooDataGridSource extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await fetchData(
-        page: _currentPage,
-        pageSize: _pageSize,
-        filters: _filters,
-        sorts: _sorts,
-      );
-
-      _rows = response.rows;
-      _totalRows = response.totalRows;
+      switch (_mode) {
+        case VooDataGridMode.local:
+          _applyLocalFiltersAndSorts();
+          break;
+        
+        case VooDataGridMode.remote:
+          final response = await fetchRemoteData(
+            page: _currentPage,
+            pageSize: _pageSize,
+            filters: _filters,
+            sorts: _sorts,
+          );
+          _rows = response.rows;
+          _totalRows = response.totalRows;
+          break;
+        
+        case VooDataGridMode.mixed:
+          // For mixed mode, fetch all data once then filter/sort locally
+          if (_allRows.isEmpty) {
+            final response = await fetchRemoteData(
+              page: 0,
+              pageSize: 999999, // Get all data
+              filters: {},
+              sorts: [],
+            );
+            _allRows = response.rows;
+          }
+          _applyLocalFiltersAndSorts();
+          break;
+      }
       _error = null;
     } catch (e) {
       _error = e.toString();
@@ -82,6 +141,174 @@ abstract class VooDataGridSource extends ChangeNotifier {
     }
   }
 
+  /// Apply local filtering and sorting
+  void _applyLocalFiltersAndSorts() {
+    var filteredData = List.from(_allRows);
+
+    // Apply filters
+    for (final entry in _filters.entries) {
+      final field = entry.key;
+      final filter = entry.value;
+      
+      filteredData = filteredData.where((row) {
+        final value = _getFieldValue(row, field);
+        return _applyFilter(value, filter);
+      }).toList();
+    }
+
+    // Apply sorts
+    for (final sort in _sorts.reversed) {
+      filteredData.sort((a, b) {
+        final aValue = _getFieldValue(a, sort.field);
+        final bValue = _getFieldValue(b, sort.field);
+        
+        int comparison;
+        if (aValue == null && bValue == null) {
+          comparison = 0;
+        } else if (aValue == null) {
+          comparison = 1;
+        } else if (bValue == null) {
+          comparison = -1;
+        } else if (aValue is Comparable) {
+          comparison = aValue.compareTo(bValue);
+        } else {
+          comparison = aValue.toString().compareTo(bValue.toString());
+        }
+        
+        return sort.direction == VooSortDirection.ascending
+            ? comparison
+            : -comparison;
+      });
+    }
+
+    // Apply pagination
+    _totalRows = filteredData.length;
+    final startIndex = _currentPage * _pageSize;
+    final endIndex = (startIndex + _pageSize).clamp(0, _totalRows);
+    _rows = filteredData.sublist(
+      startIndex.clamp(0, filteredData.length),
+      endIndex.clamp(0, filteredData.length),
+    );
+  }
+
+  /// Get field value from row object
+  dynamic _getFieldValue(dynamic row, String field) {
+    if (row is Map) {
+      return row[field];
+    }
+    // For objects, try to use reflection or assume a getter
+    try {
+      return row[field];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Apply a single filter to a value
+  bool _applyFilter(dynamic value, VooDataFilter filter) {
+    switch (filter.operator) {
+      case VooFilterOperator.equals:
+        return value == filter.value;
+      
+      case VooFilterOperator.notEquals:
+        return value != filter.value;
+      
+      case VooFilterOperator.contains:
+        if (value == null) return false;
+        return value.toString().toLowerCase().contains(
+          filter.value.toString().toLowerCase()
+        );
+      
+      case VooFilterOperator.notContains:
+        if (value == null) return true;
+        return !value.toString().toLowerCase().contains(
+          filter.value.toString().toLowerCase()
+        );
+      
+      case VooFilterOperator.startsWith:
+        if (value == null) return false;
+        return value.toString().toLowerCase().startsWith(
+          filter.value.toString().toLowerCase()
+        );
+      
+      case VooFilterOperator.endsWith:
+        if (value == null) return false;
+        return value.toString().toLowerCase().endsWith(
+          filter.value.toString().toLowerCase()
+        );
+      
+      case VooFilterOperator.greaterThan:
+        if (value == null || filter.value == null) return false;
+        if (value is num && filter.value is num) {
+          return value > filter.value;
+        }
+        if (value is DateTime && filter.value is DateTime) {
+          return value.isAfter(filter.value);
+        }
+        return false;
+      
+      case VooFilterOperator.greaterThanOrEqual:
+        if (value == null || filter.value == null) return false;
+        if (value is num && filter.value is num) {
+          return value >= filter.value;
+        }
+        if (value is DateTime && filter.value is DateTime) {
+          return !value.isBefore(filter.value);
+        }
+        return false;
+      
+      case VooFilterOperator.lessThan:
+        if (value == null || filter.value == null) return false;
+        if (value is num && filter.value is num) {
+          return value < filter.value;
+        }
+        if (value is DateTime && filter.value is DateTime) {
+          return value.isBefore(filter.value);
+        }
+        return false;
+      
+      case VooFilterOperator.lessThanOrEqual:
+        if (value == null || filter.value == null) return false;
+        if (value is num && filter.value is num) {
+          return value <= filter.value;
+        }
+        if (value is DateTime && filter.value is DateTime) {
+          return !value.isAfter(filter.value);
+        }
+        return false;
+      
+      case VooFilterOperator.between:
+        if (value == null || filter.value == null || filter.valueTo == null) {
+          return false;
+        }
+        if (value is num && filter.value is num && filter.valueTo is num) {
+          return value >= filter.value && value <= filter.valueTo;
+        }
+        if (value is DateTime && filter.value is DateTime && filter.valueTo is DateTime) {
+          return !value.isBefore(filter.value) && !value.isAfter(filter.valueTo);
+        }
+        return false;
+      
+      case VooFilterOperator.inList:
+        if (filter.value is List) {
+          return (filter.value as List).contains(value);
+        }
+        return false;
+      
+      case VooFilterOperator.notInList:
+        if (filter.value is List) {
+          return !(filter.value as List).contains(value);
+        }
+        return true;
+      
+      case VooFilterOperator.isNull:
+        return value == null;
+      
+      case VooFilterOperator.isNotNull:
+        return value != null;
+    }
+  }
+
   /// Apply filter to a column
   void applyFilter(String field, VooDataFilter? filter) {
     if (filter == null) {
@@ -90,7 +317,12 @@ abstract class VooDataGridSource extends ChangeNotifier {
       _filters[field] = filter;
     }
     _currentPage = 0;
-    _debouncedLoadData();
+    
+    if (_mode == VooDataGridMode.remote) {
+      _debouncedLoadData();
+    } else {
+      loadData();
+    }
   }
 
   /// Clear all filters
@@ -129,7 +361,12 @@ abstract class VooDataGridSource extends ChangeNotifier {
   void changePage(int page) {
     if (page >= 0 && page < totalPages) {
       _currentPage = page;
-      loadData();
+      if (_mode == VooDataGridMode.local || _mode == VooDataGridMode.mixed) {
+        _applyLocalFiltersAndSorts();
+        notifyListeners();
+      } else {
+        loadData();
+      }
     }
   }
 
@@ -137,7 +374,12 @@ abstract class VooDataGridSource extends ChangeNotifier {
   void changePageSize(int size) {
     _pageSize = size;
     _currentPage = 0;
-    loadData();
+    if (_mode == VooDataGridMode.local || _mode == VooDataGridMode.mixed) {
+      _applyLocalFiltersAndSorts();
+      notifyListeners();
+    } else {
+      loadData();
+    }
   }
 
   /// Get total number of pages
@@ -227,25 +469,6 @@ class VooDataFilter {
     required this.value,
     this.valueTo,
   });
-}
-
-/// Filter operators
-enum VooFilterOperator {
-  equals,
-  notEquals,
-  contains,
-  notContains,
-  startsWith,
-  endsWith,
-  greaterThan,
-  greaterThanOrEqual,
-  lessThan,
-  lessThanOrEqual,
-  between,
-  inList,
-  notInList,
-  isNull,
-  isNotNull,
 }
 
 /// Selection mode for data grid

@@ -15,7 +15,7 @@ class SampleDataSource extends VooDataGridSource {
   });
 
   @override
-  Future<VooDataGridResponse> fetchData({
+  Future<VooDataGridResponse> fetchRemoteData({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
