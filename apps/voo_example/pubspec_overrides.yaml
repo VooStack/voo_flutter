@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: voo_telemetry
+# melos_managed_dependency_overrides: voo_telemetry,voo_ui
 dependency_overrides:
   voo_core:
     path: ../../packages/voo_core
@@ -10,3 +10,5 @@ dependency_overrides:
     path: ../../packages/voo_performance
   voo_telemetry:
     path: ../../packages/voo_telemetry
+  voo_ui:
+    path: ../../packages/voo_ui

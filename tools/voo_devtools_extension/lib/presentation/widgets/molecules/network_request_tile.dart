@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/duration_badge.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/status_badge.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/modern_list_tile.dart';
 
 class NetworkRequestTile extends StatelessWidget {
@@ -57,7 +57,7 @@ class NetworkRequestTile extends StatelessWidget {
               if (request.isInProgress) ...[
                 _buildLoadingIndicator(theme),
               ] else if (request.statusCode != null) ...[
-                StatusBadge(statusCode: request.statusCode!, compact: true),
+                VooStatusBadge(statusCode: request.statusCode!, compact: true),
               ] else if (request.error != null) ...[
                 Container(
                   padding: const EdgeInsets.symmetric(

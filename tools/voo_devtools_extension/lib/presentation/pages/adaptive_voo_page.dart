@@ -13,7 +13,7 @@ import 'package:voo_logging_devtools_extension/presentation/pages/logs_tab.dart'
 import 'package:voo_logging_devtools_extension/presentation/pages/network_tab.dart';
 import 'package:voo_logging_devtools_extension/presentation/pages/performance_tab.dart';
 import 'package:voo_logging_devtools_extension/presentation/pages/analytics_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_state_widget.dart';
+import 'package:voo_ui/voo_ui.dart';
 
 class AdaptiveVooPage extends StatefulWidget {
   final Map<String, bool> pluginStatus;
@@ -252,7 +252,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
   Widget _buildNoPluginsView(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: EmptyStateWidget(
+        child: VooEmptyState(
           icon: Icons.extension_off,
           title: 'No Voo Plugins Detected',
           message: 'Initialize Voo plugins in your app to see data here.',

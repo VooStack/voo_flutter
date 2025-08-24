@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_state_widget.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/analytics_list_tile.dart';
 
@@ -33,7 +33,7 @@ class AnalyticsList extends StatelessWidget {
     }
 
     if (events.isEmpty) {
-      return const EmptyStateWidget(
+      return const VooEmptyState(
         icon: Icons.analytics_outlined,
         title: 'No Analytics Events',
         message: 'Analytics events will appear here as they are tracked',

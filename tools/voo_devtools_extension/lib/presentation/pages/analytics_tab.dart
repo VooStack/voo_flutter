@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_list.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_details_panel.dart';
@@ -51,7 +51,7 @@ class _AnalyticsTabState extends State<AnalyticsTab>
       builder: (context, state) => Column(
         children: [
           // Page header
-          PageHeader(
+          VooPageHeader(
             icon: Icons.analytics_outlined,
             title: 'Analytics',
             subtitle: 'User interaction tracking',

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/network_request_tile.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/empty_state_widget.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class NetworkList extends StatelessWidget {
@@ -49,7 +49,7 @@ class NetworkList extends StatelessWidget {
     // Handle new request-based interface
     if (requests != null && onRequestTap != null) {
       if (requests!.isEmpty) {
-        return const EmptyStateWidget(
+        return const VooEmptyState(
           icon: Icons.wifi_off_outlined,
           title: 'No Network Requests',
           message: 'Network requests will appear here when made',
@@ -79,7 +79,7 @@ class NetworkList extends StatelessWidget {
     // Handle legacy log-based interface
     if (logs != null && onLogTap != null) {
       if (logs!.isEmpty) {
-        return const EmptyStateWidget(
+        return const VooEmptyState(
           icon: Icons.wifi_off_outlined,
           title: 'No Network Requests',
           message: 'Network requests will appear here when made',
@@ -105,7 +105,7 @@ class NetworkList extends StatelessWidget {
       );
     }
 
-    return const EmptyStateWidget(
+    return const VooEmptyState(
       icon: Icons.wifi_off_outlined,
       title: 'No Network Requests',
       message: 'Network requests will appear here when made',

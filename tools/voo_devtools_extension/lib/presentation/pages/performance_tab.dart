@@ -4,7 +4,7 @@ import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bl
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/performance_state.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/performance_averages_card.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/performance_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/performance_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/performance_list.dart';
@@ -47,7 +47,7 @@ class _PerformanceTabState extends State<PerformanceTab>
       builder: (context, state) => Column(
         children: [
           // Page header
-          PageHeader(
+          VooPageHeader(
             icon: Icons.speed,
             title: 'Performance',
             subtitle: 'Performance metrics and monitoring',

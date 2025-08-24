@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_example/pages/logging_page.dart';
 import 'package:voo_example/pages/analytics_page.dart';
 import 'package:voo_example/pages/performance_page.dart';
@@ -19,7 +20,7 @@ class HomePage extends StatelessWidget {
         children: [
           _buildHeader(),
           const SizedBox(height: 24),
-          _buildFeatureCard(
+          _buildFeatureVooCard(
             context,
             title: 'Logging',
             description:
@@ -32,7 +33,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildFeatureCard(
+          _buildFeatureVooCard(
             context,
             title: 'Analytics',
             description:
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildFeatureCard(
+          _buildFeatureVooCard(
             context,
             title: 'Performance',
             description:
@@ -58,7 +59,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildFeatureCard(
+          _buildFeatureVooCard(
             context,
             title: 'Network Interceptors',
             description:
@@ -76,7 +77,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    return Card(
+    return VooCard(
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -118,7 +119,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard(
+  Widget _buildFeatureVooCard(
     BuildContext context, {
     required String title,
     required String description,
@@ -126,7 +127,7 @@ class HomePage extends StatelessWidget {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return Card(
+    return VooCard(
       elevation: 2,
       child: InkWell(
         onTap: onTap,

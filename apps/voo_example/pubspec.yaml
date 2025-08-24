@@ -20,6 +20,8 @@ dependencies:
     path: ../../packages/voo_performance
   voo_telemetry:
     path: ../../packages/voo_telemetry
+  voo_ui:
+    path: ../../packages/voo_ui
 
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.1.0

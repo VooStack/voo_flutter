@@ -4,7 +4,7 @@ import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart'
 import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/status_badge.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
 
 class NetworkDetailsPanel extends StatelessWidget {
@@ -61,7 +61,7 @@ class NetworkDetailsPanel extends StatelessWidget {
               children: [
                 MethodBadge(method: method),
                 const SizedBox(width: AppTheme.spacingSm),
-                if (statusCode != null) StatusBadge(statusCode: statusCode),
+                if (statusCode != null) VooStatusBadge(statusCode: statusCode),
                 if (networkRequest.isInProgress) ...[
                   const SizedBox(width: AppTheme.spacingSm),
                   Container(
@@ -229,7 +229,7 @@ class NetworkDetailsPanel extends StatelessWidget {
       title: _getTitle(method, statusCode),
       headerBadges: [
         MethodBadge(method: method),
-        if (statusCode != null) StatusBadge(statusCode: statusCode),
+        if (statusCode != null) VooStatusBadge(statusCode: statusCode),
         if (duration != null) _buildDurationBadge(context, duration),
       ],
       sections: sections,

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/network_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/network_list.dart';
@@ -46,7 +46,7 @@ class _NetworkTabState extends State<NetworkTab>
       builder: (context, state) => Column(
         children: [
           // Page header
-          PageHeader(
+          VooPageHeader(
             icon: Icons.wifi,
             title: 'Network',
             subtitle: 'Network request monitoring',

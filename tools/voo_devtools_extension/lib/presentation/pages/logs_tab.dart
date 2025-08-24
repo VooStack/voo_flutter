@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/page_header.dart';
+import 'package:voo_ui/voo_ui.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
 import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logs_list.dart';
@@ -57,7 +57,7 @@ class _LogsTabState extends State<LogsTab> with AutomaticKeepAliveClientMixin {
       builder: (context, state) => Column(
         children: [
           // Page header
-          PageHeader(
+          VooPageHeader(
             icon: Icons.list_alt,
             title: 'Logging',
             subtitle: 'Application logs and debugging',
