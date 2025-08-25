@@ -16,7 +16,7 @@ CLAUDE.md
 # dotenv environment variables file
 .env*
 .claude
-
+*/tasks
 # Avoid committing generated Javascript files:
 *.dart.js
 *.info.json      # Produced by the --dump-info flag.
