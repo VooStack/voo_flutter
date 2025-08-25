@@ -1,5 +1,14 @@
 ## 0.1.3
 
+ - **FEAT**: Add comprehensive remote filtering support with 5 API standards for VooDataGrid
+ - **FEAT**: Add StandardApiRequestBuilder supporting Simple REST, JSON:API, OData, MongoDB/Elasticsearch, and Custom formats
+ - **FEAT**: Add DataGridRequestBuilder utility for creating standardized JSON requests for remote operations
+ - **FEAT**: Add interactive example demonstrating all API filtering standards with live request preview
+ - **FEAT**: Add support for complex filter operators (equals, not equals, contains, between, in list, greater than, etc.)
+ - **FEAT**: Add support for multi-column sorting with ascending/descending directions
+ - **FEAT**: Add flexible pagination support (page/pageSize and offset/limit)
+ - **FEAT**: Add query parameter builder for GET requests and JSON body builder for POST requests
+ - **FEAT**: Add response parser utility for handling various API response formats
  - **FEAT**: add preview page for date and time picker components.
  - **FEAT**: add Material 3 compliant time picker and related components.
  - **FEAT**: Add VooDateTimePicker and calendar previews.

@@ -359,6 +359,290 @@ controller.selectDate(date);
 controller.setSelectionMode(VooCalendarSelectionMode.multiple);
 ```
 
+## 📊 Data Grid Remote Filtering
+
+### API Standards Support
+
+VooDataGrid supports **5 different API filtering standards** out of the box, making it compatible with virtually any backend:
+
+1. **Simple REST** - Basic query parameters (most common)
+2. **JSON:API** - Modern REST standard (used by GitHub, Stripe)
+3. **OData** - Microsoft enterprise standard
+4. **MongoDB/Elasticsearch** - NoSQL query DSL
+5. **Custom** - Flexible custom format
+
+### How Requests Look for Each Standard
+
+#### 1. Simple REST
+```http
+GET /api/users?page=0&limit=20&status=active&age_gt=25&department_in=engineering,design&salary_from=50000&salary_to=100000&sort=name,-createdAt
+```
+
+#### 2. JSON:API Standard
+```http
+GET /api/users?page[number]=1&page[size]=20&filter[status]=active&filter[age][gt]=25&filter[department][in]=engineering,design&filter[salary][between]=50000,100000&sort=name,-createdAt
+```
+
+#### 3. OData Standard
+```http
+GET /api/users?$top=20&$skip=0&$filter=status eq 'active' and age gt 25 and (department eq 'engineering' or department eq 'design') and (salary ge 50000 and salary le 100000)&$orderby=name asc,createdAt desc
+```
+
+#### 4. MongoDB/Elasticsearch Style (POST)
+```json
+POST /api/users/search
+{
+  "from": 0,
+  "size": 20,
+  "query": {
+    "bool": {
+      "must": [
+        { "term": { "status": "active" } },
+        { "range": { "age": { "gt": 25 } } },
+        { "terms": { "department": ["engineering", "design"] } },
+        { "range": { "salary": { "gte": 50000, "lte": 100000 } } }
+      ]
+    }
+  },
+  "sort": [
+    { "name": { "order": "asc" } },
+    { "createdAt": { "order": "desc" } }
+  ]
+}
+```
+
+#### 5. Custom Format (Default)
+```json
+POST /api/users
+{
+  "pagination": {
+    "page": 0,
+    "pageSize": 20,
+    "offset": 0,
+    "limit": 20
+  },
+  "filters": [
+    { "field": "status", "operator": "eq", "value": "active" },
+    { "field": "age", "operator": "gt", "value": 25 },
+    { "field": "department", "operator": "in", "values": ["engineering", "design"] },
+    { "field": "salary", "operator": "between", "value": 50000, "valueTo": 100000 }
+  ],
+  "sorts": [
+    { "field": "name", "direction": "asc" },
+    { "field": "createdAt", "direction": "desc" }
+  ]
+}
+```
+
+### Using the Standard API Request Builder
+
+#### Basic Usage
+
+```dart
+import 'package:voo_ui/voo_ui.dart';
+
+// Build complete request body for POST requests
+final requestBody = DataGridRequestBuilder.buildRequestBody(
+  page: 0,
+  pageSize: 20,
+  filters: {
+    'status': VooDataFilter(
+      operator: VooFilterOperator.equals,
+      value: 'active',
+    ),
+    'created': VooDataFilter(
+      operator: VooFilterOperator.greaterThan,
+      value: DateTime(2024, 1, 1),
+    ),
+  },
+  sorts: [
+    VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+    VooColumnSort(field: 'created', direction: VooSortDirection.descending),
+  ],
+  additionalParams: {
+    'includeDeleted': false,
+    'expand': ['profile', 'permissions'],
+  },
+);
+
+// This generates:
+// {
+//   "pagination": {
+//     "page": 0,
+//     "pageSize": 20,
+//     "offset": 0,
+//     "limit": 20
+//   },
+//   "filters": [
+//     {
+//       "field": "status",
+//       "operator": "eq",
+//       "value": "active"
+//     },
+//     {
+//       "field": "created",
+//       "operator": "gt",
+//       "value": "2024-01-01T00:00:00.000"
+//     }
+//   ],
+//   "sorts": [
+//     {"field": "name", "direction": "asc"},
+//     {"field": "created", "direction": "desc"}
+//   ],
+//   "metadata": {
+//     "includeDeleted": false,
+//     "expand": ["profile", "permissions"]
+//   }
+// }
+```
+
+#### Query Parameters for GET Requests
+
+```dart
+// Build query parameters for GET requests
+final queryParams = DataGridRequestBuilder.buildQueryParams(
+  page: 0,
+  pageSize: 20,
+  filters: filters,
+  sorts: sorts,
+);
+
+// Use with your HTTP client
+final response = await http.get(
+  Uri.parse('https://api.example.com/users').replace(
+    queryParameters: queryParams,
+  ),
+);
+```
+
+#### Custom Remote Data Source
+
+```dart
+class UserDataSource extends VooDataGridSource {
+  final Dio dio;
+  final String apiEndpoint;
+
+  UserDataSource({
+    required this.dio,
+    required this.apiEndpoint,
+  }) : super(mode: VooDataGridMode.remote);
+
+  @override
+  Future<VooDataGridResponse> fetchRemoteData({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+  }) async {
+    // Build request using the utility
+    final requestBody = DataGridRequestBuilder.buildRequestBody(
+      page: page,
+      pageSize: pageSize,
+      filters: filters,
+      sorts: sorts,
+    );
+
+    // Make API call
+    final response = await dio.post(
+      apiEndpoint,
+      data: requestBody,
+    );
+
+    // Parse response using the utility
+    return DataGridRequestBuilder.parseResponse(
+      json: response.data,
+      dataKey: 'users',      // Key containing array of records
+      totalKey: 'totalCount', // Key containing total count
+      pageKey: 'currentPage', // Optional: page number in response
+      pageSizeKey: 'pageSize', // Optional: page size in response
+    );
+  }
+}
+```
+
+#### Filter Operators
+
+The request builder supports all standard filter operators with API-friendly string representations:
+
+| Operator | API String | Usage |
+|----------|------------|-------|
+| equals | `eq` | Exact match |
+| notEquals | `ne` | Not equal |
+| contains | `contains` | Text contains |
+| notContains | `not_contains` | Text doesn't contain |
+| startsWith | `starts_with` | Text starts with |
+| endsWith | `ends_with` | Text ends with |
+| greaterThan | `gt` | Greater than |
+| greaterThanOrEqual | `gte` | Greater than or equal |
+| lessThan | `lt` | Less than |
+| lessThanOrEqual | `lte` | Less than or equal |
+| between | `between` | Range (requires `valueTo`) |
+| inList | `in` | Value in list |
+| notInList | `not_in` | Value not in list |
+| isNull | `is_null` | Is null |
+| isNotNull | `is_not_null` | Is not null |
+
+#### Complete Example with Error Handling
+
+```dart
+class ProductDataSource extends VooDataGridSource {
+  final String baseUrl = 'https://api.example.com';
+  final Dio dio;
+
+  ProductDataSource({required this.dio}) : super(mode: VooDataGridMode.remote);
+
+  @override
+  Future<VooDataGridResponse> fetchRemoteData({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+  }) async {
+    try {
+      // Build request
+      final requestBody = DataGridRequestBuilder.buildRequestBody(
+        page: page,
+        pageSize: pageSize,
+        filters: filters,
+        sorts: sorts,
+        additionalParams: {
+          'timestamp': DateTime.now().millisecondsSinceEpoch,
+        },
+      );
+
+      // Make API call with proper headers
+      final response = await dio.post(
+        '$baseUrl/products/search',
+        data: requestBody,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      // Parse and return response
+      return DataGridRequestBuilder.parseResponse(
+        json: response.data,
+        dataKey: 'products',
+        totalKey: 'total',
+      );
+    } on DioException catch (e) {
+      // Handle API errors
+      print('API Error: ${e.message}');
+      return const VooDataGridResponse(
+        rows: [],
+        totalRows: 0,
+        page: 0,
+        pageSize: 20,
+      );
+    }
+  }
+}
+```
+
 ## 📊 Data Grid Examples
 
 ### Responsive Data Grid

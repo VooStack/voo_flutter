@@ -50,6 +50,10 @@ export 'src/data/data_grid_column.dart';
 export 'src/data/data_grid_controller.dart';
 export 'src/data/data_grid_source.dart';
 
+// Data Grid Utils
+export 'src/utils/data_grid_request_builder.dart';
+export 'src/utils/data_grid_api_standards.dart';
+
 // Widget Previews
 export 'src/previews/app_previews.dart';
 export 'src/previews/calendar_previews.dart';
