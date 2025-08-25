@@ -1,3 +1,15 @@
+## 0.1.2
+
+* Fixed all failing widget tests for comprehensive test coverage
+* Fixed Radio widget API deprecation issues in tests
+* Fixed animation timeout issues in progress indicator tests  
+* Fixed CustomPaint widget expectations in progress ring tests
+* Fixed slider value display formatting in tests (decimal precision)
+* Fixed VooCardSkeletonLoader layout overflow issues
+* Updated test helpers to properly handle continuously animating widgets
+* Improved test stability and reliability across all UI components
+* No breaking changes to public APIs
+
 ## 0.1.1
 
 * Updated changelog format to match other packages' standard format
