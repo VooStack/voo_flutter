@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_ui/voo_ui.dart';
 import 'data_grid_example.dart';
+import 'calendar_example.dart';
 import 'components_gallery.dart';
 import 'design_system_demo.dart';
 
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const ComponentsGallery(),
+    const CalendarExample(),
     const DataGridExample(),
     const DesignSystemDemo(),
   ];
@@ -41,6 +43,11 @@ class _HomePageState extends State<HomePage> {
       icon: Icon(Icons.widgets_outlined),
       selectedIcon: Icon(Icons.widgets),
       label: 'Components',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.calendar_month_outlined),
+      selectedIcon: Icon(Icons.calendar_month),
+      label: 'Calendar',
     ),
     NavigationDestination(
       icon: Icon(Icons.table_chart_outlined),

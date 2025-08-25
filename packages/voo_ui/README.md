@@ -25,6 +25,24 @@ A comprehensive Flutter UI component library built with Material 3 design princi
 - **Frozen Columns**: Keep important columns visible while scrolling
 - **Custom Cell Rendering**: Full control over cell appearance and behavior
 - **Performance Optimized**: Efficient rendering for large datasets
+- **Responsive Design**: Automatic adaptation for mobile, tablet, and desktop screens
+- **Mobile Card View**: Beautiful card-based layout for mobile devices
+- **Priority Columns**: Smart column visibility based on screen size
+- **Mobile Filter Bottom Sheet**: Material Design 3 modal bottom sheet for filters on mobile/tablet
+- **Filter Chips**: Visual representation of active filters with easy removal
+- **Responsive Filter UI**: Inline filters on desktop, bottom sheet on mobile/tablet
+- **Touch-Optimized**: Large tap targets and mobile-friendly controls
+
+### 📅 Advanced Calendar
+- **Five View Modes**: Month, Week, Day, Year, and Schedule views
+- **Flexible Selection**: Single, multiple, or range date selection
+- **Event Management**: Add, display, and interact with calendar events
+- **Custom Builders**: Full control over day and event rendering
+- **Integrated Picker**: Date/time picker with field and inline modes
+- **Material 3 Theme**: Follows Material Design 3 principles
+- **Swipe Navigation**: Intuitive gesture-based navigation
+- **Responsive Design**: Adapts to different screen sizes
+- **Localization Ready**: Works with intl package for date formatting
 
 ### 🧩 Component Library
 
@@ -40,6 +58,8 @@ A comprehensive Flutter UI component library built with Material 3 design princi
 - **VooButton**: Multiple variants (elevated, outlined, text, tonal)
 - **VooDropdown**: Enhanced dropdown with icons and subtitles
 - **VooSearchBar**: Material 3 search bar with clear action
+- **VooCalendar**: Highly customizable calendar with multiple views
+- **VooDateTimePicker**: Material 3 date and time picker with calendar integration
 
 #### Display Components
 - **VooCard**: Material 3 cards with interaction states
@@ -114,7 +134,313 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+## 📅 Calendar Widget
+
+### Overview
+
+The VooCalendar is a highly customizable Material 3 calendar widget with multiple view modes, event support, and date selection capabilities.
+
+### Features
+
+- **Multiple Views**: Month, Week, Day, Year, and Schedule views
+- **Selection Modes**: Single date, multiple dates, or date range selection
+- **Event Support**: Display and manage events with custom styling
+- **Customizable Theme**: Full control over colors, text styles, and appearance
+- **Responsive Design**: Adapts to different screen sizes
+- **Swipe Navigation**: Navigate between periods with swipe gestures
+- **Date/Time Picker**: Integrated picker for forms and inputs
+
+### Basic Calendar Example
+
+```dart
+import 'package:voo_ui/voo_ui.dart';
+
+class CalendarExample extends StatefulWidget {
+  @override
+  State<CalendarExample> createState() => _CalendarExampleState();
+}
+
+class _CalendarExampleState extends State<CalendarExample> {
+  late VooCalendarController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VooCalendarController(
+      initialDate: DateTime.now(),
+      initialView: VooCalendarView.month,
+      selectionMode: VooCalendarSelectionMode.single,
+    );
+    
+    // Add sample events
+    _controller.addEvent(
+      VooCalendarEvent(
+        id: '1',
+        title: 'Team Meeting',
+        description: 'Weekly sync with the team',
+        startTime: DateTime.now().add(Duration(days: 2, hours: 10)),
+        endTime: DateTime.now().add(Duration(days: 2, hours: 11)),
+        color: Colors.blue,
+        icon: Icons.group,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VooCalendar(
+      controller: _controller,
+      availableViews: [
+        VooCalendarView.month,
+        VooCalendarView.week,
+        VooCalendarView.day,
+        VooCalendarView.year,
+        VooCalendarView.schedule,
+      ],
+      onDateSelected: (date) {
+        print('Selected date: $date');
+      },
+      onEventTap: (event) {
+        print('Tapped event: ${event.title}');
+      },
+    );
+  }
+}
+```
+
+### Date Range Selection
+
+```dart
+VooCalendar(
+  controller: VooCalendarController(
+    selectionMode: VooCalendarSelectionMode.range,
+  ),
+  onRangeSelected: (start, end) {
+    if (start != null && end != null) {
+      print('Selected range: $start to $end');
+    }
+  },
+)
+```
+
+### Custom Day Builder
+
+```dart
+VooCalendar(
+  dayBuilder: (context, date, isSelected, isToday, isOutsideMonth, events) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.blue : null,
+        border: isToday ? Border.all(color: Colors.red, width: 2) : null,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Stack(
+        children: [
+          Center(
+            child: Text(
+              date.day.toString(),
+              style: TextStyle(
+                color: isSelected ? Colors.white : null,
+                fontWeight: isToday ? FontWeight.bold : null,
+              ),
+            ),
+          ),
+          if (events.isNotEmpty)
+            Positioned(
+              bottom: 4,
+              right: 4,
+              child: Container(
+                padding: EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  events.length.toString(),
+                  style: TextStyle(fontSize: 10, color: Colors.white),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  },
+)
+```
+
+### Date/Time Picker
+
+```dart
+// Date picker field
+VooDateTimePicker(
+  mode: VooDateTimePickerMode.date,
+  labelText: 'Select Date',
+  onDateTimeChanged: (dateTime) {
+    print('Selected: $dateTime');
+  },
+)
+
+// Time picker field
+VooDateTimePicker(
+  mode: VooDateTimePickerMode.time,
+  labelText: 'Select Time',
+  use24HourFormat: true,
+  onDateTimeChanged: (dateTime) {
+    print('Selected time: ${dateTime?.hour}:${dateTime?.minute}');
+  },
+)
+
+// Date and time picker
+VooDateTimePicker(
+  mode: VooDateTimePickerMode.dateTime,
+  labelText: 'Select Date & Time',
+  onDateTimeChanged: (dateTime) {
+    print('Selected: $dateTime');
+  },
+)
+
+// Date range picker
+VooDateTimePicker(
+  mode: VooDateTimePickerMode.dateRange,
+  labelText: 'Select Date Range',
+  onDateRangeChanged: (range) {
+    print('Selected range: ${range?.start} to ${range?.end}');
+  },
+)
+
+// Inline calendar
+VooDateTimePicker(
+  mode: VooDateTimePickerMode.date,
+  isInline: true,
+  onDateTimeChanged: (dateTime) {
+    print('Selected: $dateTime');
+  },
+)
+```
+
+### Custom Theme
+
+```dart
+VooCalendar(
+  theme: VooCalendarTheme(
+    backgroundColor: Colors.grey.shade900,
+    headerBackgroundColor: Colors.black,
+    selectedDayBackgroundColor: Colors.orange,
+    todayBackgroundColor: Colors.orange.shade200,
+    eventIndicatorColor: Colors.green,
+    // ... more customization options
+  ),
+)
+```
+
+### Calendar Controller API
+
+```dart
+final controller = VooCalendarController();
+
+// Navigate periods
+controller.nextPeriod();
+controller.previousPeriod();
+controller.goToToday();
+
+// Change views
+controller.setView(VooCalendarView.week);
+
+// Manage events
+controller.addEvent(event);
+controller.removeEvent(eventId);
+controller.setEvents(eventsList);
+
+// Get events for a date
+final events = controller.getEventsForDate(DateTime.now());
+
+// Selection
+controller.selectDate(date);
+controller.setSelectionMode(VooCalendarSelectionMode.multiple);
+```
+
 ## 📊 Data Grid Examples
+
+### Responsive Data Grid
+
+The data grid automatically adapts to different screen sizes:
+
+```dart
+VooDataGrid(
+  controller: _controller,
+  displayMode: VooDataGridDisplayMode.auto, // Automatically switches between table and card view
+  mobilePriorityColumns: ['name', 'email', 'status'], // Columns to show on mobile
+  cardBuilder: (context, row, index) { // Optional custom card builder for mobile
+    return Card(
+      child: ListTile(
+        title: Text(row['name']),
+        subtitle: Text(row['email']),
+        trailing: StatusBadge(status: row['status']),
+      ),
+    );
+  },
+  onRowTap: (row) {
+    // On mobile, shows bottom sheet; on desktop, shows dialog
+    if (MediaQuery.of(context).size.width < 600) {
+      _showMobileDetails(context, row);
+    } else {
+      _showDesktopDetails(context, row);
+    }
+  },
+)
+```
+
+### Display Modes
+
+```dart
+// Force specific display mode
+VooDataGrid(
+  controller: _controller,
+  displayMode: VooDataGridDisplayMode.cards, // Always show as cards
+  // or VooDataGridDisplayMode.table for always table
+  // or VooDataGridDisplayMode.auto for responsive
+)
+```
+
+### Mobile Filters
+
+The data grid uses Material Design 3 patterns for filters on different screen sizes:
+
+**Mobile (< 600px):**
+- Filters open in a **modal bottom sheet**
+- Active filters shown as **chips** below toolbar
+- Touch-friendly controls with large tap targets
+- Apply/Cancel buttons for batch filtering
+
+**Tablet (600-900px):**
+- Filters also use bottom sheet for consistency
+- More columns visible than mobile
+- Filter chips show active filters
+
+**Desktop (> 900px):**
+- **Inline filter row** below headers
+- Real-time filtering as you type
+- All columns visible
+
+```dart
+// The data grid automatically handles filters based on screen size
+VooDataGrid(
+  controller: _controller,
+  // No special configuration needed - filters adapt automatically!
+)
+
+// Access filters programmatically
+controller.dataSource.applyFilter(
+  'status',
+  VooDataFilter(
+    operator: VooFilterOperator.equals,
+    value: 'active',
+  ),
+);
+
+// Clear all filters
+controller.dataSource.clearFilters();
+```
 
 ### Basic Data Grid
 

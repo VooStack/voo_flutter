@@ -4,6 +4,135 @@ import 'package:voo_ui/src/data/data_grid.dart';
 import 'package:voo_ui/src/foundations/design_system.dart';
 import 'package:voo_ui/src/inputs/dropdown.dart';
 
+/// Mobile-optimized pagination controls for VooDataGrid
+class VooDataGridMobilePagination extends StatelessWidget {
+  final int currentPage;
+  final int totalPages;
+  final int pageSize;
+  final int totalRows;
+  final void Function(int page) onPageChanged;
+  final void Function(int pageSize) onPageSizeChanged;
+  final VooDataGridTheme theme;
+  final List<int> pageSizeOptions;
+
+  const VooDataGridMobilePagination({
+    super.key,
+    required this.currentPage,
+    required this.totalPages,
+    required this.pageSize,
+    required this.totalRows,
+    required this.onPageChanged,
+    required this.onPageSizeChanged,
+    required this.theme,
+    this.pageSizeOptions = const [10, 20, 50, 100],
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final design = context.vooDesign;
+    final startRow = currentPage * pageSize + 1;
+    final endRow = ((currentPage + 1) * pageSize).clamp(0, totalRows);
+
+    return Container(
+      padding: EdgeInsets.all(design.spacingMd),
+      decoration: BoxDecoration(
+        color: theme.headerBackgroundColor,
+        border: Border(
+          top: BorderSide(
+            color: theme.borderColor,
+            width: theme.borderWidth,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Row info and page size selector
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '$startRow-$endRow of $totalRows',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              PopupMenuButton<int>(
+                onSelected: onPageSizeChanged,
+                itemBuilder: (context) => pageSizeOptions
+                    .map((size) => PopupMenuItem(
+                          value: size,
+                          child: Text('$size rows per page'),
+                        ))
+                    .toList(),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacingMd,
+                    vertical: design.spacingXs,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: theme.borderColor),
+                    borderRadius: BorderRadius.circular(design.radiusSm),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '$pageSize rows',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const Icon(Icons.arrow_drop_down, size: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: design.spacingMd),
+          // Navigation controls
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.first_page),
+                onPressed: currentPage > 0 ? () => onPageChanged(0) : null,
+                tooltip: 'First',
+              ),
+              IconButton(
+                icon: const Icon(Icons.chevron_left),
+                onPressed: currentPage > 0
+                    ? () => onPageChanged(currentPage - 1)
+                    : null,
+                tooltip: 'Previous',
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
+                child: Text(
+                  '${currentPage + 1} / $totalPages',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.chevron_right),
+                onPressed: currentPage < totalPages - 1
+                    ? () => onPageChanged(currentPage + 1)
+                    : null,
+                tooltip: 'Next',
+              ),
+              IconButton(
+                icon: const Icon(Icons.last_page),
+                onPressed: currentPage < totalPages - 1
+                    ? () => onPageChanged(totalPages - 1)
+                    : null,
+                tooltip: 'Last',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Pagination controls for VooDataGrid
 class VooDataGridPagination extends StatelessWidget {
   final int currentPage;

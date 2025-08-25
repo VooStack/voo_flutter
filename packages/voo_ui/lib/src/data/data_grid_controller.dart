@@ -120,6 +120,20 @@ class VooDataGridController extends ChangeNotifier {
     }
   }
 
+  /// Set visible columns for responsive behavior
+  void setVisibleColumns(List<VooDataColumn> visibleColumns) {
+    for (var column in _columns) {
+      final shouldBeVisible = visibleColumns.any((col) => col.field == column.field);
+      if (column.visible != shouldBeVisible) {
+        final index = _columns.indexWhere((col) => col.field == column.field);
+        if (index >= 0) {
+          _columns[index] = _columns[index].copyWith(visible: shouldBeVisible);
+        }
+      }
+    }
+    notifyListeners();
+  }
+
   /// Resize column
   void resizeColumn(String field, double width) {
     _columnWidths[field] = width;
