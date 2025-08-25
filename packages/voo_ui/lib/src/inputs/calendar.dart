@@ -259,9 +259,7 @@ class VooCalendarController extends ChangeNotifier {
     } else if (_selectionMode == VooCalendarSelectionMode.range && _dragStartDate != null && _dragEndDate != null) {
       final start = _dragStartDate!.isBefore(_dragEndDate!) ? _dragStartDate! : _dragEndDate!;
       final end = _dragStartDate!.isBefore(_dragEndDate!) ? _dragEndDate! : _dragStartDate!;
-      return date.isAtSameMomentAs(start) || 
-             date.isAtSameMomentAs(end) || 
-             (date.isAfter(start) && date.isBefore(end));
+      return date.isAtSameMomentAs(start) || date.isAtSameMomentAs(end) || (date.isAfter(start) && date.isBefore(end));
     }
 
     return false;
@@ -536,9 +534,9 @@ class _VooCalendarState extends State<VooCalendar> {
     }
 
     // Determine padding based on screen size
-    final contentPadding = isDesktop 
+    final contentPadding = isDesktop
         ? EdgeInsets.all(design.spacingLg)
-        : isTablet 
+        : isTablet
             ? EdgeInsets.all(design.spacingMd)
             : EdgeInsets.all(design.spacingSm);
 

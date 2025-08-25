@@ -3,11 +3,13 @@ export 'src/app/voo_material_app.dart';
 
 // Display
 export 'src/display/card.dart';
+export 'src/display/chip.dart';
 export 'src/display/list_tile.dart';
 export 'src/display/timestamp_text.dart';
 
 // Feedback
 export 'src/feedback/empty_state.dart';
+export 'src/feedback/progress_indicators.dart';
 export 'src/feedback/status_badge.dart';
 
 // Foundations
@@ -24,9 +26,14 @@ export 'src/inputs/button.dart';
 export 'src/inputs/calendar.dart';
 export 'src/inputs/calendar_theme.dart';
 export 'src/inputs/calendar_views.dart';
+export 'src/inputs/checkbox.dart';
 export 'src/inputs/date_time_picker.dart';
 export 'src/inputs/dropdown.dart';
+export 'src/inputs/radio.dart';
 export 'src/inputs/search_bar.dart';
+export 'src/inputs/segmented_button.dart';
+export 'src/inputs/slider.dart';
+export 'src/inputs/switch.dart';
 export 'src/inputs/text_field.dart';
 export 'src/inputs/time_picker.dart';
 
