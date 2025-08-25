@@ -1,3 +1,37 @@
+## 0.4.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: remove deprecated performance sync entity and update plugin structure.
+ - **REFACTOR**: Update logging package version to 0.0.7, enhance build scripts, and improve .pubignore.
+ - **REFACTOR**: Update logging package configuration and remove unused web assets.
+ - **REFACTOR**: Remove unused DevTools extension code and update logging scripts.
+ - **REFACTOR**: Move devtools extension widgets and logic to a dedicated package.
+ - **FIX**: Update cSpell configuration to include 'devstack'; adjust logging.dart for directive ordering.
+ - **FEAT**: Refactor network list and performance list to use new empty state widget.
+ - **FEAT**: Refactor NetworkList to support both log and request models.
+ - **FEAT**: Update changelogs for voo_analytics, voo_core, voo_logging, and voo_performance packages to reflect deprecation and migration to voo_telemetry.
+ - **FEAT**: Enhance topics in pubspec.yaml files for voo_analytics, voo_core, voo_logging, voo_performance, and voo_telemetry packages.
+ - **FEAT**: Add comprehensive test suite and configuration for VooTelemetry package.
+ - **FEAT**: Update package versions and descriptions; enhance import statements for consistency.
+ - **FEAT**: Add DevStack integration guide and example app; enhance telemetry configuration and logging features.
+ - **FEAT**: Enhance logging configuration with enableDevToolsJson option; update LogSyncEntity and SyncStorage for improved functionality.
+ - **FEAT**: Implement cloud sync functionality for analytics, logging, and performance data; add SyncEntity and CloudSyncManager classes; update version to 0.1.0.
+ - **FEAT**: Add pretty logging feature with customizable formatting options; enhance logging configuration and examples.
+ - **FEAT**: Implement route-aware touch tracking and heat map visualization; enhance analytics data collection and UI components.
+ - **FEAT**: Integrate Voo Analytics and Performance tracking; add example pages for analytics and performance metrics.
+ - **FEAT**: Enhance Voo DevTools extension with heat map visualization and analytics improvements.
+ - **FEAT**: Update package versions and enhance analytics, performance, and logging functionalities.
+ - **FEAT**: Add analytics tracking and UI components to Voo DevTools extension.
+ - **FEAT**: Add VooFlutter example app with integration and widget tests.
+ - **FEAT**: Add logs and network details panels for improved logging functionality.
+ - **FEAT**: Add new Melos run configurations for logging and testing, and update scripts in melos.yaml.
+ - **FEAT**: Update version to 0.0.15 and improve CHANGELOG with formatting enhancements for better readability.
+ - **FEAT**: Update CHANGELOG for version 0.0.14 with breaking changes and enhancements, add Dio example, and improve interceptor logging.
+ - **FEAT**: Update version to 0.0.13 and enhance CHANGELOG with new features for network and performance monitoring.
+ - **FEAT**: Add network and performance tabs to VooLoggerPage.
+ - **BREAKING** **FEAT**(voo_telemetry): Complete OpenTelemetry migration for VooFlutter.
+
 ## 0.3.0
 
 * Added WASM support for web platform

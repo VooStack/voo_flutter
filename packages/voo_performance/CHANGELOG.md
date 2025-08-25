@@ -1,3 +1,28 @@
+## 0.4.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: remove deprecated performance sync entity and update plugin structure.
+ - **REFACTOR**: Remove obsolete integration and widget tests; streamline HeatMapData and VooPerformance initialization.
+ - **FEAT**: Refactor network list and performance list to use new empty state widget.
+ - **FEAT**: Refactor NetworkList to support both log and request models.
+ - **FEAT**: Update changelogs for voo_analytics, voo_core, voo_logging, and voo_performance packages to reflect deprecation and migration to voo_telemetry.
+ - **FEAT**: Enhance topics in pubspec.yaml files for voo_analytics, voo_core, voo_logging, voo_performance, and voo_telemetry packages.
+ - **FEAT**: Add comprehensive test suite and configuration for VooTelemetry package.
+ - **FEAT**: Update package versions and descriptions; enhance import statements for consistency.
+ - **FEAT**: Add cloud sync support for analytics and performance metrics; enhance VooAnalytics and VooPerformance plugins; update CHANGELOGs and tests.
+ - **FEAT**: Implement cloud sync functionality for analytics, logging, and performance data; add SyncEntity and CloudSyncManager classes; update version to 0.1.0.
+ - **FEAT**: Enhance package description and add additional metadata in pubspec.yaml.
+ - **FEAT**: Update dependencies in pubspec.yaml; add dio package and remove duplicate entry.
+ - **FEAT**: Add license files and update package versions to 0.0.1 for voo_core, voo_analytics, and voo_performance.
+ - **FEAT**: Integrate Voo Analytics and Performance tracking; add example pages for analytics and performance metrics.
+ - **FEAT**: Enhance Voo DevTools extension with heat map visualization and analytics improvements.
+ - **FEAT**: Update package versions and enhance analytics, performance, and logging functionalities.
+ - **FEAT**: Add analytics tracking and UI components to Voo DevTools extension.
+ - **FEAT**: Add VooFlutter example app with integration and widget tests.
+ - **FEAT**: Add logs and network details panels for improved logging functionality.
+ - **BREAKING** **FEAT**(voo_telemetry): Complete OpenTelemetry migration for VooFlutter.
+
 ## 0.3.0
 
 * Added WASM support for web platform

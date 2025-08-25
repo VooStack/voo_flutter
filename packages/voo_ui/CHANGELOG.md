@@ -1,3 +1,18 @@
+## 0.1.3
+
+ - **FEAT**: add preview page for date and time picker components.
+ - **FEAT**: add Material 3 compliant time picker and related components.
+ - **FEAT**: Add VooDateTimePicker and calendar previews.
+ - **FEAT**: Integrate voo_ui package and replace custom components with Voo equivalents.
+ - **FEAT**: Add design system demo and main application structure.
+ - **FEAT**: Refactor VooTextField to use OutlineInputBorder and improve error handling.
+ - **FEAT**: Enhance VooDataGrid with advanced filtering and sorting capabilities.
+ - **FEAT**: Initialize macOS Flutter project structure.
+ - **FEAT**: Add widget previews for Voo UI components and enhance design system customization.
+ - **FEAT**: Enhance README with updated descriptions and quick start guide for VooDesignSystem and components.
+ - **FEAT**: Add VooDropdown, VooTextField, VooContainer, and VooAppBar components.
+ - **FEAT**: Create voo_ui package with atomic design components.
+
 ## 0.1.2
 
 * Fixed all failing widget tests for comprehensive test coverage

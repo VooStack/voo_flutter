@@ -1,3 +1,17 @@
+## 0.2.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: remove deprecated performance sync entity and update plugin structure.
+ - **FEAT**: Update cSpell words in settings, increment version to 0.3.2, and refactor network_bloc for improved readability.
+ - **FEAT**: Refactor network list and performance list to use new empty state widget.
+ - **FEAT**: Refactor NetworkList to support both log and request models.
+ - **FEAT**: Update changelogs for voo_analytics, voo_core, voo_logging, and voo_performance packages to reflect deprecation and migration to voo_telemetry.
+ - **FEAT**: Enhance topics in pubspec.yaml files for voo_analytics, voo_core, voo_logging, voo_performance, and voo_telemetry packages.
+ - **FEAT**: Add comprehensive test suite and configuration for VooTelemetry package.
+ - **FEAT**: Update package versions and descriptions; enhance import statements for consistency.
+ - **BREAKING** **FEAT**(voo_telemetry): Complete OpenTelemetry migration for VooFlutter.
+
 # Changelog
 
 ## [0.1.0] - 2024-08-20
