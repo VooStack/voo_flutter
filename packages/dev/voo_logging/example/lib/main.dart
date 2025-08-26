@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:dio/dio.dart';
+import 'package:voo_core/voo_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Initialize Voo Core first
+  await Voo.initializeApp(
+    options: const VooOptions(
+      appName: 'VooLoggingExample',
+      autoRegisterPlugins: true,
+    ),
+  );
+  
   // Initialize VooLogging
-  await VooLogging.instance.initialize(
+  await VooLogger.initialize(
     appName: 'VooLoggingExample',
-    enableNetworkLogging: true,
-    enableDevToolsIntegration: true,
-    maxStorageSize: 10 * 1024 * 1024, // 10 MB
+    minimumLevel: LogLevel.verbose,
+    config: const LoggingConfig(
+      enablePrettyLogs: true,
+      showEmojis: true,
+      showTimestamp: true,
+      showColors: true,
+      enabled: true,
+    ),
   );
   
   runApp(const MyApp());
@@ -40,7 +54,6 @@ class LoggingDemoScreen extends StatefulWidget {
 }
 
 class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
-  final logger = VooLogger('ExampleApp');
   late final Dio dio;
   List<LogEntry> recentLogs = [];
   
@@ -50,10 +63,10 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
     
     // Set up Dio with VooLogging interceptor
     dio = Dio();
-    dio.interceptors.add(VooLogging.instance.dioInterceptor);
+    // Note: Add dio interceptor if available in VooLogging
     
     // Listen to log stream
-    VooLogging.instance.logStream.listen((log) {
+    VooLogger.instance.stream.listen((log) {
       setState(() {
         recentLogs.insert(0, log);
         if (recentLogs.length > 20) {
@@ -63,20 +76,24 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
     });
   }
   
+  void _logVerbose() {
+    VooLogger.verbose('This is a verbose message');
+  }
+  
   void _logDebug() {
-    logger.debug('This is a debug message');
+    VooLogger.debug('This is a debug message');
   }
   
   void _logInfo() {
-    logger.info('This is an info message');
+    VooLogger.info('This is an info message');
   }
   
   void _logWarning() {
-    logger.warning('This is a warning message');
+    VooLogger.warning('This is a warning message');
   }
   
   void _logError() {
-    logger.error('This is an error message', 
+    VooLogger.error('This is an error message', 
       error: Exception('Sample exception'),
       stackTrace: StackTrace.current,
     );
@@ -85,14 +102,14 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
   Future<void> _makeNetworkRequest() async {
     try {
       await dio.get('https://jsonplaceholder.typicode.com/posts/1');
-      logger.info('Network request completed successfully');
+      VooLogger.info('Network request completed successfully');
     } catch (e) {
-      logger.error('Network request failed', error: e);
+      VooLogger.error('Network request failed', error: e);
     }
   }
   
   Future<void> _clearLogs() async {
-    await VooLogging.instance.clearLogs();
+    await VooLogger.instance.clearLogs();
     setState(() {
       recentLogs.clear();
     });
@@ -100,6 +117,8 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
   
   String _getLogLevelIcon(LogLevel level) {
     switch (level) {
+      case LogLevel.verbose:
+        return '📝';
       case LogLevel.debug:
         return '🐛';
       case LogLevel.info:
@@ -108,11 +127,15 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
         return '⚠️';
       case LogLevel.error:
         return '❌';
+      case LogLevel.fatal:
+        return '💀';
     }
   }
   
   Color _getLogLevelColor(LogLevel level) {
     switch (level) {
+      case LogLevel.verbose:
+        return Colors.grey.shade600;
       case LogLevel.debug:
         return Colors.grey;
       case LogLevel.info:
@@ -121,6 +144,8 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
         return Colors.orange;
       case LogLevel.error:
         return Colors.red;
+      case LogLevel.fatal:
+        return Colors.red.shade900;
     }
   }
   
@@ -147,6 +172,10 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
               spacing: 8,
               runSpacing: 8,
               children: [
+                ElevatedButton(
+                  onPressed: _logVerbose,
+                  child: const Text('Log Verbose'),
+                ),
                 ElevatedButton(
                   onPressed: _logDebug,
                   child: const Text('Log Debug'),
@@ -211,7 +240,7 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${log.loggerName} • ${log.timestamp.toString().split('.').first}',
+                                log.timestamp.toString().split('.').first,
                                 style: const TextStyle(fontSize: 12),
                               ),
                               if (log.error != null)

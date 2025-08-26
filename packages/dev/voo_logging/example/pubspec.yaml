@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   voo_logging:
     path: ../
+  voo_core:
+    path: ../../voo_core
   dio: ^5.0.0
 
 dev_dependencies:
