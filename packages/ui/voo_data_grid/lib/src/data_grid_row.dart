@@ -67,7 +67,7 @@ class VooDataGridRow extends StatelessWidget {
               // Scrollable columns
               Expanded(
                 child: SingleChildScrollView(
-                  controller: controller.horizontalScrollController,
+                  controller: controller.bodyHorizontalScrollController,
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [

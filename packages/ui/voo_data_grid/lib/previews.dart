@@ -32,7 +32,8 @@ class VooDataGridBasicPreview extends StatefulWidget {
   const VooDataGridBasicPreview({super.key});
 
   @override
-  State<VooDataGridBasicPreview> createState() => _VooDataGridBasicPreviewState();
+  State<VooDataGridBasicPreview> createState() =>
+      _VooDataGridBasicPreviewState();
 }
 
 class _VooDataGridBasicPreviewState extends State<VooDataGridBasicPreview> {
@@ -123,10 +124,12 @@ class VooDataGridFilterablePreview extends StatefulWidget {
   const VooDataGridFilterablePreview({super.key});
 
   @override
-  State<VooDataGridFilterablePreview> createState() => _VooDataGridFilterablePreviewState();
+  State<VooDataGridFilterablePreview> createState() =>
+      _VooDataGridFilterablePreviewState();
 }
 
-class _VooDataGridFilterablePreviewState extends State<VooDataGridFilterablePreview> {
+class _VooDataGridFilterablePreviewState
+    extends State<VooDataGridFilterablePreview> {
   late VooDataGridController _controller;
   late LocalDataGridSource _dataSource;
 
@@ -140,7 +143,12 @@ class _VooDataGridFilterablePreviewState extends State<VooDataGridFilterablePrev
         (index) => {
               'id': index + 1,
               'name': 'Product ${index + 1}',
-              'category': ['Electronics', 'Books', 'Clothing', 'Food'][index % 4],
+              'category': [
+                'Electronics',
+                'Books',
+                'Clothing',
+                'Food'
+              ][index % 4],
               'price': (index + 1) * 10.99,
               'stock': index * 5,
               'available': index % 2 == 0,
@@ -219,10 +227,12 @@ class VooDataGridSelectablePreview extends StatefulWidget {
   const VooDataGridSelectablePreview({super.key});
 
   @override
-  State<VooDataGridSelectablePreview> createState() => _VooDataGridSelectablePreviewState();
+  State<VooDataGridSelectablePreview> createState() =>
+      _VooDataGridSelectablePreviewState();
 }
 
-class _VooDataGridSelectablePreviewState extends State<VooDataGridSelectablePreview> {
+class _VooDataGridSelectablePreviewState
+    extends State<VooDataGridSelectablePreview> {
   late VooDataGridController _controller;
   late LocalDataGridSource _dataSource;
 
@@ -333,10 +343,12 @@ class VooDataGridPaginatedPreview extends StatefulWidget {
   const VooDataGridPaginatedPreview({super.key});
 
   @override
-  State<VooDataGridPaginatedPreview> createState() => _VooDataGridPaginatedPreviewState();
+  State<VooDataGridPaginatedPreview> createState() =>
+      _VooDataGridPaginatedPreviewState();
 }
 
-class _VooDataGridPaginatedPreviewState extends State<VooDataGridPaginatedPreview> {
+class _VooDataGridPaginatedPreviewState
+    extends State<VooDataGridPaginatedPreview> {
   late VooDataGridController _controller;
   late LocalDataGridSource _dataSource;
 

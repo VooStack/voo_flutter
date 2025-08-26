@@ -9,10 +9,16 @@ A powerful and flexible data grid widget for Flutter with advanced features like
 
 - **Flexible Data Display**: Display tabular data with customizable columns and rows
 - **Sorting**: Built-in column sorting with custom comparators
-- **Filtering**: Advanced filtering capabilities with multiple filter types  
+- **Advanced Filtering**: 
+  - Multiple filter types (string, int, date, decimal)
+  - Secondary filters with AND/OR logic
+  - Complex compound filters
+  - Legacy filter format support
+  - Built-in filter UI widget
 - **Pagination**: Server-side and client-side pagination support
 - **Selection**: Row selection with single and multi-select modes
 - **Remote Data**: Built-in support for fetching data from REST APIs
+- **Synchronized Scrolling**: Uniform horizontal scrolling between header and body
 - **Performance**: Optimized for large datasets with efficient rendering
 - **API Standards**: Support for multiple API standards (Laravel, Spring Boot, custom)
 - **Customization**: Highly customizable headers, cells, and styling
@@ -282,6 +288,85 @@ VooDataGridColumn(
         ),
       ],
     );
+  },
+)
+```
+
+## Advanced Filtering
+
+### Complex Filter with Secondary Conditions
+
+```dart
+// Using AdvancedRemoteDataSource for complex filtering
+final dataSource = AdvancedRemoteDataSource(
+  apiEndpoint: '/api/orders',
+  httpClient: httpClient,
+  useAdvancedFilters: true,
+);
+
+// Apply complex filter programmatically
+final filterRequest = AdvancedFilterRequest(
+  stringFilters: [
+    StringFilter(
+      fieldName: 'Site.Name',
+      value: 'Tech',
+      operator: 'Contains',
+      secondaryFilter: SecondaryFilter(
+        logic: FilterLogic.and,
+        value: 'Park',
+        operator: 'NotContains',
+      ),
+    ),
+  ],
+  intFilters: [
+    IntFilter(
+      fieldName: 'Site.SiteNumber',
+      value: 1006,
+      operator: 'GreaterThan',
+      secondaryFilter: SecondaryFilter(
+        logic: FilterLogic.and,
+        value: 1011,
+        operator: 'LessThan',
+      ),
+    ),
+  ],
+  logic: FilterLogic.and,
+  pageNumber: 1,
+  pageSize: 20,
+);
+
+dataSource.setAdvancedFilterRequest(filterRequest);
+```
+
+### Using Advanced Filter Widget
+
+```dart
+AdvancedFilterWidget(
+  dataSource: dataSource,
+  fields: [
+    FilterFieldConfig(
+      fieldName: 'Site.SiteNumber',
+      displayName: 'Site Number',
+      type: FilterType.int,
+    ),
+    FilterFieldConfig(
+      fieldName: 'Client.CompanyName',
+      displayName: 'Client',
+      type: FilterType.string,
+    ),
+    FilterFieldConfig(
+      fieldName: 'OrderDate',
+      displayName: 'Order Date',
+      type: FilterType.date,
+    ),
+    FilterFieldConfig(
+      fieldName: 'OrderCost',
+      displayName: 'Cost',
+      type: FilterType.decimal,
+    ),
+  ],
+  onFilterApplied: (request) {
+    print('Applied filters: ${request.toJson()}');
   },
 )
 ```

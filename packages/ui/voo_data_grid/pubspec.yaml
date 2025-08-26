@@ -14,6 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   voo_ui_core:
+    path: ../voo_ui_core
   intl: ^0.20.1
 
 dev_dependencies:

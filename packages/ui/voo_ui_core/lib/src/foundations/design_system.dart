@@ -97,8 +97,10 @@ class VooDesignSystemData {
         radiusUnit: radiusUnit ?? this.radiusUnit,
         borderWidth: borderWidth ?? this.borderWidth,
         animationDuration: animationDuration ?? this.animationDuration,
-        animationDurationSlow: animationDurationSlow ?? this.animationDurationSlow,
-        animationDurationFast: animationDurationFast ?? this.animationDurationFast,
+        animationDurationSlow:
+            animationDurationSlow ?? this.animationDurationSlow,
+        animationDurationFast:
+            animationDurationFast ?? this.animationDurationFast,
         animationCurve: animationCurve ?? this.animationCurve,
         inputHeight: inputHeight ?? this.inputHeight,
         buttonHeight: buttonHeight ?? this.buttonHeight,
@@ -136,7 +138,8 @@ class VooDesignSystem extends InheritedWidget {
 
   /// Access the design system from context
   static VooDesignSystemData of(BuildContext context) {
-    final system = context.dependOnInheritedWidgetOfExactType<VooDesignSystem>();
+    final system =
+        context.dependOnInheritedWidgetOfExactType<VooDesignSystem>();
     return system?.data ?? VooDesignSystemData.defaultSystem;
   }
 

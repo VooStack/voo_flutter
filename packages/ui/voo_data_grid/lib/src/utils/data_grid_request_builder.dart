@@ -1,5 +1,6 @@
 import '../data_grid_column.dart';
 import '../data_grid_source.dart';
+import '../models/advanced_filters.dart';
 
 /// Utility class for building JSON requests for remote data grid operations
 /// Following REST API best practices
@@ -195,6 +196,129 @@ class DataGridRequestBuilder {
       page: page,
       pageSize: pageSize,
     );
+  }
+
+  /// Build an advanced filter request body with support for secondary filters
+  static Map<String, dynamic> buildAdvancedRequestBody({
+    required AdvancedFilterRequest request,
+    Map<String, dynamic>? additionalParams,
+  }) {
+    final body = request.toJson();
+    
+    // Add any additional parameters
+    if (additionalParams != null) {
+      body['metadata'] = additionalParams;
+    }
+    
+    return body;
+  }
+
+  /// Convert VooDataFilter map to AdvancedFilterRequest for compatibility
+  static AdvancedFilterRequest convertToAdvancedRequest({
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+    required int page,
+    required int pageSize,
+  }) {
+    final stringFilters = <StringFilter>[];
+    final intFilters = <IntFilter>[];
+    final dateFilters = <DateFilter>[];
+    final decimalFilters = <DecimalFilter>[];
+    
+    filters.forEach((field, filter) {
+      final value = filter.value;
+      final operator = _operatorToApiString(filter.operator);
+      
+      SecondaryFilter? secondaryFilter;
+      if (filter.valueTo != null && filter.operator == VooFilterOperator.between) {
+        secondaryFilter = SecondaryFilter(
+          logic: FilterLogic.and,
+          value: filter.valueTo,
+          operator: 'LessThanOrEqual',
+        );
+      }
+      
+      // Determine filter type based on value type
+      if (value is String) {
+        stringFilters.add(StringFilter(
+          fieldName: field,
+          value: value,
+          operator: operator,
+          secondaryFilter: secondaryFilter,
+        ));
+      } else if (value is int) {
+        intFilters.add(IntFilter(
+          fieldName: field,
+          value: value,
+          operator: operator,
+          secondaryFilter: secondaryFilter,
+        ));
+      } else if (value is double) {
+        decimalFilters.add(DecimalFilter(
+          fieldName: field,
+          value: value,
+          operator: operator,
+          secondaryFilter: secondaryFilter,
+        ));
+      } else if (value is DateTime) {
+        dateFilters.add(DateFilter(
+          fieldName: field,
+          value: value.toIso8601String(),
+          operator: operator,
+          secondaryFilter: secondaryFilter,
+        ));
+      }
+    });
+    
+    // Get primary sort
+    final primarySort = sorts.isNotEmpty ? sorts.first : null;
+    
+    return AdvancedFilterRequest(
+      stringFilters: stringFilters,
+      intFilters: intFilters,
+      dateFilters: dateFilters,
+      decimalFilters: decimalFilters,
+      pageNumber: page + 1, // Convert from 0-based to 1-based
+      pageSize: pageSize,
+      sortBy: primarySort?.field,
+      sortDescending: primarySort?.direction == VooSortDirection.descending,
+    );
+  }
+
+  /// Convert filter operator to API string format
+  static String _operatorToApiString(VooFilterOperator operator) {
+    switch (operator) {
+      case VooFilterOperator.equals:
+        return 'Equals';
+      case VooFilterOperator.notEquals:
+        return 'NotEquals';
+      case VooFilterOperator.contains:
+        return 'Contains';
+      case VooFilterOperator.notContains:
+        return 'NotContains';
+      case VooFilterOperator.startsWith:
+        return 'StartsWith';
+      case VooFilterOperator.endsWith:
+        return 'EndsWith';
+      case VooFilterOperator.greaterThan:
+        return 'GreaterThan';
+      case VooFilterOperator.greaterThanOrEqual:
+        return 'GreaterThanOrEqual';
+      case VooFilterOperator.lessThan:
+        return 'LessThan';
+      case VooFilterOperator.lessThanOrEqual:
+        return 'LessThanOrEqual';
+      case VooFilterOperator.between:
+        return 'Between';
+      case VooFilterOperator.inList:
+        return 'In';
+      case VooFilterOperator.notInList:
+        return 'NotIn';
+      case VooFilterOperator.isNull:
+        return 'IsNull';
+      case VooFilterOperator.isNotNull:
+        return 'IsNotNull';
+    }
   }
 }
 

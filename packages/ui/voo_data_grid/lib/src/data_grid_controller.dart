@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data_grid_source.dart';
 import 'data_grid_column.dart';
+import 'utils/synchronized_scroll_controller.dart';
 
 /// Controller for VooDataGrid
 class VooDataGridController extends ChangeNotifier {
@@ -23,8 +24,14 @@ class VooDataGridController extends ChangeNotifier {
   /// Column widths map
   final Map<String, double> _columnWidths = {};
 
-  /// Horizontal scroll controller
+  /// Synchronized horizontal scroll controller for header and body
+  final SynchronizedScrollController horizontalSyncController = SynchronizedScrollController();
+  
+  /// Horizontal scroll controller for header
   final ScrollController horizontalScrollController = ScrollController();
+  
+  /// Horizontal scroll controller for body
+  final ScrollController bodyHorizontalScrollController = ScrollController();
 
   /// Vertical scroll controller
   final ScrollController verticalScrollController = ScrollController();
@@ -92,6 +99,10 @@ class VooDataGridController extends ChangeNotifier {
 
     // Listen to data source changes
     dataSource.addListener(_onDataSourceChanged);
+    
+    // Register scroll controllers for synchronization
+    horizontalSyncController.registerController(horizontalScrollController);
+    horizontalSyncController.registerController(bodyHorizontalScrollController);
   }
 
   /// Set columns
@@ -258,7 +269,7 @@ class VooDataGridController extends ChangeNotifier {
   @override
   void dispose() {
     dataSource.removeListener(_onDataSourceChanged);
-    horizontalScrollController.dispose();
+    horizontalSyncController.dispose();
     verticalScrollController.dispose();
     super.dispose();
   }
