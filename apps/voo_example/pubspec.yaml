@@ -11,17 +11,21 @@ dependencies:
     sdk: flutter
 
   voo_core:
-    path: ../../packages/voo_core
+    path: ../../packages/dev/voo_core
   voo_logging:
-    path: ../../packages/voo_logging
+    path: ../../packages/dev/voo_logging
   voo_analytics:
-    path: ../../packages/voo_analytics
+    path: ../../packages/dev/voo_analytics
   voo_performance:
-    path: ../../packages/voo_performance
+    path: ../../packages/dev/voo_performance
   voo_telemetry:
-    path: ../../packages/voo_telemetry
-  voo_ui:
-    path: ../../packages/voo_ui
+    path: ../../packages/dev/voo_telemetry
+  voo_ui_core:
+    path: ../../packages/ui/voo_ui_core
+  voo_data_grid:
+    path: ../../packages/ui/voo_data_grid
+  voo_calendar:
+    path: ../../packages/ui/voo_calendar
 
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.1.0

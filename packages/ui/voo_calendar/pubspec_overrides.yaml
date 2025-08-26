@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: voo_ui_core
+dependency_overrides:
+  voo_ui_core:
+    path: ../voo_ui_core

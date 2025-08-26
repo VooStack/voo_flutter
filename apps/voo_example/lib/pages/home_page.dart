@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_ui/voo_ui.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 import 'package:voo_example/pages/logging_page.dart';
 import 'package:voo_example/pages/analytics_page.dart';
 import 'package:voo_example/pages/performance_page.dart';

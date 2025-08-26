@@ -3,12 +3,15 @@
     "combinators",
     "dartdoc",
     "devstack",
+    "endswith",
     "fixnum",
+    "ilike",
     "interps",
     "ints",
     "kvlist",
     "sembast",
     "Sparkline",
+    "startswith",
     "Traceparent",
     "Tracestate"
   ]

@@ -1,7 +1,8 @@
 name: VooFlutter
 packages:
   - apps/*
-  - packages/*
+  - packages/dev/*
+  - packages/ui/*
   - tools/*
 
 command:
