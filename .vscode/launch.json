@@ -1,29 +1,57 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Voo Example",
+      "name": "voo_example",
       "cwd": "apps/voo_example",
       "request": "launch",
       "type": "dart",
-      "args": ["--print-dtd"]
+      "flutterMode": "debug"
     },
     {
-      "name": "Dev Tools",
-      "cwd": "tools/voo_devtools_extension",
+      "name": "voo_example (profile)",
+      "cwd": "apps/voo_example",
       "request": "launch",
       "type": "dart",
-      "args": [
-        "--dart-define=use_simulated_environment=true",
-        "--web-experimental-hot-reload"
-      ],
-      "env": {
-        "DART_VM_OPTIONS": "--enable-vm-service"
-      },
+      "flutterMode": "profile"
+    },
+    {
+      "name": "voo_example (release)",
+      "cwd": "apps/voo_example",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "voo_core example",
+      "cwd": "packages/dev/voo_core/example",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "voo_analytics example",
+      "cwd": "packages/dev/voo_analytics/example",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "voo_telemetry example",
+      "cwd": "packages/dev/voo_telemetry/example",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "voo_data_grid preview",
+      "cwd": "packages/ui/voo_data_grid",
+      "request": "launch",
+      "type": "dart",
       "program": "lib/main.dart"
+    },
+    {
+      "name": "DevTools Extension",
+      "cwd": "tools/voo_devtools_extension",
+      "request": "launch",
+      "type": "dart"
     }
   ]
 }

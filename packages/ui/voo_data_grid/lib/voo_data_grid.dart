@@ -13,3 +13,6 @@ export 'src/data_grid_row.dart';
 // Data Grid Utils
 export 'src/utils/data_grid_request_builder.dart';
 export 'src/utils/data_grid_api_standards.dart';
+
+// Preview widgets
+export 'previews.dart';

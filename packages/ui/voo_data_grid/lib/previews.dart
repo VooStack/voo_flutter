@@ -1,66 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
-
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: WidgetPreviewScaffold(),
-  ));
-}
-
-class WidgetPreviewScaffold extends StatelessWidget {
-  const WidgetPreviewScaffold({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Voo Data Grid Previews'),
-      ),
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text('Basic Data Grid'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const VooDataGridBasicPreview(),
-              ),
-            ),
-          ),
-          ListTile(
-            title: const Text('Filterable Data Grid'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const VooDataGridFilterablePreview(),
-              ),
-            ),
-          ),
-          ListTile(
-            title: const Text('Selectable Data Grid'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const VooDataGridSelectablePreview(),
-              ),
-            ),
-          ),
-          ListTile(
-            title: const Text('Paginated Data Grid'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const VooDataGridPaginatedPreview(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // Simple local data source implementation for previews
 class LocalDataGridSource extends VooDataGridSource {
@@ -89,9 +28,6 @@ class LocalDataGridSource extends VooDataGridSource {
   }
 }
 
-// Widget previews for voo_data_grid components
-
-@pragma('preview')
 class VooDataGridBasicPreview extends StatefulWidget {
   const VooDataGridBasicPreview({super.key});
 
@@ -129,7 +65,6 @@ class _VooDataGridBasicPreviewState extends State<VooDataGridBasicPreview> {
           field: 'id',
           label: 'ID',
           width: 60,
-          sortable: true,
         ),
         VooDataColumn(
           field: 'name',
@@ -165,22 +100,17 @@ class _VooDataGridBasicPreviewState extends State<VooDataGridBasicPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Basic Data Grid'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Basic Data Grid'),
+        ),
+        body: Card(
+          margin: const EdgeInsets.all(16),
+          child: SizedBox(
+            height: 400,
             child: VooDataGrid(
               controller: _controller,
-              onRowTap: (data) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Selected: ${data['name']}')),
-                );
-              },
             ),
           ),
         ),
@@ -189,7 +119,6 @@ class _VooDataGridBasicPreviewState extends State<VooDataGridBasicPreview> {
   }
 }
 
-@pragma('preview')
 class VooDataGridFilterablePreview extends StatefulWidget {
   const VooDataGridFilterablePreview({super.key});
 
@@ -241,15 +170,12 @@ class _VooDataGridFilterablePreviewState extends State<VooDataGridFilterablePrev
           label: 'Price',
           width: 100,
           sortable: true,
-          filterable: true,
           valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
         ),
         VooDataColumn(
           field: 'stock',
           label: 'Stock',
           width: 80,
-          sortable: true,
-          filterable: true,
         ),
         VooDataColumn(
           field: 'available',
@@ -273,19 +199,15 @@ class _VooDataGridFilterablePreviewState extends State<VooDataGridFilterablePrev
 
   @override
   Widget build(BuildContext context) {
-    return VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Filterable Data Grid'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: VooDataGrid(
-              controller: _controller,
-              // Search is enabled through toolbar
-            ),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Filterable Data Grid'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: VooDataGrid(
+            controller: _controller,
           ),
         ),
       ),
@@ -293,7 +215,6 @@ class _VooDataGridFilterablePreviewState extends State<VooDataGridFilterablePrev
   }
 }
 
-@pragma('preview')
 class VooDataGridSelectablePreview extends StatefulWidget {
   const VooDataGridSelectablePreview({super.key});
 
@@ -343,36 +264,20 @@ class _VooDataGridSelectablePreviewState extends State<VooDataGridSelectablePrev
           field: 'assignee',
           label: 'Assignee',
           width: 120,
-          sortable: true,
         ),
         VooDataColumn(
           field: 'priority',
           label: 'Priority',
           width: 100,
           sortable: true,
-          cellBuilder: (context, value, row) {
-            Color color;
-            switch (value) {
-              case 'High':
-                color = Colors.red;
-                break;
-              case 'Medium':
-                color = Colors.orange;
-                break;
-              default:
-                color = Colors.green;
-            }
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: color, fontWeight: FontWeight.bold),
-              ),
-            );
+          valueFormatter: (value) {
+            final color = switch (value) {
+              'High' => '🔴',
+              'Medium' => '🟡',
+              'Low' => '🟢',
+              _ => '',
+            };
+            return '$color $value';
           },
         ),
         VooDataColumn(
@@ -396,28 +301,27 @@ class _VooDataGridSelectablePreviewState extends State<VooDataGridSelectablePrev
 
   @override
   Widget build(BuildContext context) {
-    return VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Selectable Data Grid'),
-            actions: [
-              if (selectedCount > 0)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text('$selectedCount selected'),
-                  ),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Selectable Grid - $selectedCount selected'),
+          actions: [
+            if (selectedCount > 0)
+              TextButton(
+                onPressed: () {
+                  _dataSource.clearSelection();
+                },
+                child: const Text(
+                  'Clear Selection',
+                  style: TextStyle(color: Colors.white),
                 ),
-            ],
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: VooDataGrid(
-              controller: _controller,
-              // Selection is handled through data source
-            ),
+              ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: VooDataGrid(
+            controller: _controller,
           ),
         ),
       ),
@@ -425,7 +329,6 @@ class _VooDataGridSelectablePreviewState extends State<VooDataGridSelectablePrev
   }
 }
 
-@pragma('preview')
 class VooDataGridPaginatedPreview extends StatefulWidget {
   const VooDataGridPaginatedPreview({super.key});
 
@@ -498,15 +401,14 @@ class _VooDataGridPaginatedPreviewState extends State<VooDataGridPaginatedPrevie
 
   @override
   Widget build(BuildContext context) {
-    return VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Paginated Data Grid'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Paginated Data Grid'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Card(
             child: VooDataGrid(
               controller: _controller,
               showPagination: true,

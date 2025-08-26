@@ -5,14 +5,58 @@
     "devstack",
     "endswith",
     "fixnum",
+    "goldens",
     "ilike",
     "interps",
     "ints",
     "kvlist",
+    "lcov",
+    "melos",
+    "pubspec",
     "sembast",
     "Sparkline",
     "startswith",
     "Traceparent",
     "Tracestate"
-  ]
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.rulers": [80],
+    "editor.wordWrapColumn": 80,
+    "editor.wordWrap": "wordWrapColumn"
+  },
+  "dart.lineLength": 80,
+  "dart.showTodos": true,
+  "dart.previewLsp": true,
+  "dart.runPubGetOnPubspecChanges": "never",
+  "files.associations": {
+    "pubspec_overrides.yaml": "yaml"
+  },
+  "files.exclude": {
+    "**/.dart_tool": true,
+    "**/build": true,
+    "**/.melos": true,
+    "**/pubspec_overrides.yaml": false
+  },
+  "search.exclude": {
+    "**/.dart_tool": true,
+    "**/build": true,
+    "**/.melos": true,
+    "**/pubspec.lock": true,
+    "**/*.g.dart": true,
+    "**/*.freezed.dart": true
+  },
+  "terminal.integrated.env.osx": {
+    "PATH": "${env:HOME}/.pub-cache/bin:${env:PATH}"
+  },
+  "terminal.integrated.env.linux": {
+    "PATH": "${env:HOME}/.pub-cache/bin:${env:PATH}"
+  },
+  "terminal.integrated.env.windows": {
+    "PATH": "${env:USERPROFILE}\\AppData\\Local\\Pub\\Cache\\bin;${env:PATH}"
+  }
 }

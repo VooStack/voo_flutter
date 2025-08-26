@@ -1,5 +1,5 @@
 name: voo_ui_core
-description: "A comprehensive Flutter UI component library with Material 3 design system, responsive utilities, and customizable components"
+description: 'A comprehensive Flutter UI component library with Material 3 design system, responsive utilities, and customizable components'
 version: 0.1.0
 repository: https://github.com/YourOrg/VooFlutter/tree/main/packages/ui/voo_ui_core
 homepage: https://github.com/YourOrg/VooFlutter
@@ -7,8 +7,8 @@ issue_tracker: https://github.com/YourOrg/VooFlutter/issues
 documentation: https://github.com/YourOrg/VooFlutter/tree/main/packages/ui/voo_ui_core
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:
@@ -21,3 +21,4 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  uses-material-design: true
