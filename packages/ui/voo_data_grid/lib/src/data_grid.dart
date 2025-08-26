@@ -461,17 +461,6 @@ class _VooDataGridState extends State<VooDataGrid> {
       );
     }
 
-    if (dataSource.rows.isEmpty) {
-      return Center(
-        child: widget.emptyStateWidget ??
-            const VooEmptyState(
-              icon: Icons.table_rows_outlined,
-              title: 'No Data',
-              message: 'No rows to display',
-            ),
-      );
-    }
-
     // Filter columns based on screen width
     final visibleColumns = _getVisibleColumnsForWidth(width);
     widget.controller.setVisibleColumns(visibleColumns);
@@ -481,7 +470,7 @@ class _VooDataGridState extends State<VooDataGrid> {
     
     return Column(
       children: [
-        // Header
+        // Header - Always show headers even when no data
         VooDataGridHeader(
           controller: widget.controller,
           theme: _theme,
@@ -495,9 +484,18 @@ class _VooDataGridState extends State<VooDataGrid> {
             theme: _theme,
           ),
         
-        // Data rows
+        // Data rows or empty state
         Expanded(
-          child: _buildDataRows(design),
+          child: dataSource.rows.isEmpty
+              ? Center(
+                  child: widget.emptyStateWidget ??
+                      const VooEmptyState(
+                        icon: Icons.table_rows_outlined,
+                        title: 'No Data',
+                        message: 'No rows to display',
+                      ),
+                )
+              : _buildDataRows(design),
         ),
         
         // Loading overlay

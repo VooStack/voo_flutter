@@ -1,5 +1,22 @@
+## 0.2.1
+
+* **API Standards Support**
+  * Added `ApiFilterStandard` enum for different API standards (Simple, JSON:API, OData, MongoDB, GraphQL, Custom)
+  * Enhanced `StandardApiRequestBuilder` to support multiple API standards
+  * Added comprehensive API standards preview demonstrating all formats
+  * Exported `data_grid_api_standards.dart` for public use
+* **Preview Improvements**  
+  * Moved preview files to proper `lib/preview/` directory structure
+  * Created interactive API standards configuration preview
+  * Added real-time request format viewer for different API standards
+  * Included code examples for each API standard integration
+
 ## 0.2.0
 
+* **Empty State Improvements**
+  * Column headers now remain visible even when there's no data
+  * Empty state message appears in the body area below headers
+  * Users can see the table structure even with no rows
 * **Advanced Filtering System**
   * Added support for complex filters with secondary conditions
   * Implemented multiple filter types: string, int, date, decimal
