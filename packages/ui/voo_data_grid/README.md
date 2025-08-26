@@ -30,7 +30,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  voo_data_grid: ^0.1.0
+  voo_data_grid: ^0.2.0
   voo_ui_core: ^0.1.0
 ```
 
