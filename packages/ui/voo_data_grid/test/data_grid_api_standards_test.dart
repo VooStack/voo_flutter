@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 void main() {
-  group('StandardApiRequestBuilder', () {
+  group('DataGridRequestBuilder', () {
     late Map<String, VooDataFilter> testFilters;
     late List<VooColumnSort> testSorts;
 
@@ -31,10 +31,10 @@ void main() {
     });
 
     group('Simple REST Standard', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.simple);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.simple);
       });
 
       test('should build simple request with basic pagination', () {
@@ -133,10 +133,10 @@ void main() {
     });
 
     group('JSON:API Standard', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.jsonApi);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.jsonApi);
       });
 
       test('should use 1-based pagination', () {
@@ -214,10 +214,10 @@ void main() {
     });
 
     group('OData Standard', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.odata);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
       });
 
       test('should build OData query string', () {
@@ -319,10 +319,10 @@ void main() {
     });
 
     group('MongoDB/Elasticsearch Standard', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.mongodb);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.mongodb);
       });
 
       test('should build MongoDB request body', () {
@@ -455,10 +455,10 @@ void main() {
     });
 
     group('GraphQL Standard', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.graphql);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.graphql);
       });
 
       test('should build GraphQL variables with pagination', () {
@@ -598,10 +598,10 @@ void main() {
     });
 
     group('Custom Standard', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.custom);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.custom);
       });
 
       test('should build custom request body', () {
@@ -688,7 +688,7 @@ void main() {
 
     group('URL Encoding', () {
       test('should URL encode values in simple format', () {
-        final builder = StandardApiRequestBuilder(standard: ApiFilterStandard.simple);
+        final builder = DataGridRequestBuilder(standard: ApiFilterStandard.simple);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
@@ -710,7 +710,7 @@ void main() {
       });
 
       test('should URL encode values in JSON:API format', () {
-        final builder = StandardApiRequestBuilder(standard: ApiFilterStandard.jsonApi);
+        final builder = DataGridRequestBuilder(standard: ApiFilterStandard.jsonApi);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
@@ -732,7 +732,7 @@ void main() {
       });
 
       test('should escape single quotes in OData format', () {
-        final builder = StandardApiRequestBuilder(standard: ApiFilterStandard.odata);
+        final builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
@@ -754,7 +754,7 @@ void main() {
       });
 
       test('should handle numeric values without quotes in OData', () {
-        final builder = StandardApiRequestBuilder(standard: ApiFilterStandard.odata);
+        final builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
@@ -777,10 +777,10 @@ void main() {
     });
 
     group('Filter Validation', () {
-      late StandardApiRequestBuilder builder;
+      late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = StandardApiRequestBuilder(standard: ApiFilterStandard.custom);
+        builder = DataGridRequestBuilder(standard: ApiFilterStandard.custom);
       });
 
       test('should throw error for numeric operators with non-numeric values', () {
@@ -931,7 +931,7 @@ void main() {
 
       test('should validate all standards without throwing errors', () {
         for (final standard in ApiFilterStandard.values) {
-          final builder = StandardApiRequestBuilder(standard: standard);
+          final builder = DataGridRequestBuilder(standard: standard);
           
           // Test with valid filters
           expect(
@@ -1005,7 +1005,7 @@ void main() {
 
           // Test with each standard
           for (final standard in ApiFilterStandard.values) {
-            final builder = StandardApiRequestBuilder(standard: standard);
+            final builder = DataGridRequestBuilder(standard: standard);
             final result = builder.buildRequest(
               page: 0,
               pageSize: 20,

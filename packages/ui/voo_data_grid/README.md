@@ -20,9 +20,10 @@ A powerful and flexible data grid widget for Flutter with advanced features like
 - **Remote Data**: Built-in support for fetching data from REST APIs
 - **Synchronized Scrolling**: Uniform horizontal scrolling between header and body
 - **Performance**: Optimized for large datasets with efficient rendering
-- **API Standards**: Support for multiple API standards (Laravel, Spring Boot, custom)
+- **API Standards**: Support for 6 API standards (Simple REST, JSON:API, OData, MongoDB, GraphQL, Custom)
 - **Customization**: Highly customizable headers, cells, and styling
 - **Responsive**: Adapts to different screen sizes
+- **Empty State**: Headers remain visible with empty data for better UX
 
 ## Installation
 
@@ -30,7 +31,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  voo_data_grid: ^0.2.0
+  voo_data_grid: ^0.3.0
   voo_ui_core: ^0.1.0
 ```
 
@@ -157,11 +158,19 @@ class _RemoteDataExampleState extends State<RemoteDataExample> {
   void initState() {
     super.initState();
     controller = VooDataGridController(
-      dataSource: VooRemoteDataSource(
-        url: 'https://api.example.com/users',
-        apiStandard: ApiStandard.laravel,
+      dataSource: RemoteDataGridSource(
+        apiEndpoint: 'https://api.example.com/users',
+        apiStandard: ApiFilterStandard.jsonApi,
         headers: {
           'Authorization': 'Bearer YOUR_TOKEN',
+        },
+        httpClient: (url, requestData, headers) async {
+          // Use your preferred HTTP client (dio, http, etc.)
+          final response = await dio.get(url, 
+            queryParameters: requestData['params'],
+            options: Options(headers: headers),
+          );
+          return response.data;
         },
       ),
       columns: _buildColumns(),
@@ -373,9 +382,94 @@ AdvancedFilterWidget(
 
 ## API Standards Support
 
-The data grid supports multiple API response formats out of the box:
+VooDataGrid now includes integrated support for 6 different API standards through the `DataGridRequestBuilder` class. Each data source can have its own HTTP client with custom interceptors and authentication.
 
-### Laravel Format
+### Simple REST Standard
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: 'https://api.example.com/products',
+  apiStandard: ApiFilterStandard.simple,
+  httpClient: (url, requestData, headers) async {
+    // Generates: ?page=0&limit=20&status=active&age_gt=25&sort=-created_at
+    final params = requestData['params'] as Map<String, String>;
+    final response = await dio.get(url, queryParameters: params);
+    return response.data;
+  },
+);
+```
+
+### JSON:API Standard
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: 'https://api.example.com/products',
+  apiStandard: ApiFilterStandard.jsonApi,
+  httpClient: (url, requestData, headers) async {
+    // Generates: ?page[number]=1&page[size]=20&filter[status]=active&sort=-created_at
+    final params = requestData['params'] as Map<String, String>;
+    final response = await dio.get(url, queryParameters: params);
+    return response.data;
+  },
+);
+```
+
+### OData Standard
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: 'https://api.example.com/odata/products',
+  apiStandard: ApiFilterStandard.odata,
+  httpClient: (url, requestData, headers) async {
+    // Generates: ?$top=20&$skip=0&$filter=status eq 'active'&$orderby=name asc
+    final params = requestData['params'] as Map<String, String>;
+    final response = await dio.get(url, queryParameters: params);
+    return response.data;
+  },
+);
+```
+
+### MongoDB/Elasticsearch Standard
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: 'https://api.example.com/search',
+  apiStandard: ApiFilterStandard.mongodb,
+  httpClient: (url, requestData, headers) async {
+    // Sends POST body with MongoDB-style query
+    final body = requestData['body'];
+    final response = await dio.post(url, data: body);
+    return response.data;
+  },
+);
+```
+
+### GraphQL Standard
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: 'https://api.example.com/graphql',
+  apiStandard: ApiFilterStandard.graphql,
+  httpClient: (url, requestData, headers) async {
+    // Sends GraphQL query with variables
+    final response = await dio.post(url, data: {
+      'query': requestData['query'],
+      'variables': requestData['variables'],
+    });
+    return response.data;
+  },
+);
+```
+
+### Custom Standard (Default)
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: 'https://api.example.com/data',
+  apiStandard: ApiFilterStandard.custom,
+  httpClient: (url, requestData, headers) async {
+    // Uses VooDataGrid's default format
+    final response = await dio.post(url, data: requestData);
+    return response.data;
+  },
+);
+```
+
+### Response Format
 ```json
 {
   "data": [...],
@@ -538,7 +632,7 @@ VooDataGrid(
 )
 ```
 
-## Performance Tips
+## Widget Previews\n\nVooDataGrid includes comprehensive preview widgets for testing and development:\n\n### Available Previews\n\n1. **VooDataGridPreview** - Large dataset demo with 200+ rows and 15+ columns\n2. **VooDataGridApiStandardsPreview** - Interactive API standards configuration tool\n3. **VooDataGridEmptyStatePreview** - Demonstrates empty state with persistent headers\n\n### Using Previews\n\n```dart\nimport 'package:voo_data_grid/voo_data_grid.dart';\n\n// In your development/testing environment\nvoid main() {\n  runApp(const VooDataGridApiStandardsPreview());\n}\n```\n\n### Interactive API Standards Preview\n\nThe API standards preview provides:\n- Live switching between all 6 API standards\n- Real-time request format viewer\n- Copy-paste ready code examples\n- Interactive filter and sort testing\n\n## Performance Tips
 
 1. **Use pagination** for large datasets
 2. **Implement virtual scrolling** for very large lists
@@ -547,14 +641,23 @@ VooDataGrid(
 5. **Cache remote data** when appropriate
 6. **Use proper keys** for columns to optimize rebuilds
 
-## Migration from voo_ui
+## Migration Guide
+
+### From v0.2.0 to v0.3.0
+
+**Breaking Changes:**
+- `StandardApiRequestBuilder` renamed to `DataGridRequestBuilder`
+- API standards now integrated directly into `DataGridRequestBuilder`
+- Preview files moved from `/preview` to `/lib/preview`
+
+### From voo_ui
 
 If you're migrating from the monolithic `voo_ui` package:
 
 1. Update your dependencies:
 ```yaml
 dependencies:
-  voo_data_grid: ^0.1.0
+  voo_data_grid: ^0.3.0
   voo_ui_core: ^0.1.0  # Required for design system
 ```
 

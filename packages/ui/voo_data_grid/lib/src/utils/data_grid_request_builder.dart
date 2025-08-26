@@ -2,18 +2,318 @@ import '../data_grid_column.dart';
 import '../data_grid_source.dart';
 import '../models/advanced_filters.dart';
 
+/// Enum for different API filtering standards
+enum ApiFilterStandard {
+  /// Simple REST style: ?status=active&age_gt=25
+  simple,
+
+  /// JSON:API style: ?filter[status]=active&filter[age][gt]=25
+  jsonApi,
+
+  /// OData style: ?$filter=status eq 'active' and age gt 25
+  odata,
+
+  /// MongoDB/Elasticsearch style (POST body)
+  mongodb,
+
+  /// GraphQL variables format
+  graphql,
+
+  /// Custom format (default VooDataGrid format)
+  custom,
+}
+
 /// Utility class for building JSON requests for remote data grid operations
-/// Following REST API best practices
+/// Supporting multiple API standards for different backend systems
 class DataGridRequestBuilder {
-  /// Build a complete request body for data grid operations
-  /// Returns a Map that can be converted to JSON
-  static Map<String, dynamic> buildRequestBody({
+  final ApiFilterStandard standard;
+
+  const DataGridRequestBuilder({
+    this.standard = ApiFilterStandard.custom,
+  });
+
+  /// Build request based on selected API standard
+  Map<String, dynamic> buildRequest({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
     Map<String, dynamic>? additionalParams,
   }) {
+    switch (standard) {
+      case ApiFilterStandard.simple:
+        return _buildSimpleRequest(
+            page, pageSize, filters, sorts, additionalParams);
+      case ApiFilterStandard.jsonApi:
+        return _buildJsonApiRequest(
+            page, pageSize, filters, sorts, additionalParams);
+      case ApiFilterStandard.odata:
+        return _buildODataRequest(
+            page, pageSize, filters, sorts, additionalParams);
+      case ApiFilterStandard.mongodb:
+        return _buildMongoDbRequest(
+            page, pageSize, filters, sorts, additionalParams);
+      case ApiFilterStandard.graphql:
+        return _buildGraphQLRequest(
+            page, pageSize, filters, sorts, additionalParams);
+      case ApiFilterStandard.custom:
+        return _buildCustomRequest(
+            page, pageSize, filters, sorts, additionalParams);
+    }
+  }
+
+  /// Simple REST style query parameters
+  Map<String, dynamic> _buildSimpleRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
+    final params = <String, dynamic>{
+      'params': <String, String>{
+        'page': page.toString(),
+        'limit': pageSize.toString(),
+      },
+    };
+
+    final queryParams = params['params'] as Map<String, String>;
+
+    // Add filters using simple format
+    filters.forEach((field, filter) {
+      switch (filter.operator) {
+        case VooFilterOperator.equals:
+          queryParams[field] = filter.value.toString();
+          break;
+        case VooFilterOperator.greaterThan:
+          queryParams['${field}_gt'] = filter.value.toString();
+          break;
+        case VooFilterOperator.lessThan:
+          queryParams['${field}_lt'] = filter.value.toString();
+          break;
+        case VooFilterOperator.greaterThanOrEqual:
+          queryParams['${field}_gte'] = filter.value.toString();
+          break;
+        case VooFilterOperator.lessThanOrEqual:
+          queryParams['${field}_lte'] = filter.value.toString();
+          break;
+        case VooFilterOperator.contains:
+          queryParams['${field}_like'] = filter.value.toString();
+          break;
+        case VooFilterOperator.between:
+          queryParams['${field}_from'] = filter.value.toString();
+          queryParams['${field}_to'] = filter.valueTo.toString();
+          break;
+        default:
+          queryParams[field] = filter.value?.toString() ?? '';
+      }
+    });
+
+    // Add sorts in simple format
+    if (sorts.isNotEmpty) {
+      queryParams['sort'] = sorts
+          .map((s) => s.direction == VooSortDirection.descending
+              ? '-${s.field}'
+              : s.field)
+          .join(',');
+    }
+
+    if (additionalParams != null) {
+      params.addAll(additionalParams);
+    }
+
+    return params;
+  }
+
+  /// JSON:API format
+  Map<String, dynamic> _buildJsonApiRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
+    final params = <String, dynamic>{
+      'params': <String, String>{
+        'page[number]': page.toString(),
+        'page[size]': pageSize.toString(),
+      },
+    };
+
+    final queryParams = params['params'] as Map<String, String>;
+
+    // Add filters in JSON:API format
+    filters.forEach((field, filter) {
+      final op = _getJsonApiOperator(filter.operator);
+      if (op == 'eq') {
+        queryParams['filter[$field]'] = filter.value.toString();
+      } else {
+        queryParams['filter[$field][$op]'] = filter.value.toString();
+      }
+      if (filter.valueTo != null) {
+        queryParams['filter[$field][to]'] = filter.valueTo.toString();
+      }
+    });
+
+    // Add sorts in JSON:API format
+    if (sorts.isNotEmpty) {
+      queryParams['sort'] = sorts
+          .map((s) => s.direction == VooSortDirection.descending
+              ? '-${s.field}'
+              : s.field)
+          .join(',');
+    }
+
+    if (additionalParams != null) {
+      params.addAll(additionalParams);
+    }
+
+    return params;
+  }
+
+  /// OData format
+  Map<String, dynamic> _buildODataRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
+    final params = <String, dynamic>{
+      'params': <String, String>{
+        '\$skip': (page * pageSize).toString(),
+        '\$top': pageSize.toString(),
+      },
+    };
+
+    final queryParams = params['params'] as Map<String, String>;
+
+    // Build OData filter expression
+    if (filters.isNotEmpty) {
+      final filterExpressions = <String>[];
+      filters.forEach((field, filter) {
+        final expression = _buildODataFilterExpression(field, filter);
+        if (expression.isNotEmpty) {
+          filterExpressions.add(expression);
+        }
+      });
+      if (filterExpressions.isNotEmpty) {
+        queryParams['\$filter'] = filterExpressions.join(' and ');
+      }
+    }
+
+    // Add sorts in OData format
+    if (sorts.isNotEmpty) {
+      final orderBy = sorts
+          .map((s) =>
+              '${s.field} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}')
+          .join(',');
+      queryParams['\$orderby'] = orderBy;
+    }
+
+    if (additionalParams != null) {
+      params.addAll(additionalParams);
+    }
+
+    return params;
+  }
+
+  /// MongoDB/Elasticsearch format
+  Map<String, dynamic> _buildMongoDbRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
+    final body = <String, dynamic>{
+      'skip': page * pageSize,
+      'limit': pageSize,
+    };
+
+    // Build MongoDB query
+    if (filters.isNotEmpty) {
+      final query = <String, dynamic>{};
+      filters.forEach((field, filter) {
+        query[field] = _buildMongoDbOperator(filter);
+      });
+      body['query'] = query;
+    }
+
+    // Add sorts in MongoDB format
+    if (sorts.isNotEmpty) {
+      final sort = <String, dynamic>{};
+      for (var s in sorts) {
+        sort[s.field] = s.direction == VooSortDirection.ascending ? 1 : -1;
+      }
+      body['sort'] = sort;
+    }
+
+    if (additionalParams != null) {
+      body.addAll(additionalParams);
+    }
+
+    return {'body': body};
+  }
+
+  /// GraphQL variables format
+  Map<String, dynamic> _buildGraphQLRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
+    final variables = <String, dynamic>{
+      'page': page,
+      'pageSize': pageSize,
+    };
+
+    // Add filters as GraphQL variables
+    if (filters.isNotEmpty) {
+      final where = <String, dynamic>{};
+      filters.forEach((field, filter) {
+        where[field] = _buildGraphQLFilter(filter);
+      });
+      variables['where'] = where;
+    }
+
+    // Add sorts as GraphQL variables
+    if (sorts.isNotEmpty) {
+      variables['orderBy'] = sorts
+          .map((s) => {
+                'field': s.field,
+                'direction':
+                    s.direction == VooSortDirection.ascending ? 'ASC' : 'DESC',
+              })
+          .toList();
+    }
+
+    if (additionalParams != null) {
+      variables.addAll(additionalParams);
+    }
+
+    return {
+      'variables': variables,
+      'query': '''
+        query GetData(\$page: Int!, \$pageSize: Int!, \$where: DataFilter, \$orderBy: [SortInput!]) {
+          data(page: \$page, pageSize: \$pageSize, where: \$where, orderBy: \$orderBy) {
+            items { ... }
+            totalCount
+          }
+        }
+      ''',
+    };
+  }
+
+  /// Custom format (default VooDataGrid format)
+  Map<String, dynamic> _buildCustomRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
     final request = <String, dynamic>{
       'pagination': {
         'page': page,
@@ -41,8 +341,155 @@ class DataGridRequestBuilder {
     return request;
   }
 
+  /// Helper methods for different formats
+  String _getJsonApiOperator(VooFilterOperator operator) {
+    switch (operator) {
+      case VooFilterOperator.equals:
+        return 'eq';
+      case VooFilterOperator.greaterThan:
+        return 'gt';
+      case VooFilterOperator.lessThan:
+        return 'lt';
+      case VooFilterOperator.greaterThanOrEqual:
+        return 'gte';
+      case VooFilterOperator.lessThanOrEqual:
+        return 'lte';
+      case VooFilterOperator.contains:
+        return 'contains';
+      case VooFilterOperator.between:
+        return 'between';
+      default:
+        return 'eq';
+    }
+  }
+
+  String _buildODataFilterExpression(String field, VooDataFilter filter) {
+    switch (filter.operator) {
+      case VooFilterOperator.equals:
+        return "$field eq '${filter.value}'";
+      case VooFilterOperator.notEquals:
+        return "$field ne '${filter.value}'";
+      case VooFilterOperator.greaterThan:
+        return "$field gt ${filter.value}";
+      case VooFilterOperator.lessThan:
+        return "$field lt ${filter.value}";
+      case VooFilterOperator.greaterThanOrEqual:
+        return "$field ge ${filter.value}";
+      case VooFilterOperator.lessThanOrEqual:
+        return "$field le ${filter.value}";
+      case VooFilterOperator.contains:
+        return "contains($field, '${filter.value}')";
+      case VooFilterOperator.startsWith:
+        return "startswith($field, '${filter.value}')";
+      case VooFilterOperator.endsWith:
+        return "endswith($field, '${filter.value}')";
+      case VooFilterOperator.between:
+        return "($field ge ${filter.value} and $field le ${filter.valueTo})";
+      case VooFilterOperator.isNull:
+        return "$field eq null";
+      case VooFilterOperator.isNotNull:
+        return "$field ne null";
+      default:
+        return '';
+    }
+  }
+
+  Map<String, dynamic> _buildMongoDbOperator(VooDataFilter filter) {
+    switch (filter.operator) {
+      case VooFilterOperator.equals:
+        return filter.value;
+      case VooFilterOperator.notEquals:
+        return {'\$ne': filter.value};
+      case VooFilterOperator.greaterThan:
+        return {'\$gt': filter.value};
+      case VooFilterOperator.lessThan:
+        return {'\$lt': filter.value};
+      case VooFilterOperator.greaterThanOrEqual:
+        return {'\$gte': filter.value};
+      case VooFilterOperator.lessThanOrEqual:
+        return {'\$lte': filter.value};
+      case VooFilterOperator.contains:
+        return {'\$regex': filter.value, '\$options': 'i'};
+      case VooFilterOperator.between:
+        return {'\$gte': filter.value, '\$lte': filter.valueTo};
+      case VooFilterOperator.inList:
+        return {
+          '\$in': filter.value is List ? filter.value : [filter.value]
+        };
+      case VooFilterOperator.notInList:
+        return {
+          '\$nin': filter.value is List ? filter.value : [filter.value]
+        };
+      case VooFilterOperator.isNull:
+        return {'\$eq': null};
+      case VooFilterOperator.isNotNull:
+        return {'\$ne': null};
+      default:
+        return filter.value;
+    }
+  }
+
+  Map<String, dynamic> _buildGraphQLFilter(VooDataFilter filter) {
+    switch (filter.operator) {
+      case VooFilterOperator.equals:
+        return {'eq': filter.value};
+      case VooFilterOperator.notEquals:
+        return {'neq': filter.value};
+      case VooFilterOperator.greaterThan:
+        return {'gt': filter.value};
+      case VooFilterOperator.lessThan:
+        return {'lt': filter.value};
+      case VooFilterOperator.greaterThanOrEqual:
+        return {'gte': filter.value};
+      case VooFilterOperator.lessThanOrEqual:
+        return {'lte': filter.value};
+      case VooFilterOperator.contains:
+        return {'contains': filter.value};
+      case VooFilterOperator.startsWith:
+        return {'startsWith': filter.value};
+      case VooFilterOperator.endsWith:
+        return {'endsWith': filter.value};
+      case VooFilterOperator.between:
+        return {
+          'between': [filter.value, filter.valueTo]
+        };
+      case VooFilterOperator.inList:
+        return {
+          'in': filter.value is List ? filter.value : [filter.value]
+        };
+      case VooFilterOperator.notInList:
+        return {
+          'notIn': filter.value is List ? filter.value : [filter.value]
+        };
+      case VooFilterOperator.isNull:
+        return {'isNull': true};
+      case VooFilterOperator.isNotNull:
+        return {'isNull': false};
+      default:
+        return filter.value;
+    }
+  }
+
+  /// Legacy static method for backward compatibility
+  static Map<String, dynamic> buildRequestBody({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  }) {
+    final builder = DataGridRequestBuilder();
+    return builder.buildRequest(
+      page: page,
+      pageSize: pageSize,
+      filters: filters,
+      sorts: sorts,
+      additionalParams: additionalParams,
+    );
+  }
+
   /// Build filters array for the request
-  static List<Map<String, dynamic>> _buildFilters(Map<String, VooDataFilter> filters) {
+  List<Map<String, dynamic>> _buildFilters(Map<String, VooDataFilter> filters) {
     return filters.entries.map((entry) {
       final filter = entry.value;
       final filterMap = <String, dynamic>{
@@ -62,7 +509,8 @@ class DataGridRequestBuilder {
           break;
         case VooFilterOperator.inList:
         case VooFilterOperator.notInList:
-          filterMap['values'] = filter.value is List ? filter.value : [filter.value];
+          filterMap['values'] =
+              filter.value is List ? filter.value : [filter.value];
           break;
         default:
           filterMap['value'] = filter.value;
@@ -73,7 +521,7 @@ class DataGridRequestBuilder {
   }
 
   /// Build sorts array for the request
-  static List<Map<String, dynamic>> _buildSorts(List<VooColumnSort> sorts) {
+  List<Map<String, dynamic>> _buildSorts(List<VooColumnSort> sorts) {
     return sorts
         .where((sort) => sort.direction != VooSortDirection.none)
         .map((sort) => {
@@ -149,8 +597,8 @@ class DataGridRequestBuilder {
       final prefix = 'filters[$filterIndex]';
       params['$prefix.field'] = field;
       params['$prefix.operator'] = _operatorToString(filter.operator);
-      
-      if (filter.operator != VooFilterOperator.isNull && 
+
+      if (filter.operator != VooFilterOperator.isNull &&
           filter.operator != VooFilterOperator.isNotNull) {
         if (filter.value != null) {
           if (filter.value is List) {
@@ -170,7 +618,8 @@ class DataGridRequestBuilder {
     for (int i = 0; i < sorts.length; i++) {
       if (sorts[i].direction != VooSortDirection.none) {
         params['sorts[$i].field'] = sorts[i].field;
-        params['sorts[$i].direction'] = _sortDirectionToString(sorts[i].direction);
+        params['sorts[$i].direction'] =
+            _sortDirectionToString(sorts[i].direction);
       }
     }
 
@@ -188,7 +637,8 @@ class DataGridRequestBuilder {
     final data = json[dataKey] as List<dynamic>? ?? [];
     final total = json[totalKey] as int? ?? 0;
     final page = pageKey != null ? (json[pageKey] as int? ?? 0) : 0;
-    final pageSize = pageSizeKey != null ? (json[pageSizeKey] as int? ?? 20) : 20;
+    final pageSize =
+        pageSizeKey != null ? (json[pageSizeKey] as int? ?? 20) : 20;
 
     return VooDataGridResponse(
       rows: data,
@@ -204,12 +654,12 @@ class DataGridRequestBuilder {
     Map<String, dynamic>? additionalParams,
   }) {
     final body = request.toJson();
-    
+
     // Add any additional parameters
     if (additionalParams != null) {
       body['metadata'] = additionalParams;
     }
-    
+
     return body;
   }
 
@@ -224,20 +674,21 @@ class DataGridRequestBuilder {
     final intFilters = <IntFilter>[];
     final dateFilters = <DateFilter>[];
     final decimalFilters = <DecimalFilter>[];
-    
+
     filters.forEach((field, filter) {
       final value = filter.value;
       final operator = _operatorToApiString(filter.operator);
-      
+
       SecondaryFilter? secondaryFilter;
-      if (filter.valueTo != null && filter.operator == VooFilterOperator.between) {
+      if (filter.valueTo != null &&
+          filter.operator == VooFilterOperator.between) {
         secondaryFilter = SecondaryFilter(
           logic: FilterLogic.and,
           value: filter.valueTo,
           operator: 'LessThanOrEqual',
         );
       }
-      
+
       // Determine filter type based on value type
       if (value is String) {
         stringFilters.add(StringFilter(
@@ -269,10 +720,10 @@ class DataGridRequestBuilder {
         ));
       }
     });
-    
+
     // Get primary sort
     final primarySort = sorts.isNotEmpty ? sorts.first : null;
-    
+
     return AdvancedFilterRequest(
       stringFilters: stringFilters,
       intFilters: intFilters,
@@ -322,21 +773,25 @@ class DataGridRequestBuilder {
   }
 }
 
-/// Example of a remote data source implementation
+/// Example of a remote data source implementation with API standards
 class RemoteDataGridSource extends VooDataGridSource {
   final String apiEndpoint;
   final Map<String, String>? headers;
+  final ApiFilterStandard apiStandard;
+  final DataGridRequestBuilder requestBuilder;
   final Future<Map<String, dynamic>> Function(
     String url,
-    Map<String, dynamic> body,
+    Map<String, dynamic> requestData,
     Map<String, String>? headers,
   )? httpClient;
 
   RemoteDataGridSource({
     required this.apiEndpoint,
     this.headers,
+    this.apiStandard = ApiFilterStandard.custom,
     this.httpClient,
-  }) : super(mode: VooDataGridMode.remote);
+  })  : requestBuilder = DataGridRequestBuilder(standard: apiStandard),
+        super(mode: VooDataGridMode.remote);
 
   @override
   Future<VooDataGridResponse> fetchRemoteData({
@@ -345,8 +800,8 @@ class RemoteDataGridSource extends VooDataGridSource {
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) async {
-    // Build request body
-    final requestBody = DataGridRequestBuilder.buildRequestBody(
+    // Build request based on API standard
+    final requestData = requestBuilder.buildRequest(
       page: page,
       pageSize: pageSize,
       filters: filters,
@@ -357,12 +812,15 @@ class RemoteDataGridSource extends VooDataGridSource {
     if (httpClient == null) {
       throw UnimplementedError(
         'Please provide an httpClient function to make API calls. '
-        'Example: httpClient: (url, body, headers) async => await dio.post(url, data: body, options: Options(headers: headers)).then((r) => r.data)',
+        'Example: httpClient: (url, requestData, headers) async => '
+        'await dio.post(url, data: requestData, options: Options(headers: headers)).then((r) => r.data)',
       );
     }
 
-    final response = await httpClient!(apiEndpoint, requestBody, headers);
-    
+    // For GET requests (simple, jsonApi, odata), pass params as query parameters
+    // For POST requests (mongodb, graphql, custom), pass as body
+    final response = await httpClient!(apiEndpoint, requestData, headers);
+
     // Parse response
     return DataGridRequestBuilder.parseResponse(json: response);
   }

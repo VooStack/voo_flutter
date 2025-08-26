@@ -1,15 +1,55 @@
-## 0.2.1
+## 0.3.0
+
+* **BREAKING CHANGES**
+  * Renamed `StandardApiRequestBuilder` to `DataGridRequestBuilder`
+  * Integrated API standards directly into `DataGridRequestBuilder` for better architecture
+  * Moved preview files from `/preview` to `/lib/preview` directory
 
 * **API Standards Support**
-  * Added `ApiFilterStandard` enum for different API standards (Simple, JSON:API, OData, MongoDB, GraphQL, Custom)
-  * Enhanced `StandardApiRequestBuilder` to support multiple API standards
-  * Added comprehensive API standards preview demonstrating all formats
-  * Exported `data_grid_api_standards.dart` for public use
-* **Preview Improvements**  
-  * Moved preview files to proper `lib/preview/` directory structure
-  * Created interactive API standards configuration preview
-  * Added real-time request format viewer for different API standards
-  * Included code examples for each API standard integration
+  * Integrated `ApiFilterStandard` enum directly into `DataGridRequestBuilder`
+  * Support for 6 different API standards: Simple REST, JSON:API, OData, MongoDB/Elasticsearch, GraphQL, and Custom
+  * Instance-based configuration allows separate Dio instances with custom interceptors
+  * Each data source can have its own HTTP client with tokens and authentication
+
+* **Advanced Filtering System** 
+  * Complex filters with secondary conditions (AND/OR logic)
+  * Multiple filter types: stringFilters, intFilters, dateFilters, decimalFilters
+  * `AdvancedFilterRequest` model for complex filter requests
+  * `AdvancedRemoteDataSource` for handling advanced filter formats
+  * Full backward compatibility with legacy filter formats
+
+* **Enhanced Request Builder**
+  * New instance-based `DataGridRequestBuilder` with API standard configuration
+  * `buildRequest()` method adapts to selected API standard
+  * Support for query parameters (GET) and request body (POST) formats
+  * Built-in URL encoding and special character handling for each standard
+  * Static methods maintained for backward compatibility
+
+* **Synchronized Horizontal Scrolling**
+  * Fixed horizontal scrolling to work uniformly between header and body
+  * `SynchronizedScrollController` for coordinating scroll between components
+  * Separate controllers for header and body synchronization
+  * Smooth scrolling experience across large datasets
+
+* **Widget Previews**
+  * Comprehensive data grid preview with 200+ rows and 15+ columns
+  * API standards configuration preview with live request viewer  
+  * Advanced filtering demo with API request/response monitoring
+  * Empty state preview demonstrating proper header visibility
+  * Mock data generator for realistic testing scenarios
+
+* **UI/UX Improvements**
+  * Column headers remain visible even with no data
+  * Empty state message appears below headers
+  * Advanced filter widget with visual filter builders
+  * Filter preview and validation features
+  * Better responsive behavior for large datasets
+
+* **Developer Experience**
+  * Cleaner architecture with integrated API standards
+  * Better separation of concerns for HTTP clients
+  * Comprehensive examples for each API standard
+  * Improved documentation and code organization
 
 ## 0.2.0
 

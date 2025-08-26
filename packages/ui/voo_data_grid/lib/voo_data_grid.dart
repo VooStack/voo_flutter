@@ -12,7 +12,6 @@ export 'src/data_grid_row.dart';
 
 // Data Grid Utils
 export 'src/utils/data_grid_request_builder.dart';
-export 'src/utils/data_grid_api_standards.dart';
 export 'src/utils/synchronized_scroll_controller.dart';
 
 // Advanced Features

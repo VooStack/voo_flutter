@@ -6,12 +6,14 @@ import 'dart:convert';
 /// Example data source that demonstrates different API standards
 class ApiStandardDataSource extends VooDataGridSource {
   final ApiFilterStandard apiStandard;
+  final DataGridRequestBuilder requestBuilder;
   final void Function(Map<String, dynamic>)? onRequestBuilt;
   
   ApiStandardDataSource({
     required this.apiStandard,
     this.onRequestBuilt,
-  }) : super(mode: VooDataGridMode.local) {
+  }) : requestBuilder = DataGridRequestBuilder(standard: apiStandard),
+       super(mode: VooDataGridMode.local) {
     // Initialize with sample data
     _loadInitialData();
   }
@@ -37,12 +39,7 @@ class ApiStandardDataSource extends VooDataGridSource {
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) async {
-    // Build request using the selected API standard
-    final requestBuilder = StandardApiRequestBuilder(
-      standard: apiStandard,
-    );
-
-    // Build the request with all parameters
+    // Build the request with all parameters using the selected API standard
     final request = requestBuilder.buildRequest(
       page: page,
       pageSize: pageSize,

@@ -34,7 +34,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(design.radiusMd),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
       margin: EdgeInsets.only(bottom: design.spacingSm),
       padding: EdgeInsets.all(design.spacingSm),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(design.radiusSm),
       ),
       child: Column(
@@ -194,7 +194,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               padding: EdgeInsets.all(design.spacingXs),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                 ),
                 borderRadius: BorderRadius.circular(design.radiusXs),
               ),
