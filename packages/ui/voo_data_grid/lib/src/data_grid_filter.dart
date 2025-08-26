@@ -23,13 +23,42 @@ class VooDataGridFilterRow extends StatefulWidget {
 
 class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
   final Map<String, TextEditingController> _textControllers = {};
+  final Map<String, dynamic> _dropdownValues = {};
+  final Map<String, bool> _checkboxValues = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to data source changes to update filters when cleared
+    widget.controller.dataSource.addListener(_onDataSourceChanged);
+  }
 
   @override
   void dispose() {
+    widget.controller.dataSource.removeListener(_onDataSourceChanged);
     for (final controller in _textControllers.values) {
       controller.dispose();
     }
     super.dispose();
+  }
+
+  void _onDataSourceChanged() {
+    // Update controllers when filters are cleared externally
+    setState(() {
+      // Clear text controllers for removed filters
+      for (final column in widget.controller.columns) {
+        if (!widget.controller.dataSource.filters.containsKey(column.field)) {
+          // Clear text controllers
+          _textControllers[column.field]?.clear();
+          _textControllers['${column.field}_min']?.clear();
+          _textControllers['${column.field}_max']?.clear();
+          // Clear dropdown values
+          _dropdownValues.remove(column.field);
+          // Clear checkbox values  
+          _checkboxValues.remove(column.field);
+        }
+      }
+    });
   }
 
   @override
@@ -460,6 +489,13 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
   Widget _buildDropdownFilter(VooDataColumn column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
     final theme = Theme.of(context);
+    
+    // Initialize dropdown value from current filter if not already set
+    if (!_dropdownValues.containsKey(column.field) && currentFilter != null) {
+      _dropdownValues[column.field] = currentFilter.value;
+    }
+    
+    final selectedValue = _dropdownValues[column.field];
 
     return Container(
       height: 32,
@@ -472,7 +508,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
         child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton<dynamic>(
-            value: currentFilter?.value,
+            value: selectedValue,
             hint: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
@@ -505,7 +541,16 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
                     ),
                   )),
             ],
-            onChanged: (value) => _applyFilter(column, value),
+            onChanged: (value) {
+              setState(() {
+                if (value == null) {
+                  _dropdownValues.remove(column.field);
+                } else {
+                  _dropdownValues[column.field] = value;
+                }
+              });
+              _applyFilter(column, value);
+            },
             isExpanded: true,
             isDense: true,
             icon: Padding(
@@ -591,12 +636,28 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
   }
 
   Widget _buildCheckboxFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+    // Initialize checkbox value from current filter if not already set
+    if (!_checkboxValues.containsKey(column.field) && currentFilter != null) {
+      _checkboxValues[column.field] = currentFilter.value == true;
+    }
+    
+    final isChecked = _checkboxValues[column.field] ?? false;
+    
     return SizedBox(
       height: 32,
       child: Center(
         child: Checkbox(
-          value: currentFilter?.value == true,
-          onChanged: (value) => _applyFilter(column, value),
+          value: isChecked,
+          onChanged: (value) {
+            setState(() {
+              if (value == null || value == false) {
+                _checkboxValues.remove(column.field);
+              } else {
+                _checkboxValues[column.field] = value;
+              }
+            });
+            _applyFilter(column, value);
+          },
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ),

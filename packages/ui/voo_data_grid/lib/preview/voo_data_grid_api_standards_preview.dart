@@ -8,26 +8,29 @@ class ApiStandardDataSource extends VooDataGridSource {
   final ApiFilterStandard apiStandard;
   final DataGridRequestBuilder requestBuilder;
   final void Function(Map<String, dynamic>)? onRequestBuilt;
-  
+
   ApiStandardDataSource({
     required this.apiStandard,
     this.onRequestBuilt,
-  }) : requestBuilder = DataGridRequestBuilder(standard: apiStandard),
-       super(mode: VooDataGridMode.local) {
+  })  : requestBuilder = DataGridRequestBuilder(standard: apiStandard),
+        super(mode: VooDataGridMode.local) {
     // Initialize with sample data
     _loadInitialData();
   }
 
   void _loadInitialData() {
-    final data = List.generate(50, (i) => {
-      'id': i + 1,
-      'name': 'Product ${i + 1}',
-      'category': ['Electronics', 'Books', 'Clothing', 'Food'][i % 4],
-      'price': ((i + 1) * 15.99),
-      'stock': (i + 1) * 5,
-      'rating': (i % 5) + 1,
-      'dateAdded': DateTime.now().subtract(Duration(days: i)).toIso8601String(),
-    });
+    final data = List.generate(
+        50,
+        (i) => {
+              'id': i + 1,
+              'name': 'Product ${i + 1}',
+              'category': ['Electronics', 'Books', 'Clothing', 'Food'][i % 4],
+              'price': ((i + 1) * 15.99),
+              'stock': (i + 1) * 5,
+              'rating': (i % 5) + 1,
+              'dateAdded':
+                  DateTime.now().subtract(Duration(days: i)).toIso8601String(),
+            });
     setLocalData(data);
     loadData();
   }
@@ -47,7 +50,7 @@ class ApiStandardDataSource extends VooDataGridSource {
       sorts: sorts,
       additionalParams: {'endpoint': '/api/products'},
     );
-    
+
     // Notify listener about the built request
     onRequestBuilt?.call(request);
 
@@ -66,10 +69,12 @@ class VooDataGridApiStandardsPreview extends StatefulWidget {
   const VooDataGridApiStandardsPreview({super.key});
 
   @override
-  State<VooDataGridApiStandardsPreview> createState() => _VooDataGridApiStandardsPreviewState();
+  State<VooDataGridApiStandardsPreview> createState() =>
+      _VooDataGridApiStandardsPreviewState();
 }
 
-class _VooDataGridApiStandardsPreviewState extends State<VooDataGridApiStandardsPreview> {
+class _VooDataGridApiStandardsPreviewState
+    extends State<VooDataGridApiStandardsPreview> {
   late VooDataGridController _controller;
   late ApiStandardDataSource _dataSource;
   ApiFilterStandard _selectedStandard = ApiFilterStandard.simple;
@@ -151,7 +156,7 @@ class _VooDataGridApiStandardsPreviewState extends State<VooDataGridApiStandards
 
   void _changeApiStandard(ApiFilterStandard? standard) {
     if (standard == null) return;
-    
+
     setState(() {
       _selectedStandard = standard;
     });
@@ -169,14 +174,18 @@ class _VooDataGridApiStandardsPreviewState extends State<VooDataGridApiStandards
 
   void _triggerSampleRequest() {
     // Apply some filters and sorts to generate a request
-    _dataSource.applyFilter('category', VooDataFilter(
-      value: 'Electronics',
-      operator: VooFilterOperator.equals,
-    ));
-    _dataSource.applyFilter('price', VooDataFilter(
-      value: 50,
-      operator: VooFilterOperator.greaterThan,
-    ));
+    _dataSource.applyFilter(
+        'category',
+        VooDataFilter(
+          value: 'Electronics',
+          operator: VooFilterOperator.equals,
+        ));
+    _dataSource.applyFilter(
+        'price',
+        VooDataFilter(
+          value: 50,
+          operator: VooFilterOperator.greaterThan,
+        ));
     _dataSource.applySort('name', VooSortDirection.ascending);
     _dataSource.applySort('price', VooSortDirection.descending);
     _dataSource.loadData();
@@ -194,6 +203,8 @@ class _VooDataGridApiStandardsPreviewState extends State<VooDataGridApiStandards
         return 'MongoDB/Elasticsearch query format';
       case ApiFilterStandard.graphql:
         return 'GraphQL variables format';
+      case ApiFilterStandard.voo:
+        return 'Voo API Standard with typed filters';
       case ApiFilterStandard.custom:
         return 'Custom format (define your own)';
     }
@@ -280,7 +291,8 @@ class _VooDataGridApiStandardsPreviewState extends State<VooDataGridApiStandards
                   onPressed: () {
                     // In a real app, copy to clipboard
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Request copied to clipboard')),
+                      const SnackBar(
+                          content: Text('Request copied to clipboard')),
                     );
                   },
                   tooltip: 'Copy request',
@@ -406,7 +418,8 @@ final dataSource = RemoteDataSource(
           children: [
             Row(
               children: [
-                Icon(Icons.integration_instructions, color: Theme.of(context).colorScheme.secondary),
+                Icon(Icons.integration_instructions,
+                    color: Theme.of(context).colorScheme.secondary),
                 const SizedBox(width: 8),
                 Text(
                   'Usage Example',
@@ -418,7 +431,10 @@ final dataSource = RemoteDataSource(
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest
+                    .withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: SelectableText(

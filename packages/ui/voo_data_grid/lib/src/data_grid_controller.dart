@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data_grid_source.dart';
 import 'data_grid_column.dart';
+import 'models/data_grid_constraints.dart';
 import 'utils/synchronized_scroll_controller.dart';
 
 /// Controller for VooDataGrid
@@ -72,6 +73,10 @@ class VooDataGridController extends ChangeNotifier {
   bool _columnReorderable = false;
   bool get columnReorderable => _columnReorderable;
 
+  /// Data grid constraints
+  VooDataGridConstraints _constraints = const VooDataGridConstraints();
+  VooDataGridConstraints get constraints => _constraints;
+
   /// Constructor
   VooDataGridController({
     required this.dataSource,
@@ -85,6 +90,7 @@ class VooDataGridController extends ChangeNotifier {
     bool? showHoverEffect,
     bool? columnResizable,
     bool? columnReorderable,
+    VooDataGridConstraints? constraints,
   }) {
     _columns = columns ?? [];
     _rowHeight = rowHeight ?? 48.0;
@@ -96,6 +102,7 @@ class VooDataGridController extends ChangeNotifier {
     _showHoverEffect = showHoverEffect ?? true;
     _columnResizable = columnResizable ?? true;
     _columnReorderable = columnReorderable ?? false;
+    _constraints = constraints ?? const VooDataGridConstraints();
 
     // Listen to data source changes
     dataSource.addListener(_onDataSourceChanged);
@@ -225,6 +232,9 @@ class VooDataGridController extends ChangeNotifier {
     final column = _columns.firstWhere((col) => col.field == field);
     if (!column.sortable) return;
 
+    // Check if sorting is allowed
+    if (!_constraints.allowSorting) return;
+
     final currentSort = dataSource.sorts.firstWhere(
       (sort) => sort.field == field,
       orElse: () => VooColumnSort(
@@ -244,6 +254,21 @@ class VooDataGridController extends ChangeNotifier {
       case VooSortDirection.descending:
         newDirection = VooSortDirection.none;
         break;
+    }
+
+    // If single-sort mode is enabled, clear all other sorts
+    if (!_constraints.allowMultiSort || _constraints.clearSortsOnNewSort) {
+      dataSource.clearSorts();
+    }
+
+    // Check max sort columns constraint
+    if (_constraints.maxSortColumns > 0 && 
+        dataSource.sorts.length >= _constraints.maxSortColumns &&
+        currentSort.direction == VooSortDirection.none) {
+      // Remove the oldest sort if we're at the limit
+      if (dataSource.sorts.isNotEmpty) {
+        dataSource.sorts.removeAt(0);
+      }
     }
 
     dataSource.applySort(field, newDirection);

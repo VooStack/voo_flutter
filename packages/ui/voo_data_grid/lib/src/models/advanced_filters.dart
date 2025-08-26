@@ -109,14 +109,14 @@ class IntFilter extends BaseFilter {
 
 /// Date filter implementation
 class DateFilter extends BaseFilter {
-  const DateFilter({
+  DateFilter({
     required String fieldName,
-    required String value,
+    required DateTime value,
     required String operator,
     SecondaryFilter? secondaryFilter,
   }) : super(
           fieldName: fieldName,
-          value: value,
+          value: value.toIso8601String(),
           operator: operator,
           secondaryFilter: secondaryFilter,
         );
@@ -124,13 +124,15 @@ class DateFilter extends BaseFilter {
   factory DateFilter.fromJson(Map<String, dynamic> json) {
     return DateFilter(
       fieldName: json['fieldName'],
-      value: json['value'],
+      value: DateTime.parse(json['value']),
       operator: json['operator'],
       secondaryFilter: json['secondaryFilter'] != null
           ? SecondaryFilter.fromJson(json['secondaryFilter'])
           : null,
     );
   }
+  
+  DateTime get dateValue => DateTime.parse(value as String);
 }
 
 /// Decimal filter implementation
@@ -159,12 +161,39 @@ class DecimalFilter extends BaseFilter {
   }
 }
 
+/// Boolean filter implementation
+class BoolFilter extends BaseFilter {
+  const BoolFilter({
+    required String fieldName,
+    required bool value,
+    String operator = 'Equals',
+    SecondaryFilter? secondaryFilter,
+  }) : super(
+          fieldName: fieldName,
+          value: value,
+          operator: operator,
+          secondaryFilter: secondaryFilter,
+        );
+
+  factory BoolFilter.fromJson(Map<String, dynamic> json) {
+    return BoolFilter(
+      fieldName: json['fieldName'],
+      value: json['value'] is bool ? json['value'] : json['value'].toString().toLowerCase() == 'true',
+      operator: json['operator'] ?? 'Equals',
+      secondaryFilter: json['secondaryFilter'] != null
+          ? SecondaryFilter.fromJson(json['secondaryFilter'])
+          : null,
+    );
+  }
+}
+
 /// Advanced filter request combining all filter types
 class AdvancedFilterRequest {
   final List<StringFilter> stringFilters;
   final List<IntFilter> intFilters;
   final List<DateFilter> dateFilters;
   final List<DecimalFilter> decimalFilters;
+  final List<BoolFilter> boolFilters;
   final FilterLogic logic;
   final int pageNumber;
   final int pageSize;
@@ -179,6 +208,7 @@ class AdvancedFilterRequest {
     this.intFilters = const [],
     this.dateFilters = const [],
     this.decimalFilters = const [],
+    this.boolFilters = const [],
     this.logic = FilterLogic.and,
     this.pageNumber = 1,
     this.pageSize = 20,
@@ -209,6 +239,8 @@ class AdvancedFilterRequest {
         'dateFilters': dateFilters.map((f) => f.toJson()).toList(),
       if (decimalFilters.isNotEmpty)
         'decimalFilters': decimalFilters.map((f) => f.toJson()).toList(),
+      if (boolFilters.isNotEmpty)
+        'boolFilters': boolFilters.map((f) => f.toJson()).toList(),
       'logic': logic == FilterLogic.and ? 'And' : 'Or',
       'pageNumber': pageNumber,
       'pageSize': pageSize,
@@ -222,7 +254,8 @@ class AdvancedFilterRequest {
     bool isAdvancedFormat = json.containsKey('stringFilters') ||
         json.containsKey('intFilters') ||
         json.containsKey('dateFilters') ||
-        json.containsKey('decimalFilters');
+        json.containsKey('decimalFilters') ||
+        json.containsKey('boolFilters');
 
     if (!isAdvancedFormat) {
       // Legacy format - extract known fields and put the rest in legacyFilters
@@ -260,6 +293,10 @@ class AdvancedFilterRequest {
               ?.map((f) => DecimalFilter.fromJson(f))
               .toList() ??
           [],
+      boolFilters: (json['boolFilters'] as List<dynamic>?)
+              ?.map((f) => BoolFilter.fromJson(f))
+              .toList() ??
+          [],
       logic: json['logic'] == 'Or' ? FilterLogic.or : FilterLogic.and,
       pageNumber: json['pageNumber'] ?? 1,
       pageSize: json['pageSize'] ?? 20,
@@ -274,6 +311,7 @@ class AdvancedFilterRequest {
       intFilters.isNotEmpty ||
       dateFilters.isNotEmpty ||
       decimalFilters.isNotEmpty ||
+      boolFilters.isNotEmpty ||
       (legacyFilters?.isNotEmpty ?? false);
 
   /// Create a legacy-compatible filter request

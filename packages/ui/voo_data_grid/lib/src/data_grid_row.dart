@@ -64,19 +64,9 @@ class VooDataGridRow extends StatelessWidget {
               for (final column in controller.frozenColumns)
                 _buildDataCell(context, column, design),
               
-              // Scrollable columns
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: controller.bodyHorizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for (final column in controller.scrollableColumns)
-                        _buildDataCell(context, column, design),
-                    ],
-                  ),
-                ),
-              ),
+              // Scrollable columns - these will be scrolled at the parent level
+              for (final column in controller.scrollableColumns)
+                _buildDataCell(context, column, design),
             ],
           ),
         ),

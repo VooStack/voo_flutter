@@ -43,7 +43,7 @@ class VooDataGridHeader extends StatelessWidget {
           for (final column in controller.frozenColumns)
             _buildHeaderCell(context, column, design),
           
-          // Scrollable columns
+          // Scrollable columns - no scrollbar here, just synchronized scrolling
           Expanded(
             child: SingleChildScrollView(
               controller: controller.horizontalScrollController,

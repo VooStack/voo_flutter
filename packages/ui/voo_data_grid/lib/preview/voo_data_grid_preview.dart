@@ -4,6 +4,8 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 import 'dart:math';
 import 'dart:convert';
 import 'voo_data_grid_preview_empty.dart' show VooDataGridEmptyStatePreview;
+import 'voo_data_grid_comprehensive_preview.dart'
+    show VooDataGridComprehensivePreview;
 
 void main() {
   runApp(const MaterialApp(
@@ -23,6 +25,19 @@ class WidgetPreviewScaffold extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          ListTile(
+            title: const Text('🌟 Comprehensive Preview (All Features)'),
+            subtitle: const Text(
+                '30+ columns, advanced filters, custom rendering, all data types'),
+            leading: const Icon(Icons.star, color: Colors.amber),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const VooDataGridComprehensivePreview(),
+              ),
+            ),
+          ),
+          const Divider(),
           ListTile(
             title: const Text('Basic Data Grid'),
             onTap: () => Navigator.push(
@@ -45,8 +60,8 @@ class WidgetPreviewScaffold extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Advanced Filtering with API Output'),
-            subtitle:
-                const Text('Complex filters with request/response display'),
+            subtitle: const Text(
+                'Date/time, numeric ranges, boolean filters with API display'),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -652,16 +667,62 @@ class _VooDataGridAdvancedFilteringPreviewState
   String _lastApiResponse = 'No response yet';
   bool _showFilters = false;
 
-  // Sample data for demonstration
+  // Sample data for demonstration with diverse data types
   late List<Map<String, dynamic>> _mockData;
+
+  // Sample users for dropdown
+  final List<Map<String, String>> _users = [
+    {'id': 'USR001', 'name': 'John Smith'},
+    {'id': 'USR002', 'name': 'Sarah Johnson'},
+    {'id': 'USR003', 'name': 'Mike Williams'},
+    {'id': 'USR004', 'name': 'Emily Davis'},
+    {'id': 'USR005', 'name': 'David Brown'},
+  ];
+
+  // Sample categories for dropdown
+  final List<Map<String, String>> _categories = [
+    {'id': 'CAT001', 'name': 'Electronics'},
+    {'id': 'CAT002', 'name': 'Furniture'},
+    {'id': 'CAT003', 'name': 'Clothing'},
+    {'id': 'CAT004', 'name': 'Food & Beverages'},
+    {'id': 'CAT005', 'name': 'Books'},
+  ];
 
   @override
   void initState() {
     super.initState();
 
-    // Generate mock orders
-    _mockData =
-        List.generate(100, (i) => MockDataGenerator.generateOrder(i + 1));
+    // Generate mock data with enhanced fields for filtering demos
+    final random = Random();
+    _mockData = List.generate(150, (i) {
+      final order = MockDataGenerator.generateOrder(i + 1);
+      final user = _users[random.nextInt(_users.length)];
+      final category = _categories[random.nextInt(_categories.length)];
+      // Add more diverse data types for filtering examples
+      return {
+        ...order,
+        'assignedUserId': user['id'],
+        'assignedUserName': user['name'],
+        'categoryId': category['id'],
+        'categoryName': category['name'],
+        'createdDate':
+            DateTime.now().subtract(Duration(days: random.nextInt(365))),
+        'deliveryDate': DateTime.now().add(Duration(days: random.nextInt(30))),
+        'lastModified':
+            DateTime.now().subtract(Duration(hours: random.nextInt(720))),
+        'rating': random.nextDouble() * 5,
+        'discount': random.nextDouble() * 100,
+        'weight': random.nextDouble() * 50,
+        'priority': random.nextInt(5) + 1,
+        'itemCount': random.nextInt(20) + 1,
+        'stockLevel': random.nextInt(1000),
+        'completionPercentage': random.nextDouble() * 100,
+        'isExpedited': random.nextBool(),
+        'isFragile': random.nextBool(),
+        'requiresSignature': random.nextBool(),
+        'tags': ['urgent', 'regular', 'bulk', 'premium'][random.nextInt(4)],
+      };
+    });
 
     // Initialize advanced data source with mock HTTP client
     _dataSource = AdvancedRemoteDataSource(
@@ -676,57 +737,214 @@ class _VooDataGridAdvancedFilteringPreviewState
         const VooDataColumn(
           field: 'orderId',
           label: 'Order ID',
-          width: 120,
+          width: 100,
           sortable: true,
         ),
         const VooDataColumn(
           field: 'customerName',
           label: 'Customer',
-          width: 150,
-          sortable: true,
-          filterable: true,
-        ),
-        const VooDataColumn(
-          field: 'customerCompany',
-          label: 'Company',
-          width: 180,
+          width: 140,
           sortable: true,
           filterable: true,
         ),
         const VooDataColumn(
           field: 'product',
           label: 'Product',
-          width: 150,
+          width: 140,
           sortable: true,
           filterable: true,
+        ),
+        VooDataColumn(
+          field: 'createdDate',
+          label: 'Created',
+          width: 100,
+          sortable: true,
+          filterable: true,
+          valueFormatter: (value) {
+            if (value is DateTime) {
+              return '${value.month.toString().padLeft(2, '0')}/${value.day.toString().padLeft(2, '0')}/${value.year}';
+            }
+            return value.toString();
+          },
+        ),
+        VooDataColumn(
+          field: 'lastModified',
+          label: 'Modified',
+          width: 110,
+          sortable: true,
+          filterable: true,
+          valueFormatter: (value) {
+            if (value is DateTime) {
+              final now = DateTime.now();
+              final diff = now.difference(value);
+              if (diff.inDays > 0) return '${diff.inDays}d ago';
+              if (diff.inHours > 0) return '${diff.inHours}h ago';
+              return '${diff.inMinutes}m ago';
+            }
+            return value.toString();
+          },
         ),
         VooDataColumn(
           field: 'quantity',
           label: 'Qty',
           width: 60,
           sortable: true,
+          filterable: true,
           textAlign: TextAlign.right,
         ),
         VooDataColumn(
           field: 'totalAmount',
           label: 'Total',
-          width: 100,
+          width: 90,
           sortable: true,
+          filterable: true,
           textAlign: TextAlign.right,
           valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+        ),
+        VooDataColumn(
+          field: 'temperature',
+          label: 'Temp °C',
+          width: 80,
+          sortable: true,
+          filterable: true,
+          textAlign: TextAlign.right,
+          valueFormatter: (value) => '${value.toStringAsFixed(1)}°',
+          cellBuilder: (context, value, row) {
+            final temp = value as double;
+            Color color;
+            if (temp < 0)
+              color = Colors.blue;
+            else if (temp < 20)
+              color = Colors.cyan;
+            else if (temp < 40)
+              color = Colors.green;
+            else if (temp < 60)
+              color = Colors.orange;
+            else
+              color = Colors.red;
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Text(
+                '${temp.toStringAsFixed(1)}°',
+                style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.right,
+              ),
+            );
+          },
+        ),
+        VooDataColumn(
+          field: 'rating',
+          label: 'Rating',
+          width: 70,
+          sortable: true,
+          filterable: true,
+          cellBuilder: (context, value, row) {
+            final rating = double.tryParse(value.toString()) ?? 0.0;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.star,
+                  size: 14,
+                  color: rating >= 4 ? Colors.amber : Colors.grey.shade400,
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  value.toString(),
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            );
+          },
+        ),
+        VooDataColumn(
+          field: 'priority',
+          label: 'Priority',
+          width: 70,
+          sortable: true,
+          filterable: true,
+          cellBuilder: (context, value, row) {
+            final priority = value as int;
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: priority == 5
+                    ? Colors.red.shade100
+                    : priority >= 3
+                        ? Colors.orange.shade100
+                        : Colors.green.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'P$priority',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: priority == 5
+                      ? Colors.red.shade700
+                      : priority >= 3
+                          ? Colors.orange.shade700
+                          : Colors.green.shade700,
+                ),
+              ),
+            );
+          },
+        ),
+        VooDataColumn(
+          field: 'completionPercentage',
+          label: 'Progress',
+          width: 100,
+          sortable: true,
+          filterable: true,
+          cellBuilder: (context, value, row) {
+            final percentage = (value as double).clamp(0, 100);
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LinearProgressIndicator(
+                    value: percentage / 100,
+                    backgroundColor: Colors.grey.shade300,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      percentage < 30
+                          ? Colors.red
+                          : percentage < 70
+                              ? Colors.orange
+                              : Colors.green,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${percentage.toStringAsFixed(0)}%',
+                    style: const TextStyle(fontSize: 10),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
         const VooDataColumn(
           field: 'orderStatus',
           label: 'Status',
-          width: 90,
+          width: 80,
           sortable: true,
           filterable: true,
         ),
-        const VooDataColumn(
-          field: 'orderDate',
-          label: 'Date',
-          width: 100,
+        VooDataColumn(
+          field: 'isExpedited',
+          label: 'Express',
+          width: 70,
           sortable: true,
+          filterable: true,
+          cellBuilder: (context, value, row) {
+            final isExpedited = value as bool;
+            return Icon(
+              isExpedited ? Icons.flash_on : Icons.schedule,
+              size: 16,
+              color: isExpedited ? Colors.orange : Colors.grey,
+            );
+          },
         ),
       ],
     );
@@ -789,7 +1007,104 @@ class _VooDataGridAdvancedFilteringPreviewState
 
         filteredData = filteredData.where((item) {
           final itemValue = item[field] as int? ?? 0;
-          return _applyNumericOperator(itemValue, value, operator);
+          bool matches = _applyNumericOperator(itemValue, value, operator);
+
+          // Apply secondary filter if exists
+          if (filter['secondaryFilter'] != null) {
+            final secondary = filter['secondaryFilter'];
+            final secondaryValue = secondary['value'] as int;
+            final secondaryOperator = secondary['operator'];
+            final secondaryMatches = _applyNumericOperator(
+                itemValue, secondaryValue, secondaryOperator);
+
+            if (secondary['logic'] == 'And') {
+              matches = matches && secondaryMatches;
+            } else {
+              matches = matches || secondaryMatches;
+            }
+          }
+
+          return matches;
+        }).toList();
+      }
+    }
+
+    // Apply decimal filters
+    if (body.containsKey('decimalFilters')) {
+      final filters = body['decimalFilters'] as List;
+      for (final filter in filters) {
+        final field = _mapFieldName(filter['fieldName']);
+        final value = (filter['value'] as num).toDouble();
+        final operator = filter['operator'];
+
+        filteredData = filteredData.where((item) {
+          final itemValue = (item[field] as num?)?.toDouble() ?? 0.0;
+          bool matches = _applyNumericOperator(itemValue, value, operator);
+
+          // Apply secondary filter if exists
+          if (filter['secondaryFilter'] != null) {
+            final secondary = filter['secondaryFilter'];
+            final secondaryValue = (secondary['value'] as num).toDouble();
+            final secondaryOperator = secondary['operator'];
+            final secondaryMatches = _applyNumericOperator(
+                itemValue, secondaryValue, secondaryOperator);
+
+            if (secondary['logic'] == 'And') {
+              matches = matches && secondaryMatches;
+            } else {
+              matches = matches || secondaryMatches;
+            }
+          }
+
+          return matches;
+        }).toList();
+      }
+    }
+
+    // Apply date filters
+    if (body.containsKey('dateFilters')) {
+      final filters = body['dateFilters'] as List;
+      for (final filter in filters) {
+        final field = _mapFieldName(filter['fieldName']);
+        final value = DateTime.parse(filter['value']);
+        final operator = filter['operator'];
+
+        filteredData = filteredData.where((item) {
+          final itemValue = item[field] as DateTime?;
+          if (itemValue == null) return false;
+
+          bool matches = _applyDateOperator(itemValue, value, operator);
+
+          // Apply secondary filter if exists
+          if (filter['secondaryFilter'] != null) {
+            final secondary = filter['secondaryFilter'];
+            final secondaryValue = DateTime.parse(secondary['value']);
+            final secondaryOperator = secondary['operator'];
+            final secondaryMatches = _applyDateOperator(
+                itemValue, secondaryValue, secondaryOperator);
+
+            if (secondary['logic'] == 'And') {
+              matches = matches && secondaryMatches;
+            } else {
+              matches = matches || secondaryMatches;
+            }
+          }
+
+          return matches;
+        }).toList();
+      }
+    }
+
+    // Apply bool filters
+    if (body.containsKey('boolFilters')) {
+      final filters = body['boolFilters'] as List;
+      for (final filter in filters) {
+        final field = _mapFieldName(filter['fieldName']);
+        final value = filter['value'] as bool;
+
+        filteredData = filteredData.where((item) {
+          final itemValue = item[field] as bool? ?? false;
+          return itemValue == value;
         }).toList();
       }
     }
@@ -853,6 +1168,72 @@ class _VooDataGridAdvancedFilteringPreviewState
     }
   }
 
+  bool _applyDateOperator(
+      DateTime value, DateTime filterValue, String operator) {
+    switch (operator) {
+      case 'GreaterThan':
+        return value.isAfter(filterValue);
+      case 'GreaterThanOrEqual':
+        return value.isAfter(filterValue) ||
+            value.isAtSameMomentAs(filterValue);
+      case 'LessThan':
+        return value.isBefore(filterValue);
+      case 'LessThanOrEqual':
+        return value.isBefore(filterValue) ||
+            value.isAtSameMomentAs(filterValue);
+      case 'Equals':
+        return value.year == filterValue.year &&
+            value.month == filterValue.month &&
+            value.day == filterValue.day;
+      case 'NotEquals':
+        return !(value.year == filterValue.year &&
+            value.month == filterValue.month &&
+            value.day == filterValue.day);
+      default:
+        return true;
+    }
+  }
+
+  Widget _buildFilterExample(String title, String subtitle, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.blue.shade700, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                    fontSize: 12,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: Colors.blue.shade700,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -888,40 +1269,84 @@ class _VooDataGridAdvancedFilteringPreviewState
                   children: [
                     if (_showFilters) ...[
                       Container(
-                        height: 200,
+                        height: 320,
                         padding: const EdgeInsets.all(16.0),
-                        child: AdvancedFilterWidget(
-                          dataSource: _dataSource,
-                          fields: const [
-                            FilterFieldConfig(
-                              fieldName: 'customerName',
-                              displayName: 'Customer Name',
-                              type: FilterType.string,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Advanced Filter Examples',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            FilterFieldConfig(
-                              fieldName: 'customerCompany',
-                              displayName: 'Company',
-                              type: FilterType.string,
-                            ),
-                            FilterFieldConfig(
-                              fieldName: 'product',
-                              displayName: 'Product',
-                              type: FilterType.string,
-                            ),
-                            FilterFieldConfig(
-                              fieldName: 'quantity',
-                              displayName: 'Quantity',
-                              type: FilterType.int,
-                            ),
-                            FilterFieldConfig(
-                              fieldName: 'totalAmount',
-                              displayName: 'Total Amount',
-                              type: FilterType.decimal,
+                            const SizedBox(height: 16),
+                            Expanded(
+                              child: GridView.count(
+                                crossAxisCount: 3,
+                                childAspectRatio: 3,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                children: [
+                                  // Text filter
+                                  _buildFilterExample(
+                                    'Customer Name',
+                                    'Text filter with operators',
+                                    Icons.text_fields,
+                                  ),
+                                  // Dropdown filter
+                                  _buildFilterExample(
+                                    'Assigned User',
+                                    'Dropdown (shows name, sends ID)',
+                                    Icons.person,
+                                  ),
+                                  // Date range filter
+                                  _buildFilterExample(
+                                    'Created Date',
+                                    'Date range picker',
+                                    Icons.date_range,
+                                  ),
+                                  // Number range filter
+                                  _buildFilterExample(
+                                    'Total Amount',
+                                    'Min/Max numeric input',
+                                    Icons.attach_money,
+                                  ),
+                                  // Boolean filter
+                                  _buildFilterExample(
+                                    'Express Shipping',
+                                    'Checkbox (Yes/No/All)',
+                                    Icons.local_shipping,
+                                  ),
+                                  // Multi-select filter
+                                  _buildFilterExample(
+                                    'Categories',
+                                    'Multi-select dropdown',
+                                    Icons.category,
+                                  ),
+                                  // Slider filter
+                                  _buildFilterExample(
+                                    'Priority',
+                                    'Slider (1-5)',
+                                    Icons.priority_high,
+                                  ),
+                                  // Percentage filter
+                                  _buildFilterExample(
+                                    'Completion',
+                                    'Percentage (0-100%)',
+                                    Icons.donut_small,
+                                  ),
+                                  // Rating filter
+                                  _buildFilterExample(
+                                    'Rating',
+                                    'Star rating (0-5)',
+                                    Icons.star,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                          onFilterApplied: (request) {
-                            // Request will be shown in the API output panel
-                          },
                         ),
                       ),
                     ],
@@ -929,62 +1354,120 @@ class _VooDataGridAdvancedFilteringPreviewState
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          ElevatedButton.icon(
-                            icon: const Icon(Icons.filter_1),
-                            label: const Text('Example: Product Filter'),
-                            onPressed: () {
-                              _dataSource.setAdvancedFilterRequest(
-                                AdvancedFilterRequest(
-                                  stringFilters: [
-                                    StringFilter(
-                                      fieldName: 'product',
-                                      value: 'Smart',
-                                      operator: 'Contains',
-                                      secondaryFilter: const SecondaryFilter(
-                                        logic: FilterLogic.and,
-                                        value: 'Hub',
-                                        operator: 'NotContains',
-                                      ),
-                                    ),
-                                  ],
-                                  pageNumber: 1,
-                                  pageSize: 20,
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton.icon(
-                            icon: const Icon(Icons.filter_2),
-                            label: const Text('Example: Quantity Range'),
-                            onPressed: () {
-                              _dataSource.setAdvancedFilterRequest(
-                                AdvancedFilterRequest(
-                                  intFilters: [
-                                    IntFilter(
-                                      fieldName: 'quantity',
-                                      value: 100,
-                                      operator: 'GreaterThan',
-                                      secondaryFilter: const SecondaryFilter(
-                                        logic: FilterLogic.and,
-                                        value: 500,
-                                        operator: 'LessThan',
-                                      ),
-                                    ),
-                                  ],
-                                  pageNumber: 1,
-                                  pageSize: 20,
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          OutlinedButton.icon(
-                            icon: const Icon(Icons.clear),
-                            label: const Text('Clear'),
-                            onPressed: () {
-                              _dataSource.clearAdvancedFilters();
-                            },
+                          Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.date_range),
+                                    label: const Text('Date Range'),
+                                    onPressed: () {
+                                      final now = DateTime.now();
+                                      _dataSource.setAdvancedFilterRequest(
+                                        AdvancedFilterRequest(
+                                          dateFilters: [
+                                            DateFilter(
+                                              fieldName: 'createdDate',
+                                              value: now.subtract(
+                                                  const Duration(days: 30)),
+                                              operator: 'GreaterThan',
+                                              secondaryFilter: SecondaryFilter(
+                                                logic: FilterLogic.and,
+                                                value: now,
+                                                operator: 'LessThan',
+                                              ),
+                                            ),
+                                          ],
+                                          pageNumber: 1,
+                                          pageSize: 20,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.thermostat),
+                                    label: const Text('Temp Range'),
+                                    onPressed: () {
+                                      _dataSource.setAdvancedFilterRequest(
+                                        AdvancedFilterRequest(
+                                          decimalFilters: [
+                                            DecimalFilter(
+                                              fieldName: 'temperature',
+                                              value: 20.0,
+                                              operator: 'GreaterThan',
+                                              secondaryFilter:
+                                                  const SecondaryFilter(
+                                                logic: FilterLogic.and,
+                                                value: 40.0,
+                                                operator: 'LessThan',
+                                              ),
+                                            ),
+                                          ],
+                                          pageNumber: 1,
+                                          pageSize: 20,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.priority_high),
+                                    label: const Text('High Priority'),
+                                    onPressed: () {
+                                      _dataSource.setAdvancedFilterRequest(
+                                        AdvancedFilterRequest(
+                                          intFilters: [
+                                            IntFilter(
+                                              fieldName: 'priority',
+                                              value: 4,
+                                              operator: 'GreaterThanOrEqual',
+                                            ),
+                                          ],
+                                          boolFilters: [
+                                            BoolFilter(
+                                              fieldName: 'isExpedited',
+                                              value: true,
+                                            ),
+                                          ],
+                                          pageNumber: 1,
+                                          pageSize: 20,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.star),
+                                    label: const Text('Top Rated'),
+                                    onPressed: () {
+                                      _dataSource.setAdvancedFilterRequest(
+                                        AdvancedFilterRequest(
+                                          decimalFilters: [
+                                            DecimalFilter(
+                                              fieldName: 'rating',
+                                              value: 4.0,
+                                              operator: 'GreaterThanOrEqual',
+                                            ),
+                                          ],
+                                          pageNumber: 1,
+                                          pageSize: 20,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  OutlinedButton.icon(
+                                    icon: const Icon(Icons.clear),
+                                    label: const Text('Clear All'),
+                                    onPressed: () {
+                                      _dataSource.clearAdvancedFilters();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -1804,9 +2287,11 @@ class _VooDataGridSelectablePreviewState
     _dataSource = LocalDataGridSource(data: tasks);
     _dataSource.setSelectionMode(VooSelectionMode.multiple);
 
-    // Listen to selection changes
-    _dataSource.addListener(() {
-      if (mounted) setState(() {});
+    // Listen to selection changes after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _dataSource.addListener(() {
+        if (mounted) setState(() {});
+      });
     });
 
     _controller = VooDataGridController(

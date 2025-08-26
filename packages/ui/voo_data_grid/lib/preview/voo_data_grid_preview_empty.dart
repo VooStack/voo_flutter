@@ -34,10 +34,12 @@ class VooDataGridEmptyStatePreview extends StatefulWidget {
   const VooDataGridEmptyStatePreview({super.key});
 
   @override
-  State<VooDataGridEmptyStatePreview> createState() => _VooDataGridEmptyStatePreviewState();
+  State<VooDataGridEmptyStatePreview> createState() =>
+      _VooDataGridEmptyStatePreviewState();
 }
 
-class _VooDataGridEmptyStatePreviewState extends State<VooDataGridEmptyStatePreview> {
+class _VooDataGridEmptyStatePreviewState
+    extends State<VooDataGridEmptyStatePreview> {
   late VooDataGridController _controller;
   late LocalDataGridSource _dataSource;
   bool _hasData = false;
@@ -126,17 +128,22 @@ class _VooDataGridEmptyStatePreviewState extends State<VooDataGridEmptyStatePrev
       _hasData = !_hasData;
       if (_hasData) {
         // Add sample data
-        final data = List.generate(10, (i) => {
-          'orderId': 'ORD${(1000 + i).toString().padLeft(6, '0')}',
-          'customerName': 'Customer ${i + 1}',
-          'productName': 'Product ${i + 1}',
-          'quantity': (i + 1) * 2,
-          'unitPrice': (i + 1) * 15.99,
-          'totalAmount': (i + 1) * 2 * 15.99,
-          'orderStatus': ['Active', 'Pending', 'Shipped'][i % 3],
-          'orderDate': DateTime.now().subtract(Duration(days: i)).toIso8601String().split('T')[0],
-          'shippingMethod': ['Standard', 'Express', 'Overnight'][i % 3],
-        });
+        final data = List.generate(
+            10,
+            (i) => {
+                  'orderId': 'ORD${(1000 + i).toString().padLeft(6, '0')}',
+                  'customerName': 'Customer ${i + 1}',
+                  'productName': 'Product ${i + 1}',
+                  'quantity': (i + 1) * 2,
+                  'unitPrice': (i + 1) * 15.99,
+                  'totalAmount': (i + 1) * 2 * 15.99,
+                  'orderStatus': ['Active', 'Pending', 'Shipped'][i % 3],
+                  'orderDate': DateTime.now()
+                      .subtract(Duration(days: i))
+                      .toIso8601String()
+                      .split('T')[0],
+                  'shippingMethod': ['Standard', 'Express', 'Overnight'][i % 3],
+                });
         _dataSource.setLocalData(data);
       } else {
         // Clear data to show empty state
@@ -220,9 +227,10 @@ class _VooDataGridEmptyStatePreviewState extends State<VooDataGridEmptyStatePrev
                         const SizedBox(height: 8),
                         Text(
                           'Try adjusting your filters or add some data',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey.shade600,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey.shade600,
+                                  ),
                         ),
                         const SizedBox(height: 24),
                         OutlinedButton.icon(

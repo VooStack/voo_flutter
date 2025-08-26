@@ -127,10 +127,18 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
         );
         break;
       case FilterType.date:
+      case FilterType.dateTime:
         filter = DateFilter(
           fieldName: fieldName,
-          value:
-              value is String ? value : (value as DateTime).toIso8601String(),
+          value: value is DateTime ? value : DateTime.parse(value.toString()),
+          operator: operator,
+          secondaryFilter: secondaryFilter,
+        );
+        break;
+      case FilterType.bool:
+        filter = BoolFilter(
+          fieldName: fieldName,
+          value: value is bool ? value : value.toString().toLowerCase() == 'true',
           operator: operator,
           secondaryFilter: secondaryFilter,
         );
@@ -150,10 +158,11 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
 
   /// Helper to detect filter type from value
   FilterType _detectFilterType(dynamic value) {
-    if (value is String) return FilterType.string;
+    if (value is bool) return FilterType.bool;
     if (value is int) return FilterType.int;
     if (value is double) return FilterType.decimal;
     if (value is DateTime) return FilterType.date;
+    if (value is String) return FilterType.string;
     // Default to string for unknown types
     return FilterType.string;
   }
@@ -165,12 +174,14 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
     final intFilters = List<IntFilter>.from(request.intFilters);
     final decimalFilters = List<DecimalFilter>.from(request.decimalFilters);
     final dateFilters = List<DateFilter>.from(request.dateFilters);
+    final boolFilters = List<BoolFilter>.from(request.boolFilters);
 
     // Remove existing filter for the same field
     stringFilters.removeWhere((f) => f.fieldName == filter.fieldName);
     intFilters.removeWhere((f) => f.fieldName == filter.fieldName);
     decimalFilters.removeWhere((f) => f.fieldName == filter.fieldName);
     dateFilters.removeWhere((f) => f.fieldName == filter.fieldName);
+    boolFilters.removeWhere((f) => f.fieldName == filter.fieldName);
 
     // Add new filter
     if (filter is StringFilter) {
@@ -181,6 +192,8 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
       decimalFilters.add(filter);
     } else if (filter is DateFilter) {
       dateFilters.add(filter);
+    } else if (filter is BoolFilter) {
+      boolFilters.add(filter);
     }
 
     return AdvancedFilterRequest(
@@ -188,6 +201,7 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
       intFilters: intFilters,
       decimalFilters: decimalFilters,
       dateFilters: dateFilters,
+      boolFilters: boolFilters,
       logic: request.logic,
       pageNumber: request.pageNumber,
       pageSize: request.pageSize,
@@ -209,4 +223,6 @@ enum FilterType {
   int,
   decimal,
   date,
+  dateTime,
+  bool,
 }

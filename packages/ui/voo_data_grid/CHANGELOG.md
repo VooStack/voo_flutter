@@ -1,3 +1,31 @@
+## 0.3.1
+
+* **Bug Fixes**
+  * Fixed ScrollController multiple positions error when using horizontal scrolling
+  * Resolved horizontal scrollbar positioning to appear at bottom of grid instead of right side
+  * Fixed horizontal scrollbar accessibility - now always visible at bottom of viewport without requiring vertical scroll
+
+* **Filter Enhancements**
+  * Enhanced Advanced Filters preview with comprehensive filter types:
+    - DateTime filters with date picker widgets
+    - Numeric range filters for min/max values
+    - Dropdown filters with icon support
+    - Boolean checkbox filters
+    - Text search filters with proper hints
+  * Added `FilterTypeExtensions` for cleaner code organization
+  * Improved filter type handling with proper operators and input widgets per type
+
+* **UX Improvements**
+  * Horizontal scrollbar now fixed at bottom of grid viewport for better accessibility
+  * Removed scrollbar from header to prevent duplicate scrollbar issues
+  * Improved scrollbar positioning following UI/UX best practices
+  * Stack-based layout for optimal scrollbar visibility
+
+* **Code Quality**
+  * Refactored filter system with enum extensions for better maintainability
+  * Fixed DateTime handling in DateFilter models
+  * Improved type safety in filter request builders
+
 ## 0.3.0
 
 * **BREAKING CHANGES**

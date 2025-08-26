@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
-import 'package:voo_data_grid/previews.dart';
+import 'package:voo_data_grid/preview/voo_data_grid_preview.dart';
 
 @Preview(name: 'Basic Data Grid')
 Widget basicDataGridPreview() {

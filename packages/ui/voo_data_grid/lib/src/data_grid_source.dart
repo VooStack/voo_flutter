@@ -6,8 +6,10 @@ import 'data_grid_column.dart';
 enum VooDataGridMode {
   /// All operations (filtering, sorting, pagination) are handled locally
   local,
+
   /// All operations are handled remotely via API
   remote,
+
   /// Filtering and sorting are local, but data fetching is remote
   mixed,
 }
@@ -78,7 +80,8 @@ abstract class VooDataGridSource extends ChangeNotifier {
     required List<VooColumnSort> sorts,
   }) async {
     // Default implementation for local mode
-    throw UnimplementedError('fetchRemoteData must be implemented for remote/mixed modes');
+    throw UnimplementedError(
+        'fetchRemoteData must be implemented for remote/mixed modes');
   }
 
   /// Set local data (for local mode)
@@ -104,7 +107,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
         case VooDataGridMode.local:
           _applyLocalFiltersAndSorts();
           break;
-        
+
         case VooDataGridMode.remote:
           final response = await fetchRemoteData(
             page: _currentPage,
@@ -115,7 +118,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
           _rows = response.rows;
           _totalRows = response.totalRows;
           break;
-        
+
         case VooDataGridMode.mixed:
           // For mixed mode, fetch all data once then filter/sort locally
           if (_allRows.isEmpty) {
@@ -149,7 +152,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
     for (final entry in _filters.entries) {
       final field = entry.key;
       final filter = entry.value;
-      
+
       filteredData = filteredData.where((row) {
         final value = _getFieldValue(row, field);
         return _applyFilter(value, filter);
@@ -161,7 +164,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
       filteredData.sort((a, b) {
         final aValue = _getFieldValue(a, sort.field);
         final bValue = _getFieldValue(b, sort.field);
-        
+
         int comparison;
         if (aValue == null && bValue == null) {
           comparison = 0;
@@ -174,7 +177,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
         } else {
           comparison = aValue.toString().compareTo(bValue.toString());
         }
-        
+
         return sort.direction == VooSortDirection.ascending
             ? comparison
             : -comparison;
@@ -209,34 +212,38 @@ abstract class VooDataGridSource extends ChangeNotifier {
     switch (filter.operator) {
       case VooFilterOperator.equals:
         return value == filter.value;
-      
+
       case VooFilterOperator.notEquals:
         return value != filter.value;
-      
+
       case VooFilterOperator.contains:
         if (value == null) return false;
-        return value.toString().toLowerCase().contains(
-          filter.value.toString().toLowerCase()
-        );
-      
+        return value
+            .toString()
+            .toLowerCase()
+            .contains(filter.value.toString().toLowerCase());
+
       case VooFilterOperator.notContains:
         if (value == null) return true;
-        return !value.toString().toLowerCase().contains(
-          filter.value.toString().toLowerCase()
-        );
-      
+        return !value
+            .toString()
+            .toLowerCase()
+            .contains(filter.value.toString().toLowerCase());
+
       case VooFilterOperator.startsWith:
         if (value == null) return false;
-        return value.toString().toLowerCase().startsWith(
-          filter.value.toString().toLowerCase()
-        );
-      
+        return value
+            .toString()
+            .toLowerCase()
+            .startsWith(filter.value.toString().toLowerCase());
+
       case VooFilterOperator.endsWith:
         if (value == null) return false;
-        return value.toString().toLowerCase().endsWith(
-          filter.value.toString().toLowerCase()
-        );
-      
+        return value
+            .toString()
+            .toLowerCase()
+            .endsWith(filter.value.toString().toLowerCase());
+
       case VooFilterOperator.greaterThan:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -246,7 +253,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
           return value.isAfter(filter.value);
         }
         return false;
-      
+
       case VooFilterOperator.greaterThanOrEqual:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -256,7 +263,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
           return !value.isBefore(filter.value);
         }
         return false;
-      
+
       case VooFilterOperator.lessThan:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -266,7 +273,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
           return value.isBefore(filter.value);
         }
         return false;
-      
+
       case VooFilterOperator.lessThanOrEqual:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -276,7 +283,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
           return !value.isAfter(filter.value);
         }
         return false;
-      
+
       case VooFilterOperator.between:
         if (value == null || filter.value == null || filter.valueTo == null) {
           return false;
@@ -284,26 +291,29 @@ abstract class VooDataGridSource extends ChangeNotifier {
         if (value is num && filter.value is num && filter.valueTo is num) {
           return value >= filter.value && value <= filter.valueTo;
         }
-        if (value is DateTime && filter.value is DateTime && filter.valueTo is DateTime) {
-          return !value.isBefore(filter.value) && !value.isAfter(filter.valueTo);
+        if (value is DateTime &&
+            filter.value is DateTime &&
+            filter.valueTo is DateTime) {
+          return !value.isBefore(filter.value) &&
+              !value.isAfter(filter.valueTo);
         }
         return false;
-      
+
       case VooFilterOperator.inList:
         if (filter.value is List) {
           return (filter.value as List).contains(value);
         }
         return false;
-      
+
       case VooFilterOperator.notInList:
         if (filter.value is List) {
           return !(filter.value as List).contains(value);
         }
         return true;
-      
+
       case VooFilterOperator.isNull:
         return value == null;
-      
+
       case VooFilterOperator.isNotNull:
         return value != null;
     }
@@ -317,7 +327,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
       _filters[field] = filter;
     }
     _currentPage = 0;
-    
+
     if (_mode == VooDataGridMode.remote) {
       _debouncedLoadData();
     } else {
@@ -339,7 +349,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
     } else {
       final existingIndex = _sorts.indexWhere((sort) => sort.field == field);
       final newSort = VooColumnSort(field: field, direction: direction);
-      
+
       if (existingIndex >= 0) {
         _sorts[existingIndex] = newSort;
       } else {
@@ -411,7 +421,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   /// Select all rows (alias for selectAll)
   void selectAllRows() => selectAll();
 
@@ -420,8 +430,8 @@ abstract class VooDataGridSource extends ChangeNotifier {
     _selectedRows.clear();
     notifyListeners();
   }
-  
-  /// Deselect all rows (alias for clearSelection) 
+
+  /// Deselect all rows (alias for clearSelection)
   void deselectAllRows() => clearSelection();
 
   /// Set selection mode

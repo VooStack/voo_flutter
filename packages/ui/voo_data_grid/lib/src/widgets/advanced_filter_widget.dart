@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 import '../models/advanced_filters.dart';
+import '../models/filter_type_extensions.dart';
 import '../advanced_remote_data_source.dart';
 
 /// Advanced filter widget for complex filtering UI
@@ -99,298 +100,313 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
   }
 
   Widget _buildFilterRow(FilterEntry filter, VooDesignSystemData design) {
-    return Container(
+    final theme = Theme.of(context);
+    
+    return Card(
       margin: EdgeInsets.only(bottom: design.spacingSm),
-      padding: EdgeInsets.all(design.spacingSm),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(design.radiusSm),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              // Field selector
-              Expanded(
-                flex: 2,
-                child: DropdownButtonFormField<String>(
-                  initialValue: filter.fieldName,
-                  decoration: InputDecoration(
-                    labelText: 'Field',
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: design.spacingSm,
-                      vertical: design.spacingXs,
-                    ),
-                  ),
-                  items: widget.fields.map((field) {
-                    return DropdownMenuItem(
-                      value: field.fieldName,
-                      child: Text(field.displayName),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      filter.fieldName = value!;
-                      final config = widget.fields.firstWhere(
-                        (f) => f.fieldName == value,
-                      );
-                      filter.type = config.type;
-                    });
-                  },
+      child: Padding(
+        padding: EdgeInsets.all(design.spacingSm),
+        child: Row(
+          children: [
+            // Field selector
+            Expanded(
+              flex: 2,
+              child: DropdownButtonFormField<FilterFieldConfig>(
+                decoration: InputDecoration(
+                  labelText: 'Field',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: Icon(filter.field?.type.icon),
                 ),
-              ),
-              SizedBox(width: design.spacingXs),
-              
-              // Operator selector
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  initialValue: filter.operator,
-                  decoration: InputDecoration(
-                    labelText: 'Operator',
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: design.spacingSm,
-                      vertical: design.spacingXs,
-                    ),
-                  ),
-                  items: _getOperatorsForType(filter.type).map((op) {
-                    return DropdownMenuItem(
-                      value: op,
-                      child: Text(_getOperatorDisplayName(op)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      filter.operator = value!;
-                    });
-                  },
-                ),
-              ),
-              SizedBox(width: design.spacingXs),
-              
-              // Value input
-              Expanded(
-                flex: 2,
-                child: _buildValueInput(filter, design),
-              ),
-              SizedBox(width: design.spacingXs),
-              
-              // Remove button
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                color: Theme.of(context).colorScheme.error,
-                onPressed: () {
+                value: filter.field,
+                items: widget.fields.map((field) {
+                  return DropdownMenuItem(
+                    value: field,
+                    child: Text(field.displayName),
+                  );
+                }).toList(),
+                onChanged: (value) {
                   setState(() {
-                    _filters.remove(filter);
+                    filter.field = value;
+                    filter.operator = value?.type.defaultOperator;
+                    filter.value = null;
+                    filter.secondaryValue = null;
                   });
                 },
               ),
-            ],
-          ),
-          
-          // Secondary filter (if enabled)
-          if (filter.hasSecondaryFilter)
-            Container(
-              margin: EdgeInsets.only(top: design.spacingSm),
-              padding: EdgeInsets.all(design.spacingXs),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-                ),
-                borderRadius: BorderRadius.circular(design.radiusXs),
-              ),
-              child: Row(
-                children: [
-                  // Logic selector
-                  SegmentedButton<FilterLogic>(
-                    segments: const [
-                      ButtonSegment(value: FilterLogic.and, label: Text('AND')),
-                      ButtonSegment(value: FilterLogic.or, label: Text('OR')),
-                    ],
-                    selected: {filter.secondaryLogic},
-                    onSelectionChanged: (value) {
-                      setState(() {
-                        filter.secondaryLogic = value.first;
-                      });
-                    },
-                  ),
-                  SizedBox(width: design.spacingXs),
-                  
-                  // Secondary operator
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      initialValue: filter.secondaryOperator,
-                      decoration: InputDecoration(
-                        labelText: 'Operator',
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: design.spacingSm,
-                          vertical: design.spacingXs,
-                        ),
-                      ),
-                      items: _getOperatorsForType(filter.type).map((op) {
-                        return DropdownMenuItem(
-                          value: op,
-                          child: Text(_getOperatorDisplayName(op)),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          filter.secondaryOperator = value!;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(width: design.spacingXs),
-                  
-                  // Secondary value
-                  Expanded(
-                    flex: 2,
-                    child: _buildSecondaryValueInput(filter, design),
-                  ),
-                ],
-              ),
             ),
-          
-          // Add secondary filter button
-          if (!filter.hasSecondaryFilter)
-            TextButton.icon(
-              icon: const Icon(Icons.add_circle_outline),
-              label: const Text('Add Secondary Filter'),
+            SizedBox(width: design.spacingSm),
+            
+            // Operator selector
+            if (filter.field != null) ...[
+              Expanded(
+                flex: 2,
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Operator',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: filter.operator,
+                  items: filter.field!.type.operators.map((op) {
+                    return DropdownMenuItem(
+                      value: op,
+                      child: Text(op.displayText),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      filter.operator = value;
+                      if (value != null && !value.requiresSecondaryValue) {
+                        filter.secondaryValue = null;
+                      }
+                    });
+                  },
+                ),
+              ),
+              SizedBox(width: design.spacingSm),
+            ],
+            
+            // Value input
+            if (filter.field != null && filter.operator != null) ...[
+              Expanded(
+                flex: 3,
+                child: _buildValueInput(filter, design),
+              ),
+              SizedBox(width: design.spacingSm),
+            ],
+            
+            // Secondary value for range operations
+            if (filter.operator?.requiresSecondaryValue == true) ...[
+              Expanded(
+                flex: 3,
+                child: _buildSecondaryValueInput(filter, design),
+              ),
+              SizedBox(width: design.spacingSm),
+            ],
+            
+            // Remove button
+            IconButton(
+              icon: const Icon(Icons.remove_circle_outline),
+              color: theme.colorScheme.error,
               onPressed: () {
                 setState(() {
-                  filter.hasSecondaryFilter = true;
+                  _filters.remove(filter);
                 });
               },
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildValueInput(FilterEntry filter, VooDesignSystemData design) {
-    switch (filter.type) {
-      case FilterType.string:
+    final type = filter.field!.type;
+    
+    switch (type.inputType) {
+      case FilterInputType.text:
         return TextFormField(
-          initialValue: filter.value?.toString() ?? '',
-          decoration: const InputDecoration(labelText: 'Value'),
+          decoration: const InputDecoration(
+            labelText: 'Value',
+            border: OutlineInputBorder(),
+          ),
+          initialValue: filter.value?.toString(),
           onChanged: (value) {
             filter.value = value;
           },
         );
-      
-      case FilterType.int:
+        
+      case FilterInputType.number:
         return TextFormField(
-          initialValue: filter.value?.toString() ?? '',
-          decoration: const InputDecoration(labelText: 'Value'),
+          decoration: const InputDecoration(
+            labelText: 'Value',
+            border: OutlineInputBorder(),
+          ),
           keyboardType: TextInputType.number,
+          initialValue: filter.value?.toString(),
           onChanged: (value) {
-            filter.value = int.tryParse(value) ?? 0;
+            filter.value = int.tryParse(value);
           },
         );
-      
-      case FilterType.decimal:
+        
+      case FilterInputType.decimal:
         return TextFormField(
-          initialValue: filter.value?.toString() ?? '',
-          decoration: const InputDecoration(labelText: 'Value'),
+          decoration: const InputDecoration(
+            labelText: 'Value',
+            border: OutlineInputBorder(),
+          ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          initialValue: filter.value?.toString(),
           onChanged: (value) {
-            filter.value = double.tryParse(value) ?? 0.0;
+            filter.value = double.tryParse(value);
           },
         );
-      
-      case FilterType.date:
+        
+      case FilterInputType.datePicker:
         return InkWell(
           onTap: () async {
             final date = await showDatePicker(
               context: context,
-              initialDate: DateTime.now(),
+              initialDate: filter.value as DateTime? ?? DateTime.now(),
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
             );
             if (date != null) {
               setState(() {
-                filter.value = date.toIso8601String();
+                filter.value = date;
               });
             }
           },
           child: InputDecorator(
-            decoration: const InputDecoration(labelText: 'Date'),
+            decoration: const InputDecoration(
+              labelText: 'Date',
+              border: OutlineInputBorder(),
+              suffixIcon: Icon(Icons.calendar_today),
+            ),
             child: Text(
-              filter.value?.toString() ?? 'Select date',
-              style: Theme.of(context).textTheme.bodyMedium,
+              filter.value != null 
+                ? type.formatValue(filter.value)
+                : 'Select date',
             ),
           ),
         );
+        
+      case FilterInputType.dateTimePicker:
+        return InkWell(
+          onTap: () async {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: filter.value as DateTime? ?? DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+            );
+            if (date != null && mounted) {
+              final time = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(
+                  filter.value as DateTime? ?? DateTime.now(),
+                ),
+              );
+              if (time != null) {
+                setState(() {
+                  filter.value = DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    time.hour,
+                    time.minute,
+                  );
+                });
+              }
+            }
+          },
+          child: InputDecorator(
+            decoration: const InputDecoration(
+              labelText: 'Date & Time',
+              border: OutlineInputBorder(),
+              suffixIcon: Icon(Icons.access_time),
+            ),
+            child: Text(
+              filter.value != null 
+                ? type.formatValue(filter.value)
+                : 'Select date & time',
+            ),
+          ),
+        );
+        
+      case FilterInputType.checkbox:
+        return DropdownButtonFormField<bool>(
+          decoration: const InputDecoration(
+            labelText: 'Value',
+            border: OutlineInputBorder(),
+          ),
+          value: filter.value as bool?,
+          items: const [
+            DropdownMenuItem(value: true, child: Text('Yes')),
+            DropdownMenuItem(value: false, child: Text('No')),
+          ],
+          onChanged: (value) {
+            setState(() {
+              filter.value = value;
+            });
+          },
+        );
+        
+      default:
+        return const SizedBox.shrink();
     }
   }
 
   Widget _buildSecondaryValueInput(FilterEntry filter, VooDesignSystemData design) {
-    switch (filter.type) {
-      case FilterType.string:
+    final type = filter.field!.type;
+    
+    switch (type.inputType) {
+      case FilterInputType.number:
         return TextFormField(
-          initialValue: filter.secondaryValue?.toString() ?? '',
-          decoration: const InputDecoration(labelText: 'Secondary Value'),
-          onChanged: (value) {
-            filter.secondaryValue = value;
-          },
-        );
-      
-      case FilterType.int:
-        return TextFormField(
-          initialValue: filter.secondaryValue?.toString() ?? '',
-          decoration: const InputDecoration(labelText: 'Secondary Value'),
+          decoration: const InputDecoration(
+            labelText: 'To',
+            border: OutlineInputBorder(),
+          ),
           keyboardType: TextInputType.number,
+          initialValue: filter.secondaryValue?.toString(),
           onChanged: (value) {
-            filter.secondaryValue = int.tryParse(value) ?? 0;
+            filter.secondaryValue = int.tryParse(value);
           },
         );
-      
-      case FilterType.decimal:
+        
+      case FilterInputType.decimal:
         return TextFormField(
-          initialValue: filter.secondaryValue?.toString() ?? '',
-          decoration: const InputDecoration(labelText: 'Secondary Value'),
+          decoration: const InputDecoration(
+            labelText: 'To',
+            border: OutlineInputBorder(),
+          ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          initialValue: filter.secondaryValue?.toString(),
           onChanged: (value) {
-            filter.secondaryValue = double.tryParse(value) ?? 0.0;
+            filter.secondaryValue = double.tryParse(value);
           },
         );
-      
-      case FilterType.date:
+        
+      case FilterInputType.datePicker:
         return InkWell(
           onTap: () async {
             final date = await showDatePicker(
               context: context,
-              initialDate: DateTime.now(),
+              initialDate: filter.secondaryValue as DateTime? ?? DateTime.now(),
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
             );
             if (date != null) {
               setState(() {
-                filter.secondaryValue = date.toIso8601String();
+                filter.secondaryValue = date;
               });
             }
           },
           child: InputDecorator(
-            decoration: const InputDecoration(labelText: 'Secondary Date'),
+            decoration: const InputDecoration(
+              labelText: 'To Date',
+              border: OutlineInputBorder(),
+              suffixIcon: Icon(Icons.calendar_today),
+            ),
             child: Text(
-              filter.secondaryValue?.toString() ?? 'Select date',
-              style: Theme.of(context).textTheme.bodyMedium,
+              filter.secondaryValue != null 
+                ? type.formatValue(filter.secondaryValue)
+                : 'Select end date',
             ),
           ),
         );
+        
+      default:
+        return const SizedBox.shrink();
     }
   }
 
   Widget _buildAddFilterButton(VooDesignSystemData design) {
-    return OutlinedButton.icon(
-      icon: const Icon(Icons.add),
+    return TextButton.icon(
+      icon: const Icon(Icons.add_circle_outline),
       label: const Text('Add Filter'),
       onPressed: () {
         setState(() {
-          _filters.add(FilterEntry(
-            fieldName: widget.fields.first.fieldName,
-            type: widget.fields.first.type,
-            operator: 'Equals',
-          ));
+          _filters.add(FilterEntry());
         });
       },
     );
@@ -411,7 +427,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
         ),
         SizedBox(width: design.spacingSm),
         FilledButton.icon(
-          icon: const Icon(Icons.check),
+          icon: const Icon(Icons.search),
           label: const Text('Apply Filters'),
           onPressed: _applyFilters,
         ),
@@ -422,133 +438,117 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
   void _applyFilters() {
     final stringFilters = <StringFilter>[];
     final intFilters = <IntFilter>[];
-    final dateFilters = <DateFilter>[];
     final decimalFilters = <DecimalFilter>[];
-
+    final dateFilters = <DateFilter>[];
+    final boolFilters = <BoolFilter>[];
+    
     for (final filter in _filters) {
+      if (filter.field == null || 
+          filter.operator == null || 
+          filter.value == null) continue;
+      
+      final field = filter.field!;
       SecondaryFilter? secondaryFilter;
-      if (filter.hasSecondaryFilter && filter.secondaryValue != null) {
+      
+      if (filter.operator!.requiresSecondaryValue && 
+          filter.secondaryValue != null) {
         secondaryFilter = SecondaryFilter(
-          logic: filter.secondaryLogic,
+          logic: FilterLogic.and,
           value: filter.secondaryValue,
-          operator: filter.secondaryOperator ?? 'Equals',
+          operator: 'LessThanOrEqual',
         );
       }
-
-      switch (filter.type) {
+      
+      switch (field.type) {
         case FilterType.string:
           stringFilters.add(StringFilter(
-            fieldName: filter.fieldName!,
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? 'Equals',
+            fieldName: field.fieldName,
+            value: filter.value.toString(),
+            operator: filter.operator!,
             secondaryFilter: secondaryFilter,
           ));
           break;
-        
+          
         case FilterType.int:
           intFilters.add(IntFilter(
-            fieldName: filter.fieldName!,
-            value: filter.value as int? ?? 0,
-            operator: filter.operator ?? 'Equals',
+            fieldName: field.fieldName,
+            value: filter.value as int,
+            operator: filter.operator!,
             secondaryFilter: secondaryFilter,
           ));
           break;
-        
+          
         case FilterType.decimal:
           decimalFilters.add(DecimalFilter(
-            fieldName: filter.fieldName!,
-            value: filter.value as double? ?? 0.0,
-            operator: filter.operator ?? 'Equals',
+            fieldName: field.fieldName,
+            value: (filter.value as num).toDouble(),
+            operator: filter.operator!,
             secondaryFilter: secondaryFilter,
           ));
           break;
-        
+          
         case FilterType.date:
+        case FilterType.dateTime:
           dateFilters.add(DateFilter(
-            fieldName: filter.fieldName!,
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? 'Equals',
+            fieldName: field.fieldName,
+            value: filter.value as DateTime,
+            operator: filter.operator!,
             secondaryFilter: secondaryFilter,
+          ));
+          break;
+          
+        case FilterType.bool:
+          boolFilters.add(BoolFilter(
+            fieldName: field.fieldName,
+            value: filter.value as bool,
+            operator: filter.operator!,
           ));
           break;
       }
     }
-
+    
     final request = AdvancedFilterRequest(
       stringFilters: stringFilters,
       intFilters: intFilters,
-      dateFilters: dateFilters,
       decimalFilters: decimalFilters,
+      dateFilters: dateFilters,
+      boolFilters: boolFilters,
       logic: _globalLogic,
       pageNumber: 1,
-      pageSize: widget.dataSource.pageSize,
+      pageSize: 20,
     );
-
+    
     widget.dataSource.setAdvancedFilterRequest(request);
     widget.onFilterApplied?.call(request);
   }
-
-  List<String> _getOperatorsForType(FilterType type) {
-    switch (type) {
-      case FilterType.string:
-        return ['Equals', 'NotEquals', 'Contains', 'NotContains', 'StartsWith', 'EndsWith'];
-      case FilterType.int:
-      case FilterType.decimal:
-        return ['Equals', 'NotEquals', 'GreaterThan', 'GreaterThanOrEqual', 'LessThan', 'LessThanOrEqual'];
-      case FilterType.date:
-        return ['Equals', 'NotEquals', 'After', 'AfterOrEqual', 'Before', 'BeforeOrEqual'];
-    }
-  }
-
-  String _getOperatorDisplayName(String operator) {
-    final map = {
-      'Equals': '=',
-      'NotEquals': '≠',
-      'Contains': 'Contains',
-      'NotContains': 'Not Contains',
-      'StartsWith': 'Starts With',
-      'EndsWith': 'Ends With',
-      'GreaterThan': '>',
-      'GreaterThanOrEqual': '≥',
-      'LessThan': '<',
-      'LessThanOrEqual': '≤',
-      'After': 'After',
-      'AfterOrEqual': 'After or Equal',
-      'Before': 'Before',
-      'BeforeOrEqual': 'Before or Equal',
-    };
-    return map[operator] ?? operator;
-  }
 }
 
-/// Configuration for a filterable field
+/// Filter field configuration
 class FilterFieldConfig {
   final String fieldName;
   final String displayName;
   final FilterType type;
-
+  final List<String>? options; // For dropdown fields
+  
   const FilterFieldConfig({
     required this.fieldName,
     required this.displayName,
     required this.type,
+    this.options,
   });
 }
 
 /// Internal filter entry model
 class FilterEntry {
-  String? fieldName;
-  FilterType type;
+  FilterFieldConfig? field;
   String? operator;
   dynamic value;
-  bool hasSecondaryFilter = false;
-  FilterLogic secondaryLogic = FilterLogic.and;
-  String? secondaryOperator;
-  dynamic secondaryValue;
-
+  dynamic secondaryValue; // For range operations
+  
   FilterEntry({
-    this.fieldName,
-    required this.type,
+    this.field,
     this.operator,
     this.value,
+    this.secondaryValue,
   });
 }

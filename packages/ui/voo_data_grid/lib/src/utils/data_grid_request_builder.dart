@@ -19,6 +19,9 @@ enum ApiFilterStandard {
   /// GraphQL variables format
   graphql,
 
+  /// Voo API Standard with typed filters and secondary filters
+  voo,
+
   /// Custom format (default VooDataGrid format)
   custom,
 }
@@ -55,6 +58,9 @@ class DataGridRequestBuilder {
             page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.graphql:
         return _buildGraphQLRequest(
+            page, pageSize, filters, sorts, additionalParams);
+      case ApiFilterStandard.voo:
+        return _buildVooRequest(
             page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.custom:
         return _buildCustomRequest(
@@ -304,6 +310,115 @@ class DataGridRequestBuilder {
         }
       ''',
     };
+  }
+
+  /// Voo API Standard with typed filters and secondary filters
+  Map<String, dynamic> _buildVooRequest(
+    int page,
+    int pageSize,
+    Map<String, VooDataFilter> filters,
+    List<VooColumnSort> sorts,
+    Map<String, dynamic>? additionalParams,
+  ) {
+    final request = <String, dynamic>{
+      'pageNumber': page,
+      'pageSize': pageSize,
+      'logic': 'And', // Default logic
+    };
+
+    // Organize filters by type
+    final stringFilters = <Map<String, dynamic>>[];
+    final intFilters = <Map<String, dynamic>>[];
+    final dateFilters = <Map<String, dynamic>>[];
+    final decimalFilters = <Map<String, dynamic>>[];
+
+    filters.forEach((field, filter) {
+      final filterMap = <String, dynamic>{
+        'fieldName': field,
+        'value': filter.value,
+        'operator': _vooOperatorToString(filter.operator),
+      };
+
+      // Add secondary filter if exists
+      if (filter.valueTo != null && filter.operator == VooFilterOperator.between) {
+        filterMap['secondaryFilter'] = {
+          'logic': 'And',
+          'value': filter.valueTo,
+          'operator': 'LessThanOrEqual',
+        };
+      }
+
+      // Categorize by value type
+      if (filter.value is String) {
+        stringFilters.add(filterMap);
+      } else if (filter.value is int) {
+        intFilters.add(filterMap);
+      } else if (filter.value is DateTime) {
+        filterMap['value'] = (filter.value as DateTime).toIso8601String();
+        dateFilters.add(filterMap);
+      } else if (filter.value is double) {
+        decimalFilters.add(filterMap);
+      } else {
+        // Default to string filter for unknown types
+        stringFilters.add(filterMap);
+      }
+    });
+
+    // Add filter arrays if not empty
+    if (stringFilters.isNotEmpty) request['stringFilters'] = stringFilters;
+    if (intFilters.isNotEmpty) request['intFilters'] = intFilters;
+    if (dateFilters.isNotEmpty) request['dateFilters'] = dateFilters;
+    if (decimalFilters.isNotEmpty) request['decimalFilters'] = decimalFilters;
+
+    // Add sorting
+    if (sorts.isNotEmpty) {
+      final primarySort = sorts.first;
+      request['sortBy'] = primarySort.field;
+      request['sortDescending'] = primarySort.direction == VooSortDirection.descending;
+    }
+
+    // Merge additional params
+    if (additionalParams != null) {
+      request.addAll(additionalParams);
+    }
+
+    return request;
+  }
+
+  /// Convert operator to Voo API format
+  String _vooOperatorToString(VooFilterOperator operator) {
+    switch (operator) {
+      case VooFilterOperator.equals:
+        return 'Equals';
+      case VooFilterOperator.notEquals:
+        return 'NotEquals';
+      case VooFilterOperator.contains:
+        return 'Contains';
+      case VooFilterOperator.notContains:
+        return 'NotContains';
+      case VooFilterOperator.startsWith:
+        return 'StartsWith';
+      case VooFilterOperator.endsWith:
+        return 'EndsWith';
+      case VooFilterOperator.greaterThan:
+        return 'GreaterThan';
+      case VooFilterOperator.greaterThanOrEqual:
+        return 'GreaterThanOrEqual';
+      case VooFilterOperator.lessThan:
+        return 'LessThan';
+      case VooFilterOperator.lessThanOrEqual:
+        return 'LessThanOrEqual';
+      case VooFilterOperator.between:
+        return 'Between';
+      case VooFilterOperator.inList:
+        return 'In';
+      case VooFilterOperator.notInList:
+        return 'NotIn';
+      case VooFilterOperator.isNull:
+        return 'IsNull';
+      case VooFilterOperator.isNotNull:
+        return 'IsNotNull';
+    }
   }
 
   /// Custom format (default VooDataGrid format)
@@ -714,7 +829,7 @@ class DataGridRequestBuilder {
       } else if (value is DateTime) {
         dateFilters.add(DateFilter(
           fieldName: field,
-          value: value.toIso8601String(),
+          value: value,
           operator: operator,
           secondaryFilter: secondaryFilter,
         ));
