@@ -38,8 +38,13 @@ class DataGridRequestBuilder {
   });
 
   /// Apply field prefix to field name if prefix is set
-  String _applyFieldPrefix(String field) {
+  String _applyFieldPrefix(String field, {bool pascalCaseField = false}) {
     if (fieldPrefix != null && fieldPrefix!.isNotEmpty) {
+      if (pascalCaseField && field.isNotEmpty) {
+        // Capitalize first letter of field for standards like VooApiStandard
+        final capitalizedField = field[0].toUpperCase() + field.substring(1);
+        return '$fieldPrefix.$capitalizedField';
+      }
       return '$fieldPrefix.$field';
     }
     return field;
@@ -352,7 +357,7 @@ class DataGridRequestBuilder {
         // Create GreaterThanOrEqual filter for the lower bound if value exists
         if (filter.value != null) {
           final lowerFilter = <String, dynamic>{
-            'fieldName': _applyFieldPrefix(field),
+            'fieldName': _applyFieldPrefix(field, pascalCaseField: true),
             'value': filter.value,
             'operator': 'GreaterThanOrEqual',
           };
@@ -376,7 +381,7 @@ class DataGridRequestBuilder {
         // Create LessThanOrEqual filter for the upper bound if valueTo exists
         if (filter.valueTo != null) {
           final upperFilter = <String, dynamic>{
-            'fieldName': _applyFieldPrefix(field),
+            'fieldName': _applyFieldPrefix(field, pascalCaseField: true),
             'value': filter.valueTo,
             'operator': 'LessThanOrEqual',
           };
@@ -399,7 +404,7 @@ class DataGridRequestBuilder {
       } else {
         // Normal filter handling for non-between operators
         final filterMap = <String, dynamic>{
-          'fieldName': _applyFieldPrefix(field),
+          'fieldName': _applyFieldPrefix(field, pascalCaseField: true),
           'value': filter.value,
           'operator': _vooOperatorToString(filter.operator),
         };
@@ -430,7 +435,7 @@ class DataGridRequestBuilder {
     // Add sorting
     if (sorts.isNotEmpty) {
       final primarySort = sorts.first;
-      request['sortBy'] = _applyFieldPrefix(primarySort.field);
+      request['sortBy'] = _applyFieldPrefix(primarySort.field, pascalCaseField: true);
       request['sortDescending'] = primarySort.direction == VooSortDirection.descending;
     }
 

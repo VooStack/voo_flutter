@@ -1,3 +1,10 @@
+## 0.5.4
+
+* **Code Quality Improvements**
+  * Applied linter suggestions across the codebase
+  * Improved code formatting and readability
+  * Minor optimizations and cleanup
+
 ## 0.5.3
 
 * **Bug Fixes**
@@ -13,6 +20,12 @@
     * Now only creates GreaterThanOrEqual filter when minimum value is not null
     * Only creates LessThanOrEqual filter when maximum value is not null
     * Allows filtering with just a minimum or just a maximum value
+
+  * **VooApiStandard Field Name PascalCase**
+    * Fixed field names to use PascalCase after the prefix in VooApiStandard
+    * When using fieldPrefix='Site' with field='siteNumber', it now correctly generates 'Site.SiteNumber' (not 'Site.siteNumber')
+    * This ensures compatibility with backend APIs expecting PascalCase field names
+    * Other API standards continue to use the field name as-is without case changes
 
 ## 0.5.2
 

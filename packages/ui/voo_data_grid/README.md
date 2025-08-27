@@ -36,7 +36,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  voo_data_grid: ^0.5.2
+  voo_data_grid: ^0.5.4
   voo_ui_core: ^0.1.0
 ```
 
@@ -915,7 +915,7 @@ If you're migrating from the monolithic `voo_ui` package:
 1. Update your dependencies:
 ```yaml
 dependencies:
-  voo_data_grid: ^0.5.2
+  voo_data_grid: ^0.5.4
   voo_ui_core: ^0.1.0  # Required for design system
 ```
 

@@ -1,6 +1,6 @@
 name: voo_data_grid
 description: 'A powerful and flexible data grid widget for Flutter with sorting, filtering, pagination, and remote data support'
-version: 0.5.3
+version: 0.5.4
 repository: https://github.com/YourOrg/VooFlutter/tree/main/packages/ui/voo_data_grid
 homepage: https://github.com/YourOrg/VooFlutter
 issue_tracker: https://github.com/YourOrg/VooFlutter/issues
