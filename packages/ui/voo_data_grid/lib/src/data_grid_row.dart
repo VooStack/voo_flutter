@@ -116,7 +116,7 @@ class VooDataGridRow<T> extends StatelessWidget {
     // For typed objects, valueGetter MUST be provided.
     // Try column's valueGetter first, then fallback to bracket notation for Maps.
     dynamic value;
-    
+
     try {
       if (column.valueGetter != null) {
         // Safely call valueGetter with error handling
@@ -148,7 +148,7 @@ class VooDataGridRow<T> extends StatelessWidget {
         'ValueGetter type: ${column.valueGetter.runtimeType}\n'
         'Stack trace:\n$stackTrace',
       );
-      
+
       // In production, show a placeholder instead of crashing
       value = null;
     }
