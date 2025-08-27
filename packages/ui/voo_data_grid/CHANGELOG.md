@@ -1,3 +1,38 @@
+## 0.5.2
+
+* **Bug Fixes & Improvements**
+  * **Enhanced Error Handling**: Added comprehensive error handling for valueGetter functions
+    * Added try-catch blocks around valueGetter calls to prevent crashes
+    * Improved error logging with detailed type information for debugging
+    * Better error messages when valueGetter is missing for typed objects
+    * Graceful fallback to null values on errors instead of crashing
+  
+  * **VooApiStandard Number Range Fix**: Fixed number range filtering for Voo API Standard
+    * Number ranges now correctly use GreaterThanOrEqual and LessThanOrEqual operators
+    * Removed unsupported 'Between' operator from Voo API Standard
+    * Creates two separate filters for range queries as expected by the API
+    * Example: Site.siteNumber between 0 and 100 now sends:
+      * `{fieldName: 'Site.siteNumber', value: 0, operator: 'GreaterThanOrEqual'}`
+      * `{fieldName: 'Site.siteNumber', value: 100, operator: 'LessThanOrEqual'}`
+  
+  * **Filter Visibility During Errors**: Fixed filters disappearing when data loading fails
+    * Headers and filter row now remain visible even when there's an error
+    * Users can adjust filters and retry without losing their filter state
+    * Error message appears in the data area while preserving the grid structure
+    * Improves user experience by maintaining context during error states
+
+* **Developer Experience**
+  * Added detailed debug logging for type mismatches
+  * Created comprehensive error handling tests
+  * Better documentation of type safety requirements
+  * Clearer error messages to help developers debug issues
+
+* **Testing**
+  * Added `error_handling_test.dart` with comprehensive type safety tests
+  * Tests for typed valueGetter functions with various data types
+  * Tests for null safety and error recovery
+  * Verification that grid doesn't crash on type mismatches
+
 ## 0.5.1
 
 * **New Feature: Field Prefix Support for Nested Properties**

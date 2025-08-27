@@ -116,18 +116,40 @@ class VooDataGridRow<T> extends StatelessWidget {
     // For typed objects, valueGetter MUST be provided.
     // Try column's valueGetter first, then fallback to bracket notation for Maps.
     dynamic value;
-    if (column.valueGetter != null) {
-      value = column.valueGetter!(row);
-    } else if (row is Map) {
-      value = (row as Map)[column.field];
-    } else {
-      // Typed object without valueGetter - this will cause errors
-      // Log warning in debug mode
-      assert(
-        false,
-        'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
-        'Provide a valueGetter function in the VooDataColumn definition.',
+    
+    try {
+      if (column.valueGetter != null) {
+        // Safely call valueGetter with error handling
+        value = column.valueGetter!(row);
+      } else if (row is Map) {
+        value = (row as Map)[column.field];
+      } else {
+        // Typed object without valueGetter - this will cause errors
+        // Log warning in debug mode
+        debugPrint(
+          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects. '
+          'Row type: ${row.runtimeType}. '
+          'Please provide a valueGetter function in the VooDataColumn definition.',
+        );
+        assert(
+          false,
+          'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
+          'Provide a valueGetter function in the VooDataColumn definition.',
+        );
+        value = null;
+      }
+    } catch (e, stackTrace) {
+      // Log detailed error information to help debugging
+      debugPrint(
+        '[VooDataGrid Error] Failed to get value for column "${column.field}":\n'
+        'Error: $e\n'
+        'Row type: ${row.runtimeType}\n'
+        'Column field: ${column.field}\n'
+        'ValueGetter type: ${column.valueGetter.runtimeType}\n'
+        'Stack trace:\n$stackTrace',
       );
+      
+      // In production, show a placeholder instead of crashing
       value = null;
     }
 

@@ -7,6 +7,7 @@ A powerful and flexible data grid widget for Flutter with advanced features like
 
 ## Features
 
+- **Type-Safe Generic Support**: Full compile-time type safety with generic type parameters
 - **Flexible Data Display**: Display tabular data with customizable columns and rows
 - **Sorting**: Built-in column sorting with custom comparators
 - **Advanced Filtering**: 
@@ -15,15 +16,19 @@ A powerful and flexible data grid widget for Flutter with advanced features like
   - Complex compound filters
   - Legacy filter format support
   - Built-in filter UI widget
+  - Filters remain visible during error states
 - **Pagination**: Server-side and client-side pagination support
 - **Selection**: Row selection with single and multi-select modes
 - **Remote Data**: Built-in support for fetching data from REST APIs
 - **Synchronized Scrolling**: Uniform horizontal scrolling between header and body
 - **Performance**: Optimized for large datasets with efficient rendering
-- **API Standards**: Support for 6 API standards (Simple REST, JSON:API, OData, MongoDB, GraphQL, Custom)
+- **API Standards**: Support for 7 API standards (Voo, Simple REST, JSON:API, OData, MongoDB, GraphQL, Custom)
+- **Field Prefix Support**: Automatic field name prefixing for nested properties
+- **Action Columns**: Support for clickable cells and action buttons
+- **Enhanced Error Handling**: Comprehensive error handling with graceful fallbacks
 - **Customization**: Highly customizable headers, cells, and styling
 - **Responsive**: Adapts to different screen sizes
-- **Empty State**: Headers remain visible with empty data for better UX
+- **Empty State**: Headers and filters remain visible with empty data for better UX
 
 ## Installation
 
@@ -31,7 +36,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  voo_data_grid: ^0.3.0
+  voo_data_grid: ^0.5.2
   voo_ui_core: ^0.1.0
 ```
 
@@ -142,6 +147,150 @@ class _DataGridExampleState extends State<DataGridExample> {
   }
 }
 ```
+
+### Using Typed Objects (Generic Support)
+
+VooDataGrid fully supports typed objects with compile-time type safety:
+
+```dart
+// Define your data model
+class OrderModel {
+  final int id;
+  final String orderNumber;
+  final String customerName;
+  final double amount;
+  final FileStatus? status;
+  
+  OrderModel({
+    required this.id,
+    required this.orderNumber,
+    required this.customerName,
+    required this.amount,
+    this.status,
+  });
+}
+
+class FileStatus {
+  final String code;
+  final String name;
+  final Color color;
+  
+  FileStatus({required this.code, required this.name, required this.color});
+}
+
+// Create strongly typed controller
+class TypedDataExample extends StatefulWidget {
+  @override
+  State<TypedDataExample> createState() => _TypedDataExampleState();
+}
+
+class _TypedDataExampleState extends State<TypedDataExample> {
+  late VooDataGridController<OrderModel> controller;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    // Create typed data source
+    final dataSource = TypedDataSource();
+    dataSource.setLocalData([
+      OrderModel(
+        id: 1,
+        orderNumber: 'ORD-001',
+        customerName: 'John Doe',
+        amount: 1500.00,
+        status: FileStatus(code: 'ACTIVE', name: 'Active', color: Colors.green),
+      ),
+      // ... more data
+    ]);
+    
+    controller = VooDataGridController<OrderModel>(
+      dataSource: dataSource,
+    );
+    
+    // Define columns with type-safe valueGetter
+    controller.setColumns([
+      VooDataColumn<OrderModel>(
+        field: 'orderNumber',
+        label: 'Order #',
+        // No casting needed - row is already typed as OrderModel
+        valueGetter: (row) => row.orderNumber,
+      ),
+      VooDataColumn<OrderModel>(
+        field: 'customerName',
+        label: 'Customer',
+        valueGetter: (row) => row.customerName,
+      ),
+      VooDataColumn<OrderModel>(
+        field: 'amount',
+        label: 'Amount',
+        valueGetter: (row) => row.amount,
+        valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+      ),
+      VooDataColumn<OrderModel>(
+        field: 'status',
+        label: 'Status',
+        // Handle nullable nested properties safely
+        valueGetter: (row) => row.status?.name,
+        cellBuilder: (context, value, row) {
+          final status = row.status;
+          if (status == null) return const Text('N/A');
+          
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: status.color.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              status.name,
+              style: TextStyle(color: status.color),
+            ),
+          );
+        },
+      ),
+    ]);
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return VooDataGrid<OrderModel>(
+      controller: controller,
+      onRowTap: (OrderModel order) {
+        // Type-safe row access
+        print('Order ${order.orderNumber} tapped');
+      },
+    );
+  }
+}
+
+// Custom data source for typed objects
+class TypedDataSource extends VooDataGridSource<OrderModel> {
+  TypedDataSource() : super(mode: VooDataGridMode.local);
+  
+  @override
+  Future<VooDataGridResponse<OrderModel>> fetchRemoteData({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+  }) async {
+    // Implement remote fetching if needed
+    return VooDataGridResponse<OrderModel>(
+      rows: [],
+      totalRows: 0,
+      page: page,
+      pageSize: pageSize,
+    );
+  }
+}
+```
+
+**Important Notes for Typed Objects:**
+- You MUST provide a `valueGetter` function for each column when using typed objects
+- The grid cannot use reflection to access properties dynamically
+- All callbacks (onRowTap, cellBuilder, etc.) receive properly typed data
+- Map objects work without valueGetter (backward compatibility)
 
 ### Remote Data Example
 
@@ -382,7 +531,55 @@ AdvancedFilterWidget(
 
 ## API Standards Support
 
-VooDataGrid now includes integrated support for 6 different API standards through the `DataGridRequestBuilder` class. Each data source can have its own HTTP client with custom interceptors and authentication.
+VooDataGrid includes integrated support for 7 different API standards through the `DataGridRequestBuilder` class. Each data source can have its own HTTP client with custom interceptors and authentication.
+
+### Voo API Standard
+
+The Voo API Standard is designed for enterprise applications with typed filters:
+
+```dart
+final dataSource = RemoteDataGridSource(
+  apiEndpoint: '/api/data',
+  apiStandard: ApiFilterStandard.voo,
+  fieldPrefix: 'Site', // Optional: prefix for nested properties
+  httpClient: (url, requestData, headers) async {
+    final response = await dio.post(url, data: requestData);
+    return response.data;
+  },
+);
+
+// Example request format for Voo API Standard:
+{
+  "pageNumber": 1,
+  "pageSize": 20,
+  "logic": "And",
+  "intFilters": [
+    {
+      "fieldName": "Site.siteNumber",
+      "value": 100,
+      "operator": "GreaterThanOrEqual"
+    },
+    {
+      "fieldName": "Site.siteNumber",
+      "value": 200,
+      "operator": "LessThanOrEqual"
+    }
+  ],
+  "stringFilters": [
+    {
+      "fieldName": "Site.name",
+      "value": "Tech",
+      "operator": "Contains"
+    }
+  ]
+}
+```
+
+**Important Notes for Voo API Standard:**
+- Number ranges are sent as two separate filters (GreaterThanOrEqual and LessThanOrEqual)
+- The "Between" operator is not supported - it's automatically converted to two filters
+- Filters are organized by type: stringFilters, intFilters, dateFilters, decimalFilters
+- Field prefix is automatically applied to all field names when set
 
 ### Simple REST Standard
 ```dart
@@ -632,6 +829,44 @@ VooDataGrid(
 )
 ```
 
+## Error Handling
+
+VooDataGrid provides comprehensive error handling with graceful fallbacks:
+
+### Enhanced Error Recovery
+
+- **Filters remain visible during errors**: Headers and filter row stay accessible even when data loading fails
+- **Type-safe error handling**: Comprehensive try-catch blocks around valueGetter functions
+- **Detailed error logging**: Debug mode provides detailed type information for troubleshooting
+
+### Handling Type Mismatches
+
+```dart
+// The grid gracefully handles type mismatches
+VooDataColumn<OrderModel>(
+  field: 'status',
+  label: 'Status',
+  valueGetter: (row) {
+    // This is protected with error handling
+    return row.status?.name;
+  },
+  // Fallback for null or error cases
+  valueFormatter: (value) => value ?? 'N/A',
+)
+```
+
+### Debug Logging
+
+In debug mode, detailed error information is logged:
+
+```
+[VooDataGrid Error] Failed to get value for column "status":
+Error: type 'Null' is not a subtype of type 'String'
+Row type: OrderModel
+Column field: status
+ValueGetter type: (OrderModel) => String?
+```
+
 ## Widget Previews\n\nVooDataGrid includes comprehensive preview widgets for testing and development:\n\n### Available Previews\n\n1. **VooDataGridPreview** - Large dataset demo with 200+ rows and 15+ columns\n2. **VooDataGridApiStandardsPreview** - Interactive API standards configuration tool\n3. **VooDataGridEmptyStatePreview** - Demonstrates empty state with persistent headers\n4. **VooDataGridTypedObjectsPreview** - Demonstrates using VooDataGrid with typed objects\n\n### Using Previews\n\n```dart\nimport 'package:voo_data_grid/voo_data_grid.dart';\n\n// In your development/testing environment\nvoid main() {\n  runApp(const VooDataGridApiStandardsPreview());\n}\n```\n\n### Interactive API Standards Preview\n\nThe API standards preview provides:\n- Live switching between all 6 API standards\n- Real-time request format viewer\n- Copy-paste ready code examples\n- Interactive filter and sort testing\n\n## Performance Tips
 
 1. **Use pagination** for large datasets
@@ -642,6 +877,29 @@ VooDataGrid(
 6. **Use proper keys** for columns to optimize rebuilds
 
 ## Migration Guide
+
+### From v0.5.1 to v0.5.2
+
+**Bug Fixes & Improvements:**
+- Fixed VooApiStandard number range filtering (now uses GreaterThanOrEqual/LessThanOrEqual instead of Between)
+- Fixed filters disappearing when data loading fails  
+- Enhanced error handling for type mismatches in valueGetter functions
+- Added comprehensive error logging in debug mode
+
+### From v0.5.0 to v0.5.1
+
+**New Features:**
+- Added field prefix support for nested properties
+- Added action columns with `excludeFromApi` flag
+- Added `onCellTap` callback for clickable cells
+
+### From v0.4.0 to v0.5.0
+
+**Breaking Changes:**
+- All components now use generic type parameters for type safety
+- `valueGetter` now has proper type signature: `dynamic Function(T row)`
+- No casting needed in valueGetter functions anymore
+- Compile-time type checking for all row data
 
 ### From v0.2.0 to v0.3.0
 
@@ -657,7 +915,7 @@ If you're migrating from the monolithic `voo_ui` package:
 1. Update your dependencies:
 ```yaml
 dependencies:
-  voo_data_grid: ^0.3.0
+  voo_data_grid: ^0.5.2
   voo_ui_core: ^0.1.0  # Required for design system
 ```
 

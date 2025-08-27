@@ -725,7 +725,16 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     // Try to extract unique values from current data
     final uniqueValues = <dynamic>{};
     for (final row in widget.controller.dataSource.allRows.isNotEmpty ? widget.controller.dataSource.allRows : widget.controller.dataSource.rows) {
-      final value = column.valueGetter?.call(row) ?? (row is Map ? row[column.field] : null);
+      dynamic value;
+      try {
+        value = column.valueGetter?.call(row) ?? (row is Map ? row[column.field] : null);
+      } catch (e) {
+        debugPrint(
+          '[VooDataGrid Warning] Failed to get value for column "${column.field}" '
+          'when building filter options: $e',
+        );
+        value = null;
+      }
       if (value != null) {
         uniqueValues.add(value);
       }

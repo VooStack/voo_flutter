@@ -346,34 +346,65 @@ class DataGridRequestBuilder {
     final decimalFilters = <Map<String, dynamic>>[];
 
     filters.forEach((field, filter) {
-      final filterMap = <String, dynamic>{
-        'fieldName': _applyFieldPrefix(field),
-        'value': filter.value,
-        'operator': _vooOperatorToString(filter.operator),
-      };
-
-      // Add secondary filter if exists
-      if (filter.valueTo != null && filter.operator == VooFilterOperator.between) {
-        filterMap['secondaryFilter'] = {
-          'logic': 'And',
+      // Special handling for Between operator in Voo API standard
+      // Voo API doesn't support Between directly - we need to create two separate filters
+      if (filter.operator == VooFilterOperator.between && filter.valueTo != null) {
+        // Create GreaterThanOrEqual filter for the lower bound
+        final lowerFilter = <String, dynamic>{
+          'fieldName': _applyFieldPrefix(field),
+          'value': filter.value,
+          'operator': 'GreaterThanOrEqual',
+        };
+        
+        // Create LessThanOrEqual filter for the upper bound
+        final upperFilter = <String, dynamic>{
+          'fieldName': _applyFieldPrefix(field),
           'value': filter.valueTo,
           'operator': 'LessThanOrEqual',
         };
-      }
-
-      // Categorize by value type
-      if (filter.value is String) {
-        stringFilters.add(filterMap);
-      } else if (filter.value is int) {
-        intFilters.add(filterMap);
-      } else if (filter.value is DateTime) {
-        filterMap['value'] = (filter.value as DateTime).toIso8601String();
-        dateFilters.add(filterMap);
-      } else if (filter.value is double) {
-        decimalFilters.add(filterMap);
+        
+        // Add both filters to the appropriate type array
+        if (filter.value is String) {
+          stringFilters.add(lowerFilter);
+          stringFilters.add(upperFilter);
+        } else if (filter.value is int) {
+          intFilters.add(lowerFilter);
+          intFilters.add(upperFilter);
+        } else if (filter.value is DateTime) {
+          lowerFilter['value'] = (filter.value as DateTime).toIso8601String();
+          upperFilter['value'] = (filter.valueTo as DateTime).toIso8601String();
+          dateFilters.add(lowerFilter);
+          dateFilters.add(upperFilter);
+        } else if (filter.value is double) {
+          decimalFilters.add(lowerFilter);
+          decimalFilters.add(upperFilter);
+        } else {
+          // Default to string filter for unknown types
+          stringFilters.add(lowerFilter);
+          stringFilters.add(upperFilter);
+        }
       } else {
-        // Default to string filter for unknown types
-        stringFilters.add(filterMap);
+        // Normal filter handling for non-between operators
+        final filterMap = <String, dynamic>{
+          'fieldName': _applyFieldPrefix(field),
+          'value': filter.value,
+          'operator': _vooOperatorToString(filter.operator),
+        };
+
+        // Categorize by value type
+        if (filter.value is String) {
+          stringFilters.add(filterMap);
+        } else if (filter.value is int) {
+          intFilters.add(filterMap);
+        } else if (filter.value is DateTime) {
+          filterMap['value'] = (filter.value as DateTime).toIso8601String();
+          dateFilters.add(filterMap);
+        } else if (filter.value is double) {
+          decimalFilters.add(filterMap);
+        } else {
+          // Default to string filter for unknown types
+          stringFilters.add(filterMap);
+        }
       }
     });
 

@@ -347,6 +347,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
       );
     }
 
+    // Handle error state but still allow filtering to remain visible
     if (dataSource.error != null) {
       return Center(
         child: widget.errorBuilder?.call(dataSource.error!) ??
@@ -422,17 +423,39 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
     // For typed objects, valueGetter MUST be provided.
     // Try column's valueGetter first, then fallback to bracket notation for Maps.
     dynamic value;
-    if (column.valueGetter != null) {
-      value = column.valueGetter!(row);
-    } else if (row is Map) {
-      value = row[column.field];
-    } else {
-      // Typed object without valueGetter - this will cause errors
-      assert(
-        false,
-        'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
-        'Provide a valueGetter function in the VooDataColumn definition.',
+    
+    try {
+      if (column.valueGetter != null) {
+        // Safely call valueGetter with error handling
+        value = column.valueGetter!(row);
+      } else if (row is Map) {
+        value = row[column.field];
+      } else {
+        // Typed object without valueGetter - this will cause errors
+        debugPrint(
+          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects. '
+          'Row type: ${row.runtimeType}. '
+          'Please provide a valueGetter function in the VooDataColumn definition.',
+        );
+        assert(
+          false,
+          'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
+          'Provide a valueGetter function in the VooDataColumn definition.',
+        );
+        value = null;
+      }
+    } catch (e, stackTrace) {
+      // Log detailed error information to help debugging
+      debugPrint(
+        '[VooDataGrid Error] Failed to get value for column "${column.field}" in card view:\n'
+        'Error: $e\n'
+        'Row type: ${row.runtimeType}\n'
+        'Column field: ${column.field}\n'
+        'ValueGetter type: ${column.valueGetter.runtimeType}\n'
+        'Stack trace:\n$stackTrace',
       );
+      
+      // In production, show a placeholder instead of crashing
       value = null;
     }
     
@@ -489,21 +512,6 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
       );
     }
 
-    if (dataSource.error != null) {
-      return Center(
-        child: widget.errorBuilder?.call(dataSource.error!) ??
-            VooEmptyState(
-              icon: Icons.error_outline,
-              title: 'Error Loading Data',
-              message: dataSource.error!,
-              action: TextButton(
-                onPressed: dataSource.refresh,
-                child: const Text('Retry'),
-              ),
-            ),
-      );
-    }
-
     // Filter columns based on screen width
     final visibleColumns = _getVisibleColumnsForWidth(width);
     widget.controller.setVisibleColumns(visibleColumns);
@@ -514,32 +522,45 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
 
     return Column(
       children: [
-        // Header - Always show headers even when no data
+        // Header - Always show headers even when no data or error
         VooDataGridHeader(
           controller: widget.controller,
           theme: _theme,
           onSort: widget.controller.sortColumn,
         ),
 
-        // Filters (only on desktop)
+        // Filters (only on desktop) - Keep visible even during errors
         if (showInlineFilters)
           VooDataGridFilterRow(
             controller: widget.controller,
             theme: _theme,
           ),
 
-        // Data rows or empty state
+        // Data rows, error state, or empty state
         Expanded(
-          child: dataSource.rows.isEmpty
+          child: dataSource.error != null
               ? Center(
-                  child: widget.emptyStateWidget ??
-                      const VooEmptyState(
-                        icon: Icons.table_rows_outlined,
-                        title: 'No Data',
-                        message: 'No rows to display',
+                  child: widget.errorBuilder?.call(dataSource.error!) ??
+                      VooEmptyState(
+                        icon: Icons.error_outline,
+                        title: 'Error Loading Data',
+                        message: dataSource.error!,
+                        action: TextButton(
+                          onPressed: dataSource.refresh,
+                          child: const Text('Retry'),
+                        ),
                       ),
                 )
-              : _buildDataRows(design),
+              : dataSource.rows.isEmpty
+                  ? Center(
+                      child: widget.emptyStateWidget ??
+                          const VooEmptyState(
+                            icon: Icons.table_rows_outlined,
+                            title: 'No Data',
+                            message: 'No rows to display',
+                          ),
+                    )
+                  : _buildDataRows(design),
         ),
 
         // Loading overlay
