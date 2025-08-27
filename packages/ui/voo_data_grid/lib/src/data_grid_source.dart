@@ -15,10 +15,10 @@ enum VooDataGridMode {
 }
 
 /// Abstract data source for VooDataGrid
-/// 
+///
 /// Generic type parameter T represents the row data type.
 /// Use dynamic if working with untyped Map data.
-/// For typed objects (non-Map), you MUST provide a valueGetter function 
+/// For typed objects (non-Map), you MUST provide a valueGetter function
 /// in your VooDataColumn definitions to extract field values.
 abstract class VooDataGridSource<T> extends ChangeNotifier {
   /// Operation mode
@@ -202,14 +202,14 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
   }
 
   /// Get field value from row object
-  /// 
+  ///
   /// For typed objects, you MUST provide a valueGetter function in VooDataColumn.
   /// This default implementation only handles Map objects.
   dynamic _getFieldValue(dynamic row, String field) {
     if (row is Map) {
       return row[field];
     }
-    
+
     // For typed objects, we cannot dynamically access properties in Flutter/Dart
     // without mirrors (which aren't available in Flutter).
     // Users MUST provide a valueGetter function in the column definition.
@@ -470,7 +470,7 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
 }
 
 /// Response from data source
-/// 
+///
 /// Generic type parameter T represents the row data type.
 class VooDataGridResponse<T> {
   final List<T> rows;

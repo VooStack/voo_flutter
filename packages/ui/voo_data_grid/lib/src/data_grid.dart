@@ -150,7 +150,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
   bool _isTablet(double width) =>
       width >= VooDataGridBreakpoints.mobile &&
       width < VooDataGridBreakpoints.tablet;
-  bool _isDesktop(double width) => width >= VooDataGridBreakpoints.desktop;
+  bool _isDesktop(double width) => width >= VooDataGridBreakpoints.tablet;
 
   @override
   Widget build(BuildContext context) {
@@ -753,7 +753,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
             String label = column.label;
             if (filter.value != null) {
               final displayValue = column.valueFormatter?.call(filter.value) ??
-                  filter.value.toString();
+                  filter.value?.toString() ?? '';
               label = '$label: $displayValue';
             }
             return InputChip(

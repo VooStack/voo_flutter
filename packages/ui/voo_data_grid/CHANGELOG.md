@@ -1,3 +1,21 @@
+## 0.5.7
+
+* **Type-Safe Column Values with TypedVooDataColumn**
+  * Added `TypedVooDataColumn<T, V>` class for type-safe column value handling
+  * Provides compile-time type safety for `valueGetter`, `valueFormatter`, `cellBuilder`, and `onCellTap`
+  * Maintains full backward compatibility with existing `VooDataColumn` usage
+  * Example usage:
+    ```dart
+    TypedVooDataColumn<User, String>(
+      field: 'name',
+      label: 'Name',
+      typedValueGetter: (user) => user.name,
+      typedValueFormatter: (name) => name.toUpperCase(), // name is typed as String
+    )
+    ```
+  * Improved developer experience with better IDE autocompletion and type checking
+  * Enhanced documentation for value formatter explaining its purpose and usage
+
 ## 0.5.6
 
 * **OData Query Parameter Fix**

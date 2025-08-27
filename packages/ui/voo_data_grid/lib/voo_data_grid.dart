@@ -3,6 +3,7 @@ library;
 // Data Grid Core
 export 'src/data_grid.dart';
 export 'src/data_grid_column.dart';
+export 'src/typed_data_column.dart';
 export 'src/data_grid_controller.dart';
 export 'src/data_grid_source.dart';
 export 'src/data_grid_filter.dart';

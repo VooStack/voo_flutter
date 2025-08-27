@@ -39,6 +39,8 @@ class VooDataColumn<T> {
   final dynamic Function(T row)? valueGetter;
 
   /// Value formatter for display
+  /// Takes the cell value (extracted via valueGetter) and formats it as a string
+  /// The value type depends on what valueGetter returns for each specific column
   final String Function(dynamic value)? valueFormatter;
 
   /// Whether the column is visible
