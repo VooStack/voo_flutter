@@ -79,10 +79,14 @@ class VooDataGrid<T> extends StatefulWidget {
   /// Priority columns to show on mobile (field names)
   final List<String>? mobilePriorityColumns;
 
-  /// Whether to always show vertical scrollbar
+  /// Whether to always show vertical scrollbar.
+  /// When true, the vertical scrollbar thumb and track will always be visible,
+  /// even when the content doesn't overflow vertically.
   final bool alwaysShowVerticalScrollbar;
 
-  /// Whether to always show horizontal scrollbar
+  /// Whether to always show horizontal scrollbar.
+  /// When true, the horizontal scrollbar thumb and track will always be visible,
+  /// even when the content doesn't overflow horizontally.
   final bool alwaysShowHorizontalScrollbar;
 
   const VooDataGrid({
@@ -658,69 +662,42 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
         ),
       );
 
-      // For best UX: Both scrollbars visible at viewport edges
-      if (needsHorizontalScroll && widget.alwaysShowHorizontalScrollbar) {
-        // Use InteractiveViewer or custom solution for better scrollbar positioning
-        return Stack(
-          children: [
-            // Main scrollable content
-            Positioned.fill(
-              bottom: 12, // Reserve space for horizontal scrollbar
-              child: Scrollbar(
-                controller: widget.controller.verticalScrollController,
-                thumbVisibility: widget.alwaysShowVerticalScrollbar,
-                child: SingleChildScrollView(
-                  controller: widget.controller.verticalScrollController,
-                  child: SingleChildScrollView(
-                    controller:
-                        widget.controller.bodyHorizontalScrollController,
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      width: totalWidth,
-                      child: Column(children: rowsList),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Fixed horizontal scrollbar at bottom
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 12,
-              child: Scrollbar(
+      // Build scrollable content with proper scrollbar visibility
+      if (needsHorizontalScroll) {
+        // Both horizontal and vertical scrolling needed
+        return Scrollbar(
+          controller: widget.controller.verticalScrollController,
+          thumbVisibility: widget.alwaysShowVerticalScrollbar,
+          trackVisibility: widget.alwaysShowVerticalScrollbar,
+          child: Scrollbar(
+            controller: widget.controller.bodyHorizontalScrollController,
+            scrollbarOrientation: ScrollbarOrientation.bottom,
+            thumbVisibility: widget.alwaysShowHorizontalScrollbar,
+            trackVisibility: widget.alwaysShowHorizontalScrollbar,
+            notificationPredicate: (notification) => notification.depth == 1,
+            child: SingleChildScrollView(
+              controller: widget.controller.verticalScrollController,
+              child: SingleChildScrollView(
                 controller: widget.controller.bodyHorizontalScrollController,
-                scrollbarOrientation: ScrollbarOrientation.bottom,
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  controller: widget.controller.bodyHorizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: SizedBox(width: totalWidth, height: 1),
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: totalWidth,
+                  child: Column(children: rowsList),
                 ),
               ),
             ),
-          ],
+          ),
         );
       }
 
-      // Standard scrolling without fixed horizontal scrollbar
+      // Only vertical scrolling needed
       return Scrollbar(
         controller: widget.controller.verticalScrollController,
         thumbVisibility: widget.alwaysShowVerticalScrollbar,
+        trackVisibility: widget.alwaysShowVerticalScrollbar,
         child: SingleChildScrollView(
           controller: widget.controller.verticalScrollController,
-          child: needsHorizontalScroll
-              ? SingleChildScrollView(
-                  controller: widget.controller.bodyHorizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: totalWidth,
-                    child: Column(children: rowsList),
-                  ),
-                )
-              : Column(children: rowsList),
+          child: Column(children: rowsList),
         ),
       );
     });

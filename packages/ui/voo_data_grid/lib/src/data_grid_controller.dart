@@ -28,11 +28,14 @@ class VooDataGridController<T> extends ChangeNotifier {
   /// Column widths map
   final Map<String, double> _columnWidths = {};
 
-  /// Synchronized horizontal scroll controller for header and body
+  /// Synchronized horizontal scroll controller for header, filter and body
   final SynchronizedScrollController horizontalSyncController = SynchronizedScrollController();
   
   /// Horizontal scroll controller for header
   final ScrollController horizontalScrollController = ScrollController();
+  
+  /// Horizontal scroll controller for filter row
+  final ScrollController filterHorizontalScrollController = ScrollController();
   
   /// Horizontal scroll controller for body
   final ScrollController bodyHorizontalScrollController = ScrollController();
@@ -118,6 +121,7 @@ class VooDataGridController<T> extends ChangeNotifier {
     
     // Register scroll controllers for synchronization
     horizontalSyncController.registerController(horizontalScrollController);
+    horizontalSyncController.registerController(filterHorizontalScrollController);
     horizontalSyncController.registerController(bodyHorizontalScrollController);
   }
 
@@ -311,6 +315,7 @@ class VooDataGridController<T> extends ChangeNotifier {
     dataSource.removeListener(_onDataSourceChanged);
     horizontalSyncController.dispose();
     horizontalScrollController.dispose();
+    filterHorizontalScrollController.dispose();
     bodyHorizontalScrollController.dispose();
     verticalScrollController.dispose();
     super.dispose();

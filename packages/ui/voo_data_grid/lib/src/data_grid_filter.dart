@@ -86,10 +86,10 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
           // Frozen column filters
           for (final column in widget.controller.frozenColumns) _buildFilterCell(context, column, design),
 
-          // Scrollable column filters
+          // Scrollable column filters - synchronized with header and body
           Expanded(
             child: SingleChildScrollView(
-              controller: widget.controller.horizontalScrollController,
+              controller: widget.controller.filterHorizontalScrollController,
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [

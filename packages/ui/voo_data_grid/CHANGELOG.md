@@ -1,3 +1,12 @@
+## 0.5.8
+
+* **Scrolling Improvements**
+  * Fixed horizontal scrolling synchronization issue where filters didn't scroll with data columns
+  * Added dedicated scroll controller for filter row to ensure proper synchronization with header and body
+  * Improved scrollbar visibility implementation with proper `thumbVisibility` and `trackVisibility` properties
+  * Enhanced documentation for `alwaysShowVerticalScrollbar` and `alwaysShowHorizontalScrollbar` parameters
+  * Both scrollbars now properly display when enabled, with horizontal scrollbar fixed at bottom
+
 ## 0.5.7
 
 * **Type-Safe Column Values with TypedVooDataColumn**
