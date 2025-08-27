@@ -80,6 +80,10 @@ class VooDataGridController<T> extends ChangeNotifier {
   VooDataGridConstraints _constraints = const VooDataGridConstraints();
   VooDataGridConstraints get constraints => _constraints;
 
+  /// Field prefix for nested properties (e.g., "Site" for "Site.SiteNumber")
+  String? _fieldPrefix;
+  String? get fieldPrefix => _fieldPrefix;
+
   /// Constructor
   VooDataGridController({
     required this.dataSource,
@@ -94,6 +98,7 @@ class VooDataGridController<T> extends ChangeNotifier {
     bool? columnResizable,
     bool? columnReorderable,
     VooDataGridConstraints? constraints,
+    String? fieldPrefix,
   }) {
     _columns = columns ?? [];
     _rowHeight = rowHeight ?? 48.0;
@@ -106,6 +111,7 @@ class VooDataGridController<T> extends ChangeNotifier {
     _columnResizable = columnResizable ?? true;
     _columnReorderable = columnReorderable ?? false;
     _constraints = constraints ?? const VooDataGridConstraints();
+    _fieldPrefix = fieldPrefix;
 
     // Listen to data source changes
     dataSource.addListener(_onDataSourceChanged);
@@ -227,6 +233,12 @@ class VooDataGridController<T> extends ChangeNotifier {
   /// Toggle hover effect
   void toggleHoverEffect() {
     _showHoverEffect = !_showHoverEffect;
+    notifyListeners();
+  }
+
+  /// Set field prefix for nested properties
+  void setFieldPrefix(String? prefix) {
+    _fieldPrefix = prefix;
     notifyListeners();
   }
 

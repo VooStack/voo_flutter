@@ -79,6 +79,12 @@ class VooDataColumn<T> {
   /// Whether to show filter operator selector
   final bool showFilterOperator;
 
+  /// Whether to exclude this column from API requests (useful for action columns)
+  final bool excludeFromApi;
+
+  /// Callback when a cell is tapped
+  final void Function(BuildContext context, T row, dynamic value)? onCellTap;
+
   const VooDataColumn({
     required this.field,
     required this.label,
@@ -103,6 +109,8 @@ class VooDataColumn<T> {
     this.allowedFilterOperators,
     this.flex = 1,
     this.showFilterOperator = false,
+    this.excludeFromApi = false,
+    this.onCellTap,
   });
 
   /// Get the effective filter widget type
@@ -232,6 +240,8 @@ class VooDataColumn<T> {
     List<VooFilterOperator>? allowedFilterOperators,
     int? flex,
     bool? showFilterOperator,
+    bool? excludeFromApi,
+    void Function(BuildContext context, T row, dynamic value)? onCellTap,
   }) {
     return VooDataColumn<T>(
       field: field ?? this.field,
@@ -257,6 +267,8 @@ class VooDataColumn<T> {
       allowedFilterOperators: allowedFilterOperators ?? this.allowedFilterOperators,
       flex: flex ?? this.flex,
       showFilterOperator: showFilterOperator ?? this.showFilterOperator,
+      excludeFromApi: excludeFromApi ?? this.excludeFromApi,
+      onCellTap: onCellTap ?? this.onCellTap,
     );
   }
 }

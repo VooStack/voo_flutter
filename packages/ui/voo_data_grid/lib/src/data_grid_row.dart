@@ -134,6 +134,16 @@ class VooDataGridRow<T> extends StatelessWidget {
     final displayValue =
         column.valueFormatter?.call(value) ?? value?.toString() ?? '';
 
+    final cellContent = Align(
+      alignment: _getAlignment(column.textAlign),
+      child: column.cellBuilder?.call(context, value, row) ??
+          Text(
+            displayValue,
+            style: theme.cellTextStyle,
+            overflow: TextOverflow.ellipsis,
+          ),
+    );
+
     return Container(
       width: width,
       padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
@@ -149,15 +159,12 @@ class VooDataGridRow<T> extends StatelessWidget {
           ),
         ),
       ),
-      child: Align(
-        alignment: _getAlignment(column.textAlign),
-        child: column.cellBuilder?.call(context, value, row) ??
-            Text(
-              displayValue,
-              style: theme.cellTextStyle,
-              overflow: TextOverflow.ellipsis,
-            ),
-      ),
+      child: column.onCellTap != null
+          ? InkWell(
+              onTap: () => column.onCellTap!(context, row, value),
+              child: cellContent,
+            )
+          : cellContent,
     );
   }
 

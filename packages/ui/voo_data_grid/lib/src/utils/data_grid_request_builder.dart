@@ -30,10 +30,20 @@ enum ApiFilterStandard {
 /// Supporting multiple API standards for different backend systems
 class DataGridRequestBuilder {
   final ApiFilterStandard standard;
+  final String? fieldPrefix;
 
   const DataGridRequestBuilder({
     this.standard = ApiFilterStandard.custom,
+    this.fieldPrefix,
   });
+
+  /// Apply field prefix to field name if prefix is set
+  String _applyFieldPrefix(String field) {
+    if (fieldPrefix != null && fieldPrefix!.isNotEmpty) {
+      return '$fieldPrefix.$field';
+    }
+    return field;
+  }
 
   /// Build request based on selected API standard
   Map<String, dynamic> buildRequest({
@@ -87,31 +97,32 @@ class DataGridRequestBuilder {
 
     // Add filters using simple format
     filters.forEach((field, filter) {
+      final prefixedField = _applyFieldPrefix(field);
       switch (filter.operator) {
         case VooFilterOperator.equals:
-          queryParams[field] = filter.value.toString();
+          queryParams[prefixedField] = filter.value.toString();
           break;
         case VooFilterOperator.greaterThan:
-          queryParams['${field}_gt'] = filter.value.toString();
+          queryParams['${prefixedField}_gt'] = filter.value.toString();
           break;
         case VooFilterOperator.lessThan:
-          queryParams['${field}_lt'] = filter.value.toString();
+          queryParams['${prefixedField}_lt'] = filter.value.toString();
           break;
         case VooFilterOperator.greaterThanOrEqual:
-          queryParams['${field}_gte'] = filter.value.toString();
+          queryParams['${prefixedField}_gte'] = filter.value.toString();
           break;
         case VooFilterOperator.lessThanOrEqual:
-          queryParams['${field}_lte'] = filter.value.toString();
+          queryParams['${prefixedField}_lte'] = filter.value.toString();
           break;
         case VooFilterOperator.contains:
-          queryParams['${field}_like'] = filter.value.toString();
+          queryParams['${prefixedField}_like'] = filter.value.toString();
           break;
         case VooFilterOperator.between:
-          queryParams['${field}_from'] = filter.value.toString();
-          queryParams['${field}_to'] = filter.valueTo.toString();
+          queryParams['${prefixedField}_from'] = filter.value.toString();
+          queryParams['${prefixedField}_to'] = filter.valueTo.toString();
           break;
         default:
-          queryParams[field] = filter.value?.toString() ?? '';
+          queryParams[prefixedField] = filter.value?.toString() ?? '';
       }
     });
 
@@ -119,8 +130,8 @@ class DataGridRequestBuilder {
     if (sorts.isNotEmpty) {
       queryParams['sort'] = sorts
           .map((s) => s.direction == VooSortDirection.descending
-              ? '-${s.field}'
-              : s.field)
+              ? '-${_applyFieldPrefix(s.field)}'
+              : _applyFieldPrefix(s.field))
           .join(',');
     }
 
@@ -150,14 +161,15 @@ class DataGridRequestBuilder {
 
     // Add filters in JSON:API format
     filters.forEach((field, filter) {
+      final prefixedField = _applyFieldPrefix(field);
       final op = _getJsonApiOperator(filter.operator);
       if (op == 'eq') {
-        queryParams['filter[$field]'] = filter.value.toString();
+        queryParams['filter[$prefixedField]'] = filter.value.toString();
       } else {
-        queryParams['filter[$field][$op]'] = filter.value.toString();
+        queryParams['filter[$prefixedField][$op]'] = filter.value.toString();
       }
       if (filter.valueTo != null) {
-        queryParams['filter[$field][to]'] = filter.valueTo.toString();
+        queryParams['filter[$prefixedField][to]'] = filter.valueTo.toString();
       }
     });
 
@@ -165,8 +177,8 @@ class DataGridRequestBuilder {
     if (sorts.isNotEmpty) {
       queryParams['sort'] = sorts
           .map((s) => s.direction == VooSortDirection.descending
-              ? '-${s.field}'
-              : s.field)
+              ? '-${_applyFieldPrefix(s.field)}'
+              : _applyFieldPrefix(s.field))
           .join(',');
     }
 
@@ -198,7 +210,8 @@ class DataGridRequestBuilder {
     if (filters.isNotEmpty) {
       final filterExpressions = <String>[];
       filters.forEach((field, filter) {
-        final expression = _buildODataFilterExpression(field, filter);
+        final prefixedField = _applyFieldPrefix(field);
+        final expression = _buildODataFilterExpression(prefixedField, filter);
         if (expression.isNotEmpty) {
           filterExpressions.add(expression);
         }
@@ -212,7 +225,7 @@ class DataGridRequestBuilder {
     if (sorts.isNotEmpty) {
       final orderBy = sorts
           .map((s) =>
-              '${s.field} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}')
+              '${_applyFieldPrefix(s.field)} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}')
           .join(',');
       queryParams['\$orderby'] = orderBy;
     }
@@ -241,7 +254,7 @@ class DataGridRequestBuilder {
     if (filters.isNotEmpty) {
       final query = <String, dynamic>{};
       filters.forEach((field, filter) {
-        query[field] = _buildMongoDbOperator(filter);
+        query[_applyFieldPrefix(field)] = _buildMongoDbOperator(filter);
       });
       body['query'] = query;
     }
@@ -250,7 +263,7 @@ class DataGridRequestBuilder {
     if (sorts.isNotEmpty) {
       final sort = <String, dynamic>{};
       for (var s in sorts) {
-        sort[s.field] = s.direction == VooSortDirection.ascending ? 1 : -1;
+        sort[_applyFieldPrefix(s.field)] = s.direction == VooSortDirection.ascending ? 1 : -1;
       }
       body['sort'] = sort;
     }
@@ -279,7 +292,7 @@ class DataGridRequestBuilder {
     if (filters.isNotEmpty) {
       final where = <String, dynamic>{};
       filters.forEach((field, filter) {
-        where[field] = _buildGraphQLFilter(filter);
+        where[_applyFieldPrefix(field)] = _buildGraphQLFilter(filter);
       });
       variables['where'] = where;
     }
@@ -288,7 +301,7 @@ class DataGridRequestBuilder {
     if (sorts.isNotEmpty) {
       variables['orderBy'] = sorts
           .map((s) => {
-                'field': s.field,
+                'field': _applyFieldPrefix(s.field),
                 'direction':
                     s.direction == VooSortDirection.ascending ? 'ASC' : 'DESC',
               })
@@ -334,7 +347,7 @@ class DataGridRequestBuilder {
 
     filters.forEach((field, filter) {
       final filterMap = <String, dynamic>{
-        'fieldName': field,
+        'fieldName': _applyFieldPrefix(field),
         'value': filter.value,
         'operator': _vooOperatorToString(filter.operator),
       };
@@ -373,7 +386,7 @@ class DataGridRequestBuilder {
     // Add sorting
     if (sorts.isNotEmpty) {
       final primarySort = sorts.first;
-      request['sortBy'] = primarySort.field;
+      request['sortBy'] = _applyFieldPrefix(primarySort.field);
       request['sortDescending'] = primarySort.direction == VooSortDirection.descending;
     }
 
@@ -615,7 +628,7 @@ class DataGridRequestBuilder {
     return filters.entries.map((entry) {
       final filter = entry.value;
       final filterMap = <String, dynamic>{
-        'field': entry.key,
+        'field': _applyFieldPrefix(entry.key),
         'operator': _operatorToString(filter.operator),
       };
 
@@ -647,7 +660,7 @@ class DataGridRequestBuilder {
     return sorts
         .where((sort) => sort.direction != VooSortDirection.none)
         .map((sort) => {
-              'field': sort.field,
+              'field': _applyFieldPrefix(sort.field),
               'direction': _sortDirectionToString(sort.direction),
             })
         .toList();
@@ -900,6 +913,7 @@ class RemoteDataGridSource extends VooDataGridSource {
   final String apiEndpoint;
   final Map<String, String>? headers;
   final ApiFilterStandard apiStandard;
+  final String? fieldPrefix;
   final DataGridRequestBuilder requestBuilder;
   final Future<Map<String, dynamic>> Function(
     String url,
@@ -911,8 +925,12 @@ class RemoteDataGridSource extends VooDataGridSource {
     required this.apiEndpoint,
     this.headers,
     this.apiStandard = ApiFilterStandard.custom,
+    this.fieldPrefix,
     this.httpClient,
-  })  : requestBuilder = DataGridRequestBuilder(standard: apiStandard),
+  })  : requestBuilder = DataGridRequestBuilder(
+          standard: apiStandard, 
+          fieldPrefix: fieldPrefix,
+        ),
         super(mode: VooDataGridMode.remote);
 
   @override

@@ -1,3 +1,34 @@
+## 0.5.1
+
+* **New Feature: Field Prefix Support for Nested Properties**
+  * Added `fieldPrefix` property to `VooDataGridController` for automatic field name prefixing
+  * Added `fieldPrefix` parameter to `DataGridRequestBuilder` for API request formatting
+  * Supports nested property filtering like "Site.SiteNumber", "Client.CompanyName"
+  * Works with all API standards (Voo, Simple, JSON:API, OData, MongoDB, GraphQL, Custom)
+  * Enables cleaner column definitions while maintaining proper API field names
+  
+* **New Feature: Action Columns and Clickable Cells**
+  * Added `excludeFromApi` property to exclude columns from API requests (useful for action columns)
+  * Added `onCellTap` callback for making cells clickable
+  * Updated filter row to skip columns with `excludeFromApi` flag
+  * Updated header to prevent sorting on excluded columns
+  * Added InkWell wrapper for cells with onCellTap callback
+  
+* **Use Cases**
+  * Nested properties: `Site.SiteNumber`, `Client.CompanyName`, `Order.Status`
+  * Action buttons (edit, delete, view) that shouldn't be sent to API
+  * Clickable cells for quick actions
+  * Local-only columns that don't exist in the backend
+  
+* **Examples**
+  * `nested_field_example.dart`: Demonstrates field prefix usage
+  * `action_buttons_example.dart`: Shows action columns with edit/delete/view buttons
+  
+* **Testing**
+  * Added tests for field prefix functionality
+  * Added tests for excludeFromApi and onCellTap features
+  * All existing tests pass without modifications
+
 ## 0.5.0
 
 * **Major Feature: Generic Type Support**

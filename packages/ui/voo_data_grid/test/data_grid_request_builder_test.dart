@@ -467,5 +467,167 @@ void main() {
         expect(sortsList[1]['direction'], 'desc');
       });
     });
+
+    group('field prefix', () {
+      test('should apply field prefix to filters in Voo API standard', () {
+        final builder = DataGridRequestBuilder(
+          standard: ApiFilterStandard.voo,
+          fieldPrefix: 'Site',
+        );
+
+        final filters = {
+          'SiteNumber': VooDataFilter(
+            operator: VooFilterOperator.equals,
+            value: 100,
+          ),
+          'Name': VooDataFilter(
+            operator: VooFilterOperator.contains,
+            value: 'Tech',
+          ),
+        };
+
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: filters,
+          sorts: [],
+        );
+
+        expect(result['intFilters'], [
+          {
+            'fieldName': 'Site.SiteNumber',
+            'value': 100,
+            'operator': 'Equals',
+          }
+        ]);
+        
+        expect(result['stringFilters'], [
+          {
+            'fieldName': 'Site.Name',
+            'value': 'Tech',
+            'operator': 'Contains',
+          }
+        ]);
+      });
+
+      test('should apply field prefix to sorting in Voo API standard', () {
+        final builder = DataGridRequestBuilder(
+          standard: ApiFilterStandard.voo,
+          fieldPrefix: 'Client',
+        );
+
+        final sorts = [
+          VooColumnSort(field: 'CompanyName', direction: VooSortDirection.ascending),
+        ];
+
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: {},
+          sorts: sorts,
+        );
+
+        expect(result['sortBy'], 'Client.CompanyName');
+        expect(result['sortDescending'], false);
+      });
+
+      test('should not apply prefix when fieldPrefix is null', () {
+        final builder = DataGridRequestBuilder(
+          standard: ApiFilterStandard.voo,
+          fieldPrefix: null,
+        );
+
+        final filters = {
+          'OrderStatus': VooDataFilter(
+            operator: VooFilterOperator.equals,
+            value: 1,
+          ),
+        };
+
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: filters,
+          sorts: [],
+        );
+
+        expect(result['intFilters'], [
+          {
+            'fieldName': 'OrderStatus',
+            'value': 1,
+            'operator': 'Equals',
+          }
+        ]);
+      });
+
+      test('should handle mixed types with field prefix', () {
+        final builder = DataGridRequestBuilder(
+          standard: ApiFilterStandard.voo,
+          fieldPrefix: 'Order',
+        );
+
+        final filters = {
+          'Status': VooDataFilter(
+            operator: VooFilterOperator.equals,
+            value: 1,
+          ),
+          'Date': VooDataFilter(
+            operator: VooFilterOperator.greaterThanOrEqual,
+            value: DateTime(2024, 1, 1),
+          ),
+          'Cost': VooDataFilter(
+            operator: VooFilterOperator.greaterThan,
+            value: 1000.50,
+          ),
+        };
+
+        final sorts = [
+          VooColumnSort(field: 'Date', direction: VooSortDirection.descending),
+        ];
+
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: filters,
+          sorts: sorts,
+        );
+
+        expect(result['intFilters'], [
+          {
+            'fieldName': 'Order.Status',
+            'value': 1,
+            'operator': 'Equals',
+          }
+        ]);
+
+        expect((result['dateFilters'] as List).first['fieldName'], 'Order.Date');
+        expect((result['decimalFilters'] as List).first['fieldName'], 'Order.Cost');
+        expect(result['sortBy'], 'Order.Date');
+      });
+
+      test('should apply field prefix to custom format', () {
+        final builder = DataGridRequestBuilder(
+          standard: ApiFilterStandard.custom,
+          fieldPrefix: 'User',
+        );
+
+        final filters = {
+          'Name': VooDataFilter(
+            operator: VooFilterOperator.contains,
+            value: 'John',
+          ),
+        };
+
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 10,
+          filters: filters,
+          sorts: [],
+        );
+
+        final filtersList = result['filters'] as List;
+        expect(filtersList.first['field'], 'User.Name');
+      });
+    });
   });
 }

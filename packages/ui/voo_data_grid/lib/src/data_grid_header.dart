@@ -105,7 +105,7 @@ class VooDataGridHeader<T> extends StatelessWidget {
     final width = controller.getColumnWidth(column);
     
     return GestureDetector(
-      onTap: column.sortable ? () => onSort(column.field) : null,
+      onTap: column.sortable && !column.excludeFromApi ? () => onSort(column.field) : null,
       child: Container(
         width: width,
         padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
@@ -128,7 +128,7 @@ class VooDataGridHeader<T> extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
             ),
-            if (column.sortable)
+            if (column.sortable && !column.excludeFromApi)
               _buildSortIcon(sortDirection),
             if (controller.columnResizable)
               _buildResizeHandle(column),

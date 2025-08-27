@@ -108,7 +108,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     VooDataColumn<T> column,
     VooDesignSystemData design,
   ) {
-    if (!column.filterable) {
+    if (!column.filterable || column.excludeFromApi) {
       return Container(
         width: widget.controller.getColumnWidth(column),
         decoration: BoxDecoration(
