@@ -141,7 +141,7 @@ class DataGridRequestBuilder {
   ) {
     final params = <String, dynamic>{
       'params': <String, String>{
-        'page[number]': page.toString(),
+        'page[number]': (page + 1).toString(),  // JSON:API uses 1-based pagination
         'page[size]': pageSize.toString(),
       },
     };
@@ -481,8 +481,15 @@ class DataGridRequestBuilder {
   String _buildODataFilterExpression(String field, VooDataFilter filter) {
     switch (filter.operator) {
       case VooFilterOperator.equals:
+        // Don't quote numeric values
+        if (filter.value is num) {
+          return "$field eq ${filter.value}";
+        }
         return "$field eq '${filter.value}'";
       case VooFilterOperator.notEquals:
+        if (filter.value is num) {
+          return "$field ne ${filter.value}";
+        }
         return "$field ne '${filter.value}'";
       case VooFilterOperator.greaterThan:
         return "$field gt ${filter.value}";
@@ -509,10 +516,10 @@ class DataGridRequestBuilder {
     }
   }
 
-  Map<String, dynamic> _buildMongoDbOperator(VooDataFilter filter) {
+  dynamic _buildMongoDbOperator(VooDataFilter filter) {
     switch (filter.operator) {
       case VooFilterOperator.equals:
-        return filter.value;
+        return filter.value;  // MongoDB uses direct value for equality
       case VooFilterOperator.notEquals:
         return {'\$ne': filter.value};
       case VooFilterOperator.greaterThan:
@@ -579,9 +586,9 @@ class DataGridRequestBuilder {
       case VooFilterOperator.isNull:
         return {'isNull': true};
       case VooFilterOperator.isNotNull:
-        return {'isNull': false};
+        return {'isNotNull': true};
       default:
-        return filter.value;
+        return {'eq': filter.value}; // Default to equals for unsupported operators
     }
   }
 

@@ -812,16 +812,17 @@ class _VooDataGridAdvancedFilteringPreviewState
           cellBuilder: (context, value, row) {
             final temp = value as double;
             Color color;
-            if (temp < 0)
+            if (temp < 0) {
               color = Colors.blue;
-            else if (temp < 20)
+            } else if (temp < 20) {
               color = Colors.cyan;
-            else if (temp < 40)
+            } else if (temp < 40) {
               color = Colors.green;
-            else if (temp < 60)
+            } else if (temp < 60) {
               color = Colors.orange;
-            else
+            } else {
               color = Colors.red;
+            }
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Text(

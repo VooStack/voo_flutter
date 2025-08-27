@@ -1,4 +1,5 @@
 /// Advanced filter models for VooDataGrid with secondary filter support
+library;
 
 /// Logic operators for combining filters
 enum FilterLogic {
@@ -51,23 +52,19 @@ abstract class BaseFilter {
         'fieldName': fieldName,
         'value': value,
         'operator': operator,
-        if (secondaryFilter != null) 'secondaryFilter': secondaryFilter!.toJson(),
+        if (secondaryFilter != null)
+          'secondaryFilter': secondaryFilter!.toJson(),
       };
 }
 
 /// String filter implementation
 class StringFilter extends BaseFilter {
   const StringFilter({
-    required String fieldName,
-    required String value,
-    required String operator,
-    SecondaryFilter? secondaryFilter,
-  }) : super(
-          fieldName: fieldName,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        );
+    required super.fieldName,
+    required String super.value,
+    required super.operator,
+    super.secondaryFilter,
+  });
 
   factory StringFilter.fromJson(Map<String, dynamic> json) {
     return StringFilter(
@@ -84,21 +81,18 @@ class StringFilter extends BaseFilter {
 /// Integer filter implementation
 class IntFilter extends BaseFilter {
   const IntFilter({
-    required String fieldName,
-    required int value,
-    required String operator,
-    SecondaryFilter? secondaryFilter,
-  }) : super(
-          fieldName: fieldName,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        );
+    required super.fieldName,
+    required int super.value,
+    required super.operator,
+    super.secondaryFilter,
+  });
 
   factory IntFilter.fromJson(Map<String, dynamic> json) {
     return IntFilter(
       fieldName: json['fieldName'],
-      value: json['value'] is int ? json['value'] : int.parse(json['value'].toString()),
+      value: json['value'] is int
+          ? json['value']
+          : int.parse(json['value'].toString()),
       operator: json['operator'],
       secondaryFilter: json['secondaryFilter'] != null
           ? SecondaryFilter.fromJson(json['secondaryFilter'])
@@ -110,15 +104,12 @@ class IntFilter extends BaseFilter {
 /// Date filter implementation
 class DateFilter extends BaseFilter {
   DateFilter({
-    required String fieldName,
+    required super.fieldName,
     required DateTime value,
-    required String operator,
-    SecondaryFilter? secondaryFilter,
+    required super.operator,
+    super.secondaryFilter,
   }) : super(
-          fieldName: fieldName,
           value: value.toIso8601String(),
-          operator: operator,
-          secondaryFilter: secondaryFilter,
         );
 
   factory DateFilter.fromJson(Map<String, dynamic> json) {
@@ -131,28 +122,25 @@ class DateFilter extends BaseFilter {
           : null,
     );
   }
-  
+
   DateTime get dateValue => DateTime.parse(value as String);
 }
 
 /// Decimal filter implementation
 class DecimalFilter extends BaseFilter {
   const DecimalFilter({
-    required String fieldName,
-    required double value,
-    required String operator,
-    SecondaryFilter? secondaryFilter,
-  }) : super(
-          fieldName: fieldName,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        );
+    required super.fieldName,
+    required double super.value,
+    required super.operator,
+    super.secondaryFilter,
+  });
 
   factory DecimalFilter.fromJson(Map<String, dynamic> json) {
     return DecimalFilter(
       fieldName: json['fieldName'],
-      value: json['value'] is double ? json['value'] : double.parse(json['value'].toString()),
+      value: json['value'] is double
+          ? json['value']
+          : double.parse(json['value'].toString()),
       operator: json['operator'],
       secondaryFilter: json['secondaryFilter'] != null
           ? SecondaryFilter.fromJson(json['secondaryFilter'])
@@ -164,21 +152,18 @@ class DecimalFilter extends BaseFilter {
 /// Boolean filter implementation
 class BoolFilter extends BaseFilter {
   const BoolFilter({
-    required String fieldName,
-    required bool value,
-    String operator = 'Equals',
-    SecondaryFilter? secondaryFilter,
-  }) : super(
-          fieldName: fieldName,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        );
+    required super.fieldName,
+    required bool super.value,
+    super.operator = 'Equals',
+    super.secondaryFilter,
+  });
 
   factory BoolFilter.fromJson(Map<String, dynamic> json) {
     return BoolFilter(
       fieldName: json['fieldName'],
-      value: json['value'] is bool ? json['value'] : json['value'].toString().toLowerCase() == 'true',
+      value: json['value'] is bool
+          ? json['value']
+          : json['value'].toString().toLowerCase() == 'true',
       operator: json['operator'] ?? 'Equals',
       secondaryFilter: json['secondaryFilter'] != null
           ? SecondaryFilter.fromJson(json['secondaryFilter'])
@@ -199,7 +184,7 @@ class AdvancedFilterRequest {
   final int pageSize;
   final String? sortBy;
   final bool sortDescending;
-  
+
   /// Legacy simple filters for backward compatibility
   final Map<String, dynamic>? legacyFilters;
 
@@ -261,7 +246,8 @@ class AdvancedFilterRequest {
       // Legacy format - extract known fields and put the rest in legacyFilters
       final legacyFields = <String, dynamic>{};
       json.forEach((key, value) {
-        if (!['pageNumber', 'pageSize', 'sortBy', 'sortDescending'].contains(key)) {
+        if (!['pageNumber', 'pageSize', 'sortBy', 'sortDescending']
+            .contains(key)) {
           legacyFields[key] = value;
         }
       });

@@ -183,9 +183,15 @@ void main() {
       // Find and tap a checkbox
       final checkboxes = find.byType(Checkbox);
       expect(checkboxes, findsWidgets);
+      
+      // Count how many checkboxes we have
+      final checkboxCount = tester.widgetList(checkboxes).length;
+      expect(checkboxCount, greaterThan(0));
 
-      await tester.tap(checkboxes.first);
-      await tester.pump();
+      // Tap the first checkbox if there's only one, or second if there are multiple (to skip header)
+      final targetIndex = checkboxCount > 1 ? 1 : 0;
+      await tester.tap(checkboxes.at(targetIndex));
+      await tester.pumpAndSettle();
 
       expect(controller.dataSource.selectedRows.length, 1);
     });
@@ -206,11 +212,12 @@ void main() {
       await tester.pump();
 
       final checkboxes = find.byType(Checkbox);
+      expect(checkboxes, findsWidgets);
 
-      // Select multiple rows
+      // Select multiple rows (skip header checkbox at index 0)
       await tester.tap(checkboxes.at(1)); // First data row
       await tester.pump();
-      await tester.tap(checkboxes.at(2)); // Second data row
+      await tester.tap(checkboxes.at(2)); // Second data row  
       await tester.pump();
 
       expect(controller.dataSource.selectedRows.length, 2);
@@ -329,9 +336,15 @@ void main() {
         ),
       );
 
-      // Trigger loading
-      remoteController.dataSource.loadData();
+      // Initially should be loading when remote source loads
       await tester.pump();
+      
+      // Check if loading indicator is shown
+      // If not initially loading, trigger a load
+      if (!remoteController.dataSource.isLoading) {
+        remoteController.dataSource.loadData();
+        await tester.pump();
+      }
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 

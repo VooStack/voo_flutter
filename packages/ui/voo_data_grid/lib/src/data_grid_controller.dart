@@ -295,6 +295,8 @@ class VooDataGridController extends ChangeNotifier {
   void dispose() {
     dataSource.removeListener(_onDataSourceChanged);
     horizontalSyncController.dispose();
+    horizontalScrollController.dispose();
+    bodyHorizontalScrollController.dispose();
     verticalScrollController.dispose();
     super.dispose();
   }

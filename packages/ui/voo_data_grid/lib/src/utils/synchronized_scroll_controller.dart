@@ -74,11 +74,10 @@ class SynchronizedScrollController {
     _isUpdating = false;
   }
 
-  /// Dispose of all controllers
+  /// Clear registered controllers
   void dispose() {
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
+    // Don't dispose the controllers themselves as they are owned by VooDataGridController
+    // Just clear the list
     _controllers.clear();
   }
 }

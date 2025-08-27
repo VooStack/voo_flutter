@@ -51,6 +51,7 @@ class VooDataGridRow extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         onDoubleTap: onDoubleTap,
+        behavior: HitTestBehavior.opaque,  // Make entire row clickable
         child: Container(
           height: controller.rowHeight,
           color: backgroundColor,
@@ -109,7 +110,25 @@ class VooDataGridRow extends StatelessWidget {
     VooDesignSystemData design,
   ) {
     final width = controller.getColumnWidth(column);
-    final value = column.valueGetter?.call(row) ?? row[column.field];
+    
+    // For typed objects, valueGetter MUST be provided.
+    // Try column's valueGetter first, then fallback to bracket notation for Maps.
+    dynamic value;
+    if (column.valueGetter != null) {
+      value = column.valueGetter!(row);
+    } else if (row is Map) {
+      value = row[column.field];
+    } else {
+      // Typed object without valueGetter - this will cause errors
+      // Log warning in debug mode
+      assert(
+        false,
+        'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
+        'Provide a valueGetter function in the VooDataColumn definition.',
+      );
+      value = null;
+    }
+    
     final displayValue = column.valueFormatter?.call(value) ?? value?.toString() ?? '';
     
     return Container(

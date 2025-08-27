@@ -416,7 +416,23 @@ class _VooDataGridState extends State<VooDataGrid> {
 
   Widget _buildCardField(BuildContext context, VooDataColumn column,
       dynamic row, VooDesignSystemData design) {
-    final value = column.valueGetter?.call(row) ?? row[column.field];
+    // For typed objects, valueGetter MUST be provided.
+    // Try column's valueGetter first, then fallback to bracket notation for Maps.
+    dynamic value;
+    if (column.valueGetter != null) {
+      value = column.valueGetter!(row);
+    } else if (row is Map) {
+      value = row[column.field];
+    } else {
+      // Typed object without valueGetter - this will cause errors
+      assert(
+        false,
+        'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
+        'Provide a valueGetter function in the VooDataColumn definition.',
+      );
+      value = null;
+    }
+    
     final displayValue =
         column.valueFormatter?.call(value) ?? value?.toString() ?? '';
 
