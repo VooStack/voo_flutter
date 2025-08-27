@@ -348,40 +348,53 @@ class DataGridRequestBuilder {
     filters.forEach((field, filter) {
       // Special handling for Between operator in Voo API standard
       // Voo API doesn't support Between directly - we need to create two separate filters
-      if (filter.operator == VooFilterOperator.between && filter.valueTo != null) {
-        // Create GreaterThanOrEqual filter for the lower bound
-        final lowerFilter = <String, dynamic>{
-          'fieldName': _applyFieldPrefix(field),
-          'value': filter.value,
-          'operator': 'GreaterThanOrEqual',
-        };
+      if (filter.operator == VooFilterOperator.between) {
+        // Create GreaterThanOrEqual filter for the lower bound if value exists
+        if (filter.value != null) {
+          final lowerFilter = <String, dynamic>{
+            'fieldName': _applyFieldPrefix(field),
+            'value': filter.value,
+            'operator': 'GreaterThanOrEqual',
+          };
+          
+          // Add lower bound filter to the appropriate type array
+          if (filter.value is String) {
+            stringFilters.add(lowerFilter);
+          } else if (filter.value is int) {
+            intFilters.add(lowerFilter);
+          } else if (filter.value is DateTime) {
+            lowerFilter['value'] = (filter.value as DateTime).toIso8601String();
+            dateFilters.add(lowerFilter);
+          } else if (filter.value is double) {
+            decimalFilters.add(lowerFilter);
+          } else {
+            // Default to string filter for unknown types
+            stringFilters.add(lowerFilter);
+          }
+        }
         
-        // Create LessThanOrEqual filter for the upper bound
-        final upperFilter = <String, dynamic>{
-          'fieldName': _applyFieldPrefix(field),
-          'value': filter.valueTo,
-          'operator': 'LessThanOrEqual',
-        };
-        
-        // Add both filters to the appropriate type array
-        if (filter.value is String) {
-          stringFilters.add(lowerFilter);
-          stringFilters.add(upperFilter);
-        } else if (filter.value is int) {
-          intFilters.add(lowerFilter);
-          intFilters.add(upperFilter);
-        } else if (filter.value is DateTime) {
-          lowerFilter['value'] = (filter.value as DateTime).toIso8601String();
-          upperFilter['value'] = (filter.valueTo as DateTime).toIso8601String();
-          dateFilters.add(lowerFilter);
-          dateFilters.add(upperFilter);
-        } else if (filter.value is double) {
-          decimalFilters.add(lowerFilter);
-          decimalFilters.add(upperFilter);
-        } else {
-          // Default to string filter for unknown types
-          stringFilters.add(lowerFilter);
-          stringFilters.add(upperFilter);
+        // Create LessThanOrEqual filter for the upper bound if valueTo exists
+        if (filter.valueTo != null) {
+          final upperFilter = <String, dynamic>{
+            'fieldName': _applyFieldPrefix(field),
+            'value': filter.valueTo,
+            'operator': 'LessThanOrEqual',
+          };
+          
+          // Add upper bound filter to the appropriate type array
+          if (filter.valueTo is String) {
+            stringFilters.add(upperFilter);
+          } else if (filter.valueTo is int) {
+            intFilters.add(upperFilter);
+          } else if (filter.valueTo is DateTime) {
+            upperFilter['value'] = (filter.valueTo as DateTime).toIso8601String();
+            dateFilters.add(upperFilter);
+          } else if (filter.valueTo is double) {
+            decimalFilters.add(upperFilter);
+          } else {
+            // Default to string filter for unknown types
+            stringFilters.add(upperFilter);
+          }
         }
       } else {
         // Normal filter handling for non-between operators

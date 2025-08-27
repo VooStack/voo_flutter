@@ -142,7 +142,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
 
   Widget _buildFilterInput(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDataFilter? currentFilter,
   ) {
     // Use custom filter builder if provided
@@ -186,7 +186,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     }
   }
 
-  Widget _buildTextFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+  Widget _buildTextFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     final controller = _textControllers.putIfAbsent(
       column.field,
       () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
@@ -232,7 +232,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     );
   }
 
-  Widget _buildNumberFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+  Widget _buildNumberFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     final controller = _textControllers.putIfAbsent(
       column.field,
       () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
@@ -279,7 +279,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
   }
 
   Widget _buildNumberRangeFilter(
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDataFilter? currentFilter,
   ) {
     final minController = _textControllers.putIfAbsent(
@@ -383,7 +383,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
 
   Widget _buildDateFilter(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDataFilter? currentFilter,
   ) {
     final controller = _textControllers.putIfAbsent(
@@ -434,7 +434,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
 
   Widget _buildDateRangeFilter(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDataFilter? currentFilter,
   ) {
     final theme = Theme.of(context);
@@ -488,7 +488,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     );
   }
 
-  Widget _buildDropdownFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+  Widget _buildDropdownFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
     final theme = Theme.of(context);
     
@@ -582,7 +582,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     );
   }
 
-  Widget _buildMultiSelectFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+  Widget _buildMultiSelectFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
     final selectedValues = currentFilter?.value is List ? List.from(currentFilter!.value as List) : [];
     final theme = Theme.of(context);
@@ -637,7 +637,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     );
   }
 
-  Widget _buildCheckboxFilter(VooDataColumn column, VooDataFilter? currentFilter) {
+  Widget _buildCheckboxFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     // Initialize checkbox value from current filter if not already set
     if (!_checkboxValues.containsKey(column.field) && currentFilter != null) {
       _checkboxValues[column.field] = currentFilter.value == true;
@@ -709,7 +709,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     );
   }
 
-  List<VooFilterOption> _getFilterOptions(VooDataColumn column) {
+  List<VooFilterOption> _getFilterOptions(VooDataColumn<T> column) {
     if (column.filterOptions != null) {
       return column.filterOptions!;
     }
@@ -749,7 +749,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
       ..sort((a, b) => a.label.compareTo(b.label));
   }
 
-  void _applyFilter(VooDataColumn column, dynamic value) {
+  void _applyFilter(VooDataColumn<T> column, dynamic value) {
     if (value == null) {
       _clearFilter(column);
       return;

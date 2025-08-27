@@ -523,7 +523,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
     return Column(
       children: [
         // Header - Always show headers even when no data or error
-        VooDataGridHeader(
+        VooDataGridHeader<T>(
           controller: widget.controller,
           theme: _theme,
           onSort: widget.controller.sortColumn,
@@ -531,7 +531,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
 
         // Filters (only on desktop) - Keep visible even during errors
         if (showInlineFilters)
-          VooDataGridFilterRow(
+          VooDataGridFilterRow<T>(
             controller: widget.controller,
             theme: _theme,
           ),
@@ -635,7 +635,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
       // Build rows
       final rowsList = List.generate(
         rows.length,
-        (i) => VooDataGridRow(
+        (i) => VooDataGridRow<T>(
           row: rows[i],
           index: i,
           controller: widget.controller,

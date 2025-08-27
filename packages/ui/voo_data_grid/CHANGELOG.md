@@ -1,6 +1,26 @@
+## 0.5.3
+
+* **Bug Fixes**
+  * **Fixed Generic Type Parameter Propagation in Filter Row**
+    * Fixed type mismatch error that occurred when clicking on filters with typed controllers
+    * Added missing generic type parameters to all filter-related methods in `VooDataGridFilterRow`
+    * Methods updated: `_buildFilterInput`, `_buildTextFilter`, `_buildNumberFilter`, `_buildNumberRangeFilter`, `_buildDateFilter`, `_buildDateRangeFilter`, `_buildDropdownFilter`, `_buildMultiSelectFilter`, `_buildCheckboxFilter`, `_getFilterOptions`, and `_applyFilter`
+    * This ensures proper type safety when using typed controllers like `VooDataGridController<OrderList>`
+    * Users no longer need to explicitly add type parameters to columns when using typed controllers
+
+  * **Improved VooApiStandard Number Range Filtering**
+    * Enhanced handling of between operator to properly handle null min/max values
+    * Now only creates GreaterThanOrEqual filter when minimum value is not null
+    * Only creates LessThanOrEqual filter when maximum value is not null
+    * Allows filtering with just a minimum or just a maximum value
+
 ## 0.5.2
 
 * **Bug Fixes & Improvements**
+  * **Fixed Generic Type Propagation**: Fixed missing generic type parameters in widget tree
+    * Added generic type parameter `<T>` to `VooDataGridFilterRow`, `VooDataGridHeader`, and `VooDataGridRow` widget instantiations
+    * This fixes the type mismatch error when clicking on filters with typed controllers
+    * Ensures proper type safety throughout the widget hierarchy
   * **Enhanced Error Handling**: Added comprehensive error handling for valueGetter functions
     * Added try-catch blocks around valueGetter calls to prevent crashes
     * Improved error logging with detailed type information for debugging
