@@ -29,9 +29,12 @@ class VooDataGridBreakpoints {
 }
 
 /// A powerful data grid widget with remote filtering support
-class VooDataGrid extends StatefulWidget {
+/// 
+/// Generic type parameter T represents the row data type.
+/// Use dynamic if working with untyped Map data.
+class VooDataGrid<T> extends StatefulWidget {
   /// Controller for the data grid
-  final VooDataGridController controller;
+  final VooDataGridController<T> controller;
 
   /// Whether to show pagination controls
   final bool showPagination;
@@ -52,13 +55,13 @@ class VooDataGrid extends StatefulWidget {
   final Widget Function(String error)? errorBuilder;
 
   /// Row tap callback
-  final void Function(dynamic row)? onRowTap;
+  final void Function(T row)? onRowTap;
 
   /// Row double tap callback
-  final void Function(dynamic row)? onRowDoubleTap;
+  final void Function(T row)? onRowDoubleTap;
 
   /// Row hover callback
-  final void Function(dynamic)? onRowHover;
+  final void Function(T)? onRowHover;
 
   /// Border decoration
   final BoxDecoration? decoration;
@@ -70,7 +73,7 @@ class VooDataGrid extends StatefulWidget {
   final VooDataGridDisplayMode displayMode;
 
   /// Custom card builder for mobile layout
-  final Widget Function(BuildContext context, dynamic row, int index)?
+  final Widget Function(BuildContext context, T row, int index)?
       cardBuilder;
 
   /// Priority columns to show on mobile (field names)
@@ -104,11 +107,11 @@ class VooDataGrid extends StatefulWidget {
   });
 
   @override
-  State<VooDataGrid> createState() => _VooDataGridState();
+  State<VooDataGrid<T>> createState() => _VooDataGridState<T>();
 }
 
-class _VooDataGridState extends State<VooDataGrid> {
-  dynamic _hoveredRow;
+class _VooDataGridState<T> extends State<VooDataGrid<T>> {
+  T? _hoveredRow;
   late VooDataGridTheme _theme;
   late VooDataGridDisplayMode _effectiveDisplayMode;
   VooDataGridDisplayMode? _userSelectedMode;
@@ -463,7 +466,7 @@ class _VooDataGridState extends State<VooDataGrid> {
     );
   }
 
-  List<VooDataColumn> _getPriorityColumns() {
+  List<VooDataColumn<T>> _getPriorityColumns() {
     final allColumns = widget.controller.columns;
 
     if (widget.mobilePriorityColumns != null &&
@@ -546,7 +549,7 @@ class _VooDataGridState extends State<VooDataGrid> {
     );
   }
 
-  List<VooDataColumn> _getVisibleColumnsForWidth(double width) {
+  List<VooDataColumn<T>> _getVisibleColumnsForWidth(double width) {
     final allColumns = widget.controller.columns;
 
     if (_isDesktop(width)) {
@@ -627,7 +630,9 @@ class _VooDataGridState extends State<VooDataGrid> {
             setState(() {
               _hoveredRow = isHovered ? rows[i] : null;
             });
-            widget.onRowHover?.call(isHovered ? rows[i] : null);
+            if (isHovered) {
+              widget.onRowHover?.call(rows[i]);
+            }
           },
         ),
       );

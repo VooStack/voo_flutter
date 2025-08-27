@@ -1,3 +1,29 @@
+## 0.5.0
+
+* **Major Feature: Generic Type Support**
+  * VooDataGrid components now support generic type parameters for compile-time type safety
+  * `VooDataGridController<T>`, `VooDataGridSource<T>`, and `VooDataColumn<T>` are now generic
+  * `VooDataGrid<T>`, `VooDataGridHeader<T>`, `VooDataGridRow<T>`, and `VooDataGridFilterRow<T>` widgets are now generic
+  * Eliminates need for runtime type casting in `valueGetter` functions
+  * Provides full IntelliSense and type checking for row data
+
+* **Type Safety Improvements**
+  * `valueGetter` in VooDataColumn now has proper type signature: `dynamic Function(T row)`
+  * `cellBuilder` callback now receives properly typed row: `Widget Function(BuildContext, dynamic value, T row)`
+  * `onRowTap` and `onRowDoubleTap` callbacks now receive typed data: `void Function(T row)`
+  * `cardBuilder` for mobile layout now has type safety: `Widget Function(BuildContext, T row, int index)`
+
+* **Developer Experience**
+  * No more casting needed in valueGetter: `(row) => row.orderId` instead of `(row) => (row as OrderModel).orderId`
+  * Better IDE support with autocomplete and error detection
+  * Cleaner, more maintainable code with compile-time type checking
+  * Backward compatible - can still use `dynamic` for untyped/Map data
+
+* **Example Updates**
+  * Updated VooDataGridTypedObjectsPreview to demonstrate generic usage
+  * Simplified valueGetter implementations without type casting
+  * Added comments highlighting type safety benefits
+
 ## 0.4.0
 
 * **Breaking Changes**

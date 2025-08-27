@@ -6,10 +6,12 @@ import 'data_grid_source.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Row widget for VooDataGrid
-class VooDataGridRow extends StatelessWidget {
-  final dynamic row;
+///
+/// Generic type parameter T represents the row data type.
+class VooDataGridRow<T> extends StatelessWidget {
+  final T row;
   final int index;
-  final VooDataGridController controller;
+  final VooDataGridController<T> controller;
   final VooDataGridTheme theme;
   final bool isSelected;
   final bool isHovered;
@@ -33,7 +35,7 @@ class VooDataGridRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     Color backgroundColor;
     if (isSelected) {
       backgroundColor = theme.selectedRowBackgroundColor;
@@ -44,14 +46,14 @@ class VooDataGridRow extends StatelessWidget {
     } else {
       backgroundColor = theme.rowBackgroundColor;
     }
-    
+
     return MouseRegion(
       onEnter: (_) => onHover?.call(true),
       onExit: (_) => onHover?.call(false),
       child: GestureDetector(
         onTap: onTap,
         onDoubleTap: onDoubleTap,
-        behavior: HitTestBehavior.opaque,  // Make entire row clickable
+        behavior: HitTestBehavior.opaque, // Make entire row clickable
         child: Container(
           height: controller.rowHeight,
           color: backgroundColor,
@@ -60,11 +62,11 @@ class VooDataGridRow extends StatelessWidget {
               // Selection checkbox column
               if (controller.dataSource.selectionMode != VooSelectionMode.none)
                 _buildSelectionCell(design),
-              
+
               // Frozen columns
               for (final column in controller.frozenColumns)
                 _buildDataCell(context, column, design),
-              
+
               // Scrollable columns - these will be scrolled at the parent level
               for (final column in controller.scrollableColumns)
                 _buildDataCell(context, column, design),
@@ -106,18 +108,18 @@ class VooDataGridRow extends StatelessWidget {
 
   Widget _buildDataCell(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDesignSystemData design,
   ) {
     final width = controller.getColumnWidth(column);
-    
+
     // For typed objects, valueGetter MUST be provided.
     // Try column's valueGetter first, then fallback to bracket notation for Maps.
     dynamic value;
     if (column.valueGetter != null) {
       value = column.valueGetter!(row);
     } else if (row is Map) {
-      value = row[column.field];
+      value = (row as Map)[column.field];
     } else {
       // Typed object without valueGetter - this will cause errors
       // Log warning in debug mode
@@ -128,9 +130,10 @@ class VooDataGridRow extends StatelessWidget {
       );
       value = null;
     }
-    
-    final displayValue = column.valueFormatter?.call(value) ?? value?.toString() ?? '';
-    
+
+    final displayValue =
+        column.valueFormatter?.call(value) ?? value?.toString() ?? '';
+
     return Container(
       width: width,
       padding: EdgeInsets.symmetric(horizontal: design.spacingMd),

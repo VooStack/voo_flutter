@@ -16,20 +16,22 @@ enum VooDataGridMode {
 
 /// Abstract data source for VooDataGrid
 /// 
+/// Generic type parameter T represents the row data type.
+/// Use dynamic if working with untyped Map data.
 /// For typed objects (non-Map), you MUST provide a valueGetter function 
 /// in your VooDataColumn definitions to extract field values.
-abstract class VooDataGridSource extends ChangeNotifier {
+abstract class VooDataGridSource<T> extends ChangeNotifier {
   /// Operation mode
   VooDataGridMode _mode = VooDataGridMode.remote;
   VooDataGridMode get mode => _mode;
 
   /// All data (for local mode)
-  List<dynamic> _allRows = [];
-  List<dynamic> get allRows => _allRows;
+  List<T> _allRows = [];
+  List<T> get allRows => _allRows;
 
   /// Current page of data (filtered/sorted)
-  List<dynamic> _rows = [];
-  List<dynamic> get rows => _rows;
+  List<T> _rows = [];
+  List<T> get rows => _rows;
 
   /// Total number of rows (after filtering)
   int _totalRows = 0;
@@ -60,8 +62,8 @@ abstract class VooDataGridSource extends ChangeNotifier {
   List<VooColumnSort> get sorts => _sorts;
 
   /// Selected rows
-  final Set<dynamic> _selectedRows = {};
-  Set<dynamic> get selectedRows => _selectedRows;
+  final Set<T> _selectedRows = {};
+  Set<T> get selectedRows => _selectedRows;
 
   /// Selection mode
   VooSelectionMode _selectionMode = VooSelectionMode.none;
@@ -76,7 +78,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
   }
 
   /// Fetch data from remote source (required for remote and mixed modes)
-  Future<VooDataGridResponse> fetchRemoteData({
+  Future<VooDataGridResponse<T>> fetchRemoteData({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
@@ -88,7 +90,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
   }
 
   /// Set local data (for local mode)
-  void setLocalData(List<dynamic> data) {
+  void setLocalData(List<T> data) {
     _allRows = List.from(data);
     _applyLocalFiltersAndSorts();
   }
@@ -191,10 +193,12 @@ abstract class VooDataGridSource extends ChangeNotifier {
     _totalRows = filteredData.length;
     final startIndex = _currentPage * _pageSize;
     final endIndex = (startIndex + _pageSize).clamp(0, _totalRows);
-    _rows = filteredData.sublist(
-      startIndex.clamp(0, filteredData.length),
-      endIndex.clamp(0, filteredData.length),
-    );
+    _rows = filteredData
+        .sublist(
+          startIndex.clamp(0, filteredData.length),
+          endIndex.clamp(0, filteredData.length),
+        )
+        .cast<T>();
   }
 
   /// Get field value from row object
@@ -402,7 +406,7 @@ abstract class VooDataGridSource extends ChangeNotifier {
   int get totalPages => (_totalRows / _pageSize).ceil();
 
   /// Select/deselect a row
-  void toggleRowSelection(dynamic row) {
+  void toggleRowSelection(T row) {
     if (_selectionMode == VooSelectionMode.none) return;
 
     if (_selectionMode == VooSelectionMode.single) {
@@ -466,8 +470,10 @@ abstract class VooDataGridSource extends ChangeNotifier {
 }
 
 /// Response from data source
-class VooDataGridResponse {
-  final List<dynamic> rows;
+/// 
+/// Generic type parameter T represents the row data type.
+class VooDataGridResponse<T> {
+  final List<T> rows;
   final int totalRows;
   final int page;
   final int pageSize;

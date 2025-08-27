@@ -6,8 +6,10 @@ import 'data_grid_source.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Header widget for VooDataGrid
-class VooDataGridHeader extends StatelessWidget {
-  final VooDataGridController controller;
+/// 
+/// Generic type parameter T represents the row data type.
+class VooDataGridHeader<T> extends StatelessWidget {
+  final VooDataGridController<T> controller;
   final VooDataGridTheme theme;
   final void Function(String field) onSort;
 
@@ -96,7 +98,7 @@ class VooDataGridHeader extends StatelessWidget {
 
   Widget _buildHeaderCell(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDesignSystemData design,
   ) {
     final sortDirection = controller.getSortDirection(column.field);
@@ -165,7 +167,7 @@ class VooDataGridHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildResizeHandle(VooDataColumn column) {
+  Widget _buildResizeHandle(VooDataColumn<T> column) {
     return MouseRegion(
       cursor: SystemMouseCursors.resizeColumn,
       child: GestureDetector(

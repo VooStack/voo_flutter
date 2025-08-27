@@ -5,22 +5,25 @@ import 'models/data_grid_constraints.dart';
 import 'utils/synchronized_scroll_controller.dart';
 
 /// Controller for VooDataGrid
-class VooDataGridController extends ChangeNotifier {
+/// 
+/// Generic type parameter T represents the row data type.
+/// Use dynamic if working with untyped Map data.
+class VooDataGridController<T> extends ChangeNotifier {
   /// Data source
-  final VooDataGridSource dataSource;
+  final VooDataGridSource<T> dataSource;
 
   /// Columns configuration
-  List<VooDataColumn> _columns = [];
-  List<VooDataColumn> get columns => _columns;
+  List<VooDataColumn<T>> _columns = [];
+  List<VooDataColumn<T>> get columns => _columns;
 
   /// Visible columns (filtered by visible property)
-  List<VooDataColumn> get visibleColumns => _columns.where((col) => col.visible).toList();
+  List<VooDataColumn<T>> get visibleColumns => _columns.where((col) => col.visible).toList();
 
   /// Frozen columns
-  List<VooDataColumn> get frozenColumns => visibleColumns.where((col) => col.frozen).toList();
+  List<VooDataColumn<T>> get frozenColumns => visibleColumns.where((col) => col.frozen).toList();
 
   /// Scrollable columns
-  List<VooDataColumn> get scrollableColumns => visibleColumns.where((col) => !col.frozen).toList();
+  List<VooDataColumn<T>> get scrollableColumns => visibleColumns.where((col) => !col.frozen).toList();
 
   /// Column widths map
   final Map<String, double> _columnWidths = {};
@@ -80,7 +83,7 @@ class VooDataGridController extends ChangeNotifier {
   /// Constructor
   VooDataGridController({
     required this.dataSource,
-    List<VooDataColumn>? columns,
+    List<VooDataColumn<T>>? columns,
     double? rowHeight,
     double? headerHeight,
     double? filterHeight,
@@ -113,13 +116,13 @@ class VooDataGridController extends ChangeNotifier {
   }
 
   /// Set columns
-  void setColumns(List<VooDataColumn> columns) {
+  void setColumns(List<VooDataColumn<T>> columns) {
     _columns = columns;
     notifyListeners();
   }
 
   /// Update column
-  void updateColumn(String field, VooDataColumn column) {
+  void updateColumn(String field, VooDataColumn<T> column) {
     final index = _columns.indexWhere((col) => col.field == field);
     if (index >= 0) {
       _columns[index] = column;
@@ -139,7 +142,7 @@ class VooDataGridController extends ChangeNotifier {
   }
 
   /// Set visible columns for responsive behavior
-  void setVisibleColumns(List<VooDataColumn> visibleColumns) {
+  void setVisibleColumns(List<VooDataColumn<T>> visibleColumns) {
     for (var column in _columns) {
       final shouldBeVisible = visibleColumns.any((col) => col.field == column.field);
       if (column.visible != shouldBeVisible) {
@@ -159,7 +162,7 @@ class VooDataGridController extends ChangeNotifier {
   }
 
   /// Get column width
-  double getColumnWidth(VooDataColumn column) {
+  double getColumnWidth(VooDataColumn<T> column) {
     if (_columnWidths.containsKey(column.field)) {
       return _columnWidths[column.field]!;
     }
@@ -167,7 +170,7 @@ class VooDataGridController extends ChangeNotifier {
   }
 
   /// Calculate flex width for column
-  double _calculateFlexWidth(VooDataColumn column) {
+  double _calculateFlexWidth(VooDataColumn<T> column) {
     // This will be calculated based on available space
     // For now, return a default width
     return 150.0;

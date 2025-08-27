@@ -7,8 +7,10 @@ import 'data_grid_source.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Filter row widget for VooDataGrid
-class VooDataGridFilterRow extends StatefulWidget {
-  final VooDataGridController controller;
+/// 
+/// Generic type parameter T represents the row data type.
+class VooDataGridFilterRow<T> extends StatefulWidget {
+  final VooDataGridController<T> controller;
   final VooDataGridTheme theme;
 
   const VooDataGridFilterRow({
@@ -18,10 +20,10 @@ class VooDataGridFilterRow extends StatefulWidget {
   });
 
   @override
-  State<VooDataGridFilterRow> createState() => _VooDataGridFilterRowState();
+  State<VooDataGridFilterRow<T>> createState() => _VooDataGridFilterRowState<T>();
 }
 
-class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
+class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
   final Map<String, TextEditingController> _textControllers = {};
   final Map<String, dynamic> _dropdownValues = {};
   final Map<String, bool> _checkboxValues = {};
@@ -103,7 +105,7 @@ class _VooDataGridFilterRowState extends State<VooDataGridFilterRow> {
 
   Widget _buildFilterCell(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     VooDesignSystemData design,
   ) {
     if (!column.filterable) {

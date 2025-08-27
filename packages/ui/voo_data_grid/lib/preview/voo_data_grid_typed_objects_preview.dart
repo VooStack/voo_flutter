@@ -30,7 +30,7 @@ class OrderModel {
 }
 
 /// Data source for typed objects
-class TypedObjectDataSource extends VooDataGridSource {
+class TypedObjectDataSource extends VooDataGridSource<OrderModel> {
   TypedObjectDataSource({
     List<OrderModel>? orders,
   }) : super(mode: VooDataGridMode.local) {
@@ -41,7 +41,7 @@ class TypedObjectDataSource extends VooDataGridSource {
   }
 
   @override
-  Future<VooDataGridResponse> fetchRemoteData({
+  Future<VooDataGridResponse<OrderModel>> fetchRemoteData({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
@@ -59,7 +59,7 @@ class TypedObjectDataSource extends VooDataGridSource {
     // );
     
     // Not needed for local mode
-    return VooDataGridResponse(
+    return VooDataGridResponse<OrderModel>(
       rows: [],
       totalRows: 0,
       page: page,
@@ -80,7 +80,7 @@ class VooDataGridTypedObjectsPreview extends StatefulWidget {
 
 class _VooDataGridTypedObjectsPreviewState
     extends State<VooDataGridTypedObjectsPreview> {
-  late VooDataGridController _controller;
+  late VooDataGridController<OrderModel> _controller;
   late TypedObjectDataSource _dataSource;
 
   @override
@@ -108,8 +108,8 @@ class _VooDataGridTypedObjectsPreviewState
     _dataSource = TypedObjectDataSource(orders: orders);
 
     // Initialize controller with columns
-    // IMPORTANT: For typed objects, you MUST provide valueGetter functions
-    _controller = VooDataGridController(
+    // With generics, valueGetter now has proper type safety
+    _controller = VooDataGridController<OrderModel>(
       dataSource: _dataSource,
       columns: [
         VooDataColumn(
@@ -117,16 +117,16 @@ class _VooDataGridTypedObjectsPreviewState
           label: 'Order ID',
           width: 100,
           sortable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).orderId,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.orderId,
         ),
         VooDataColumn(
           field: 'siteNumber',
           label: 'Site #',
           width: 80,
           sortable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).siteNumber,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.siteNumber,
         ),
         VooDataColumn(
           field: 'customerName',
@@ -134,8 +134,8 @@ class _VooDataGridTypedObjectsPreviewState
           flex: 2,
           sortable: true,
           filterable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).customerName,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.customerName,
         ),
         VooDataColumn(
           field: 'product',
@@ -143,8 +143,8 @@ class _VooDataGridTypedObjectsPreviewState
           width: 120,
           sortable: true,
           filterable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).product,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.product,
         ),
         VooDataColumn(
           field: 'quantity',
@@ -152,8 +152,8 @@ class _VooDataGridTypedObjectsPreviewState
           width: 60,
           sortable: true,
           textAlign: TextAlign.right,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).quantity,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.quantity,
         ),
         VooDataColumn(
           field: 'unitPrice',
@@ -161,8 +161,8 @@ class _VooDataGridTypedObjectsPreviewState
           width: 90,
           sortable: true,
           textAlign: TextAlign.right,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).unitPrice,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.unitPrice,
           valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
         ),
         VooDataColumn(
@@ -171,8 +171,8 @@ class _VooDataGridTypedObjectsPreviewState
           width: 100,
           sortable: true,
           textAlign: TextAlign.right,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).totalAmount,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.totalAmount,
           valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
           cellBuilder: (context, value, row) {
             final amount = value as double;
@@ -198,8 +198,8 @@ class _VooDataGridTypedObjectsPreviewState
           width: 100,
           sortable: true,
           filterable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).orderDate,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.orderDate,
           valueFormatter: (value) {
             final date = value as DateTime;
             return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -211,8 +211,8 @@ class _VooDataGridTypedObjectsPreviewState
           width: 100,
           sortable: true,
           filterable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).status,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.status,
           cellBuilder: (context, value, row) {
             Color color;
             IconData icon;
@@ -254,8 +254,8 @@ class _VooDataGridTypedObjectsPreviewState
           label: 'Payment',
           width: 120,
           sortable: true,
-          // REQUIRED for typed objects: Extract value from OrderModel
-          valueGetter: (row) => (row as OrderModel).paymentMethod,
+          // Type-safe getter - no casting needed!
+          valueGetter: (row) => row.paymentMethod,
         ),
       ],
     );
@@ -332,13 +332,12 @@ class _VooDataGridTypedObjectsPreviewState
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: VooDataGrid(
+                  child: VooDataGrid<OrderModel>(
                     controller: _controller,
                     showPagination: true,
                     showToolbar: true,
-                    onRowTap: (data) {
-                      // The data parameter is the typed OrderModel object
-                      final order = data as OrderModel;
+                    onRowTap: (order) {
+                      // The data parameter is now properly typed as OrderModel
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -399,7 +398,7 @@ class _VooDataGridTypedObjectsPreviewState
 }
 
 /// Example of implementing a remote data source with typed objects
-class TypedRemoteDataSource extends VooDataGridSource {
+class TypedRemoteDataSource extends VooDataGridSource<OrderModel> {
   final Future<PagedResult<OrderModel>> Function({
     required int page,
     required int pageSize,
@@ -411,7 +410,7 @@ class TypedRemoteDataSource extends VooDataGridSource {
       : super(mode: VooDataGridMode.remote);
 
   @override
-  Future<VooDataGridResponse> fetchRemoteData({
+  Future<VooDataGridResponse<OrderModel>> fetchRemoteData({
     required int page,
     required int pageSize,
     required Map<String, VooDataFilter> filters,
@@ -425,7 +424,7 @@ class TypedRemoteDataSource extends VooDataGridSource {
     );
 
     // Convert typed result to VooDataGridResponse
-    return VooDataGridResponse(
+    return VooDataGridResponse<OrderModel>(
       rows: result.items, // List<OrderModel> gets cast to List<dynamic>
       totalRows: result.totalCount,
       page: page,

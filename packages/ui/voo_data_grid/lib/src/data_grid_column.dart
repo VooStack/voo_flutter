@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 /// Represents a column in the VooDataGrid
-class VooDataColumn {
+/// 
+/// Generic type parameter T represents the row data type.
+/// Use dynamic if working with untyped Map data.
+class VooDataColumn<T> {
   /// The unique identifier for this column
   final String field;
 
@@ -27,13 +30,13 @@ class VooDataColumn {
   final TextAlign textAlign;
 
   /// Custom header widget builder
-  final Widget Function(BuildContext context, VooDataColumn column)? headerBuilder;
+  final Widget Function(BuildContext context, VooDataColumn<T> column)? headerBuilder;
 
   /// Custom cell widget builder
-  final Widget Function(BuildContext context, dynamic value, dynamic row)? cellBuilder;
+  final Widget Function(BuildContext context, dynamic value, T row)? cellBuilder;
 
   /// Value getter from row data
-  final dynamic Function(dynamic row)? valueGetter;
+  final dynamic Function(T row)? valueGetter;
 
   /// Value formatter for display
   final String Function(dynamic value)? valueFormatter;
@@ -53,7 +56,7 @@ class VooDataColumn {
   /// Custom filter widget builder
   final Widget Function(
     BuildContext context,
-    VooDataColumn column,
+    VooDataColumn<T> column,
     dynamic currentValue,
     void Function(dynamic value) onChanged,
   )? filterBuilder;
@@ -200,7 +203,7 @@ class VooDataColumn {
   }
 
   /// Creates a copy with optional overrides
-  VooDataColumn copyWith({
+  VooDataColumn<T> copyWith({
     String? field,
     String? label,
     double? width,
@@ -209,9 +212,9 @@ class VooDataColumn {
     bool? sortable,
     bool? filterable,
     TextAlign? textAlign,
-    Widget Function(BuildContext context, VooDataColumn column)? headerBuilder,
-    Widget Function(BuildContext context, dynamic value, dynamic row)? cellBuilder,
-    dynamic Function(dynamic row)? valueGetter,
+    Widget Function(BuildContext context, VooDataColumn<T> column)? headerBuilder,
+    Widget Function(BuildContext context, dynamic value, T row)? cellBuilder,
+    dynamic Function(T row)? valueGetter,
     String Function(dynamic value)? valueFormatter,
     bool? visible,
     bool? frozen,
@@ -219,7 +222,7 @@ class VooDataColumn {
     VooFilterWidgetType? filterWidgetType,
     Widget Function(
       BuildContext context,
-      VooDataColumn column,
+      VooDataColumn<T> column,
       dynamic currentValue,
       void Function(dynamic value) onChanged,
     )? filterBuilder,
@@ -230,7 +233,7 @@ class VooDataColumn {
     int? flex,
     bool? showFilterOperator,
   }) {
-    return VooDataColumn(
+    return VooDataColumn<T>(
       field: field ?? this.field,
       label: label ?? this.label,
       width: width ?? this.width,
