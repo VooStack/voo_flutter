@@ -202,14 +202,12 @@ class DataGridRequestBuilder {
     List<VooColumnSort> sorts,
     Map<String, dynamic>? additionalParams,
   ) {
-    final params = <String, dynamic>{
-      'params': <String, String>{
-        '\$skip': (page * pageSize).toString(),
-        '\$top': pageSize.toString(),
-      },
+    // For OData, return query parameters directly without wrapper
+    // This allows them to be used directly in the URL query string
+    final queryParams = <String, String>{
+      '\$skip': (page * pageSize).toString(),
+      '\$top': pageSize.toString(),
     };
-
-    final queryParams = params['params'] as Map<String, String>;
 
     // Add $count for total count (OData v4 standard)
     if (additionalParams?['includeCount'] == true) {
@@ -288,6 +286,20 @@ class DataGridRequestBuilder {
       queryParams['\$apply'] = additionalParams!['apply'];
     }
 
+    // For OData, return query parameters in a way that can be used directly
+    // Most HTTP clients expect OData params at the root level of query string
+    final result = <String, dynamic>{
+      // Return params directly for OData - these should be used as root-level query params
+      // NOT nested under 'params' in the actual HTTP request
+      'queryParameters': queryParams,  // Use this with your HTTP client directly
+      'method': 'GET',  // OData typically uses GET requests
+      'standard': 'odata',  // Indicate this is OData format
+    };
+    
+    // For backward compatibility, also include in params format
+    // But HTTP client should use 'queryParameters' for OData
+    result['params'] = queryParams;
+    
     if (additionalParams != null) {
       // Remove OData-specific params from additionalParams to avoid duplication
       final cleanedParams = Map<String, dynamic>.from(additionalParams);
@@ -299,10 +311,14 @@ class DataGridRequestBuilder {
       cleanedParams.remove('format');
       cleanedParams.remove('compute');
       cleanedParams.remove('apply');
-      params.addAll(cleanedParams);
+      
+      // Add any remaining additional params to metadata
+      if (cleanedParams.isNotEmpty) {
+        result['metadata'] = cleanedParams;
+      }
     }
 
-    return params;
+    return result;
   }
 
   /// MongoDB/Elasticsearch format

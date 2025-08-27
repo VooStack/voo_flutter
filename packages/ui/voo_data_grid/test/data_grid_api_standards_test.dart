@@ -789,8 +789,9 @@ void main() {
         final params = result['params'] as Map<String, String>;
         final filter = params['\$filter']!;
 
-        expect(filter.contains("name eq 'O'Reilly's'"), isTrue);
-        expect(filter.contains("contains(description, 'It's a 'special' value')"), isTrue);
+        // OData v4 escapes single quotes by doubling them
+        expect(filter.contains("name eq 'O''Reilly''s'"), isTrue);
+        expect(filter.contains("contains(description, 'It''s a ''special'' value')"), isTrue);
       });
 
       test('should handle numeric values without quotes in OData', () {

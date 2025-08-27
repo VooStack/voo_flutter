@@ -1,3 +1,14 @@
+## 0.5.6
+
+* **OData Query Parameter Fix**
+  * Fixed OData query parameters being incorrectly nested under 'params' in URL
+  * OData parameters (`$skip`, `$top`, `$filter`, etc.) are now properly placed at the root level of the query string
+  * Added `queryParameters` field in response for cleaner HTTP client integration
+  * Added metadata fields to identify request standard (`standard: 'odata'`) and method (`method: 'GET'`)
+  * Ensures proper URL format: `/api/endpoint?$skip=20&$top=20` instead of `/api/endpoint?params[$skip]=20&params[$top]=20`
+  * Maintains backward compatibility with existing implementations
+  * HTTP clients should now use `requestData['queryParameters']` for OData instead of `requestData['params']`
+
 ## 0.5.5
 
 * **OData v4 Industry Standard Compliance**
