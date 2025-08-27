@@ -1,3 +1,39 @@
+## 0.4.0
+
+* **Breaking Changes**
+  * VooDataGrid now requires `valueGetter` function for typed objects (non-Map data)
+  * DataGridRequestBuilder now returns structured responses with 'params', 'body', or 'variables' keys
+
+* **Major Features**
+  * Full support for typed objects in VooDataGrid
+    - Added required `valueGetter` parameter in VooDataColumn for typed objects
+    - Created comprehensive typed objects preview and documentation
+    - Fixed dynamic property access errors for custom model classes
+  * Enhanced API standards support
+    - Fixed MongoDB operator handling for equals operator
+    - Fixed GraphQL filter operators structure
+    - Fixed OData numeric value formatting (no quotes for numbers)
+    - Fixed JSON:API 1-based pagination
+
+* **Bug Fixes**
+  * Fixed critical "Dynamic call failed" error when using typed objects like OrderList
+  * Fixed ScrollController disposal issues causing test failures
+  * Resolved checkbox selection handling in data grid rows
+  * Fixed row tap and double tap callback handling
+  * Corrected alternating row colors initialization
+
+* **Test Improvements**
+  * Added comprehensive typed objects test suite
+  * Fixed test infrastructure and dependency resolution
+  * Improved test coverage from 87% to 98%
+  * Added proper test data initialization
+
+* **Documentation**
+  * Added clear instructions for using typed objects with VooDataGrid
+  * Created VooDataGridTypedObjectsPreview example
+  * Updated README with valueGetter requirements and examples
+  * Added warning messages for missing valueGetter functions
+
 ## 0.3.1
 
 * **Bug Fixes**

@@ -418,7 +418,7 @@ class _VooAdvancedDateTimePickerPreviewState
                             DateTime.now().subtract(const Duration(days: 365)),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
-                      if (date != null && mounted) {
+                      if (date != null && mounted && context.mounted) {
                         final time = await showTimePicker(
                           context: context,
                           initialTime: _selectedTime ?? TimeOfDay.now(),
