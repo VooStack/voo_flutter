@@ -194,7 +194,7 @@ class DataGridRequestBuilder {
     return params;
   }
 
-  /// OData format
+  /// OData v4 format - Industry standard for .NET/EF Core APIs
   Map<String, dynamic> _buildODataRequest(
     int page,
     int pageSize,
@@ -211,9 +211,41 @@ class DataGridRequestBuilder {
 
     final queryParams = params['params'] as Map<String, String>;
 
-    // Build OData filter expression
+    // Add $count for total count (OData v4 standard)
+    if (additionalParams?['includeCount'] == true) {
+      queryParams['\$count'] = 'true';
+    }
+
+    // Add $select for field selection
+    if (additionalParams?['select'] != null) {
+      final selectFields = additionalParams!['select'];
+      if (selectFields is List) {
+        queryParams['\$select'] = selectFields.join(',');
+      } else if (selectFields is String) {
+        queryParams['\$select'] = selectFields;
+      }
+    }
+
+    // Add $expand for related entities (navigation properties)
+    if (additionalParams?['expand'] != null) {
+      final expandFields = additionalParams!['expand'];
+      if (expandFields is List) {
+        queryParams['\$expand'] = expandFields.join(',');
+      } else if (expandFields is String) {
+        queryParams['\$expand'] = expandFields;
+      }
+    }
+
+    // Add $search for full-text search
+    if (additionalParams?['search'] != null) {
+      queryParams['\$search'] = '"${additionalParams!['search']}"';
+    }
+
+    // Build OData filter expression with proper logical grouping
     if (filters.isNotEmpty) {
       final filterExpressions = <String>[];
+      final logicalOperator = additionalParams?['logicalOperator'] ?? 'and';
+      
       filters.forEach((field, filter) {
         final prefixedField = _applyFieldPrefix(field);
         final expression = _buildODataFilterExpression(prefixedField, filter);
@@ -221,8 +253,14 @@ class DataGridRequestBuilder {
           filterExpressions.add(expression);
         }
       });
+      
       if (filterExpressions.isNotEmpty) {
-        queryParams['\$filter'] = filterExpressions.join(' and ');
+        // Group expressions properly if there are multiple
+        if (filterExpressions.length > 1 && logicalOperator == 'or') {
+          queryParams['\$filter'] = filterExpressions.join(' or ');
+        } else {
+          queryParams['\$filter'] = filterExpressions.join(' and ');
+        }
       }
     }
 
@@ -235,8 +273,33 @@ class DataGridRequestBuilder {
       queryParams['\$orderby'] = orderBy;
     }
 
+    // Add $format if specified (json is default)
+    if (additionalParams?['format'] != null) {
+      queryParams['\$format'] = additionalParams!['format'];
+    }
+
+    // Add $compute for calculated properties (OData v4)
+    if (additionalParams?['compute'] != null) {
+      queryParams['\$compute'] = additionalParams!['compute'];
+    }
+
+    // Add $apply for aggregations (OData v4)
+    if (additionalParams?['apply'] != null) {
+      queryParams['\$apply'] = additionalParams!['apply'];
+    }
+
     if (additionalParams != null) {
-      params.addAll(additionalParams);
+      // Remove OData-specific params from additionalParams to avoid duplication
+      final cleanedParams = Map<String, dynamic>.from(additionalParams);
+      cleanedParams.remove('includeCount');
+      cleanedParams.remove('select');
+      cleanedParams.remove('expand');
+      cleanedParams.remove('search');
+      cleanedParams.remove('logicalOperator');
+      cleanedParams.remove('format');
+      cleanedParams.remove('compute');
+      cleanedParams.remove('apply');
+      params.addAll(cleanedParams);
     }
 
     return params;
@@ -540,41 +603,78 @@ class DataGridRequestBuilder {
     }
   }
 
+  /// Format values for OData v4 compliance
+  String _formatODataValue(dynamic value) {
+    if (value == null) {
+      return 'null';
+    } else if (value is num) {
+      return value.toString();
+    } else if (value is bool) {
+      return value.toString();
+    } else if (value is DateTime) {
+      // OData v4 uses ISO 8601 format for dates
+      return value.toUtc().toIso8601String();
+    } else if (value is String) {
+      // Escape single quotes by doubling them (OData v4 standard)
+      final escaped = value.replaceAll("'", "''");
+      return "'$escaped'";
+    } else {
+      // Default to string representation with escaping
+      final escaped = value.toString().replaceAll("'", "''");
+      return "'$escaped'";
+    }
+  }
+
   String _buildODataFilterExpression(String field, VooDataFilter filter) {
     switch (filter.operator) {
       case VooFilterOperator.equals:
-        // Don't quote numeric values
-        if (filter.value is num) {
-          return "$field eq ${filter.value}";
-        }
-        return "$field eq '${filter.value}'";
+        return "$field eq ${_formatODataValue(filter.value)}";
       case VooFilterOperator.notEquals:
-        if (filter.value is num) {
-          return "$field ne ${filter.value}";
-        }
-        return "$field ne '${filter.value}'";
+        return "$field ne ${_formatODataValue(filter.value)}";
       case VooFilterOperator.greaterThan:
-        return "$field gt ${filter.value}";
+        return "$field gt ${_formatODataValue(filter.value)}";
       case VooFilterOperator.lessThan:
-        return "$field lt ${filter.value}";
+        return "$field lt ${_formatODataValue(filter.value)}";
       case VooFilterOperator.greaterThanOrEqual:
-        return "$field ge ${filter.value}";
+        return "$field ge ${_formatODataValue(filter.value)}";
       case VooFilterOperator.lessThanOrEqual:
-        return "$field le ${filter.value}";
+        return "$field le ${_formatODataValue(filter.value)}";
       case VooFilterOperator.contains:
-        return "contains($field, '${filter.value}')";
+        return "contains($field, ${_formatODataValue(filter.value)})";
+      case VooFilterOperator.notContains:
+        // OData v4: use 'not contains()' for negation
+        return "not contains($field, ${_formatODataValue(filter.value)})";
       case VooFilterOperator.startsWith:
-        return "startswith($field, '${filter.value}')";
+        return "startswith($field, ${_formatODataValue(filter.value)})";
       case VooFilterOperator.endsWith:
-        return "endswith($field, '${filter.value}')";
+        return "endswith($field, ${_formatODataValue(filter.value)})";
       case VooFilterOperator.between:
-        return "($field ge ${filter.value} and $field le ${filter.valueTo})";
+        // Use parentheses for proper precedence
+        return "($field ge ${_formatODataValue(filter.value)} and $field le ${_formatODataValue(filter.valueTo)})";
+      case VooFilterOperator.inList:
+        // OData v4 'in' operator for collections
+        if (filter.value is List) {
+          final values = (filter.value as List)
+              .map((v) => _formatODataValue(v))
+              .join(',');
+          return "$field in ($values)";
+        } else {
+          return "$field in (${_formatODataValue(filter.value)})";
+        }
+      case VooFilterOperator.notInList:
+        // OData v4: use 'not (field in (...))' for not in list
+        if (filter.value is List) {
+          final values = (filter.value as List)
+              .map((v) => _formatODataValue(v))
+              .join(',');
+          return "not ($field in ($values))";
+        } else {
+          return "not ($field in (${_formatODataValue(filter.value)}))";
+        }
       case VooFilterOperator.isNull:
         return "$field eq null";
       case VooFilterOperator.isNotNull:
         return "$field ne null";
-      default:
-        return '';
     }
   }
 
@@ -830,6 +930,83 @@ class DataGridRequestBuilder {
       page: page,
       pageSize: pageSize,
     );
+  }
+
+  /// Parse OData v4 response format
+  static VooDataGridResponse parseODataResponse({
+    required Map<String, dynamic> json,
+    int page = 0,
+    int pageSize = 20,
+  }) {
+    // OData v4 standard response structure
+    // {
+    //   "@odata.context": "$metadata#Products",
+    //   "@odata.count": 100,  // Total count when $count=true
+    //   "value": [             // Array of entities
+    //     { "id": 1, "name": "Product 1" },
+    //     { "id": 2, "name": "Product 2" }
+    //   ],
+    //   "@odata.nextLink": "Products?$skip=20&$top=20"  // Next page URL
+    // }
+    
+    // Extract data from 'value' array (OData standard)
+    final data = json['value'] as List<dynamic>? ?? [];
+    
+    // Extract total count from '@odata.count' if present
+    // This is only available when $count=true is included in the request
+    final total = json['@odata.count'] as int? ?? data.length;
+    
+    return VooDataGridResponse(
+      rows: data,
+      totalRows: total,
+      page: page,
+      pageSize: pageSize,
+    );
+  }
+
+  /// Extract OData metadata from response
+  static Map<String, dynamic> extractODataMetadata(Map<String, dynamic> json) {
+    final metadata = <String, dynamic>{};
+    
+    // Extract all OData annotations (properties starting with @odata)
+    json.forEach((key, value) {
+      if (key.startsWith('@odata')) {
+        metadata[key] = value;
+      }
+    });
+    
+    // Add computed properties
+    metadata['hasNextPage'] = json.containsKey('@odata.nextLink');
+    metadata['hasDeltaLink'] = json.containsKey('@odata.deltaLink');
+    
+    return metadata;
+  }
+
+  /// Parse OData v4 error response
+  static Map<String, dynamic>? parseODataError(Map<String, dynamic> json) {
+    // OData v4 error format:
+    // {
+    //   "error": {
+    //     "code": "BadRequest",
+    //     "message": "The request is invalid.",
+    //     "details": [
+    //       {
+    //         "code": "ValidationError",
+    //         "message": "The field 'Price' must be greater than 0."
+    //       }
+    //     ]
+    //   }
+    // }
+    
+    if (json.containsKey('error')) {
+      final error = json['error'] as Map<String, dynamic>;
+      return {
+        'code': error['code'],
+        'message': error['message'],
+        'details': error['details'],
+      };
+    }
+    return null;
   }
 
   /// Build an advanced filter request body with support for secondary filters

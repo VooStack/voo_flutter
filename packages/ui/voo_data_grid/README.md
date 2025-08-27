@@ -934,6 +934,50 @@ import 'package:voo_ui_core/voo_ui_core.dart';
    - Column configuration is more flexible
    - Better TypeScript support
 
+## Troubleshooting
+
+### Sorting not working with VooApiStandard
+
+If sorting isn't being applied when clicking column headers with VooApiStandard:
+
+1. **Ensure columns are sortable**:
+```dart
+VooDataColumn<OrderList>(
+  field: 'siteNumber',
+  label: 'Site Number',
+  sortable: true,  // <-- REQUIRED for sorting
+  valueGetter: (row) => row.siteNumber,  // <-- REQUIRED for typed objects
+),
+```
+
+2. **Verify API standard is set**:
+```dart
+// In your data source:
+final request = const DataGridRequestBuilder(
+  standard: ApiFilterStandard.voo,  // <-- REQUIRED for VooApiStandard
+  fieldPrefix: 'Site',  // Optional prefix
+).buildRequest(
+  page: page + 1,
+  pageSize: pageSize,
+  filters: filters,
+  sorts: sorts,  // <-- Will be converted to sortBy and sortDescending
+);
+```
+
+3. **Check debug output**:
+```dart
+// Add logging to your fetchRemoteData:
+debugPrint('Sorts received: $sorts');
+debugPrint('Request built: $request');
+```
+
+If sorts are empty, verify:
+- Column has `sortable: true`
+- Column has `valueGetter` for typed objects
+- Controller is properly initialized with columns
+
+See `example/lib/voo_api_standard_example.dart` for a complete working example.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

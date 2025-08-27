@@ -1,3 +1,32 @@
+## 0.5.5
+
+* **OData v4 Industry Standard Compliance**
+  * Enhanced OData implementation to be fully OData v4 compliant, matching .NET/Entity Framework Core standards
+  * Added support for all OData v4 query options:
+    * `$count` - Get total count of results with response
+    * `$select` - Select specific fields to return
+    * `$expand` - Include related entities (navigation properties)
+    * `$search` - Full-text search across searchable fields
+    * `$format` - Specify response format (json, xml, etc.)
+    * `$compute` - Define calculated properties
+    * `$apply` - Apply aggregations and transformations
+  * Implemented proper OData v4 value formatting:
+    * Single quotes properly escaped by doubling (OData v4 spec)
+    * DateTime values formatted in ISO 8601 UTC format
+    * Numeric and boolean values without quotes
+    * Null value handling per specification
+  * Added advanced OData operators:
+    * `in` operator for collection membership
+    * `not` operator for negation (e.g., `not contains()`)
+    * Proper parenthetical grouping for complex expressions
+  * Introduced OData-specific response parsing:
+    * `parseODataResponse()` - Parse standard OData v4 responses
+    * `extractODataMetadata()` - Extract @odata annotations
+    * `parseODataError()` - Handle OData error responses
+  * Added configurable logical operators (AND/OR) for filter combination
+  * Full compatibility with ASP.NET Core OData endpoints
+  * Comprehensive test suite validating OData v4 compliance
+
 ## 0.5.4
 
 * **Code Quality Improvements**
