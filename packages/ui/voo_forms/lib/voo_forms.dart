@@ -4,6 +4,7 @@ library voo_forms;
 export 'src/domain/entities/field_change.dart';
 export 'src/domain/entities/field_type.dart';
 export 'src/domain/entities/form.dart';
+export 'src/domain/entities/form_config.dart';
 export 'src/domain/entities/form_field.dart';
 export 'src/domain/entities/form_header.dart';
 export 'src/domain/entities/form_section.dart';
@@ -17,6 +18,7 @@ export 'src/presentation/atoms/voo_form_section_divider.dart';
 export 'src/presentation/atoms/voo_radio_form_field.dart';
 export 'src/presentation/atoms/voo_switch_form_field.dart';
 export 'src/presentation/atoms/voo_text_form_field.dart';
+export 'src/presentation/atoms/voo_text_form_field_v2.dart';
 
 // Presentation - Controllers
 export 'src/presentation/controllers/form_controller.dart';
@@ -27,6 +29,7 @@ export 'src/presentation/molecules/form_section.dart';
 
 // Presentation - Organisms
 export 'src/presentation/organisms/voo_form.dart';
+export 'src/presentation/organisms/voo_form_v2.dart';
 export 'src/presentation/organisms/voo_form_builder.dart';
 export 'src/presentation/organisms/voo_responsive_form_wrapper.dart';
 
