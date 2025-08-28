@@ -313,7 +313,7 @@ class _ThemeConsistencyPageState extends State<ThemeConsistencyPage> {
               ),
             ),
             const SizedBox(height: 16),
-            VooFormV2(
+            VooFormWidget(
               form: form.copyWith(
                 title: null,
                 description: null,

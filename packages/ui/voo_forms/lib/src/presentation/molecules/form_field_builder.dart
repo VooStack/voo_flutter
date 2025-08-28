@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_checkbox_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_dropdown_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_radio_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_switch_form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_text_form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
 
+/// Enhanced form field builder with consistent theming
 class VooFormFieldBuilder extends StatelessWidget {
   final VooFormField field;
   final VooFormController controller;
+  final VooFormConfig? config;
   final bool showError;
   final EdgeInsetsGeometry? padding;
 
@@ -20,6 +18,7 @@ class VooFormFieldBuilder extends StatelessWidget {
     super.key,
     required this.field,
     required this.controller,
+    this.config,
     this.showError = true,
     this.padding,
   });
@@ -30,11 +29,13 @@ class VooFormFieldBuilder extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    Widget fieldWidget = _buildFieldWidget(context);
+    final formConfig = config ?? const VooFormConfig();
+
+    Widget fieldWidget = _buildFieldWidget(context, formConfig);
     
-    if (padding != null) {
+    if (padding != null || formConfig.padding != null) {
       fieldWidget = Padding(
-        padding: padding!,
+        padding: padding ?? formConfig.padding!,
         child: fieldWidget,
       );
     }
@@ -42,8 +43,8 @@ class VooFormFieldBuilder extends StatelessWidget {
     return fieldWidget;
   }
 
-  Widget _buildFieldWidget(BuildContext context) {
-    final design = context.vooDesign;
+  Widget _buildFieldWidget(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
     
     switch (field.type) {
       case VooFieldType.text:
@@ -54,7 +55,7 @@ class VooFormFieldBuilder extends StatelessWidget {
       case VooFieldType.url:
       case VooFieldType.multiline:
         return VooTextFormField(
-          field: field,
+          field: _applyConfigToField(context, config, field),
           controller: controller.getTextController(field.id),
           focusNode: controller.getFocusNode(field.id),
           onChanged: (value) => controller.setValue(field.id, value),
@@ -66,82 +67,295 @@ class VooFormFieldBuilder extends StatelessWidget {
             }
           },
           error: controller.getError(field.id),
-          showError: showError,
+          showError: showError && config.errorDisplayMode != ErrorDisplayMode.none,
+          decoration: _buildDecoration(context, config),
         );
         
       case VooFieldType.boolean:
-        return VooSwitchFormField(
-          field: field as VooFormField<bool>,
-          onChanged: (value) => controller.setValue(field.id, value),
-          error: controller.getError(field.id),
-          showError: showError,
-        );
+        return _buildSwitchField(context, config);
         
       case VooFieldType.checkbox:
-        return VooCheckboxFormField(
-          field: field as VooFormField<bool>,
-          onChanged: (value) => controller.setValue(field.id, value),
-          error: controller.getError(field.id),
-          showError: showError,
-        );
+        return _buildCheckboxField(context, config);
         
       case VooFieldType.dropdown:
-        return VooDropdownFormField(
-          field: field,
-          onChanged: (value) => controller.setValue(field.id, value),
-          error: controller.getError(field.id),
-          showError: showError,
-        );
+        return _buildDropdownField(context, config);
         
       case VooFieldType.radio:
-        return VooRadioFormField(
-          field: field,
-          onChanged: (value) => controller.setValue(field.id, value),
-          error: controller.getError(field.id),
-          showError: showError,
-        );
+        return _buildRadioField(context, config);
         
       case VooFieldType.slider:
-        return _buildSliderField(context);
+        return _buildSliderField(context, config);
         
       case VooFieldType.date:
-        return _buildDateField(context);
+        return _buildDateField(context, config);
         
       case VooFieldType.time:
-        return _buildTimeField(context);
+        return _buildTimeField(context, config);
         
       case VooFieldType.dateTime:
-        return _buildDateTimeField(context);
+        return _buildDateTimeField(context, config);
         
       case VooFieldType.multiSelect:
-        return _buildMultiSelectField(context);
+        return _buildMultiSelectField(context, config);
         
       case VooFieldType.file:
-        return _buildFileField(context);
+        return _buildFileField(context, config);
         
       case VooFieldType.color:
-        return _buildColorField(context);
+        return _buildColorField(context, config);
         
       case VooFieldType.rating:
-        return _buildRatingField(context);
+        return _buildRatingField(context, config);
         
       case VooFieldType.custom:
         return Container(
-          padding: EdgeInsets.all(design.spacingMd),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(design.radiusMd),
+            color: theme.colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(8.0),
           ),
           child: Text(
-            'Unsupported field type: ${field.type}',
-            style: Theme.of(context).textTheme.bodyMedium,
+            'Custom field: ${field.customWidgetType ?? field.type}',
+            style: theme.textTheme.bodyMedium,
           ),
         );
     }
   }
 
-  Widget _buildSliderField(BuildContext context) {
-    final design = context.vooDesign;
+  InputDecoration _buildDecoration(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
+    
+    // Build label with required indicator
+    String? labelText = field.label;
+    if (labelText != null && field.required && config.showRequiredIndicator) {
+      labelText = '$labelText ${config.requiredIndicator}';
+    }
+
+    // Apply label position
+    if (config.labelPosition == LabelPosition.hidden) {
+      labelText = null;
+    }
+
+    final baseDecoration = InputDecoration(
+      labelText: config.labelPosition == LabelPosition.floating ? labelText : null,
+      hintText: field.hint,
+      helperText: field.helper,
+      errorText: showError ? controller.getError(field.id) : null,
+      prefixIcon: field.prefixIcon != null && config.showFieldIcons 
+          ? Icon(field.prefixIcon) 
+          : null,
+      suffixIcon: field.suffixIcon != null ? Icon(field.suffixIcon) : null,
+      contentPadding: config.getFieldPadding(),
+    );
+
+    // Apply field variant styling
+    switch (config.fieldVariant) {
+      case FieldVariant.filled:
+        return baseDecoration.copyWith(
+          filled: true,
+          fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide.none,
+          ),
+        );
+        
+      case FieldVariant.underlined:
+        return baseDecoration.copyWith(
+          border: const UnderlineInputBorder(),
+        );
+        
+      case FieldVariant.ghost:
+        return baseDecoration.copyWith(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 2.0,
+            ),
+          ),
+        );
+        
+      case FieldVariant.outlined:
+        return baseDecoration;
+    }
+  }
+
+  Widget _buildLabel(BuildContext context, VooFormConfig config) {
+    if (field.label == null || config.labelPosition == LabelPosition.hidden) {
+      return const SizedBox.shrink();
+    }
+
+    final theme = Theme.of(context);
+    String labelText = field.label!;
+    
+    if (field.required && config.showRequiredIndicator) {
+      labelText = '$labelText ${config.requiredIndicator}';
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: config.fieldSpacing / 2),
+      child: Text(
+        labelText,
+        style: config.getLabelStyle(context) ?? theme.textTheme.bodyMedium,
+      ),
+    );
+  }
+
+  Widget _buildSwitchField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
+    final value = controller.getValue(field.id) as bool? ?? false;
+    
+    return Row(
+      children: [
+        Expanded(
+          child: config.labelPosition != LabelPosition.floating
+              ? _buildLabel(context, config)
+              : Text(
+                  field.label ?? '',
+                  style: theme.textTheme.bodyLarge,
+                ),
+        ),
+        Switch.adaptive(
+          value: value,
+          onChanged: field.enabled && !field.readOnly
+              ? (value) => controller.setValue(field.id, value)
+              : null,
+          activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.5),
+          inactiveThumbColor: theme.colorScheme.outline,
+          inactiveTrackColor: theme.colorScheme.surfaceContainerHighest,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCheckboxField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
+    final value = controller.getValue(field.id) as bool? ?? false;
+    
+    return CheckboxListTile(
+      value: value,
+      onChanged: field.enabled && !field.readOnly
+          ? (value) => controller.setValue(field.id, value)
+          : null,
+      title: Text(
+        field.label ?? '',
+        style: theme.textTheme.bodyLarge,
+      ),
+      subtitle: field.helper != null 
+          ? Text(
+              field.helper!,
+              style: theme.textTheme.bodySmall,
+            )
+          : null,
+      controlAffinity: ListTileControlAffinity.leading,
+      contentPadding: EdgeInsets.zero,
+      activeColor: theme.colorScheme.primary,
+      checkColor: theme.colorScheme.onPrimary,
+    );
+  }
+
+  Widget _buildDropdownField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
+    final value = controller.getValue(field.id);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (config.labelPosition == LabelPosition.above)
+          _buildLabel(context, config),
+        DropdownButtonFormField<dynamic>(
+          initialValue: field.options?.any((o) => o.value == value) ?? false ? value : null,
+          decoration: _buildDecoration(context, config),
+          items: field.options?.map((option) {
+            return DropdownMenuItem(
+              value: option.value,
+              enabled: option.enabled,
+              child: Row(
+                children: [
+                  if (option.icon != null) ...[
+                    Icon(option.icon, size: 20),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(option.label),
+                ],
+              ),
+            );
+          }).toList(),
+          onChanged: field.enabled && !field.readOnly
+              ? (value) => controller.setValue(field.id, value)
+              : null,
+          style: theme.textTheme.bodyLarge,
+          dropdownColor: theme.colorScheme.surface,
+          icon: Icon(
+            Icons.arrow_drop_down,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRadioField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
+    final value = controller.getValue(field.id);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (config.labelPosition != LabelPosition.hidden)
+          _buildLabel(context, config),
+        ...?field.options?.map((option) {
+          return RadioListTile<dynamic>(
+            value: option.value,
+            groupValue: value,
+            onChanged: field.enabled && !field.readOnly && option.enabled
+                ? (value) => controller.setValue(field.id, value)
+                : null,
+            title: Text(
+              option.label,
+              style: theme.textTheme.bodyLarge,
+            ),
+            subtitle: option.subtitle != null
+                ? Text(
+                    option.subtitle!,
+                    style: theme.textTheme.bodySmall,
+                  )
+                : null,
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+            activeColor: theme.colorScheme.primary,
+          );
+        }),
+        if (showError && controller.getError(field.id) != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              controller.getError(field.id)!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSliderField(BuildContext context, VooFormConfig config) {
     final theme = Theme.of(context);
     final value = (controller.getValue(field.id) as num?)?.toDouble() ?? 
                    field.min?.toDouble() ?? 0.0;
@@ -152,14 +366,9 @@ class VooFormFieldBuilder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (field.label != null) ...[
-          Text(
-            field.label!,
-            style: theme.textTheme.bodyMedium,
-          ),
-          SizedBox(height: design.spacingXs),
-        ],
-        VooSlider(
+        if (config.labelPosition != LabelPosition.hidden)
+          _buildLabel(context, config),
+        Slider.adaptive(
           value: value,
           min: min,
           max: max,
@@ -168,86 +377,156 @@ class VooFormFieldBuilder extends StatelessWidget {
           onChanged: field.enabled && !field.readOnly
               ? (value) => controller.setValue(field.id, value)
               : null,
+          activeColor: theme.colorScheme.primary,
+          inactiveColor: theme.colorScheme.primary.withValues(alpha: 0.3),
         ),
-        if (field.helper != null) ...[
-          SizedBox(height: design.spacingXs),
+        if (field.helper != null)
           Text(
             field.helper!,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-        ],
       ],
     );
   }
 
-  Widget _buildDateField(BuildContext context) {
+  Widget _buildDateField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
     final value = controller.getValue(field.id) as DateTime?;
+    final displayValue = value != null 
+        ? '${value.month}/${value.day}/${value.year}'
+        : '';
     
-    return VooDateTimePicker(
-      value: value,
-      onChanged: field.enabled && !field.readOnly
-          ? (date) => controller.setValue(field.id, date)
+    return TextFormField(
+      controller: TextEditingController(text: displayValue),
+      decoration: _buildDecoration(context, config).copyWith(
+        suffixIcon: const Icon(Icons.calendar_today),
+      ),
+      readOnly: true,
+      onTap: field.enabled && !field.readOnly
+          ? () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: value ?? DateTime.now(),
+                firstDate: field.minDate ?? DateTime(1900),
+                lastDate: field.maxDate ?? DateTime(2100),
+                builder: (context, child) {
+                  return Theme(
+                    data: theme,
+                    child: child!,
+                  );
+                },
+              );
+              if (date != null) {
+                controller.setValue(field.id, date);
+              }
+            }
           : null,
-      label: field.label,
-      hintText: field.hint,
-      showTime: false,
-      firstDate: field.minDate ?? DateTime(1900),
-      lastDate: field.maxDate ?? DateTime(2100),
     );
   }
 
-  Widget _buildTimeField(BuildContext context) {
+  Widget _buildTimeField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
     final value = controller.getValue(field.id) as TimeOfDay?;
+    final displayValue = value != null 
+        ? value.format(context)
+        : '';
     
-    return VooTimePicker(
-      initialTime: value,
-      onTimeChanged: field.enabled && !field.readOnly
-          ? (time) => controller.setValue(field.id, time)
+    return TextFormField(
+      controller: TextEditingController(text: displayValue),
+      decoration: _buildDecoration(context, config).copyWith(
+        suffixIcon: const Icon(Icons.access_time),
+      ),
+      readOnly: true,
+      onTap: field.enabled && !field.readOnly
+          ? () async {
+              final time = await showTimePicker(
+                context: context,
+                initialTime: value ?? TimeOfDay.now(),
+                builder: (context, child) {
+                  return Theme(
+                    data: theme,
+                    child: child!,
+                  );
+                },
+              );
+              if (time != null) {
+                controller.setValue(field.id, time);
+              }
+            }
           : null,
-      labelText: field.label,
-      helperText: field.helper,
-      errorText: controller.getError(field.id),
     );
   }
 
-  Widget _buildDateTimeField(BuildContext context) {
+  Widget _buildDateTimeField(BuildContext context, VooFormConfig config) {
+    final theme = Theme.of(context);
     final value = controller.getValue(field.id) as DateTime?;
+    final displayValue = value != null 
+        ? '${value.month}/${value.day}/${value.year} ${value.hour}:${value.minute.toString().padLeft(2, '0')}'
+        : '';
     
-    return VooDateTimePicker(
-      value: value,
-      onChanged: field.enabled && !field.readOnly
-          ? (dateTime) => controller.setValue(field.id, dateTime)
+    return TextFormField(
+      controller: TextEditingController(text: displayValue),
+      decoration: _buildDecoration(context, config).copyWith(
+        suffixIcon: const Icon(Icons.calendar_today),
+      ),
+      readOnly: true,
+      onTap: field.enabled && !field.readOnly
+          ? () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: value ?? DateTime.now(),
+                firstDate: field.minDate ?? DateTime(1900),
+                lastDate: field.maxDate ?? DateTime(2100),
+                builder: (context, child) {
+                  return Theme(
+                    data: theme,
+                    child: child!,
+                  );
+                },
+              );
+              if (date != null && context.mounted) {
+                final time = await showTimePicker(
+                  context: context,
+                  initialTime: value != null 
+                      ? TimeOfDay.fromDateTime(value)
+                      : TimeOfDay.now(),
+                  builder: (context, child) {
+                    return Theme(
+                      data: theme,
+                      child: child!,
+                    );
+                  },
+                );
+                if (time != null) {
+                  final dateTime = DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    time.hour,
+                    time.minute,
+                  );
+                  controller.setValue(field.id, dateTime);
+                }
+              }
+            }
           : null,
-      label: field.label,
-      hintText: field.hint,
-      showTime: true,
-      firstDate: field.minDate ?? DateTime(1900),
-      lastDate: field.maxDate ?? DateTime(2100),
     );
   }
 
-  Widget _buildMultiSelectField(BuildContext context) {
-    final design = context.vooDesign;
+  Widget _buildMultiSelectField(BuildContext context, VooFormConfig config) {
     final theme = Theme.of(context);
     final selectedValues = (controller.getValue(field.id) as List?) ?? [];
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (field.label != null) ...[
-          Text(
-            field.label!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: design.spacingSm),
-        ],
+        if (config.labelPosition != LabelPosition.hidden)
+          _buildLabel(context, config),
         Wrap(
-          spacing: design.spacingSm,
-          runSpacing: design.spacingSm,
+          spacing: 8.0,
+          runSpacing: 8.0,
           children: field.options?.map((option) {
             final isSelected = selectedValues.contains(option.value);
             return FilterChip(
@@ -265,53 +544,56 @@ class VooFormFieldBuilder extends StatelessWidget {
                     }
                   : null,
               avatar: option.icon != null
-                  ? Icon(option.icon, size: design.iconSizeSm)
+                  ? Icon(option.icon, size: 16)
                   : null,
+              selectedColor: theme.colorScheme.primaryContainer,
+              checkmarkColor: theme.colorScheme.onPrimaryContainer,
+              backgroundColor: theme.colorScheme.surface,
             );
           }).toList() ?? [],
         ),
-        if (field.helper != null || controller.getError(field.id) != null) ...[
-          SizedBox(height: design.spacingXs),
-          Text(
-            controller.getError(field.id) ?? field.helper!,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: controller.getError(field.id) != null
-                  ? theme.colorScheme.error
-                  : theme.colorScheme.onSurfaceVariant,
+        if (field.helper != null || controller.getError(field.id) != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              controller.getError(field.id) ?? field.helper!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: controller.getError(field.id) != null
+                    ? theme.colorScheme.error
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
-        ],
       ],
     );
   }
 
-  Widget _buildFileField(BuildContext context) {
-    final design = context.vooDesign;
+  Widget _buildFileField(BuildContext context, VooFormConfig config) {
     final theme = Theme.of(context);
     
     return Container(
-      padding: EdgeInsets.all(design.spacingLg),
+      padding: const EdgeInsets.all(24.0),
       decoration: BoxDecoration(
         border: Border.all(
           color: theme.colorScheme.outline,
           style: BorderStyle.solid,
         ),
-        borderRadius: BorderRadius.circular(design.radiusMd),
+        borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(
         children: [
           Icon(
             Icons.cloud_upload_outlined,
-            size: design.iconSizeXl,
+            size: 48,
             color: theme.colorScheme.primary,
           ),
-          SizedBox(height: design.spacingMd),
+          const SizedBox(height: 16),
           Text(
             field.label ?? 'Choose file',
             style: theme.textTheme.bodyMedium,
           ),
           if (field.helper != null) ...[
-            SizedBox(height: design.spacingXs),
+            const SizedBox(height: 8),
             Text(
               field.helper!,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -324,62 +606,56 @@ class VooFormFieldBuilder extends StatelessWidget {
     );
   }
 
-  Widget _buildColorField(BuildContext context) {
-    final design = context.vooDesign;
+  Widget _buildColorField(BuildContext context, VooFormConfig config) {
     final theme = Theme.of(context);
-    final color = controller.getValue(field.id) as Color? ?? Colors.blue;
+    final color = controller.getValue(field.id) as Color? ?? theme.colorScheme.primary;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (field.label != null) ...[
-          Text(
-            field.label!,
-            style: theme.textTheme.bodyMedium,
-          ),
-          SizedBox(height: design.spacingXs),
-        ],
+        if (config.labelPosition != LabelPosition.hidden)
+          _buildLabel(context, config),
         InkWell(
           onTap: field.enabled && !field.readOnly
               ? () async {
                   // Color picker would go here
-                  // For now, just cycle through some colors
+                  // For now, just cycle through theme colors
                   final colors = <Color>[
-                    Colors.red,
-                    Colors.blue,
-                    Colors.green,
-                    Colors.orange,
-                    Colors.purple,
+                    theme.colorScheme.primary,
+                    theme.colorScheme.secondary,
+                    theme.colorScheme.tertiary,
+                    theme.colorScheme.error,
+                    theme.colorScheme.onSurface,
                   ];
                   final currentIndex = colors.indexOf(color);
                   final nextColor = colors[(currentIndex + 1) % colors.length];
                   controller.setValue(field.id, nextColor);
                 }
               : null,
-          borderRadius: BorderRadius.circular(design.radiusMd),
+          borderRadius: BorderRadius.circular(8.0),
           child: Container(
-            height: design.inputHeight,
+            height: 48,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               border: Border.all(color: color),
-              borderRadius: BorderRadius.circular(design.radiusMd),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             child: Row(
               children: [
                 Container(
-                  width: design.inputHeight,
+                  width: 48,
                   decoration: BoxDecoration(
                     color: color,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(design.radiusMd - 1),
-                      bottomLeft: Radius.circular(design.radiusMd - 1),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(7),
+                      bottomLeft: Radius.circular(7),
                     ),
                   ),
                 ),
                 Expanded(
                   child: Center(
                     child: Text(
-                      '#${(((color.r * 255.0).round() & 0xff) << 16 | ((color.g * 255.0).round() & 0xff) << 8 | ((color.b * 255.0).round() & 0xff)).toRadixString(16).padLeft(6, '0').toUpperCase()}',
+                      '#${((color.r * 255).round() << 16 | (color.g * 255).round() << 8 | (color.b * 255).round()).toRadixString(16).padLeft(6, '0').toUpperCase()}',
                       style: theme.textTheme.bodyMedium,
                     ),
                   ),
@@ -392,8 +668,7 @@ class VooFormFieldBuilder extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingField(BuildContext context) {
-    final design = context.vooDesign;
+  Widget _buildRatingField(BuildContext context, VooFormConfig config) {
     final theme = Theme.of(context);
     final rating = (controller.getValue(field.id) as num?)?.toInt() ?? 0;
     final maxRating = field.max?.toInt() ?? 5;
@@ -401,20 +676,17 @@ class VooFormFieldBuilder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (field.label != null) ...[
-          Text(
-            field.label!,
-            style: theme.textTheme.bodyMedium,
-          ),
-          SizedBox(height: design.spacingXs),
-        ],
+        if (config.labelPosition != LabelPosition.hidden)
+          _buildLabel(context, config),
         Row(
           children: List.generate(maxRating, (index) {
             final filled = index < rating;
             return IconButton(
               icon: Icon(
                 filled ? Icons.star : Icons.star_border,
-                color: filled ? Colors.amber : theme.colorScheme.outline,
+                color: filled 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.outline,
               ),
               onPressed: field.enabled && !field.readOnly
                   ? () => controller.setValue(field.id, index + 1)
@@ -422,16 +694,36 @@ class VooFormFieldBuilder extends StatelessWidget {
             );
           }),
         ),
-        if (field.helper != null) ...[
-          SizedBox(height: design.spacingXs),
+        if (field.helper != null)
           Text(
             field.helper!,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-        ],
       ],
+    );
+  }
+
+  VooFormField _applyConfigToField(
+    BuildContext context,
+    VooFormConfig config,
+    VooFormField field,
+  ) {
+    // Build label with required indicator
+    String? label = field.label;
+    if (label != null && field.required && config.showRequiredIndicator) {
+      label = '$label ${config.requiredIndicator}';
+    }
+
+    // Apply label position
+    if (config.labelPosition == LabelPosition.hidden) {
+      label = null;
+    }
+
+    return field.copyWith(
+      label: config.labelPosition != LabelPosition.floating ? label : field.label,
+      padding: config.getFieldPadding(),
     );
   }
 }

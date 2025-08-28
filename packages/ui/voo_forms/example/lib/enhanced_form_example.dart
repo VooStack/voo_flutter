@@ -217,7 +217,7 @@ class _EnhancedFormExamplePageState extends State<EnhancedFormExamplePage> {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(24.0),
-        child: VooFormV2(
+        child: VooFormWidget(
           form: form,
           config: VooFormConfig.desktop().copyWith(
             labelPosition: LabelPosition.above,
@@ -336,7 +336,7 @@ class _EnhancedFormExamplePageState extends State<EnhancedFormExamplePage> {
       ],
     );
 
-    return VooFormV2(
+    return VooFormWidget(
       form: form,
       config: const VooFormConfig(
         labelPosition: LabelPosition.above,
@@ -446,7 +446,7 @@ class _EnhancedFormExamplePageState extends State<EnhancedFormExamplePage> {
       ),
     ];
 
-    return VooFormV2(
+    return VooFormWidget(
       form: form,
       config: const VooFormConfig(
         labelPosition: LabelPosition.above,
@@ -532,7 +532,7 @@ class _EnhancedFormExamplePageState extends State<EnhancedFormExamplePage> {
     );
 
     return Center(
-      child: VooFormV2(
+      child: VooFormWidget(
         form: form,
         config: VooFormConfig(
           labelPosition: LabelPosition.floating,
