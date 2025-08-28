@@ -45,12 +45,20 @@
   - Atoms: Basic UI elements
   - Molecules: Simple component groups
   - Organisms: Complex component sections
+- **One class per file**: Each class should be in its own file
+  - Improves code organization and maintainability
+  - Makes files easier to find and understand
+  - Reduces merge conflicts in version control
 - **No function widgets**: Always use proper widget classes
 - **No _buildXXX methods**: DO NOT use methods like _buildSwitchField that return widgets
   - Instead, create separate widget classes following atomic design
   - Each widget type should be in its own file
   - This improves code readability and maintainability
   - Primary focus is developer experience
+- **No static widget creation methods**: Avoid static methods for creating widgets or form fields
+  - Use factory constructors instead (e.g., VooField.text() not VooFieldUtils.textField())
+  - Static methods are bad practice and harder to test/mock
+  - Factory constructors provide better IDE support and discoverability
 - **Stateless when possible**: Only use StatefulWidget when necessary
 - **Theme compliance**: Use app theme for all styling
 

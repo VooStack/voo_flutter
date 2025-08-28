@@ -30,7 +30,7 @@ class VooFormSectionDivider extends StatelessWidget {
     final responsive = VooResponsive.maybeOf(context);
     
     // Material 3 divider specifications
-    final defaultThickness = 1.0;
+    const defaultThickness = 1.0;
     final defaultHeight = responsive?.device(
       phone: design.spacingMd * 2,
       tablet: design.spacingLg * 2,

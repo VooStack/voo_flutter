@@ -4,9 +4,9 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 // Test implementation of VooDataGridSource
 class TestDataGridSource extends VooDataGridSource {
   TestDataGridSource({
-    VooDataGridMode mode = VooDataGridMode.local,
+    super.mode = VooDataGridMode.local,
     List<dynamic>? data,
-  }) : super(mode: mode) {
+  }) {
     if (data != null) {
       setLocalData(data);
     }

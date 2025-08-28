@@ -3,12 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
 import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
+import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/molecules/form_field_builder.dart';
 import 'package:voo_forms/src/presentation/molecules/form_section.dart';
-import 'package:voo_forms/src/presentation/widgets/voo_field.dart';
-import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart'
-    hide LabelStyle, FieldSize, FieldDensity, ValidationTrigger, FocusBehavior;
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Enhanced VooForm widget with improved theming and layout
 class VooFormWidget extends HookWidget {
@@ -221,7 +219,8 @@ class VooFormWidget extends HookWidget {
     return Column(
       children: fieldGroups!.map((group) {
         return _buildFieldGroup(
-            context, controller, config, group, screenWidth);
+            context, controller, config, group, screenWidth,
+        );
       }).toList(),
     );
   }

@@ -117,7 +117,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                   border: const OutlineInputBorder(),
                   prefixIcon: Icon(filter.field?.type.icon),
                 ),
-                value: filter.field,
+                initialValue: filter.field,
                 items: widget.fields.map((field) {
                   return DropdownMenuItem(
                     value: field,
@@ -145,7 +145,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                     labelText: 'Operator',
                     border: OutlineInputBorder(),
                   ),
-                  value: filter.operator,
+                  initialValue: filter.operator,
                   items: filter.field!.type.operators.map((op) {
                     return DropdownMenuItem(
                       value: op,
@@ -319,7 +319,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             labelText: 'Value',
             border: OutlineInputBorder(),
           ),
-          value: filter.value as bool?,
+          initialValue: filter.value as bool?,
           items: const [
             DropdownMenuItem(value: true, child: Text('Yes')),
             DropdownMenuItem(value: false, child: Text('No')),
@@ -445,7 +445,9 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
     for (final filter in _filters) {
       if (filter.field == null || 
           filter.operator == null || 
-          filter.value == null) continue;
+          filter.value == null) {
+        continue;
+      }
       
       final field = filter.field!;
       SecondaryFilter? secondaryFilter;

@@ -285,7 +285,7 @@ extension FilterOperatorExtensions on String {
       case 'Between':
         return 'between';
       default:
-        return this.toLowerCase();
+        return toLowerCase();
     }
   }
 

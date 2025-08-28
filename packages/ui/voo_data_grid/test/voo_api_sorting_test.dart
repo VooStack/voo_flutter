@@ -22,7 +22,7 @@ void main() {
         ],
       );
 
-      print('Request with ascending sort: $request');
+      // print('Request with ascending sort: $request');
       expect(request['sortBy'], 'Site.SiteNumber'); // Should be PascalCase
       expect(request['sortDescending'], false);
 
@@ -39,7 +39,7 @@ void main() {
         ],
       );
 
-      print('Request with descending sort: $request');
+      // print('Request with descending sort: $request');
       expect(request['sortBy'], 'Site.SiteName');
       expect(request['sortDescending'], true);
 
@@ -51,7 +51,7 @@ void main() {
         sorts: [],
       );
 
-      print('Request with no sort: $request');
+      // print('Request with no sort: $request');
       expect(request.containsKey('sortBy'), false);
       expect(request.containsKey('sortDescending'), false);
     });

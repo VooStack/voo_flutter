@@ -9,6 +9,7 @@ class VooFormField<T> extends Equatable {
   final String name;
   final String? label;
   final String? hint;
+  final String? placeholder;
   final String? helper;
   final T? value;
   final T? initialValue;
@@ -26,11 +27,13 @@ class VooFormField<T> extends Equatable {
   // For selection fields
   final List<VooFieldOption<T>>? options;
   final bool allowMultiple;
+  final List<VooFieldOption>? items;
   
   // For numeric fields
   final num? min;
   final num? max;
   final num? step;
+  final int? divisions;
   
   // For text fields
   final int? maxLength;
@@ -40,6 +43,10 @@ class VooFormField<T> extends Equatable {
   final List<TextInputFormatter>? inputFormatters;
   final TextCapitalization? textCapitalization;
   final TextInputAction? textInputAction;
+  final TextInputType? keyboardType;
+  final bool? obscureText;
+  final bool? autocorrect;
+  final bool? enableSuggestions;
   
   // For date/time fields
   final DateTime? minDate;
@@ -76,6 +83,7 @@ class VooFormField<T> extends Equatable {
     required this.name,
     this.label,
     this.hint,
+    this.placeholder,
     this.helper,
     this.value,
     this.initialValue,
@@ -91,9 +99,11 @@ class VooFormField<T> extends Equatable {
     this.controller,
     this.options,
     this.allowMultiple = false,
+    this.items,
     this.min,
     this.max,
     this.step,
+    this.divisions,
     this.maxLength,
     this.maxLines,
     this.minLines,
@@ -101,6 +111,10 @@ class VooFormField<T> extends Equatable {
     this.inputFormatters,
     this.textCapitalization,
     this.textInputAction,
+    this.keyboardType,
+    this.obscureText,
+    this.autocorrect,
+    this.enableSuggestions,
     this.minDate,
     this.maxDate,
     this.minTime,
@@ -128,6 +142,7 @@ class VooFormField<T> extends Equatable {
     String? name,
     String? label,
     String? hint,
+    String? placeholder,
     String? helper,
     T? value,
     T? initialValue,
@@ -153,6 +168,12 @@ class VooFormField<T> extends Equatable {
     List<TextInputFormatter>? inputFormatters,
     TextCapitalization? textCapitalization,
     TextInputAction? textInputAction,
+    TextInputType? keyboardType,
+    bool? obscureText,
+    bool? autocorrect,
+    bool? enableSuggestions,
+    int? divisions,
+    List<VooFieldOption>? items,
     DateTime? minDate,
     DateTime? maxDate,
     TimeOfDay? minTime,
@@ -179,6 +200,7 @@ class VooFormField<T> extends Equatable {
       name: name ?? this.name,
       label: label ?? this.label,
       hint: hint ?? this.hint,
+      placeholder: placeholder ?? this.placeholder,
       helper: helper ?? this.helper,
       value: value ?? this.value,
       initialValue: initialValue ?? this.initialValue,
@@ -194,9 +216,11 @@ class VooFormField<T> extends Equatable {
       controller: controller ?? this.controller,
       options: options ?? this.options,
       allowMultiple: allowMultiple ?? this.allowMultiple,
+      items: items ?? this.items,
       min: min ?? this.min,
       max: max ?? this.max,
       step: step ?? this.step,
+      divisions: divisions ?? this.divisions,
       maxLength: maxLength ?? this.maxLength,
       maxLines: maxLines ?? this.maxLines,
       minLines: minLines ?? this.minLines,
@@ -204,6 +228,10 @@ class VooFormField<T> extends Equatable {
       inputFormatters: inputFormatters ?? this.inputFormatters,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textInputAction: textInputAction ?? this.textInputAction,
+      keyboardType: keyboardType ?? this.keyboardType,
+      obscureText: obscureText ?? this.obscureText,
+      autocorrect: autocorrect ?? this.autocorrect,
+      enableSuggestions: enableSuggestions ?? this.enableSuggestions,
       minDate: minDate ?? this.minDate,
       maxDate: maxDate ?? this.maxDate,
       minTime: minTime ?? this.minTime,

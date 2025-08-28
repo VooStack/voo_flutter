@@ -1,5 +1,53 @@
 # Changelog
 
+## [0.1.3] - 2025-01-28
+
+### Changed
+- **One Class Per File Rule**: Refactored voo_field_options.dart into separate files
+  - Each enum and class now in its own file following rules.md
+  - Created separate files for: LabelPosition, FieldVariant, ErrorDisplayMode, ValidationTrigger, FocusBehavior
+  - VooFieldOptions and VooFieldOptionsProvider now in separate files
+- **Removed Duplicate Responsive Logic**: Now using voo_ui_core's VooSpacingSize and VooDesignSystemData
+  - Eliminated duplicate size/spacing definitions
+  - Using voo_ui_core's existing responsive utilities
+  - Better integration with overall design system
+
+### Fixed
+- Import paths now properly organized
+- No more duplicate responsive logic between packages
+
+## [0.1.2] - 2025-01-28
+
+### Added
+- **VooSimpleForm**: New simplified form builder for amazing developer experience
+  - Works seamlessly with VooField factory constructors
+  - Supports all form layouts (vertical, horizontal, grid, stepped, tabbed)
+  - Built-in support for VooFieldOptions inheritance
+  - Extension method `.toForm()` for even simpler form creation
+- **Atomic Layout Widgets**: Replaced all _buildXXX methods with proper atomic widgets
+  - `VooFormVerticalLayout`: Vertical form layout organism
+  - `VooFormHorizontalLayout`: Horizontal scrolling form layout
+  - `VooFormGridLayout`: Responsive grid layout with column spanning
+  - `VooFormSteppedLayout`: Wizard-style stepped form layout
+  - `VooFormTabbedLayout`: Tabbed form layout
+  - `VooFormProgress`: Progress indicator molecule
+  - `VooFormActions`: Form action buttons molecule
+- **Best Practices Example**: Comprehensive example demonstrating all new features
+
+### Changed
+- **VooFormBuilder**: Refactored to use atomic widgets instead of _buildXXX methods
+  - Improved separation of concerns
+  - Better testability and maintainability
+  - Follows atomic design principles strictly
+- **Theme Integration**: All form components now properly use theme colors
+  - Removed hardcoded green/red colors in favor of theme.colorScheme.tertiary/error
+  - Consistent theming throughout all form elements
+
+### Fixed
+- Fixed VooFormController import path issues in new atomic widgets
+- Fixed type errors in VooFormSection references
+- Removed unused _validateCurrentStep method from VooFormBuilder
+
 ## [0.1.1] - 2025-01-28
 
 ### Added
@@ -26,6 +74,24 @@
 - Improved theme integration - respects app's ColorScheme automatically
 - Updated VooFormConfig to support defaultFieldOptions
 - Enhanced field option inheritance from parent forms
+
+### Deprecated
+- **VooFieldUtils**: Static methods violate best practices. Use VooField factory constructors instead:
+  ```dart
+  // OLD (deprecated)
+  VooFieldUtils.textField(id: 'name', name: 'name')
+  
+  // NEW (recommended) 
+  VooField.text(name: 'name')
+  ```
+  Migration guide:
+  - `VooFieldUtils.textField()` → `VooField.text()`
+  - `VooFieldUtils.emailField()` → `VooField.email()`
+  - `VooFieldUtils.passwordField()` → `VooField.password()`
+  - `VooFieldUtils.phoneField()` → `VooField.phone()`
+  - `VooFieldUtils.dropdownField()` → `VooField.dropdown()`
+  - All other static methods have equivalent factory constructors
+  - Will be removed in version 0.2.0
 
 ### Fixed
 - Fixed green color appearing in switches and other components when not in theme

@@ -32,7 +32,7 @@ void main() {
       
       // Verify the request contains sortBy and sortDescending
       expect(capturedRequest, isNotNull);
-      print('Captured request: $capturedRequest');
+      // print('Captured request: $capturedRequest');
       expect(capturedRequest!['sortBy'], equals('Site.SiteNumber'));
       expect(capturedRequest!['sortDescending'], equals(false));
       

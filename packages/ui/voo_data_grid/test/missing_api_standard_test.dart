@@ -24,7 +24,7 @@ void main() {
     await dataSource.loadData();
     
     // Check what format was used
-    print('Request without apiStandard: $capturedRequest');
+    // print('Request without apiStandard: $capturedRequest');
     
     // With default (custom) format, sorts would be in a different structure
     expect(capturedRequest!.containsKey('sorts'), equals(true));
@@ -55,7 +55,7 @@ void main() {
     await dataSource.loadData();
     
     // Check what format was used
-    print('Request with VooApiStandard: $capturedRequest');
+    // print('Request with VooApiStandard: $capturedRequest');
     
     // With VooApiStandard, should have sortBy and sortDescending
     expect(capturedRequest!.containsKey('sortBy'), equals(true));

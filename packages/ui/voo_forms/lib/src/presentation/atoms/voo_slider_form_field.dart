@@ -22,18 +22,18 @@ class VooSliderFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final value = (field.value as num?)?.toDouble() ?? 
-                   field.min?.toDouble() ?? 0.0;
+    final value =
+        (field.value as num?)?.toDouble() ?? field.min?.toDouble() ?? 0.0;
     final min = field.min?.toDouble() ?? 0.0;
     final max = field.max?.toDouble() ?? 100.0;
-    final divisions = field.step != null 
-        ? ((max - min) / field.step!).round()
-        : null;
-    
+    final divisions =
+        field.step != null ? ((max - min) / field.step!).round() : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (field.label != null && options.labelPosition != LabelPosition.hidden)
+        if (field.label != null &&
+            options.labelPosition != LabelPosition.hidden)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Row(
@@ -71,18 +71,18 @@ class VooSliderFormField extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
               field.helper!,
-              style: options.helperStyle ?? 
+              style: options.helperStyle ??
                   theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
             ),
           ),
-        if (showError && error != null && (options.showErrorText ?? true))
+        if (showError && error != null && options.errorDisplayMode != ErrorDisplayMode.none)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               error!,
-              style: options.errorStyle ?? 
+              style: options.errorStyle ??
                   theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.error,
                   ),

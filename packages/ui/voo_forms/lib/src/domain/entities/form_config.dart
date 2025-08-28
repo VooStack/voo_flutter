@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Configuration for form styling and behavior
 class VooFormConfig {
@@ -13,7 +14,7 @@ class VooFormConfig {
   final FieldVariant fieldVariant;
   
   /// Field size (small, medium, large)
-  final FieldSize fieldSize;
+  final VooSpacingSize fieldSize;
   
   /// Spacing between fields
   final double fieldSpacing;
@@ -76,7 +77,7 @@ class VooFormConfig {
     this.labelPosition = LabelPosition.above,
     this.labelStyle = LabelStyle.normal,
     this.fieldVariant = FieldVariant.outlined,
-    this.fieldSize = FieldSize.medium,
+    this.fieldSize = VooSpacingSize.md,
     this.fieldSpacing = 16.0,
     this.sectionSpacing = 24.0,
     this.maxFormWidth,
@@ -102,7 +103,7 @@ class VooFormConfig {
   factory VooFormConfig.mobile() {
     return const VooFormConfig(
       labelPosition: LabelPosition.floating,
-      fieldSize: FieldSize.large,
+      fieldSize: VooSpacingSize.lg,
       fieldSpacing: 12.0,
       maxFormWidth: double.infinity,
       centerOnLargeScreens: false,
@@ -113,7 +114,7 @@ class VooFormConfig {
   factory VooFormConfig.desktop() {
     return const VooFormConfig(
       labelPosition: LabelPosition.above,
-      fieldSize: FieldSize.medium,
+      fieldSize: VooSpacingSize.md,
       maxFormWidth: 600.0,
       centerOnLargeScreens: true,
       padding: EdgeInsets.all(24.0),
@@ -124,7 +125,7 @@ class VooFormConfig {
   factory VooFormConfig.compact() {
     return const VooFormConfig(
       labelPosition: LabelPosition.inline,
-      fieldSize: FieldSize.small,
+      fieldSize: VooSpacingSize.sm,
       fieldSpacing: 8.0,
       sectionSpacing: 16.0,
     );
@@ -135,7 +136,7 @@ class VooFormConfig {
     return const VooFormConfig(
       labelPosition: LabelPosition.floating,
       fieldVariant: FieldVariant.outlined,
-      fieldSize: FieldSize.medium,
+      fieldSize: VooSpacingSize.md,
     );
   }
 
@@ -143,7 +144,7 @@ class VooFormConfig {
     LabelPosition? labelPosition,
     LabelStyle? labelStyle,
     FieldVariant? fieldVariant,
-    FieldSize? fieldSize,
+    VooSpacingSize? fieldSize,
     double? fieldSpacing,
     double? sectionSpacing,
     double? maxFormWidth,
@@ -203,14 +204,24 @@ class VooFormConfig {
   /// Get field padding based on size
   EdgeInsetsGeometry getFieldPadding() {
     switch (fieldSize) {
-      case FieldSize.small:
+      case VooSpacingSize.xs:
+        return const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0);
+      case VooSpacingSize.sm:
         return const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
-      case FieldSize.medium:
+      case VooSpacingSize.md:
         return const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
-      case FieldSize.large:
+      case VooSpacingSize.lg:
         return const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0);
-      case FieldSize.xlarge:
+      case VooSpacingSize.xl:
         return const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0);
+      case VooSpacingSize.xxl:
+        return const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24.0);
+      case VooSpacingSize.xxxl:
+        return const EdgeInsets.symmetric(horizontal: 32.0, vertical: 28.0);
+      case VooSpacingSize.none:
+        return EdgeInsets.zero;
+      case VooSpacingSize.custom:
+        return const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
     }
   }
 

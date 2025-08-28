@@ -5,6 +5,7 @@
     "devstack",
     "endswith",
     "fixnum",
+    "globalzoning",
     "goldens",
     "ilike",
     "interps",
@@ -17,7 +18,8 @@
     "Sparkline",
     "startswith",
     "Traceparent",
-    "Tracestate"
+    "Tracestate",
+    "xlarge"
   ],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {

@@ -45,21 +45,24 @@ class VooFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveOptions = options ?? VooFieldOptions.material;
-    
+
     // Apply label if needed for non-floating positions
     Widget fieldWidget = _buildFieldByType(context, effectiveOptions);
-    
+
     // Wrap with label if label position requires it
-    if (field.label != null && 
-        effectiveOptions.labelPosition == LabelPosition.above ||
+    if (field.label != null &&
+            effectiveOptions.labelPosition == LabelPosition.above ||
         effectiveOptions.labelPosition == LabelPosition.left) {
       fieldWidget = _wrapWithLabel(context, fieldWidget, effectiveOptions);
     }
-    
+
     return fieldWidget;
   }
-  
-  Widget _buildFieldByType(BuildContext context, VooFieldOptions effectiveOptions) {
+
+  Widget _buildFieldByType(
+    BuildContext context,
+    VooFieldOptions effectiveOptions,
+  ) {
     switch (field.type) {
       case VooFieldType.text:
       case VooFieldType.email:
@@ -79,70 +82,64 @@ class VooFieldWidget extends StatelessWidget {
           showError: showError,
           autoFocus: autofocus,
         );
-        
+
       case VooFieldType.boolean:
         return VooSwitchFormField(
           field: field,
           onChanged: onChanged,
         );
-        
+
       case VooFieldType.checkbox:
         return VooCheckboxFormField(
           field: field,
           onChanged: onChanged,
         );
-        
+
       case VooFieldType.dropdown:
         return VooDropdownFormField(
           field: field,
           onChanged: onChanged,
         );
-        
+
       case VooFieldType.radio:
         return VooRadioFormField(
           field: field,
           onChanged: onChanged,
         );
-        
+
       case VooFieldType.slider:
         return VooSliderFormField(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged != null 
-              ? (value) => onChanged!(value)
-              : null,
+          onChanged: onChanged != null ? (value) => onChanged!(value) : null,
           error: error,
           showError: showError,
         );
-        
+
       case VooFieldType.date:
         return VooDateFormField(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged != null 
-              ? (value) => onChanged!(value)
-              : null,
+          onChanged: onChanged != null ? (value) => onChanged!(value) : null,
           onTap: onTap,
           focusNode: focusNode,
           controller: controller,
           error: error,
           showError: showError,
         );
-        
+
       case VooFieldType.time:
         return VooTimeFormField(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged != null 
-              ? (value) => onChanged!(value)
-              : null,
+          onChanged: onChanged != null ? (value) => onChanged!(value) : null,
           onTap: onTap,
           focusNode: focusNode,
           controller: controller,
           error: error,
           showError: showError,
         );
-        
+
       default:
         // Fallback for unsupported types
         return Container(
@@ -158,9 +155,9 @@ class VooFieldWidget extends StatelessWidget {
         );
     }
   }
-  
+
   Widget _wrapWithLabel(
-    BuildContext context, 
+    BuildContext context,
     Widget fieldWidget,
     VooFieldOptions options,
   ) {
@@ -169,7 +166,7 @@ class VooFieldWidget extends StatelessWidget {
       field.label!,
       style: options.textStyle ?? theme.textTheme.bodyMedium,
     );
-    
+
     if (options.labelPosition == LabelPosition.left) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
-import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
+import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/organisms/voo_form_builder.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 

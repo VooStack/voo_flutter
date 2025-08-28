@@ -5,8 +5,20 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 
 /// Utility class for working with form fields
-class VooFieldUtils {
-  VooFieldUtils._();
+/// 
+/// @deprecated Use VooField factory constructors instead:
+/// - VooField.text() instead of VooField.textField()
+/// - VooField.email() instead of VooField.emailField()
+/// - VooField.password() instead of VooField.passwordField()
+/// - etc.
+/// 
+/// This class will be removed in version 0.2.0
+/// Static methods violate best practices - use the new VooField API
+@Deprecated('Use VooField factory constructors instead. '
+    'This violates best practices with static methods. '
+    'Will be removed in 0.2.0')
+class VooField {
+  VooField._();
 
   /// Create a text field with common configurations
   static VooFormField<String> textField({
