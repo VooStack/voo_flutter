@@ -1,0 +1,52 @@
+# Changelog
+
+## [0.1.0] - 2025-01-27
+
+### Added
+- Initial release of voo_forms package
+- Comprehensive form builder with clean architecture
+- 20+ field types support including:
+  - Text, Email, Password, Phone, URL
+  - Number, Slider, Rating
+  - Date, Time, DateTime
+  - Boolean, Checkbox, Switch
+  - Dropdown, Radio, MultiSelect
+  - Color picker, File upload
+- Form sections with collapsible support
+- Form headers for better organization and categorization
+- Advanced validation system with 20+ built-in validators:
+  - Required, Email, Phone, URL validation
+  - Min/Max length and value validators
+  - Pattern matching validators
+  - Password strength validators
+  - Credit card, postal code validators
+  - Custom validation support
+- 15+ text input formatters:
+  - Phone number formatting (US and international)
+  - Credit card formatting
+  - Currency formatting
+  - Date and time formatting
+  - Custom mask formatters
+- Form controller with state management:
+  - Real-time validation
+  - Field dependencies
+  - Form submission handling
+  - Progress tracking
+- Multiple form layouts:
+  - Vertical, Horizontal, Grid
+  - Stepped/Wizard forms
+  - Tabbed forms
+- Responsive design supporting all screen sizes
+- Material 3 compliance
+- Theme customization support
+- Comprehensive utility classes:
+  - VooFormUtils for form operations
+  - VooFieldUtils for field creation
+  - VooFormTheme for styling
+- Export formats:
+  - JSON serialization/deserialization
+  - Form summary generation
+  - Configuration export
+- Full TypeScript-like type safety with generics
+- Atomic design pattern implementation
+- Cross-platform support (iOS, Android, Web, Desktop)
