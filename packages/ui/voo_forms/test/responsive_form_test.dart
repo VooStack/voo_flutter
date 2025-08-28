@@ -39,13 +39,22 @@ void main() {
       // The form wrapper doesn't necessarily show the form title
     });
 
-    testWidgets('applies different column counts based on screen size', (tester) async {
+    testWidgets('applies different column counts based on screen size',
+        (tester) async {
       final form = VooForm(
         id: 'test',
         title: 'Test Form',
         fields: [
-          VooFieldUtils.textField(id: 'field1', name: 'field1', label: 'Field 1'),
-          VooFieldUtils.textField(id: 'field2', name: 'field2', label: 'Field 2'),
+          VooFieldUtils.textField(
+            id: 'field1',
+            name: 'field1',
+            label: 'Field 1',
+          ),
+          VooFieldUtils.textField(
+            id: 'field2',
+            name: 'field2',
+            label: 'Field 2',
+          ),
         ],
       );
 
@@ -72,7 +81,7 @@ void main() {
     });
 
     testWidgets('renders header and footer when provided', (tester) async {
-      final form = VooForm(
+      const form = VooForm(
         id: 'test',
         title: 'Test Form',
         fields: [],
@@ -98,7 +107,7 @@ void main() {
     });
 
     testWidgets('applies surface tint when enabled', (tester) async {
-      final form = VooForm(
+      const form = VooForm(
         id: 'test',
         title: 'Test Form',
         fields: [],
@@ -121,10 +130,12 @@ void main() {
 
       // Check that Material widget exists with elevation
       final material = tester.widget<Material>(
-        find.descendant(
-          of: find.byType(VooResponsiveFormWrapper),
-          matching: find.byType(Material),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(VooResponsiveFormWrapper),
+              matching: find.byType(Material),
+            )
+            .first,
       );
       expect(material.elevation, 4);
     });

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
@@ -246,8 +247,12 @@ class RemoteDataSource extends VooDataGridSource {
     );
 
     // Log the request to demonstrate the field prefix in action
-    print('API Request with field prefix "$fieldPrefix":');
-    print(const JsonEncoder.withIndent('  ').convert(request));
+    if (kDebugMode) {
+      print('API Request with field prefix "$fieldPrefix":');
+    }
+    if (kDebugMode) {
+      print(const JsonEncoder.withIndent('  ').convert(request));
+    }
 
     // Simulate API response with dummy data
     await Future.delayed(const Duration(milliseconds: 500));

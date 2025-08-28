@@ -1,0 +1,23 @@
+name: voo_motion
+description: 'Simple and powerful animation package with extension methods for Flutter widgets'
+version: 0.0.1
+homepage: https://github.com/VooStack/VooFlutter
+repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_motion
+
+environment:
+  sdk: ^3.0.0
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voo_ui_core:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  mocktail: ^1.0.1
+
+flutter:
+  material: true
