@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,7 +7,8 @@ import 'package:voo_motion/voo_motion.dart';
 
 void main() {
   group('Hover Animations', () {
-    testWidgets('hoverGrow extension should apply hover grow animation', (tester) async {
+    testWidgets('hoverGrow extension should apply hover grow animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -19,15 +22,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverGrowAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverGrowAnimation>(
         find.byType(VooHoverGrowAnimation),
       );
       expect(animation.growScale, 1.1);
     });
-    
-    testWidgets('hoverLift extension should apply hover lift animation', (tester) async {
+
+    testWidgets('hoverLift extension should apply hover lift animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -39,15 +43,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverLiftAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverLiftAnimation>(
         find.byType(VooHoverLiftAnimation),
       );
       expect(animation.liftHeight, 10);
     });
-    
-    testWidgets('hoverGlow extension should apply hover glow animation', (tester) async {
+
+    testWidgets('hoverGlow extension should apply hover glow animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -57,15 +62,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverGlowAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverGlowAnimation>(
         find.byType(VooHoverGlowAnimation),
       );
       expect(animation.glowColor, Colors.yellow);
     });
-    
-    testWidgets('hoverTilt extension should apply hover tilt animation', (tester) async {
+
+    testWidgets('hoverTilt extension should apply hover tilt animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -79,15 +85,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverTiltAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverTiltAnimation>(
         find.byType(VooHoverTiltAnimation),
       );
       expect(animation.tiltAngle, 0.1);
     });
-    
-    testWidgets('hoverShine extension should apply hover shine animation', (tester) async {
+
+    testWidgets('hoverShine extension should apply hover shine animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -97,15 +104,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverShineAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverShineAnimation>(
         find.byType(VooHoverShineAnimation),
       );
       expect(animation.shineColor, Colors.white30);
     });
-    
-    testWidgets('hoverRotate extension should apply hover rotate animation', (tester) async {
+
+    testWidgets('hoverRotate extension should apply hover rotate animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -116,7 +124,7 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverRotateAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverRotateAnimation>(
         find.byType(VooHoverRotateAnimation),
@@ -124,8 +132,9 @@ void main() {
       expect(animation.rotationAngle, 0.2);
       expect(animation.rotationAxis, Axis.horizontal);
     });
-    
-    testWidgets('hoverColor extension should apply hover color animation', (tester) async {
+
+    testWidgets('hoverColor extension should apply hover color animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -139,15 +148,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverColorAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverColorAnimation>(
         find.byType(VooHoverColorAnimation),
       );
       expect(animation.hoverColor, Colors.blue);
     });
-    
-    testWidgets('hoverBlur extension should apply hover blur animation', (tester) async {
+
+    testWidgets('hoverBlur extension should apply hover blur animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -157,15 +167,17 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverBlurAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverBlurAnimation>(
         find.byType(VooHoverBlurAnimation),
       );
       expect(animation.blurAmount, 10);
     });
-    
-    testWidgets('hoverUnderline extension should apply hover underline animation', (tester) async {
+
+    testWidgets(
+        'hoverUnderline extension should apply hover underline animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -176,7 +188,7 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverUnderlineAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverUnderlineAnimation>(
         find.byType(VooHoverUnderlineAnimation),
@@ -184,8 +196,9 @@ void main() {
       expect(animation.underlineColor, Colors.red);
       expect(animation.underlineThickness, 3);
     });
-    
-    testWidgets('hoverBorder extension should apply hover border animation', (tester) async {
+
+    testWidgets('hoverBorder extension should apply hover border animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -200,7 +213,7 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverBorderAnimation), findsOneWidget);
       final animation = tester.widget<VooHoverBorderAnimation>(
         find.byType(VooHoverBorderAnimation),
@@ -208,11 +221,12 @@ void main() {
       expect(animation.borderColor, Colors.green);
       expect(animation.borderWidth, 4);
     });
-    
-    testWidgets('hover animations should respond to mouse events', (tester) async {
+
+    testWidgets('hover animations should respond to mouse events',
+        (tester) async {
       bool hoverStarted = false;
       bool hoverExited = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -229,7 +243,7 @@ void main() {
           ),
         ),
       );
-      
+
       // Find the MouseRegion
       final mouseRegion = tester.widget<MouseRegion>(
         find.descendant(
@@ -237,16 +251,17 @@ void main() {
           matching: find.byType(MouseRegion),
         ),
       );
-      
+
       // Simulate mouse enter
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: tester.getCenter(find.byType(Container)));
+      await gesture.addPointer(
+          location: tester.getCenter(find.byType(Container)));
       addTearDown(gesture.removePointer);
-      
+
       // Check hover callbacks
       expect(mouseRegion.cursor, SystemMouseCursors.click);
     });
-    
+
     testWidgets('multiple hover animations can be chained', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -255,14 +270,11 @@ void main() {
               width: 100,
               height: 100,
               color: Colors.blue,
-            )
-                .hoverGrow()
-                .hoverGlow()
-                .hoverLift(),
+            ).hoverGrow().hoverGlow().hoverLift(),
           ),
         ),
       );
-      
+
       expect(find.byType(VooHoverGrowAnimation), findsOneWidget);
       expect(find.byType(VooHoverGlowAnimation), findsOneWidget);
       expect(find.byType(VooHoverLiftAnimation), findsOneWidget);

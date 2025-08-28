@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_motion/voo_motion.dart';
@@ -14,11 +16,11 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooDropAnimation), findsOneWidget);
       expect(find.text('Drop In Test'), findsOneWidget);
     });
-    
+
     testWidgets('fadeIn extension should apply fade animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -29,12 +31,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooFadeAnimation), findsOneWidget);
       expect(find.text('Fade Test'), findsOneWidget);
     });
-    
-    testWidgets('slideInLeft extension should apply slide animation', (tester) async {
+
+    testWidgets('slideInLeft extension should apply slide animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -44,12 +47,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooSlideAnimation), findsOneWidget);
       expect(find.text('Slide Test'), findsOneWidget);
     });
-    
-    testWidgets('scaleIn extension should apply scale animation', (tester) async {
+
+    testWidgets('scaleIn extension should apply scale animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -59,12 +63,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooScaleAnimation), findsOneWidget);
       expect(find.text('Scale Test'), findsOneWidget);
     });
-    
-    testWidgets('rotate extension should apply rotation animation', (tester) async {
+
+    testWidgets('rotate extension should apply rotation animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -74,12 +79,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooRotationAnimation), findsOneWidget);
       expect(find.byIcon(Icons.refresh), findsOneWidget);
     });
-    
-    testWidgets('bounce extension should apply bounce animation', (tester) async {
+
+    testWidgets('bounce extension should apply bounce animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -89,11 +95,11 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooBounceAnimation), findsOneWidget);
       expect(find.text('Bounce Test'), findsOneWidget);
     });
-    
+
     testWidgets('shake extension should apply shake animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -104,12 +110,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooShakeAnimation), findsOneWidget);
       expect(find.text('Shake Test'), findsOneWidget);
     });
-    
-    testWidgets('flipX extension should apply horizontal flip animation', (tester) async {
+
+    testWidgets('flipX extension should apply horizontal flip animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -121,15 +128,16 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooFlipAnimation), findsOneWidget);
       final flipAnimation = tester.widget<VooFlipAnimation>(
         find.byType(VooFlipAnimation),
       );
       expect(flipAnimation.direction, FlipDirection.horizontal);
     });
-    
-    testWidgets('flipY extension should apply vertical flip animation', (tester) async {
+
+    testWidgets('flipY extension should apply vertical flip animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -141,14 +149,14 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooFlipAnimation), findsOneWidget);
       final flipAnimation = tester.widget<VooFlipAnimation>(
         find.byType(VooFlipAnimation),
       );
       expect(flipAnimation.direction, FlipDirection.vertical);
     });
-    
+
     testWidgets('blur extension should apply blur animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -159,11 +167,11 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooBlurAnimation), findsOneWidget);
       expect(find.text('Blur Test'), findsOneWidget);
     });
-    
+
     testWidgets('glow extension should apply glow animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -174,11 +182,11 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooGlowAnimation), findsOneWidget);
       expect(find.text('Glow Test'), findsOneWidget);
     });
-    
+
     testWidgets('pulse extension should apply pulse animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -189,12 +197,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooPulseAnimation), findsOneWidget);
       expect(find.text('Pulse Test'), findsOneWidget);
     });
-    
-    testWidgets('shimmer extension should apply shimmer animation', (tester) async {
+
+    testWidgets('shimmer extension should apply shimmer animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -204,11 +213,11 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooShimmerAnimation), findsOneWidget);
       expect(find.text('Shimmer Test'), findsOneWidget);
     });
-    
+
     testWidgets('wave extension should apply wave animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -219,12 +228,13 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooWaveAnimation), findsOneWidget);
       expect(find.text('Wave Test'), findsOneWidget);
     });
-    
-    testWidgets('ripple extension should apply ripple animation', (tester) async {
+
+    testWidgets('ripple extension should apply ripple animation',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -234,11 +244,11 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooRippleAnimation), findsOneWidget);
       expect(find.text('Ripple Test'), findsOneWidget);
     });
-    
+
     testWidgets('chaining animations should work', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -249,17 +259,17 @@ void main() {
           ),
         ),
       );
-      
+
       // Should have both animations applied
       expect(find.byType(VooFadeAnimation), findsOneWidget);
       expect(find.byType(VooScaleAnimation), findsOneWidget);
       expect(find.text('Chain Test'), findsOneWidget);
     });
-    
+
     testWidgets('animation parameters should be customizable', (tester) async {
       var startCalled = false;
       var completeCalled = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -277,11 +287,11 @@ void main() {
           ),
         ),
       );
-      
+
       final fadeAnimation = tester.widget<VooFadeAnimation>(
         find.byType(VooFadeAnimation),
       );
-      
+
       expect(fadeAnimation.config.duration, const Duration(seconds: 1));
       expect(fadeAnimation.config.delay, const Duration(milliseconds: 500));
       expect(fadeAnimation.config.curve, Curves.bounceOut);

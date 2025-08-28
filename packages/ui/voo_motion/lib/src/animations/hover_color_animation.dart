@@ -203,8 +203,7 @@ class VooHoverUnderlineAnimation extends StatelessWidget {
                   return Container(
                     height: underlineThickness,
                     color: underlineColor.withValues(alpha: underlineColor.a * value),
-                    transform: Matrix4.identity()
-                      ..scale(value, 1.0, 1.0),
+                    transform: Matrix4.diagonal3Values(value, 1.0, 1.0),
                     transformAlignment: Alignment.centerLeft,
                   );
                 },
