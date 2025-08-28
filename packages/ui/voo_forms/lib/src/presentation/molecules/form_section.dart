@@ -70,16 +70,16 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    final responsive = context.responsive;
+    final responsive = VooResponsive.maybeOf(context);
 
     // Calculate responsive columns
     final columns = widget.section.columns ??
-        responsive.device(
+        (responsive?.device(
           phone: 1,
           tablet: 2,
           desktop: 3,
           defaultValue: 1,
-        );
+        ) ?? 1);
 
     // Build section header
     Widget? header;
@@ -166,11 +166,11 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
 
     // Build fields content
     Widget content;
-    if ((columns ?? 1) > 1 && !responsive.isPhone) {
+    if ((columns) > 1 && !(responsive?.isPhone ?? false)) {
       // Grid layout for multiple columns
       content = LayoutBuilder(
         builder: (context, constraints) {
-          final columnsCount = columns ?? 1;
+          final columnsCount = columns;
           final itemWidth = (constraints.maxWidth -
                   (columnsCount - 1) * design.spacingMd) /
               columnsCount;

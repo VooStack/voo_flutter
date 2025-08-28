@@ -68,7 +68,15 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    final responsive = context.responsive;
+    
+    // Make responsive optional
+    final responsive = VooResponsive.maybeOf(context);
+    final spacing = responsive?.device(
+      phone: design.spacingMd,
+      tablet: design.spacingLg,
+      desktop: design.spacingXl,
+      defaultValue: design.spacingMd,
+    ) ?? design.spacingMd;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -79,15 +87,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
           child: SingleChildScrollView(
             controller: _scrollController,
             physics: widget.physics,
-            padding: widget.padding ??
-                EdgeInsets.all(
-                  responsive.device(
-                    phone: design.spacingMd,
-                    tablet: design.spacingLg,
-                    desktop: design.spacingXl,
-                    defaultValue: design.spacingMd,
-                  ),
-                ),
+            padding: widget.padding ?? EdgeInsets.all(spacing),
             child: _buildFormContent(context),
           ),
         ),
@@ -192,14 +192,14 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
 
   Widget _buildGridLayout(BuildContext context) {
     final design = context.vooDesign;
-    final responsive = context.responsive;
+    final responsive = VooResponsive.maybeOf(context);
     
-    final columns = responsive.device(
+    final columns = responsive?.device(
       phone: 1,
       tablet: 2,
       desktop: 3,
       defaultValue: 2,
-    );
+    ) ?? 2;
     
     return LayoutBuilder(
       builder: (context, constraints) {

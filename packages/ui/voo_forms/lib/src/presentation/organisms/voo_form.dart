@@ -40,7 +40,7 @@ class VooFormWidget extends HookWidget {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    final responsive = context.responsive;
+    final responsive = VooResponsive.maybeOf(context);
 
     // Use provided controller or create a new one
     final formController = controller ?? useVooFormController(form);
@@ -77,12 +77,12 @@ class VooFormWidget extends HookWidget {
           Padding(
             padding: padding ??
                 EdgeInsets.all(
-                  responsive.device(
+                  responsive?.device(
                     phone: design.spacingMd,
                     tablet: design.spacingLg,
                     desktop: design.spacingXl,
                     defaultValue: design.spacingLg,
-                  ),
+                  ) ?? design.spacingLg,
                 ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,12 +110,12 @@ class VooFormWidget extends HookWidget {
           child: SingleChildScrollView(
             padding: padding ??
                 EdgeInsets.all(
-                  responsive.device(
+                  responsive?.device(
                     phone: design.spacingMd,
                     tablet: design.spacingLg,
                     desktop: design.spacingXl,
                     defaultValue: design.spacingLg,
-                  ),
+                  ) ?? design.spacingLg,
                 ),
             child: content,
           ),
@@ -189,14 +189,14 @@ class VooFormWidget extends HookWidget {
 
   Widget _buildGridLayout(BuildContext context, VooFormController controller) {
     final design = context.vooDesign;
-    final responsive = context.responsive;
+    final responsive = VooResponsive.maybeOf(context);
     
-    final columns = responsive.device(
+    final columns = responsive?.device(
       phone: 1,
       tablet: 2,
       desktop: 3,
       defaultValue: 2,
-    );
+    ) ?? 2;
     
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -235,16 +235,16 @@ class VooFormWidget extends HookWidget {
   Widget _buildSubmitButton(BuildContext context, VooFormController controller) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    final responsive = context.responsive;
+    final responsive = VooResponsive.maybeOf(context);
     
     return Container(
       padding: EdgeInsets.all(
-        responsive.device(
+        responsive?.device(
           phone: design.spacingMd,
           tablet: design.spacingLg,
           desktop: design.spacingXl,
           defaultValue: design.spacingLg,
-        ),
+        ) ?? design.spacingLg,
       ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -300,12 +300,12 @@ class VooFormWidget extends HookWidget {
 }
 
 // Simplified form widget with builder pattern
-class VooFormBuilder extends HookWidget {
+class VooFormWidgetBuilder extends HookWidget {
   final VooForm form;
   final Widget Function(BuildContext, VooFormController) builder;
   final VooFormController? controller;
 
-  const VooFormBuilder({
+  const VooFormWidgetBuilder({
     super.key,
     required this.form,
     required this.builder,

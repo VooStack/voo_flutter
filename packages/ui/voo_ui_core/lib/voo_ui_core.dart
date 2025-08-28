@@ -21,6 +21,12 @@ export 'src/foundations/spacing.dart';
 export 'src/foundations/theme.dart';
 export 'src/foundations/typography.dart';
 
+// Design System
+export 'src/design_system/design_system.dart';
+export 'src/design_system/voo_design_tokens.dart' hide VooTypography, VooSpacing;
+export 'src/design_system/material_design_tokens.dart';
+export 'src/widgets/voo_design_system.dart' hide VooDesignSystemData, VooDesignSystem, VooResponsiveBuilder, VooResponsive;
+
 // Inputs (excluding calendar and data grid)
 // export 'src/inputs/advanced_date_time_picker.dart'; // TODO: Re-enable when voo_calendar dependency is added
 export 'src/inputs/button.dart';

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/voo_forms.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
+import 'responsive_form_example.dart';
+import 'simple_responsive_example.dart';
+import 'design_system_example.dart';
 
 void main() {
   runApp(const MyApp());
@@ -96,6 +99,51 @@ class FormExampleHome extends StatelessWidget {
             () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const HeadersExample()),
+            ),
+          ),
+          _buildExampleCard(
+            context,
+            'Simple Responsive Form',
+            'Basic form that adapts to different screen sizes',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SimpleResponsiveExample()),
+            ),
+          ),
+          _buildExampleCard(
+            context,
+            'Advanced Responsive Form',
+            'Complex form with Material 3 dividers and sections',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ResponsiveFormExample()),
+            ),
+          ),
+          _buildExampleCard(
+            context,
+            'Divider Styles',
+            'All Material 3 form divider styles',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DividerStylesExample()),
+            ),
+          ),
+          _buildExampleCard(
+            context,
+            'Design System',
+            'Switch between Voo and Material design systems',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DesignSystemExample()),
+            ),
+          ),
+          _buildExampleCard(
+            context,
+            'Design System Comparison',
+            'Side-by-side design system comparison',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DesignSystemComparison()),
             ),
           ),
         ],
@@ -498,7 +546,7 @@ class _SurveyExampleState extends State<SurveyExample> {
   }
 }
 
-// All Field Types Example
+// All Field Types Example - Including Switch Field
 class AllFieldTypesExample extends StatefulWidget {
   const AllFieldTypesExample({super.key});
 
@@ -605,7 +653,9 @@ class _AllFieldTypesExampleState extends State<AllFieldTypesExample> {
         VooFieldUtils.switchField(
           id: 'switch',
           name: 'switch',
-          label: 'Switch',
+          label: 'Switch Toggle',
+          helper: 'Enable or disable this feature',
+          prefixIcon: Icons.notifications,
         ),
         
         // Selection fields
@@ -744,6 +794,14 @@ class _SteppedFormExampleState extends State<SteppedFormExample> {
               id: 'notifications',
               name: 'notifications',
               label: 'Enable Notifications',
+              helper: 'Get updates about new features',
+            ),
+            VooFieldUtils.switchField(
+              id: 'darkMode',
+              name: 'darkMode',
+              label: 'Dark Mode',
+              helper: 'Use dark theme for the app',
+              prefixIcon: Icons.dark_mode,
             ),
           ],
         ),
@@ -853,6 +911,12 @@ class _DynamicFormExampleState extends State<DynamicFormExample> {
           name: 'birth_date',
           label: 'Date of Birth',
         ),
+        VooFieldUtils.switchField(
+          id: 'marketing_emails',
+          name: 'marketing_emails',
+          label: 'Receive Marketing Emails',
+          helper: 'Get updates about our latest offers',
+        ),
       ]);
     } else {
       fields.addAll([
@@ -873,6 +937,13 @@ class _DynamicFormExampleState extends State<DynamicFormExample> {
           name: 'employees',
           label: 'Number of Employees',
           min: 1,
+        ),
+        VooFieldUtils.switchField(
+          id: 'enterprise_features',
+          name: 'enterprise_features',
+          label: 'Enterprise Features',
+          helper: 'Enable advanced business features',
+          prefixIcon: Icons.business,
         ),
       ]);
     }
@@ -1082,7 +1153,7 @@ class _HeadersExampleState extends State<HeadersExample> {
       sections: const [
         VooFormSection(
           id: 'large',
-          fieldIds: ['field1'],
+          fieldIds: ['field1', 'switch1'],
           header: VooFormHeader(
             id: 'large_header',
             title: 'Large Header Style',
@@ -1094,7 +1165,7 @@ class _HeadersExampleState extends State<HeadersExample> {
         ),
         VooFormSection(
           id: 'card',
-          fieldIds: ['field2'],
+          fieldIds: ['field2', 'switch2'],
           header: VooFormHeader(
             id: 'card_header',
             title: 'Card Style Header',
@@ -1105,7 +1176,7 @@ class _HeadersExampleState extends State<HeadersExample> {
         ),
         VooFormSection(
           id: 'banner',
-          fieldIds: ['field3'],
+          fieldIds: ['field3', 'switch3'],
           header: VooFormHeader(
             id: 'banner_header',
             title: 'Banner Style',
@@ -1131,15 +1202,34 @@ class _HeadersExampleState extends State<HeadersExample> {
           name: 'field1',
           label: 'Field under large header',
         ),
+        VooFieldUtils.switchField(
+          id: 'switch1',
+          name: 'switch1',
+          label: 'Enable Feature',
+          helper: 'Toggle this to enable the feature',
+        ),
         VooFieldUtils.textField(
           id: 'field2',
           name: 'field2',
           label: 'Field under card header',
         ),
+        VooFieldUtils.switchField(
+          id: 'switch2',
+          name: 'switch2',
+          label: 'Enable Notifications',
+          prefixIcon: Icons.notifications,
+        ),
         VooFieldUtils.textField(
           id: 'field3',
           name: 'field3',
           label: 'Field under banner header',
+        ),
+        VooFieldUtils.switchField(
+          id: 'switch3',
+          name: 'switch3',
+          label: 'Advanced Settings',
+          helper: 'Enable advanced configuration options',
+          prefixIcon: Icons.settings_applications,
         ),
         VooFieldUtils.textField(
           id: 'field4',

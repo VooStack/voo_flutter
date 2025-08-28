@@ -13,7 +13,9 @@ export 'src/domain/entities/validation_rule.dart';
 export 'src/presentation/atoms/form_header.dart';
 export 'src/presentation/atoms/voo_checkbox_form_field.dart';
 export 'src/presentation/atoms/voo_dropdown_form_field.dart';
+export 'src/presentation/atoms/voo_form_section_divider.dart';
 export 'src/presentation/atoms/voo_radio_form_field.dart';
+export 'src/presentation/atoms/voo_switch_form_field.dart';
 export 'src/presentation/atoms/voo_text_form_field.dart';
 
 // Presentation - Controllers
@@ -24,8 +26,9 @@ export 'src/presentation/molecules/form_field_builder.dart';
 export 'src/presentation/molecules/form_section.dart';
 
 // Presentation - Organisms
-export 'src/presentation/organisms/voo_form.dart' hide VooFormBuilder;
+export 'src/presentation/organisms/voo_form.dart';
 export 'src/presentation/organisms/voo_form_builder.dart';
+export 'src/presentation/organisms/voo_responsive_form_wrapper.dart';
 
 // Utilities
 export 'src/utils/field_utils.dart';

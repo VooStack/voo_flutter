@@ -71,11 +71,11 @@ void main() {
 
       // Test too short
       var fieldShort = field.copyWith(value: 'ab');
-      expect(fieldShort.validate(), contains('at least 3'));
+      expect(fieldShort.validate(), contains('Minimum 3'));
 
       // Test too long
       var fieldLong = field.copyWith(value: '12345678901');
-      expect(fieldLong.validate(), contains('at most 10'));
+      expect(fieldLong.validate(), contains('Maximum 10'));
 
       // Test valid length
       var fieldValid = field.copyWith(value: '12345');
@@ -133,11 +133,11 @@ void main() {
 
       // Test below minimum
       var fieldBelowMin = field.copyWith(value: -5);
-      expect(fieldBelowMin.validate(), contains('at least'));
+      expect(fieldBelowMin.validate(), contains('Must be at least'));
 
       // Test above maximum
       var fieldAboveMax = field.copyWith(value: 150);
-      expect(fieldAboveMax.validate(), contains('at most'));
+      expect(fieldAboveMax.validate(), contains('Must be at most'));
 
       // Test valid value
       var fieldValid = field.copyWith(value: 50);

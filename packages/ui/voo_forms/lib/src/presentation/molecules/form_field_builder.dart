@@ -5,6 +5,7 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_checkbox_form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_dropdown_form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_radio_form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/voo_switch_form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_text_form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
@@ -69,6 +70,13 @@ class VooFormFieldBuilder extends StatelessWidget {
         );
         
       case VooFieldType.boolean:
+        return VooSwitchFormField(
+          field: field as VooFormField<bool>,
+          onChanged: (value) => controller.setValue(field.id, value),
+          error: controller.getError(field.id),
+          showError: showError,
+        );
+        
       case VooFieldType.checkbox:
         return VooCheckboxFormField(
           field: field as VooFormField<bool>,
