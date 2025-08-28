@@ -24,6 +24,7 @@ export 'src/presentation/molecules/form_field_builder.dart';
 export 'src/presentation/molecules/form_section.dart';
 
 // Presentation - Organisms
+export 'src/presentation/organisms/voo_form.dart' hide VooFormBuilder;
 export 'src/presentation/organisms/voo_form_builder.dart';
 
 // Utilities
