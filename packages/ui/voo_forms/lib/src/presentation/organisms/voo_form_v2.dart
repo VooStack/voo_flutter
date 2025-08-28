@@ -4,7 +4,7 @@ import 'package:voo_forms/src/domain/entities/form.dart';
 import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
-import 'package:voo_forms/src/presentation/molecules/form_field_builder.dart';
+import 'package:voo_forms/src/presentation/molecules/form_field_builder_v2.dart';
 import 'package:voo_forms/src/presentation/molecules/form_section.dart';
 
 /// Enhanced VooForm widget with improved theming and layout
@@ -435,9 +435,10 @@ class VooFormV2 extends HookWidget {
     // Apply configuration to field
     final configuredField = _applyConfigToField(context, config, field);
     
-    return VooFormFieldBuilder(
+    return VooFormFieldBuilderV2(
       field: configuredField,
       controller: controller,
+      config: config,
       showError: config.errorDisplayMode != ErrorDisplayMode.none,
     );
   }

@@ -25,6 +25,7 @@ export 'src/presentation/controllers/form_controller.dart';
 
 // Presentation - Molecules
 export 'src/presentation/molecules/form_field_builder.dart';
+export 'src/presentation/molecules/form_field_builder_v2.dart';
 export 'src/presentation/molecules/form_section.dart';
 
 // Presentation - Organisms
