@@ -31,6 +31,11 @@ export 'src/presentation/organisms/voo_form.dart';
 export 'src/presentation/organisms/voo_form_builder.dart';
 export 'src/presentation/organisms/voo_responsive_form_wrapper.dart';
 
+// Presentation - Widgets (New API)
+export 'src/presentation/widgets/voo_field.dart';
+export 'src/presentation/widgets/voo_field_options.dart';
+export 'src/presentation/widgets/voo_field_widget.dart';
+
 // Utilities
 export 'src/utils/field_utils.dart';
 export 'src/utils/form_theme.dart';

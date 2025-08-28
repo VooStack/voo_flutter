@@ -6,6 +6,9 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
 import 'package:voo_forms/src/presentation/molecules/form_field_builder.dart';
 import 'package:voo_forms/src/presentation/molecules/form_section.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart'
+    hide LabelStyle, FieldSize, FieldDensity, ValidationTrigger, FocusBehavior;
 
 /// Enhanced VooForm widget with improved theming and layout
 class VooFormWidget extends HookWidget {
@@ -48,10 +51,9 @@ class VooFormWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final formConfig = config ?? const VooFormConfig();
     final formController = controller ?? useVooFormController(form);
-    
+
     useListenable(formController);
 
     return LayoutBuilder(
@@ -63,7 +65,8 @@ class VooFormWidget extends HookWidget {
 
         // Calculate form width
         double formWidth = screenWidth;
-        if (formConfig.maxFormWidth != null && screenWidth > formConfig.maxFormWidth!) {
+        if (formConfig.maxFormWidth != null &&
+            screenWidth > formConfig.maxFormWidth!) {
           formWidth = formConfig.maxFormWidth!;
         }
 
@@ -74,6 +77,14 @@ class VooFormWidget extends HookWidget {
           formConfig,
           screenWidth,
         );
+
+        // Wrap with field options provider if default options are provided
+        if (formConfig.defaultFieldOptions != null) {
+          formContent = VooFieldOptionsProvider(
+            options: formConfig.defaultFieldOptions!,
+            child: formContent,
+          );
+        }
 
         // Apply form decoration
         if (formConfig.decoration != null) {
@@ -134,7 +145,7 @@ class VooFormWidget extends HookWidget {
                   child: formContent,
                 ),
               ),
-            if (showSubmitButton) 
+            if (showSubmitButton)
               _buildSubmitSection(context, formController, formConfig),
             if (footer != null) footer!,
           ],
@@ -145,8 +156,9 @@ class VooFormWidget extends HookWidget {
 
   Widget _buildFormHeader(BuildContext context, VooFormConfig config) {
     final theme = Theme.of(context);
-    final effectivePadding = padding ?? config.padding ?? const EdgeInsets.all(16.0);
-    
+    final effectivePadding =
+        padding ?? config.padding ?? const EdgeInsets.all(16.0);
+
     return Padding(
       padding: effectivePadding,
       child: Column(
@@ -208,7 +220,8 @@ class VooFormWidget extends HookWidget {
   ) {
     return Column(
       children: fieldGroups!.map((group) {
-        return _buildFieldGroup(context, controller, config, group, screenWidth);
+        return _buildFieldGroup(
+            context, controller, config, group, screenWidth);
       }).toList(),
     );
   }
@@ -281,7 +294,7 @@ class VooFormWidget extends HookWidget {
     Widget content,
   ) {
     final theme = Theme.of(context);
-    
+
     return ExpansionTile(
       title: Text(
         group.title ?? 'Section',
@@ -300,9 +313,8 @@ class VooFormWidget extends HookWidget {
     int columns,
     double screenWidth,
   ) {
-    final effectiveColumns = screenWidth < config.mobileBreakpoint
-        ? 1
-        : columns;
+    final effectiveColumns =
+        screenWidth < config.mobileBreakpoint ? 1 : columns;
 
     if (effectiveColumns == 1) {
       return Column(
@@ -318,19 +330,20 @@ class VooFormWidget extends HookWidget {
     // Multi-column layout
     return LayoutBuilder(
       builder: (context, constraints) {
-        final columnWidth = (constraints.maxWidth - 
-            (effectiveColumns - 1) * config.fieldSpacing) / effectiveColumns;
-        
+        final columnWidth = (constraints.maxWidth -
+                (effectiveColumns - 1) * config.fieldSpacing) /
+            effectiveColumns;
+
         return Wrap(
           spacing: config.fieldSpacing,
           runSpacing: config.fieldSpacing,
           children: fields.map((field) {
             final fieldColumns = field.gridColumns ?? 1;
-            final width = fieldColumns > effectiveColumns 
+            final width = fieldColumns > effectiveColumns
                 ? constraints.maxWidth
-                : (columnWidth * fieldColumns + 
-                   config.fieldSpacing * (fieldColumns - 1));
-            
+                : (columnWidth * fieldColumns +
+                    config.fieldSpacing * (fieldColumns - 1));
+
             return SizedBox(
               width: width,
               child: _buildField(context, controller, config, field),
@@ -352,7 +365,7 @@ class VooFormWidget extends HookWidget {
         final sectionFields = form.fields
             .where((field) => section.fieldIds.contains(field.id))
             .toList();
-        
+
         return Padding(
           padding: EdgeInsets.only(bottom: config.sectionSpacing),
           child: FormSectionWidget(
@@ -407,12 +420,13 @@ class VooFormWidget extends HookWidget {
     double screenWidth,
   ) {
     final columns = config.getColumnCount(screenWidth);
-    
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final itemWidth = (constraints.maxWidth - 
-            (columns - 1) * config.fieldSpacing) / columns;
-        
+        final itemWidth =
+            (constraints.maxWidth - (columns - 1) * config.fieldSpacing) /
+                columns;
+
         return Wrap(
           spacing: config.fieldSpacing,
           runSpacing: config.fieldSpacing,
@@ -420,9 +434,9 @@ class VooFormWidget extends HookWidget {
             final fieldColumns = field.gridColumns ?? 1;
             final width = fieldColumns > columns
                 ? constraints.maxWidth
-                : (itemWidth * fieldColumns + 
-                   config.fieldSpacing * (fieldColumns - 1));
-            
+                : (itemWidth * fieldColumns +
+                    config.fieldSpacing * (fieldColumns - 1));
+
             return SizedBox(
               width: width,
               child: _buildField(context, controller, config, field),
@@ -441,7 +455,7 @@ class VooFormWidget extends HookWidget {
   ) {
     // Apply configuration to field
     final configuredField = _applyConfigToField(context, config, field);
-    
+
     return VooFormFieldBuilder(
       field: configuredField,
       controller: controller,
@@ -456,7 +470,7 @@ class VooFormWidget extends HookWidget {
     VooFormField field,
   ) {
     final theme = Theme.of(context);
-    
+
     // Build label with required indicator
     String? label = field.label;
     if (label != null && field.required && config.showRequiredIndicator) {
@@ -485,7 +499,8 @@ class VooFormWidget extends HookWidget {
         case FieldVariant.filled:
           decoration = decoration.copyWith(
             filled: true,
-            fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            fillColor: theme.colorScheme.surfaceContainerHighest
+                .withValues(alpha: 0.5),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide.none,
@@ -541,7 +556,7 @@ class VooFormWidget extends HookWidget {
     VooFormConfig config,
   ) {
     final theme = Theme.of(context);
-    
+
     Widget submitButton = ElevatedButton.icon(
       onPressed: controller.isSubmitting || onSubmit == null
           ? null
@@ -607,7 +622,8 @@ class VooFormWidget extends HookWidget {
         break;
     }
 
-    final effectivePadding = padding ?? config.padding ?? const EdgeInsets.all(16.0);
+    final effectivePadding =
+        padding ?? config.padding ?? const EdgeInsets.all(16.0);
 
     return Container(
       padding: effectivePadding,
@@ -642,7 +658,7 @@ class VooFormWidgetBuilder extends HookWidget {
   Widget build(BuildContext context) {
     final formController = controller ?? useVooFormController(form);
     useListenable(formController);
-    
+
     return builder(context, formController);
   }
 }
@@ -658,7 +674,8 @@ class VooFormConfigProvider extends InheritedWidget {
   });
 
   static VooFormConfig? of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<VooFormConfigProvider>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<VooFormConfigProvider>();
     return provider?.config;
   }
 

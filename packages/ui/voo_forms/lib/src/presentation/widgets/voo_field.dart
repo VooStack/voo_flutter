@@ -1,0 +1,793 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:voo_forms/src/domain/entities/field_type.dart';
+import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/domain/entities/validation_rule.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_widget.dart';
+
+/// Modern field API with factory constructors for all field types
+class VooField extends StatelessWidget {
+  final VooFormField field;
+  final VooFieldOptions? options;
+  final ValueChanged<dynamic>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<dynamic>? onSubmitted;
+  final VoidCallback? onTap;
+  final FocusNode? focusNode;
+  final TextEditingController? controller;
+  final String? error;
+  final bool showError;
+  final bool autofocus;
+
+  const VooField._({
+    super.key,
+    required this.field,
+    this.options,
+    this.onChanged,
+    this.onEditingComplete,
+    this.onSubmitted,
+    this.onTap,
+    this.focusNode,
+    this.controller,
+    this.error,
+    this.showError = true,
+    this.autofocus = false,
+  });
+
+  /// Text field factory
+  factory VooField.text({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    String? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<String>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    int? maxLength,
+    int? maxLines,
+    int? minLines,
+    List<TextInputFormatter>? inputFormatters,
+    TextCapitalization? textCapitalization,
+    TextInputAction? textInputAction,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    Widget? prefix,
+    Widget? suffix,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onEditingComplete,
+    ValueChanged<dynamic>? onSubmitted,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    TextEditingController? controller,
+    String? error,
+    bool showError = true,
+    bool autofocus = false,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<String>(
+        id: name,
+        name: name,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.text,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        maxLength: maxLength,
+        maxLines: maxLines ?? 1,
+        minLines: minLines,
+        inputFormatters: inputFormatters,
+        textCapitalization: textCapitalization,
+        textInputAction: textInputAction,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        prefix: prefix,
+        suffix: suffix,
+        onChanged: onChanged,
+        onTap: onTap,
+        focusNode: focusNode,
+        controller: controller,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+
+  /// Email field factory
+  factory VooField.email({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    String? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<String>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onEditingComplete,
+    ValueChanged<dynamic>? onSubmitted,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    TextEditingController? controller,
+    String? error,
+    bool showError = true,
+    bool autofocus = false,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<String>(
+        id: name,
+        name: name,
+        label: label ?? 'Email',
+        hint: hint ?? 'Enter your email',
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.email,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [const EmailValidation()],
+        prefixIcon: prefixIcon ?? Icons.email_outlined,
+        suffixIcon: suffixIcon,
+        onChanged: onChanged,
+        onTap: onTap,
+        focusNode: focusNode,
+        controller: controller,
+        error: error,
+        showError: showError,
+        textCapitalization: TextCapitalization.none,
+        textInputAction: TextInputAction.next,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+
+  /// Password field factory
+  factory VooField.password({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    String? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<String>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onEditingComplete,
+    ValueChanged<dynamic>? onSubmitted,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    TextEditingController? controller,
+    String? error,
+    bool showError = true,
+    bool autofocus = false,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<String>(
+        id: name,
+        name: name,
+        label: label ?? 'Password',
+        hint: hint ?? 'Enter your password',
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.password,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        prefixIcon: prefixIcon ?? Icons.lock_outline,
+        onChanged: onChanged,
+        onTap: onTap,
+        focusNode: focusNode,
+        controller: controller,
+        error: error,
+        showError: showError,
+        textCapitalization: TextCapitalization.none,
+        textInputAction: TextInputAction.done,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+
+  /// Phone field factory
+  factory VooField.phone({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    String? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<String>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onEditingComplete,
+    ValueChanged<dynamic>? onSubmitted,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    TextEditingController? controller,
+    String? error,
+    bool showError = true,
+    bool autofocus = false,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<String>(
+        id: name,
+        name: name,
+        label: label ?? 'Phone',
+        hint: hint ?? 'Enter phone number',
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.phone,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [const PhoneValidation()],
+        prefixIcon: prefixIcon ?? Icons.phone_outlined,
+        suffixIcon: suffixIcon,
+        onChanged: onChanged,
+        onTap: onTap,
+        focusNode: focusNode,
+        controller: controller,
+        error: error,
+        showError: showError,
+        textInputAction: TextInputAction.next,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+
+  /// Number field factory
+  factory VooField.number({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    num? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<num>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    num? min,
+    num? max,
+    num? step,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onEditingComplete,
+    ValueChanged<dynamic>? onSubmitted,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    TextEditingController? controller,
+    String? error,
+    bool showError = true,
+    bool autofocus = false,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<num>(
+        id: name,
+        name: name,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.number,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        min: min,
+        max: max,
+        step: step,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        onChanged: onChanged,
+        onTap: onTap,
+        focusNode: focusNode,
+        controller: controller,
+        error: error,
+        showError: showError,
+        textInputAction: TextInputAction.next,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+
+  /// Multiline text field factory
+  factory VooField.multiline({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    String? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<String>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    int? maxLength,
+    int? maxLines,
+    int? minLines,
+    IconData? prefixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onEditingComplete,
+    ValueChanged<dynamic>? onSubmitted,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    TextEditingController? controller,
+    String? error,
+    bool showError = true,
+    bool autofocus = false,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<String>(
+        id: name,
+        name: name,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.multiline,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        maxLength: maxLength,
+        maxLines: maxLines ?? 4,
+        minLines: minLines ?? 2,
+        prefixIcon: prefixIcon,
+        onChanged: onChanged,
+        onTap: onTap,
+        focusNode: focusNode,
+        controller: controller,
+        error: error,
+        showError: showError,
+        textInputAction: TextInputAction.newline,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+
+  /// Dropdown field factory
+  factory VooField.dropdown({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    dynamic initialValue,
+    VooFieldOptions? options,
+    required List<VooFieldOption> items,
+    List<VooValidationRule>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onTap,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField(
+        id: name,
+        name: name,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.dropdown,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        options: items,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
+        onChanged: onChanged,
+        onTap: onTap,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onTap: onTap,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  /// Checkbox field factory
+  factory VooField.checkbox({
+    Key? key,
+    required String name,
+    String? label,
+    String? helper,
+    bool initialValue = false,
+    VooFieldOptions? options,
+    List<VooValidationRule<bool>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    ValueChanged<dynamic>? onChanged,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<bool>(
+        id: name,
+        name: name,
+        label: label,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.checkbox,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        onChanged: onChanged,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  /// Switch field factory
+  factory VooField.switchField({
+    Key? key,
+    required String name,
+    String? label,
+    String? helper,
+    bool initialValue = false,
+    VooFieldOptions? options,
+    List<VooValidationRule<bool>>? validators,
+    bool enabled = true,
+    bool readOnly = false,
+    ValueChanged<dynamic>? onChanged,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<bool>(
+        id: name,
+        name: name,
+        label: label,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.boolean,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        onChanged: onChanged,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  /// Radio field factory
+  factory VooField.radio({
+    Key? key,
+    required String name,
+    String? label,
+    String? helper,
+    dynamic initialValue,
+    VooFieldOptions? options,
+    required List<VooFieldOption> items,
+    List<VooValidationRule>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    ValueChanged<dynamic>? onChanged,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField(
+        id: name,
+        name: name,
+        label: label,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.radio,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        options: items,
+        onChanged: onChanged,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  /// Slider field factory
+  factory VooField.slider({
+    Key? key,
+    required String name,
+    String? label,
+    String? helper,
+    double initialValue = 0.0,
+    VooFieldOptions? options,
+    List<VooValidationRule<double>>? validators,
+    bool enabled = true,
+    bool readOnly = false,
+    double min = 0.0,
+    double max = 100.0,
+    int? divisions,
+    ValueChanged<dynamic>? onChanged,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<double>(
+        id: name,
+        name: name,
+        label: label,
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.slider,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        min: min,
+        max: max,
+        step: divisions != null ? (max - min) / divisions : null,
+        onChanged: onChanged,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  /// Date field factory
+  factory VooField.date({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    DateTime? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<DateTime>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    DateTime? minDate,
+    DateTime? maxDate,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onTap,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<DateTime>(
+        id: name,
+        name: name,
+        label: label,
+        hint: hint ?? 'Select date',
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.date,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        minDate: minDate,
+        maxDate: maxDate,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.calendar_today,
+        onChanged: onChanged,
+        onTap: onTap,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onTap: onTap,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  /// Time field factory
+  factory VooField.time({
+    Key? key,
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    TimeOfDay? initialValue,
+    VooFieldOptions? options,
+    List<VooValidationRule<TimeOfDay>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    ValueChanged<dynamic>? onChanged,
+    VoidCallback? onTap,
+    String? error,
+    bool showError = true,
+  }) {
+    return VooField._(
+      key: key,
+      field: VooFormField<TimeOfDay>(
+        id: name,
+        name: name,
+        label: label,
+        hint: hint ?? 'Select time',
+        helper: helper,
+        initialValue: initialValue,
+        type: VooFieldType.time,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.access_time,
+        onChanged: onChanged,
+        onTap: onTap,
+        error: error,
+        showError: showError,
+      ),
+      options: options,
+      onChanged: onChanged,
+      onTap: onTap,
+      error: error,
+      showError: showError,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Get inherited options from parent if available
+    final inheritedOptions = VooFieldOptionsProvider.of(context);
+    final effectiveOptions = inheritedOptions?.merge(options) ?? options;
+    
+    return VooFieldWidget(
+      field: field,
+      options: effectiveOptions,
+      onChanged: onChanged,
+      onEditingComplete: onEditingComplete,
+      onSubmitted: onSubmitted,
+      onTap: onTap,
+      focusNode: focusNode,
+      controller: controller,
+      error: error,
+      showError: showError,
+      autofocus: autofocus,
+    );
+  }
+}
+
+/// Provider for field options that can be inherited by child fields
+class VooFieldOptionsProvider extends InheritedWidget {
+  final VooFieldOptions options;
+
+  const VooFieldOptionsProvider({
+    super.key,
+    required this.options,
+    required super.child,
+  });
+
+  static VooFieldOptions? of(BuildContext context) {
+    final provider = context.dependOnInheritedWidgetOfExactType<VooFieldOptionsProvider>();
+    return provider?.options;
+  }
+
+  @override
+  bool updateShouldNotify(VooFieldOptionsProvider oldWidget) {
+    return options != oldWidget.options;
+  }
+}

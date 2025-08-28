@@ -5,6 +5,7 @@ import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_text_form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/form_controller.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart' hide VooFieldOptions;
 
 /// Enhanced form field builder with consistent theming
 class VooFormFieldBuilder extends StatelessWidget {
@@ -192,6 +193,46 @@ class VooFormFieldBuilder extends StatelessWidget {
         
       case FieldVariant.outlined:
         return baseDecoration;
+        
+      case FieldVariant.rounded:
+        return baseDecoration.copyWith(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24.0),
+            borderSide: BorderSide(
+              color: theme.colorScheme.outline,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24.0),
+            borderSide: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 2.0,
+            ),
+          ),
+        );
+        
+      case FieldVariant.sharp:
+        return baseDecoration.copyWith(
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(
+              color: theme.colorScheme.outline,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 2.0,
+            ),
+          ),
+        );
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Configuration for form styling and behavior
 class VooFormConfig {
@@ -67,6 +68,9 @@ class VooFormConfig {
   
   /// Custom theme overrides
   final ThemeData? themeOverrides;
+  
+  /// Default field options that apply to all fields
+  final VooFieldOptions? defaultFieldOptions;
 
   const VooFormConfig({
     this.labelPosition = LabelPosition.above,
@@ -91,6 +95,7 @@ class VooFormConfig {
     this.tabletBreakpoint = 1024.0,
     this.gridColumns = const ResponsiveColumns(),
     this.themeOverrides,
+    this.defaultFieldOptions,
   });
 
   /// Create a config optimized for mobile
@@ -204,6 +209,8 @@ class VooFormConfig {
         return const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0);
       case FieldSize.large:
         return const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0);
+      case FieldSize.xlarge:
+        return const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0);
     }
   }
 
@@ -228,49 +235,17 @@ class VooFormConfig {
           fontSize: 13.0,
           color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
         );
+      case LabelStyle.emphasized:
+        return baseStyle?.copyWith(
+          fontSize: 14.0,
+          fontWeight: FontWeight.w600,
+          color: theme.colorScheme.primary,
+        );
     }
   }
 }
 
-/// Label position options
-enum LabelPosition {
-  above,      // Label above field
-  inline,     // Label inside field
-  floating,   // Material design floating label
-  left,       // Label to the left of field
-  hidden,     // No label shown
-}
-
-/// Label style variants
-enum LabelStyle {
-  normal,
-  bold,
-  uppercase,
-  minimal,
-}
-
-/// Field appearance variants
-enum FieldVariant {
-  outlined,
-  filled,
-  underlined,
-  ghost,      // No visible border until focused
-}
-
-/// Field size options
-enum FieldSize {
-  small,
-  medium,
-  large,
-}
-
-/// Error display modes
-enum ErrorDisplayMode {
-  below,      // Show error below field
-  tooltip,    // Show as tooltip on hover/focus
-  inline,     // Show inline with field
-  none,       // Don't show errors
-}
+// Enums are now imported from voo_field_options.dart to avoid duplication
 
 /// Submit button position
 enum ButtonPosition {

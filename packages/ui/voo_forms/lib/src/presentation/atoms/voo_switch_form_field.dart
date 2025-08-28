@@ -3,8 +3,8 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 class VooSwitchFormField extends StatelessWidget {
-  final VooFormField<bool> field;
-  final ValueChanged<bool>? onChanged;
+  final VooFormField field;
+  final ValueChanged<dynamic>? onChanged;
   final String? error;
   final bool showError;
 
@@ -56,7 +56,7 @@ class VooSwitchFormField extends StatelessWidget {
                 )
               : null,
           trailing: VooSwitch(
-            value: field.value ?? false,
+            value: (field.value as bool?) ?? false,
             onChanged: field.enabled && !field.readOnly
                 ? (value) {
                     onChanged?.call(value);

@@ -46,6 +46,11 @@
   - Molecules: Simple component groups
   - Organisms: Complex component sections
 - **No function widgets**: Always use proper widget classes
+- **No _buildXXX methods**: DO NOT use methods like _buildSwitchField that return widgets
+  - Instead, create separate widget classes following atomic design
+  - Each widget type should be in its own file
+  - This improves code readability and maintainability
+  - Primary focus is developer experience
 - **Stateless when possible**: Only use StatefulWidget when necessary
 - **Theme compliance**: Use app theme for all styling
 
