@@ -52,7 +52,7 @@ class VooFieldWidget extends StatelessWidget {
     // Wrap with label if label position requires it
     if (field.label != null &&
         (effectiveOptions.labelPosition == LabelPosition.above ||
-         effectiveOptions.labelPosition == LabelPosition.left)) {
+            effectiveOptions.labelPosition == LabelPosition.left)) {
       fieldWidget = _wrapWithLabel(context, fieldWidget, effectiveOptions);
     }
 

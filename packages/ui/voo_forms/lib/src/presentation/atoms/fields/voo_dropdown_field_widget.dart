@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
@@ -8,7 +10,7 @@ typedef AsyncOptionsLoader<T> = Future<List<VooFieldOption<T>>> Function(String 
 class VooDropdownFieldWidget<T> extends StatefulWidget {
   final VooFormField<T> field;
   final VooFieldOptions options;
-  final ValueChanged<T?>? onChanged;
+  final ValueChanged<dynamic>? onChanged;
   final String? error;
   final bool showError;
 
@@ -34,9 +36,9 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   List<VooFieldOption<T>> _allOptions = [];
   bool _isLoading = false;
   String _lastQuery = '';
-  DateTime _lastSearchTime = DateTime.now();
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -46,14 +48,23 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     _allOptions = widget.field.options ?? [];
     _filteredOptions = _allOptions;
     
-    // Load initial async options if async loader is provided
+    // Handle initial value for async dropdowns
     if (widget.field.asyncOptionsLoader != null) {
+      // If there's an initial value, we need to handle it specially
+      if (widget.field.initialValue != null) {
+        // Create a temporary option for the initial value if we have a converter
+        // This will be replaced when actual options are loaded
+        _allOptions = [];
+        _filteredOptions = [];
+      }
+      // Load initial options
       _loadAsyncOptions('');
     }
   }
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _searchController.dispose();
     _removeOverlay();
     if (widget.field.focusNode == null) {
@@ -233,13 +244,15 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       itemCount: _filteredOptions.length,
       itemBuilder: (context, index) {
         final option = _filteredOptions[index];
-        final isSelected = option.value == widget.field.value;
+        final currentValue = widget.field.value ?? widget.field.initialValue;
+        final isSelected = option.value == currentValue;
 
         return InkWell(
           onTap: option.enabled
               ? () {
-                  widget.onChanged?.call(option.value);
-                  widget.field.onChanged?.call(option.value);
+                  final value = option.value;
+                  widget.onChanged?.call(value);
+                  widget.field.onChanged?.call(value);
                   _removeOverlay();
                   _searchController.clear();
                 }
@@ -310,21 +323,28 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
 
   void _onSearchChanged(String query) {
     if (widget.field.asyncOptionsLoader != null) {
-      final now = DateTime.now();
       final searchDebounce = widget.field.searchDebounce ?? const Duration(milliseconds: 300);
       final minSearchLength = widget.field.minSearchLength ?? 0;
       
-      if (now.difference(_lastSearchTime) < searchDebounce && query.length >= minSearchLength) {
-        Future.delayed(searchDebounce).then((_) {
-          if (_searchController.text == query && query != _lastQuery) {
-            _loadAsyncOptions(query);
-          }
+      // Cancel previous timer
+      _debounceTimer?.cancel();
+      
+      if (query.length < minSearchLength && query.isNotEmpty) {
+        // If query is too short, clear results
+        setState(() {
+          _filteredOptions = [];
         });
-      } else if (query.length >= minSearchLength) {
-        _loadAsyncOptions(query);
+        return;
       }
-      _lastSearchTime = now;
+      
+      // Set up new debounce timer
+      _debounceTimer = Timer(searchDebounce, () {
+        if (_searchController.text == query) {
+          _loadAsyncOptions(query);
+        }
+      });
     } else {
+      // For non-async dropdowns, filter immediately
       setState(() {
         if (query.isEmpty) {
           _filteredOptions = _allOptions;
@@ -398,9 +418,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         break;
       case FieldVariant.outlined:
         decoration = BoxDecoration(
-          color: widget.field.enabled
-              ? theme.colorScheme.surface
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          // No background color for outlined variant to match TextFormField
           borderRadius: BorderRadius.circular(design.radiusMd),
           border: Border.all(
             color: borderColor,
@@ -433,9 +451,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         break;
       case FieldVariant.rounded:
         decoration = BoxDecoration(
-          color: widget.field.enabled
-              ? theme.colorScheme.surface
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          // No background color for rounded variant to match TextFormField
           borderRadius: BorderRadius.circular(24.0),
           border: Border.all(
             color: borderColor,
@@ -445,9 +461,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         break;
       case FieldVariant.sharp:
         decoration = BoxDecoration(
-          color: widget.field.enabled
-              ? theme.colorScheme.surface
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          // No background color for sharp variant to match TextFormField
           borderRadius: BorderRadius.zero,
           border: Border.all(
             color: borderColor,
@@ -456,11 +470,8 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         );
         break;
       default:
-        // Default to outlined
+        // Default to outlined (no background)
         decoration = BoxDecoration(
-          color: widget.field.enabled
-              ? theme.colorScheme.surface
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(design.radiusMd),
           border: Border.all(
             color: borderColor,
@@ -473,9 +484,12 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   }
 
   VooFieldOption<T>? _getSelectedOption() {
-    if (widget.field.value == null) return null;
+    // Use value if available, otherwise fall back to initialValue
+    final currentValue = widget.field.value ?? widget.field.initialValue;
+    if (currentValue == null) return null;
+    
     try {
-      return _allOptions.firstWhere((option) => option.value == widget.field.value);
+      return _allOptions.firstWhere((option) => option.value == currentValue);
     } catch (_) {
       return null;
     }
@@ -503,119 +517,121 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         borderColor = theme.colorScheme.outline;
       }
 
-      return CompositedTransformTarget(
+      // Build the dropdown input field
+      Widget dropdownInput = CompositedTransformTarget(
         link: _layerLink,
-        child: AnimatedContainer(
+        child: InkWell(
+          onTap: widget.field.enabled && !widget.field.readOnly
+              ? () {
+                  if (_isOpen) {
+                    _removeOverlay();
+                  } else {
+                    _showOverlay();
+                  }
+                }
+              : null,
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          child: Container(
+            height: design.inputHeight,
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacingLg,
+            ),
+            decoration: _buildDecoration(
+              context,
+              borderColor,
+              (_isFocused || _isOpen),
+            ),
+            child: Row(
+              children: [
+                if (widget.field.prefixIcon != null) ...[
+                  Icon(
+                    widget.field.prefixIcon,
+                    size: design.iconSizeMd,
+                    color: (_isFocused || _isOpen)
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurfaceVariant,
+                  ),
+                  SizedBox(width: design.spacingMd),
+                ],
+                Expanded(
+                  child: selectedOption != null
+                      ? Row(
+                          children: [
+                            if (selectedOption.icon != null) ...[
+                              Icon(
+                                selectedOption.icon,
+                                size: design.iconSizeMd,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                              SizedBox(width: design.spacingSm),
+                            ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    selectedOption.label,
+                                    style: theme.textTheme.bodyMedium,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  if (selectedOption.subtitle != null) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      selectedOption.subtitle!,
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.colorScheme.onSurfaceVariant,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(
+                          widget.field.hint ?? '',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                          ),
+                        ),
+                ),
+                Icon(
+                  _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: widget.field.enabled
+                      ? theme.colorScheme.onSurfaceVariant
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // Build the complete widget based on label position
+      if (widget.options.labelPosition == LabelPosition.floating && widget.field.label != null) {
+        // For floating label, include it in the widget structure
+        return AnimatedContainer(
           duration: design.animationDurationFast,
           curve: design.animationCurve,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Only show label for floating position
-              // For above/left positions, VooFieldWidget handles the label
-              if (widget.field.label != null && 
-                  widget.options.labelPosition == LabelPosition.floating) ...[
-                Text(
-                  widget.field.label!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: hasError
-                        ? theme.colorScheme.error
-                        : (_isFocused || _isOpen)
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.onSurfaceVariant,
-                    fontWeight: (_isFocused || _isOpen) ? FontWeight.w500 : FontWeight.normal,
-                  ),
-                ),
-                SizedBox(height: design.spacingXs),
-              ],
-              InkWell(
-                onTap: widget.field.enabled && !widget.field.readOnly
-                    ? () {
-                        if (_isOpen) {
-                          _removeOverlay();
-                        } else {
-                          _showOverlay();
-                        }
-                      }
-                    : null,
-                borderRadius: BorderRadius.circular(design.radiusMd),
-                child: Container(
-                  height: design.inputHeight,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacingLg,
-                  ),
-                  decoration: _buildDecoration(
-                    context,
-                    borderColor,
-                    (_isFocused || _isOpen),
-                  ),
-                  child: Row(
-                    children: [
-                      if (widget.field.prefixIcon != null) ...[
-                        Icon(
-                          widget.field.prefixIcon,
-                          size: design.iconSizeMd,
-                          color: (_isFocused || _isOpen)
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurfaceVariant,
-                        ),
-                        SizedBox(width: design.spacingMd),
-                      ],
-                      Expanded(
-                        child: selectedOption != null
-                            ? Row(
-                                children: [
-                                  if (selectedOption.icon != null) ...[
-                                    Icon(
-                                      selectedOption.icon,
-                                      size: design.iconSizeMd,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
-                                    SizedBox(width: design.spacingSm),
-                                  ],
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          selectedOption.label,
-                                          style: theme.textTheme.bodyMedium,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        if (selectedOption.subtitle != null) ...[
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            selectedOption.subtitle!,
-                                            style: theme.textTheme.bodySmall?.copyWith(
-                                              color: theme.colorScheme.onSurfaceVariant,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Text(
-                                widget.field.hint ?? '',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                                ),
-                              ),
-                      ),
-                      Icon(
-                        _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                        color: widget.field.enabled
-                            ? theme.colorScheme.onSurfaceVariant
-                            : theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                      ),
-                    ],
-                  ),
+              Text(
+                widget.field.label!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: hasError
+                      ? theme.colorScheme.error
+                      : (_isFocused || _isOpen)
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurfaceVariant,
+                  fontWeight: (_isFocused || _isOpen) ? FontWeight.w500 : FontWeight.normal,
                 ),
               ),
+              SizedBox(height: design.spacingXs),
+              dropdownInput,
               if (widget.field.helper != null || errorText != null) ...[
                 SizedBox(height: design.spacingXs),
                 Text(
@@ -627,8 +643,27 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
               ],
             ],
           ),
-        ),
-      );
+        );
+      } else {
+        // For other label positions (above, left, hidden, placeholder)
+        // Return just the input field, VooFieldWidget will handle label wrapping
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            dropdownInput,
+            if (widget.field.helper != null || errorText != null) ...[
+              SizedBox(height: design.spacingXs),
+              Text(
+                errorText ?? widget.field.helper ?? '',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: hasError ? theme.colorScheme.error : theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ],
+        );
+      }
     }
 
     // Regular dropdown without search - use VooDropdown from voo_ui_core
@@ -643,16 +678,24 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         }).toList() ??
         [];
 
+    // Only pass label to VooDropdown if labelPosition is floating
+    // For above/left positions, VooFieldWidget handles the label
+    final shouldShowLabel = widget.options.labelPosition == LabelPosition.floating ||
+                           widget.options.labelPosition == LabelPosition.placeholder;
+
+    // Use value if available, otherwise fall back to initialValue
+    final currentValue = widget.field.value ?? widget.field.initialValue;
+    
     return VooDropdown<T>(
-      value: widget.field.value,
+      value: currentValue,
       items: items,
       onChanged: widget.field.enabled && !widget.field.readOnly
-          ? (value) {
+          ? (T? value) {
               widget.onChanged?.call(value);
               widget.field.onChanged?.call(value);
             }
           : null,
-      label: widget.field.label,
+      label: shouldShowLabel ? widget.field.label : null,
       hint: widget.field.hint,
       helper: widget.field.helper,
       error: errorText,

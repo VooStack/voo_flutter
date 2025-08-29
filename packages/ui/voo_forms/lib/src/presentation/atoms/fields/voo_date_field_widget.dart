@@ -29,7 +29,8 @@ class VooDateFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final currentValue = field.value as DateTime?;
+    // Use value if available, otherwise fall back to initialValue
+    final currentValue = (field.value ?? field.initialValue) as DateTime?;
     final dateFormat = DateFormat('MMM dd, yyyy');
     
     // Create controller if not provided

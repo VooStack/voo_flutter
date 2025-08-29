@@ -28,7 +28,8 @@ class VooTimeFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final currentValue = field.value as TimeOfDay?;
+    // Use value if available, otherwise fall back to initialValue
+    final currentValue = (field.value ?? field.initialValue) as TimeOfDay?;
     
     // Create controller if not provided
     final effectiveController = controller ?? 

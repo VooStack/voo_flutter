@@ -134,7 +134,7 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
                   horizontal: design.spacingLg,
                 ),
             decoration: BoxDecoration(
-              color: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              // No background color to match TextFormField styling
               borderRadius: BorderRadius.circular(design.radiusMd),
               border: Border.all(
                 color: borderColor,
