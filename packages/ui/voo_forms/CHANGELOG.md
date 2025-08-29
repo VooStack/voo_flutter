@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.1.8] - 2025-08-29
+
+### Fixed
+- **Type Safety in Dropdowns**: Fixed runtime type errors in dropdown onChanged callbacks
+  - Changed VooDropdownFieldWidget onChanged from `ValueChanged<T?>?` to `ValueChanged<dynamic>?` to match VooFieldWidget
+  - Fixes errors like "(String?) => void is not a subtype of ((dynamic) => void)?"
+  - Ensures proper type casting for all dropdown value types
+
+- **Async Dropdown Query Issues**: Fixed async dropdown not triggering searches when typing
+  - Replaced faulty time-based debounce logic with proper Timer-based implementation
+  - Now correctly debounces search queries with configurable delay
+  - Properly cancels previous timers to prevent duplicate requests
+
+- **Label Position for All Fields**: Fixed label positioning issues across all field types
+  - Date fields now respect labelPosition setting from form configuration
+  - Async dropdowns properly work with VooFieldWidget label wrapping
+  - Consistent label positioning for above, left, floating, and placeholder positions
+
+- **Initial Values**: Fixed initial value display for all field types
+  - All fields now check `field.value ?? field.initialValue` pattern
+  - Dropdowns, date, and time fields properly display initial values
+  - Consistent initial value handling across the entire form system
+
+- **Dropdown Background Styling**: Fixed inconsistent dropdown backgrounds
+  - Removed explicit background colors from outlined, rounded, and sharp variants
+  - Dropdowns now have transparent backgrounds matching TextFormField behavior
+  - Fixed VooDropdown in voo_ui_core to match consistent styling
+  - Filled variant properly retains its background fill color
+
+### Changed
+- **VooFormFieldBuilder Refactored**: Now uses VooFieldWidget for all field types
+  - Simplified form field builder to use single VooFieldWidget
+  - Ensures consistent label handling and options propagation
+  - Better separation of concerns with atomic design principles
+
 ## [0.1.7]
 
 ### Added
