@@ -42,6 +42,7 @@ class VooField {
     Widget? prefix,
     Widget? suffix,
     int? gridColumns,
+    ValueChanged<String?>? onChanged,
   }) {
     return VooFormField<String>(
       id: name,
@@ -66,6 +67,7 @@ class VooField {
       prefix: prefix,
       suffix: suffix,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -84,6 +86,7 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    ValueChanged<String?>? onChanged,
   }) {
     return VooFormField<String>(
       id: name,
@@ -103,6 +106,7 @@ class VooField {
       prefixIcon: prefixIcon ?? Icons.email,
       suffixIcon: suffixIcon,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -121,6 +125,7 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    ValueChanged<String?>? onChanged,
   }) {
     return VooFormField<String>(
       id: name,
@@ -142,6 +147,7 @@ class VooField {
       prefixIcon: prefixIcon ?? Icons.lock,
       suffixIcon: suffixIcon ?? Icons.visibility,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -161,6 +167,7 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    ValueChanged<String?>? onChanged,
   }) {
     return VooFormField<String>(
       id: name,
@@ -181,6 +188,7 @@ class VooField {
       prefixIcon: prefixIcon ?? Icons.phone,
       suffixIcon: suffixIcon,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -203,6 +211,7 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    ValueChanged<num?>? onChanged,
   }) {
     return VooFormField<num>(
       id: name,
@@ -225,6 +234,7 @@ class VooField {
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -245,6 +255,7 @@ class VooField {
     int? minLines,
     IconData? prefixIcon,
     int? gridColumns,
+    ValueChanged<String?>? onChanged,
   }) {
     return VooFormField<String>(
       id: name,
@@ -266,6 +277,7 @@ class VooField {
       textInputAction: TextInputAction.newline,
       prefixIcon: prefixIcon,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -313,6 +325,7 @@ class VooField {
     int? gridColumns,
     bool enableSearch = false,
     String? searchHint,
+    ValueChanged<T?>? onChanged,
   }) {
     return VooFormField<T>(
       id: name,
@@ -332,6 +345,7 @@ class VooField {
       gridColumns: gridColumns,
       enableSearch: enableSearch,
       searchHint: searchHint,
+      onChanged: onChanged,
     );
   }
 
@@ -373,6 +387,7 @@ class VooField {
     String? searchHint,
     Duration? searchDebounce,
     int minSearchLength = 0,
+    ValueChanged<T?>? onChanged,
   }) {
     return VooFormField<T>(
       id: name,
@@ -397,6 +412,7 @@ class VooField {
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
   
@@ -426,6 +442,7 @@ class VooField {
     int? gridColumns,
     bool enableSearch = false,
     String? searchHint,
+    ValueChanged? onChanged,
   }) {
     return VooFormField(
       id: name,
@@ -448,6 +465,7 @@ class VooField {
       gridColumns: gridColumns,
       enableSearch: enableSearch,
       searchHint: searchHint,
+      onChanged: onChanged,
     );
   }
 
@@ -462,6 +480,7 @@ class VooField {
     bool required = false,
     bool enabled = true,
     bool readOnly = false,
+    ValueChanged<bool?>? onChanged,
   }) {
     return VooFormField<bool>(
       id: name,
@@ -474,6 +493,7 @@ class VooField {
       enabled: enabled,
       readOnly: readOnly,
       validators: validators ?? [],
+      onChanged: onChanged,
     );
   }
 
@@ -487,6 +507,7 @@ class VooField {
     bool required = false,
     bool enabled = true,
     bool readOnly = false,
+    ValueChanged<bool?>? onChanged,
   }) {
     return VooFormField<bool>(
       id: name,
@@ -499,6 +520,7 @@ class VooField {
       enabled: enabled,
       readOnly: readOnly,
       validators: validators ?? [],
+      onChanged: onChanged,
     );
   }
 
@@ -514,6 +536,7 @@ class VooField {
     bool required = false,
     bool enabled = true,
     bool readOnly = false,
+    ValueChanged? onChanged,
   }) {
     return VooFormField(
       id: name,
@@ -530,6 +553,7 @@ class VooField {
         value: option,
         label: option,
       ),).toList(),
+      onChanged: onChanged,
     );
   }
 
@@ -550,6 +574,7 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    ValueChanged<DateTime?>? onChanged,
   }) {
     return VooFormField<DateTime>(
       id: name,
@@ -569,6 +594,7 @@ class VooField {
       prefixIcon: prefixIcon ?? Icons.calendar_today,
       suffixIcon: suffixIcon,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -587,6 +613,7 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    ValueChanged<TimeOfDay?>? onChanged,
   }) {
     return VooFormField<TimeOfDay>(
       id: name,
@@ -604,6 +631,7 @@ class VooField {
       prefixIcon: prefixIcon ?? Icons.access_time,
       suffixIcon: suffixIcon,
       gridColumns: gridColumns,
+      onChanged: onChanged,
     );
   }
 
@@ -621,6 +649,7 @@ class VooField {
     bool required = false,
     bool enabled = true,
     bool readOnly = false,
+    ValueChanged<double?>? onChanged,
   }) {
     return VooFormField<double>(
       id: name,
@@ -636,6 +665,7 @@ class VooField {
       min: min,
       max: max,
       divisions: divisions,
+      onChanged: onChanged,
     );
   }
 }

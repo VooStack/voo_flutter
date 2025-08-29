@@ -92,6 +92,8 @@ class VooDateFieldWidget extends StatelessWidget {
         suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     } else {
+      // For above, left, or hidden positions, don't include label
+      // as VooFieldWidget handles it externally
       decoration = InputDecoration(
         hintText: field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,

@@ -88,6 +88,8 @@ class VooTimeFieldWidget extends StatelessWidget {
         suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
       );
     } else {
+      // For above, left, or hidden positions, don't include label
+      // as VooFieldWidget handles it externally
       decoration = InputDecoration(
         hintText: field.hint ?? 'Select time',
         errorText: showError && error != null ? error : null,

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.7]
+
+### Added
+- **onChanged Callbacks**: All VooField factory methods now accept onChanged parameter
+  - Added `ValueChanged<T?>? onChanged` parameter to all field types
+  - Allows users to provide callback functions directly in field definitions
+  - Simplifies form field event handling without needing wrapper widgets
+  - Supports type-safe callbacks for each field type (String, bool, DateTime, etc.)
+
 ## [0.1.6]
 
 ### Fixed
@@ -8,6 +17,18 @@
   - VooFieldWidget now consistently passes options to all field types
   - VooFormFieldBuilder properly passes fieldOptions to all widgets
   - Ensures consistent theming and configuration across all form fields
+- **Label Positioning**: Fixed label display for above and left positions
+  - Fixed operator precedence bug in VooFieldWidget that prevented proper label wrapping
+  - VooDateFieldWidget, VooTimeFieldWidget, and VooDropdownFieldWidget now correctly omit labels from InputDecoration when position is above/left
+  - Labels are now properly displayed externally for above/left positions as intended
+- **Dropdown Styling**: Fixed dropdown background inconsistency
+  - VooDropdownFieldWidget now properly applies field variant styling (filled, outlined, etc.)
+  - Dropdown fields now match the appearance of other form fields
+  - Added `_buildDecoration` method to apply consistent styling based on field variant
+- **Async Dropdown Loading**: Fixed constant loading state issue
+  - Async dropdowns now properly load initial options on mount
+  - Fixed issue where async dropdowns would show perpetual loading state
+  - Empty query is now sent on initialization to load default options
 
 ### Changed
 - **VooField.dropdownAsync API**: Improved to use cleaner List<T> pattern

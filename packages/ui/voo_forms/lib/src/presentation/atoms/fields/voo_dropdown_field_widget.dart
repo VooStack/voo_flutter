@@ -45,6 +45,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     _focusNode.addListener(_handleFocusChange);
     _allOptions = widget.field.options ?? [];
     _filteredOptions = _allOptions;
+    
+    // Load initial async options if async loader is provided
+    if (widget.field.asyncOptionsLoader != null) {
+      _loadAsyncOptions('');
+    }
   }
 
   @override
@@ -360,6 +365,113 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     }
   }
 
+  BoxDecoration _buildDecoration(
+    BuildContext context,
+    Color borderColor,
+    bool isFocused,
+  ) {
+    final theme = Theme.of(context);
+    final design = context.vooDesign;
+    
+    // Base decoration
+    BoxDecoration decoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(design.radiusMd),
+      border: Border.all(
+        color: borderColor,
+        width: isFocused ? 2 : 1,
+      ),
+    );
+    
+    // Apply field variant styling
+    switch (widget.options.fieldVariant) {
+      case FieldVariant.filled:
+        decoration = BoxDecoration(
+          color: widget.field.enabled
+              ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          border: Border.all(
+            color: borderColor,
+            width: isFocused ? 2 : 1,
+          ),
+        );
+        break;
+      case FieldVariant.outlined:
+        decoration = BoxDecoration(
+          color: widget.field.enabled
+              ? theme.colorScheme.surface
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          border: Border.all(
+            color: borderColor,
+            width: isFocused ? 2 : 1,
+          ),
+        );
+        break;
+      case FieldVariant.underlined:
+        decoration = BoxDecoration(
+          color: Colors.transparent,
+          border: Border(
+            bottom: BorderSide(
+              color: borderColor,
+              width: isFocused ? 2 : 1,
+            ),
+          ),
+        );
+        break;
+      case FieldVariant.ghost:
+        decoration = BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          border: isFocused
+              ? Border.all(
+                  color: borderColor,
+                  width: 2,
+                )
+              : null,
+        );
+        break;
+      case FieldVariant.rounded:
+        decoration = BoxDecoration(
+          color: widget.field.enabled
+              ? theme.colorScheme.surface
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(24.0),
+          border: Border.all(
+            color: borderColor,
+            width: isFocused ? 2 : 1,
+          ),
+        );
+        break;
+      case FieldVariant.sharp:
+        decoration = BoxDecoration(
+          color: widget.field.enabled
+              ? theme.colorScheme.surface
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.zero,
+          border: Border.all(
+            color: borderColor,
+            width: isFocused ? 2 : 1,
+          ),
+        );
+        break;
+      default:
+        // Default to outlined
+        decoration = BoxDecoration(
+          color: widget.field.enabled
+              ? theme.colorScheme.surface
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(design.radiusMd),
+          border: Border.all(
+            color: borderColor,
+            width: isFocused ? 2 : 1,
+          ),
+        );
+    }
+    
+    return decoration;
+  }
+
   VooFieldOption<T>? _getSelectedOption() {
     if (widget.field.value == null) return null;
     try {
@@ -400,7 +512,10 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.field.label != null) ...[
+              // Only show label for floating position
+              // For above/left positions, VooFieldWidget handles the label
+              if (widget.field.label != null && 
+                  widget.options.labelPosition == LabelPosition.floating) ...[
                 Text(
                   widget.field.label!,
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -430,15 +545,10 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                   padding: EdgeInsets.symmetric(
                     horizontal: design.spacingLg,
                   ),
-                  decoration: BoxDecoration(
-                    color: widget.field.enabled
-                        ? theme.colorScheme.surface
-                        : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(design.radiusMd),
-                    border: Border.all(
-                      color: borderColor,
-                      width: (_isFocused || _isOpen) ? 2 : 1,
-                    ),
+                  decoration: _buildDecoration(
+                    context,
+                    borderColor,
+                    (_isFocused || _isOpen),
                   ),
                   child: Row(
                     children: [
