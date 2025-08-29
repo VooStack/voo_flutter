@@ -6,7 +6,7 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 class VooSwitchFieldWidget extends StatelessWidget {
   final VooFormField field;
   final VooFieldOptions options;
-  final ValueChanged<dynamic>? onChanged;
+  final ValueChanged<bool?>? onChanged;
   final String? error;
   final bool showError;
 

@@ -10,7 +10,7 @@ typedef AsyncOptionsLoader<T> = Future<List<VooFieldOption<T>>> Function(String 
 class VooDropdownFieldWidget<T> extends StatefulWidget {
   final VooFormField<T> field;
   final VooFieldOptions options;
-  final ValueChanged<dynamic>? onChanged;
+  final ValueChanged<T?>? onChanged;
   final String? error;
   final bool showError;
 

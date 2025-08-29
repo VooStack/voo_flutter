@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.9] - 2025-08-29
+
+### Fixed
+- **Type Casting in Field Widgets**: Fixed type casting errors across all field widget callbacks
+  - Fixed `TypeError: Instance of '(String?) => void': type '(String?) => void' is not a subtype of type '((dynamic) => void)?'`
+  - All field widgets now use properly typed callbacks instead of `dynamic`
+  - VooFieldWidget correctly forwards typed callbacks without causing type mismatches
+  - Ensures both widget `onChanged` and field `onChanged` callbacks are called consistently
+  - VooDropdownFieldWidget now uses properly typed `ValueChanged<T?>?` callback
+  - VooSwitchFieldWidget and VooCheckboxFieldWidget now handle bool types correctly
+  - All VooField factory methods now work with typed callbacks without runtime errors
+
 ## [0.1.8] - 2025-08-29
 
 ### Fixed

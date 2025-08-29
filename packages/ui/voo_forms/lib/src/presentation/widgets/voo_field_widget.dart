@@ -76,9 +76,12 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           controller: controller,
           focusNode: focusNode,
-          onChanged: onChanged,
+          onChanged: (String value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
           onEditingComplete: onEditingComplete,
-          onSubmitted: onSubmitted,
+          onSubmitted: onSubmitted != null ? (value) => onSubmitted!(value) : null,
           error: error,
           showError: showError,
           autoFocus: autofocus,
@@ -88,35 +91,50 @@ class VooFieldWidget extends StatelessWidget {
         return VooSwitchFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged,
+          onChanged: (bool? value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
         );
 
       case VooFieldType.checkbox:
         return VooCheckboxFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged,
+          onChanged: (bool? value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
         );
 
       case VooFieldType.dropdown:
         return VooDropdownFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged,
+          onChanged: (value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
         );
 
       case VooFieldType.radio:
         return VooRadioFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged,
+          onChanged: (value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
         );
 
       case VooFieldType.slider:
         return VooSliderFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged != null ? (value) => onChanged!(value) : null,
+          onChanged: (double value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
           error: error,
           showError: showError,
         );
@@ -125,7 +143,10 @@ class VooFieldWidget extends StatelessWidget {
         return VooDateFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged != null ? (value) => onChanged!(value) : null,
+          onChanged: (DateTime? value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
           onTap: onTap,
           focusNode: focusNode,
           controller: controller,
@@ -137,7 +158,10 @@ class VooFieldWidget extends StatelessWidget {
         return VooTimeFieldWidget(
           field: field,
           options: effectiveOptions,
-          onChanged: onChanged != null ? (value) => onChanged!(value) : null,
+          onChanged: (TimeOfDay? value) {
+            onChanged?.call(value);
+            field.onChanged?.call(value);
+          },
           onTap: onTap,
           focusNode: focusNode,
           controller: controller,
