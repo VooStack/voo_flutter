@@ -72,6 +72,7 @@ class VooFormFieldBuilder extends StatelessWidget {
           field: field,
           controller: controller,
           config: formConfig,
+          options: fieldOptions,
           showError: showError,
           focusNode: controller.getFocusNode(field.id),
           onEditingComplete: () => controller.focusNextField(field.id),
@@ -132,6 +133,7 @@ class VooFormFieldBuilder extends StatelessWidget {
       case VooFieldType.boolean:
         fieldWidget = VooSwitchFieldWidget(
           field: field,
+          options: fieldOptions,
           onChanged: (value) {
             controller.setValue(field.id, value);
             if (controller.form.validationMode == FormValidationMode.onChange) {
@@ -146,6 +148,7 @@ class VooFormFieldBuilder extends StatelessWidget {
       case VooFieldType.checkbox:
         fieldWidget = VooCheckboxFieldWidget(
           field: field,
+          options: fieldOptions,
           onChanged: (value) {
             controller.setValue(field.id, value);
             if (controller.form.validationMode == FormValidationMode.onChange) {
@@ -160,6 +163,7 @@ class VooFormFieldBuilder extends StatelessWidget {
       case VooFieldType.dropdown:
         fieldWidget = VooDropdownFieldWidget(
           field: field,
+          options: fieldOptions,
           onChanged: (value) {
             controller.setValue(field.id, value);
             if (controller.form.validationMode == FormValidationMode.onChange) {
@@ -174,6 +178,7 @@ class VooFormFieldBuilder extends StatelessWidget {
       case VooFieldType.radio:
         fieldWidget = VooRadioFieldWidget(
           field: field,
+          options: fieldOptions,
           onChanged: (value) {
             controller.setValue(field.id, value);
             if (controller.form.validationMode == FormValidationMode.onChange) {

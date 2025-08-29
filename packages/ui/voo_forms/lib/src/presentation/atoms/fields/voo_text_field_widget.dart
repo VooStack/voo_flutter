@@ -10,6 +10,7 @@ class VooTextFieldWidget extends StatelessWidget {
   final VooFormField field;
   final VooFormController controller;
   final VooFormConfig config;
+  final VooFieldOptions options;
   final bool showError;
   final FocusNode? focusNode;
   final VoidCallback? onEditingComplete;
@@ -20,6 +21,7 @@ class VooTextFieldWidget extends StatelessWidget {
     required this.field,
     required this.controller,
     required this.config,
+    required this.options,
     this.showError = true,
     this.focusNode,
     this.onEditingComplete,
@@ -34,6 +36,7 @@ class VooTextFieldWidget extends StatelessWidget {
     
     final textField = VooTextFormField(
       field: preparedField,
+      options: options,
       controller: controller.getTextController(field.id),
       focusNode: focusNode,
       onChanged: (value) => controller.setValue(field.id, value),

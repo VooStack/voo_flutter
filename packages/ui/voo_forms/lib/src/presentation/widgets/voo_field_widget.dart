@@ -73,6 +73,7 @@ class VooFieldWidget extends StatelessWidget {
       case VooFieldType.multiline:
         return VooTextFormField(
           field: field,
+          options: effectiveOptions,
           controller: controller,
           focusNode: focusNode,
           onChanged: onChanged,
@@ -86,24 +87,28 @@ class VooFieldWidget extends StatelessWidget {
       case VooFieldType.boolean:
         return VooSwitchFieldWidget(
           field: field,
+          options: effectiveOptions,
           onChanged: onChanged,
         );
 
       case VooFieldType.checkbox:
         return VooCheckboxFieldWidget(
           field: field,
+          options: effectiveOptions,
           onChanged: onChanged,
         );
 
       case VooFieldType.dropdown:
         return VooDropdownFieldWidget(
           field: field,
+          options: effectiveOptions,
           onChanged: onChanged,
         );
 
       case VooFieldType.radio:
         return VooRadioFieldWidget(
           field: field,
+          options: effectiveOptions,
           onChanged: onChanged,
         );
 

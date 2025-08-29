@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Enhanced text form field that uses Flutter's default theme
 class VooTextFormField extends StatefulWidget {
   final VooFormField field;
+  final VooFieldOptions options;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
@@ -19,6 +21,7 @@ class VooTextFormField extends StatefulWidget {
   const VooTextFormField({
     super.key,
     required this.field,
+    required this.options,
     this.controller,
     this.focusNode,
     this.onChanged,
@@ -184,6 +187,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
   }
 
   InputDecoration _buildDecoration(BuildContext context) {
+    final theme = Theme.of(context);
     
     // If a decoration was explicitly provided, use it as-is with minimal changes
     if (widget.decoration != null) {
@@ -200,33 +204,80 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
       );
     }
     
-    // Otherwise build default decoration
-    InputDecoration baseDecoration = widget.field.decoration ?? 
-        const InputDecoration();
-
-    // Get error text
-    final errorText = widget.showError 
-        ? (widget.error ?? widget.field.error) 
-        : null;
-
+    // Build decoration based on label position from options
+    InputDecoration decoration;
+    
     // Build label with required indicator
     String? labelText = widget.field.label;
     if (labelText != null && widget.field.required) {
       labelText = '$labelText *';
     }
-
-    return baseDecoration.copyWith(
-      labelText: baseDecoration.labelText ?? labelText,
-      hintText: baseDecoration.hintText ?? widget.field.hint,
-      helperText: baseDecoration.helperText ?? widget.field.helper,
-      errorText: errorText,
-      prefixIcon: baseDecoration.prefixIcon ?? _buildPrefixWidget(),
-      suffixIcon: baseDecoration.suffixIcon ?? _buildSuffixWidget(),
-      contentPadding: baseDecoration.contentPadding ?? widget.field.padding,
-      counter: widget.field.maxLength != null 
-          ? null // Let TextField handle counter
-          : baseDecoration.counter,
-    );
+    
+    if (widget.options.labelPosition == LabelPosition.floating) {
+      decoration = InputDecoration(
+        labelText: labelText,
+        hintText: widget.field.hint,
+        errorText: widget.showError ? (widget.error ?? widget.field.error) : null,
+        helperText: widget.field.helper,
+        prefixIcon: _buildPrefixWidget(),
+        suffixIcon: _buildSuffixWidget(),
+        contentPadding: widget.field.padding,
+      );
+    } else if (widget.options.labelPosition == LabelPosition.placeholder) {
+      decoration = InputDecoration(
+        hintText: labelText ?? widget.field.hint,
+        errorText: widget.showError ? (widget.error ?? widget.field.error) : null,
+        helperText: widget.field.helper,
+        prefixIcon: _buildPrefixWidget(),
+        suffixIcon: _buildSuffixWidget(),
+        contentPadding: widget.field.padding,
+      );
+    } else {
+      // For above/left/hidden positions
+      decoration = InputDecoration(
+        hintText: widget.field.hint,
+        errorText: widget.showError ? (widget.error ?? widget.field.error) : null,
+        helperText: widget.field.helper,
+        prefixIcon: _buildPrefixWidget(),
+        suffixIcon: _buildSuffixWidget(),
+        contentPadding: widget.field.padding,
+      );
+    }
+    
+    // Apply field variant styling
+    switch (widget.options.fieldVariant) {
+      case FieldVariant.filled:
+        return decoration.copyWith(
+          filled: true,
+          fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        );
+      case FieldVariant.underlined:
+        return decoration.copyWith(
+          border: const UnderlineInputBorder(),
+        );
+      case FieldVariant.ghost:
+        return decoration.copyWith(
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: theme.colorScheme.primary),
+          ),
+        );
+      case FieldVariant.rounded:
+        return decoration.copyWith(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+        );
+      case FieldVariant.sharp:
+        return decoration.copyWith(
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+        );
+      default:
+        return decoration;
+    }
   }
 
   @override
@@ -253,7 +304,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
       textInputAction: textInputAction,
       textCapitalization: textCapitalization,
       inputFormatters: inputFormatters.isNotEmpty ? inputFormatters : null,
-      style: theme.textTheme.bodyLarge,
+      style: widget.options.textStyle ?? theme.textTheme.bodyLarge,
       cursorColor: theme.colorScheme.primary,
       validator: (_) => widget.field.validate(),
       autovalidateMode: widget.field.validateOnChange 

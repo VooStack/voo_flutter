@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 class VooCheckboxFieldWidget extends StatelessWidget {
   final VooFormField field;
+  final VooFieldOptions options;
   final ValueChanged<dynamic>? onChanged;
   final String? error;
   final bool showError;
@@ -11,6 +13,7 @@ class VooCheckboxFieldWidget extends StatelessWidget {
   const VooCheckboxFieldWidget({
     super.key,
     required this.field,
+    required this.options,
     this.onChanged,
     this.error,
     this.showError = true,
@@ -48,7 +51,7 @@ class VooCheckboxFieldWidget extends StatelessWidget {
             ),
             child: Text(
               errorText,
-              style: theme.textTheme.bodySmall?.copyWith(
+              style: options.errorStyle ?? theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.error,
               ),
             ),

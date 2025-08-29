@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 typedef AsyncOptionsLoader<T> = Future<List<VooFieldOption<T>>> Function(String query);
 
 class VooDropdownFieldWidget<T> extends StatefulWidget {
   final VooFormField<T> field;
+  final VooFieldOptions options;
   final ValueChanged<T?>? onChanged;
   final String? error;
   final bool showError;
@@ -13,6 +15,7 @@ class VooDropdownFieldWidget<T> extends StatefulWidget {
   const VooDropdownFieldWidget({
     super.key,
     required this.field,
+    required this.options,
     this.onChanged,
     this.error,
     this.showError = true,

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.6]
+
+### Fixed
+- **VooFieldOptions Integration**: All field types now properly use config from form builder
+  - Added `VooFieldOptions` parameter to VooTextFormField, VooCheckboxFieldWidget, VooDropdownFieldWidget, VooRadioFieldWidget, and VooSwitchFieldWidget
+  - VooFieldWidget now consistently passes options to all field types
+  - VooFormFieldBuilder properly passes fieldOptions to all widgets
+  - Ensures consistent theming and configuration across all form fields
+
+### Changed
+- **VooField.dropdownAsync API**: Improved to use cleaner List<T> pattern
+  - Now accepts `Future<List<T>>` instead of `Future<List<VooFieldOption<T>>>`
+  - Added required `converter` parameter to transform items to VooDropdownChild
+  - Matches the API pattern of regular dropdown for consistency
+  - Example: `asyncOptionsLoader: (query) async => await api.getUsers(query)`
+
 ## [0.1.5]
 
 ### Added

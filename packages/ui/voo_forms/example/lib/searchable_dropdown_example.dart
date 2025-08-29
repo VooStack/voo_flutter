@@ -116,14 +116,14 @@ class _SearchableDropdownExampleState extends State<SearchableDropdownExample> {
                   label: 'Select User',
                   hint: 'Search for a user',
                   asyncOptionsLoader: (query) async {
-                    final users = await _searchUsers(query);
-                    return users.map((user) => VooFieldOption<User>(
-                          value: user,
-                          label: user.name,
-                          subtitle: '${user.email} • ${user.department}',
-                          icon: Icons.person,
-                        )).toList();
+                    return await _searchUsers(query);
                   },
+                  converter: (user) => VooDropdownChild<User>(
+                    value: user,
+                    label: user.name,
+                    subtitle: '${user.email} • ${user.department}',
+                    icon: Icons.person,
+                  ),
                   searchHint: 'Search by name, email, or department...',
                   minSearchLength: 0,
                   searchDebounce: const Duration(milliseconds: 300),

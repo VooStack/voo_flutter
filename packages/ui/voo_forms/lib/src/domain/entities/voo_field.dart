@@ -344,13 +344,14 @@ class VooField {
   ///   label: 'Select User',
   ///   asyncOptionsLoader: (query) async {
   ///     final users = await api.searchUsers(query);
-  ///     return users.map((user) => VooFieldOption(
-  ///       value: user,
-  ///       label: user.name,
-  ///       subtitle: user.email,
-  ///       icon: Icons.person,
-  ///     )).toList();
+  ///     return users;
   ///   },
+  ///   converter: (user) => VooDropdownChild(
+  ///     value: user,
+  ///     label: user.name,
+  ///     subtitle: user.email,
+  ///     icon: Icons.person,
+  ///   ),
   ///   searchHint: 'Search users...',
   /// )
   /// ```
@@ -360,7 +361,8 @@ class VooField {
     String? hint,
     String? helper,
     T? initialValue,
-    required Future<List<VooFieldOption<T>>> Function(String) asyncOptionsLoader,
+    required Future<List<T>> Function(String) asyncOptionsLoader,
+    required VooDropdownChild<T> Function(T) converter,
     List<VooValidationRule<T>>? validators,
     bool required = false,
     bool enabled = true,
@@ -384,7 +386,10 @@ class VooField {
       enabled: enabled,
       readOnly: readOnly,
       validators: validators ?? [],
-      asyncOptionsLoader: asyncOptionsLoader,
+      asyncOptionsLoader: (query) async {
+        final items = await asyncOptionsLoader(query);
+        return items.map(converter).toList();
+      },
       enableSearch: true,
       searchHint: searchHint,
       searchDebounce: searchDebounce,
