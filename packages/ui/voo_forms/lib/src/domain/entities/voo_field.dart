@@ -292,6 +292,7 @@ class VooField {
   ///     icon: Icons.flag,
   ///   ),
   ///   initialValue: countries.first,
+  ///   enableSearch: true,  // Enable search bar
   /// )
   /// ```
   static VooFormField<T> dropdown<T>({
@@ -310,6 +311,8 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    bool enableSearch = false,
+    String? searchHint,
   }) {
     return VooFormField<T>(
       id: name,
@@ -324,6 +327,68 @@ class VooField {
       readOnly: readOnly,
       validators: validators ?? [],
       options: options.map(converter).toList(),
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
+      gridColumns: gridColumns,
+      enableSearch: enableSearch,
+      searchHint: searchHint,
+    );
+  }
+
+  /// Async dropdown field factory with dynamic loading
+  /// 
+  /// Example:
+  /// ```dart
+  /// VooField.dropdownAsync<User>(
+  ///   name: 'user',
+  ///   label: 'Select User',
+  ///   asyncOptionsLoader: (query) async {
+  ///     final users = await api.searchUsers(query);
+  ///     return users.map((user) => VooFieldOption(
+  ///       value: user,
+  ///       label: user.name,
+  ///       subtitle: user.email,
+  ///       icon: Icons.person,
+  ///     )).toList();
+  ///   },
+  ///   searchHint: 'Search users...',
+  /// )
+  /// ```
+  static VooFormField<T> dropdownAsync<T>({
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    T? initialValue,
+    required Future<List<VooFieldOption<T>>> Function(String) asyncOptionsLoader,
+    List<VooValidationRule<T>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    int? gridColumns,
+    String? searchHint,
+    Duration? searchDebounce,
+    int minSearchLength = 0,
+  }) {
+    return VooFormField<T>(
+      id: name,
+      name: name,
+      type: VooFieldType.dropdown,
+      label: label,
+      hint: hint,
+      helper: helper,
+      initialValue: initialValue,
+      required: required,
+      enabled: enabled,
+      readOnly: readOnly,
+      validators: validators ?? [],
+      asyncOptionsLoader: asyncOptionsLoader,
+      enableSearch: true,
+      searchHint: searchHint,
+      searchDebounce: searchDebounce,
+      minSearchLength: minSearchLength,
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
       gridColumns: gridColumns,
@@ -354,6 +419,8 @@ class VooField {
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
+    bool enableSearch = false,
+    String? searchHint,
   }) {
     return VooFormField(
       id: name,
@@ -374,6 +441,8 @@ class VooField {
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
       gridColumns: gridColumns,
+      enableSearch: enableSearch,
+      searchHint: searchHint,
     );
   }
 

@@ -28,6 +28,11 @@ class VooFormField<T> extends Equatable {
   final List<VooFieldOption<T>>? options;
   final bool allowMultiple;
   final List<VooFieldOption>? items;
+  final Future<List<VooFieldOption<T>>> Function(String)? asyncOptionsLoader;
+  final bool enableSearch;
+  final String? searchHint;
+  final Duration? searchDebounce;
+  final int? minSearchLength;
   
   // For numeric fields
   final num? min;
@@ -100,6 +105,11 @@ class VooFormField<T> extends Equatable {
     this.options,
     this.allowMultiple = false,
     this.items,
+    this.asyncOptionsLoader,
+    this.enableSearch = false,
+    this.searchHint,
+    this.searchDebounce,
+    this.minSearchLength,
     this.min,
     this.max,
     this.step,
@@ -158,6 +168,11 @@ class VooFormField<T> extends Equatable {
     TextEditingController? controller,
     List<VooFieldOption<T>>? options,
     bool? allowMultiple,
+    Future<List<VooFieldOption<T>>> Function(String)? asyncOptionsLoader,
+    bool? enableSearch,
+    String? searchHint,
+    Duration? searchDebounce,
+    int? minSearchLength,
     num? min,
     num? max,
     num? step,
@@ -217,6 +232,11 @@ class VooFormField<T> extends Equatable {
       options: options ?? this.options,
       allowMultiple: allowMultiple ?? this.allowMultiple,
       items: items ?? this.items,
+      asyncOptionsLoader: asyncOptionsLoader ?? this.asyncOptionsLoader,
+      enableSearch: enableSearch ?? this.enableSearch,
+      searchHint: searchHint ?? this.searchHint,
+      searchDebounce: searchDebounce ?? this.searchDebounce,
+      minSearchLength: minSearchLength ?? this.minSearchLength,
       min: min ?? this.min,
       max: max ?? this.max,
       step: step ?? this.step,

@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.1.5]
+
+### Added
+- **Searchable Dropdown Support**: Enhanced dropdown fields with search functionality
+  - Local search filtering for existing dropdown options
+  - Async options loading for dynamic data from APIs/databases
+  - Configurable search debounce for performance optimization
+  - Minimum search length configuration
+  - Loading indicators and empty state handling
+- **New VooField Factory Methods**:
+  - `VooField.dropdownAsync()` for async data loading with search
+  - Enhanced `VooField.dropdown()` and `VooField.dropdownSimple()` with `enableSearch` parameter
+- **VooFormField Enhancements**:
+  - Added `asyncOptionsLoader` for dynamic option loading
+  - Added `enableSearch`, `searchHint`, `searchDebounce`, `minSearchLength` fields
+- **VooDropdownFieldWidget Updates**:
+  - Now passes search configuration to enhanced VooDropdown widget
+  - Handles both sync and async options seamlessly
+- **Example Application**:
+  - Added searchable_dropdown_example.dart demonstrating both local and async search
+
+### Changed
+- VooDropdownFieldWidget now handles search functionality internally
+- Search implementation kept in voo_forms package, not in voo_ui_core
+- VooDropdown in voo_ui_core remains a simple, basic dropdown widget
+
 ## [0.1.4]
 
 ### Fixed
