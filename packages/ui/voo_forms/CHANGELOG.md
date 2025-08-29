@@ -1,6 +1,15 @@
 # Changelog
 
-## [0.1.3] - 2025-01-28
+## [0.1.4]
+
+### Fixed
+- Fixed `labelPosition: LabelPosition.above` not working correctly
+- Refactored form field builder to follow atomic design principles
+- Created `VooTextFieldWidget` atomic widget for proper label positioning
+- Fixed duplicate labels appearing when using above positioning
+- `VooTextFormField` now properly respects provided decorations
+
+## [0.1.3]
 
 ### Changed
 - **One Class Per File Rule**: Refactored voo_field_options.dart into separate files
@@ -16,7 +25,7 @@
 - Import paths now properly organized
 - No more duplicate responsive logic between packages
 
-## [0.1.2] - 2025-01-28
+## [0.1.2]
 
 ### Added
 - **VooSimpleForm**: New simplified form builder for amazing developer experience
@@ -48,7 +57,7 @@
 - Fixed type errors in VooFormSection references
 - Removed unused _validateCurrentStep method from VooFormBuilder
 
-## [0.1.1] - 2025-01-28
+## [0.1.1]
 
 ### Added
 - New VooField API with factory constructors for better developer experience:
@@ -107,7 +116,7 @@
 - Consistent theming throughout all form components
 - Better code organization following atomic design principles
 
-## [0.1.0] - 2025-01-27
+## [0.1.0]
 
 ### Added
 - Initial release of voo_forms package
