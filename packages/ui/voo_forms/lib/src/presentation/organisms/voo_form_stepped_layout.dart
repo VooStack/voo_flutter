@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/molecules/form_section.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
@@ -10,6 +11,7 @@ class VooFormSteppedLayout extends StatelessWidget {
   final VooFormController controller;
   final bool showValidation;
   final Widget Function(int step, int totalSteps)? stepIndicatorBuilder;
+  final VooFormConfig? config;
 
   const VooFormSteppedLayout({
     super.key,
@@ -17,6 +19,7 @@ class VooFormSteppedLayout extends StatelessWidget {
     required this.controller,
     this.showValidation = true,
     this.stepIndicatorBuilder,
+    this.config,
   });
 
   @override
@@ -52,6 +55,7 @@ class VooFormSteppedLayout extends StatelessWidget {
                   .toList(),
               controller: controller,
               showErrors: showValidation,
+              config: config,
             ),
           ),
         

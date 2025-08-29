@@ -295,17 +295,29 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   }) {
     try {
       final timestamp = DateTime.now();
+      
+      // Create entry data, filtering out null values for web compatibility
+      final entryData = <String, dynamic>{
+        'id': '${category.toLowerCase()}_${timestamp.millisecondsSinceEpoch}',
+        'timestamp': timestamp.toIso8601String(),
+        'message': message,
+        'level': 'info',
+        'category': category,
+        'tag': 'VooAnalytics',
+      };
+      
+      // Add metadata if present, filtering out null values
+      if (metadata != null) {
+        final cleanMetadata = <String, dynamic>{};
+        metadata.forEach((key, value) {
+          if (value != null) cleanMetadata[key] = value;
+        });
+        if (cleanMetadata.isNotEmpty) entryData['metadata'] = cleanMetadata;
+      }
+      
       final structuredData = {
         '__voo_logger__': true,
-        'entry': {
-          'id': '${category.toLowerCase()}_${timestamp.millisecondsSinceEpoch}',
-          'timestamp': timestamp.toIso8601String(),
-          'message': message,
-          'level': 'info',
-          'category': category,
-          'tag': 'VooAnalytics',
-          'metadata': metadata,
-        },
+        'entry': entryData,
       };
 
       // Send via postEvent for DevTools extension

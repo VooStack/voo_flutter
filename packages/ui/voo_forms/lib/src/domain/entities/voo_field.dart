@@ -269,8 +269,77 @@ class VooField {
     );
   }
 
-  /// Dropdown field factory - simple version with strings
-  static VooFormField dropdown({
+  /// Generic dropdown field factory with custom type and converter
+  /// 
+  /// Example:
+  /// ```dart
+  /// class Country {
+  ///   final String code;
+  ///   final String name;
+  ///   final String flag;
+  ///   
+  ///   const Country({required this.code, required this.name, required this.flag});
+  /// }
+  /// 
+  /// VooField.dropdown<Country>(
+  ///   name: 'country',
+  ///   label: 'Select Country',
+  ///   options: countries,
+  ///   converter: (country) => VooDropdownChild(
+  ///     value: country,
+  ///     label: country.name,
+  ///     subtitle: country.code,
+  ///     icon: Icons.flag,
+  ///   ),
+  ///   initialValue: countries.first,
+  /// )
+  /// ```
+  static VooFormField<T> dropdown<T>({
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    T? initialValue,
+    T? defaultValue,
+    required List<T> options,
+    required VooDropdownChild<T> Function(T) converter,
+    List<VooValidationRule<T>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    int? gridColumns,
+  }) {
+    return VooFormField<T>(
+      id: name,
+      name: name,
+      type: VooFieldType.dropdown,
+      label: label,
+      hint: hint,
+      helper: helper,
+      initialValue: initialValue ?? defaultValue,
+      required: required,
+      enabled: enabled,
+      readOnly: readOnly,
+      validators: validators ?? [],
+      options: options.map(converter).toList(),
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
+      gridColumns: gridColumns,
+    );
+  }
+  
+  /// Simple dropdown field factory with strings
+  /// 
+  /// Example:
+  /// ```dart
+  /// VooField.dropdownSimple(
+  ///   name: 'country',
+  ///   options: ['USA', 'Canada', 'Mexico'],
+  /// )
+  /// ```
+  static VooFormField dropdownSimple({
     required String name,
     String? label,
     String? hint,
@@ -298,7 +367,7 @@ class VooField {
       enabled: enabled,
       readOnly: readOnly,
       validators: validators ?? [],
-      items: options.map((option) => VooFieldOption(
+      options: options.map((option) => VooFieldOption(
         value: option,
         label: option,
       ),).toList(),
@@ -383,7 +452,7 @@ class VooField {
       enabled: enabled,
       readOnly: readOnly,
       validators: validators ?? [],
-      items: options.map((option) => VooFieldOption(
+      options: options.map((option) => VooFieldOption(
         value: option,
         label: option,
       ),).toList(),

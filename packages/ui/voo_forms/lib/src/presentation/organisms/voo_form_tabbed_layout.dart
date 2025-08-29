@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/molecules/form_section.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
@@ -10,6 +11,7 @@ class VooFormTabbedLayout extends StatelessWidget {
   final VooFormController controller;
   final bool showValidation;
   final TabController? tabController;
+  final VooFormConfig? config;
 
   const VooFormTabbedLayout({
     super.key,
@@ -17,6 +19,7 @@ class VooFormTabbedLayout extends StatelessWidget {
     required this.controller,
     this.showValidation = true,
     this.tabController,
+    this.config,
   });
 
   @override
@@ -55,6 +58,7 @@ class VooFormTabbedLayout extends StatelessWidget {
                   fields: sectionFields,
                   controller: controller,
                   showErrors: showValidation,
+                  config: config,
                 ),
               );
             }).toList(),

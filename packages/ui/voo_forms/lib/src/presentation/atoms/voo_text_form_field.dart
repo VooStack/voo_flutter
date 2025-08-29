@@ -185,9 +185,23 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
 
   InputDecoration _buildDecoration(BuildContext context) {
     
-    // Use provided decoration or create default
-    InputDecoration baseDecoration = widget.decoration ?? 
-        widget.field.decoration ?? 
+    // If a decoration was explicitly provided, use it as-is with minimal changes
+    if (widget.decoration != null) {
+      final errorText = widget.showError 
+          ? (widget.error ?? widget.field.error) 
+          : null;
+      
+      return widget.decoration!.copyWith(
+        errorText: errorText,
+        // Only add prefix/suffix if not already in decoration
+        prefixIcon: widget.decoration!.prefixIcon ?? 
+            (widget.field.prefixIcon != null ? Icon(widget.field.prefixIcon) : null),
+        suffixIcon: widget.decoration!.suffixIcon ?? _buildSuffixWidget(),
+      );
+    }
+    
+    // Otherwise build default decoration
+    InputDecoration baseDecoration = widget.field.decoration ?? 
         const InputDecoration();
 
     // Get error text

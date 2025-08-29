@@ -307,3 +307,6 @@ class VooFieldOption<T> extends Equatable {
   @override
   List<Object?> get props => [value, label, subtitle, icon, enabled];
 }
+
+/// Type alias for dropdown children items
+typedef VooDropdownChild<T> = VooFieldOption<T>;

@@ -33,7 +33,7 @@ class Tracer {
 
     try {
       final result = await fn(span);
-      span.setStatus(SpanStatus.ok());
+      span.status = SpanStatus.ok();
       return result;
     } catch (e, stackTrace) {
       span.recordException(e, stackTrace);
@@ -56,7 +56,7 @@ class Tracer {
 
     try {
       final result = fn(span);
-      span.setStatus(SpanStatus.ok());
+      span.status = SpanStatus.ok();
       return result;
     } catch (e, stackTrace) {
       span.recordException(e, stackTrace);

@@ -85,6 +85,10 @@ class BestPracticesExample extends StatelessWidget {
           label: 'Country',
           options: ['United States', 'Canada', 'Mexico', 'Other'],
           required: true,
+          converter: (country) => VooDropdownChild(
+            value: country,
+            label: country,
+          ),
         ),
         VooField.boolean(
           name: 'newsletter',
@@ -254,6 +258,10 @@ class BestPracticesExample extends StatelessWidget {
             label: 'State',
             options: ['CA', 'NY', 'TX', 'FL', 'Other'],
             required: true,
+            converter: (state) => VooDropdownChild(
+              value: state,
+              label: state,
+            ),
           ),
           VooField.text(
             name: 'zip',
@@ -277,6 +285,10 @@ class BestPracticesExample extends StatelessWidget {
             label: 'Language',
             options: ['English', 'Spanish', 'French', 'German'],
             initialValue: 'English',
+            converter: (language) => VooDropdownChild(
+              value: language,
+              label: language,
+            ),
           ),
         ],
         onSubmit: (values) {

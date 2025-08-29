@@ -38,15 +38,23 @@ class VooFormActions extends StatelessWidget {
     final design = context.vooDesign;
     final theme = Theme.of(context);
     
-    return Container(
-      padding: padding ?? EdgeInsets.all(design.spacingMd),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: padding ?? EdgeInsets.symmetric(
+        horizontal: design.spacingLg,
+        vertical: design.spacingMd,
+      ),
       decoration: elevated 
           ? BoxDecoration(
               color: theme.colorScheme.surface,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20.0),
+                bottomRight: Radius.circular(20.0),
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 4,
+                  color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+                  blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
               ],
@@ -56,27 +64,104 @@ class VooFormActions extends StatelessWidget {
         mainAxisAlignment: alignment,
         children: [
           if (showCancel && onCancel != null) ...[
-            VooButton(
-              onPressed: onCancel,
-              variant: VooButtonVariant.text,
-              child: Text(cancelLabel),
+            AnimatedScale(
+              scale: controller.isSubmitting ? 0.95 : 1.0,
+              duration: const Duration(milliseconds: 150),
+              child: OutlinedButton(
+                onPressed: controller.isSubmitting ? null : onCancel,
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 14.0,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  side: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Text(
+                  cancelLabel,
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
             SizedBox(width: design.spacingMd),
           ],
-          VooButton(
-            onPressed: controller.isSubmitting ? null : onSubmit,
-            child: controller.isSubmitting
-                ? SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        theme.colorScheme.onPrimary,
-                      ),
+          AnimatedScale(
+            scale: controller.isSubmitting ? 0.95 : 1.0,
+            duration: const Duration(milliseconds: 150),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                gradient: LinearGradient(
+                  colors: controller.isSubmitting
+                      ? [
+                          theme.colorScheme.primary.withValues(alpha: 0.7),
+                          theme.colorScheme.primary.withValues(alpha: 0.5),
+                        ]
+                      : [
+                          theme.colorScheme.primary,
+                          theme.colorScheme.primary.withValues(alpha: 0.9),
+                        ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                    blurRadius: controller.isSubmitting ? 4 : 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
+                  onTap: controller.isSubmitting ? null : onSubmit,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32.0,
+                      vertical: 14.0,
                     ),
-                  )
-                : Text(submitLabel),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (controller.isSubmitting) ...[
+                          SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                        ],
+                        Text(
+                          controller.isSubmitting ? 'Processing...' : submitLabel,
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

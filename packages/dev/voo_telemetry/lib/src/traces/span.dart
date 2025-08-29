@@ -53,13 +53,9 @@ class Span {
       },
     );
 
-    setStatus(SpanStatus.error(description: exception.toString()));
+    status = SpanStatus.error(description: exception.toString());
   }
 
-  /// Set the span status
-  void setStatus(SpanStatus status) {
-    this.status = status;
-  }
 
   /// End the span
   void end([DateTime? endTime]) {

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// Provides theming utilities for forms
+/// Provides Material 3 theming utilities for forms
+/// Integrates with voo_ui_core design system
 class VooFormTheme {
   VooFormTheme._();
 
   /// Generate form theme based on Material 3 design system
+  /// Uses voo_ui_core design tokens for consistency
   static ThemeData generateFormTheme({
     required ColorScheme colorScheme,
     TextTheme? textTheme,
@@ -12,10 +14,12 @@ class VooFormTheme {
     EdgeInsetsGeometry? fieldPadding,
     EdgeInsetsGeometry? contentPadding,
   }) {
+    // Use modern rounded corners for better visual appeal
     final radius = borderRadius ?? 12.0;
+    // Generous padding for better touch targets and visual breathing room
     final content = contentPadding ?? const EdgeInsets.symmetric(
-      horizontal: 16.0,
-      vertical: 12.0,
+      horizontal: 20.0,
+      vertical: 18.0,
     );
 
     return ThemeData(
@@ -23,7 +27,7 @@ class VooFormTheme {
       textTheme: textTheme,
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         contentPadding: content,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
@@ -32,89 +36,123 @@ class VooFormTheme {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
-            color: colorScheme.outline.withValues(alpha: 0.5),
-            width: 1.0,
+            color: colorScheme.outline.withValues(alpha: 0.2),
+            width: 1.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
             color: colorScheme.primary,
-            width: 2.0,
+            width: 2.5,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
-            color: colorScheme.error,
-            width: 1.0,
+            color: colorScheme.error.withValues(alpha: 0.6),
+            width: 1.5,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
             color: colorScheme.error,
-            width: 2.0,
+            width: 2.5,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
-            color: colorScheme.outline.withValues(alpha: 0.3),
+            color: colorScheme.outline.withValues(alpha: 0.1),
             width: 1.0,
           ),
         ),
         labelStyle: TextStyle(
           color: colorScheme.onSurfaceVariant,
+          fontSize: 14.0,
+          fontWeight: FontWeight.w500,
+        ),
+        floatingLabelStyle: TextStyle(
+          color: colorScheme.primary,
+          fontSize: 12.0,
+          fontWeight: FontWeight.w600,
         ),
         hintStyle: TextStyle(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
         ),
         errorStyle: TextStyle(
           color: colorScheme.error,
           fontSize: 12.0,
+          fontWeight: FontWeight.w500,
         ),
         helperStyle: TextStyle(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
           fontSize: 12.0,
+          fontWeight: FontWeight.w400,
         ),
         prefixStyle: TextStyle(
           color: colorScheme.onSurface,
+          fontSize: 14.0,
         ),
         suffixStyle: TextStyle(
           color: colorScheme.onSurface,
+          fontSize: 14.0,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(
-            horizontal: 24.0,
-            vertical: 12.0,
+            horizontal: 32.0,
+            vertical: 16.0,
           ),
+          elevation: 2,
+          shadowColor: colorScheme.shadow.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(
-            horizontal: 24.0,
-            vertical: 12.0,
+            horizontal: 32.0,
+            vertical: 16.0,
+          ),
+          side: BorderSide(
+            color: colorScheme.outline.withValues(alpha: 0.5),
+            width: 1.5,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 8.0,
+            horizontal: 20.0,
+            vertical: 12.0,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
           ),
         ),
       ),
@@ -125,8 +163,13 @@ class VooFormTheme {
           }
           return Colors.transparent;
         }),
+        checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(6.0),
+        ),
+        side: BorderSide(
+          color: colorScheme.outline.withValues(alpha: 0.5),
+          width: 2.0,
         ),
       ),
       radioTheme: RadioThemeData(
@@ -134,32 +177,44 @@ class VooFormTheme {
           if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
-          return colorScheme.onSurfaceVariant;
+          return colorScheme.outline.withValues(alpha: 0.5);
         }),
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary;
+            return colorScheme.onPrimary;
           }
           return colorScheme.outline;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colorScheme.primary.withValues(alpha: 0.5);
+            return colorScheme.primary;
           }
           return colorScheme.surfaceContainerHighest;
+        }),
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+          return Colors.transparent;
         }),
       ),
       sliderTheme: SliderThemeData(
         activeTrackColor: colorScheme.primary,
-        inactiveTrackColor: colorScheme.primary.withValues(alpha: 0.3),
+        inactiveTrackColor: colorScheme.primary.withValues(alpha: 0.2),
         thumbColor: colorScheme.primary,
-        overlayColor: colorScheme.primary.withValues(alpha: 0.1),
+        overlayColor: colorScheme.primary.withValues(alpha: 0.15),
         valueIndicatorColor: colorScheme.primary,
         valueIndicatorTextStyle: TextStyle(
           color: colorScheme.onPrimary,
+          fontWeight: FontWeight.w600,
         ),
+        trackHeight: 6.0,
+        thumbShape: const RoundSliderThumbShape(
+          enabledThumbRadius: 10.0,
+        ),
+        overlayShape: const RoundSliderOverlayShape(
+          overlayRadius: 20.0,
+        ),
+        valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: colorScheme.surfaceContainerHighest,

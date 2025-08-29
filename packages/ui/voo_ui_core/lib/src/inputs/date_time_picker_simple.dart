@@ -83,6 +83,7 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
     
     if (pickedDate != null) {
       if (widget.showTime) {
+        if (!context.mounted) return;
         final TimeOfDay? pickedTime = await showTimePicker(
           context: context,
           initialTime: TimeOfDay.fromDateTime(widget.value ?? DateTime.now()),

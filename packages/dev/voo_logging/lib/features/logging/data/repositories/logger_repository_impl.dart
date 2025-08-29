@@ -216,22 +216,33 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
   void _sendStructuredLogToDevTools(LogEntry entry) {
     try {
-      // Send structured log data as JSON through the standard logging mechanism
+      // Create entry data, filtering out null values for web compatibility
+      final entryData = <String, dynamic>{
+        'id': entry.id,
+        'timestamp': entry.timestamp.toIso8601String(),
+        'message': entry.message,
+        'level': entry.level.name,
+      };
+      
+      // Add non-null fields
+      if (entry.category != null) entryData['category'] = entry.category;
+      if (entry.tag != null) entryData['tag'] = entry.tag;
+      if (entry.metadata != null) {
+        // Filter out null values from metadata for web compatibility
+        final cleanMetadata = <String, dynamic>{};
+        entry.metadata!.forEach((key, value) {
+          if (value != null) cleanMetadata[key] = value;
+        });
+        if (cleanMetadata.isNotEmpty) entryData['metadata'] = cleanMetadata;
+      }
+      if (entry.error != null) entryData['error'] = entry.error.toString();
+      if (entry.stackTrace != null) entryData['stackTrace'] = entry.stackTrace;
+      if (entry.userId != null) entryData['userId'] = entry.userId;
+      if (entry.sessionId != null) entryData['sessionId'] = entry.sessionId;
+
       final structuredData = {
         '__voo_logger__': true,
-        'entry': {
-          'id': entry.id,
-          'timestamp': entry.timestamp.toIso8601String(),
-          'message': entry.message,
-          'level': entry.level.name,
-          'category': entry.category,
-          'tag': entry.tag,
-          'metadata': entry.metadata,
-          'error': entry.error?.toString(),
-          'stackTrace': entry.stackTrace,
-          'userId': entry.userId,
-          'sessionId': entry.sessionId,
-        },
+        'entry': entryData,
       };
 
       // Only send JSON to console if explicitly enabled

@@ -55,7 +55,7 @@ class VooTimeFormField extends StatelessWidget {
           },
         );
         
-        if (picked != null) {
+        if (picked != null && context.mounted) {
           effectiveController.text = picked.format(context);
           onChanged?.call(picked);
         }

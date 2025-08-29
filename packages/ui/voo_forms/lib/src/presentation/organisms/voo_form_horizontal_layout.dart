@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/molecules/form_field_builder.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
@@ -10,6 +11,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
   final VooFormController controller;
   final bool showValidation;
   final double fieldWidth;
+  final VooFormConfig? config;
 
   const VooFormHorizontalLayout({
     super.key,
@@ -17,6 +19,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
     required this.controller,
     this.showValidation = true,
     this.fieldWidth = 300,
+    this.config,
   });
 
   @override
@@ -34,6 +37,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
               field: field,
               controller: controller,
               showError: showValidation,
+              config: config,
             ),
           );
         }).toList(),

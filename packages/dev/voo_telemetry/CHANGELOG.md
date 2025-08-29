@@ -1,3 +1,7 @@
+## 0.2.1
+
+  fixed error causing repeated error in console ```DebugService: Error serving requestsError: Unsupported operation: Cannot send Null```
+  
 ## 0.2.0
 
 > Note: This release has breaking changes.

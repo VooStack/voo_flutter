@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/form_section.dart';
 import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
@@ -36,6 +37,9 @@ class VooSimpleForm extends StatefulWidget {
 
   /// Default field options that apply to all fields
   final VooFieldOptions? defaultFieldOptions;
+
+  /// Default form configuration
+  final VooFormConfig? defaultConfig;
 
   /// Callback when form is submitted
   final void Function(Map<String, dynamic>)? onSubmit;
@@ -79,6 +83,7 @@ class VooSimpleForm extends StatefulWidget {
     this.layout = FormLayout.vertical,
     this.sections,
     this.defaultFieldOptions,
+    this.defaultConfig,
     this.onSubmit,
     this.onCancel,
     this.showProgress = false,
@@ -136,6 +141,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
       showProgress: widget.showProgress,
       showValidation: widget.showValidation,
       padding: widget.padding,
+      defaultConfig: widget.defaultConfig,
       actionsBuilder: widget.actionsBuilder ??
           (context, controller) {
             return VooFormActions(
@@ -207,6 +213,7 @@ extension VooSimpleFormExtensions on List<VooFormField> {
     FormLayout layout = FormLayout.vertical,
     List<VooFormSection>? sections,
     VooFieldOptions? defaultFieldOptions,
+    VooFormConfig? defaultConfig,
     void Function(Map<String, dynamic>)? onSubmit,
     VoidCallback? onCancel,
     bool showProgress = false,
@@ -223,6 +230,7 @@ extension VooSimpleFormExtensions on List<VooFormField> {
       layout: layout,
       sections: sections,
       defaultFieldOptions: defaultFieldOptions,
+      defaultConfig: defaultConfig,
       onSubmit: onSubmit,
       onCancel: onCancel,
       showProgress: showProgress,

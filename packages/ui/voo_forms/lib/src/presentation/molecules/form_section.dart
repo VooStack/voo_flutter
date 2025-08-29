@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/form_section.dart';
 import 'package:voo_forms/src/presentation/atoms/voo_form_header.dart';
@@ -12,6 +13,7 @@ class FormSectionWidget extends StatefulWidget {
   final VooFormController controller;
   final bool showErrors;
   final EdgeInsetsGeometry? padding;
+  final VooFormConfig? config;
 
   const FormSectionWidget({
     super.key,
@@ -20,6 +22,7 @@ class FormSectionWidget extends StatefulWidget {
     required this.controller,
     this.showErrors = true,
     this.padding,
+    this.config,
   });
 
   @override
@@ -188,6 +191,7 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
                   field: field,
                   controller: widget.controller,
                   showError: widget.showErrors,
+                  config: widget.config,
                 ),
               );
             }).toList(),
@@ -205,6 +209,7 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
                     field: field,
                     controller: widget.controller,
                     showError: widget.showErrors,
+                    config: widget.config,
                   ),
                 ),)
             .toList(),

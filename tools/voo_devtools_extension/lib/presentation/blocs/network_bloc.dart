@@ -17,7 +17,6 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     on<ClearNetworkLogs>(_onClearNetworkLogs);
     on<FilterNetworkLogs>(_onFilterNetworkLogs);
     on<SelectNetworkRequest>(_onSelectNetworkRequest);
-    on<SelectNetworkLog>(_onSelectNetworkLog);
   }
 
   Future<void> _onLoadNetworkLogs(LoadNetworkLogs event, Emitter<NetworkState> emit) async {
@@ -104,16 +103,6 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
 
   void _onSelectNetworkRequest(SelectNetworkRequest event, Emitter<NetworkState> emit) {
     emit(state.copyWith(selectedRequest: () => event.request));
-  }
-
-  void _onSelectNetworkLog(SelectNetworkLog event, Emitter<NetworkState> emit) {
-    // Convert log to request for backwards compatibility
-    if (event.log != null) {
-      final request = NetworkRequestModel.fromLogEntry(event.log!);
-      emit(state.copyWith(selectedRequest: () => request));
-    } else {
-      emit(state.copyWith(selectedRequest: () => null));
-    }
   }
 
   List<NetworkRequestModel> _applyFilters(List<NetworkRequestModel> requests, {String? method, String? statusFilter, String? searchQuery}) {

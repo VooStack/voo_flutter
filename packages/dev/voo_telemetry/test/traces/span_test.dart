@@ -91,11 +91,11 @@ void main() {
     test('should set status', () {
       final span = Span(name: 'test-span');
 
-      span.setStatus(SpanStatus.ok());
+      span.status = SpanStatus.ok();
       expect(span.status.code, StatusCode.ok);
       expect(span.status.description, isNull);
 
-      span.setStatus(SpanStatus.error(description: 'Something went wrong'));
+      span.status = SpanStatus.error(description: 'Something went wrong');
       expect(span.status.code, StatusCode.error);
       expect(span.status.description, 'Something went wrong');
     });
@@ -137,7 +137,7 @@ void main() {
       span.setAttribute('http.method', 'GET');
       span.setAttribute('http.url', 'https://example.com');
       span.addEvent('request-sent');
-      span.setStatus(SpanStatus.ok());
+      span.status = SpanStatus.ok();
       span.end();
 
       final otlp = span.toOtlp();
