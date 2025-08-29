@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
-/// Atomic widget for time form field
-class VooTimeFormField extends StatelessWidget {
+/// Atomic widget for date form field
+class VooDateFieldWidget extends StatelessWidget {
   final VooFormField field;
   final VooFieldOptions options;
-  final ValueChanged<TimeOfDay?>? onChanged;
+  final ValueChanged<DateTime?>? onChanged;
   final VoidCallback? onTap;
   final FocusNode? focusNode;
   final TextEditingController? controller;
   final String? error;
   final bool showError;
 
-  const VooTimeFormField({
+  const VooDateFieldWidget({
     super.key,
     required this.field,
     required this.options,
@@ -28,12 +29,13 @@ class VooTimeFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final currentValue = field.value as TimeOfDay?;
+    final currentValue = field.value as DateTime?;
+    final dateFormat = DateFormat('MMM dd, yyyy');
     
     // Create controller if not provided
     final effectiveController = controller ?? 
         TextEditingController(
-          text: currentValue != null ? currentValue.format(context) : '',
+          text: currentValue != null ? dateFormat.format(currentValue) : '',
         );
     
     return TextFormField(
@@ -44,9 +46,11 @@ class VooTimeFormField extends StatelessWidget {
       decoration: _buildDecoration(context),
       style: options.textStyle ?? theme.textTheme.bodyLarge,
       onTap: field.enabled ? () async {
-        final picked = await showTimePicker(
+        final picked = await showDatePicker(
           context: context,
-          initialTime: currentValue ?? TimeOfDay.now(),
+          initialDate: currentValue ?? DateTime.now(),
+          firstDate: field.minDate ?? DateTime(1900),
+          lastDate: field.maxDate ?? DateTime(2100),
           builder: (context, child) {
             return Theme(
               data: theme,
@@ -55,8 +59,8 @@ class VooTimeFormField extends StatelessWidget {
           },
         );
         
-        if (picked != null && context.mounted) {
-          effectiveController.text = picked.format(context);
+        if (picked != null) {
+          effectiveController.text = dateFormat.format(picked);
           onChanged?.call(picked);
         }
         onTap?.call();
@@ -73,27 +77,27 @@ class VooTimeFormField extends StatelessWidget {
     if (options.labelPosition == LabelPosition.floating) {
       decoration = InputDecoration(
         labelText: field.label,
-        hintText: field.hint ?? 'Select time',
+        hintText: field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,
         helperText: field.helper,
         prefixIcon: field.prefixIcon != null ? Icon(field.prefixIcon) : null,
-        suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
+        suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     } else if (options.labelPosition == LabelPosition.placeholder) {
       decoration = InputDecoration(
-        hintText: field.label ?? field.hint ?? 'Select time',
+        hintText: field.label ?? field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,
         helperText: field.helper,
         prefixIcon: field.prefixIcon != null ? Icon(field.prefixIcon) : null,
-        suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
+        suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     } else {
       decoration = InputDecoration(
-        hintText: field.hint ?? 'Select time',
+        hintText: field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,
         helperText: field.helper,
         prefixIcon: field.prefixIcon != null ? Icon(field.prefixIcon) : null,
-        suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
+        suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     }
     

@@ -3,14 +3,14 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Atomic widget for slider form field
-class VooSliderFormField extends StatelessWidget {
+class VooSliderFieldWidget extends StatelessWidget {
   final VooFormField field;
   final VooFieldOptions options;
   final ValueChanged<double>? onChanged;
   final String? error;
   final bool showError;
 
-  const VooSliderFormField({
+  const VooSliderFieldWidget({
     super.key,
     required this.field,
     required this.options,

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
-class VooDropdownFormField<T> extends StatelessWidget {
+class VooDropdownFieldWidget<T> extends StatelessWidget {
   final VooFormField<T> field;
   final ValueChanged<T?>? onChanged;
   final String? error;
   final bool showError;
 
-  const VooDropdownFormField({
+  const VooDropdownFieldWidget({
     super.key,
     required this.field,
     this.onChanged,

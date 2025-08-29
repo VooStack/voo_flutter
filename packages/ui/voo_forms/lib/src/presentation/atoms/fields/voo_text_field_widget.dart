@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_text_form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_text_form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 

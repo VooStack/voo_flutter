@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_checkbox_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_date_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_dropdown_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_radio_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_slider_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_switch_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_text_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/voo_time_form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_checkbox_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_date_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_dropdown_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_radio_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_slider_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_switch_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_text_form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_time_field_widget.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Widget that renders a form field based on its type and options
@@ -84,31 +84,31 @@ class VooFieldWidget extends StatelessWidget {
         );
 
       case VooFieldType.boolean:
-        return VooSwitchFormField(
+        return VooSwitchFieldWidget(
           field: field,
           onChanged: onChanged,
         );
 
       case VooFieldType.checkbox:
-        return VooCheckboxFormField(
+        return VooCheckboxFieldWidget(
           field: field,
           onChanged: onChanged,
         );
 
       case VooFieldType.dropdown:
-        return VooDropdownFormField(
+        return VooDropdownFieldWidget(
           field: field,
           onChanged: onChanged,
         );
 
       case VooFieldType.radio:
-        return VooRadioFormField(
+        return VooRadioFieldWidget(
           field: field,
           onChanged: onChanged,
         );
 
       case VooFieldType.slider:
-        return VooSliderFormField(
+        return VooSliderFieldWidget(
           field: field,
           options: effectiveOptions,
           onChanged: onChanged != null ? (value) => onChanged!(value) : null,
@@ -117,7 +117,7 @@ class VooFieldWidget extends StatelessWidget {
         );
 
       case VooFieldType.date:
-        return VooDateFormField(
+        return VooDateFieldWidget(
           field: field,
           options: effectiveOptions,
           onChanged: onChanged != null ? (value) => onChanged!(value) : null,
@@ -129,7 +129,7 @@ class VooFieldWidget extends StatelessWidget {
         );
 
       case VooFieldType.time:
-        return VooTimeFormField(
+        return VooTimeFieldWidget(
           field: field,
           options: effectiveOptions,
           onChanged: onChanged != null ? (value) => onChanged!(value) : null,

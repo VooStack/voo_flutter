@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
-class VooRadioFormField<T> extends StatelessWidget {
-  final VooFormField<T> field;
-  final ValueChanged<T?>? onChanged;
+/// Atomic widget for multi-select form field
+class VooMultiSelectFieldWidget<T> extends StatelessWidget {
+  final VooFormField field;
+  final ValueChanged<List<T>?>? onChanged;
   final String? error;
   final bool showError;
 
-  const VooRadioFormField({
+  const VooMultiSelectFieldWidget({
     super.key,
     required this.field,
     this.onChanged,
@@ -23,6 +24,7 @@ class VooRadioFormField<T> extends StatelessWidget {
 
     final errorText = showError ? (error ?? field.error) : null;
     final hasError = errorText != null && errorText.isNotEmpty;
+    final selectedValues = (field.value as List<T>?) ?? <T>[];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,24 +52,33 @@ class VooRadioFormField<T> extends StatelessWidget {
           SizedBox(height: design.spacingSm),
         ],
         Container(
-          decoration: hasError
-              ? BoxDecoration(
-                  border: Border.all(color: theme.colorScheme.error),
-                  borderRadius: BorderRadius.circular(design.radiusMd),
-                )
-              : null,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: hasError 
+                  ? theme.colorScheme.error
+                  : theme.colorScheme.outline,
+            ),
+            borderRadius: BorderRadius.circular(design.radiusMd),
+          ),
           child: Column(
             children: field.options?.map<Widget>((option) {
-                  return VooRadioListTile<T>(
-                    value: option.value,
-                    groupValue: field.value,
-                    onChanged:
-                        field.enabled && !field.readOnly && option.enabled
-                            ? (value) {
-                                onChanged?.call(value);
-                                field.onChanged?.call(value);
+                  final isSelected = selectedValues.contains(option.value);
+                  return CheckboxListTile(
+                    value: isSelected,
+                    onChanged: field.enabled && !field.readOnly && option.enabled
+                        ? (bool? checked) {
+                            final newValues = List<T>.from(selectedValues);
+                            if (checked == true) {
+                              if (!newValues.contains(option.value)) {
+                                newValues.add(option.value);
                               }
-                            : null,
+                            } else {
+                              newValues.remove(option.value);
+                            }
+                            onChanged?.call(newValues);
+                            field.onChanged?.call(newValues);
+                          }
+                        : null,
                     title: Text(option.label),
                     subtitle:
                         option.subtitle != null ? Text(option.subtitle!) : null,
@@ -77,7 +88,8 @@ class VooRadioFormField<T> extends StatelessWidget {
                             size: design.iconSizeMd,
                           )
                         : null,
-                    isError: hasError,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    dense: true,
                   );
                 }).toList() ??
                 [],

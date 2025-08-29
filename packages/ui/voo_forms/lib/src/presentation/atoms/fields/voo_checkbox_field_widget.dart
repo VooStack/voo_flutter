@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
-class VooCheckboxFormField extends StatelessWidget {
+class VooCheckboxFieldWidget extends StatelessWidget {
   final VooFormField field;
   final ValueChanged<dynamic>? onChanged;
   final String? error;
   final bool showError;
 
-  const VooCheckboxFormField({
+  const VooCheckboxFieldWidget({
     super.key,
     required this.field,
     this.onChanged,

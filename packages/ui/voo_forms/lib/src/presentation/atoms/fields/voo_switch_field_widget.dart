@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
-class VooSwitchFormField extends StatelessWidget {
+class VooSwitchFieldWidget extends StatelessWidget {
   final VooFormField field;
   final ValueChanged<dynamic>? onChanged;
   final String? error;
   final bool showError;
 
-  const VooSwitchFormField({
+  const VooSwitchFieldWidget({
     super.key,
     required this.field,
     this.onChanged,
