@@ -144,15 +144,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                       _currentValue = value;
                     });
                     widget.onChanged?.call(value);
-                    // Call field.onChanged only if it exists
-                    // This avoids type casting issues
-                    if (widget.field.onChanged != null) {
-                      try {
-                        widget.field.onChanged!(value);
-                      } catch (_) {
-                        // Silently ignore type casting errors
-                      }
-                    }
+                    // field.onChanged is now handled by VooFieldWidget to avoid type casting issues
                     _removeOverlay();
                     _searchController.clear();
                   },
@@ -493,15 +485,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                 _currentValue = value;
               });
               widget.onChanged?.call(value);
-              // Call field.onChanged only if it exists
-              // This avoids type casting issues
-              if (widget.field.onChanged != null) {
-                try {
-                  widget.field.onChanged!(value);
-                } catch (_) {
-                  // Silently ignore type casting errors
-                }
-              }
+              // field.onChanged is now handled by VooFieldWidget to avoid type casting issues
             }
           : null,
       decoration: decoration,
