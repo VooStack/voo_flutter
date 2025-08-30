@@ -93,32 +93,26 @@ extension VooFieldTypeExtension on VooFieldType {
     }
   }
 
-  bool get isTextInput {
-    return [
-      VooFieldType.text,
-      VooFieldType.number,
-      VooFieldType.email,
-      VooFieldType.password,
-      VooFieldType.phone,
-      VooFieldType.url,
-      VooFieldType.multiline,
-    ].contains(this);
-  }
+  bool get isTextInput => [
+        VooFieldType.text,
+        VooFieldType.number,
+        VooFieldType.email,
+        VooFieldType.password,
+        VooFieldType.phone,
+        VooFieldType.url,
+        VooFieldType.multiline,
+      ].contains(this);
 
-  bool get isSelectionInput {
-    return [
-      VooFieldType.dropdown,
-      VooFieldType.multiSelect,
-      VooFieldType.radio,
-      VooFieldType.checkbox,
-    ].contains(this);
-  }
+  bool get isSelectionInput => [
+        VooFieldType.dropdown,
+        VooFieldType.multiSelect,
+        VooFieldType.radio,
+        VooFieldType.checkbox,
+      ].contains(this);
 
-  bool get isDateTimeInput {
-    return [
-      VooFieldType.date,
-      VooFieldType.time,
-      VooFieldType.dateTime,
-    ].contains(this);
-  }
+  bool get isDateTimeInput => [
+        VooFieldType.date,
+        VooFieldType.time,
+        VooFieldType.dateTime,
+      ].contains(this);
 }

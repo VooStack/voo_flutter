@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../advanced_remote_data_source.dart';
+import 'package:voo_data_grid/src/advanced_remote_data_source.dart';
 
 /// Extension methods for FilterType enum
 extension FilterTypeExtensions on FilterType {
@@ -149,7 +149,7 @@ extension FilterTypeExtensions on FilterType {
   /// Format a value for display
   String formatValue(dynamic value) {
     if (value == null) return '';
-    
+
     switch (this) {
       case FilterType.string:
         return value.toString();
@@ -169,29 +169,26 @@ extension FilterTypeExtensions on FilterType {
         }
         return value.toString();
       case FilterType.bool:
-        return value ? 'Yes' : 'No';
+        return value is bool ? (value ? 'Yes' : 'No') : value.toString();
     }
   }
 
   /// Validate a value for this filter type
   bool isValidValue(dynamic value) {
     if (value == null) return false;
-    
+
     switch (this) {
       case FilterType.string:
         return value is String && value.isNotEmpty;
       case FilterType.int:
         return value is int || (value is String && int.tryParse(value) != null);
       case FilterType.decimal:
-        return value is double || value is int || 
-               (value is String && double.tryParse(value) != null);
+        return value is double || value is int || (value is String && double.tryParse(value) != null);
       case FilterType.date:
       case FilterType.dateTime:
-        return value is DateTime || 
-               (value is String && DateTime.tryParse(value) != null);
+        return value is DateTime || (value is String && DateTime.tryParse(value) != null);
       case FilterType.bool:
-        return value is bool || 
-               (value is String && (value == 'true' || value == 'false'));
+        return value is bool || (value is String && (value == 'true' || value == 'false'));
     }
   }
 }
@@ -247,9 +244,7 @@ extension FilterOperatorExtensions on String {
   }
 
   /// Check if this operator requires a secondary value (for range operations)
-  bool get requiresSecondaryValue {
-    return this == 'Between';
-  }
+  bool get requiresSecondaryValue => this == 'Between';
 
   /// Get display text for the operator
   String get displayText {
@@ -292,7 +287,7 @@ extension FilterOperatorExtensions on String {
   /// Apply this operator to compare two values
   bool apply(dynamic value1, dynamic value2) {
     if (value1 == null || value2 == null) return false;
-    
+
     switch (this) {
       case 'Equals':
         return value1 == value2;

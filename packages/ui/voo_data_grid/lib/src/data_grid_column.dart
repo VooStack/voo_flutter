@@ -244,8 +244,7 @@ class VooDataColumn<T> {
     bool? showFilterOperator,
     bool? excludeFromApi,
     void Function(BuildContext context, T row, dynamic value)? onCellTap,
-  }) {
-    return VooDataColumn<T>(
+  }) => VooDataColumn<T>(
       field: field ?? this.field,
       label: label ?? this.label,
       width: width ?? this.width,
@@ -272,7 +271,6 @@ class VooDataColumn<T> {
       excludeFromApi: excludeFromApi ?? this.excludeFromApi,
       onCellTap: onCellTap ?? this.onCellTap,
     );
-  }
 }
 
 /// Column data types for filtering

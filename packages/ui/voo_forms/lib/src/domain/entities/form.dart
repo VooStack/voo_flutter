@@ -56,26 +56,25 @@ class VooForm extends Equatable {
     FormLayout? layout,
     FormValidationMode? validationMode,
     Map<String, dynamic>? metadata,
-  }) {
-    return VooForm(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      fields: fields ?? this.fields,
-      sections: sections ?? this.sections,
-      enabled: enabled ?? this.enabled,
-      readOnly: readOnly ?? this.readOnly,
-      values: values ?? this.values,
-      errors: errors ?? this.errors,
-      isValid: isValid ?? this.isValid,
-      isDirty: isDirty ?? this.isDirty,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSubmitted: isSubmitted ?? this.isSubmitted,
-      layout: layout ?? this.layout,
-      validationMode: validationMode ?? this.validationMode,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  }) =>
+      VooForm(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        fields: fields ?? this.fields,
+        sections: sections ?? this.sections,
+        enabled: enabled ?? this.enabled,
+        readOnly: readOnly ?? this.readOnly,
+        values: values ?? this.values,
+        errors: errors ?? this.errors,
+        isValid: isValid ?? this.isValid,
+        isDirty: isDirty ?? this.isDirty,
+        isSubmitting: isSubmitting ?? this.isSubmitting,
+        isSubmitted: isSubmitted ?? this.isSubmitted,
+        layout: layout ?? this.layout,
+        validationMode: validationMode ?? this.validationMode,
+        metadata: metadata ?? this.metadata,
+      );
 
   VooFormField? getField(String fieldId) {
     try {
@@ -85,17 +84,12 @@ class VooForm extends Equatable {
     }
   }
 
-  dynamic getValue(String fieldId) {
-    return values[fieldId];
-  }
+  dynamic getValue(String fieldId) => values[fieldId];
 
-  String? getError(String fieldId) {
-    return errors[fieldId];
-  }
+  String? getError(String fieldId) => errors[fieldId];
 
-  bool hasError(String fieldId) {
-    return errors.containsKey(fieldId) && errors[fieldId]!.isNotEmpty;
-  }
+  bool hasError(String fieldId) =>
+      errors.containsKey(fieldId) && errors[fieldId]!.isNotEmpty;
 
   Map<String, String> validateAll() {
     final Map<String, String> allErrors = {};

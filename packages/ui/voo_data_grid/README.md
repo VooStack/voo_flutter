@@ -7,6 +7,7 @@ A powerful and flexible data grid widget for Flutter with advanced features like
 
 ## Features
 
+- **State Management Agnostic**: Works with any state management solution (Cubit, BLoC, Provider, Riverpod, GetX, etc.)
 - **Type-Safe Generic Support**: Full compile-time type safety with generic type parameters
 - **Flexible Data Display**: Display tabular data with customizable columns and rows
 - **Sorting**: Built-in column sorting with custom comparators
@@ -36,7 +37,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  voo_data_grid: ^0.5.4
+  voo_data_grid: ^0.6.0
   voo_ui_core: ^0.1.0
 ```
 
@@ -48,7 +49,53 @@ flutter pub get
 
 ## Usage
 
-### Basic Example
+### Three Ways to Use VooDataGrid
+
+VooDataGrid offers three different approaches to suit your state management needs:
+
+1. **`VooDataGrid`** - Traditional controller-based widget (works with Provider/ChangeNotifier)
+2. **`StatelessVooDataGrid`** - Completely state-agnostic widget (works with ANY state management)
+3. **`VooDataGridStateController`** - Provider-compatible controller for existing users
+
+### Using StatelessVooDataGrid (NEW - Recommended for Cubit/BLoC/Riverpod)
+
+The new `StatelessVooDataGrid` widget accepts state and callbacks directly, making it perfect for use with any state management solution:
+
+```dart
+// With Cubit
+BlocBuilder<OrderGridCubit, VooDataGridState<OrderList>>(
+  builder: (context, state) {
+    return StatelessVooDataGrid<OrderList>(
+      state: state,
+      columns: columns,
+      onPageChanged: (page) => context.read<OrderGridCubit>().changePage(page),
+      onFilterChanged: (field, filter) => 
+        context.read<OrderGridCubit>().applyFilter(field, filter),
+      onSortChanged: (field, direction) => 
+        context.read<OrderGridCubit>().applySort(field, direction),
+      onRowTap: (order) => _showOrderDetails(order),
+    );
+  },
+)
+
+// With Riverpod
+Consumer(
+  builder: (context, ref, child) {
+    final state = ref.watch(orderGridProvider);
+    return StatelessVooDataGrid<OrderList>(
+      state: state,
+      columns: columns,
+      onPageChanged: (page) => 
+        ref.read(orderGridProvider.notifier).changePage(page),
+      onFilterChanged: (field, filter) => 
+        ref.read(orderGridProvider.notifier).applyFilter(field, filter),
+      // ... other callbacks
+    );
+  },
+)
+```
+
+### Basic Example (Traditional Controller)
 
 ```dart
 import 'package:flutter/material.dart';
@@ -528,6 +575,113 @@ AdvancedFilterWidget(
   },
 )
 ```
+
+## State Management Compatibility
+
+VooDataGrid now supports **any state management solution** through a flexible, state-agnostic architecture. Whether you use Cubit, BLoC, Provider, Riverpod, GetX, or any other state management, VooDataGrid integrates seamlessly.
+
+### New Architecture (v0.5.9+)
+
+The package provides three key components for state management flexibility:
+
+1. **`VooDataGridDataSource<T>`** - Clean interface for data fetching without forcing inheritance
+2. **`VooDataGridState<T>`** - Immutable state class with copyWith method
+3. **`VooDataGridStateController<T>`** - ChangeNotifier-based controller for Provider users
+
+### Using with Cubit/BLoC
+
+```dart
+// Repository for data fetching
+class OrderRepository extends VooDataGridDataSource<Order> {
+  @override
+  Future<VooDataGridResponse<Order>> fetchRemoteData({
+    required int page,
+    required int pageSize,
+    required Map<String, VooDataFilter> filters,
+    required List<VooColumnSort> sorts,
+  }) async {
+    // Fetch from your API
+    final response = await api.getOrders(page, pageSize, filters, sorts);
+    return VooDataGridResponse<Order>(
+      rows: response.items,
+      totalRows: response.total,
+      page: page,
+      pageSize: pageSize,
+    );
+  }
+}
+
+// Cubit for state management
+class OrderGridCubit extends Cubit<VooDataGridState<Order>> {
+  final OrderRepository repository;
+  
+  OrderGridCubit({required this.repository}) 
+    : super(const VooDataGridState<Order>());
+  
+  Future<void> loadData() async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final response = await repository.fetchRemoteData(
+        page: state.currentPage,
+        pageSize: state.pageSize,
+        filters: state.filters,
+        sorts: state.sorts,
+      );
+      emit(state.copyWith(
+        rows: response.rows,
+        totalRows: response.totalRows,
+        isLoading: false,
+      ));
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), isLoading: false));
+    }
+  }
+  
+  void changePage(int page) {
+    emit(state.copyWith(currentPage: page));
+    loadData();
+  }
+}
+```
+
+### Using with Provider
+
+```dart
+// Use the provided controller
+final controller = VooDataGridStateController<Order>(
+  dataSource: OrderRepository(),
+  mode: VooDataGridMode.remote,
+);
+
+// In your widget
+ChangeNotifierProvider(
+  create: (_) => controller..loadData(),
+  child: Consumer<VooDataGridStateController<Order>>(
+    builder: (context, controller, _) {
+      return VooDataGrid<Order>(
+        state: controller.state,
+        columns: [...],
+        onPageChanged: controller.changePage,
+        onFilterChanged: controller.applyFilter,
+      );
+    },
+  ),
+)
+```
+
+### Backward Compatibility
+
+The original `VooDataGridSource` with ChangeNotifier is still available and fully supported:
+
+```dart
+// Legacy approach still works
+class MyDataSource extends VooDataGridSource<Map<String, dynamic>> {
+  MyDataSource() : super(mode: VooDataGridMode.local);
+  // ... implementation
+}
+```
+
+For detailed migration examples with Riverpod, GetX, and other state management solutions, see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md).
 
 ## API Standards Support
 

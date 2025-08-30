@@ -43,36 +43,6 @@ class VooFieldWidget extends StatelessWidget {
     this.autofocus = false,
   });
 
-  /// Helper method to create dropdown field with proper type handling
-  Widget _buildDropdownField(
-    VooFormField field,
-    VooFieldOptions effectiveOptions,
-    ValueChanged<dynamic>? onChanged,
-  ) {
-    // Create a wrapper callback that handles both widget onChanged and field onChanged
-    void handleChange(dynamic value) {
-      // Call widget's onChanged
-      onChanged?.call(value);
-      
-      // Safely invoke field.onChanged using reflection to avoid type casting
-      try {
-        final fieldOnChanged = field.onChanged;
-        if (fieldOnChanged != null) {
-          // Create a Function.apply call to invoke the callback without type checking
-          Function.apply(fieldOnChanged, [value]);
-        }
-      } catch (_) {
-        // If Function.apply fails, field.onChanged is incompatible
-        // This is expected when types don't match, so we silently ignore
-      }
-    }
-
-    return VooDropdownFieldWidget<dynamic>(
-      field: field,
-      options: effectiveOptions,
-      onChanged: handleChange,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +119,29 @@ class VooFieldWidget extends StatelessWidget {
 
       case VooFieldType.dropdown:
         // Create dropdown with dynamic type to handle all field types
-        return _buildDropdownField(field, effectiveOptions, onChanged);
+        // Create a wrapper callback that handles both widget onChanged and field onChanged
+        void handleChange(dynamic value) {
+          // Call widget's onChanged
+          onChanged?.call(value);
+          
+          // Safely invoke field.onChanged using reflection to avoid type casting
+          try {
+            final fieldOnChanged = field.onChanged;
+            if (fieldOnChanged != null) {
+              // Create a Function.apply call to invoke the callback without type checking
+              Function.apply(fieldOnChanged, [value]);
+            }
+          } catch (_) {
+            // If Function.apply fails, field.onChanged is incompatible
+            // This is expected when types don't match, so we silently ignore
+          }
+        }
+
+        return VooDropdownFieldWidget<dynamic>(
+          field: field,
+          options: effectiveOptions,
+          onChanged: handleChange,
+        );
 
       case VooFieldType.radio:
         return VooRadioFieldWidget(

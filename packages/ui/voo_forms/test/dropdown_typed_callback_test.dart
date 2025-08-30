@@ -131,7 +131,7 @@ void main() {
           ),
           asyncOptionsLoader: (query) async {
             loaderCalled = true;
-            await Future.delayed(const Duration(milliseconds: 100));
+            await Future<void>.delayed(const Duration(milliseconds: 100));
             
             final allJurisdictions = [
               const JurisdictionListOption(id: '1', name: 'California', code: 'CA'),

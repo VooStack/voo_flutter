@@ -43,33 +43,32 @@ class VooField {
     Widget? suffix,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
-  }) {
-    return VooFormField<String>(
-      id: name,
-      name: name,
-      type: VooFieldType.text,
-      label: label,
-      hint: hint,
-      placeholder: placeholder,
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      maxLength: maxLength,
-      maxLines: 1,
-      inputFormatters: inputFormatters,
-      textCapitalization: textCapitalization,
-      textInputAction: textInputAction ?? TextInputAction.next,
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon,
-      prefix: prefix,
-      suffix: suffix,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<String>(
+        id: name,
+        name: name,
+        type: VooFieldType.text,
+        label: label,
+        hint: hint,
+        placeholder: placeholder,
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        maxLength: maxLength,
+        maxLines: 1,
+        inputFormatters: inputFormatters,
+        textCapitalization: textCapitalization,
+        textInputAction: textInputAction ?? TextInputAction.next,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        prefix: prefix,
+        suffix: suffix,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Email field factory
   static VooFormField<String> email({
@@ -87,28 +86,27 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
-  }) {
-    return VooFormField<String>(
-      id: name,
-      name: name,
-      type: VooFieldType.email,
-      label: label,
-      hint: hint,
-      placeholder: placeholder ?? 'user@example.com',
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      keyboardType: TextInputType.emailAddress,
-      textInputAction: TextInputAction.next,
-      prefixIcon: prefixIcon ?? Icons.email,
-      suffixIcon: suffixIcon,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<String>(
+        id: name,
+        name: name,
+        type: VooFieldType.email,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? 'user@example.com',
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: TextInputType.emailAddress,
+        textInputAction: TextInputAction.next,
+        prefixIcon: prefixIcon ?? Icons.email,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Password field factory
   static VooFormField<String> password({
@@ -126,30 +124,29 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
-  }) {
-    return VooFormField<String>(
-      id: name,
-      name: name,
-      type: VooFieldType.password,
-      label: label,
-      hint: hint,
-      placeholder: placeholder,
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      obscureText: true,
-      enableSuggestions: false,
-      autocorrect: false,
-      textInputAction: TextInputAction.done,
-      prefixIcon: prefixIcon ?? Icons.lock,
-      suffixIcon: suffixIcon ?? Icons.visibility,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<String>(
+        id: name,
+        name: name,
+        type: VooFieldType.password,
+        label: label,
+        hint: hint,
+        placeholder: placeholder,
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        obscureText: true,
+        enableSuggestions: false,
+        autocorrect: false,
+        textInputAction: TextInputAction.done,
+        prefixIcon: prefixIcon ?? Icons.lock,
+        suffixIcon: suffixIcon ?? Icons.visibility,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Phone field factory
   static VooFormField<String> phone({
@@ -168,29 +165,28 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
-  }) {
-    return VooFormField<String>(
-      id: name,
-      name: name,
-      type: VooFieldType.phone,
-      label: label,
-      hint: hint,
-      placeholder: placeholder ?? '(555) 123-4567',
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      keyboardType: TextInputType.phone,
-      inputFormatters: inputFormatters,
-      textInputAction: TextInputAction.next,
-      prefixIcon: prefixIcon ?? Icons.phone,
-      suffixIcon: suffixIcon,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<String>(
+        id: name,
+        name: name,
+        type: VooFieldType.phone,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? '(555) 123-4567',
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: TextInputType.phone,
+        inputFormatters: inputFormatters,
+        textInputAction: TextInputAction.next,
+        prefixIcon: prefixIcon ?? Icons.phone,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Number field factory
   static VooFormField<num> number({
@@ -212,31 +208,30 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<num?>? onChanged,
-  }) {
-    return VooFormField<num>(
-      id: name,
-      name: name,
-      type: VooFieldType.number,
-      label: label,
-      hint: hint,
-      placeholder: placeholder,
-      helper: helper,
-      initialValue: initialValue ?? defaultValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      keyboardType: TextInputType.number,
-      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]'))],
-      min: min,
-      max: max,
-      step: step,
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<num>(
+        id: name,
+        name: name,
+        type: VooFieldType.number,
+        label: label,
+        hint: hint,
+        placeholder: placeholder,
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9.-]'))],
+        min: min,
+        max: max,
+        step: step,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Multiline text field factory
   static VooFormField<String> multiline({
@@ -256,30 +251,29 @@ class VooField {
     IconData? prefixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
-  }) {
-    return VooFormField<String>(
-      id: name,
-      name: name,
-      type: VooFieldType.multiline,
-      label: label,
-      hint: hint,
-      placeholder: placeholder,
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      maxLength: maxLength,
-      maxLines: maxLines ?? 5,
-      minLines: minLines ?? 3,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      prefixIcon: prefixIcon,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<String>(
+        id: name,
+        name: name,
+        type: VooFieldType.multiline,
+        label: label,
+        hint: hint,
+        placeholder: placeholder,
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        maxLength: maxLength,
+        maxLines: maxLines ?? 5,
+        minLines: minLines ?? 3,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,
+        prefixIcon: prefixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Generic dropdown field factory with custom type and converter
   /// 
@@ -326,28 +320,27 @@ class VooField {
     bool enableSearch = false,
     String? searchHint,
     ValueChanged<T?>? onChanged,
-  }) {
-    return VooFormField<T>(
-      id: name,
-      name: name,
-      type: VooFieldType.dropdown,
-      label: label,
-      hint: hint,
-      helper: helper,
-      initialValue: initialValue ?? defaultValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      options: options.map(converter).toList(),
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
-      gridColumns: gridColumns,
-      enableSearch: enableSearch,
-      searchHint: searchHint,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<T>(
+        id: name,
+        name: name,
+        type: VooFieldType.dropdown,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        options: options.map(converter).toList(),
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
+        gridColumns: gridColumns,
+        enableSearch: enableSearch,
+        searchHint: searchHint,
+        onChanged: onChanged,
+      );
 
   /// Async dropdown field factory with dynamic loading
   /// 
@@ -388,33 +381,32 @@ class VooField {
     Duration? searchDebounce,
     int minSearchLength = 0,
     ValueChanged<T?>? onChanged,
-  }) {
-    return VooFormField<T>(
-      id: name,
-      name: name,
-      type: VooFieldType.dropdown,
-      label: label,
-      hint: hint,
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      asyncOptionsLoader: (query) async {
-        final items = await asyncOptionsLoader(query);
-        return items.map(converter).toList();
-      },
-      enableSearch: true,
-      searchHint: searchHint,
-      searchDebounce: searchDebounce,
-      minSearchLength: minSearchLength,
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<T>(
+        id: name,
+        name: name,
+        type: VooFieldType.dropdown,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        asyncOptionsLoader: (query) async {
+          final items = await asyncOptionsLoader(query);
+          return items.map(converter).toList();
+        },
+        enableSearch: true,
+        searchHint: searchHint,
+        searchDebounce: searchDebounce,
+        minSearchLength: minSearchLength,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
   
   /// Simple dropdown field factory with strings
   /// 
@@ -443,31 +435,34 @@ class VooField {
     bool enableSearch = false,
     String? searchHint,
     ValueChanged? onChanged,
-  }) {
-    return VooFormField(
-      id: name,
-      name: name,
-      type: VooFieldType.dropdown,
-      label: label,
-      hint: hint,
-      helper: helper,
-      initialValue: initialValue ?? defaultValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      options: options.map((option) => VooFieldOption(
-        value: option,
-        label: option,
-      ),).toList(),
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
-      gridColumns: gridColumns,
-      enableSearch: enableSearch,
-      searchHint: searchHint,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField(
+        id: name,
+        name: name,
+        type: VooFieldType.dropdown,
+        label: label,
+        hint: hint,
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        options: options
+            .map(
+                (option) => VooFieldOption(
+                  value: option,
+                  label: option,
+                ),
+              )
+            .toList(),
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
+        gridColumns: gridColumns,
+        enableSearch: enableSearch,
+        searchHint: searchHint,
+        onChanged: onChanged,
+      );
 
   /// Boolean/Switch field factory
   static VooFormField<bool> boolean({
@@ -481,21 +476,20 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged<bool?>? onChanged,
-  }) {
-    return VooFormField<bool>(
-      id: name,
-      name: name,
-      type: VooFieldType.boolean,
-      label: label,
-      helper: helper,
-      initialValue: initialValue || defaultValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<bool>(
+        id: name,
+        name: name,
+        type: VooFieldType.boolean,
+        label: label,
+        helper: helper,
+        initialValue: initialValue || defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        onChanged: onChanged,
+      );
 
   /// Checkbox field factory
   static VooFormField<bool> checkbox({
@@ -508,21 +502,20 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged<bool?>? onChanged,
-  }) {
-    return VooFormField<bool>(
-      id: name,
-      name: name,
-      type: VooFieldType.checkbox,
-      label: label,
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<bool>(
+        id: name,
+        name: name,
+        type: VooFieldType.checkbox,
+        label: label,
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        onChanged: onChanged,
+      );
 
   /// Radio field factory - simple version with strings
   static VooFormField radio({
@@ -537,25 +530,28 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged? onChanged,
-  }) {
-    return VooFormField(
-      id: name,
-      name: name,
-      type: VooFieldType.radio,
-      label: label,
-      helper: helper,
-      initialValue: initialValue ?? defaultValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      options: options.map((option) => VooFieldOption(
-        value: option,
-        label: option,
-      ),).toList(),
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField(
+        id: name,
+        name: name,
+        type: VooFieldType.radio,
+        label: label,
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        options: options
+            .map(
+                (option) => VooFieldOption(
+                  value: option,
+                  label: option,
+                ),
+              )
+            .toList(),
+        onChanged: onChanged,
+      );
 
   /// Date field factory
   static VooFormField<DateTime> date({
@@ -575,28 +571,27 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<DateTime?>? onChanged,
-  }) {
-    return VooFormField<DateTime>(
-      id: name,
-      name: name,
-      type: VooFieldType.date,
-      label: label,
-      hint: hint,
-      placeholder: placeholder ?? 'MM/DD/YYYY',
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      minDate: min,
-      maxDate: max,
-      prefixIcon: prefixIcon ?? Icons.calendar_today,
-      suffixIcon: suffixIcon,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<DateTime>(
+        id: name,
+        name: name,
+        type: VooFieldType.date,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? 'MM/DD/YYYY',
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        minDate: min,
+        maxDate: max,
+        prefixIcon: prefixIcon ?? Icons.calendar_today,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Time field factory
   static VooFormField<TimeOfDay> time({
@@ -614,26 +609,25 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<TimeOfDay?>? onChanged,
-  }) {
-    return VooFormField<TimeOfDay>(
-      id: name,
-      name: name,
-      type: VooFieldType.time,
-      label: label,
-      hint: hint,
-      placeholder: placeholder ?? 'HH:MM',
-      helper: helper,
-      initialValue: initialValue,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      prefixIcon: prefixIcon ?? Icons.access_time,
-      suffixIcon: suffixIcon,
-      gridColumns: gridColumns,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<TimeOfDay>(
+        id: name,
+        name: name,
+        type: VooFieldType.time,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? 'HH:MM',
+        helper: helper,
+        initialValue: initialValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        prefixIcon: prefixIcon ?? Icons.access_time,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
 
   /// Slider field factory
   static VooFormField<double> slider({
@@ -650,22 +644,21 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged<double?>? onChanged,
-  }) {
-    return VooFormField<double>(
-      id: name,
-      name: name,
-      type: VooFieldType.slider,
-      label: label,
-      helper: helper,
-      initialValue: initialValue ?? defaultValue ?? min,
-      required: required,
-      enabled: enabled,
-      readOnly: readOnly,
-      validators: validators ?? [],
-      min: min,
-      max: max,
-      divisions: divisions,
-      onChanged: onChanged,
-    );
-  }
+  }) =>
+      VooFormField<double>(
+        id: name,
+        name: name,
+        type: VooFieldType.slider,
+        label: label,
+        helper: helper,
+        initialValue: initialValue ?? defaultValue ?? min,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        min: min,
+        max: max,
+        divisions: divisions,
+        onChanged: onChanged,
+      );
 }

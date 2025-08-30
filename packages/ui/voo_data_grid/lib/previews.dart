@@ -1,7 +1,8 @@
-import 'package:flutter/widget_previews.dart';
-import 'package:flutter/material.dart';
-import 'package:voo_data_grid/voo_data_grid.dart';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 
 // Simple local data source implementation for previews
 class _LocalDataGridSource extends VooDataGridSource {
@@ -19,15 +20,13 @@ class _LocalDataGridSource extends VooDataGridSource {
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
-  }) async {
-    // Not needed for local mode
-    return VooDataGridResponse(
-      rows: [],
-      totalRows: 0,
-      page: page,
-      pageSize: pageSize,
-    );
-  }
+  }) async =>
+      VooDataGridResponse(
+        rows: [],
+        totalRows: 0,
+        page: page,
+        pageSize: pageSize,
+      );
 }
 
 @Preview(name: 'Basic Data Grid')
@@ -48,28 +47,25 @@ Widget basicDataGrid() {
   final controller = VooDataGridController(
     dataSource: dataSource,
     columns: [
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'id',
         label: 'ID',
         width: 60,
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'name',
         label: 'Name',
         flex: 2,
-        sortable: true,
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'email',
         label: 'Email',
         flex: 3,
-        sortable: true,
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'status',
         label: 'Status',
         width: 100,
-        sortable: true,
       ),
     ],
   );
@@ -103,7 +99,7 @@ Widget wideDataGridWithScrollbars() {
   final dataSource = _LocalDataGridSource(data: data);
 
   final columns = <VooDataColumn>[
-    VooDataColumn(
+    const VooDataColumn<dynamic>(
       field: 'id',
       label: 'ID',
       width: 60,
@@ -112,7 +108,7 @@ Widget wideDataGridWithScrollbars() {
 
   for (int i = 0; i < 20; i++) {
     columns.add(
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'col_$i',
         label: 'Column ${i + 1}',
         width: 120,
@@ -153,7 +149,7 @@ Widget advancedFiltersGrid() {
         'Books',
         'Clothing',
         'Food',
-        'Toys'
+        'Toys',
       ][index % 5],
       'price': (index + 1) * 9.99,
       'stock': index * 5,
@@ -172,56 +168,65 @@ Widget advancedFiltersGrid() {
   final controller = VooDataGridController(
     dataSource: dataSource,
     columns: [
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'product',
         label: 'Product',
         flex: 2,
-        sortable: true,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.textField,
         filterHint: 'Search products...',
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'category',
         label: 'Category',
         width: 120,
-        sortable: true,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.dropdown,
         filterOptions: [
           VooFilterOption(
-              value: 'Electronics', label: 'Electronics', icon: Icons.devices),
-          VooFilterOption(value: 'Books', label: 'Books', icon: Icons.book),
+            value: 'Electronics',
+            label: 'Electronics',
+            icon: Icons.devices,
+          ),
           VooFilterOption(
-              value: 'Clothing', label: 'Clothing', icon: Icons.checkroom),
-          VooFilterOption(value: 'Food', label: 'Food', icon: Icons.restaurant),
-          VooFilterOption(value: 'Toys', label: 'Toys', icon: Icons.toys),
+            value: 'Books',
+            label: 'Books',
+            icon: Icons.book,
+          ),
+          VooFilterOption(
+            value: 'Clothing',
+            label: 'Clothing',
+            icon: Icons.checkroom,
+          ),
+          VooFilterOption(
+            value: 'Food',
+            label: 'Food',
+            icon: Icons.restaurant,
+          ),
+          VooFilterOption(
+            value: 'Toys',
+            label: 'Toys',
+            icon: Icons.toys,
+          ),
         ],
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'price',
         label: 'Price',
         width: 100,
-        sortable: true,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.numberRange,
         valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
         filterHint: 'Min price...',
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'stock',
         label: 'Stock',
         width: 80,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.numberField,
         filterHint: 'Min stock...',
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'rating',
         label: 'Rating',
         width: 100,
-        sortable: true,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.numberRange,
         filterHint: 'Min rating...',
         cellBuilder: (context, value, row) {
@@ -229,19 +234,17 @@ Widget advancedFiltersGrid() {
           return Row(
             children: List.generate(5, (i) {
               if (i < rating.floor()) {
-                return Icon(Icons.star, size: 14, color: Colors.amber);
+                return const Icon(Icons.star, size: 14, color: Colors.amber);
               }
-              return Icon(Icons.star_border, size: 14, color: Colors.grey);
+              return const Icon(Icons.star_border, size: 14, color: Colors.grey);
             }),
           );
         },
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'created',
         label: 'Created Date',
         width: 120,
-        sortable: true,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.datePicker,
         valueFormatter: (value) {
           if (value is DateTime) {
@@ -251,11 +254,10 @@ Widget advancedFiltersGrid() {
         },
         filterHint: 'Select date...',
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'available',
         label: 'Available',
         width: 100,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.checkbox,
         cellBuilder: (context, value, row) {
           final isAvailable = value as bool? ?? false;
@@ -266,16 +268,24 @@ Widget advancedFiltersGrid() {
           );
         },
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'supplier',
         label: 'Supplier',
         width: 120,
-        filterable: true,
         filterWidgetType: VooFilterWidgetType.dropdown,
         filterOptions: [
-          VooFilterOption(value: 'Supplier A', label: 'Supplier A'),
-          VooFilterOption(value: 'Supplier B', label: 'Supplier B'),
-          VooFilterOption(value: 'Supplier C', label: 'Supplier C'),
+          VooFilterOption(
+            value: 'Supplier A',
+            label: 'Supplier A',
+          ),
+          VooFilterOption(
+            value: 'Supplier B',
+            label: 'Supplier B',
+          ),
+          VooFilterOption(
+            value: 'Supplier C',
+            label: 'Supplier C',
+          ),
         ],
       ),
     ],
@@ -295,7 +305,7 @@ Widget advancedFiltersGrid() {
 @Preview(name: 'API Output - Simple REST')
 Widget apiOutputSimpleRest() {
   // Create request builder with Simple REST standard
-  final requestBuilder = DataGridRequestBuilder(
+  const requestBuilder = DataGridRequestBuilder(
     standard: ApiFilterStandard.simple,
   );
 
@@ -304,35 +314,35 @@ Widget apiOutputSimpleRest() {
     page: 1,
     pageSize: 20,
     filters: {
-      'name': VooDataFilter(
+      'name': const VooDataFilter(
         operator: VooFilterOperator.contains,
         value: 'John',
       ),
-      'status': VooDataFilter(
+      'status': const VooDataFilter(
         operator: VooFilterOperator.equals,
         value: 'active',
       ),
     },
     sorts: [
-      VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+      const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
     ],
   );
 
-  final jsonOutput = JsonEncoder.withIndent('  ').convert(request);
+  final jsonOutput = const JsonEncoder.withIndent('  ').convert(request);
 
   return Material(
     child: Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Simple REST API Request:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -340,7 +350,7 @@ Widget apiOutputSimpleRest() {
             ),
             child: SelectableText(
               jsonOutput,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 12,
               ),
@@ -354,7 +364,7 @@ Widget apiOutputSimpleRest() {
 
 @Preview(name: 'API Output - JSON:API')
 Widget apiOutputJsonApi() {
-  final requestBuilder = DataGridRequestBuilder(
+  const requestBuilder = DataGridRequestBuilder(
     standard: ApiFilterStandard.jsonApi,
   );
 
@@ -362,36 +372,36 @@ Widget apiOutputJsonApi() {
     page: 2,
     pageSize: 15,
     filters: {
-      'category': VooDataFilter(
+      'category': const VooDataFilter(
         operator: VooFilterOperator.equals,
         value: 'electronics',
       ),
-      'price': VooDataFilter(
+      'price': const VooDataFilter(
         operator: VooFilterOperator.greaterThan,
         value: 100,
       ),
     },
     sorts: [
-      VooColumnSort(field: 'price', direction: VooSortDirection.descending),
-      VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+      const VooColumnSort(field: 'price', direction: VooSortDirection.descending),
+      const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
     ],
   );
 
-  final jsonOutput = JsonEncoder.withIndent('  ').convert(request);
+  final jsonOutput = const JsonEncoder.withIndent('  ').convert(request);
 
   return Material(
     child: Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'JSON:API Request:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -399,7 +409,7 @@ Widget apiOutputJsonApi() {
             ),
             child: SelectableText(
               jsonOutput,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 12,
               ),
@@ -413,7 +423,7 @@ Widget apiOutputJsonApi() {
 
 @Preview(name: 'API Output - OData')
 Widget apiOutputOData() {
-  final requestBuilder = DataGridRequestBuilder(
+  const requestBuilder = DataGridRequestBuilder(
     standard: ApiFilterStandard.odata,
   );
 
@@ -421,35 +431,35 @@ Widget apiOutputOData() {
     page: 1,
     pageSize: 50,
     filters: {
-      'department': VooDataFilter(
+      'department': const VooDataFilter(
         operator: VooFilterOperator.equals,
         value: 'Sales',
       ),
-      'salary': VooDataFilter(
+      'salary': const VooDataFilter(
         operator: VooFilterOperator.between,
         value: [50000, 100000],
       ),
     },
     sorts: [
-      VooColumnSort(field: 'salary', direction: VooSortDirection.descending),
+      const VooColumnSort(field: 'salary', direction: VooSortDirection.descending),
     ],
   );
 
-  final jsonOutput = JsonEncoder.withIndent('  ').convert(request);
+  final jsonOutput = const JsonEncoder.withIndent('  ').convert(request);
 
   return Material(
     child: Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'OData Request:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -457,7 +467,7 @@ Widget apiOutputOData() {
             ),
             child: SelectableText(
               jsonOutput,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 12,
               ),
@@ -471,7 +481,7 @@ Widget apiOutputOData() {
 
 @Preview(name: 'API Output - MongoDB')
 Widget apiOutputMongoDB() {
-  final requestBuilder = DataGridRequestBuilder(
+  const requestBuilder = DataGridRequestBuilder(
     standard: ApiFilterStandard.mongodb,
   );
 
@@ -479,35 +489,35 @@ Widget apiOutputMongoDB() {
     page: 1,
     pageSize: 25,
     filters: {
-      'status': VooDataFilter(
+      'status': const VooDataFilter(
         operator: VooFilterOperator.inList,
         value: ['active', 'pending'],
       ),
-      'created': VooDataFilter(
+      'created': const VooDataFilter(
         operator: VooFilterOperator.greaterThanOrEqual,
         value: '2024-01-01',
       ),
     },
     sorts: [
-      VooColumnSort(field: 'created', direction: VooSortDirection.descending),
+      const VooColumnSort(field: 'created', direction: VooSortDirection.descending),
     ],
   );
 
-  final jsonOutput = JsonEncoder.withIndent('  ').convert(request);
+  final jsonOutput = const JsonEncoder.withIndent('  ').convert(request);
 
   return Material(
     child: Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'MongoDB Query:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -515,7 +525,7 @@ Widget apiOutputMongoDB() {
             ),
             child: SelectableText(
               jsonOutput,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 12,
               ),
@@ -529,7 +539,7 @@ Widget apiOutputMongoDB() {
 
 @Preview(name: 'API Output - Voo Standard')
 Widget apiOutputVooStandard() {
-  final requestBuilder = DataGridRequestBuilder(
+  const requestBuilder = DataGridRequestBuilder(
     standard: ApiFilterStandard.voo,
   );
 
@@ -537,51 +547,51 @@ Widget apiOutputVooStandard() {
     page: 1,
     pageSize: 20,
     filters: {
-      'Site.Name': VooDataFilter(
+      'Site.Name': const VooDataFilter(
         operator: VooFilterOperator.contains,
         value: 'Tech',
       ),
-      'Client.CompanyName': VooDataFilter(
+      'Client.CompanyName': const VooDataFilter(
         operator: VooFilterOperator.contains,
         value: 'Solutions',
       ),
-      'Site.SiteNumber': VooDataFilter(
+      'Site.SiteNumber': const VooDataFilter(
         operator: VooFilterOperator.greaterThan,
         value: 1006,
       ),
-      'OrderStatus': VooDataFilter(
+      'OrderStatus': const VooDataFilter(
         operator: VooFilterOperator.equals,
         value: 0,
       ),
-      'OrderDate': VooDataFilter(
+      'OrderDate': const VooDataFilter(
         operator: VooFilterOperator.greaterThanOrEqual,
         value: '2024-01-01T00:00:00Z',
       ),
-      'OrderCost': VooDataFilter(
+      'OrderCost': const VooDataFilter(
         operator: VooFilterOperator.greaterThanOrEqual,
         value: 1000.00,
       ),
     },
     sorts: [
-      VooColumnSort(field: 'OrderDate', direction: VooSortDirection.descending),
+      const VooColumnSort(field: 'OrderDate', direction: VooSortDirection.descending),
     ],
   );
 
-  final jsonOutput = JsonEncoder.withIndent('  ').convert(request);
+  final jsonOutput = const JsonEncoder.withIndent('  ').convert(request);
 
   return Material(
     child: Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Voo API Standard Request:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -589,7 +599,7 @@ Widget apiOutputVooStandard() {
             ),
             child: SelectableText(
               jsonOutput,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 12,
               ),
@@ -603,7 +613,7 @@ Widget apiOutputVooStandard() {
 
 @Preview(name: 'API Output - GraphQL')
 Widget apiOutputGraphQL() {
-  final requestBuilder = DataGridRequestBuilder(
+  const requestBuilder = DataGridRequestBuilder(
     standard: ApiFilterStandard.graphql,
   );
 
@@ -611,35 +621,35 @@ Widget apiOutputGraphQL() {
     page: 3,
     pageSize: 10,
     filters: {
-      'type': VooDataFilter(
+      'type': const VooDataFilter(
         operator: VooFilterOperator.equals,
         value: 'premium',
       ),
-      'score': VooDataFilter(
+      'score': const VooDataFilter(
         operator: VooFilterOperator.greaterThanOrEqual,
         value: 4.5,
       ),
     },
     sorts: [
-      VooColumnSort(field: 'score', direction: VooSortDirection.descending),
+      const VooColumnSort(field: 'score', direction: VooSortDirection.descending),
     ],
   );
 
-  final jsonOutput = JsonEncoder.withIndent('  ').convert(request);
+  final jsonOutput = const JsonEncoder.withIndent('  ').convert(request);
 
   return Material(
     child: Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'GraphQL Variables:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -647,7 +657,7 @@ Widget apiOutputGraphQL() {
             ),
             child: SelectableText(
               jsonOutput,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 12,
               ),
@@ -676,29 +686,25 @@ Widget singleSortConstraint() {
   final controller = VooDataGridController(
     dataSource: dataSource,
     columns: [
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'id',
         label: 'ID',
         width: 60,
-        sortable: true,
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'name',
         label: 'Name',
         flex: 2,
-        sortable: true,
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'value',
         label: 'Value',
         width: 100,
-        sortable: true,
       ),
-      VooDataColumn(
+      const VooDataColumn<dynamic>(
         field: 'status',
         label: 'Status',
         width: 100,
-        sortable: true,
       ),
     ],
     // constraints: VooDataGridConstraints.singleSort, // Constraints would be added here
@@ -710,9 +716,9 @@ Widget singleSortConstraint() {
     child: Column(
       children: [
         Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           color: Colors.blue.withValues(alpha: 0.1),
-          child: Row(
+          child: const Row(
             children: [
               Icon(Icons.info_outline, size: 16, color: Colors.blue),
               SizedBox(width: 8),
@@ -741,7 +747,7 @@ Widget customCellsDataGrid() {
         'John Doe',
         'Jane Smith',
         'Bob Johnson',
-        'Alice Brown'
+        'Alice Brown',
       ][index % 4],
       'department': ['Engineering', 'Sales', 'HR', 'Marketing'][index % 4],
       'salary': 50000 + (index * 2500),
@@ -755,7 +761,7 @@ Widget customCellsDataGrid() {
   final controller = VooDataGridController(
     dataSource: dataSource,
     columns: [
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'name',
         label: 'Employee',
         flex: 2,
@@ -774,16 +780,16 @@ Widget customCellsDataGrid() {
                 backgroundColor: Colors.blue.withValues(alpha: 0.2),
                 child: Text(
                   initials,
-                  style: TextStyle(fontSize: 10, color: Colors.blue),
+                  style: const TextStyle(fontSize: 10, color: Colors.blue),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(name),
             ],
           );
         },
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'department',
         label: 'Department',
         width: 120,
@@ -797,7 +803,7 @@ Widget customCellsDataGrid() {
           };
 
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: (colors[dept] ?? Colors.grey).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
@@ -815,13 +821,13 @@ Widget customCellsDataGrid() {
           );
         },
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'salary',
         label: 'Salary',
         width: 100,
         valueFormatter: (value) => '\$${(value / 1000).toStringAsFixed(0)}k',
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'performance',
         label: 'Performance',
         width: 120,
@@ -837,8 +843,8 @@ Widget customCellsDataGrid() {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('$performance%', style: TextStyle(fontSize: 10)),
-              SizedBox(height: 2),
+              Text('$performance%', style: const TextStyle(fontSize: 10)),
+              const SizedBox(height: 2),
               LinearProgressIndicator(
                 value: performance / 100,
                 backgroundColor: Colors.grey.withValues(alpha: 0.2),
@@ -849,7 +855,7 @@ Widget customCellsDataGrid() {
           );
         },
       ),
-      VooDataColumn(
+      VooDataColumn<dynamic>(
         field: 'active',
         label: 'Status',
         width: 80,
@@ -866,7 +872,7 @@ Widget customCellsDataGrid() {
                   shape: BoxShape.circle,
                 ),
               ),
-              SizedBox(width: 4),
+              const SizedBox(width: 4),
               Text(
                 active ? 'Active' : 'Inactive',
                 style: TextStyle(

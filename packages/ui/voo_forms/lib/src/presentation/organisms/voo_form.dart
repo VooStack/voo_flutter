@@ -15,7 +15,7 @@ class VooFormWidget extends HookWidget {
   final VooFormController? controller;
   final Future<void> Function(Map<String, dynamic>)? onSubmit;
   final VoidCallback? onSuccess;
-  final Function(dynamic)? onError;
+  final void Function(dynamic)? onError;
   final bool showErrors;
   final bool showSubmitButton;
   final String submitButtonText;

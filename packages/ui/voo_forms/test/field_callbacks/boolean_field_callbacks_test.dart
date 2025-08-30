@@ -372,7 +372,7 @@ void main() {
             options: ['S', 'M', 'L'],
             onChanged: (dynamic value) {
               capturedValue = value as String?;
-              selectedValues.add(value as String?);
+              selectedValues.add(value);
             },
           );
           

@@ -27,8 +27,7 @@ class VooDropdownFieldWidget<T> extends StatefulWidget {
   });
 
   @override
-  State<VooDropdownFieldWidget<T>> createState() =>
-      _VooDropdownFieldWidgetState<T>();
+  State<VooDropdownFieldWidget<T>> createState() => _VooDropdownFieldWidgetState<T>();
 }
 
 class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
@@ -107,9 +106,9 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       // Access field.onChanged dynamically to avoid compile-time type checking
       final dynamic field = widget.field;
       final callback = field.onChanged;
-      if (callback != null) {
+      if (callback != null && callback is Function) {
         // Use Function.apply to invoke the callback with proper type handling
-        Function.apply(callback, [value]);
+        Function.apply(callback as Function, [value]);
       }
     } catch (e) {
       // If there's a type mismatch, silently ignore
@@ -131,7 +130,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   void _showOverlay() {
     if (_overlayEntry != null) return;
 
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final RenderBox renderBox = context.findRenderObject()! as RenderBox;
     final size = renderBox.size;
 
     _overlayEntry = OverlayEntry(
@@ -187,8 +186,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
 
   void _onSearchChanged(String query) {
     if (widget.field.asyncOptionsLoader != null) {
-      final searchDebounce =
-          widget.field.searchDebounce ?? const Duration(milliseconds: 300);
+      final searchDebounce = widget.field.searchDebounce ?? const Duration(milliseconds: 300);
       final minSearchLength = widget.field.minSearchLength ?? 0;
 
       // Cancel previous timer
@@ -214,11 +212,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         if (query.isEmpty) {
           _filteredOptions = _allOptions;
         } else {
-          _filteredOptions = _allOptions.where((option) {
-            return option.label.toLowerCase().contains(query.toLowerCase()) ||
-                (option.subtitle?.toLowerCase().contains(query.toLowerCase()) ??
-                    false);
-          }).toList();
+          _filteredOptions = _allOptions
+              .where(
+                (option) => option.label.toLowerCase().contains(query.toLowerCase()) || (option.subtitle?.toLowerCase().contains(query.toLowerCase()) ?? false),
+              )
+              .toList();
         }
       });
     }
@@ -266,11 +264,9 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     String? labelText;
     String? hintText = widget.field.hint;
 
-    if (widget.options.labelPosition == LabelPosition.floating &&
-        widget.field.label != null) {
+    if (widget.options.labelPosition == LabelPosition.floating && widget.field.label != null) {
       labelText = widget.field.label;
-    } else if (widget.options.labelPosition == LabelPosition.placeholder &&
-        widget.field.label != null) {
+    } else if (widget.options.labelPosition == LabelPosition.placeholder && widget.field.label != null) {
       hintText = widget.field.label;
     }
 
@@ -283,9 +279,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       prefixIcon: widget.field.prefixIcon != null
           ? Icon(
               widget.field.prefixIcon,
-              color: (_isFocused || _isOpen)
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant,
+              color: (_isFocused || _isOpen) ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
             )
           : selectedOption?.icon != null
               ? Icon(
@@ -295,9 +289,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
               : null,
       suffixIcon: Icon(
         _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-        color: widget.field.enabled
-            ? theme.colorScheme.onSurfaceVariant
-            : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+        color: widget.field.enabled ? theme.colorScheme.onSurfaceVariant : theme.colorScheme.onSurface.withValues(alpha: 0.38),
       ),
       enabled: widget.field.enabled && !widget.field.readOnly,
     );
@@ -309,8 +301,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
           filled: true,
           fillColor: widget.field.enabled
               ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
-              : theme.colorScheme.surfaceContainerHighest
-                  .withValues(alpha: 0.3),
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         );
         break;
       case FieldVariant.underlined:
@@ -383,8 +374,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    final errorText =
-        widget.showError ? (widget.error ?? widget.field.error) : null;
+    final errorText = widget.showError ? (widget.error ?? widget.field.error) : null;
     final hasError = errorText != null && errorText.isNotEmpty;
 
     // Use searchable dropdown if search is enabled or async loader is provided
@@ -392,14 +382,14 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       final selectedOption = _getSelectedOption();
 
       // Create InputDecoration matching TextFormField style
-      InputDecoration decoration = _buildInputDecoration(
+      final InputDecoration decoration = _buildInputDecoration(
         context,
         hasError,
         selectedOption,
       );
 
       // Build the dropdown input field using TextFormField for consistent styling
-      Widget dropdownInput = CompositedTransformTarget(
+      final Widget dropdownInput = CompositedTransformTarget(
         link: _layerLink,
         child: TextFormField(
           controller: TextEditingController(
@@ -429,41 +419,38 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     // Regular dropdown without search - use DropdownButtonFormField for consistency
     // Simplified items without subtitles to prevent overflow
     // Subtitles are only shown in searchable dropdowns with custom overlay
-    
-    final items = widget.field.options?.map<DropdownMenuItem<T>>((option) {
-          // Simplified item without subtitle to prevent overflow
-          // Subtitle can be shown in the searchable dropdown only
-          return DropdownMenuItem<T>(
-            value: option.value,
-            enabled: option.enabled,
-            child: Row(
-              children: [
-                if (option.icon != null) ...[
-                  Icon(
-                    option.icon,
-                    size: design.iconSizeMd,
-                    color: option.enabled
-                        ? theme.colorScheme.onSurface
-                        : theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                  ),
-                  SizedBox(width: design.spacingSm),
-                ],
-                Expanded(
-                  child: Text(
-                    option.label,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: option.enabled
-                          ? theme.colorScheme.onSurface
-                          : theme.colorScheme.onSurface
-                              .withValues(alpha: 0.38),
+
+    // Simplified item without subtitle to prevent overflow
+    // Subtitle can be shown in the searchable dropdown only
+    final items = widget.field.options
+            ?.map<DropdownMenuItem<T>>(
+              (option) => DropdownMenuItem<T>(
+                value: option.value,
+                enabled: option.enabled,
+                child: Row(
+                  children: [
+                    if (option.icon != null) ...[
+                      Icon(
+                        option.icon,
+                        size: design.iconSizeMd,
+                        color: option.enabled ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                      ),
+                      SizedBox(width: design.spacingSm),
+                    ],
+                    Expanded(
+                      child: Text(
+                        option.label,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: option.enabled ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }).toList() ??
+              ),
+            )
+            .toList() ??
         [];
 
     // Build input decoration for regular dropdown
@@ -481,7 +468,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         );
       }
     }
-    
+
     final decoration = _buildInputDecoration(
       context,
       hasError,
@@ -493,9 +480,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
 
     return DropdownButtonFormField<T>(
       key: dropdownKey,
-      initialValue: items.any((item) => item.value == _currentValue)
-          ? _currentValue
-          : null,
+      initialValue: items.any((item) => item.value == _currentValue) ? _currentValue : null,
       items: items,
       onChanged: widget.field.enabled && !widget.field.readOnly
           ? (T? value) {

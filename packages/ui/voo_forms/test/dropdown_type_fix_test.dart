@@ -177,7 +177,7 @@ void main() {
         name: 'jurisdiction',
         label: 'Select Jurisdiction',
         asyncOptionsLoader: (query) async {
-          await Future.delayed(const Duration(milliseconds: 100));
+          await Future<void>.delayed(const Duration(milliseconds: 100));
           return [
             const JurisdictionListOption(id: '1', name: 'California', code: 'CA'),
             const JurisdictionListOption(id: '2', name: 'Texas', code: 'TX'),

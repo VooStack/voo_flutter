@@ -1,150 +1,114 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/src/data_grid_source_base.dart';
 
-/// Abstract data source for VooDataGrid
-///
-/// Generic type parameter T represents the row data type.
-/// Use dynamic if working with untyped Map data.
-/// For typed objects (non-Map), you MUST provide a valueGetter function
-/// in your VooDataColumn definitions to extract field values.
-abstract class VooDataGridSource<T> extends ChangeNotifier {
-  /// Operation mode
-  VooDataGridMode _mode = VooDataGridMode.remote;
-  VooDataGridMode get mode => _mode;
-
-  /// All data (for local mode)
-  List<T> _allRows = [];
-  List<T> get allRows => _allRows;
-
-  /// Current page of data (filtered/sorted)
-  List<T> _rows = [];
-  List<T> get rows => _rows;
-
-  /// Total number of rows (after filtering)
-  int _totalRows = 0;
-  int get totalRows => _totalRows;
-
-  /// Current page number (0-indexed)
-  int _currentPage = 0;
-  int get currentPage => _currentPage;
-
-  /// Rows per page
-  int _pageSize = 20;
-  int get pageSize => _pageSize;
-
-  /// Loading state
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-
-  /// Error state
-  String? _error;
-  String? get error => _error;
-
-  /// Current filters
-  final Map<String, VooDataFilter> _filters = {};
-  Map<String, VooDataFilter> get filters => _filters;
-
-  /// Current sort
-  final List<VooColumnSort> _sorts = [];
-  List<VooColumnSort> get sorts => _sorts;
-
-  /// Selected rows
-  final Set<T> _selectedRows = {};
-  Set<T> get selectedRows => _selectedRows;
-
-  /// Selection mode
-  VooSelectionMode _selectionMode = VooSelectionMode.none;
-  VooSelectionMode get selectionMode => _selectionMode;
-
-  /// Debounce timer for remote filtering
+/// Data grid controller with ChangeNotifier for Provider/ChangeNotifierProvider
+/// 
+/// This controller can be used with Provider for those who prefer that approach.
+/// For other state management solutions, use the appropriate adapter.
+class VooDataGridStateController<T> extends ChangeNotifier {
+  final VooDataGridDataSource<T> dataSource;
+  VooDataGridState<T> _state;
   Timer? _debounceTimer;
 
-  /// Constructor
-  VooDataGridSource({VooDataGridMode mode = VooDataGridMode.remote}) {
-    _mode = mode;
-  }
+  VooDataGridStateController({
+    required this.dataSource,
+    VooDataGridMode mode = VooDataGridMode.remote,
+    int pageSize = 20,
+  }) : _state = VooDataGridState<T>(
+          mode: mode,
+          pageSize: pageSize,
+        );
 
-  /// Fetch data from remote source (required for remote and mixed modes)
-  Future<VooDataGridResponse<T>> fetchRemoteData({
-    required int page,
-    required int pageSize,
-    required Map<String, VooDataFilter> filters,
-    required List<VooColumnSort> sorts,
-  }) async {
-    // Default implementation for local mode
-    throw UnimplementedError(
-      'fetchRemoteData must be implemented for remote/mixed modes',
-    );
-  }
+  /// Get current state
+  VooDataGridState<T> get state => _state;
+
+  /// Convenience getters
+  VooDataGridMode get mode => _state.mode;
+  List<T> get allRows => _state.allRows;
+  List<T> get rows => _state.rows;
+  int get totalRows => _state.totalRows;
+  int get currentPage => _state.currentPage;
+  int get pageSize => _state.pageSize;
+  bool get isLoading => _state.isLoading;
+  String? get error => _state.error;
+  Map<String, VooDataFilter> get filters => _state.filters;
+  List<VooColumnSort> get sorts => _state.sorts;
+  Set<T> get selectedRows => _state.selectedRows;
+  VooSelectionMode get selectionMode => _state.selectionMode;
+  int get totalPages => _state.totalPages;
 
   /// Set local data (for local mode)
   void setLocalData(List<T> data) {
-    _allRows = List.from(data);
+    _state = _state.copyWith(allRows: data);
     _applyLocalFiltersAndSorts();
   }
 
   /// Set operation mode
   void setMode(VooDataGridMode newMode) {
-    _mode = newMode;
+    _state = _state.copyWith(mode: newMode);
     loadData();
   }
 
   /// Load data with current settings
   Future<void> loadData() async {
-    _isLoading = true;
-    _error = null;
+    _state = _state.copyWith(isLoading: true, error: null);
     notifyListeners();
 
     try {
-      switch (_mode) {
+      switch (_state.mode) {
         case VooDataGridMode.local:
           _applyLocalFiltersAndSorts();
           break;
 
         case VooDataGridMode.remote:
-          final response = await fetchRemoteData(
-            page: _currentPage,
-            pageSize: _pageSize,
-            filters: _filters,
-            sorts: _sorts,
+          final response = await dataSource.fetchRemoteData(
+            page: _state.currentPage,
+            pageSize: _state.pageSize,
+            filters: _state.filters,
+            sorts: _state.sorts,
           );
-          _rows = response.rows;
-          _totalRows = response.totalRows;
+          _state = _state.copyWith(
+            rows: response.rows,
+            totalRows: response.totalRows,
+            error: null,
+          );
           break;
 
         case VooDataGridMode.mixed:
           // For mixed mode, fetch all data once then filter/sort locally
-          if (_allRows.isEmpty) {
-            final response = await fetchRemoteData(
+          if (_state.allRows.isEmpty) {
+            final response = await dataSource.fetchRemoteData(
               page: 0,
               pageSize: 999999, // Get all data
               filters: {},
               sorts: [],
             );
-            _allRows = response.rows;
+            _state = _state.copyWith(allRows: response.rows);
           }
           _applyLocalFiltersAndSorts();
           break;
       }
-      _error = null;
     } catch (e) {
-      _error = e.toString();
-      _rows = [];
-      _totalRows = 0;
+      _state = _state.copyWith(
+        error: e.toString(),
+        rows: [],
+        totalRows: 0,
+      );
     } finally {
-      _isLoading = false;
+      _state = _state.copyWith(isLoading: false);
       notifyListeners();
     }
   }
 
   /// Apply local filtering and sorting
   void _applyLocalFiltersAndSorts() {
-    var filteredData = List<T>.from(_allRows);
+    var filteredData = List<T>.from(_state.allRows);
 
     // Apply filters
-    for (final entry in _filters.entries) {
+    for (final entry in _state.filters.entries) {
       final field = entry.key;
       final filter = entry.value;
 
@@ -155,7 +119,7 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
     }
 
     // Apply sorts
-    for (final sort in _sorts.reversed) {
+    for (final sort in _state.sorts.reversed) {
       filteredData.sort((a, b) {
         final aValue = _getFieldValue(a, sort.field);
         final bValue = _getFieldValue(b, sort.field);
@@ -173,35 +137,35 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
           comparison = aValue.toString().compareTo(bValue.toString());
         }
 
-        return sort.direction == VooSortDirection.ascending ? comparison : -comparison;
+        return sort.direction == VooSortDirection.ascending
+            ? comparison
+            : -comparison;
       });
     }
 
     // Apply pagination
-    _totalRows = filteredData.length;
-    final startIndex = _currentPage * _pageSize;
-    final endIndex = (startIndex + _pageSize).clamp(0, _totalRows);
-    _rows = filteredData
+    final totalRows = filteredData.length;
+    final startIndex = _state.currentPage * _state.pageSize;
+    final endIndex = (startIndex + _state.pageSize).clamp(0, totalRows);
+    final rows = filteredData
         .sublist(
           startIndex.clamp(0, filteredData.length),
           endIndex.clamp(0, filteredData.length),
         )
         .cast<T>();
+
+    _state = _state.copyWith(
+      rows: rows,
+      totalRows: totalRows,
+    );
   }
 
   /// Get field value from row object
-  ///
-  /// For typed objects, you MUST provide a valueGetter function in VooDataColumn.
-  /// This default implementation only handles Map objects.
   dynamic _getFieldValue(dynamic row, String field) {
     if (row is Map) {
       return row[field];
     }
-
-    // For typed objects, we cannot dynamically access properties in Flutter/Dart
-    // without mirrors (which aren't available in Flutter).
-    // Users MUST provide a valueGetter function in the column definition.
-    // Return null to indicate the field cannot be accessed.
+    // For typed objects, users must provide valueGetter in column definition
     return null;
   }
 
@@ -210,26 +174,32 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
     switch (filter.operator) {
       case VooFilterOperator.equals:
         return value == filter.value;
-
       case VooFilterOperator.notEquals:
         return value != filter.value;
-
       case VooFilterOperator.contains:
         if (value == null) return false;
-        return value.toString().toLowerCase().contains(filter.value.toString().toLowerCase());
-
+        return value
+            .toString()
+            .toLowerCase()
+            .contains(filter.value.toString().toLowerCase());
       case VooFilterOperator.notContains:
         if (value == null) return true;
-        return !value.toString().toLowerCase().contains(filter.value.toString().toLowerCase());
-
+        return !value
+            .toString()
+            .toLowerCase()
+            .contains(filter.value.toString().toLowerCase());
       case VooFilterOperator.startsWith:
         if (value == null) return false;
-        return value.toString().toLowerCase().startsWith(filter.value.toString().toLowerCase());
-
+        return value
+            .toString()
+            .toLowerCase()
+            .startsWith(filter.value.toString().toLowerCase());
       case VooFilterOperator.endsWith:
         if (value == null) return false;
-        return value.toString().toLowerCase().endsWith(filter.value.toString().toLowerCase());
-
+        return value
+            .toString()
+            .toLowerCase()
+            .endsWith(filter.value.toString().toLowerCase());
       case VooFilterOperator.greaterThan:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -239,7 +209,6 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
           return value.isAfter(filter.value as DateTime);
         }
         return false;
-
       case VooFilterOperator.greaterThanOrEqual:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -249,7 +218,6 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
           return !value.isBefore(filter.value as DateTime);
         }
         return false;
-
       case VooFilterOperator.lessThan:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -259,7 +227,6 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
           return value.isBefore(filter.value as DateTime);
         }
         return false;
-
       case VooFilterOperator.lessThanOrEqual:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -269,7 +236,6 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
           return !value.isAfter(filter.value as DateTime);
         }
         return false;
-
       case VooFilterOperator.between:
         if (value == null || filter.value == null || filter.valueTo == null) {
           return false;
@@ -277,26 +243,25 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
         if (value is num && filter.value is num && filter.valueTo is num) {
           return value >= (filter.value as num) && value <= (filter.valueTo as num);
         }
-        if (value is DateTime && filter.value is DateTime && filter.valueTo is DateTime) {
-          return !value.isBefore(filter.value as DateTime) && !value.isAfter(filter.valueTo as DateTime);
+        if (value is DateTime &&
+            filter.value is DateTime &&
+            filter.valueTo is DateTime) {
+          return !value.isBefore(filter.value as DateTime) &&
+              !value.isAfter(filter.valueTo as DateTime);
         }
         return false;
-
       case VooFilterOperator.inList:
         if (filter.value is List) {
           return (filter.value as List).contains(value);
         }
         return false;
-
       case VooFilterOperator.notInList:
         if (filter.value is List) {
           return !(filter.value as List).contains(value);
         }
         return true;
-
       case VooFilterOperator.isNull:
         return value == null;
-
       case VooFilterOperator.isNotNull:
         return value != null;
     }
@@ -304,14 +269,15 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
 
   /// Apply filter to a column
   void applyFilter(String field, VooDataFilter? filter) {
+    final newFilters = Map<String, VooDataFilter>.from(_state.filters);
     if (filter == null) {
-      _filters.remove(field);
+      newFilters.remove(field);
     } else {
-      _filters[field] = filter;
+      newFilters[field] = filter;
     }
-    _currentPage = 0;
+    _state = _state.copyWith(filters: newFilters, currentPage: 0);
 
-    if (_mode == VooDataGridMode.remote) {
+    if (_state.mode == VooDataGridMode.remote) {
       _debouncedLoadData();
     } else {
       loadData();
@@ -320,41 +286,40 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
 
   /// Clear all filters
   void clearFilters() {
-    _filters.clear();
-    _currentPage = 0;
+    _state = _state.copyWith(filters: {}, currentPage: 0);
     loadData();
   }
 
   /// Apply sort to a column
   void applySort(String field, VooSortDirection direction) {
+    final newSorts = List<VooColumnSort>.from(_state.sorts);
     if (direction == VooSortDirection.none) {
-      _sorts.removeWhere((sort) => sort.field == field);
+      newSorts.removeWhere((sort) => sort.field == field);
     } else {
-      final existingIndex = _sorts.indexWhere((sort) => sort.field == field);
+      final existingIndex = newSorts.indexWhere((sort) => sort.field == field);
       final newSort = VooColumnSort(field: field, direction: direction);
 
       if (existingIndex >= 0) {
-        _sorts[existingIndex] = newSort;
+        newSorts[existingIndex] = newSort;
       } else {
-        _sorts.add(newSort);
+        newSorts.add(newSort);
       }
     }
-    _currentPage = 0;
+    _state = _state.copyWith(sorts: newSorts, currentPage: 0);
     loadData();
   }
 
   /// Clear all sorts
   void clearSorts() {
-    _sorts.clear();
-    _currentPage = 0;
+    _state = _state.copyWith(sorts: [], currentPage: 0);
     loadData();
   }
 
   /// Change page
   void changePage(int page) {
-    if (page >= 0 && page < totalPages) {
-      _currentPage = page;
-      if (_mode == VooDataGridMode.local || _mode == VooDataGridMode.mixed) {
+    if (page >= 0 && page < _state.totalPages) {
+      _state = _state.copyWith(currentPage: page);
+      if (_state.mode == VooDataGridMode.local || _state.mode == VooDataGridMode.mixed) {
         _applyLocalFiltersAndSorts();
         notifyListeners();
       } else {
@@ -365,9 +330,8 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
 
   /// Change page size
   void changePageSize(int size) {
-    _pageSize = size;
-    _currentPage = 0;
-    if (_mode == VooDataGridMode.local || _mode == VooDataGridMode.mixed) {
+    _state = _state.copyWith(pageSize: size, currentPage: 0);
+    if (_state.mode == VooDataGridMode.local || _state.mode == VooDataGridMode.mixed) {
       _applyLocalFiltersAndSorts();
       notifyListeners();
     } else {
@@ -375,51 +339,45 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
     }
   }
 
-  /// Get total number of pages
-  int get totalPages => (_totalRows / _pageSize).ceil();
-
   /// Select/deselect a row
   void toggleRowSelection(T row) {
-    if (_selectionMode == VooSelectionMode.none) return;
+    if (_state.selectionMode == VooSelectionMode.none) return;
 
-    if (_selectionMode == VooSelectionMode.single) {
-      _selectedRows.clear();
-      if (!_selectedRows.contains(row)) {
-        _selectedRows.add(row);
+    final newSelection = Set<T>.from(_state.selectedRows);
+    if (_state.selectionMode == VooSelectionMode.single) {
+      newSelection.clear();
+      if (!newSelection.contains(row)) {
+        newSelection.add(row);
       }
     } else {
-      if (_selectedRows.contains(row)) {
-        _selectedRows.remove(row);
+      if (newSelection.contains(row)) {
+        newSelection.remove(row);
       } else {
-        _selectedRows.add(row);
+        newSelection.add(row);
       }
     }
+    _state = _state.copyWith(selectedRows: newSelection);
     notifyListeners();
   }
 
   /// Select all rows
   void selectAll() {
-    if (_selectionMode == VooSelectionMode.multiple) {
-      _selectedRows.addAll(_rows);
+    if (_state.selectionMode == VooSelectionMode.multiple) {
+      final newSelection = Set<T>.from(_state.rows);
+      _state = _state.copyWith(selectedRows: newSelection);
       notifyListeners();
     }
   }
 
-  /// Select all rows (alias for selectAll)
-  void selectAllRows() => selectAll();
-
   /// Clear selection
   void clearSelection() {
-    _selectedRows.clear();
+    _state = _state.copyWith(selectedRows: {});
     notifyListeners();
   }
 
-  /// Deselect all rows (alias for clearSelection)
-  void deselectAllRows() => clearSelection();
-
   /// Set selection mode
   void setSelectionMode(VooSelectionMode mode) {
-    _selectionMode = mode;
+    _state = _state.copyWith(selectionMode: mode);
     if (mode == VooSelectionMode.none) {
       clearSelection();
     }
@@ -438,6 +396,7 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
   @override
   void dispose() {
     _debounceTimer?.cancel();
+    dataSource.dispose();
     super.dispose();
   }
 }

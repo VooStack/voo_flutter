@@ -276,7 +276,7 @@ void main() {
             asyncOptionsLoader: (query) async {
               loaderCalled = true;
               // Simulate API call
-              await Future.delayed(const Duration(milliseconds: 100));
+              await Future<void>.delayed(const Duration(milliseconds: 100));
               
               final allOptions = ['Async 1', 'Async 2', 'Async 3'];
               return allOptions

@@ -1,11 +1,11 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 void main() {
   group('Action Column Tests', () {
     test('excludeFromApi property should be false by default', () {
-      final column = VooDataColumn(
+      const column = VooDataColumn<dynamic>(
         field: 'test',
         label: 'Test',
       );
@@ -14,7 +14,7 @@ void main() {
     });
 
     test('excludeFromApi property should be set correctly', () {
-      final column = VooDataColumn(
+      const column = VooDataColumn<dynamic>(
         field: 'actions',
         label: 'Actions',
         excludeFromApi: true,
@@ -24,7 +24,7 @@ void main() {
     });
 
     test('onCellTap should be null by default', () {
-      final column = VooDataColumn(
+      const column = VooDataColumn<dynamic>(
         field: 'test',
         label: 'Test',
       );
@@ -37,7 +37,7 @@ void main() {
         // Handler implementation
       }
 
-      final column = VooDataColumn(
+      final column = VooDataColumn<dynamic>(
         field: 'test',
         label: 'Test',
         onCellTap: tapHandler,
@@ -48,7 +48,7 @@ void main() {
     });
 
     test('copyWith should preserve excludeFromApi', () {
-      final original = VooDataColumn(
+      const original = VooDataColumn<dynamic>(
         field: 'actions',
         label: 'Actions',
         excludeFromApi: true,
@@ -61,7 +61,7 @@ void main() {
     });
 
     test('copyWith should update excludeFromApi', () {
-      final original = VooDataColumn(
+      const original = VooDataColumn<dynamic>(
         field: 'actions',
         label: 'Actions',
         excludeFromApi: true,
@@ -77,7 +77,7 @@ void main() {
         // Handler implementation
       }
 
-      final original = VooDataColumn(
+      final original = VooDataColumn<dynamic>(
         field: 'test',
         label: 'Test',
         onCellTap: tapHandler,
@@ -91,7 +91,7 @@ void main() {
 
     group('Filter behavior with excludeFromApi', () {
       test('columns with excludeFromApi should not be filterable', () {
-        final column = VooDataColumn(
+        const column = VooDataColumn<dynamic>(
           field: 'actions',
           label: 'Actions',
           excludeFromApi: true,
@@ -105,7 +105,7 @@ void main() {
       });
 
       test('columns with excludeFromApi should not be sortable in practice', () {
-        final column = VooDataColumn(
+        const column = VooDataColumn<dynamic>(
           field: 'actions',
           label: 'Actions',
           excludeFromApi: true,
@@ -127,14 +127,14 @@ void main() {
       // because they never get added to the filters map in the first place
       
       final filters = <String, VooDataFilter>{
-        'name': VooDataFilter(
+        'name': const VooDataFilter(
           operator: VooFilterOperator.contains,
           value: 'John',
         ),
         // 'actions' column would not be here because it's excludeFromApi
       };
 
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
       );
 
@@ -172,11 +172,11 @@ void main() {
       // The header doesn't allow sorting on excluded columns
       
       final sorts = [
-        VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+        const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
         // 'actions' column would not be here because it's excludeFromApi
       ];
 
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
       );
 

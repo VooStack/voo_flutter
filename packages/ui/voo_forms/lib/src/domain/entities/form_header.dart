@@ -65,44 +65,41 @@ class VooFormHeader {
     double? dividerHeight,
     Color? dividerColor,
     Map<String, dynamic>? metadata,
-  }) {
-    return VooFormHeader(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
-      description: description ?? this.description,
-      icon: icon ?? this.icon,
-      leading: leading ?? this.leading,
-      trailing: trailing ?? this.trailing,
-      color: color ?? this.color,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      padding: padding ?? this.padding,
-      margin: margin ?? this.margin,
-      borderRadius: borderRadius ?? this.borderRadius,
-      decoration: decoration ?? this.decoration,
-      style: style ?? this.style,
-      alignment: alignment ?? this.alignment,
-      showDivider: showDivider ?? this.showDivider,
-      dividerHeight: dividerHeight ?? this.dividerHeight,
-      dividerColor: dividerColor ?? this.dividerColor,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  }) =>
+      VooFormHeader(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        subtitle: subtitle ?? this.subtitle,
+        description: description ?? this.description,
+        icon: icon ?? this.icon,
+        leading: leading ?? this.leading,
+        trailing: trailing ?? this.trailing,
+        color: color ?? this.color,
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        padding: padding ?? this.padding,
+        margin: margin ?? this.margin,
+        borderRadius: borderRadius ?? this.borderRadius,
+        decoration: decoration ?? this.decoration,
+        style: style ?? this.style,
+        alignment: alignment ?? this.alignment,
+        showDivider: showDivider ?? this.showDivider,
+        dividerHeight: dividerHeight ?? this.dividerHeight,
+        dividerColor: dividerColor ?? this.dividerColor,
+        metadata: metadata ?? this.metadata,
+      );
 
   /// Convert to map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'subtitle': subtitle,
-      'description': description,
-      'style': style.toString(),
-      'alignment': alignment.toString(),
-      'showDivider': showDivider,
-      'dividerHeight': dividerHeight,
-      'metadata': metadata,
-    };
-  }
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'subtitle': subtitle,
+        'description': description,
+        'style': style.toString(),
+        'alignment': alignment.toString(),
+        'showDivider': showDivider,
+        'dividerHeight': dividerHeight,
+        'metadata': metadata,
+      };
 }
 
 /// Style variations for form headers

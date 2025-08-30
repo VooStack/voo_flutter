@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voo_data_grid/src/advanced_remote_data_source.dart';
+import 'package:voo_data_grid/src/models/advanced_filters.dart';
+import 'package:voo_data_grid/src/models/filter_type_extensions.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
-import '../models/advanced_filters.dart';
-import '../models/filter_type_extensions.dart';
-import '../advanced_remote_data_source.dart';
 
 /// Advanced filter widget for complex filtering UI
 class AdvancedFilterWidget extends StatefulWidget {

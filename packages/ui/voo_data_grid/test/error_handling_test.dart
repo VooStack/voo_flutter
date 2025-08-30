@@ -52,28 +52,28 @@ class FileStatus {
 
 void main() {
   group('VooDataGrid Error Handling', () {
-    testWidgets('should handle typed valueGetter without crashing',
-        (tester) async {
+    testWidgets('should handle typed valueGetter without crashing', (tester) async {
       // Create test data
       final testData = [
         OrderList(
           id: '1',
           siteNumber: 'SITE001',
-          status:
-              FileStatus(code: 'ACTIVE', name: 'Active', color: Colors.green),
+          status: FileStatus(code: 'ACTIVE', name: 'Active', color: Colors.green),
           amount: 100.0,
         ),
         OrderList(
           id: '2',
           siteNumber: 'SITE002',
           status: FileStatus(
-              code: 'PENDING', name: 'Pending', color: Colors.orange),
+            code: 'PENDING',
+            name: 'Pending',
+            color: Colors.orange,
+          ),
           amount: 200.0,
         ),
         OrderList(
           id: '3',
           siteNumber: 'SITE003',
-          status: null, // Test null status
           amount: 300.0,
         ),
       ];
@@ -99,7 +99,7 @@ void main() {
           label: 'Status',
           // This is the kind of valueGetter that was causing the error
           valueGetter: (OrderList row) => row.status?.name,
-          valueFormatter: (value) => value ?? 'N/A',
+          valueFormatter: (value) => (value ?? 'N/A') as String,
         ),
         VooDataColumn<OrderList>(
           field: 'statusCode',
@@ -116,8 +116,7 @@ void main() {
       ];
 
       // Create controller
-      final controller =
-          VooDataGridController<OrderList>(dataSource: dataSource);
+      final controller = VooDataGridController<OrderList>(dataSource: dataSource);
       controller.setColumns(columns);
 
       // Build the widget
@@ -158,8 +157,7 @@ void main() {
       expect(find.text('N/A'), findsOneWidget); // Null status should show N/A
     });
 
-    test('should log warning when valueGetter is missing for typed objects',
-        () {
+    test('should log warning when valueGetter is missing for typed objects', () {
       // Capture debug print output
       final List<String> debugMessages = [];
       final originalDebugPrint = debugPrint;
@@ -172,8 +170,7 @@ void main() {
         OrderList(
           id: '1',
           siteNumber: 'SITE001',
-          status:
-              FileStatus(code: 'ACTIVE', name: 'Active', color: Colors.green),
+          status: FileStatus(code: 'ACTIVE', name: 'Active', color: Colors.green),
           amount: 100.0,
         ),
       ];
@@ -183,15 +180,14 @@ void main() {
 
       // Create column WITHOUT valueGetter (this should trigger warning)
       final columns = [
-        VooDataColumn<OrderList>(
+        const VooDataColumn<OrderList>(
           field: 'id',
           label: 'ID',
           // Missing valueGetter - should trigger warning for typed objects
         ),
       ];
 
-      final controller =
-          VooDataGridController<OrderList>(dataSource: dataSource);
+      final controller = VooDataGridController<OrderList>(dataSource: dataSource);
       controller.setColumns(columns);
 
       // The warning should be logged when trying to access field value
@@ -215,8 +211,7 @@ void main() {
         {'id': '2', 'value': 200},
       ];
 
-      final dataSource =
-          TestDataSource<Map<String, dynamic>>(mode: VooDataGridMode.local);
+      final dataSource = TestDataSource<Map<String, dynamic>>(mode: VooDataGridMode.local);
       dataSource.setLocalData(testData);
 
       final columns = [
@@ -236,8 +231,7 @@ void main() {
         ),
       ];
 
-      final controller =
-          VooDataGridController<Map<String, dynamic>>(dataSource: dataSource);
+      final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource);
       controller.setColumns(columns);
 
       // Verify the setup
@@ -246,8 +240,7 @@ void main() {
       expect(() => columns[1].valueGetter!(testData[1]), returnsNormally);
     });
 
-    test('should handle filtering with typed objects that have valueGetter',
-        () {
+    test('should handle filtering with typed objects that have valueGetter', () {
       final testData = [
         OrderList(id: '1', siteNumber: 'SITE001', amount: 100.0),
         OrderList(id: '2', siteNumber: 'SITE002', amount: 200.0),
@@ -261,16 +254,16 @@ void main() {
       // This is a known limitation that we've documented
 
       // For remote mode, filtering is handled server-side
-      final remoteDataSource =
-          TestDataSource<OrderList>(mode: VooDataGridMode.remote);
+      final remoteDataSource = TestDataSource<OrderList>(mode: VooDataGridMode.remote);
 
       // Apply filter (this would be sent to server in remote mode)
       remoteDataSource.applyFilter(
-          'siteNumber',
-          VooDataFilter(
-            value: 'SITE001',
-            operator: VooFilterOperator.equals,
-          ));
+        'siteNumber',
+        const VooDataFilter(
+          value: 'SITE001',
+          operator: VooFilterOperator.equals,
+        ),
+      );
 
       expect(remoteDataSource.filters.length, 1);
       expect(remoteDataSource.filters['siteNumber']?.value, 'SITE001');
@@ -294,8 +287,7 @@ void main() {
       final dataSource = TestDataSource<OrderList>(mode: VooDataGridMode.local);
 
       // Create strongly typed controller
-      final controller =
-          VooDataGridController<OrderList>(dataSource: dataSource);
+      final controller = VooDataGridController<OrderList>(dataSource: dataSource);
       controller.setColumns(columns);
 
       // Verify types are maintained

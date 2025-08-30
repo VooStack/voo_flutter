@@ -10,7 +10,7 @@ class VooFormController extends ChangeNotifier {
   final Map<String, dynamic> _fieldValues = {};
   final Map<String, String> _fieldErrors = {};
   final Map<String, GlobalKey> _fieldKeys = {};
-  
+
   VooFormController({required VooForm form}) : _form = form {
     _initializeForm();
   }
@@ -56,21 +56,13 @@ class VooFormController extends ChangeNotifier {
     }
   }
 
-  TextEditingController? getTextController(String fieldId) {
-    return _textControllers[fieldId];
-  }
+  TextEditingController? getTextController(String fieldId) => _textControllers[fieldId];
 
-  FocusNode? getFocusNode(String fieldId) {
-    return _focusNodes[fieldId];
-  }
+  FocusNode? getFocusNode(String fieldId) => _focusNodes[fieldId];
 
-  GlobalKey? getFieldKey(String fieldId) {
-    return _fieldKeys[fieldId];
-  }
+  GlobalKey? getFieldKey(String fieldId) => _fieldKeys[fieldId];
 
-  dynamic getValue(String fieldId) {
-    return _fieldValues[fieldId];
-  }
+  dynamic getValue(String fieldId) => _fieldValues[fieldId];
 
   T? getTypedValue<T>(String fieldId) {
     final value = _fieldValues[fieldId];
@@ -78,13 +70,11 @@ class VooFormController extends ChangeNotifier {
     return null;
   }
 
-  String? getError(String fieldId) {
-    return _fieldErrors[fieldId];
-  }
+  String? getError(String fieldId) => _fieldErrors[fieldId];
 
   void setValue(String fieldId, dynamic value, {bool validate = false}) {
     _fieldValues[fieldId] = value;
-    
+
     if (!_form.isDirty) {
       _form = _form.copyWith(isDirty: true);
     }
@@ -108,7 +98,7 @@ class VooFormController extends ChangeNotifier {
     values.forEach((key, value) {
       if (_form.fields.any((field) => field.id == key)) {
         _fieldValues[key] = value;
-        
+
         // Update text controller if it exists
         if (_textControllers.containsKey(key)) {
           final text = value?.toString() ?? '';
@@ -133,7 +123,7 @@ class VooFormController extends ChangeNotifier {
   void _handleFieldChange(String fieldId, dynamic value) {
     if (_fieldValues[fieldId] != value) {
       setValue(fieldId, value);
-      
+
       final field = _form.getField(fieldId);
       field?.onChanged?.call(value);
     }
@@ -208,17 +198,16 @@ class VooFormController extends ChangeNotifier {
   void reset() {
     _fieldValues.clear();
     _fieldErrors.clear();
-    
+
     // Reset to initial values
     for (final field in _form.fields) {
       if (field.initialValue != null) {
         _fieldValues[field.id] = field.initialValue;
       }
-      
+
       // Reset text controllers
       if (_textControllers.containsKey(field.id)) {
-        _textControllers[field.id]!.text = 
-            field.initialValue?.toString() ?? '';
+        _textControllers[field.id]!.text = field.initialValue?.toString() ?? '';
       }
     }
 
@@ -236,7 +225,7 @@ class VooFormController extends ChangeNotifier {
   void clear() {
     _fieldValues.clear();
     _fieldErrors.clear();
-    
+
     // Clear text controllers
     for (final controller in _textControllers.values) {
       controller.clear();
@@ -256,7 +245,7 @@ class VooFormController extends ChangeNotifier {
   Future<bool> submit({
     required Future<void> Function(Map<String, dynamic> values) onSubmit,
     VoidCallback? onSuccess,
-    Function(dynamic error)? onError,
+    void Function(dynamic error)? onError,
   }) async {
     if (_form.isSubmitting) return false;
 
@@ -288,13 +277,13 @@ class VooFormController extends ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {};
-    
+
     for (final field in _form.fields) {
       if (_fieldValues.containsKey(field.id)) {
         json[field.name] = _fieldValues[field.id];
       }
     }
-    
+
     return json;
   }
 
@@ -305,7 +294,7 @@ class VooFormController extends ChangeNotifier {
   void focusNextField(String currentFieldId) {
     final fields = _form.fields.where((f) => f.visible && f.enabled).toList();
     final currentIndex = fields.indexWhere((f) => f.id == currentFieldId);
-    
+
     if (currentIndex >= 0 && currentIndex < fields.length - 1) {
       final nextField = fields[currentIndex + 1];
       focusField(nextField.id);
@@ -315,7 +304,7 @@ class VooFormController extends ChangeNotifier {
   void focusPreviousField(String currentFieldId) {
     final fields = _form.fields.where((f) => f.visible && f.enabled).toList();
     final currentIndex = fields.indexWhere((f) => f.id == currentFieldId);
-    
+
     if (currentIndex > 0) {
       final previousField = fields[currentIndex - 1];
       focusField(previousField.id);
@@ -332,9 +321,7 @@ class VooFormController extends ChangeNotifier {
     final field = _form.getField(fieldId);
     if (field != null) {
       final updatedField = field.copyWith(enabled: true);
-      final updatedFields = _form.fields.map((f) {
-        return f.id == fieldId ? updatedField : f;
-      }).toList();
+      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
       _form = _form.copyWith(fields: updatedFields);
       notifyListeners();
     }
@@ -344,9 +331,7 @@ class VooFormController extends ChangeNotifier {
     final field = _form.getField(fieldId);
     if (field != null) {
       final updatedField = field.copyWith(enabled: false);
-      final updatedFields = _form.fields.map((f) {
-        return f.id == fieldId ? updatedField : f;
-      }).toList();
+      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
       _form = _form.copyWith(fields: updatedFields);
       notifyListeners();
     }
@@ -356,9 +341,7 @@ class VooFormController extends ChangeNotifier {
     final field = _form.getField(fieldId);
     if (field != null) {
       final updatedField = field.copyWith(visible: true);
-      final updatedFields = _form.fields.map((f) {
-        return f.id == fieldId ? updatedField : f;
-      }).toList();
+      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
       _form = _form.copyWith(fields: updatedFields);
       notifyListeners();
     }
@@ -368,9 +351,7 @@ class VooFormController extends ChangeNotifier {
     final field = _form.getField(fieldId);
     if (field != null) {
       final updatedField = field.copyWith(visible: false);
-      final updatedFields = _form.fields.map((f) {
-        return f.id == fieldId ? updatedField : f;
-      }).toList();
+      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
       _form = _form.copyWith(fields: updatedFields);
       notifyListeners();
     }
@@ -391,9 +372,7 @@ class VooFormController extends ChangeNotifier {
 }
 
 // Hook for easy form controller usage
-VooFormController useVooFormController(VooForm form) {
-  return use(_VooFormControllerHook(form: form));
-}
+VooFormController useVooFormController(VooForm form) => use(_VooFormControllerHook(form: form));
 
 class _VooFormControllerHook extends Hook<VooFormController> {
   final VooForm form;

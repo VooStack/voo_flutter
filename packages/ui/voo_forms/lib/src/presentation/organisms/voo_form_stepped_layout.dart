@@ -28,7 +28,7 @@ class VooFormSteppedLayout extends StatelessWidget {
     
     // Extract steps from metadata
     final steps = form.metadata?['steps'] as List?;
-    final currentStep = controller.getValue('_currentStep') ?? 0;
+    final int currentStep = (controller.getValue('_currentStep') ?? 0) as int;
     
     if (steps == null || steps.isEmpty || form.sections == null) {
       return const Center(

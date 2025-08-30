@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'data_grid.dart';
+import 'package:voo_data_grid/src/data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Mobile-optimized pagination controls for VooDataGrid
@@ -56,7 +56,7 @@ class VooDataGridMobilePagination extends StatelessWidget {
               PopupMenuButton<int>(
                 onSelected: onPageSizeChanged,
                 itemBuilder: (context) => pageSizeOptions
-                    .map((size) => PopupMenuItem(
+                    .map((size) => PopupMenuItem<int>(
                           value: size,
                           child: Text('$size rows per page'),
                         ))

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'data_grid_source.dart';
-import 'data_grid_column.dart';
-import 'models/data_grid_constraints.dart';
-import 'utils/synchronized_scroll_controller.dart';
+import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/data_grid_source.dart';
+import 'package:voo_data_grid/src/models/data_grid_constraints.dart';
+import 'package:voo_data_grid/src/utils/synchronized_scroll_controller.dart';
 
 /// Controller for VooDataGrid
 /// 
@@ -80,7 +80,7 @@ class VooDataGridController<T> extends ChangeNotifier {
   bool get columnReorderable => _columnReorderable;
 
   /// Data grid constraints
-  VooDataGridConstraints _constraints = const VooDataGridConstraints();
+  VooDataGridConstraints _constraints = VooDataGridConstraints.singleSort;
   VooDataGridConstraints get constraints => _constraints;
 
   /// Field prefix for nested properties (e.g., "Site" for "Site.SiteNumber")
@@ -113,7 +113,7 @@ class VooDataGridController<T> extends ChangeNotifier {
     _showHoverEffect = showHoverEffect ?? true;
     _columnResizable = columnResizable ?? true;
     _columnReorderable = columnReorderable ?? false;
-    _constraints = constraints ?? const VooDataGridConstraints();
+    _constraints = constraints ?? VooDataGridConstraints.singleSort;
     _fieldPrefix = fieldPrefix;
 
     // Listen to data source changes

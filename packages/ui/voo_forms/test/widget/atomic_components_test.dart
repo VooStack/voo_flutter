@@ -99,7 +99,7 @@ void main() {
         ),
       );
 
-      final textField = tester.widget<TextFormField>(find.byType(TextFormField));
+      expect(find.byType(TextFormField), findsOneWidget);
       expect(field.type, equals(VooFieldType.password));
     });
 
@@ -141,8 +141,6 @@ void main() {
 
   group('Atomic Components - Boolean Fields', () {
     testWidgets('VooSwitchFieldWidget should toggle', (tester) async {
-      bool? capturedValue;
-      
       final field = VooField.boolean(
         name: 'enabled',
         label: 'Enable Feature',
@@ -151,10 +149,7 @@ void main() {
 
       await tester.pumpWidget(
         createTestApp(
-          VooFieldWidget(
-            field: field,
-            onChanged: (value) => capturedValue = value as bool?,
-          ),
+          VooFieldWidget(field: field),
         ),
       );
 
@@ -185,8 +180,6 @@ void main() {
     });
 
     testWidgets('Checkbox should handle tap', (tester) async {
-      bool? capturedValue;
-      
       final field = VooField.checkbox(
         name: 'subscribe',
         label: 'Subscribe to newsletter',
@@ -195,10 +188,7 @@ void main() {
 
       await tester.pumpWidget(
         createTestApp(
-          VooFieldWidget(
-            field: field,
-            onChanged: (value) => capturedValue = value as bool?,
-          ),
+          VooFieldWidget(field: field),
         ),
       );
 
@@ -319,8 +309,6 @@ void main() {
     });
 
     testWidgets('Slider should handle drag', (tester) async {
-      double? capturedValue;
-      
       final field = VooField.slider(
         name: 'brightness',
         label: 'Brightness',
@@ -331,10 +319,7 @@ void main() {
 
       await tester.pumpWidget(
         createTestApp(
-          VooFieldWidget(
-            field: field,
-            onChanged: (value) => capturedValue = value as double?,
-          ),
+          VooFieldWidget(field: field),
         ),
       );
 

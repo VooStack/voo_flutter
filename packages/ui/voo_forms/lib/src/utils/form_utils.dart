@@ -18,8 +18,7 @@ class VooFormUtils {
     FormLayout layout = FormLayout.vertical,
     FormValidationMode validationMode = FormValidationMode.onChange,
     Map<String, dynamic>? metadata,
-  }) {
-    return VooForm(
+  }) => VooForm(
       id: id,
       title: title,
       description: description,
@@ -28,7 +27,6 @@ class VooFormUtils {
       validationMode: validationMode,
       metadata: metadata,
     );
-  }
 
   /// Create a form with sections
   static VooForm createSectionedForm({
@@ -236,8 +234,7 @@ class VooFormUtils {
   static List<VooFormField> getUnfilledRequiredFields({
     required VooForm form,
     required Map<String, dynamic> values,
-  }) {
-    return form.fields.where((field) {
+  }) => form.fields.where((field) {
       if (!field.required) return false;
       
       final value = values[field.id];
@@ -245,7 +242,6 @@ class VooFormUtils {
           (value is String && value.isEmpty) ||
           (value is List && value.isEmpty);
     }).toList();
-  }
 
   /// Clone form with new values
   static VooForm cloneFormWithValues({
@@ -451,8 +447,7 @@ class VooFormUtils {
   }
 
   /// Export form configuration as JSON
-  static Map<String, dynamic> exportFormConfiguration(VooForm form) {
-    return {
+  static Map<String, dynamic> exportFormConfiguration(VooForm form) => {
       'id': form.id,
       'title': form.title,
       'description': form.description,
@@ -486,7 +481,6 @@ class VooFormUtils {
       },).toList(),
       'metadata': form.metadata,
     };
-  }
 
   /// Group fields by section
   static Map<VooFormSection?, List<VooFormField>> groupFieldsBySection(VooForm form) {
@@ -524,8 +518,7 @@ class VooFormUtils {
     required List<VooFormField> fields,
     required Map<String, dynamic> values,
     required Map<String, bool Function(Map<String, dynamic>)> rules,
-  }) {
-    return fields.map((field) {
+  }) => fields.map((field) {
       if (rules.containsKey(field.id)) {
         final rule = rules[field.id]!;
         final shouldShow = rule(values);
@@ -533,7 +526,6 @@ class VooFormUtils {
       }
       return field;
     }).toList();
-  }
 
   /// Generate form from JSON schema
   static VooForm fromJsonSchema(Map<String, dynamic> schema) {
@@ -553,8 +545,8 @@ class VooFormUtils {
         hint: fieldSchema['description'] as String?,
         type: fieldType,
         required: required.contains(key),
-        min: fieldSchema['minimum'],
-        max: fieldSchema['maximum'],
+        min: fieldSchema['minimum'] as num?,
+        max: fieldSchema['maximum'] as num?,
         maxLength: fieldSchema['maxLength'] as int?,
         options: _parseOptions(fieldSchema['enum']),
       ),);
@@ -612,13 +604,11 @@ class FormStep {
     this.optional = false,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
+  Map<String, dynamic> toMap() => {
       'title': title,
       'subtitle': subtitle,
       'description': description,
       'fieldCount': fields.length,
       'optional': optional,
     };
-  }
 }

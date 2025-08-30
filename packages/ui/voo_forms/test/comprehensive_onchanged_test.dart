@@ -499,7 +499,7 @@ void main() {
           name: 'test_async_dropdown',
           label: 'Test Async Dropdown',
           asyncOptionsLoader: (query) async {
-            await Future.delayed(const Duration(milliseconds: 50));
+            await Future<void>.delayed(const Duration(milliseconds: 50));
             return [
               TestData('1', 'Item 1'),
               TestData('2', 'Item 2'),

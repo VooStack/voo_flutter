@@ -25,13 +25,11 @@ class SecondaryFilter {
         'operator': operator,
       };
 
-  factory SecondaryFilter.fromJson(Map<String, dynamic> json) {
-    return SecondaryFilter(
+  factory SecondaryFilter.fromJson(Map<String, dynamic> json) => SecondaryFilter(
       logic: json['logic'] == 'And' ? FilterLogic.and : FilterLogic.or,
       value: json['value'],
-      operator: json['operator'],
+      operator: json['operator']?.toString() ?? '',
     );
-  }
 }
 
 /// Base class for all filter types
@@ -66,16 +64,14 @@ class StringFilter extends BaseFilter {
     super.secondaryFilter,
   });
 
-  factory StringFilter.fromJson(Map<String, dynamic> json) {
-    return StringFilter(
-      fieldName: json['fieldName'],
-      value: json['value'],
-      operator: json['operator'],
+  factory StringFilter.fromJson(Map<String, dynamic> json) => StringFilter(
+      fieldName: json['fieldName'] as String,
+      value: json['value'] as String,
+      operator: json['operator'] as String,
       secondaryFilter: json['secondaryFilter'] != null
-          ? SecondaryFilter.fromJson(json['secondaryFilter'])
+          ? SecondaryFilter.fromJson(json['secondaryFilter'] as Map<String, dynamic>)
           : null,
     );
-  }
 }
 
 /// Integer filter implementation
@@ -87,18 +83,16 @@ class IntFilter extends BaseFilter {
     super.secondaryFilter,
   });
 
-  factory IntFilter.fromJson(Map<String, dynamic> json) {
-    return IntFilter(
-      fieldName: json['fieldName'],
+  factory IntFilter.fromJson(Map<String, dynamic> json) => IntFilter(
+      fieldName: json['fieldName'] as String,
       value: json['value'] is int
-          ? json['value']
+          ? json['value'] as int
           : int.parse(json['value'].toString()),
-      operator: json['operator'],
+      operator: json['operator'] as String,
       secondaryFilter: json['secondaryFilter'] != null
-          ? SecondaryFilter.fromJson(json['secondaryFilter'])
+          ? SecondaryFilter.fromJson(json['secondaryFilter'] as Map<String, dynamic>)
           : null,
     );
-  }
 }
 
 /// Date filter implementation
@@ -112,16 +106,14 @@ class DateFilter extends BaseFilter {
           value: value.toIso8601String(),
         );
 
-  factory DateFilter.fromJson(Map<String, dynamic> json) {
-    return DateFilter(
-      fieldName: json['fieldName'],
-      value: DateTime.parse(json['value']),
-      operator: json['operator'],
+  factory DateFilter.fromJson(Map<String, dynamic> json) => DateFilter(
+      fieldName: json['fieldName'] as String,
+      value: DateTime.parse(json['value'] as String),
+      operator: json['operator'] as String,
       secondaryFilter: json['secondaryFilter'] != null
-          ? SecondaryFilter.fromJson(json['secondaryFilter'])
+          ? SecondaryFilter.fromJson(json['secondaryFilter'] as Map<String, dynamic>)
           : null,
     );
-  }
 
   DateTime get dateValue => DateTime.parse(value as String);
 }
@@ -135,18 +127,16 @@ class DecimalFilter extends BaseFilter {
     super.secondaryFilter,
   });
 
-  factory DecimalFilter.fromJson(Map<String, dynamic> json) {
-    return DecimalFilter(
-      fieldName: json['fieldName'],
+  factory DecimalFilter.fromJson(Map<String, dynamic> json) => DecimalFilter(
+      fieldName: json['fieldName'] as String,
       value: json['value'] is double
-          ? json['value']
+          ? json['value'] as double
           : double.parse(json['value'].toString()),
-      operator: json['operator'],
+      operator: json['operator'] as String,
       secondaryFilter: json['secondaryFilter'] != null
-          ? SecondaryFilter.fromJson(json['secondaryFilter'])
+          ? SecondaryFilter.fromJson(json['secondaryFilter'] as Map<String, dynamic>)
           : null,
     );
-  }
 }
 
 /// Boolean filter implementation
@@ -158,18 +148,16 @@ class BoolFilter extends BaseFilter {
     super.secondaryFilter,
   });
 
-  factory BoolFilter.fromJson(Map<String, dynamic> json) {
-    return BoolFilter(
-      fieldName: json['fieldName'],
+  factory BoolFilter.fromJson(Map<String, dynamic> json) => BoolFilter(
+      fieldName: json['fieldName'] as String,
       value: json['value'] is bool
-          ? json['value']
+          ? json['value'] as bool
           : json['value'].toString().toLowerCase() == 'true',
-      operator: json['operator'] ?? 'Equals',
+      operator: (json['operator'] as String?) ?? 'Equals',
       secondaryFilter: json['secondaryFilter'] != null
-          ? SecondaryFilter.fromJson(json['secondaryFilter'])
+          ? SecondaryFilter.fromJson(json['secondaryFilter'] as Map<String, dynamic>)
           : null,
     );
-  }
 }
 
 /// Advanced filter request combining all filter types
@@ -253,10 +241,10 @@ class AdvancedFilterRequest {
       });
 
       return AdvancedFilterRequest(
-        pageNumber: json['pageNumber'] ?? 1,
-        pageSize: json['pageSize'] ?? 20,
-        sortBy: json['sortBy'],
-        sortDescending: json['sortDescending'] ?? false,
+        pageNumber: (json['pageNumber'] as int?) ?? 1,
+        pageSize: (json['pageSize'] as int?) ?? 20,
+        sortBy: json['sortBy'] as String?,
+        sortDescending: (json['sortDescending'] as bool?) ?? false,
         legacyFilters: legacyFields,
       );
     }
@@ -264,30 +252,30 @@ class AdvancedFilterRequest {
     // Advanced format
     return AdvancedFilterRequest(
       stringFilters: (json['stringFilters'] as List<dynamic>?)
-              ?.map((f) => StringFilter.fromJson(f))
+              ?.map((f) => StringFilter.fromJson(f as Map<String, dynamic>))
               .toList() ??
           [],
       intFilters: (json['intFilters'] as List<dynamic>?)
-              ?.map((f) => IntFilter.fromJson(f))
+              ?.map((f) => IntFilter.fromJson(f as Map<String, dynamic>))
               .toList() ??
           [],
       dateFilters: (json['dateFilters'] as List<dynamic>?)
-              ?.map((f) => DateFilter.fromJson(f))
+              ?.map((f) => DateFilter.fromJson(f as Map<String, dynamic>))
               .toList() ??
           [],
       decimalFilters: (json['decimalFilters'] as List<dynamic>?)
-              ?.map((f) => DecimalFilter.fromJson(f))
+              ?.map((f) => DecimalFilter.fromJson(f as Map<String, dynamic>))
               .toList() ??
           [],
       boolFilters: (json['boolFilters'] as List<dynamic>?)
-              ?.map((f) => BoolFilter.fromJson(f))
+              ?.map((f) => BoolFilter.fromJson(f as Map<String, dynamic>))
               .toList() ??
           [],
       logic: json['logic'] == 'Or' ? FilterLogic.or : FilterLogic.and,
-      pageNumber: json['pageNumber'] ?? 1,
-      pageSize: json['pageSize'] ?? 20,
-      sortBy: json['sortBy'],
-      sortDescending: json['sortDescending'] ?? false,
+      pageNumber: (json['pageNumber'] as int?) ?? 1,
+      pageSize: (json['pageSize'] as int?) ?? 20,
+      sortBy: json['sortBy'] as String?,
+      sortDescending: (json['sortDescending'] as bool?) ?? false,
     );
   }
 

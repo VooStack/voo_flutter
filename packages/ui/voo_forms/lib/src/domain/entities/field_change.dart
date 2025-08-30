@@ -14,36 +14,33 @@ class FieldChange {
   bool get isDeletion =>
       oldValue != null &&
       (newValue == null ||
-          (newValue is String && newValue.isEmpty) ||
-          (newValue is List && newValue.isEmpty));
+          (newValue is String && (newValue as String).isEmpty) ||
+          (newValue is List && (newValue as List).isEmpty));
 
   /// Check if the change is an addition (was null/empty, now has value)
   bool get isAddition =>
       (oldValue == null ||
-          (oldValue is String && oldValue.isEmpty) ||
-          (oldValue is List && oldValue.isEmpty)) &&
+          (oldValue is String && (oldValue as String).isEmpty) ||
+          (oldValue is List && (oldValue as List).isEmpty)) &&
       newValue != null &&
-      !(newValue is String && newValue.isEmpty) &&
-      !(newValue is List && newValue.isEmpty);
+      !(newValue is String && (newValue as String).isEmpty) &&
+      !(newValue is List && (newValue as List).isEmpty);
 
   /// Check if the change is a modification (both have values but different)
   bool get isModification => !isDeletion && !isAddition;
 
-  Map<String, dynamic> toMap() {
-    return {
-      'fieldId': fieldId,
-      'oldValue': oldValue,
-      'newValue': newValue,
-      'type': isDeletion
-          ? 'deletion'
-          : isAddition
-              ? 'addition'
-              : 'modification',
-    };
-  }
+  Map<String, dynamic> toMap() => {
+        'fieldId': fieldId,
+        'oldValue': oldValue,
+        'newValue': newValue,
+        'type': isDeletion
+            ? 'deletion'
+            : isAddition
+                ? 'addition'
+                : 'modification',
+      };
 
   @override
-  String toString() {
-    return 'FieldChange(fieldId: $fieldId, oldValue: $oldValue, newValue: $newValue)';
-  }
+  String toString() =>
+      'FieldChange(fieldId: $fieldId, oldValue: $oldValue, newValue: $newValue)';
 }

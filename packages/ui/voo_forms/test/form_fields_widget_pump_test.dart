@@ -310,7 +310,7 @@ void main() {
           name: 'user',
           label: 'Select User',
           asyncOptionsLoader: (query) async {
-            await Future.delayed(const Duration(milliseconds: 100));
+            await Future<void>.delayed(const Duration(milliseconds: 100));
             return ['John Doe', 'Jane Smith', 'Bob Johnson']
                 .where((name) => name.toLowerCase().contains(query.toLowerCase()))
                 .toList();

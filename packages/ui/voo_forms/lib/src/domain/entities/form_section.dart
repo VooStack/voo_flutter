@@ -44,8 +44,7 @@ class VooFormSection extends Equatable {
     int? columns,
     VooFormHeader? header,
     Map<String, dynamic>? metadata,
-  }) {
-    return VooFormSection(
+  }) => VooFormSection(
       id: id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
@@ -59,7 +58,6 @@ class VooFormSection extends Equatable {
       header: header ?? this.header,
       metadata: metadata ?? this.metadata,
     );
-  }
 
   @override
   List<Object?> get props => [

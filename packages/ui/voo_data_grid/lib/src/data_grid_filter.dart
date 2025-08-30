@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'data_grid_controller.dart';
-import 'data_grid_column.dart';
-import 'data_grid.dart';
-import 'data_grid_source.dart';
+import 'package:voo_data_grid/src/data_grid.dart';
+import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/data_grid_controller.dart';
+import 'package:voo_data_grid/src/data_grid_types.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Filter row widget for VooDataGrid
-/// 
+///
 /// Generic type parameter T represents the row data type.
 class VooDataGridFilterRow<T> extends StatefulWidget {
   final VooDataGridController<T> controller;
@@ -56,7 +56,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
           _textControllers['${column.field}_max']?.clear();
           // Clear dropdown values
           _dropdownValues.remove(column.field);
-          // Clear checkbox values  
+          // Clear checkbox values
           _checkboxValues.remove(column.field);
         }
       }
@@ -268,7 +268,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
         style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
+          FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
         ],
         onChanged: (value) {
           final number = num.tryParse(value);
@@ -314,7 +314,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
               style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
+                FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
               ],
               onChanged: (value) {
                 final min = num.tryParse(value);
@@ -356,7 +356,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
               style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.-]')),
+                FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
               ],
               onChanged: (value) {
                 final min = num.tryParse(minController.text);
@@ -413,7 +413,9 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
             onTap: () async {
               final date = await showDatePicker(
                 context: context,
-                initialDate: currentFilter?.value ?? DateTime.now(),
+                initialDate: currentFilter?.value is DateTime 
+                    ? currentFilter!.value as DateTime 
+                    : DateTime.now(),
                 firstDate: DateTime(2000),
                 lastDate: DateTime(2100),
               );
@@ -491,12 +493,12 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
   Widget _buildDropdownFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
     final theme = Theme.of(context);
-    
+
     // Initialize dropdown value from current filter if not already set
     if (!_dropdownValues.containsKey(column.field) && currentFilter != null) {
       _dropdownValues[column.field] = currentFilter.value;
     }
-    
+
     final selectedValue = _dropdownValues[column.field];
 
     return Container(
@@ -520,28 +522,29 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
             ),
             items: [
               DropdownMenuItem(
-                value: null,
                 child: Text('All', style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color)),
               ),
-              ...options.map((option) => DropdownMenuItem(
-                    value: option.value,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (option.icon != null) ...[
-                          Icon(option.icon, size: 14),
-                          const SizedBox(width: 6),
-                        ],
-                        Flexible(
-                          child: Text(
-                            option.label,
-                            style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+              ...options.map(
+                (option) => DropdownMenuItem(
+                  value: option.value,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (option.icon != null) ...[
+                        Icon(option.icon, size: 14),
+                        const SizedBox(width: 6),
                       ],
-                    ),
-                  )),
+                      Flexible(
+                        child: Text(
+                          option.label,
+                          style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
             onChanged: (value) {
               setState(() {
@@ -564,14 +567,16 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text('All', style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color)),
               ),
-              ...options.map((option) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      option.label,
-                      style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )),
+              ...options.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    option.label,
+                    style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
             ],
             style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
             dropdownColor: theme.colorScheme.surface,
@@ -584,7 +589,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
 
   Widget _buildMultiSelectFilter(VooDataColumn<T> column, VooDataFilter? currentFilter) {
     final options = _getFilterOptions(column);
-    final selectedValues = currentFilter?.value is List ? List.from(currentFilter!.value as List) : [];
+    final selectedValues = currentFilter?.value is List ? List<dynamic>.from(currentFilter!.value as List) : <dynamic>[];
     final theme = Theme.of(context);
 
     return Container(
@@ -612,7 +617,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
         ),
         itemBuilder: (context) => options.map((option) {
           final isSelected = selectedValues.contains(option.value);
-          return PopupMenuItem(
+          return PopupMenuItem<dynamic>(
             child: StatefulBuilder(
               builder: (context, setState) => CheckboxListTile(
                 value: isSelected,
@@ -642,9 +647,9 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     if (!_checkboxValues.containsKey(column.field) && currentFilter != null) {
       _checkboxValues[column.field] = currentFilter.value == true;
     }
-    
+
     final isChecked = _checkboxValues[column.field] ?? false;
-    
+
     return SizedBox(
       height: 32,
       child: Center(
@@ -684,10 +689,12 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
         child: DropdownButton<VooFilterOperator>(
           value: currentOperator,
           items: operators
-              .map((op) => DropdownMenuItem(
-                    value: op,
-                    child: Center(child: Text(_getOperatorSymbol(op), style: const TextStyle(fontSize: 11))),
-                  ))
+              .map(
+                (op) => DropdownMenuItem(
+                  value: op,
+                  child: Center(child: Text(_getOperatorSymbol(op), style: const TextStyle(fontSize: 11))),
+                ),
+              )
               .toList(),
           onChanged: (op) {
             if (op != null) {
@@ -741,10 +748,12 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     }
 
     return uniqueValues
-        .map((value) => VooFilterOption(
-              value: value,
-              label: column.valueFormatter?.call(value) ?? value.toString(),
-            ))
+        .map(
+          (value) => VooFilterOption(
+            value: value,
+            label: column.valueFormatter?.call(value) ?? value.toString(),
+          ),
+        )
         .toList()
       ..sort((a, b) => a.label.compareTo(b.label));
   }
@@ -770,9 +779,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     widget.controller.dataSource.applyFilter(column.field, null);
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  String _formatDate(DateTime date) => '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
   String _getOperatorSymbol(VooFilterOperator operator) {
     switch (operator) {

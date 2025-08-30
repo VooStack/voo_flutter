@@ -16,7 +16,7 @@ void main() {
           capturedRequest = requestData;
           // Mock response
           return {
-            'data': [],
+            'data': <dynamic>[],
             'total': 0,
             'page': 0,
             'pageSize': 20,
@@ -83,12 +83,12 @@ void main() {
       final controller = VooDataGridController(
         dataSource: dataSource,
         columns: [
-          const VooDataColumn(
+          const VooDataColumn<Map<String, dynamic>>(
             field: 'siteNumber',
             label: 'Site Number',
             sortable: true,
           ),
-          const VooDataColumn(
+          const VooDataColumn<Map<String, dynamic>>(
             field: 'siteName', 
             label: 'Site Name',
             sortable: true,
@@ -102,21 +102,21 @@ void main() {
 
       // Sort by siteNumber ascending
       controller.sortColumn('siteNumber');
-      await Future.delayed(const Duration(milliseconds: 100)); // Wait for async operation
+      await Future<void>.delayed(const Duration(milliseconds: 100)); // Wait for async operation
       
       expect(capturedRequest!['sortBy'], equals('Site.SiteNumber'));
       expect(capturedRequest!['sortDescending'], equals(false));
 
       // Sort by siteNumber descending (second click)
       controller.sortColumn('siteNumber');
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       
       expect(capturedRequest!['sortBy'], equals('Site.SiteNumber'));
       expect(capturedRequest!['sortDescending'], equals(true));
 
       // Clear sort (third click)
       controller.sortColumn('siteNumber');
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       
       expect(capturedRequest!.containsKey('sortBy'), equals(false));
       expect(capturedRequest!.containsKey('sortDescending'), equals(false));

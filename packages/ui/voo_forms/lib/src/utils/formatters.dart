@@ -42,13 +42,13 @@ class VooFormatters {
   /// Alphanumeric only formatter
   static TextInputFormatter alphanumeric({bool allowSpaces = false}) =>
       FilteringTextInputFormatter.allow(
-        RegExp(allowSpaces ? r'[a-zA-Z0-9\s]' : r'[a-zA-Z0-9]'),
+        RegExp(allowSpaces ? '[a-zA-Z0-9\\s]' : '[a-zA-Z0-9]'),
       );
 
   /// Letters only formatter
   static TextInputFormatter lettersOnly({bool allowSpaces = false}) =>
       FilteringTextInputFormatter.allow(
-        RegExp(allowSpaces ? r'[a-zA-Z\s]' : r'[a-zA-Z]'),
+        RegExp(allowSpaces ? '[a-zA-Z\s]' : '[a-zA-Z]'),
       );
 
   /// Numbers only formatter
@@ -58,7 +58,7 @@ class VooFormatters {
   /// Decimal number formatter
   static TextInputFormatter decimal({int decimalPlaces = 2}) =>
       FilteringTextInputFormatter.allow(
-        RegExp(r'^\d*\.?\d{0,' + decimalPlaces.toString() + r'}'),
+        RegExp('^\d*\.?\d{0,${decimalPlaces}}'),
       );
 
   /// SSN formatter (XXX-XX-XXXX)
@@ -386,7 +386,7 @@ class _InternationalPhoneFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final text = newValue.text.replaceAll(RegExp(r'[^0-9+]'), '');
+    final text = newValue.text.replaceAll(RegExp('[^0-9+]'), '');
     if (text.isEmpty) return newValue.copyWith(text: '');
     
     // Allow + only at the beginning

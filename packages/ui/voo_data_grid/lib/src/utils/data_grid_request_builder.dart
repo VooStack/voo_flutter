@@ -1,6 +1,7 @@
-import '../data_grid_column.dart';
-import '../data_grid_source.dart';
-import '../models/advanced_filters.dart';
+import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/data_grid_source.dart';
+import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/src/models/advanced_filters.dart';
 
 /// Enum for different API filtering standards
 enum ApiFilterStandard {
@@ -61,25 +62,60 @@ class DataGridRequestBuilder {
     switch (standard) {
       case ApiFilterStandard.simple:
         return _buildSimpleRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
       case ApiFilterStandard.jsonApi:
         return _buildJsonApiRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
       case ApiFilterStandard.odata:
         return _buildODataRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
       case ApiFilterStandard.mongodb:
         return _buildMongoDbRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
       case ApiFilterStandard.graphql:
         return _buildGraphQLRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
       case ApiFilterStandard.voo:
         return _buildVooRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
       case ApiFilterStandard.custom:
         return _buildCustomRequest(
-            page, pageSize, filters, sorts, additionalParams);
+          page,
+          pageSize,
+          filters,
+          sorts,
+          additionalParams,
+        );
     }
   }
 
@@ -134,9 +170,9 @@ class DataGridRequestBuilder {
     // Add sorts in simple format
     if (sorts.isNotEmpty) {
       queryParams['sort'] = sorts
-          .map((s) => s.direction == VooSortDirection.descending
-              ? '-${_applyFieldPrefix(s.field)}'
-              : _applyFieldPrefix(s.field))
+          .map(
+            (s) => s.direction == VooSortDirection.descending ? '-${_applyFieldPrefix(s.field)}' : _applyFieldPrefix(s.field),
+          )
           .join(',');
     }
 
@@ -157,7 +193,7 @@ class DataGridRequestBuilder {
   ) {
     final params = <String, dynamic>{
       'params': <String, String>{
-        'page[number]': (page + 1).toString(),  // JSON:API uses 1-based pagination
+        'page[number]': (page + 1).toString(), // JSON:API uses 1-based pagination
         'page[size]': pageSize.toString(),
       },
     };
@@ -181,9 +217,9 @@ class DataGridRequestBuilder {
     // Add sorts in JSON:API format
     if (sorts.isNotEmpty) {
       queryParams['sort'] = sorts
-          .map((s) => s.direction == VooSortDirection.descending
-              ? '-${_applyFieldPrefix(s.field)}'
-              : _applyFieldPrefix(s.field))
+          .map(
+            (s) => s.direction == VooSortDirection.descending ? '-${_applyFieldPrefix(s.field)}' : _applyFieldPrefix(s.field),
+          )
           .join(',');
     }
 
@@ -243,7 +279,7 @@ class DataGridRequestBuilder {
     if (filters.isNotEmpty) {
       final filterExpressions = <String>[];
       final logicalOperator = additionalParams?['logicalOperator'] ?? 'and';
-      
+
       filters.forEach((field, filter) {
         final prefixedField = _applyFieldPrefix(field);
         final expression = _buildODataFilterExpression(prefixedField, filter);
@@ -251,7 +287,7 @@ class DataGridRequestBuilder {
           filterExpressions.add(expression);
         }
       });
-      
+
       if (filterExpressions.isNotEmpty) {
         // Group expressions properly if there are multiple
         if (filterExpressions.length > 1 && logicalOperator == 'or') {
@@ -265,25 +301,26 @@ class DataGridRequestBuilder {
     // Add sorts in OData format
     if (sorts.isNotEmpty) {
       final orderBy = sorts
-          .map((s) =>
-              '${_applyFieldPrefix(s.field)} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}')
+          .map(
+            (s) => '${_applyFieldPrefix(s.field)} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}',
+          )
           .join(',');
       queryParams['\$orderby'] = orderBy;
     }
 
     // Add $format if specified (json is default)
     if (additionalParams?['format'] != null) {
-      queryParams['\$format'] = additionalParams!['format'];
+      queryParams['\$format'] = additionalParams!['format'] as String;
     }
 
     // Add $compute for calculated properties (OData v4)
     if (additionalParams?['compute'] != null) {
-      queryParams['\$compute'] = additionalParams!['compute'];
+      queryParams['\$compute'] = additionalParams!['compute'] as String;
     }
 
     // Add $apply for aggregations (OData v4)
     if (additionalParams?['apply'] != null) {
-      queryParams['\$apply'] = additionalParams!['apply'];
+      queryParams['\$apply'] = additionalParams!['apply'] as String;
     }
 
     // For OData, return query parameters in a way that can be used directly
@@ -291,15 +328,15 @@ class DataGridRequestBuilder {
     final result = <String, dynamic>{
       // Return params directly for OData - these should be used as root-level query params
       // NOT nested under 'params' in the actual HTTP request
-      'queryParameters': queryParams,  // Use this with your HTTP client directly
-      'method': 'GET',  // OData typically uses GET requests
-      'standard': 'odata',  // Indicate this is OData format
+      'queryParameters': queryParams, // Use this with your HTTP client directly
+      'method': 'GET', // OData typically uses GET requests
+      'standard': 'odata', // Indicate this is OData format
     };
-    
+
     // For backward compatibility, also include in params format
     // But HTTP client should use 'queryParameters' for OData
     result['params'] = queryParams;
-    
+
     if (additionalParams != null) {
       // Remove OData-specific params from additionalParams to avoid duplication
       final cleanedParams = Map<String, dynamic>.from(additionalParams);
@@ -311,7 +348,7 @@ class DataGridRequestBuilder {
       cleanedParams.remove('format');
       cleanedParams.remove('compute');
       cleanedParams.remove('apply');
-      
+
       // Add any remaining additional params to metadata
       if (cleanedParams.isNotEmpty) {
         result['metadata'] = cleanedParams;
@@ -346,7 +383,7 @@ class DataGridRequestBuilder {
     // Add sorts in MongoDB format
     if (sorts.isNotEmpty) {
       final sort = <String, dynamic>{};
-      for (var s in sorts) {
+      for (final s in sorts) {
         sort[_applyFieldPrefix(s.field)] = s.direction == VooSortDirection.ascending ? 1 : -1;
       }
       body['sort'] = sort;
@@ -384,11 +421,12 @@ class DataGridRequestBuilder {
     // Add sorts as GraphQL variables
     if (sorts.isNotEmpty) {
       variables['orderBy'] = sorts
-          .map((s) => {
-                'field': _applyFieldPrefix(s.field),
-                'direction':
-                    s.direction == VooSortDirection.ascending ? 'ASC' : 'DESC',
-              })
+          .map(
+            (s) => {
+              'field': _applyFieldPrefix(s.field),
+              'direction': s.direction == VooSortDirection.ascending ? 'ASC' : 'DESC',
+            },
+          )
           .toList();
     }
 
@@ -440,7 +478,7 @@ class DataGridRequestBuilder {
             'value': filter.value,
             'operator': 'GreaterThanOrEqual',
           };
-          
+
           // Add lower bound filter to the appropriate type array
           if (filter.value is String) {
             stringFilters.add(lowerFilter);
@@ -456,7 +494,7 @@ class DataGridRequestBuilder {
             stringFilters.add(lowerFilter);
           }
         }
-        
+
         // Create LessThanOrEqual filter for the upper bound if valueTo exists
         if (filter.valueTo != null) {
           final upperFilter = <String, dynamic>{
@@ -464,7 +502,7 @@ class DataGridRequestBuilder {
             'value': filter.valueTo,
             'operator': 'LessThanOrEqual',
           };
-          
+
           // Add upper bound filter to the appropriate type array
           if (filter.valueTo is String) {
             stringFilters.add(upperFilter);
@@ -644,60 +682,56 @@ class DataGridRequestBuilder {
   String _buildODataFilterExpression(String field, VooDataFilter filter) {
     switch (filter.operator) {
       case VooFilterOperator.equals:
-        return "$field eq ${_formatODataValue(filter.value)}";
+        return '$field eq ${_formatODataValue(filter.value)}';
       case VooFilterOperator.notEquals:
-        return "$field ne ${_formatODataValue(filter.value)}";
+        return '$field ne ${_formatODataValue(filter.value)}';
       case VooFilterOperator.greaterThan:
-        return "$field gt ${_formatODataValue(filter.value)}";
+        return '$field gt ${_formatODataValue(filter.value)}';
       case VooFilterOperator.lessThan:
-        return "$field lt ${_formatODataValue(filter.value)}";
+        return '$field lt ${_formatODataValue(filter.value)}';
       case VooFilterOperator.greaterThanOrEqual:
-        return "$field ge ${_formatODataValue(filter.value)}";
+        return '$field ge ${_formatODataValue(filter.value)}';
       case VooFilterOperator.lessThanOrEqual:
-        return "$field le ${_formatODataValue(filter.value)}";
+        return '$field le ${_formatODataValue(filter.value)}';
       case VooFilterOperator.contains:
-        return "contains($field, ${_formatODataValue(filter.value)})";
+        return 'contains($field, ${_formatODataValue(filter.value)})';
       case VooFilterOperator.notContains:
         // OData v4: use 'not contains()' for negation
-        return "not contains($field, ${_formatODataValue(filter.value)})";
+        return 'not contains($field, ${_formatODataValue(filter.value)})';
       case VooFilterOperator.startsWith:
-        return "startswith($field, ${_formatODataValue(filter.value)})";
+        return 'startswith($field, ${_formatODataValue(filter.value)})';
       case VooFilterOperator.endsWith:
-        return "endswith($field, ${_formatODataValue(filter.value)})";
+        return 'endswith($field, ${_formatODataValue(filter.value)})';
       case VooFilterOperator.between:
         // Use parentheses for proper precedence
-        return "($field ge ${_formatODataValue(filter.value)} and $field le ${_formatODataValue(filter.valueTo)})";
+        return '($field ge ${_formatODataValue(filter.value)} and $field le ${_formatODataValue(filter.valueTo)})';
       case VooFilterOperator.inList:
         // OData v4 'in' operator for collections
         if (filter.value is List) {
-          final values = (filter.value as List)
-              .map((v) => _formatODataValue(v))
-              .join(',');
-          return "$field in ($values)";
+          final values = (filter.value as List).map(_formatODataValue).join(',');
+          return '$field in ($values)';
         } else {
-          return "$field in (${_formatODataValue(filter.value)})";
+          return '$field in (${_formatODataValue(filter.value)})';
         }
       case VooFilterOperator.notInList:
         // OData v4: use 'not (field in (...))' for not in list
         if (filter.value is List) {
-          final values = (filter.value as List)
-              .map((v) => _formatODataValue(v))
-              .join(',');
-          return "not ($field in ($values))";
+          final values = (filter.value as List).map(_formatODataValue).join(',');
+          return 'not ($field in ($values))';
         } else {
-          return "not ($field in (${_formatODataValue(filter.value)}))";
+          return 'not ($field in (${_formatODataValue(filter.value)}))';
         }
       case VooFilterOperator.isNull:
-        return "$field eq null";
+        return '$field eq null';
       case VooFilterOperator.isNotNull:
-        return "$field ne null";
+        return '$field ne null';
     }
   }
 
   dynamic _buildMongoDbOperator(VooDataFilter filter) {
     switch (filter.operator) {
       case VooFilterOperator.equals:
-        return filter.value;  // MongoDB uses direct value for equality
+        return filter.value; // MongoDB uses direct value for equality
       case VooFilterOperator.notEquals:
         return {'\$ne': filter.value};
       case VooFilterOperator.greaterThan:
@@ -714,11 +748,11 @@ class DataGridRequestBuilder {
         return {'\$gte': filter.value, '\$lte': filter.valueTo};
       case VooFilterOperator.inList:
         return {
-          '\$in': filter.value is List ? filter.value : [filter.value]
+          '\$in': filter.value is List ? filter.value : [filter.value],
         };
       case VooFilterOperator.notInList:
         return {
-          '\$nin': filter.value is List ? filter.value : [filter.value]
+          '\$nin': filter.value is List ? filter.value : [filter.value],
         };
       case VooFilterOperator.isNull:
         return {'\$eq': null};
@@ -751,15 +785,15 @@ class DataGridRequestBuilder {
         return {'endsWith': filter.value};
       case VooFilterOperator.between:
         return {
-          'between': [filter.value, filter.valueTo]
+          'between': [filter.value, filter.valueTo],
         };
       case VooFilterOperator.inList:
         return {
-          'in': filter.value is List ? filter.value : [filter.value]
+          'in': filter.value is List ? filter.value : [filter.value],
         };
       case VooFilterOperator.notInList:
         return {
-          'notIn': filter.value is List ? filter.value : [filter.value]
+          'notIn': filter.value is List ? filter.value : [filter.value],
         };
       case VooFilterOperator.isNull:
         return {'isNull': true};
@@ -778,7 +812,7 @@ class DataGridRequestBuilder {
     required List<VooColumnSort> sorts,
     Map<String, dynamic>? additionalParams,
   }) {
-    final builder = DataGridRequestBuilder();
+    const builder = DataGridRequestBuilder();
     return builder.buildRequest(
       page: page,
       pageSize: pageSize,
@@ -789,47 +823,44 @@ class DataGridRequestBuilder {
   }
 
   /// Build filters array for the request
-  List<Map<String, dynamic>> _buildFilters(Map<String, VooDataFilter> filters) {
-    return filters.entries.map((entry) {
-      final filter = entry.value;
-      final filterMap = <String, dynamic>{
-        'field': _applyFieldPrefix(entry.key),
-        'operator': _operatorToString(filter.operator),
-      };
+  List<Map<String, dynamic>> _buildFilters(Map<String, VooDataFilter> filters) => filters.entries.map((entry) {
+        final filter = entry.value;
+        final filterMap = <String, dynamic>{
+          'field': _applyFieldPrefix(entry.key),
+          'operator': _operatorToString(filter.operator),
+        };
 
-      // Add value based on operator
-      switch (filter.operator) {
-        case VooFilterOperator.isNull:
-        case VooFilterOperator.isNotNull:
-          // No value needed
-          break;
-        case VooFilterOperator.between:
-          filterMap['value'] = filter.value;
-          filterMap['valueTo'] = filter.valueTo;
-          break;
-        case VooFilterOperator.inList:
-        case VooFilterOperator.notInList:
-          filterMap['values'] =
-              filter.value is List ? filter.value : [filter.value];
-          break;
-        default:
-          filterMap['value'] = filter.value;
-      }
+        // Add value based on operator
+        switch (filter.operator) {
+          case VooFilterOperator.isNull:
+          case VooFilterOperator.isNotNull:
+            // No value needed
+            break;
+          case VooFilterOperator.between:
+            filterMap['value'] = filter.value;
+            filterMap['valueTo'] = filter.valueTo;
+            break;
+          case VooFilterOperator.inList:
+          case VooFilterOperator.notInList:
+            filterMap['values'] = filter.value is List ? filter.value : [filter.value];
+            break;
+          default:
+            filterMap['value'] = filter.value;
+        }
 
-      return filterMap;
-    }).toList();
-  }
+        return filterMap;
+      }).toList();
 
   /// Build sorts array for the request
-  List<Map<String, dynamic>> _buildSorts(List<VooColumnSort> sorts) {
-    return sorts
-        .where((sort) => sort.direction != VooSortDirection.none)
-        .map((sort) => {
-              'field': _applyFieldPrefix(sort.field),
-              'direction': _sortDirectionToString(sort.direction),
-            })
-        .toList();
-  }
+  List<Map<String, dynamic>> _buildSorts(List<VooColumnSort> sorts) => sorts
+      .where((sort) => sort.direction != VooSortDirection.none)
+      .map(
+        (sort) => {
+          'field': _applyFieldPrefix(sort.field),
+          'direction': _sortDirectionToString(sort.direction),
+        },
+      )
+      .toList();
 
   /// Convert filter operator to API string
   static String _operatorToString(VooFilterOperator operator) {
@@ -898,8 +929,7 @@ class DataGridRequestBuilder {
       params['$prefix.field'] = field;
       params['$prefix.operator'] = _operatorToString(filter.operator);
 
-      if (filter.operator != VooFilterOperator.isNull &&
-          filter.operator != VooFilterOperator.isNotNull) {
+      if (filter.operator != VooFilterOperator.isNull && filter.operator != VooFilterOperator.isNotNull) {
         if (filter.value != null) {
           if (filter.value is List) {
             params['$prefix.values'] = (filter.value as List).join(',');
@@ -918,8 +948,7 @@ class DataGridRequestBuilder {
     for (int i = 0; i < sorts.length; i++) {
       if (sorts[i].direction != VooSortDirection.none) {
         params['sorts[$i].field'] = sorts[i].field;
-        params['sorts[$i].direction'] =
-            _sortDirectionToString(sorts[i].direction);
+        params['sorts[$i].direction'] = _sortDirectionToString(sorts[i].direction);
       }
     }
 
@@ -937,8 +966,7 @@ class DataGridRequestBuilder {
     final data = json[dataKey] as List<dynamic>? ?? [];
     final total = json[totalKey] as int? ?? 0;
     final page = pageKey != null ? (json[pageKey] as int? ?? 0) : 0;
-    final pageSize =
-        pageSizeKey != null ? (json[pageSizeKey] as int? ?? 20) : 20;
+    final pageSize = pageSizeKey != null ? (json[pageSizeKey] as int? ?? 20) : 20;
 
     return VooDataGridResponse(
       rows: data,
@@ -964,14 +992,14 @@ class DataGridRequestBuilder {
     //   ],
     //   "@odata.nextLink": "Products?$skip=20&$top=20"  // Next page URL
     // }
-    
+
     // Extract data from 'value' array (OData standard)
     final data = json['value'] as List<dynamic>? ?? [];
-    
+
     // Extract total count from '@odata.count' if present
     // This is only available when $count=true is included in the request
     final total = json['@odata.count'] as int? ?? data.length;
-    
+
     return VooDataGridResponse(
       rows: data,
       totalRows: total,
@@ -983,18 +1011,18 @@ class DataGridRequestBuilder {
   /// Extract OData metadata from response
   static Map<String, dynamic> extractODataMetadata(Map<String, dynamic> json) {
     final metadata = <String, dynamic>{};
-    
+
     // Extract all OData annotations (properties starting with @odata)
     json.forEach((key, value) {
       if (key.startsWith('@odata')) {
         metadata[key] = value;
       }
     });
-    
+
     // Add computed properties
     metadata['hasNextPage'] = json.containsKey('@odata.nextLink');
     metadata['hasDeltaLink'] = json.containsKey('@odata.deltaLink');
-    
+
     return metadata;
   }
 
@@ -1013,7 +1041,7 @@ class DataGridRequestBuilder {
     //     ]
     //   }
     // }
-    
+
     if (json.containsKey('error')) {
       final error = json['error'] as Map<String, dynamic>;
       return {
@@ -1057,8 +1085,7 @@ class DataGridRequestBuilder {
       final operator = _operatorToApiString(filter.operator);
 
       SecondaryFilter? secondaryFilter;
-      if (filter.valueTo != null &&
-          filter.operator == VooFilterOperator.between) {
+      if (filter.valueTo != null && filter.operator == VooFilterOperator.between) {
         secondaryFilter = SecondaryFilter(
           logic: FilterLogic.and,
           value: filter.valueTo,
@@ -1068,33 +1095,41 @@ class DataGridRequestBuilder {
 
       // Determine filter type based on value type
       if (value is String) {
-        stringFilters.add(StringFilter(
-          fieldName: field,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        ));
+        stringFilters.add(
+          StringFilter(
+            fieldName: field,
+            value: value,
+            operator: operator,
+            secondaryFilter: secondaryFilter,
+          ),
+        );
       } else if (value is int) {
-        intFilters.add(IntFilter(
-          fieldName: field,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        ));
+        intFilters.add(
+          IntFilter(
+            fieldName: field,
+            value: value,
+            operator: operator,
+            secondaryFilter: secondaryFilter,
+          ),
+        );
       } else if (value is double) {
-        decimalFilters.add(DecimalFilter(
-          fieldName: field,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        ));
+        decimalFilters.add(
+          DecimalFilter(
+            fieldName: field,
+            value: value,
+            operator: operator,
+            secondaryFilter: secondaryFilter,
+          ),
+        );
       } else if (value is DateTime) {
-        dateFilters.add(DateFilter(
-          fieldName: field,
-          value: value,
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        ));
+        dateFilters.add(
+          DateFilter(
+            fieldName: field,
+            value: value,
+            operator: operator,
+            secondaryFilter: secondaryFilter,
+          ),
+        );
       }
     });
 
@@ -1170,7 +1205,7 @@ class RemoteDataGridSource extends VooDataGridSource {
     this.fieldPrefix,
     this.httpClient,
   })  : requestBuilder = DataGridRequestBuilder(
-          standard: apiStandard, 
+          standard: apiStandard,
           fieldPrefix: fieldPrefix,
         ),
         super(mode: VooDataGridMode.remote);

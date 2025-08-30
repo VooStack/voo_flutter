@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'data_grid_controller.dart';
-import 'data_grid_column.dart';
-import 'data_grid.dart';
-import 'data_grid_source.dart';
+import 'package:voo_data_grid/src/data_grid.dart';
+import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/data_grid_controller.dart';
+import 'package:voo_data_grid/src/data_grid_types.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Header widget for VooDataGrid

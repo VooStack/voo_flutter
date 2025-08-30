@@ -1,8 +1,10 @@
 import 'dart:async';
-import 'data_grid_source.dart';
-import 'data_grid_column.dart';
-import 'models/advanced_filters.dart';
-import 'utils/data_grid_request_builder.dart';
+
+import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/data_grid_source.dart';
+import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/src/models/advanced_filters.dart';
+import 'package:voo_data_grid/src/utils/data_grid_request_builder.dart';
 
 /// Advanced remote data source with support for complex filtering
 class AdvancedRemoteDataSource extends VooDataGridSource {
@@ -146,7 +148,7 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
     }
 
     // Update or create custom filter request
-    _customFilterRequest ??= AdvancedFilterRequest();
+    _customFilterRequest ??= const AdvancedFilterRequest();
 
     // Add filter to appropriate list
     final newRequest = _addFilterToRequest(_customFilterRequest!, filter);
@@ -169,7 +171,9 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
 
   /// Helper to add a filter to the request
   AdvancedFilterRequest _addFilterToRequest(
-      AdvancedFilterRequest request, BaseFilter filter) {
+    AdvancedFilterRequest request,
+    BaseFilter filter,
+  ) {
     final stringFilters = List<StringFilter>.from(request.stringFilters);
     final intFilters = List<IntFilter>.from(request.intFilters);
     final decimalFilters = List<DecimalFilter>.from(request.decimalFilters);

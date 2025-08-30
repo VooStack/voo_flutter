@@ -1,3 +1,58 @@
+## 0.6.0
+
+* **BREAKING CHANGE: Major Architecture Update**
+  * Introduced completely state-agnostic architecture for compatibility with all state management solutions
+  * The package now provides three ways to use VooDataGrid:
+    1. `VooDataGrid` - Traditional controller-based (backward compatible)
+    2. `StatelessVooDataGrid` - New state-agnostic widget (recommended for Cubit/BLoC/Riverpod)
+    3. `VooDataGridStateController` - Provider-compatible controller
+
+* **New Stateless Data Grid Widget**
+  * Added `StatelessVooDataGrid<T>` - a completely state-agnostic widget that works with any state management solution
+  * Accepts state and callbacks directly, eliminating dependency on specific state management patterns
+  * Perfect for integration with Cubit, BLoC, Riverpod, GetX, or any custom state management
+  * Provides full control over state updates through callbacks:
+    * `onPageChanged`, `onPageSizeChanged` - Pagination control
+    * `onFilterChanged`, `onFiltersCleared` - Filter management
+    * `onSortChanged`, `onSortsCleared` - Sort control
+    * `onRowSelected`, `onRowDeselected`, `onSelectAll`, `onDeselectAll` - Selection management
+    * `onRefresh` - Data refresh trigger
+  * Maintains full feature parity with the original VooDataGrid widget
+
+* **State Improvements**
+  * Added `filtersVisible` property to `VooDataGridState` for tracking filter visibility state
+  * Enhanced state immutability with proper copyWith support for all properties
+
+* **Documentation Updates**
+  * Updated MIGRATION_GUIDE.md with examples using the new StatelessVooDataGrid
+  * Added clear guidance on choosing between VooDataGrid, StatelessVooDataGrid, and state controllers
+
+## 0.5.9
+
+* **State Management Compatibility**
+  * Added new state-management agnostic architecture to support any state management solution (Cubit, BLoC, Provider, Riverpod, GetX, etc.)
+  * Introduced `VooDataGridDataSource<T>` - a clean interface for data fetching without forcing ChangeNotifier inheritance
+  * Added `VooDataGridState<T>` - an immutable state class with copyWith method for state updates
+  * Created `VooDataGridStateController<T>` - a ChangeNotifier-based controller for Provider users
+  * Maintained full backward compatibility with existing `VooDataGridSource` implementation
+  * Resolved conflicts between VooDataGrid and modern state management patterns like Cubit/BLoC
+  * Fixed "Tried to use Provider with a subtype of Listenable/Stream" errors when using Cubit
+
+* **Type System Improvements**
+  * Consolidated all shared types (`VooDataFilter`, `VooDataGridResponse`, `VooSelectionMode`, `VooDataGridMode`) into `data_grid_types.dart`
+  * Fixed duplicate type definition issues across the package
+  * Improved type exports for cleaner API surface
+
+* **Documentation**
+  * Added comprehensive `MIGRATION_GUIDE.md` with examples for migrating to the new architecture
+  * Included migration examples for Cubit/BLoC, Provider, Riverpod, and GetX
+  * Updated README with new architecture information
+
+* **Bug Fixes**
+  * Fixed import conflicts that prevented tests from running
+  * Resolved naming conflicts between old and new implementations
+  * Fixed type casting issues in various components
+
 ## 0.5.8
 
 * **Scrolling Improvements**

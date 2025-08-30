@@ -100,45 +100,32 @@ class VooFormConfig {
   });
 
   /// Create a config optimized for mobile
-  factory VooFormConfig.mobile() {
-    return const VooFormConfig(
-      labelPosition: LabelPosition.floating,
-      fieldSize: VooSpacingSize.lg,
-      fieldSpacing: 12.0,
-      maxFormWidth: double.infinity,
-      centerOnLargeScreens: false,
-    );
-  }
+  factory VooFormConfig.mobile() => const VooFormConfig(
+        labelPosition: LabelPosition.floating,
+        fieldSize: VooSpacingSize.lg,
+        fieldSpacing: 12.0,
+        maxFormWidth: double.infinity,
+        centerOnLargeScreens: false,
+      );
 
   /// Create a config optimized for desktop with centered form
-  factory VooFormConfig.desktop() {
-    return const VooFormConfig(
-      labelPosition: LabelPosition.above,
-      fieldSize: VooSpacingSize.md,
-      maxFormWidth: 600.0,
-      centerOnLargeScreens: true,
-      padding: EdgeInsets.all(24.0),
-    );
-  }
+  factory VooFormConfig.desktop() => const VooFormConfig(
+        maxFormWidth: 600.0,
+        padding: EdgeInsets.all(24.0),
+      );
 
   /// Create a config for compact forms
-  factory VooFormConfig.compact() {
-    return const VooFormConfig(
-      labelPosition: LabelPosition.inline,
-      fieldSize: VooSpacingSize.sm,
-      fieldSpacing: 8.0,
-      sectionSpacing: 16.0,
-    );
-  }
+  factory VooFormConfig.compact() => const VooFormConfig(
+        labelPosition: LabelPosition.inline,
+        fieldSize: VooSpacingSize.sm,
+        fieldSpacing: 8.0,
+        sectionSpacing: 16.0,
+      );
 
   /// Create a config for material design forms
-  factory VooFormConfig.material() {
-    return const VooFormConfig(
-      labelPosition: LabelPosition.floating,
-      fieldVariant: FieldVariant.outlined,
-      fieldSize: VooSpacingSize.md,
-    );
-  }
+  factory VooFormConfig.material() => const VooFormConfig(
+        labelPosition: LabelPosition.floating,
+      );
 
   VooFormConfig copyWith({
     LabelPosition? labelPosition,
@@ -163,32 +150,31 @@ class VooFormConfig {
     double? tabletBreakpoint,
     ResponsiveColumns? gridColumns,
     ThemeData? themeOverrides,
-  }) {
-    return VooFormConfig(
-      labelPosition: labelPosition ?? this.labelPosition,
-      labelStyle: labelStyle ?? this.labelStyle,
-      fieldVariant: fieldVariant ?? this.fieldVariant,
-      fieldSize: fieldSize ?? this.fieldSize,
-      fieldSpacing: fieldSpacing ?? this.fieldSpacing,
-      sectionSpacing: sectionSpacing ?? this.sectionSpacing,
-      maxFormWidth: maxFormWidth ?? this.maxFormWidth,
-      showFieldIcons: showFieldIcons ?? this.showFieldIcons,
-      showRequiredIndicator: showRequiredIndicator ?? this.showRequiredIndicator,
-      requiredIndicator: requiredIndicator ?? this.requiredIndicator,
-      errorDisplayMode: errorDisplayMode ?? this.errorDisplayMode,
-      submitButtonPosition: submitButtonPosition ?? this.submitButtonPosition,
-      submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
-      padding: padding ?? this.padding,
-      margin: margin ?? this.margin,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      decoration: decoration ?? this.decoration,
-      centerOnLargeScreens: centerOnLargeScreens ?? this.centerOnLargeScreens,
-      mobileBreakpoint: mobileBreakpoint ?? this.mobileBreakpoint,
-      tabletBreakpoint: tabletBreakpoint ?? this.tabletBreakpoint,
-      gridColumns: gridColumns ?? this.gridColumns,
-      themeOverrides: themeOverrides ?? this.themeOverrides,
-    );
-  }
+  }) =>
+      VooFormConfig(
+        labelPosition: labelPosition ?? this.labelPosition,
+        labelStyle: labelStyle ?? this.labelStyle,
+        fieldVariant: fieldVariant ?? this.fieldVariant,
+        fieldSize: fieldSize ?? this.fieldSize,
+        fieldSpacing: fieldSpacing ?? this.fieldSpacing,
+        sectionSpacing: sectionSpacing ?? this.sectionSpacing,
+        maxFormWidth: maxFormWidth ?? this.maxFormWidth,
+        showFieldIcons: showFieldIcons ?? this.showFieldIcons,
+        showRequiredIndicator: showRequiredIndicator ?? this.showRequiredIndicator,
+        requiredIndicator: requiredIndicator ?? this.requiredIndicator,
+        errorDisplayMode: errorDisplayMode ?? this.errorDisplayMode,
+        submitButtonPosition: submitButtonPosition ?? this.submitButtonPosition,
+        submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
+        padding: padding ?? this.padding,
+        margin: margin ?? this.margin,
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        decoration: decoration ?? this.decoration,
+        centerOnLargeScreens: centerOnLargeScreens ?? this.centerOnLargeScreens,
+        mobileBreakpoint: mobileBreakpoint ?? this.mobileBreakpoint,
+        tabletBreakpoint: tabletBreakpoint ?? this.tabletBreakpoint,
+        gridColumns: gridColumns ?? this.gridColumns,
+        themeOverrides: themeOverrides ?? this.themeOverrides,
+      );
 
   /// Get responsive column count based on screen width
   int getColumnCount(double screenWidth) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'data_grid_column.dart';
+import 'package:voo_data_grid/src/data_grid_column.dart';
 
 /// A typed version of VooDataColumn that provides type safety for column values
 /// 
