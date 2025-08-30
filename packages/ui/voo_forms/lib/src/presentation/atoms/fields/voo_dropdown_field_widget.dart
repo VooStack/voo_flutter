@@ -66,7 +66,10 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   void dispose() {
     _debounceTimer?.cancel();
     _searchController.dispose();
-    _removeOverlay();
+    // Just remove the overlay without setState as we're disposing
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _isOpen = false;
     if (widget.field.focusNode == null) {
       _focusNode.dispose();
     } else {
@@ -84,9 +87,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
-    setState(() {
-      _isOpen = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isOpen = false;
+      });
+    }
   }
 
   void _showOverlay() {
@@ -247,17 +252,32 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
         final currentValue = widget.field.value ?? widget.field.initialValue;
         final isSelected = option.value == currentValue;
 
-        return InkWell(
-          onTap: option.enabled
-              ? () {
-                  final value = option.value;
-                  widget.onChanged?.call(value);
-                  widget.field.onChanged?.call(value);
-                  _removeOverlay();
-                  _searchController.clear();
-                }
-              : null,
-          child: Container(
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: option.enabled
+                ? () {
+                    final T? value = option.value;
+                    widget.onChanged?.call(value);
+                    // Call field.onChanged only if it exists
+                    // This avoids type casting issues
+                    if (widget.field.onChanged != null) {
+                      try {
+                        widget.field.onChanged!(value);
+                      } catch (_) {
+                        // Silently ignore type casting errors
+                      }
+                    }
+                    setState(() {
+                      // Force update to reflect new selection
+                    });
+                    _removeOverlay();
+                    _searchController.clear();
+                  }
+                : null,
+            hoverColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.08),
+            highlightColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.12),
+            child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: design.spacingLg,
               vertical: design.spacingMd,
@@ -315,6 +335,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                   ),
               ],
             ),
+          ),
           ),
         );
       },
@@ -484,13 +505,21 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   }
 
   VooFieldOption<T>? _getSelectedOption() {
-    // Use value if available, otherwise fall back to initialValue
+    // Always use the current value from the field
     final currentValue = widget.field.value ?? widget.field.initialValue;
     if (currentValue == null) return null;
     
     try {
       return _allOptions.firstWhere((option) => option.value == currentValue);
     } catch (_) {
+      // If we have an initial value but no matching option yet (async loading),
+      // create a temporary option for display
+      if (widget.field.initialValue != null && widget.field.asyncOptionsLoader != null) {
+        return VooFieldOption<T>(
+          value: widget.field.initialValue as T,
+          label: widget.field.initialValue.toString(),
+        );
+      }
       return null;
     }
   }
@@ -692,7 +721,15 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       onChanged: widget.field.enabled && !widget.field.readOnly
           ? (T? value) {
               widget.onChanged?.call(value);
-              widget.field.onChanged?.call(value);
+              // Call field.onChanged only if it exists
+              // This avoids type casting issues
+              if (widget.field.onChanged != null) {
+                try {
+                  widget.field.onChanged!(value);
+                } catch (_) {
+                  // Silently ignore type casting errors
+                }
+              }
             }
           : null,
       label: shouldShowLabel ? widget.field.label : null,

@@ -47,7 +47,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
   void initState() {
     super.initState();
     _controller = widget.controller ??
-        TextEditingController(text: widget.field.value?.toString() ?? '');
+        TextEditingController(text: widget.field.value?.toString() ?? widget.field.initialValue?.toString() ?? '');
     _focusNode = widget.focusNode ?? FocusNode();
     _obscureText = widget.field.type == VooFieldType.password;
 

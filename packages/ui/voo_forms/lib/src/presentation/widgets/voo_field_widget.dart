@@ -78,7 +78,14 @@ class VooFieldWidget extends StatelessWidget {
           focusNode: focusNode,
           onChanged: (String value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
           onEditingComplete: onEditingComplete,
           onSubmitted: onSubmitted != null ? (value) => onSubmitted!(value) : null,
@@ -93,7 +100,14 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (bool? value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
         );
 
@@ -103,7 +117,14 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (bool? value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
         );
 
@@ -113,7 +134,6 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
           },
         );
 
@@ -123,7 +143,14 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
         );
 
@@ -133,7 +160,14 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (double value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
           error: error,
           showError: showError,
@@ -145,7 +179,14 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (DateTime? value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
           onTap: onTap,
           focusNode: focusNode,
@@ -160,7 +201,14 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (TimeOfDay? value) {
             onChanged?.call(value);
-            field.onChanged?.call(value);
+            // Safely call field.onChanged with type checking
+            if (field.onChanged != null) {
+              try {
+                field.onChanged!(value);
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
+            }
           },
           onTap: onTap,
           focusNode: focusNode,

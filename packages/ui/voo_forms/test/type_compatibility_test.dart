@@ -79,7 +79,7 @@ void main() {
         }
 
         // Test with a text field using string callback
-        final stringField = VooFormField(
+        const stringField = VooFormField(
           id: 'string_field',
           name: 'string_field',
           type: VooFieldType.text,
@@ -119,19 +119,19 @@ void main() {
         final results = <String, dynamic>{};
 
         final fields = [
-          VooFormField(
+          const VooFormField(
             id: 'text',
             name: 'text',
             type: VooFieldType.text,
             label: 'Text',
           ),
-          VooFormField(
+          const VooFormField(
             id: 'number',
             name: 'number',
             type: VooFieldType.number,
             label: 'Number',
           ),
-          VooFormField(
+          const VooFormField(
             id: 'bool',
             name: 'bool',
             type: VooFieldType.boolean,
@@ -215,7 +215,7 @@ void main() {
     group('Common Type Error Scenarios', () {
       test('String to dynamic conversion should work', () {
         // This simulates the exact error users are seeing
-        void Function(String?) stringCallback = (String? value) {};
+        void stringCallback(String? value) {}
         void Function(dynamic)? dynamicCallback;
 
         // This should not throw a type error
@@ -231,7 +231,7 @@ void main() {
       });
 
       test('Widget onChanged should accept various callback signatures', () {
-        final field = VooFormField(
+        const field = VooFormField(
           id: 'test',
           name: 'test',
           type: VooFieldType.text,
@@ -262,25 +262,25 @@ void main() {
         final formData = <String, dynamic>{};
 
         final formFields = [
-          VooFormField(
+          const VooFormField(
             id: 'name',
             name: 'name',
             type: VooFieldType.text,
             label: 'Name',
           ),
-          VooFormField(
+          const VooFormField(
             id: 'age',
             name: 'age',
             type: VooFieldType.number,
             label: 'Age',
           ),
-          VooFormField(
+          const VooFormField(
             id: 'email',
             name: 'email',
             type: VooFieldType.email,
             label: 'Email',
           ),
-          VooFormField(
+          const VooFormField(
             id: 'subscribe',
             name: 'subscribe',
             type: VooFieldType.boolean,
@@ -316,7 +316,7 @@ void main() {
         // Test using a text editing controller pattern
         final textController = TextEditingController();
         
-        final field = VooFormField(
+        const field = VooFormField(
           id: 'controlled',
           name: 'controlled',
           type: VooFieldType.text,

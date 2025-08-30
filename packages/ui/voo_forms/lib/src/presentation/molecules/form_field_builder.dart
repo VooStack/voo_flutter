@@ -50,7 +50,7 @@ class VooFormFieldBuilder extends StatelessWidget {
     Widget fieldWidget = VooFieldWidget(
       field: field,
       options: fieldOptions,
-      onChanged: (value) {
+      onChanged: (dynamic value) {
         controller.setValue(field.id, value);
         if (controller.form.validationMode == FormValidationMode.onChange) {
           controller.validateField(field.id);
@@ -74,7 +74,8 @@ class VooFormFieldBuilder extends StatelessWidget {
               field.type == VooFieldType.multiline
           ? (value) {
               controller.setValue(field.id, value);
-              if (controller.form.validationMode == FormValidationMode.onSubmit) {
+              if (controller.form.validationMode ==
+                  FormValidationMode.onSubmit) {
                 controller.validateField(field.id);
               }
             }
