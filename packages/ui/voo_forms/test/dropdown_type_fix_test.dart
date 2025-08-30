@@ -26,6 +26,25 @@ class JurisdictionListOption {
   int get hashCode => id.hashCode;
 }
 
+// Helper to tap dropdown fields that works with both DropdownButtonFormField and TextFormField
+Future<void> tapDropdown(WidgetTester tester) async {
+  // Try to find DropdownButtonFormField first (non-searchable dropdowns)
+  final dropdownButton = find.byType(DropdownButtonFormField);
+  if (dropdownButton.evaluate().isNotEmpty) {
+    await tester.tap(dropdownButton.first);
+    return;
+  }
+  
+  // Otherwise look for TextFormField (searchable dropdowns)
+  final textField = find.byType(TextFormField);
+  if (textField.evaluate().isNotEmpty) {
+    await tester.tap(textField.first);
+    return;
+  }
+  
+  throw StateError('No dropdown field found');
+}
+
 void main() {
   group('Dropdown Type Fix Tests', () {
     testWidgets('Should handle typed onChanged callbacks without type errors', (tester) async {
@@ -79,7 +98,7 @@ void main() {
       expect(find.text('California'), findsOneWidget);
 
       // Tap to open dropdown
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
 
       // Select a different option
@@ -141,7 +160,7 @@ void main() {
       expect(find.text('California'), findsOneWidget);
 
       // Open dropdown
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
 
       // Select Texas
@@ -189,7 +208,7 @@ void main() {
       );
 
       // Open dropdown
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
 
       // Wait for async loading
@@ -234,7 +253,7 @@ void main() {
       );
 
       // Open and select option
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Option 2').last);
       await tester.pumpAndSettle();
@@ -272,7 +291,7 @@ void main() {
       );
 
       // Open and select option
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Option 2').last);
       await tester.pumpAndSettle();

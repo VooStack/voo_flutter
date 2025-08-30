@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/dropdown_menu_overlay.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -128,152 +129,17 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                 link: _layerLink,
                 showWhenUnlinked: false,
                 offset: Offset(0, size.height + 8),
-                child: _buildDropdownMenu(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(_overlayEntry!);
-    setState(() {
-      _isOpen = true;
-    });
-
-    if (widget.field.asyncOptionsLoader != null && _allOptions.isEmpty) {
-      _loadAsyncOptions('');
-    }
-  }
-
-  Widget _buildDropdownMenu() {
-    final design = context.vooDesign;
-    final theme = Theme.of(context);
-
-    return Container(
-      constraints: const BoxConstraints(
-        maxHeight: 300,
-        maxWidth: 400,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(design.radiusMd),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.field.enableSearch) ...[
-            Container(
-              padding: EdgeInsets.all(design.spacingMd),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-              ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: widget.field.searchHint ?? 'Search...',
-                  prefixIcon: Icon(
-                    Icons.search,
-                    size: design.iconSizeMd,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.clear,
-                            size: design.iconSizeSm,
-                          ),
-                          onPressed: () {
-                            _searchController.clear();
-                            _onSearchChanged('');
-                          },
-                        )
-                      : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(design.radiusSm),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(design.radiusSm),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: design.spacingMd,
-                    vertical: design.spacingSm,
-                  ),
-                  isDense: true,
-                ),
-                onChanged: _onSearchChanged,
-              ),
-            ),
-          ],
-          Flexible(
-            child: _buildItemsList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildItemsList() {
-    final design = context.vooDesign;
-    final theme = Theme.of(context);
-
-    if (_isLoading) {
-      return Container(
-        padding: EdgeInsets.all(design.spacingXl),
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    if (_filteredOptions.isEmpty) {
-      return Container(
-        padding: EdgeInsets.all(design.spacingXl),
-        child: Center(
-          child: Text(
-            'No results found',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(vertical: design.spacingSm),
-      itemCount: _filteredOptions.length,
-      itemBuilder: (context, index) {
-        final option = _filteredOptions[index];
-        final currentValue = widget.field.value ?? widget.field.initialValue;
-        final isSelected = option.value == currentValue;
-
-        return Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: option.enabled
-                ? () {
-                    final T? value = option.value;
+                child: DropdownMenuOverlay<T>(
+                  filteredOptions: _filteredOptions,
+                  allOptions: _allOptions,
+                  isLoading: _isLoading,
+                  enableSearch: widget.field.enableSearch,
+                  searchHint: widget.field.searchHint,
+                  searchController: _searchController,
+                  onSearchChanged: _onSearchChanged,
+                  currentValue: _currentValue,
+                  initialValue: widget.field.initialValue,
+                  onItemSelected: (T? value) {
                     setState(() {
                       _currentValue = value;
                     });
@@ -289,76 +155,24 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                     }
                     _removeOverlay();
                     _searchController.clear();
-                  }
-                : null,
-            hoverColor:
-                theme.colorScheme.primaryContainer.withValues(alpha: 0.08),
-            highlightColor:
-                theme.colorScheme.primaryContainer.withValues(alpha: 0.12),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacingLg,
-                vertical: design.spacingMd,
+                  },
+                  onClearSearch: () => _onSearchChanged(''),
+                ),
               ),
-              color: isSelected
-                  ? theme.colorScheme.primaryContainer.withValues(alpha: 0.2)
-                  : null,
-              child: Row(
-                children: [
-                  if (option.icon != null) ...[
-                    Icon(
-                      option.icon,
-                      size: design.iconSizeMd,
-                      color: option.enabled
-                          ? (isSelected
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurface)
-                          : theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                    ),
-                    SizedBox(width: design.spacingSm),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          option.label,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: option.enabled
-                                ? (isSelected
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurface)
-                                : theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.38),
-                            fontWeight: isSelected ? FontWeight.w500 : null,
-                          ),
-                        ),
-                        if (option.subtitle != null) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            option.subtitle!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  if (isSelected)
-                    Icon(
-                      Icons.check,
-                      size: design.iconSizeMd,
-                      color: theme.colorScheme.primary,
-                    ),
-                ],
-              ),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
+
+    Overlay.of(context).insert(_overlayEntry!);
+    setState(() {
+      _isOpen = true;
+    });
+
+    if (widget.field.asyncOptionsLoader != null && _allOptions.isEmpty) {
+      _loadAsyncOptions('');
+    }
   }
 
   void _onSearchChanged(String query) {
@@ -603,7 +417,12 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     }
 
     // Regular dropdown without search - use DropdownButtonFormField for consistency
+    // Simplified items without subtitles to prevent overflow
+    // Subtitles are only shown in searchable dropdowns with custom overlay
+    
     final items = widget.field.options?.map<DropdownMenuItem<T>>((option) {
+          // Simplified item without subtitle to prevent overflow
+          // Subtitle can be shown in the searchable dropdown only
           return DropdownMenuItem<T>(
             value: option.value,
             enabled: option.enabled,
@@ -620,29 +439,15 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                   SizedBox(width: design.spacingSm),
                 ],
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        option.label,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: option.enabled
-                              ? theme.colorScheme.onSurface
-                              : theme.colorScheme.onSurface
-                                  .withValues(alpha: 0.38),
-                        ),
-                      ),
-                      if (option.subtitle != null) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          option.subtitle!,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ],
+                  child: Text(
+                    option.label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: option.enabled
+                          ? theme.colorScheme.onSurface
+                          : theme.colorScheme.onSurface
+                              .withValues(alpha: 0.38),
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

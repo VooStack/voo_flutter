@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/field_label_wrapper.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_checkbox_field_widget.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_date_field_widget.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_dropdown_field_widget.dart';
@@ -46,20 +47,28 @@ class VooFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveOptions = options ?? VooFieldOptions.material;
 
-    // Apply label if needed for non-floating positions
-    Widget fieldWidget = _buildFieldByType(context, effectiveOptions);
+    // Get the appropriate field widget based on type
+    Widget fieldWidget = _getFieldWidget(context, effectiveOptions);
 
     // Wrap with label if label position requires it
     if (field.label != null &&
+        effectiveOptions.labelPosition != null &&
         (effectiveOptions.labelPosition == LabelPosition.above ||
             effectiveOptions.labelPosition == LabelPosition.left)) {
-      fieldWidget = _wrapWithLabel(context, fieldWidget, effectiveOptions);
+      fieldWidget = FieldLabelWrapper(
+        label: field.label!,
+        labelPosition: effectiveOptions.labelPosition!,
+        textStyle: effectiveOptions.textStyle,
+        child: fieldWidget,
+      );
     }
 
     return fieldWidget;
   }
 
-  Widget _buildFieldByType(
+  /// Returns the appropriate field widget based on field type
+  /// This is a factory method that delegates to specific field widgets
+  Widget _getFieldWidget(
     BuildContext context,
     VooFieldOptions effectiveOptions,
   ) {
@@ -254,38 +263,4 @@ class VooFieldWidget extends StatelessWidget {
     }
   }
 
-  Widget _wrapWithLabel(
-    BuildContext context,
-    Widget fieldWidget,
-    VooFieldOptions options,
-  ) {
-    final theme = Theme.of(context);
-    final labelWidget = Text(
-      field.label!,
-      style: options.textStyle ?? theme.textTheme.bodyMedium,
-    );
-
-    if (options.labelPosition == LabelPosition.left) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 120,
-            child: labelWidget,
-          ),
-          const SizedBox(width: 16),
-          Expanded(child: fieldWidget),
-        ],
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          labelWidget,
-          const SizedBox(height: 8),
-          fieldWidget,
-        ],
-      );
-    }
-  }
 }

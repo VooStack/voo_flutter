@@ -5,6 +5,26 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Integration tests for complete form workflows
 /// Tests end-to-end form scenarios following clean architecture
+
+// Helper to tap dropdown fields that works with both DropdownButtonFormField and TextFormField
+Future<void> tapDropdown(WidgetTester tester) async {
+  // Try to find DropdownButtonFormField first (non-searchable dropdowns)
+  final dropdownButton = find.byType(DropdownButtonFormField);
+  if (dropdownButton.evaluate().isNotEmpty) {
+    await tester.tap(dropdownButton.first);
+    return;
+  }
+  
+  // Otherwise look for TextFormField (searchable dropdowns)
+  final textField = find.byType(TextFormField);
+  if (textField.evaluate().isNotEmpty) {
+    await tester.tap(textField.first);
+    return;
+  }
+  
+  throw StateError('No dropdown field found');
+}
+
 void main() {
   Widget createTestApp(Widget child) {
     return MaterialApp(
@@ -219,7 +239,7 @@ void main() {
       expect(find.text('Company Name'), findsNothing);
       
       // Change to business account
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
       
       if (find.text('Business').evaluate().isNotEmpty) {

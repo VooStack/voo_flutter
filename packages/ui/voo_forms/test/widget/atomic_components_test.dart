@@ -5,6 +5,26 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Widget tests for atomic components
 /// Tests all field widgets following atomic design pattern
+
+// Helper to tap dropdown fields that works with both DropdownButtonFormField and TextFormField
+Future<void> tapDropdown(WidgetTester tester) async {
+  // Try to find DropdownButtonFormField first (non-searchable dropdowns)
+  final dropdownButton = find.byType(DropdownButtonFormField);
+  if (dropdownButton.evaluate().isNotEmpty) {
+    await tester.tap(dropdownButton.first);
+    return;
+  }
+  
+  // Otherwise look for TextFormField (searchable dropdowns)
+  final textField = find.byType(TextFormField);
+  if (textField.evaluate().isNotEmpty) {
+    await tester.tap(textField.first);
+    return;
+  }
+  
+  throw StateError('No dropdown field found');
+}
+
 void main() {
   // Helper to create test app
   Widget createTestApp(Widget child) {
@@ -222,7 +242,7 @@ void main() {
       );
 
       // Tap to open dropdown
-      await tester.tap(find.byType(InkWell).first);
+      await tapDropdown(tester);
       await tester.pumpAndSettle();
       
       // Menu should be open

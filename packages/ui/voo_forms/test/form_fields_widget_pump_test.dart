@@ -21,6 +21,25 @@ class Country {
 
 enum Priority { low, medium, high, critical }
 
+// Helper to tap dropdown fields that works with both DropdownButtonFormField and TextFormField
+Future<void> tapDropdown(WidgetTester tester) async {
+  // Try to find DropdownButtonFormField first (non-searchable dropdowns)
+  final dropdownButton = find.byType(DropdownButtonFormField);
+  if (dropdownButton.evaluate().isNotEmpty) {
+    await tester.tap(dropdownButton.first);
+    return;
+  }
+  
+  // Otherwise look for TextFormField (searchable dropdowns)
+  final textField = find.byType(TextFormField);
+  if (textField.evaluate().isNotEmpty) {
+    await tester.tap(textField.first);
+    return;
+  }
+  
+  throw StateError('No dropdown field found');
+}
+
 void main() {
   // Helper function to wrap widget with necessary providers
   Widget createTestApp(Widget child) {
@@ -185,7 +204,7 @@ void main() {
         expect(find.text('USA'), findsOneWidget);
         
         // Open dropdown
-        await tester.tap(find.byType(InkWell).first);
+        await tapDropdown(tester);
         await tester.pumpAndSettle();
         
         // Select Canada
@@ -233,7 +252,7 @@ void main() {
         expect(find.text('United States'), findsOneWidget);
         
         // Open and select
-        await tester.tap(find.byType(InkWell).first);
+        await tapDropdown(tester);
         await tester.pumpAndSettle();
         
         if (find.text('Canada').evaluate().length > 1) {
@@ -273,7 +292,7 @@ void main() {
 
         expect(find.text('MEDIUM'), findsOneWidget);
         
-        await tester.tap(find.byType(InkWell).first);
+        await tapDropdown(tester);
         await tester.pumpAndSettle();
         
         if (find.text('HIGH').evaluate().length > 1) {
@@ -309,7 +328,7 @@ void main() {
         );
 
         // Open dropdown
-        await tester.tap(find.byType(InkWell).first);
+        await tapDropdown(tester);
         await tester.pumpAndSettle();
         
         // Wait for async load
