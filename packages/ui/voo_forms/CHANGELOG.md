@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.10] - 2025-08-30
+
+### Fixed
+- **Type Casting in onChanged Callbacks**: Resolved all remaining type casting issues in field widget callbacks
+  - Fixed type errors in all field widgets (checkbox, switch, radio, rating, color, multiselect, file, datetime, custom)
+  - All field widgets now use dynamic invocation to safely call field.onChanged callbacks
+  - Number fields now properly parse string input to numeric values before calling onChanged
+  - Prevents runtime errors like `type '(bool?) => void' is not a subtype of type '((dynamic) => void)?'`
+  - Added comprehensive test coverage for all field types with typed onChanged callbacks
+  - Ensures 100% test pass rate (160/160 tests passing)
+
 ## [0.1.9] - 2025-08-29
 
 ### Fixed
