@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.1.11] - 2025-08-30
+
+### Fixed
+- **Dropdown Overflow Issues**: Fixed subtitle display causing overflow in standard dropdowns
+  - Removed subtitles from non-searchable dropdown items to prevent overflow
+  - Subtitles are now only displayed in searchable dropdowns with custom overlay
+  - Ensures consistent dropdown rendering without visual glitches
+
+### Refactored
+- **Removed Function Widgets**: Eliminated all function widgets following atomic design principles
+  - Created `DropdownMenuOverlay`, `DropdownSearchField`, `DropdownItemsList`, and `VooDropdownMenuItem` as proper widget classes
+  - Created `FieldLabelWrapper` widget to handle label positioning
+  - Replaced all `_buildXXX` methods with proper widget classes or factory methods
+  - Improves code organization and follows rules.md requirements
+
+### Improved
+- **Test Suite Organization**: Completely reorganized test structure for better maintainability
+  - Created `test_helpers.dart` with reusable test utilities
+  - Organized tests by field type in `field_callbacks/` directory
+  - Added detailed error messages for all assertions
+  - Fixed all compilation errors in tests
+  - Removed unsupported API usage from tests
+  - Tests now follow atomic design pattern and rules.md requirements
+  - Improved test naming conventions for clarity
+
+### Developer Experience
+- **Test Helpers**: Added comprehensive test utilities
+  - `createTestApp()` - Properly wrapped test widgets with required providers
+  - `tapDropdown()` - Works with both regular and searchable dropdowns
+  - `enterTextWithVerification()` - Verifies text entry with detailed error reporting
+  - `expectFieldValue()` - Field value assertions with context
+  - `expectCallbackInvoked()` - Callback verification helpers
+  - Created `README_TEST_ORGANIZATION.md` documenting test structure
+
 ## [0.1.10] - 2025-08-30
 
 ### Fixed
