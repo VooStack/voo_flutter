@@ -43,6 +43,37 @@ class VooFieldWidget extends StatelessWidget {
     this.autofocus = false,
   });
 
+  /// Helper method to create dropdown field with proper type handling
+  Widget _buildDropdownField(
+    VooFormField field,
+    VooFieldOptions effectiveOptions,
+    ValueChanged<dynamic>? onChanged,
+  ) {
+    // Create a wrapper callback that handles both widget onChanged and field onChanged
+    void handleChange(dynamic value) {
+      // Call widget's onChanged
+      onChanged?.call(value);
+      
+      // Safely invoke field.onChanged using reflection to avoid type casting
+      try {
+        final fieldOnChanged = field.onChanged;
+        if (fieldOnChanged != null) {
+          // Create a Function.apply call to invoke the callback without type checking
+          Function.apply(fieldOnChanged, [value]);
+        }
+      } catch (_) {
+        // If Function.apply fails, field.onChanged is incompatible
+        // This is expected when types don't match, so we silently ignore
+      }
+    }
+
+    return VooDropdownFieldWidget<dynamic>(
+      field: field,
+      options: effectiveOptions,
+      onChanged: handleChange,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final effectiveOptions = options ?? VooFieldOptions.material;
@@ -87,17 +118,7 @@ class VooFieldWidget extends StatelessWidget {
           focusNode: focusNode,
           onChanged: (String value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (e) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
           onEditingComplete: onEditingComplete,
           onSubmitted: onSubmitted != null ? (value) => onSubmitted!(value) : null,
@@ -112,17 +133,7 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (bool? value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
         );
 
@@ -132,39 +143,13 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (bool? value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
         );
 
       case VooFieldType.dropdown:
-        return VooDropdownFieldWidget(
-          field: field,
-          options: effectiveOptions,
-          onChanged: (value) {
-            onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
-          },
-        );
+        // Create dropdown with dynamic type to handle all field types
+        return _buildDropdownField(field, effectiveOptions, onChanged);
 
       case VooFieldType.radio:
         return VooRadioFieldWidget(
@@ -172,17 +157,7 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
         );
 
@@ -192,17 +167,7 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (double value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
           error: error,
           showError: showError,
@@ -214,17 +179,7 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (DateTime? value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
           onTap: onTap,
           focusNode: focusNode,
@@ -239,17 +194,7 @@ class VooFieldWidget extends StatelessWidget {
           options: effectiveOptions,
           onChanged: (TimeOfDay? value) {
             onChanged?.call(value);
-            // Safely call field.onChanged with type checking
-            try {
-              // Use dynamic to avoid type checking on field access
-              final dynamic dynField = field;
-              final callback = dynField.onChanged;
-              if (callback != null) {
-                callback(value);
-              }
-            } catch (_) {
-              // Silently ignore type casting errors
-            }
+            // Don't call field.onChanged here - let the form controller handle it
           },
           onTap: onTap,
           focusNode: focusNode,

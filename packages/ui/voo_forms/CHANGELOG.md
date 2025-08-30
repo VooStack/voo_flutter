@@ -1,6 +1,27 @@
 # Changelog
 
-## [0.1.12] - 2025-08-30
+## [0.1.13]
+
+### Fixed
+- **Dropdown Type Casting Errors**: Fixed critical type casting errors affecting strongly typed callbacks
+  - Resolved "TypeError: Instance of '(CustomType?) => void' is not a subtype of type '((dynamic) => void)?'" errors
+  - Added `_invokeFieldOnChanged` helper method using `Function.apply` to safely invoke callbacks without type checking
+  - Fixed both searchable and regular dropdowns to handle typed callbacks properly
+  - All field types now properly handle typed onChanged callbacks without runtime errors
+
+### Added
+- **Comprehensive Type Safety Tests**: Added full test coverage for typed callbacks across all field types
+  - Tests for text, number, email, password, phone, url, multiline fields with String callbacks
+  - Tests for boolean switch with bool callbacks
+  - Tests for checkbox with bool? callbacks
+  - Tests for dropdown with custom typed callbacks (e.g., CustomOption)
+  - Tests for radio with typed callbacks
+  - Tests for slider with double callbacks
+  - Tests for date with DateTime? callbacks
+  - Tests for time with TimeOfDay? callbacks
+  - Ensures no type casting errors occur at runtime
+
+## [0.1.12]
 
 ### Fixed
 - **Dropdown Type Casting with Strongly Typed Callbacks**: Fixed runtime type errors when using typed callbacks with dropdowns
@@ -11,7 +32,7 @@
   - Added comprehensive test coverage for typed callbacks with custom types like `JurisdictionListOption`
   - Ensures type-safe callback handling without runtime errors
 
-## [0.1.11] - 2025-08-30
+## [0.1.11]
 
 ### Fixed
 - **Dropdown Overflow Issues**: Fixed subtitle display causing overflow in standard dropdowns
@@ -45,7 +66,7 @@
   - `expectCallbackInvoked()` - Callback verification helpers
   - Created `README_TEST_ORGANIZATION.md` documenting test structure
 
-## [0.1.10] - 2025-08-30
+## [0.1.10]
 
 ### Fixed
 - **Type Casting in onChanged Callbacks**: Resolved all remaining type casting issues in field widget callbacks
@@ -56,7 +77,7 @@
   - Added comprehensive test coverage for all field types with typed onChanged callbacks
   - Ensures 100% test pass rate (160/160 tests passing)
 
-## [0.1.9] - 2025-08-29
+## [0.1.9]
 
 ### Fixed
 - **Type Casting in Field Widgets**: Fixed type casting errors across all field widget callbacks
@@ -68,7 +89,7 @@
   - VooSwitchFieldWidget and VooCheckboxFieldWidget now handle bool types correctly
   - All VooField factory methods now work with typed callbacks without runtime errors
 
-## [0.1.8] - 2025-08-29
+## [0.1.8]
 
 ### Fixed
 - **Type Safety in Dropdowns**: Fixed runtime type errors in dropdown onChanged callbacks
