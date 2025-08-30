@@ -126,7 +126,7 @@ void main() {
       });
 
       testWidgets('Slider field callbacks should handle double types correctly', (tester) async {
-        double? capturedValue;
+        // Test slider field type handling
         final field = VooFormField(
           id: 'slider_field',
           name: 'slider_field',
@@ -143,7 +143,8 @@ void main() {
               body: VooFieldWidget(
                 field: field,
                 onChanged: (value) {
-                  capturedValue = value as double?;
+                  // Value would be captured as double
+                  expect(value, isA<double?>());
                 },
               ),
             ),
@@ -155,7 +156,7 @@ void main() {
       });
 
       testWidgets('Date field callbacks should handle DateTime types correctly', (tester) async {
-        DateTime? capturedValue;
+        // Test date field type handling
         final field = VooFormField(
           id: 'date_field',
           name: 'date_field',
@@ -170,7 +171,8 @@ void main() {
               body: VooFieldWidget(
                 field: field,
                 onChanged: (value) {
-                  capturedValue = value as DateTime?;
+                  // Value would be captured as DateTime
+                  expect(value, isA<DateTime?>());
                 },
               ),
             ),

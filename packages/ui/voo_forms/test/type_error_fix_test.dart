@@ -22,7 +22,7 @@ void main() {
               field: field,
               onChanged: (value) {
                 // This should not cause a type error
-                print('Value changed: $value');
+                // print('Value changed: $value');
               },
             ),
           ),
@@ -65,7 +65,7 @@ void main() {
               field: field,
               onChanged: (value) {
                 // This should not cause a type error
-                print('Dropdown value changed: $value');
+                // print('Dropdown value changed: $value');
               },
             ),
           ),
@@ -105,7 +105,7 @@ void main() {
               field: field,
               onChanged: (value) {
                 // This should not cause a type error
-                print('Async dropdown value changed: $value');
+                // print('Async dropdown value changed: $value');
               },
             ),
           ),
@@ -123,27 +123,27 @@ void main() {
       final fields = [
         VooField.text(
           name: 'text',
-          onChanged: (String? value) => print('Text: $value'),
+          onChanged: (String? value) {}, // Text: $value
         ),
         VooField.number(
           name: 'number',
-          onChanged: (num? value) => print('Number: $value'),
+          onChanged: (num? value) {}, // Number: $value
         ),
         VooField.boolean(
           name: 'boolean',
-          onChanged: (bool? value) => print('Boolean: $value'),
+          onChanged: (bool? value) {}, // Boolean: $value
         ),
         VooField.date(
           name: 'date',
-          onChanged: (DateTime? value) => print('Date: $value'),
+          onChanged: (DateTime? value) {}, // Date: $value
         ),
         VooField.time(
           name: 'time',
-          onChanged: (TimeOfDay? value) => print('Time: $value'),
+          onChanged: (TimeOfDay? value) {}, // Time: $value
         ),
         VooField.slider(
           name: 'slider',
-          onChanged: (double? value) => print('Slider: $value'),
+          onChanged: (double? value) {}, // Slider: $value
         ),
       ];
       
@@ -155,7 +155,7 @@ void main() {
                 field: field,
                 onChanged: (dynamic value) {
                   // This should not cause any type errors
-                  print('Field ${field.name} changed: $value');
+                  // print('Field ${field.name} changed: $value');
                 },
               ),
             ),

@@ -189,9 +189,11 @@ Widget advancedFiltersGrid() {
         filterable: true,
         filterWidgetType: VooFilterWidgetType.dropdown,
         filterOptions: [
-          VooFilterOption(value: 'Electronics', label: 'Electronics', icon: Icons.devices),
+          VooFilterOption(
+              value: 'Electronics', label: 'Electronics', icon: Icons.devices),
           VooFilterOption(value: 'Books', label: 'Books', icon: Icons.book),
-          VooFilterOption(value: 'Clothing', label: 'Clothing', icon: Icons.checkroom),
+          VooFilterOption(
+              value: 'Clothing', label: 'Clothing', icon: Icons.checkroom),
           VooFilterOption(value: 'Food', label: 'Food', icon: Icons.restaurant),
           VooFilterOption(value: 'Toys', label: 'Toys', icon: Icons.toys),
         ],

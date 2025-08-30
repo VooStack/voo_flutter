@@ -12,7 +12,7 @@ void main() {
     prefixIcon: Icons.home,
     onChanged: (String? value) {
       // This typed callback should work without errors
-      print('Site name changed to: $value');
+      // print('Site name changed to: $value');
     },
   );
 
@@ -28,7 +28,7 @@ void main() {
     ),
     onChanged: (USState? value) {
       // This typed callback should work without errors
-      print('State changed to: $value');
+      // print('State changed to: $value');
     },
   );
 
@@ -38,7 +38,7 @@ void main() {
     prefixIcon: Icons.calendar_today,
     onChanged: (DateTime? value) {
       // This typed callback should work without errors
-      print('Date changed to: $value');
+      // print('Date changed to: $value');
     },
   );
 
@@ -55,7 +55,7 @@ void main() {
     ),
   );
 
-  print('Type test completed successfully - no type errors!');
+  // print('Type test completed successfully - no type errors!');
 }
 
 // Sample enum for testing

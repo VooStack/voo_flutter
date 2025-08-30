@@ -144,7 +144,7 @@ Widget formPreview() {
                   label: 'Country',
                   prefixIcon: Icons.public,
                   options: countries,
-                  converter: (country) => VooDropdownChild(
+                  converter: (Country country) => VooDropdownChild<Country>(
                     value: country,
                     label: '${country.flag} ${country.name}',
                     subtitle:
@@ -227,6 +227,20 @@ Widget largeFormPreview() {
       layout: FormLayout.grid,
       id: 'user_registration',
       fields: [
+        VooField.dropdownAsync<Country>(
+          name: 'country',
+          initialValue: countries.first,
+          asyncOptionsLoader: (v) async {
+            await Future.delayed(const Duration(milliseconds: 300));
+            return countries;
+          },
+          converter: (Country country) => VooDropdownChild<Country>(
+            value: country,
+            label: country.name,
+            subtitle:
+                'Population: ${(country.population / 1000000).toStringAsFixed(1)}M',
+          ),
+        ),
         VooField.text(
           name: 'firstName',
           label: 'First Name',
@@ -286,7 +300,7 @@ Widget largeFormPreview() {
           label: 'Country',
           prefixIcon: Icons.public,
           options: countries,
-          converter: (country) => VooDropdownChild(
+          converter: (Country country) => VooDropdownChild<Country>(
             value: country,
             label: '${country.flag} ${country.name}',
             subtitle:
