@@ -112,6 +112,9 @@ void main() {
         ),
       );
       
+      // Wait for async operations to complete
+      await tester.pumpAndSettle();
+      
       // Async dropdown should render without errors
       expect(find.byType(VooDropdownFieldWidget), findsOneWidget);
     });
@@ -159,7 +162,8 @@ void main() {
           ),
         );
         
-        await tester.pump();
+        // Wait for any async operations to complete
+        await tester.pumpAndSettle();
         
         // Each field should render without errors
         expect(find.byType(VooFieldWidget), findsOneWidget);

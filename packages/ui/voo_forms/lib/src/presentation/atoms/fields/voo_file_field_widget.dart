@@ -121,7 +121,16 @@ class VooFileFieldWidget extends StatelessWidget {
                     icon: const Icon(Icons.close),
                     onPressed: () {
                       onChanged?.call(null);
-                      field.onChanged?.call(null);
+                      // Safely call field.onChanged with type checking
+                      try {
+                        final dynamic dynField = field;
+                        final callback = dynField.onChanged;
+                        if (callback != null) {
+                          callback(null);
+                        }
+                      } catch (_) {
+                        // Silently ignore type casting errors
+                      }
                     },
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

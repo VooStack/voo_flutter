@@ -48,15 +48,19 @@ void main() {
       final form = VooForm(
         id: 'validation_perf',
         fields: fields,
-        values: Map.fromEntries(
-          fields.map((f) => MapEntry(f.id, 'valid_value')),
-        ),
       );
+      
+      final controller = VooFormController(form: form);
+      
+      // Set valid values for all fields
+      for (final field in fields) {
+        controller.setValue(field.id, 'valid_value');
+      }
       
       final stopwatch = Stopwatch()..start();
       
       // Validate all fields
-      final isValid = form.validate();
+      final isValid = controller.validate();
       
       stopwatch.stop();
       

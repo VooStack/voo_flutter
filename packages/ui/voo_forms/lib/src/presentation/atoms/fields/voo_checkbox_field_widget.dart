@@ -36,7 +36,16 @@ class VooCheckboxFieldWidget extends StatelessWidget {
           onChanged: field.enabled && !field.readOnly
               ? (value) {
                   onChanged?.call(value ?? false);
-                  field.onChanged?.call(value ?? false);
+                  // Safely call field.onChanged with type checking
+                  try {
+                    final dynamic dynField = field;
+                    final callback = dynField.onChanged;
+                    if (callback != null) {
+                      callback(value ?? false);
+                    }
+                  } catch (_) {
+                    // Silently ignore type casting errors
+                  }
                 }
               : null,
           label: field.label ?? field.name,

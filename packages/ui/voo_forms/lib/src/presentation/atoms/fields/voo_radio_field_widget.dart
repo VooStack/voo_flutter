@@ -68,7 +68,16 @@ class VooRadioFieldWidget<T> extends StatelessWidget {
                         field.enabled && !field.readOnly && option.enabled
                             ? (value) {
                                 onChanged?.call(value);
-                                field.onChanged?.call(value);
+                                // Safely call field.onChanged with type checking
+                                try {
+                                  final dynamic dynField = field;
+                                  final callback = dynField.onChanged;
+                                  if (callback != null) {
+                                    callback(value);
+                                  }
+                                } catch (_) {
+                                  // Silently ignore type casting errors
+                                }
                               }
                             : null,
                     title: Text(option.label),

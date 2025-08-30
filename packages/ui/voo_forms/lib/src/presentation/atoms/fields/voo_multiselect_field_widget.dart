@@ -76,7 +76,16 @@ class VooMultiSelectFieldWidget<T> extends StatelessWidget {
                               newValues.remove(option.value);
                             }
                             onChanged?.call(newValues);
-                            field.onChanged?.call(newValues);
+                            // Safely call field.onChanged with type checking
+                            try {
+                              final dynamic dynField = field;
+                              final callback = dynField.onChanged;
+                              if (callback != null) {
+                                callback(newValues);
+                              }
+                            } catch (_) {
+                              // Silently ignore type casting errors
+                            }
                           }
                         : null,
                     title: Text(option.label),

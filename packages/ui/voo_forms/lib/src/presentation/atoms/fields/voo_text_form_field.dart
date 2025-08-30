@@ -311,8 +311,25 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
           ? AutovalidateMode.onUserInteraction 
           : AutovalidateMode.disabled,
       onChanged: (value) {
+        // Always call widget.onChanged with the string value
         widget.onChanged?.call(value);
-        widget.field.onChanged?.call(value);
+        
+        // For field.onChanged, parse the value if needed
+        dynamic callbackValue = value;
+        if (widget.field.type == VooFieldType.number && value.isNotEmpty) {
+          callbackValue = num.tryParse(value) ?? value;
+        }
+        
+        // Safely call field.onChanged with type checking
+        try {
+          final dynamic dynField = widget.field;
+          final callback = dynField.onChanged;
+          if (callback != null) {
+            callback(callbackValue);
+          }
+        } catch (_) {
+          // Silently ignore type casting errors
+        }
       },
       onEditingComplete: widget.onEditingComplete,
       onFieldSubmitted: widget.onSubmitted,

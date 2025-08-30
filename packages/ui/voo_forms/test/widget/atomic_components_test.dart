@@ -271,7 +271,8 @@ void main() {
         ),
       );
 
-      expect(find.byType(Radio<String>), findsWidgets);
+      // Radio field uses VooRadioListTile, not Radio directly
+      expect(find.byType(VooRadioListTile), findsWidgets);
       expect(find.text('S'), findsOneWidget);
       expect(find.text('M'), findsOneWidget);
       expect(find.text('L'), findsOneWidget);

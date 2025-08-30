@@ -75,7 +75,16 @@ class VooColorFieldWidget extends StatelessWidget {
                   
                   if (pickedColor != null) {
                     onChanged?.call(pickedColor);
-                    field.onChanged?.call(pickedColor);
+                    // Safely call field.onChanged with type checking
+                    try {
+                      final dynamic dynField = field;
+                      final callback = dynField.onChanged;
+                      if (callback != null) {
+                        callback(pickedColor);
+                      }
+                    } catch (_) {
+                      // Silently ignore type casting errors
+                    }
                   }
                   onTap?.call();
                 }

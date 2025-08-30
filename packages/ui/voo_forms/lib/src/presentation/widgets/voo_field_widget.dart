@@ -79,12 +79,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (String value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (e) {
+              // Silently ignore type casting errors
             }
           },
           onEditingComplete: onEditingComplete,
@@ -101,12 +104,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (bool? value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (_) {
+              // Silently ignore type casting errors
             }
           },
         );
@@ -118,12 +124,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (bool? value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (_) {
+              // Silently ignore type casting errors
             }
           },
         );
@@ -144,12 +153,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (_) {
+              // Silently ignore type casting errors
             }
           },
         );
@@ -161,12 +173,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (double value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (_) {
+              // Silently ignore type casting errors
             }
           },
           error: error,
@@ -180,12 +195,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (DateTime? value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (_) {
+              // Silently ignore type casting errors
             }
           },
           onTap: onTap,
@@ -202,12 +220,15 @@ class VooFieldWidget extends StatelessWidget {
           onChanged: (TimeOfDay? value) {
             onChanged?.call(value);
             // Safely call field.onChanged with type checking
-            if (field.onChanged != null) {
-              try {
-                field.onChanged!(value);
-              } catch (_) {
-                // Silently ignore type casting errors
+            try {
+              // Use dynamic to avoid type checking on field access
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(value);
               }
+            } catch (_) {
+              // Silently ignore type casting errors
             }
           },
           onTap: onTap,

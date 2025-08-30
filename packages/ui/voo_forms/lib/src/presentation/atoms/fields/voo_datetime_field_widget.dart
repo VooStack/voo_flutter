@@ -85,7 +85,16 @@ class VooDateTimeFieldWidget extends StatelessWidget {
             );
             effectiveController.text = dateFormat.format(combined);
             onChanged?.call(combined);
-            field.onChanged?.call(combined);
+            // Safely call field.onChanged with type checking
+            try {
+              final dynamic dynField = field;
+              final callback = dynField.onChanged;
+              if (callback != null) {
+                callback(combined);
+              }
+            } catch (_) {
+              // Silently ignore type casting errors
+            }
           }
         }
         onTap?.call();

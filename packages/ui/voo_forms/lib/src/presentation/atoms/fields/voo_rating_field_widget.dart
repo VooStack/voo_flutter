@@ -88,7 +88,16 @@ class VooRatingFieldWidget extends StatelessWidget {
                     ? () {
                         final newRating = rating.toDouble();
                         onChanged?.call(newRating);
-                        field.onChanged?.call(newRating);
+                        // Safely call field.onChanged with type checking
+                        try {
+                          final dynamic dynField = field;
+                          final callback = dynField.onChanged;
+                          if (callback != null) {
+                            callback(newRating);
+                          }
+                        } catch (_) {
+                          // Silently ignore type casting errors
+                        }
                       }
                     : null,
                 child: Padding(

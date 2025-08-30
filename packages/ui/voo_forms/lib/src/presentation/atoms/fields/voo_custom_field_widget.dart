@@ -58,7 +58,16 @@ class VooCustomFieldWidget extends StatelessWidget {
             field,
             (value) {
               onChanged?.call(value);
-              field.onChanged?.call(value);
+              // Safely call field.onChanged with type checking
+              try {
+                final dynamic dynField = field;
+                final callback = dynField.onChanged;
+                if (callback != null) {
+                  callback(value);
+                }
+              } catch (_) {
+                // Silently ignore type casting errors
+              }
             },
           ),
           if (field.helper != null)
