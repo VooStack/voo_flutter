@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.12] - 2025-08-30
+
+### Fixed
+- **Dropdown Type Casting with Strongly Typed Callbacks**: Fixed runtime type errors when using typed callbacks with dropdowns
+  - Error: `TypeError: Instance of '(JurisdictionListOption?) => void': type '(JurisdictionListOption?) => void' is not a subtype of type '((dynamic) => void)?'`
+  - Modified `VooFieldWidget` to wrap dropdown callbacks with dynamic type handling
+  - Removed direct `field.onChanged` calls from `VooDropdownFieldWidget` to prevent type mismatches
+  - Both regular and async dropdowns now handle strongly typed callbacks correctly
+  - Added comprehensive test coverage for typed callbacks with custom types like `JurisdictionListOption`
+  - Ensures type-safe callback handling without runtime errors
+
 ## [0.1.11] - 2025-08-30
 
 ### Fixed
