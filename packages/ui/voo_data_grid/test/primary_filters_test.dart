@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 void main() {
-  group('PrimaryFilterButtonAtom', () {
+  group('PrimaryFilterButton', () {
     testWidgets('displays label correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButtonAtom(
+            body: PrimaryFilterButton(
               label: 'Test Filter',
               isSelected: false,
               onPressed: () {},
@@ -24,7 +24,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButtonAtom(
+            body: PrimaryFilterButton(
               label: 'Test Filter',
               icon: Icons.filter_list,
               isSelected: false,
@@ -41,7 +41,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButtonAtom(
+            body: PrimaryFilterButton(
               label: 'Test Filter',
               count: 42,
               isSelected: false,
@@ -66,12 +66,12 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                PrimaryFilterButtonAtom(
+                PrimaryFilterButton(
                   label: 'Selected',
                   isSelected: true,
                   onPressed: () {},
                 ),
-                PrimaryFilterButtonAtom(
+                PrimaryFilterButton(
                   label: 'Not Selected',
                   isSelected: false,
                   onPressed: () {},
@@ -128,7 +128,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButtonAtom(
+            body: PrimaryFilterButton(
               label: 'Test Filter',
               isSelected: false,
               onPressed: () {
@@ -144,7 +144,7 @@ void main() {
     });
   });
 
-  group('PrimaryFiltersBarMolecule', () {
+  group('PrimaryFiltersBar', () {
     final testFilters = [
       const PrimaryFilter(
         id: 'filter1',
@@ -173,7 +173,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBarMolecule(
+            body: PrimaryFiltersBar(
               filters: testFilters,
               onFilterSelected: (_) {},
             ),
@@ -190,7 +190,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBarMolecule(
+            body: PrimaryFiltersBar(
               filters: testFilters,
               allOptionLabel: 'All Items',
               onFilterSelected: (_) {},
@@ -206,7 +206,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBarMolecule(
+            body: PrimaryFiltersBar(
               filters: testFilters,
               showAllOption: false,
               onFilterSelected: (_) {},
@@ -222,7 +222,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBarMolecule(
+            body: PrimaryFiltersBar(
               filters: testFilters,
               selectedFilterId: 'filter2',
               onFilterSelected: (_) {},
@@ -234,10 +234,10 @@ void main() {
       // Filter 2 should be selected
       final filter2Button = find.ancestor(
         of: find.text('Filter 2'),
-        matching: find.byType(PrimaryFilterButtonAtom),
+        matching: find.byType(PrimaryFilterButton),
       );
 
-      final buttonWidget = tester.widget<PrimaryFilterButtonAtom>(filter2Button);
+      final buttonWidget = tester.widget<PrimaryFilterButton>(filter2Button);
       expect(buttonWidget.isSelected, isTrue);
     });
 
@@ -247,7 +247,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBarMolecule(
+            body: PrimaryFiltersBar(
               filters: testFilters,
               onFilterSelected: (id) {
                 selectedId = id;
@@ -279,7 +279,7 @@ void main() {
           home: Scaffold(
             body: SizedBox(
               width: 300, // Constrain width to force scrolling
-              child: PrimaryFiltersBarMolecule(
+              child: PrimaryFiltersBar(
                 filters: manyFilters,
                 onFilterSelected: (_) {},
               ),

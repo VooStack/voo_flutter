@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_core_organism.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_core.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// A state-agnostic data grid widget that works with any state management solution
@@ -173,7 +173,7 @@ class VooDataGridStateless<T> extends StatelessWidget {
     );
 
     // Delegate to the core organism
-    return DataGridCoreOrganism<T>(
+    return DataGridCore<T>(
       controller: controller,
       showPagination: showPagination,
       showToolbar: showToolbar,

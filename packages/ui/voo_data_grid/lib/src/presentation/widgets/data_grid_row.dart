@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/row_data_cell.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/row_selection_cell.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -67,7 +69,7 @@ class _VooDataGridRowState<T> extends State<VooDataGridRow<T>> {
               children: [
                 // Selection checkbox column
                 if (widget.controller.dataSource.selectionMode != VooSelectionMode.none)
-                  _SelectionCell<T>(
+                  RowSelectionCell<T>(
                     controller: widget.controller,
                     theme: widget.theme,
                     design: design,
@@ -78,7 +80,7 @@ class _VooDataGridRowState<T> extends State<VooDataGridRow<T>> {
                 // Frozen columns
                 for (final column in widget.controller.frozenColumns)
                   RepaintBoundary(
-                    child: _DataCell<T>(
+                    child: RowDataCell<T>(
                       row: widget.row,
                       column: column,
                       controller: widget.controller,
@@ -90,7 +92,7 @@ class _VooDataGridRowState<T> extends State<VooDataGridRow<T>> {
                 // Scrollable columns
                 for (final column in widget.controller.scrollableColumns)
                   RepaintBoundary(
-                    child: _DataCell<T>(
+                    child: RowDataCell<T>(
                       row: widget.row,
                       column: column,
                       controller: widget.controller,
@@ -117,146 +119,4 @@ class _VooDataGridRowState<T> extends State<VooDataGridRow<T>> {
       return widget.theme.rowBackgroundColor;
     }
   }
-}
-
-/// Selection cell widget
-class _SelectionCell<T> extends StatelessWidget {
-  final VooDataGridController<T> controller;
-  final VooDataGridTheme theme;
-  final VooDesignSystemData design;
-  final bool isSelected;
-  final VoidCallback? onTap;
-
-  const _SelectionCell({
-    required this.controller,
-    required this.theme,
-    required this.design,
-    required this.isSelected,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Use const width for better performance
-    const cellWidth = 48.0;
-    
-    return SizedBox(
-      width: cellWidth,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: design.spacingSm),
-        decoration: BoxDecoration(
-          border: Border(
-            right: BorderSide(
-              color: theme.gridLineColor,
-              width: controller.showGridLines ? 1 : 0,
-            ),
-            bottom: BorderSide(
-              color: theme.gridLineColor,
-              width: controller.showGridLines ? 1 : 0,
-            ),
-          ),
-        ),
-        child: controller.dataSource.selectionMode == VooSelectionMode.single
-            ? Checkbox(
-                value: isSelected,
-                onChanged: (_) => onTap?.call(),
-                shape: const CircleBorder(),
-              )
-            : Checkbox(
-                value: isSelected,
-                onChanged: (_) => onTap?.call(),
-              ),
-      ),
-    );
-  }
-}
-
-/// Data cell widget
-class _DataCell<T> extends StatelessWidget {
-  final T row;
-  final VooDataColumn<T> column;
-  final VooDataGridController<T> controller;
-  final VooDataGridTheme theme;
-  final VooDesignSystemData design;
-
-  const _DataCell({
-    required this.row,
-    required this.column,
-    required this.controller,
-    required this.theme,
-    required this.design,
-  });
-
-  // Static method with const values for better performance
-  static const Map<TextAlign, Alignment> _alignmentCache = {
-    TextAlign.left: Alignment.centerLeft,
-    TextAlign.start: Alignment.centerLeft,
-    TextAlign.right: Alignment.centerRight,
-    TextAlign.end: Alignment.centerRight,
-    TextAlign.center: Alignment.center,
-    TextAlign.justify: Alignment.centerLeft,
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    final width = controller.getColumnWidth(column);
-
-    // Get value from row
-    dynamic value;
-    try {
-      if (column.valueGetter != null) {
-        value = column.valueGetter!(row);
-      } else if (row is Map) {
-        value = (row as Map)[column.field];
-      } else {
-        debugPrint(
-          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects.',
-        );
-        value = null;
-      }
-    } catch (e) {
-      debugPrint(
-        '[VooDataGrid Error] Failed to get value for column "${column.field}": $e',
-      );
-      value = null;
-    }
-
-    final displayValue = column.valueFormatter?.call(value) ?? value?.toString() ?? '';
-
-    // Use const where possible for better performance
-    final cellContent = Align(
-      alignment: _getAlignment(column.textAlign),
-      child: column.cellBuilder?.call(context, value, row) ??
-          Text(
-            displayValue,
-            style: theme.cellTextStyle,
-            overflow: TextOverflow.ellipsis,
-          ),
-    );
-
-    return Container(
-      width: width,
-      padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
-          ),
-          bottom: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
-          ),
-        ),
-      ),
-      child: column.onCellTap != null
-          ? InkWell(
-              onTap: () => column.onCellTap!(context, row, value),
-              child: cellContent,
-            )
-          : cellContent,
-    );
-  }
-
-  Alignment _getAlignment(TextAlign textAlign) => _alignmentCache[textAlign] ?? Alignment.centerLeft;
 }

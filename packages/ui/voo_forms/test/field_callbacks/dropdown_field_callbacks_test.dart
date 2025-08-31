@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/voo_forms.dart';
@@ -15,7 +16,7 @@ void main() {
           String? capturedValue;
           bool callbackInvoked = false;
           final options = ['Option A', 'Option B', 'Option C'];
-          
+
           final field = VooField.dropdown<String>(
             name: 'simple_dropdown',
             label: 'Select Option',
@@ -29,14 +30,14 @@ void main() {
               callbackInvoked = true;
             },
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Open dropdown
           await tapDropdown(tester, reason: 'Opening simple dropdown');
           await tester.pumpAndSettle();
-          
+
           // Select option
           final optionB = find.text('Option B').last;
           expect(
@@ -44,10 +45,10 @@ void main() {
             findsOneWidget,
             reason: 'Option B should be visible in dropdown menu',
           );
-          
+
           await tester.tap(optionB);
           await tester.pumpAndSettle();
-          
+
           // Assert
           expectCallbackInvoked(
             wasInvoked: callbackInvoked,
@@ -62,14 +63,14 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should handle initial value correctly',
         (tester) async {
           // Arrange
           String? capturedValue;
           final options = ['Red', 'Green', 'Blue'];
-          
+
           final field = VooField.dropdown<String>(
             name: 'color_dropdown',
             label: 'Select Color',
@@ -81,25 +82,25 @@ void main() {
             ),
             onChanged: (String? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
           await tester.pumpAndSettle();
-          
+
           // Assert - Initial value should be displayed
           expect(
             find.text('Green'),
             findsOneWidget,
             reason: 'Initial value "Green" should be displayed',
           );
-          
+
           // Change selection
           await tapDropdown(tester, reason: 'Changing initial selection');
           await tester.pumpAndSettle();
-          
+
           await tester.tap(find.text('Blue').last);
           await tester.pumpAndSettle();
-          
+
           expectFieldValue(
             actual: capturedValue,
             expected: 'Blue',
@@ -109,7 +110,7 @@ void main() {
         },
       );
     });
-    
+
     group('Complex Type Dropdown - Custom Objects', () {
       testWidgets(
         'should handle custom object types correctly',
@@ -117,13 +118,13 @@ void main() {
           // Arrange
           User? capturedValue;
           bool callbackInvoked = false;
-          
+
           final users = [
             const User(id: 1, name: 'John Doe', email: 'john@example.com'),
             const User(id: 2, name: 'Jane Smith', email: 'jane@example.com'),
             const User(id: 3, name: 'Bob Johnson', email: 'bob@example.com'),
           ];
-          
+
           final field = VooField.dropdown<User>(
             name: 'user_dropdown',
             label: 'Select User',
@@ -138,13 +139,13 @@ void main() {
               callbackInvoked = true;
             },
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await tapDropdown(tester, reason: 'Opening user dropdown');
           await tester.pumpAndSettle();
-          
+
           // Select Jane Smith
           final janeOption = find.text('Jane Smith').last;
           expect(
@@ -152,17 +153,17 @@ void main() {
             findsOneWidget,
             reason: 'Jane Smith should be in dropdown options',
           );
-          
+
           await tester.tap(janeOption);
           await tester.pumpAndSettle();
-          
+
           // Assert
           expectCallbackInvoked(
             wasInvoked: callbackInvoked,
             callbackName: 'onChanged',
             context: 'custom object dropdown',
           );
-          
+
           expect(
             capturedValue?.id,
             equals(2),
@@ -181,7 +182,7 @@ void main() {
         },
       );
     });
-    
+
     group('Searchable Dropdown', () {
       testWidgets(
         'should filter options based on search query',
@@ -198,7 +199,7 @@ void main() {
             'Japan',
             'Brazil',
           ];
-          
+
           final field = VooField.dropdown<String>(
             name: 'country_dropdown',
             label: 'Select Country',
@@ -211,14 +212,14 @@ void main() {
             ),
             onChanged: (String? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Open searchable dropdown
           await tapDropdown(tester, reason: 'Opening searchable dropdown');
           await tester.pumpAndSettle();
-          
+
           // Enter search query
           final searchField = find.byType(TextField).last;
           expect(
@@ -226,10 +227,10 @@ void main() {
             findsOneWidget,
             reason: 'Search field should be visible in searchable dropdown',
           );
-          
+
           await tester.enterText(searchField, 'united');
           await tester.pumpAndSettle();
-          
+
           // Verify filtered results
           expect(
             find.text('United States'),
@@ -246,11 +247,11 @@ void main() {
             findsNothing,
             reason: 'Canada should be filtered out',
           );
-          
+
           // Select filtered option
           await tester.tap(find.text('United Kingdom').last);
           await tester.pumpAndSettle();
-          
+
           // Assert
           expectFieldValue(
             actual: capturedValue,
@@ -261,7 +262,7 @@ void main() {
         },
       );
     });
-    
+
     group('Async Dropdown - Dynamic Loading', () {
       testWidgets(
         'should load options asynchronously',
@@ -269,7 +270,7 @@ void main() {
           // Arrange
           bool loaderCalled = false;
           List<String>? loadedOptions;
-          
+
           final field = VooField.dropdownAsync<String>(
             name: 'async_dropdown',
             label: 'Async Options',
@@ -277,11 +278,9 @@ void main() {
               loaderCalled = true;
               // Simulate API call
               await Future<void>.delayed(const Duration(milliseconds: 50));
-              
+
               final allOptions = ['Async 1', 'Async 2', 'Async 3'];
-              loadedOptions = allOptions
-                  .where((opt) => opt.toLowerCase().contains(query.toLowerCase()))
-                  .toList();
+              loadedOptions = allOptions.where((opt) => opt.toLowerCase().contains(query.toLowerCase())).toList();
               return loadedOptions!;
             },
             converter: (value) => VooDropdownChild(
@@ -290,30 +289,30 @@ void main() {
             ),
             onChanged: (String? value) {},
           );
-          
+
           // Act - Create the widget
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Verify the widget renders
           expect(
             find.byType(VooFieldWidget),
             findsOneWidget,
             reason: 'Async dropdown widget should render',
           );
-          
+
           // Try to interact with the field to trigger async loading
           final textField = find.byType(TextFormField);
           if (textField.evaluate().isNotEmpty) {
             await tester.tap(textField);
             await tester.pump();
-            
+
             // Enter text to trigger search
             await tester.enterText(textField, 'test');
             await tester.pump();
-            
+
             // Wait for async operation
             await tester.pump(const Duration(milliseconds: 100));
-            
+
             // Verify the loader was called
             expect(
               loaderCalled,
@@ -322,25 +321,27 @@ void main() {
             );
           } else {
             // If no text field is found, just verify the widget renders
-            print('INFO: Async dropdown rendered but no interactive field found');
+            if (kDebugMode) {
+              print('INFO: Async dropdown rendered but no interactive field found');
+            }
           }
         },
       );
     });
-    
+
     group('Dropdown with Icons and Subtitles', () {
       testWidgets(
         'should display icons and subtitles correctly',
         (tester) async {
           // Arrange
           String? capturedValue;
-          
+
           final statusOptions = [
             {'value': 'active', 'label': 'Active', 'subtitle': 'Currently running', 'icon': Icons.play_arrow},
             {'value': 'paused', 'label': 'Paused', 'subtitle': 'Temporarily stopped', 'icon': Icons.pause},
             {'value': 'stopped', 'label': 'Stopped', 'subtitle': 'Completely halted', 'icon': Icons.stop},
           ];
-          
+
           final field = VooField.dropdown<String>(
             name: 'icon_dropdown',
             label: 'Select Status',
@@ -357,13 +358,13 @@ void main() {
             },
             onChanged: (String? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await tapDropdown(tester, reason: 'Opening dropdown with icons');
           await tester.pumpAndSettle();
-          
+
           // Verify icons are displayed
           expect(
             find.byIcon(Icons.play_arrow),
@@ -375,18 +376,18 @@ void main() {
             findsOneWidget,
             reason: 'Paused status icon should be visible',
           );
-          
+
           // Verify subtitles are displayed
           expect(
             find.text('Currently running'),
             findsOneWidget,
             reason: 'Active status subtitle should be visible',
           );
-          
+
           // Select option
           await tester.tap(find.text('Paused').last);
           await tester.pumpAndSettle();
-          
+
           // Assert
           expectFieldValue(
             actual: capturedValue,
@@ -397,7 +398,7 @@ void main() {
         },
       );
     });
-    
+
     group('Edge Cases and Error Scenarios', () {
       testWidgets(
         'should handle empty options list gracefully',
@@ -409,13 +410,13 @@ void main() {
             options: [],
             converter: (value) => VooDropdownChild(value: value, label: value),
           );
-          
+
           // Act & Assert - Should render without errors
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await tapDropdown(tester, reason: 'Opening empty dropdown');
           await tester.pumpAndSettle();
-          
+
           // Should show empty state
           expect(
             find.byType(DropdownButtonFormField),
@@ -424,13 +425,13 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should handle null selection correctly',
         (tester) async {
           // Arrange
           String? capturedValue = 'option1';
-          
+
           final field = VooField.dropdown<String?>(
             name: 'nullable_dropdown',
             label: 'Nullable Dropdown',
@@ -442,17 +443,17 @@ void main() {
             ),
             onChanged: (String? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await tapDropdown(tester, reason: 'Opening nullable dropdown');
           await tester.pumpAndSettle();
-          
+
           // Select null option
           await tester.tap(find.text('None').last);
           await tester.pumpAndSettle();
-          
+
           // Assert
           expect(
             capturedValue,
@@ -470,20 +471,16 @@ class User {
   final int id;
   final String name;
   final String email;
-  
+
   const User({
     required this.id,
     required this.name,
     required this.email,
   });
-  
+
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is User &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
-  
+  bool operator ==(Object other) => identical(this, other) || other is User && runtimeType == other.runtimeType && id == other.id;
+
   @override
   int get hashCode => id.hashCode;
 }

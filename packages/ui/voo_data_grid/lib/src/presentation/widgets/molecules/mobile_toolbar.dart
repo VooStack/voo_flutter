@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/toolbar_button_atom.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/view_mode_toggle_atom.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/toolbar_button.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/view_mode_toggle.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -48,12 +48,12 @@ class MobileToolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ToolbarButtonAtom(
+          ToolbarButton(
             icon: Icons.refresh,
             onPressed: onRefresh,
             tooltip: 'Refresh',
           ),
-          ToolbarButtonAtom(
+          ToolbarButton(
             icon: activeFilterCount > 0
                 ? Icons.filter_alt
                 : Icons.filter_alt_outlined,
@@ -63,7 +63,7 @@ class MobileToolbar extends StatelessWidget {
             badgeCount: activeFilterCount > 0 ? activeFilterCount : null,
           ),
           if (showViewModeToggle && displayMode != null)
-            ViewModeToggleAtom(
+            ViewModeToggle(
               currentMode: displayMode!,
               onModeChanged: onDisplayModeChanged,
             ),

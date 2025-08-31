@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/voo_forms.dart';
@@ -14,7 +15,7 @@ void main() {
           // Arrange
           num? capturedValue;
           bool callbackInvoked = false;
-          
+
           final field = VooField.number(
             name: 'age',
             label: 'Age',
@@ -26,12 +27,12 @@ void main() {
               callbackInvoked = true;
             },
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await enterTextWithVerification(tester, '25', fieldName: 'age');
-          
+
           // Assert
           expectCallbackInvoked(
             wasInvoked: callbackInvoked,
@@ -50,25 +51,25 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should accept decimal values when decimal is true',
         (tester) async {
           // Arrange
           num? capturedValue;
-          
+
           final field = VooField.number(
             name: 'price',
             label: 'Price',
             hint: 'Enter price in dollars',
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await enterTextWithVerification(tester, '19.99', fieldName: 'price');
-          
+
           // Assert
           expect(
             capturedValue,
@@ -82,13 +83,13 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should enforce min/max constraints',
         (tester) async {
           // Arrange
           final capturedValues = <num?>[];
-          
+
           final field = VooField.number(
             name: 'percentage',
             label: 'Percentage',
@@ -97,20 +98,20 @@ void main() {
             hint: 'Enter percentage (0-100)',
             onChanged: capturedValues.add,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Try values outside range
           await tester.enterText(find.byType(TextField), '-10');
           await tester.pump();
-          
+
           await tester.enterText(find.byType(TextField), '150');
           await tester.pump();
-          
+
           await tester.enterText(find.byType(TextField), '50');
           await tester.pump();
-          
+
           // Assert
           // Note: Actual constraint enforcement depends on implementation
           // Some implementations may prevent invalid input, others may show error
@@ -121,13 +122,13 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should handle negative numbers correctly',
         (tester) async {
           // Arrange
           num? capturedValue;
-          
+
           final field = VooField.number(
             name: 'temperature',
             label: 'Temperature',
@@ -136,12 +137,12 @@ void main() {
             hint: 'Enter temperature in Celsius',
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await enterTextWithVerification(tester, '-40.5', fieldName: 'temperature');
-          
+
           // Assert
           expect(
             capturedValue,
@@ -150,62 +151,62 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should format numbers with thousands separator if enabled',
         (tester) async {
           // Arrange
           num? capturedValue;
-          
+
           final field = VooField.number(
             name: 'salary',
             label: 'Annual Salary',
             hint: 'Enter salary in dollars',
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Enter large number
           await tester.enterText(find.byType(TextField), '75000');
           await tester.pump();
-          
+
           // Assert
           expect(
             capturedValue,
             equals(75000),
             reason: 'Should parse number regardless of formatting',
           );
-          
+
           // Check if formatted display shows thousands separator
           // Note: Actual formatting depends on implementation
         },
       );
-      
+
       testWidgets(
         'should reject non-numeric input',
         (tester) async {
           // Arrange
           num? capturedValue;
           String? lastTextValue;
-          
+
           final field = VooField.number(
             name: 'numeric_only',
             label: 'Numbers Only',
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           final textField = find.byType(TextField);
-          
+
           // Try to enter non-numeric text
           await tester.enterText(textField, 'abc');
           await tester.pump();
           lastTextValue = tester.widget<TextField>(textField).controller?.text;
-          
+
           // Assert
           expect(
             lastTextValue?.isEmpty ?? true,
@@ -220,7 +221,7 @@ void main() {
         },
       );
     });
-    
+
     group('VooField.slider() - Slider Input', () {
       testWidgets(
         'should capture slider value changes',
@@ -228,7 +229,7 @@ void main() {
           // Arrange
           double? capturedValue;
           int changeCount = 0;
-          
+
           final field = VooField.slider(
             name: 'volume',
             label: 'Volume',
@@ -239,10 +240,10 @@ void main() {
               changeCount++;
             },
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Find slider
           final slider = find.byType(Slider);
           expect(
@@ -250,11 +251,11 @@ void main() {
             findsOneWidget,
             reason: 'Slider widget should be rendered',
           );
-          
+
           // Drag slider to new position
           await tester.drag(slider, const Offset(100, 0));
           await tester.pumpAndSettle();
-          
+
           // Assert
           expect(
             changeCount,
@@ -273,13 +274,13 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should respect divisions for discrete values',
         (tester) async {
           // Arrange
           double? capturedValue;
-          
+
           final field = VooField.slider(
             name: 'rating',
             label: 'Rating',
@@ -288,16 +289,16 @@ void main() {
             initialValue: 0,
             onChanged: (double? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           final slider = find.byType(Slider);
-          
+
           // Drag to approximately middle
           await tester.drag(slider, const Offset(50, 0));
           await tester.pumpAndSettle();
-          
+
           // Assert
           expect(
             capturedValue,
@@ -311,7 +312,7 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should display value label when showValue is true',
         (tester) async {
@@ -322,10 +323,10 @@ void main() {
             initialValue: 75,
             onChanged: (_) {},
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Assert - Check that slider widget exists
           expect(
             find.byType(Slider),
@@ -334,13 +335,13 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should handle continuous values without divisions',
         (tester) async {
           // Arrange
           double? capturedValue;
-          
+
           final field = VooField.slider(
             name: 'precision',
             label: 'Precision',
@@ -349,14 +350,14 @@ void main() {
             // No divisions - continuous
             onChanged: (double? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           final slider = find.byType(Slider);
           await tester.drag(slider, const Offset(25, 0));
           await tester.pumpAndSettle();
-          
+
           // Assert
           expect(
             capturedValue,
@@ -370,7 +371,7 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should display custom labels if provided',
         (tester) async {
@@ -383,10 +384,10 @@ void main() {
             initialValue: 1,
             onChanged: (_) {},
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Assert - Labels should be accessible
           // Note: Label display depends on implementation
           final slider = tester.widget<Slider>(find.byType(Slider));
@@ -398,14 +399,14 @@ void main() {
         },
       );
     });
-    
+
     group('Advanced Numeric Features', () {
       testWidgets(
         'should handle step increments for number field',
         (tester) async {
           // Arrange
           num? capturedValue;
-          
+
           final field = VooField.number(
             name: 'quantity',
             label: 'Quantity',
@@ -414,16 +415,16 @@ void main() {
             step: 5,
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Look for increment buttons if implemented
           final incrementButton = find.byIcon(Icons.add);
           if (incrementButton.evaluate().isNotEmpty) {
             await tester.tap(incrementButton);
             await tester.pump();
-            
+
             // Assert
             expect(
               capturedValue,
@@ -433,7 +434,7 @@ void main() {
           }
         },
       );
-      
+
       testWidgets(
         'should validate numeric range and show error',
         (tester) async {
@@ -446,40 +447,40 @@ void main() {
             required: true,
             onChanged: (_) {},
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Enter invalid value
           await tester.enterText(find.byType(TextField), '10');
           await tester.pump();
-          
+
           // Validation would show error
           // Error display depends on implementation
         },
       );
     });
-    
+
     group('Edge Cases and Error Scenarios', () {
       testWidgets(
         'should handle very large numbers',
         (tester) async {
           // Arrange
           num? capturedValue;
-          
+
           final field = VooField.number(
             name: 'large_number',
             label: 'Large Number',
             max: double.maxFinite,
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           await tester.enterText(find.byType(TextField), '999999999999');
           await tester.pump();
-          
+
           // Assert
           expect(
             capturedValue,
@@ -488,69 +489,80 @@ void main() {
           );
         },
       );
-      
+
       testWidgets(
         'should handle scientific notation if supported',
         (tester) async {
           // Arrange
           num? capturedValue;
-          
+
           final field = VooField.number(
             name: 'scientific',
             label: 'Scientific',
             hint: 'Enter scientific number',
             onChanged: (num? value) => capturedValue = value,
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           // Test that the regex itself works
           final testRegex = RegExp(r'[0-9\.\-eE]');
           for (final char in '1.23e5'.split('')) {
             if (!testRegex.hasMatch(char)) {
-              print('DEBUG: Character "$char" does not match regex');
+              if (kDebugMode) {
+                print('DEBUG: Character "$char" does not match regex');
+              }
             }
           }
-          
+
           await tester.enterText(find.byType(TextField), '1.23e5');
           await tester.pump();
-          
+
           // Check what's actually in the text field
           final textFieldFinder = find.byType(TextField);
           final TextField textField = tester.widget(textFieldFinder);
           final TextEditingController? controller = textField.controller;
-          print('DEBUG: TextField text = "${controller?.text}"');
-          print('DEBUG: Parsed value from text = ${num.tryParse(controller?.text ?? '')}');
-          
+          if (kDebugMode) {
+            print('DEBUG: TextField text = "${controller?.text}"');
+            print('DEBUG: Parsed value from text = ${num.tryParse(controller?.text ?? '')}');
+          }
+
           // Assert - The text field should contain the entered value
           // But since formatters might alter it, we check both scenarios
           final actualText = controller?.text ?? '';
           final parsedValue = num.tryParse(actualText);
-          
+
           if (actualText == '1.23e5') {
             // Scientific notation was preserved
-            expect(parsedValue, equals(123000), 
-              reason: 'Should parse scientific notation correctly');
+            expect(
+              parsedValue,
+              equals(123000),
+              reason: 'Should parse scientific notation correctly',
+            );
           } else if (actualText == '1.235') {
             // Scientific notation was altered, skip test
-            print('INFO: Scientific notation not supported by input formatter, skipping test');
+            if (kDebugMode) {
+              print('INFO: Scientific notation not supported by input formatter, skipping test');
+            }
             return;
           }
-          
+
           // Check the callback value
           if (capturedValue != null) {
-            print('DEBUG: capturedValue = $capturedValue (type: ${capturedValue.runtimeType})');
+            if (kDebugMode) {
+              print('DEBUG: capturedValue = $capturedValue (type: ${capturedValue.runtimeType})');
+            }
           }
         },
       );
-      
+
       testWidgets(
         'should handle rapid slider movements',
         (tester) async {
           // Arrange
           final values = <double>[];
-          
+
           final field = VooField.slider(
             name: 'rapid_slider',
             label: 'Rapid Test',
@@ -558,18 +570,18 @@ void main() {
               if (value != null) values.add(value);
             },
           );
-          
+
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
-          
+
           final slider = find.byType(Slider);
-          
+
           // Rapid movements
           for (int i = 0; i < 5; i++) {
             await tester.drag(slider, Offset(20.0 * i, 0));
             await tester.pump(const Duration(milliseconds: 50));
           }
-          
+
           // Assert
           expect(
             values.isNotEmpty,

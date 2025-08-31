@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_column_type.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_grid_theme.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
 import 'package:voo_data_grid/src/presentation/controllers/data_grid_controller.dart';
-import 'package:voo_data_grid/src/presentation/widgets/data_grid.dart';
-import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_cell_molecule.dart';
-import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_input_molecule.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_cell.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_input.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Filter row widget for VooDataGrid
@@ -86,13 +89,13 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
 
           // Frozen column filters
           for (final column in widget.controller.frozenColumns) 
-            FilterCellMolecule<T>(
+            FilterCell<T>(
               column: column,
               width: widget.controller.getColumnWidth(column),
               gridLineColor: widget.theme.gridLineColor,
               showGridLines: widget.controller.showGridLines,
               horizontalPadding: design.spacingXs,
-              child: FilterInputMolecule<T>(
+              child: FilterInput<T>(
                 column: column,
                 currentFilter: widget.controller.dataSource.filters[column.field],
                 onFilterChanged: (value) => _applyFilter(column, value),
@@ -112,13 +115,13 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
               child: Row(
                 children: [
                   for (final column in widget.controller.scrollableColumns)
-                    FilterCellMolecule<T>(
+                    FilterCell<T>(
                       column: column,
                       width: widget.controller.getColumnWidth(column),
                       gridLineColor: widget.theme.gridLineColor,
                       showGridLines: widget.controller.showGridLines,
                       horizontalPadding: design.spacingXs,
-                      child: FilterInputMolecule<T>(
+                      child: FilterInput<T>(
                         column: column,
                         currentFilter: widget.controller.dataSource.filters[column.field],
                         onFilterChanged: (value) => _applyFilter(column, value),

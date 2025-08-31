@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_column_sort.dart';
 
 // Re-export types for convenience
 export 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:voo_data_grid/src/domain/entities/voo_data_column_type.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_widget_type.dart';
+
 /// Represents a column in the VooDataGrid
 /// 
 /// Generic type parameter T represents the row data type.
@@ -271,80 +276,4 @@ class VooDataColumn<T> {
       excludeFromApi: excludeFromApi ?? this.excludeFromApi,
       onCellTap: onCellTap ?? this.onCellTap,
     );
-}
-
-/// Column data types for filtering
-enum VooDataColumnType {
-  text,
-  number,
-  date,
-  boolean,
-  select,
-  multiSelect,
-  custom,
-}
-
-/// Filter widget types
-enum VooFilterWidgetType {
-  textField,
-  numberField,
-  numberRange,
-  datePicker,
-  dateRange,
-  dropdown,
-  multiSelect,
-  checkbox,
-  custom,
-}
-
-/// Filter option for select/multiselect columns
-class VooFilterOption {
-  final dynamic value;
-  final String label;
-  final IconData? icon;
-  final Widget? child;
-
-  const VooFilterOption({
-    required this.value,
-    required this.label,
-    this.icon,
-    this.child,
-  });
-}
-
-/// Sort direction for columns
-enum VooSortDirection {
-  ascending,
-  descending,
-  none,
-}
-
-/// Column sort state
-class VooColumnSort {
-  final String field;
-  final VooSortDirection direction;
-
-  const VooColumnSort({
-    required this.field,
-    required this.direction,
-  });
-}
-
-/// Filter operators
-enum VooFilterOperator {
-  equals,
-  notEquals,
-  contains,
-  notContains,
-  startsWith,
-  endsWith,
-  greaterThan,
-  greaterThanOrEqual,
-  lessThan,
-  lessThanOrEqual,
-  between,
-  inList,
-  notInList,
-  isNull,
-  isNotNull,
 }

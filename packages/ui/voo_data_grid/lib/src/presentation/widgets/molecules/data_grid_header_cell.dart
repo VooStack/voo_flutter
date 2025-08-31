@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/sort_indicator_atom.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/sort_indicator.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/resize_handle.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
@@ -79,7 +79,7 @@ class DataGridHeaderCell<T> extends StatelessWidget {
             if (isSortable)
               Padding(
                 padding: const EdgeInsets.only(left: 4),
-                child: SortIndicatorAtom(
+                child: SortIndicator(
                   direction: sortDirection,
                 ),
               ),

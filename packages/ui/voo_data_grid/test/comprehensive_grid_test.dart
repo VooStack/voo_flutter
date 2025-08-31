@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_card_view_organism.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_card_view.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 void main() {
@@ -576,7 +576,7 @@ void main() {
 
         await tester.pumpAndSettle();
         // Cards view should be shown on mobile
-        expect(find.byType(DataGridCardViewOrganism), findsOneWidget);
+        expect(find.byType(DataGridCardView), findsOneWidget);
       });
     });
   });

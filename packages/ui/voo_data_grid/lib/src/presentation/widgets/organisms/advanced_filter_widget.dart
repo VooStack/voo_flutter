@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_header_molecule.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_header.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_row.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
@@ -42,7 +42,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Header with logic toggle
-          AdvancedFilterHeaderMolecule(
+          AdvancedFilterHeader(
             filterLogic: _globalLogic,
             onLogicChanged: (logic) {
               setState(() {
@@ -232,38 +232,4 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
     widget.dataSource.setAdvancedFilterRequest(request);
     widget.onFilterApplied?.call(request);
   }
-}
-
-/// Filter field configuration
-class FilterFieldConfig {
-  final String fieldName;
-  final String displayName;
-  final FilterType type;
-  final List<String>? options; // For dropdown fields
-  final String? defaultOperator;
-
-  const FilterFieldConfig({
-    required this.fieldName,
-    required this.displayName,
-    required this.type,
-    this.options,
-    this.defaultOperator,
-  });
-}
-
-/// Internal filter entry model
-class FilterEntry {
-  FilterFieldConfig? field;
-  String? operator;
-  dynamic value;
-  dynamic secondaryValue; // For range operations
-  FilterLogic logic;
-
-  FilterEntry({
-    this.field,
-    this.operator,
-    this.value,
-    this.secondaryValue,
-    this.logic = FilterLogic.and,
-  });
 }

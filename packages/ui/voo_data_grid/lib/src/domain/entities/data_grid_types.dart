@@ -1,9 +1,4 @@
-/// Common types used across VooDataGrid
-/// 
-/// These types are shared between the legacy ChangeNotifier-based
-/// implementation and the new state-management agnostic implementation.
-
-import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
 
 /// Data grid operation mode
 enum VooDataGridMode {

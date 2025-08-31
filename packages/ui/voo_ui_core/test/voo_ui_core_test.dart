@@ -14,7 +14,7 @@ void main() {
     });
 
     test('VooDesignSystemData has expected properties', () {
-      const design = VooDesignSystemData();
+      const design = VooDesignSystemData.defaultSystem;
       expect(design.spacingUnit, 8.0);
       expect(design.radiusUnit, 4.0);
       expect(design.borderWidth, 1.0);

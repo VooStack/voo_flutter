@@ -1,25 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_core_organism.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_core.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
-
-/// Display mode for the data grid
-enum VooDataGridDisplayMode {
-  /// Standard table layout
-  table,
-
-  /// Card-based layout for mobile
-  cards,
-
-  /// Auto-detect based on screen size
-  auto,
-}
-
-/// Breakpoints for responsive behavior
-class VooDataGridBreakpoints {
-  static const double mobile = 600;
-  static const double tablet = 900;
-  static const double desktop = 1200;
-}
 
 /// A powerful data grid widget with remote filtering support
 ///
@@ -119,7 +100,7 @@ class VooDataGrid<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => DataGridCoreOrganism<T>(
+  Widget build(BuildContext context) => DataGridCore<T>(
         controller: controller,
         showPagination: showPagination,
         showToolbar: showToolbar,
@@ -143,54 +124,3 @@ class VooDataGrid<T> extends StatelessWidget {
         showPrimaryFilters: showPrimaryFilters,
       );
 }
-
-/// Theme configuration for VooDataGrid
-class VooDataGridTheme {
-  final Color headerBackgroundColor;
-  final Color headerTextColor;
-  final Color rowBackgroundColor;
-  final Color alternateRowBackgroundColor;
-  final Color selectedRowBackgroundColor;
-  final Color hoveredRowBackgroundColor;
-  final Color borderColor;
-  final Color gridLineColor;
-  final TextStyle headerTextStyle;
-  final TextStyle cellTextStyle;
-  final double borderWidth;
-
-  const VooDataGridTheme({
-    required this.headerBackgroundColor,
-    required this.headerTextColor,
-    required this.rowBackgroundColor,
-    required this.alternateRowBackgroundColor,
-    required this.selectedRowBackgroundColor,
-    required this.hoveredRowBackgroundColor,
-    required this.borderColor,
-    required this.gridLineColor,
-    required this.headerTextStyle,
-    required this.cellTextStyle,
-    this.borderWidth = 1.0,
-  });
-
-  factory VooDataGridTheme.fromContext(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return VooDataGridTheme(
-      headerBackgroundColor: colorScheme.surfaceContainerHighest,
-      headerTextColor: colorScheme.onSurface,
-      rowBackgroundColor: colorScheme.surface,
-      alternateRowBackgroundColor: colorScheme.surfaceContainerLowest,
-      selectedRowBackgroundColor: colorScheme.primaryContainer,
-      hoveredRowBackgroundColor: colorScheme.surfaceContainerHigh,
-      borderColor: colorScheme.outline,
-      gridLineColor: colorScheme.outlineVariant.withValues(alpha: 0.3),
-      headerTextStyle: theme.textTheme.titleSmall!.copyWith(
-        fontWeight: FontWeight.w600,
-      ),
-      cellTextStyle: theme.textTheme.bodyMedium!,
-    );
-  }
-}
-
-/// Mobile filter sheet for VooDataGrid

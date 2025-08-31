@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_column_sort.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_sort_direction.dart';
 
 /// Abstract data source for VooDataGrid
 ///
