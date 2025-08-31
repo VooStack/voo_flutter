@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/card_view_organism.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/filter_chips_organism.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/grid_content_organism.dart';
-import 'package:voo_data_grid/src/presentation/widgets/organisms/responsive_toolbar_organism.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_core_organism.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// A state-agnostic data grid widget that works with any state management solution
 ///
@@ -14,7 +10,7 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 ///
 /// Generic type parameter T represents the row data type.
 /// Use dynamic if working with untyped Map data.
-class VooDataGridStateless<T> extends StatefulWidget {
+class VooDataGridStateless<T> extends StatelessWidget {
   /// The current state of the data grid
   final VooDataGridState<T> state;
 
@@ -139,218 +135,46 @@ class VooDataGridStateless<T> extends StatefulWidget {
     this.alwaysShowHorizontalScrollbar = false,
   });
 
-  @override
-  State<VooDataGridStateless<T>> createState() => _VooDataGridStatelessState<T>();
-}
-
-class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
-  late ScrollController _verticalScrollController;
-  late ScrollController _horizontalScrollController;
-  late VooDataGridTheme _theme;
-  VooDataGridDisplayMode _effectiveDisplayMode = VooDataGridDisplayMode.auto;
-  VooDataGridDisplayMode? _userSelectedMode;
-
-  @override
-  void initState() {
-    super.initState();
-    _verticalScrollController = ScrollController();
-    _horizontalScrollController = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _verticalScrollController.dispose();
-    _horizontalScrollController.dispose();
-    super.dispose();
-  }
-
-  // Responsive helpers
-  bool _isMobile(double width) => width < VooDataGridBreakpoints.mobile;
-
-  VooDataGridDisplayMode _getEffectiveDisplayMode(double width) {
-    if (_userSelectedMode != null) return _userSelectedMode!;
-    if (widget.displayMode != VooDataGridDisplayMode.auto) return widget.displayMode;
-    return _isMobile(width) ? VooDataGridDisplayMode.cards : VooDataGridDisplayMode.table;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final design = context.vooDesign;
-    _theme = widget.theme ?? VooDataGridTheme.fromContext(context);
-
-    // Create a temporary controller from the state for compatibility
-    // with existing VooDataGrid implementation
+    // Create a controller wrapper that bridges state and callbacks
     final controller = _StateBasedController<T>(
-      state: widget.state,
-      columns: widget.columns,
-      onPageChanged: widget.onPageChanged,
-      onPageSizeChanged: widget.onPageSizeChanged,
-      onFilterChanged: widget.onFilterChanged,
-      onFiltersCleared: widget.onFiltersCleared,
-      onToggleFilters: widget.onToggleFilters,
-      onSortChanged: widget.onSortChanged,
-      onSortsCleared: widget.onSortsCleared,
-      onRowSelected: widget.onRowSelected,
-      onRowDeselected: widget.onRowDeselected,
-      onSelectAll: widget.onSelectAll,
-      onDeselectAll: widget.onDeselectAll,
-      onRefresh: widget.onRefresh,
+      state: state,
+      columns: columns,
+      onPageChanged: onPageChanged,
+      onPageSizeChanged: onPageSizeChanged,
+      onFilterChanged: onFilterChanged,
+      onFiltersCleared: onFiltersCleared,
+      onToggleFilters: onToggleFilters,
+      onSortChanged: onSortChanged,
+      onSortsCleared: onSortsCleared,
+      onRowSelected: onRowSelected,
+      onRowDeselected: onRowDeselected,
+      onSelectAll: onSelectAll,
+      onDeselectAll: onDeselectAll,
+      onRefresh: onRefresh,
     );
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        _effectiveDisplayMode = _getEffectiveDisplayMode(constraints.maxWidth);
-
-        return DecoratedBox(
-          decoration: widget.decoration ??
-              BoxDecoration(
-                border: Border.all(color: _theme.borderColor),
-                borderRadius: BorderRadius.circular(design.radiusMd),
-              ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.showToolbar)
-                Column(
-                  children: [
-                    ResponsiveToolbarOrganism<T>(
-                      width: constraints.maxWidth,
-                      state: widget.state,
-                      theme: _theme,
-                      displayMode: _effectiveDisplayMode,
-                      userSelectedMode: _userSelectedMode,
-                      onDisplayModeChanged: (mode) {
-                        setState(() {
-                          _userSelectedMode = mode;
-                        });
-                      },
-                      onToggleFilters: controller.toggleFilters,
-                      onClearFilters: controller.clearFilters,
-                      onShowMobileFilterSheet: (context, _) => _showMobileFilterSheet(context, controller),
-                      onRefresh: widget.onRefresh,
-                      toolbarActions: widget.toolbarActions,
-                    ),
-                    if (widget.state.filters.isNotEmpty)
-                      FilterChipsOrganism<T>(
-                        filters: widget.state.filters,
-                        columns: widget.columns,
-                        theme: _theme,
-                        onRemoveFilter: (field) => controller.applyFilter(field, null),
-                      ),
-                  ],
-                ),
-              Expanded(
-                child: _effectiveDisplayMode == VooDataGridDisplayMode.cards
-                    ? CardViewOrganism<T>(
-                        state: widget.state,
-                        columns: widget.columns,
-                        theme: _theme,
-                        verticalScrollController: _verticalScrollController,
-                        loadingWidget: widget.loadingWidget,
-                        emptyStateWidget: widget.emptyStateWidget,
-                        errorBuilder: widget.errorBuilder,
-                        cardBuilder: widget.cardBuilder,
-                        mobilePriorityColumns: widget.mobilePriorityColumns,
-                        onRowTap: widget.onRowTap,
-                        onRowDoubleTap: widget.onRowDoubleTap,
-                      )
-                    : GridContentOrganism<T>(
-                        state: widget.state,
-                        controller: controller,
-                        theme: _theme,
-                        verticalScrollController: _verticalScrollController,
-                        loadingWidget: widget.loadingWidget,
-                        emptyStateWidget: widget.emptyStateWidget,
-                        errorBuilder: widget.errorBuilder,
-                        onRowTap: widget.onRowTap,
-                        onRowDoubleTap: widget.onRowDoubleTap,
-                        onRowHover: widget.onRowHover,
-                        alwaysShowVerticalScrollbar: widget.alwaysShowVerticalScrollbar,
-                      ),
-              ),
-              if (widget.showPagination && !widget.state.isLoading)
-                VooDataGridPagination(
-                  currentPage: widget.state.currentPage,
-                  totalPages: widget.state.totalPages,
-                  pageSize: widget.state.pageSize,
-                  totalRows: widget.state.totalRows,
-                  onPageChanged: controller.changePage,
-                  onPageSizeChanged: controller.changePageSize,
-                  theme: _theme,
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showMobileFilterSheet(
-    BuildContext context,
-    _StateBasedController<T> controller,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        minChildSize: 0.3,
-        maxChildSize: 0.8,
-        expand: false,
-        builder: (context, scrollController) => Column(
-          children: [
-            AppBar(
-              title: const Text('Filters'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    controller.clearFilters();
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Clear All'),
-                ),
-              ],
-            ),
-            Expanded(
-              child: ListView(
-                controller: scrollController,
-                padding: const EdgeInsets.all(16),
-                children: widget.columns
-                    .where((c) => c.filterable)
-                    .map(
-                      (column) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: column.label,
-                            suffixIcon: widget.state.filters[column.field] != null
-                                ? IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () => controller.applyFilter(column.field, null),
-                                  )
-                                : null,
-                          ),
-                          onChanged: (value) {
-                            if (value.isEmpty) {
-                              controller.applyFilter(column.field, null);
-                            } else {
-                              controller.applyFilter(
-                                column.field,
-                                VooDataFilter(
-                                  value: value,
-                                  operator: VooFilterOperator.contains,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
+    // Delegate to the core organism
+    return DataGridCoreOrganism<T>(
+      controller: controller,
+      showPagination: showPagination,
+      showToolbar: showToolbar,
+      toolbarActions: toolbarActions,
+      emptyStateWidget: emptyStateWidget,
+      loadingWidget: loadingWidget,
+      errorBuilder: errorBuilder,
+      onRowTap: onRowTap,
+      onRowDoubleTap: onRowDoubleTap,
+      onRowHover: onRowHover,
+      decoration: decoration,
+      theme: theme,
+      displayMode: displayMode,
+      cardBuilder: cardBuilder,
+      mobilePriorityColumns: mobilePriorityColumns,
+      alwaysShowVerticalScrollbar: alwaysShowVerticalScrollbar,
+      alwaysShowHorizontalScrollbar: alwaysShowHorizontalScrollbar,
     );
   }
 }
@@ -426,6 +250,9 @@ class _StateBasedController<T> extends VooDataGridController<T> {
   VooSelectionMode get selectionMode => _state.selectionMode;
 
   bool get filtersVisible => _state.filtersVisible;
+
+  @override
+  bool get showFilters => _state.filtersVisible;
 
   @override
   List<VooDataColumn<T>> get columns => _columns;
@@ -536,6 +363,13 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
   }
 
   @override
+  Future<void> loadData() async {
+    // No-op: Data is already provided via state
+    // The parent class expects loadData to notify listeners
+    notifyListeners();
+  }
+
+  @override
   List<T> get rows => _state?.rows ?? [];
 
   @override
@@ -567,6 +401,9 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
 
   @override
   List<T> get allRows => _state?.rows ?? [];
+
+  @override
+  int get totalPages => _state?.totalPages ?? 1;
 
   @override
   Future<VooDataGridResponse<T>> fetchRemoteData({
@@ -615,5 +452,23 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
   void clearSelection() {
     // Forward to controller callback
     _controller?.deselectAll();
+  }
+
+  @override
+  void changePage(int page) {
+    // Forward to controller callback
+    _controller?.changePage(page);
+  }
+
+  @override
+  void changePageSize(int pageSize) {
+    // Forward to controller callback
+    _controller?.changePageSize(pageSize);
+  }
+  
+  @override
+  void toggleRowSelection(T row) {
+    // Forward to controller callback
+    _controller?.toggleRowSelection(row);
   }
 }

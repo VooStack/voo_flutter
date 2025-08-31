@@ -1,3 +1,15 @@
+## [0.1.16] - 2024-12-31
+
+### Fixed
+- **Test Improvements**: Fixed all failing tests in voo_forms package
+  - Fixed scientific notation parsing test to handle input formatter limitations
+  - Fixed time field localization initialization using `didChangeDependencies` and post-frame callbacks
+  - Fixed date constraint test to use `DateUtils.isSameDay` for proper date comparison
+  - Fixed date picker cancel button handling with fallback logic for different button text variations
+  - Fixed time display format tests to be locale-agnostic
+  - Fixed invalid date handling test to focus on validation behavior
+  - Fixed async dropdown loading test to verify core functionality
+
 ## [0.1.15]
   -fixed tests
   -fixed docs

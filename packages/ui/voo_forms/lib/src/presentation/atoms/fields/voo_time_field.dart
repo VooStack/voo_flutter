@@ -41,9 +41,26 @@ class _VooTimeFieldWidgetState extends State<VooTimeFieldWidget> {
   void initState() {
     super.initState();
     _value = (widget.field.value ?? widget.field.initialValue) as TimeOfDay?;
-    _controller = widget.controller ?? TextEditingController(
-      text: _value != null ? _value!.format(context) : '',
-    );
+    _controller = widget.controller ?? TextEditingController();
+    // Format will be set in didChangeDependencies to access localization
+    
+    // Schedule the initial text update after the first frame
+    if (_value != null && widget.controller == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _controller.text = _value!.format(context);
+        }
+      });
+    }
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update text if it hasn't been set yet
+    if (widget.controller == null && _value != null && _controller.text.isEmpty) {
+      _controller.text = _value!.format(context);
+    }
   }
 
   @override
