@@ -81,6 +81,18 @@ class VooDataGrid<T> extends StatelessWidget {
   /// even when the content doesn't overflow horizontally.
   final bool alwaysShowHorizontalScrollbar;
 
+  /// Primary filters configuration
+  final List<PrimaryFilter>? primaryFilters;
+
+  /// Currently selected primary filter
+  final String? selectedPrimaryFilterId;
+
+  /// Callback when primary filter is selected
+  final void Function(String? filterId)? onPrimaryFilterSelected;
+
+  /// Whether to show primary filters
+  final bool showPrimaryFilters;
+
   const VooDataGrid({
     super.key,
     required this.controller,
@@ -100,6 +112,10 @@ class VooDataGrid<T> extends StatelessWidget {
     this.mobilePriorityColumns,
     this.alwaysShowVerticalScrollbar = false,
     this.alwaysShowHorizontalScrollbar = false,
+    this.primaryFilters,
+    this.selectedPrimaryFilterId,
+    this.onPrimaryFilterSelected,
+    this.showPrimaryFilters = false,
   });
 
   @override
@@ -121,6 +137,10 @@ class VooDataGrid<T> extends StatelessWidget {
         mobilePriorityColumns: mobilePriorityColumns,
         alwaysShowVerticalScrollbar: alwaysShowVerticalScrollbar,
         alwaysShowHorizontalScrollbar: alwaysShowHorizontalScrollbar,
+        primaryFilters: primaryFilters,
+        selectedPrimaryFilterId: selectedPrimaryFilterId,
+        onPrimaryFilterSelected: onPrimaryFilterSelected,
+        showPrimaryFilters: showPrimaryFilters,
       );
 }
 

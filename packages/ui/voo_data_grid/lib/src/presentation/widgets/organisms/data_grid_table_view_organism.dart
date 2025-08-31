@@ -77,8 +77,10 @@ class DataGridTableViewOrganism<T> extends StatelessWidget {
 
         // Data rows, error state, or empty state
         Expanded(
-          child: dataSource.error != null
-              ? Center(
+          child: Stack(
+            children: [
+              if (dataSource.error != null)
+                Center(
                   child: errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
                       VooEmptyState(
                         icon: Icons.error_outline,
@@ -90,29 +92,39 @@ class DataGridTableViewOrganism<T> extends StatelessWidget {
                         ),
                       ),
                 )
-              : dataSource.rows.isEmpty
-                  ? Center(
-                      child: emptyStateWidget ??
-                          const VooEmptyState(
-                            icon: Icons.table_rows_outlined,
-                            title: 'No Data',
-                            message: 'No rows to display',
-                          ),
-                    )
-                  : _DataGridRowsSection<T>(
-                      controller: controller,
-                      theme: theme,
-                      design: design,
-                      onRowTap: onRowTap,
-                      onRowDoubleTap: onRowDoubleTap,
-                      onRowHover: onRowHover,
-                      alwaysShowVerticalScrollbar: alwaysShowVerticalScrollbar,
-                      alwaysShowHorizontalScrollbar: alwaysShowHorizontalScrollbar,
-                    ),
+              else if (dataSource.rows.isEmpty)
+                Center(
+                  child: emptyStateWidget ??
+                      const VooEmptyState(
+                        icon: Icons.table_rows_outlined,
+                        title: 'No Data',
+                        message: 'No rows to display',
+                      ),
+                )
+              else
+                _DataGridRowsSection<T>(
+                  controller: controller,
+                  theme: theme,
+                  design: design,
+                  onRowTap: onRowTap,
+                  onRowDoubleTap: onRowDoubleTap,
+                  onRowHover: onRowHover,
+                  alwaysShowVerticalScrollbar: alwaysShowVerticalScrollbar,
+                  alwaysShowHorizontalScrollbar: alwaysShowHorizontalScrollbar,
+                ),
+              // Loading overlay at the top of rows only
+              if (dataSource.isLoading && dataSource.rows.isNotEmpty)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: LinearProgressIndicator(
+                    backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+                  ),
+                ),
+            ],
+          ),
         ),
-
-        // Loading overlay
-        if (dataSource.isLoading && dataSource.rows.isNotEmpty) const LinearProgressIndicator(),
       ],
     );
   }

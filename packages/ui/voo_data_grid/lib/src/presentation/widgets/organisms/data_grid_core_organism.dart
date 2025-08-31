@@ -60,6 +60,18 @@ class DataGridCoreOrganism<T> extends StatefulWidget {
   /// Whether to always show horizontal scrollbar
   final bool alwaysShowHorizontalScrollbar;
 
+  /// Primary filters configuration
+  final List<PrimaryFilter>? primaryFilters;
+
+  /// Currently selected primary filter
+  final String? selectedPrimaryFilterId;
+
+  /// Callback when primary filter is selected
+  final void Function(String? filterId)? onPrimaryFilterSelected;
+
+  /// Whether to show primary filters
+  final bool showPrimaryFilters;
+
   const DataGridCoreOrganism({
     super.key,
     required this.controller,
@@ -79,6 +91,10 @@ class DataGridCoreOrganism<T> extends StatefulWidget {
     this.mobilePriorityColumns,
     this.alwaysShowVerticalScrollbar = false,
     this.alwaysShowHorizontalScrollbar = false,
+    this.primaryFilters,
+    this.selectedPrimaryFilterId,
+    this.onPrimaryFilterSelected,
+    this.showPrimaryFilters = false,
   });
 
   @override
@@ -106,9 +122,7 @@ class _DataGridCoreOrganismState<T> extends State<DataGridCoreOrganism<T>> {
       return widget.displayMode;
     }
     // Auto mode: cards on mobile, table on larger screens
-    return width < VooDataGridBreakpoints.mobile 
-        ? VooDataGridDisplayMode.cards 
-        : VooDataGridDisplayMode.table;
+    return width < VooDataGridBreakpoints.mobile ? VooDataGridDisplayMode.cards : VooDataGridDisplayMode.table;
   }
 
   bool _isMobile(double width) => width < VooDataGridBreakpoints.mobile;
@@ -136,29 +150,31 @@ class _DataGridCoreOrganismState<T> extends State<DataGridCoreOrganism<T>> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (widget.showPrimaryFilters && widget.primaryFilters != null) ...[
+                  PrimaryFiltersBarMolecule(
+                    filters: widget.primaryFilters!,
+                    selectedFilterId: widget.selectedPrimaryFilterId,
+                    onFilterSelected: (filterId) {
+                      widget.onPrimaryFilterSelected?.call(filterId);
+                    },
+                  ),
+                ],
                 if (widget.showToolbar) ...[
                   Column(
                     children: [
                       DataGridToolbar(
                         onRefresh: widget.controller.dataSource.refresh,
-                        onFilterToggle: _isMobile(constraints.maxWidth) 
-                            ? null 
-                            : widget.controller.toggleFilters,
+                        onFilterToggle: _isMobile(constraints.maxWidth) ? null : widget.controller.toggleFilters,
                         filtersVisible: widget.controller.showFilters,
                         activeFilterCount: widget.controller.dataSource.filters.length,
                         displayMode: _effectiveDisplayMode,
-                        onDisplayModeChanged: _isMobile(constraints.maxWidth) 
-                            ? (mode) => setState(() => _userSelectedMode = mode)
-                            : null,
-                        showViewModeToggle: _isMobile(constraints.maxWidth) && 
-                            _effectiveDisplayMode == VooDataGridDisplayMode.table,
+                        onDisplayModeChanged: _isMobile(constraints.maxWidth) ? (mode) => setState(() => _userSelectedMode = mode) : null,
+                        showViewModeToggle: _isMobile(constraints.maxWidth) && _effectiveDisplayMode == VooDataGridDisplayMode.table,
                         additionalActions: widget.toolbarActions,
                         backgroundColor: _theme.headerBackgroundColor,
                         borderColor: _theme.borderColor,
                         isMobile: _isMobile(constraints.maxWidth),
-                        onShowMobileFilters: _isMobile(constraints.maxWidth) 
-                            ? () => _showMobileFilterSheet(context) 
-                            : null,
+                        onShowMobileFilters: _isMobile(constraints.maxWidth) ? () => _showMobileFilterSheet(context) : null,
                       ),
                       if (widget.controller.dataSource.filters.isNotEmpty) ...[
                         _buildFilterChips(),
@@ -191,11 +207,8 @@ class _DataGridCoreOrganismState<T> extends State<DataGridCoreOrganism<T>> {
         (col) => col.field == entry.key,
       );
       final filter = entry.value;
-      final displayValue = filter.value != null
-          ? (column.valueFormatter?.call(filter.value) ?? 
-             filter.value?.toString() ?? '')
-          : null;
-      
+      final displayValue = filter.value != null ? (column.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '') : null;
+
       filterData[entry.key] = FilterChipData(
         label: column.label,
         value: filter.value,
@@ -209,41 +222,37 @@ class _DataGridCoreOrganismState<T> extends State<DataGridCoreOrganism<T>> {
         widget.controller.dataSource.applyFilter(field, null);
       },
       onClearAll: widget.controller.dataSource.clearFilters,
-      backgroundColor: Theme.of(context)
-          .colorScheme
-          .surfaceContainerHighest
-          .withValues(alpha: 0.5),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       borderColor: _theme.borderColor,
     );
   }
 
-  Widget _buildContent(BoxConstraints constraints) =>
-      _effectiveDisplayMode == VooDataGridDisplayMode.cards 
-          ? DataGridCardViewOrganism<T>(
-              controller: widget.controller,
-              theme: _theme,
-              loadingWidget: widget.loadingWidget,
-              emptyStateWidget: widget.emptyStateWidget,
-              errorBuilder: widget.errorBuilder,
-              cardBuilder: widget.cardBuilder,
-              onRowTap: widget.onRowTap,
-              onRowDoubleTap: widget.onRowDoubleTap,
-              mobilePriorityColumns: widget.mobilePriorityColumns,
-            )
-          : DataGridTableViewOrganism<T>(
-              controller: widget.controller,
-              theme: _theme,
-              width: constraints.maxWidth,
-              loadingWidget: widget.loadingWidget,
-              emptyStateWidget: widget.emptyStateWidget,
-              errorBuilder: widget.errorBuilder,
-              onRowTap: widget.onRowTap,
-              onRowDoubleTap: widget.onRowDoubleTap,
-              onRowHover: widget.onRowHover,
-              alwaysShowVerticalScrollbar: widget.alwaysShowVerticalScrollbar,
-              alwaysShowHorizontalScrollbar: widget.alwaysShowHorizontalScrollbar,
-              mobilePriorityColumns: widget.mobilePriorityColumns,
-            );
+  Widget _buildContent(BoxConstraints constraints) => _effectiveDisplayMode == VooDataGridDisplayMode.cards
+      ? DataGridCardViewOrganism<T>(
+          controller: widget.controller,
+          theme: _theme,
+          loadingWidget: widget.loadingWidget,
+          emptyStateWidget: widget.emptyStateWidget,
+          errorBuilder: widget.errorBuilder,
+          cardBuilder: widget.cardBuilder,
+          onRowTap: widget.onRowTap,
+          onRowDoubleTap: widget.onRowDoubleTap,
+          mobilePriorityColumns: widget.mobilePriorityColumns,
+        )
+      : DataGridTableViewOrganism<T>(
+          controller: widget.controller,
+          theme: _theme,
+          width: constraints.maxWidth,
+          loadingWidget: widget.loadingWidget,
+          emptyStateWidget: widget.emptyStateWidget,
+          errorBuilder: widget.errorBuilder,
+          onRowTap: widget.onRowTap,
+          onRowDoubleTap: widget.onRowDoubleTap,
+          onRowHover: widget.onRowHover,
+          alwaysShowVerticalScrollbar: widget.alwaysShowVerticalScrollbar,
+          alwaysShowHorizontalScrollbar: widget.alwaysShowHorizontalScrollbar,
+          mobilePriorityColumns: widget.mobilePriorityColumns,
+        );
 
   Widget _buildPagination(double width) {
     if (_isMobile(width)) {

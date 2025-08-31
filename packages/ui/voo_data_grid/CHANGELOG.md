@@ -1,3 +1,19 @@
+## 0.6.5 - 2025-08-31
+
+* **Architecture Improvements**
+  * Introduced DataGridCoreOrganism to consolidate shared grid functionality
+  * Improved code reuse between VooDataGrid and VooDataGridStateless
+  * Enhanced atomic design pattern implementation
+
+* **Filter Enhancements**
+  * Added filter and sorting capabilities to columns in stateless data grid
+  * Maintained consistency across both grid implementations
+
+* **Code Quality**
+  * Refactored imports for better consistency
+  * Updated font sizes for filter widgets to 12px for uniformity
+  * Improved overall code organization and maintainability
+
 ## 0.6.4 - 2025-08-31
 
 * **Bug Fixes & UI Improvements**

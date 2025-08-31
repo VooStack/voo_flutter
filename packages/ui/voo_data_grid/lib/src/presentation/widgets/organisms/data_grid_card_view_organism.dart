@@ -68,48 +68,62 @@ class DataGridCardViewOrganism<T> extends StatelessWidget {
     final selectedRows = controller.dataSource.selectedRows;
     final priorityColumns = _getPriorityColumns();
 
-    return ListView.builder(
-      padding: EdgeInsets.all(design.spacingMd),
-      itemCount: dataSource.rows.length,
-      itemBuilder: (context, index) {
-        final row = dataSource.rows[index];
-        final isSelected = selectedRows.contains(row);
+    return Stack(
+      children: [
+        ListView.builder(
+          padding: EdgeInsets.all(design.spacingMd),
+          itemCount: dataSource.rows.length,
+          itemBuilder: (context, index) {
+            final row = dataSource.rows[index];
+            final isSelected = selectedRows.contains(row);
 
-        if (cardBuilder != null) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: design.spacingMd),
-            child: cardBuilder!(context, row, index),
-          );
-        }
+            if (cardBuilder != null) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: design.spacingMd),
+                child: cardBuilder!(context, row, index),
+              );
+            }
 
-        return Card(
-          elevation: isSelected ? 4 : 1,
-          color: isSelected ? theme.selectedRowBackgroundColor : null,
-          margin: EdgeInsets.only(bottom: design.spacingMd),
-          child: InkWell(
-            onTap: () {
-              controller.dataSource.toggleRowSelection(row);
-              onRowTap?.call(row);
-            },
-            onDoubleTap: () => onRowDoubleTap?.call(row),
-            borderRadius: BorderRadius.circular(design.radiusMd),
-            child: Padding(
-              padding: EdgeInsets.all(design.spacingMd),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final column in priorityColumns) 
-                    _DataGridCardField<T>(
-                      column: column,
-                      row: row,
-                      design: design,
-                    ),
-                ],
+            return Card(
+              elevation: isSelected ? 4 : 1,
+              color: isSelected ? theme.selectedRowBackgroundColor : null,
+              margin: EdgeInsets.only(bottom: design.spacingMd),
+              child: InkWell(
+                onTap: () {
+                  controller.dataSource.toggleRowSelection(row);
+                  onRowTap?.call(row);
+                },
+                onDoubleTap: () => onRowDoubleTap?.call(row),
+                borderRadius: BorderRadius.circular(design.radiusMd),
+                child: Padding(
+                  padding: EdgeInsets.all(design.spacingMd),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final column in priorityColumns) 
+                        _DataGridCardField<T>(
+                          column: column,
+                          row: row,
+                          design: design,
+                        ),
+                    ],
+                  ),
+                ),
               ),
+            );
+          },
+        ),
+        // Loading overlay at the top of cards only
+        if (dataSource.isLoading && dataSource.rows.isNotEmpty)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: LinearProgressIndicator(
+              backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
             ),
           ),
-        );
-      },
+      ],
     );
   }
 

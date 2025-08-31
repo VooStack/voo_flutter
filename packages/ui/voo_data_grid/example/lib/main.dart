@@ -37,6 +37,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
   late VooDataGridController _controller;
   late AdvancedRemoteDataSource _dataSource;
   bool _showAdvancedFilters = false;
+  String? _selectedPrimaryFilter;
 
   @override
   void initState() {
@@ -362,6 +363,65 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                 controller: _controller,
                 showToolbar: true,
                 showPagination: true,
+                showPrimaryFilters: true,
+                primaryFilters: [
+                  PrimaryFilter(
+                    id: 'pending',
+                    label: 'Pending',
+                    icon: Icons.pending_outlined,
+                    count: 12,
+                    value: 'Pending',
+                  ),
+                  PrimaryFilter(
+                    id: 'processing',
+                    label: 'Processing',
+                    icon: Icons.settings,
+                    count: 5,
+                    value: 'Processing',
+                  ),
+                  PrimaryFilter(
+                    id: 'shipped',
+                    label: 'Shipped',
+                    icon: Icons.local_shipping,
+                    count: 23,
+                    value: 'Shipped',
+                  ),
+                  PrimaryFilter(
+                    id: 'delivered',
+                    label: 'Delivered',
+                    icon: Icons.check_circle,
+                    count: 45,
+                    value: 'Delivered',
+                  ),
+                  PrimaryFilter(
+                    id: 'hold',
+                    label: 'On Hold',
+                    icon: Icons.pause_circle,
+                    count: 3,
+                    value: 'Hold',
+                  ),
+                ],
+                selectedPrimaryFilterId: _selectedPrimaryFilter,
+                onPrimaryFilterSelected: (filterId) {
+                  setState(() {
+                    _selectedPrimaryFilter = filterId;
+                  });
+                  
+                  // Apply filter based on selection
+                  if (filterId != null) {
+                    final filter = [
+                      PrimaryFilter(id: 'pending', label: 'Pending', value: 'Pending'),
+                      PrimaryFilter(id: 'processing', label: 'Processing', value: 'Processing'),
+                      PrimaryFilter(id: 'shipped', label: 'Shipped', value: 'Shipped'),
+                      PrimaryFilter(id: 'delivered', label: 'Delivered', value: 'Delivered'),
+                      PrimaryFilter(id: 'hold', label: 'On Hold', value: 'Hold'),
+                    ].firstWhere((f) => f.id == filterId);
+                    
+                    _dataSource.applyFilter('orderStatus', filter.value);
+                  } else {
+                    _dataSource.applyFilter('orderStatus', null);
+                  }
+                },
                 theme: VooDataGridTheme.fromContext(context),
                 emptyStateWidget: const VooEmptyState(
                   icon: Icons.table_rows_outlined,

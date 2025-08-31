@@ -13,16 +13,16 @@ export 'src/domain/entities/data_grid_column.dart';
 export 'src/domain/entities/data_grid_types.dart';
 export 'src/domain/entities/filter_type_extensions.dart';
 export 'src/domain/entities/typed_data_column.dart';
-// Presentation Layer - Controllers
+// Presentation Layer
 export 'src/presentation/controllers/data_grid_controller.dart';
 export 'src/presentation/controllers/voo_data_grid_controller.dart' show VooDataGridStateController; // For Provider users
-// Presentation Layer - Widgets
+export 'src/presentation/widgets/atoms/primary_filter_button_atom.dart';
 export 'src/presentation/widgets/data_grid.dart';
 export 'src/presentation/widgets/data_grid_filter_row.dart';
 export 'src/presentation/widgets/data_grid_header.dart';
 export 'src/presentation/widgets/data_grid_pagination.dart';
 export 'src/presentation/widgets/data_grid_row.dart';
-// Presentation Layer - Organisms
+export 'src/presentation/widgets/molecules/primary_filters_bar_molecule.dart';
 export 'src/presentation/widgets/organisms/advanced_filter_widget.dart';
 export 'src/presentation/widgets/voo_data_grid_stateless.dart'; // New state-agnostic widget
 // Utils

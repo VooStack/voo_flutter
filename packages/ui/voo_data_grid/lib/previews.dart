@@ -893,6 +893,201 @@ Widget customCellsDataGrid() {
   );
 }
 
+@Preview(name: 'Primary Filters Data Grid')
+Widget primaryFiltersDataGrid() {
+  // Sample order data
+  final orders = List.generate(
+    100,
+    (index) {
+      final statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+      final status = statuses[index % 5];
+      return {
+        'id': 'ORD-${1000 + index}',
+        'customer': 'Customer ${index % 20 + 1}',
+        'product': 'Product ${index % 10 + 1}',
+        'amount': (index + 1) * 25.99,
+        'status': status,
+        'date': DateTime.now().subtract(Duration(days: index)),
+      };
+    },
+  );
+
+  // Create data source with initial data
+  final dataSource = _LocalDataGridSource(data: orders);
+
+  // Define columns
+  final controller = VooDataGridController(
+    dataSource: dataSource,
+    columns: [
+      const VooDataColumn<dynamic>(
+        field: 'id',
+        label: 'Order ID',
+        width: 100,
+      ),
+      const VooDataColumn<dynamic>(
+        field: 'customer',
+        label: 'Customer',
+        flex: 2,
+      ),
+      const VooDataColumn<dynamic>(
+        field: 'product',
+        label: 'Product',
+        flex: 2,
+      ),
+      VooDataColumn<dynamic>(
+        field: 'amount',
+        label: 'Amount',
+        width: 100,
+        valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+        textAlign: TextAlign.right,
+      ),
+      VooDataColumn<dynamic>(
+        field: 'status',
+        label: 'Status',
+        width: 120,
+        cellBuilder: (context, value, row) {
+          final status = value as String;
+          final colors = {
+            'pending': Colors.orange,
+            'processing': Colors.blue,
+            'shipped': Colors.purple,
+            'delivered': Colors.green,
+            'cancelled': Colors.red,
+          };
+          final icons = {
+            'pending': Icons.pending_outlined,
+            'processing': Icons.settings,
+            'shipped': Icons.local_shipping,
+            'delivered': Icons.check_circle,
+            'cancelled': Icons.cancel,
+          };
+          
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: colors[status]?.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: colors[status]?.withValues(alpha: 0.3) ?? Colors.grey,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icons[status],
+                  size: 14,
+                  color: colors[status],
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  status.toUpperCase(),
+                  style: TextStyle(
+                    color: colors[status],
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      VooDataColumn<dynamic>(
+        field: 'date',
+        label: 'Date',
+        width: 100,
+        valueFormatter: (value) {
+          if (value is DateTime) {
+            return '${value.month}/${value.day}/${value.year}';
+          }
+          return '';
+        },
+      ),
+    ],
+  );
+
+  dataSource.loadData();
+
+  // Count orders by status
+  final statusCounts = <String, int>{};
+  for (final order in orders) {
+    final status = order['status'] as String?;
+    if (status != null) {
+      statusCounts[status] = (statusCounts[status] ?? 0) + 1;
+    }
+  }
+
+  return Material(
+    child: SizedBox(
+      height: 600,
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          String? selectedFilter;
+          
+          return VooDataGrid(
+            controller: controller,
+            showPrimaryFilters: true,
+            primaryFilters: [
+              PrimaryFilter(
+                id: 'pending',
+                label: 'Pending',
+                icon: Icons.schedule,
+                count: statusCounts['pending'],
+                value: 'pending',
+              ),
+              PrimaryFilter(
+                id: 'processing', 
+                label: 'Processing',
+                icon: Icons.sync,
+                count: statusCounts['processing'],
+                value: 'processing',
+              ),
+              PrimaryFilter(
+                id: 'shipped',
+                label: 'Shipped',
+                icon: Icons.local_shipping_outlined,
+                count: statusCounts['shipped'],
+                value: 'shipped',
+              ),
+              PrimaryFilter(
+                id: 'delivered',
+                label: 'Delivered',
+                icon: Icons.check_circle_outline,
+                count: statusCounts['delivered'],
+                value: 'delivered',
+              ),
+              PrimaryFilter(
+                id: 'cancelled',
+                label: 'Cancelled',
+                icon: Icons.cancel_outlined,
+                count: statusCounts['cancelled'],
+                value: 'cancelled',
+              ),
+            ],
+            selectedPrimaryFilterId: selectedFilter,
+            onPrimaryFilterSelected: (filterId) {
+              setState(() {
+                selectedFilter = filterId;
+                
+                // Apply filter to data source
+                if (filterId != null) {
+                  // Filter by selected status
+                  final filteredData = orders.where((order) => order['status'] == filterId).toList();
+                  dataSource.setLocalData(filteredData);
+                } else {
+                  // Show all data
+                  dataSource.setLocalData(orders);
+                }
+              });
+            },
+          );
+        },
+      ),
+    ),
+  );
+}
+
 @Preview(name: 'Stateless Data Grid')
 Widget statelessDataGrid() {
   // Sample data model

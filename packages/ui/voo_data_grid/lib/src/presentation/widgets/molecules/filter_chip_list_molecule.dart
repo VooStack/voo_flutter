@@ -45,6 +45,7 @@ class FilterChipListMolecule extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.all(design.spacingSm),
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
@@ -55,22 +56,25 @@ class FilterChipListMolecule extends StatelessWidget {
           ),
         ),
       ),
-      child: Wrap(
-        spacing: design.spacingXs,
-        runSpacing: design.spacingXs,
-        children: [
-          ...filters.entries.map(
-            (entry) => FilterChipAtom(
-              label: entry.value.label,
-              value: entry.value.displayValue,
-              onDeleted: onFilterRemoved != null ? () => onFilterRemoved!(entry.key) : null,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Wrap(
+          spacing: design.spacingXs,
+          runSpacing: design.spacingXs,
+          children: [
+            ...filters.entries.map(
+              (entry) => FilterChipAtom(
+                label: entry.value.label,
+                value: entry.value.displayValue,
+                onDeleted: onFilterRemoved != null ? () => onFilterRemoved!(entry.key) : null,
+              ),
             ),
-          ),
-          if (showClearAll && filters.length >= clearAllThreshold)
-            ClearAllChipAtom(
-              onPressed: onClearAll,
-            ),
-        ],
+            if (showClearAll && filters.length >= clearAllThreshold)
+              ClearAllChipAtom(
+                onPressed: onClearAll,
+              ),
+          ],
+        ),
       ),
     );
   }
