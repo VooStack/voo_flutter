@@ -44,7 +44,7 @@ class _VooShakeAnimationState extends State<VooShakeAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -68,17 +68,13 @@ class _VooShakeAnimationState extends State<VooShakeAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return Transform.translate(
+      builder: (context, child) => Transform.translate(
           offset: Offset(_animation.value, 0),
           child: widget.child,
-        );
-      },
+        ),
     );
-  }
 }
 
 /// Custom shake curve that creates oscillating motion

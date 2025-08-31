@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 switch component
 class VooSwitch extends StatelessWidget {
@@ -66,7 +66,7 @@ class VooSwitch extends StatelessWidget {
       inactiveThumbImage: inactiveThumbImage,
       materialTapTargetSize: materialTapTargetSize,
       thumbIcon: thumbIcon != null && thumbIcon is Icon
-        ? WidgetStateProperty.all(thumbIcon as Icon)
+        ? WidgetStateProperty.all(thumbIcon! as Icon)
         : null,
       focusColor: focusColor,
       hoverColor: hoverColor,
@@ -471,12 +471,10 @@ class VooAdaptiveSwitch extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return Switch.adaptive(
+  Widget build(BuildContext context) => Switch.adaptive(
       value: value,
       onChanged: enabled ? onChanged : null,
       activeTrackColor: activeColor,
       inactiveTrackColor: inactiveColor,
     );
-  }
 }

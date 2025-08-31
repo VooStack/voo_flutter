@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 circular progress indicator
 class VooCircularProgressIndicator extends StatelessWidget {
@@ -27,8 +27,7 @@ class VooCircularProgressIndicator extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       width: size,
       height: size,
       child: CircularProgressIndicator(
@@ -42,7 +41,6 @@ class VooCircularProgressIndicator extends StatelessWidget {
         semanticsValue: semanticsValue,
       ),
     );
-  }
 }
 
 /// Material 3 linear progress indicator
@@ -260,8 +258,7 @@ class VooCircularProgressWithContent extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       width: size,
       height: size,
       child: Stack(
@@ -278,7 +275,6 @@ class VooCircularProgressWithContent extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 /// Skeleton loader for content placeholders
@@ -327,7 +323,7 @@ class _VooSkeletonLoaderState extends State<VooSkeletonLoader>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
-    ));
+    ),);
   }
   
   @override
@@ -346,8 +342,7 @@ class _VooSkeletonLoaderState extends State<VooSkeletonLoader>
     
     return AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return Container(
+      builder: (context, child) => Container(
           width: widget.width,
           height: widget.height ?? 20,
           margin: widget.margin,
@@ -365,8 +360,7 @@ class _VooSkeletonLoaderState extends State<VooSkeletonLoader>
             ),
           ),
           child: widget.child,
-        );
-      },
+        ),
     );
   }
 }
@@ -397,8 +391,7 @@ class VooListSkeletonLoader extends StatelessWidget {
     return Padding(
       padding: padding ?? EdgeInsets.all(design.spacingMd),
       child: Column(
-        children: List.generate(itemCount, (index) {
-          return Padding(
+        children: List.generate(itemCount, (index) => Padding(
             padding: EdgeInsets.only(bottom: index < itemCount - 1 ? spacing : 0),
             child: SizedBox(
               height: itemHeight,
@@ -417,13 +410,13 @@ class VooListSkeletonLoader extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        VooSkeletonLoader(
+                        const VooSkeletonLoader(
                           height: 16,
                           width: double.infinity,
                         ),
                         if (showSubtitle) ...[
                           SizedBox(height: design.spacingSm),
-                          VooSkeletonLoader(
+                          const VooSkeletonLoader(
                             height: 14,
                             width: 200,
                           ),
@@ -434,8 +427,7 @@ class VooListSkeletonLoader extends StatelessWidget {
                 ],
               ),
             ),
-          );
-        }),
+          ),),
       ),
     );
   }
@@ -498,13 +490,13 @@ class VooCardSkeletonLoader extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (showTitle)
-                            VooSkeletonLoader(
+                            const VooSkeletonLoader(
                               height: 16,
                               width: double.infinity,
                             ),
                           if (showSubtitle) ...[
                             SizedBox(height: design.spacingXs),
-                            VooSkeletonLoader(
+                            const VooSkeletonLoader(
                               height: 14,
                               width: 150,
                             ),
@@ -582,7 +574,7 @@ class _VooShimmerState extends State<VooShimmer>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
-    ));
+    ),);
   }
   
   @override
@@ -604,11 +596,9 @@ class _VooShimmerState extends State<VooShimmer>
     return AnimatedBuilder(
       animation: _animation,
       child: widget.child,
-      builder: (context, child) {
-        return ShaderMask(
+      builder: (context, child) => ShaderMask(
           blendMode: BlendMode.srcATop,
-          shaderCallback: (bounds) {
-            return LinearGradient(
+          shaderCallback: (bounds) => LinearGradient(
               begin: Alignment(-1.0 + _animation.value, 0),
               end: Alignment(-1.0 + _animation.value + 1.0, 0),
               colors: [
@@ -617,11 +607,9 @@ class _VooShimmerState extends State<VooShimmer>
                 baseColor,
               ],
               stops: const [0.0, 0.5, 1.0],
-            ).createShader(bounds);
-          },
+            ).createShader(bounds),
           child: child,
-        );
-      },
+        ),
     );
   }
 }
@@ -716,11 +704,9 @@ class _ProgressRingPainter extends CustomPainter {
   }
   
   @override
-  bool shouldRepaint(_ProgressRingPainter oldDelegate) {
-    return value != oldDelegate.value ||
+  bool shouldRepaint(_ProgressRingPainter oldDelegate) => value != oldDelegate.value ||
            strokeWidth != oldDelegate.strokeWidth ||
            progressColor != oldDelegate.progressColor ||
            backgroundColor != oldDelegate.backgroundColor ||
            strokeCap != oldDelegate.strokeCap;
-  }
 }

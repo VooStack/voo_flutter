@@ -42,8 +42,7 @@ Future<void> tapDropdown(WidgetTester tester) async {
 
 void main() {
   // Helper function to wrap widget with necessary providers
-  Widget createTestApp(Widget child) {
-    return MaterialApp(
+  Widget createTestApp(Widget child) => MaterialApp(
       home: VooDesignSystem(
         data: VooDesignSystemData.defaultSystem,
         child: VooResponsiveBuilder(
@@ -58,7 +57,6 @@ void main() {
         ),
       ),
     );
-  }
 
   group('Form Field Widget Pump Tests', () {
     group('Text Fields', () {
@@ -348,7 +346,6 @@ void main() {
         final field = VooField.checkbox(
           name: 'agree',
           label: 'I agree to the terms',
-          initialValue: false,
         );
 
         await tester.pumpWidget(
@@ -371,8 +368,6 @@ void main() {
       });
 
       testWidgets('Switch field should toggle correctly', (tester) async {
-        bool? capturedValue;
-        
         final field = VooField.boolean(
           name: 'notifications',
           label: 'Enable Notifications',
@@ -383,8 +378,8 @@ void main() {
           createTestApp(
             VooFieldWidget(
               field: field,
-              onChanged: (value) {
-                capturedValue = value as bool?;
+              onChanged: (_) {
+                // Callback required but value not used in this test
               },
             ),
           ),
@@ -448,8 +443,6 @@ void main() {
         final field = VooField.slider(
           name: 'volume',
           label: 'Volume',
-          min: 0,
-          max: 100,
           divisions: 10,
           initialValue: 50,
         );
@@ -482,7 +475,7 @@ void main() {
         final field = VooField.date(
           name: 'birthday',
           label: 'Birthday',
-          initialValue: DateTime(2000, 1, 1),
+          initialValue: DateTime(2000),
         );
 
         await tester.pumpWidget(
@@ -547,7 +540,7 @@ void main() {
           createTestApp(
             VooFieldWidget(
               field: field,
-              options: VooFieldOptions(
+              options: const VooFieldOptions(
                 labelPosition: LabelPosition.floating,
               ),
             ),
@@ -568,7 +561,7 @@ void main() {
           createTestApp(
             VooFieldWidget(
               field: field,
-              options: VooFieldOptions(
+              options: const VooFieldOptions(
                 fieldVariant: FieldVariant.outlined,
               ),
             ),
@@ -589,7 +582,6 @@ void main() {
             VooFieldWidget(
               field: field,
               error: 'This field has an error',
-              showError: true,
             ),
           ),
         );

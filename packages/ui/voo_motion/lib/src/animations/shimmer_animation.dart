@@ -54,7 +54,7 @@ class _VooShimmerAnimationState extends State<VooShimmerAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -109,14 +109,11 @@ class _VooShimmerAnimationState extends State<VooShimmerAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return ShaderMask(
+      builder: (context, child) => ShaderMask(
           blendMode: BlendMode.srcATop,
-          shaderCallback: (bounds) {
-            return LinearGradient(
+          shaderCallback: (bounds) => LinearGradient(
               begin: Alignment(_getBeginOffset().dx, _getBeginOffset().dy),
               end: Alignment(_getEndOffset().dx, _getEndOffset().dy),
               transform: _SlideGradientTransform(
@@ -129,13 +126,10 @@ class _VooShimmerAnimationState extends State<VooShimmerAnimation>
                 widget.baseColor,
               ],
               stops: const [0.0, 0.35, 0.65, 1.0],
-            ).createShader(bounds);
-          },
+            ).createShader(bounds),
           child: widget.child,
-        );
-      },
+        ),
     );
-  }
 }
 
 class _SlideGradientTransform extends GradientTransform {
@@ -146,11 +140,9 @@ class _SlideGradientTransform extends GradientTransform {
   });
   
   @override
-  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
-    return Matrix4.translationValues(
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) => Matrix4.translationValues(
       bounds.width * slidePercent,
       0.0,
       0.0,
     );
-  }
 }

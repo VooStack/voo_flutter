@@ -65,7 +65,6 @@ class VooFormTheme {
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
             color: colorScheme.outline.withValues(alpha: 0.1),
-            width: 1.0,
           ),
         ),
         labelStyle: TextStyle(
@@ -193,9 +192,8 @@ class VooFormTheme {
           }
           return colorScheme.surfaceContainerHighest;
         }),
-        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-          return Colors.transparent;
-        }),
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) => 
+          Colors.transparent,),
       ),
       sliderTheme: SliderThemeData(
         activeTrackColor: colorScheme.primary,
@@ -209,7 +207,6 @@ class VooFormTheme {
         ),
         trackHeight: 6.0,
         thumbShape: const RoundSliderThumbShape(
-          enabledThumbRadius: 10.0,
         ),
         overlayShape: const RoundSliderOverlayShape(
           overlayRadius: 20.0,
@@ -243,8 +240,7 @@ class VooFormTheme {
     bool isPassword = false,
     bool isDense = false,
     bool filled = true,
-  }) {
-    return InputDecoration(
+  }) => InputDecoration(
       labelText: label,
       hintText: hint,
       helperText: helper,
@@ -264,7 +260,6 @@ class VooFormTheme {
                 )
               : null,
     );
-  }
 
   /// Get form section decoration
   static BoxDecoration getSectionDecoration(BuildContext context) {
@@ -274,7 +269,6 @@ class VooFormTheme {
       borderRadius: BorderRadius.circular(16.0),
       border: Border.all(
         color: theme.colorScheme.outlineVariant,
-        width: 1.0,
       ),
     );
   }
@@ -303,7 +297,6 @@ class VooFormTheme {
       borderRadius: BorderRadius.circular(12.0),
       border: Border.all(
         color: theme.colorScheme.outline.withValues(alpha: 0.3),
-        width: 1.0,
       ),
     );
   }

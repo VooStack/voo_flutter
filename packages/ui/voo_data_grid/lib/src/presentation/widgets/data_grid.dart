@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_controller.dart';
-import 'package:voo_data_grid/src/data_grid_filter.dart';
-import 'package:voo_data_grid/src/data_grid_header.dart';
-import 'package:voo_data_grid/src/data_grid_pagination.dart';
-import 'package:voo_data_grid/src/data_grid_row.dart';
-import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Display mode for the data grid

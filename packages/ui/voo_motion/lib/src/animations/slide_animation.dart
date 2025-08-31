@@ -40,7 +40,7 @@ class _VooSlideAnimationState extends State<VooSlideAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -74,10 +74,8 @@ class _VooSlideAnimationState extends State<VooSlideAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return SlideTransition(
+  Widget build(BuildContext context) => SlideTransition(
       position: _animation,
       child: widget.child,
     );
-  }
 }

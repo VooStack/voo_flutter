@@ -19,14 +19,12 @@ class TestDataSource extends VooDataGridSource<TestModel> {
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
-  }) async {
-    return VooDataGridResponse<TestModel>(
+  }) async => VooDataGridResponse<TestModel>(
       rows: [],
       totalRows: 0,
       page: page,
       pageSize: pageSize,
     );
-  }
 }
 
 void main() {
@@ -82,7 +80,7 @@ void main() {
       
       // Verify valueGetter has correct type
       if (column.valueGetter != null) {
-        final testRow = TestModel(id: 'test', status: null);
+        final testRow = TestModel(id: 'test');
         final result = column.valueGetter!(testRow);
         expect(result, 'test');
       }

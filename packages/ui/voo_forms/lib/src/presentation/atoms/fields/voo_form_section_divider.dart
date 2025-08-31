@@ -39,26 +39,21 @@ class VooFormSectionDivider extends StatelessWidget {
     ) ?? design.spacingLg * 2;
     
     // Calculate indentation based on style
-    double calculateIndent() {
-      switch (style) {
-        case DividerStyle.full:
-          return 0;
-        case DividerStyle.inset:
-          return responsive?.device(
-            phone: design.spacingMd,
-            tablet: design.spacingLg,
-            desktop: design.spacingXl,
-            defaultValue: design.spacingLg,
-          ) ?? design.spacingLg;
-        case DividerStyle.middle:
-          return responsive?.device(
-            phone: design.spacingLg * 2,
-            tablet: design.spacingXl * 2,
-            desktop: design.spacingXl * 3,
-            defaultValue: design.spacingXl * 2,
-          ) ?? design.spacingXl * 2;
-      }
-    }
+    double calculateIndent() => switch (style) {
+      DividerStyle.full => 0,
+      DividerStyle.inset => responsive?.device(
+        phone: design.spacingMd,
+        tablet: design.spacingLg,
+        desktop: design.spacingXl,
+        defaultValue: design.spacingLg,
+      ) ?? design.spacingLg,
+      DividerStyle.middle => responsive?.device(
+        phone: design.spacingLg * 2,
+        tablet: design.spacingXl * 2,
+        desktop: design.spacingXl * 3,
+        defaultValue: design.spacingXl * 2,
+      ) ?? design.spacingXl * 2,
+    };
     
     final dividerIndent = indent ?? calculateIndent();
     final dividerEndIndent = endIndent ?? (style == DividerStyle.middle ? dividerIndent : 0);
@@ -90,15 +85,12 @@ class VooFormSectionDivider extends StatelessWidget {
     double? thickness,
     Color? color,
     EdgeInsetsGeometry? margin,
-  }) {
-    return VooFormSectionDivider(
-      height: height,
-      thickness: thickness,
-      color: color,
-      margin: margin,
-      style: DividerStyle.full,
-    );
-  }
+  }) => VooFormSectionDivider(
+    height: height,
+    thickness: thickness,
+    color: color,
+    margin: margin,
+  );
   
   /// Creates an inset divider (Material 3 standard)
   factory VooFormSectionDivider.inset({
@@ -106,15 +98,13 @@ class VooFormSectionDivider extends StatelessWidget {
     double? thickness,
     Color? color,
     EdgeInsetsGeometry? margin,
-  }) {
-    return VooFormSectionDivider(
-      height: height,
-      thickness: thickness,
-      color: color,
-      margin: margin,
-      style: DividerStyle.inset,
-    );
-  }
+  }) => VooFormSectionDivider(
+    height: height,
+    thickness: thickness,
+    color: color,
+    margin: margin,
+    style: DividerStyle.inset,
+  );
   
   /// Creates a middle divider (centered with equal indents)
   factory VooFormSectionDivider.middle({
@@ -122,15 +112,13 @@ class VooFormSectionDivider extends StatelessWidget {
     double? thickness,
     Color? color,
     EdgeInsetsGeometry? margin,
-  }) {
-    return VooFormSectionDivider(
-      height: height,
-      thickness: thickness,
-      color: color,
-      margin: margin,
-      style: DividerStyle.middle,
-    );
-  }
+  }) => VooFormSectionDivider(
+    height: height,
+    thickness: thickness,
+    color: color,
+    margin: margin,
+    style: DividerStyle.middle,
+  );
 }
 
 /// Divider style options
@@ -314,16 +302,14 @@ class VooFormSectionTextDivider extends StatelessWidget {
     Color? color,
     EdgeInsetsGeometry? margin,
     DividerTextStyle style = DividerTextStyle.outlined,
-  }) {
-    return VooFormSectionTextDivider(
-      text: 'OR',
-      textStyle: textStyle,
-      thickness: thickness,
-      color: color,
-      margin: margin,
-      style: style,
-    );
-  }
+  }) => VooFormSectionTextDivider(
+    text: 'OR',
+    textStyle: textStyle,
+    thickness: thickness,
+    color: color,
+    margin: margin,
+    style: style,
+  );
   
   /// Creates a simple "AND" divider
   factory VooFormSectionTextDivider.and({
@@ -332,16 +318,14 @@ class VooFormSectionTextDivider extends StatelessWidget {
     Color? color,
     EdgeInsetsGeometry? margin,
     DividerTextStyle style = DividerTextStyle.outlined,
-  }) {
-    return VooFormSectionTextDivider(
-      text: 'AND',
-      textStyle: textStyle,
-      thickness: thickness,
-      color: color,
-      margin: margin,
-      style: style,
-    );
-  }
+  }) => VooFormSectionTextDivider(
+    text: 'AND',
+    textStyle: textStyle,
+    thickness: thickness,
+    color: color,
+    margin: margin,
+    style: style,
+  );
   
   /// Creates a custom text divider with an icon
   factory VooFormSectionTextDivider.withIcon({
@@ -352,17 +336,15 @@ class VooFormSectionTextDivider extends StatelessWidget {
     Color? color,
     EdgeInsetsGeometry? margin,
     DividerTextStyle style = DividerTextStyle.outlined,
-  }) {
-    return VooFormSectionTextDivider(
-      text: text,
-      icon: icon,
-      textStyle: textStyle,
-      thickness: thickness,
-      color: color,
-      margin: margin,
-      style: style,
-    );
-  }
+  }) => VooFormSectionTextDivider(
+    text: text,
+    icon: icon,
+    textStyle: textStyle,
+    thickness: thickness,
+    color: color,
+    margin: margin,
+    style: style,
+  );
 }
 
 /// Style options for text dividers

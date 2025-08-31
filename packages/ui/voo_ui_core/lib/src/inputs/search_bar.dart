@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/spacing.dart';
+import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooSearchBar extends StatelessWidget {
   final String hintText;

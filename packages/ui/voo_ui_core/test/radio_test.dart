@@ -29,8 +29,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
+            builder: (context, setState) => Column(
                 children: [
                   VooRadio<String>(
                     value: 'A',
@@ -49,8 +48,7 @@ void main() {
                     },
                   ),
                 ],
-              );
-            },
+              ),
           ),
         ),
       );
@@ -71,8 +69,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooRadio<String>(
+            builder: (context, setState) => VooRadio<String>(
                 value: 'A',
                 groupValue: groupValue,
                 toggleable: true,
@@ -80,8 +77,7 @@ void main() {
                   setState(() => groupValue = value);
                   callbacks.onChanged(value);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -141,8 +137,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
+            builder: (context, setState) => Column(
                 children: [
                   VooRadioListTile<int>(
                     value: 1,
@@ -163,8 +158,7 @@ void main() {
                     title: const Text('Option 2'),
                   ),
                 ],
-              );
-            },
+              ),
           ),
         ),
       );
@@ -209,8 +203,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooRadioGroup<String>(
+            builder: (context, setState) => VooRadioGroup<String>(
                 items: items,
                 value: selectedValue,
                 labelBuilder: (item) => item,
@@ -218,8 +211,7 @@ void main() {
                   setState(() => selectedValue = value);
                   callbacks.onChanged(value);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -237,7 +229,6 @@ void main() {
         createTestApp(
           child: VooRadioGroup<String>(
             items: const ['Option'],
-            value: null,
             labelBuilder: (item) => item,
             onChanged: (_) {}, // Add onChanged
             label: 'Select size',
@@ -256,7 +247,6 @@ void main() {
         createTestApp(
           child: VooRadioGroup<String>(
             items: const ['Option'],
-            value: null,
             labelBuilder: (item) => item,
             onChanged: (_) {}, // Add onChanged
             errorText: 'Please select an option',
@@ -292,8 +282,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooRadioGroup<String>(
+            builder: (context, setState) => VooRadioGroup<String>(
                 items: const ['A', 'B'],
                 value: selectedValue,
                 labelBuilder: (item) => item,
@@ -302,8 +291,7 @@ void main() {
                   setState(() => selectedValue = value);
                   callbacks.onChanged(value);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -324,7 +312,6 @@ void main() {
         createTestApp(
           child: VooRadioGroup<String>(
             items: const ['Available', 'Unavailable'],
-            value: null,
             labelBuilder: (item) => item,
             isDisabled: (item) => item == 'Unavailable',
             onChanged: callbacks.onChanged,
@@ -374,8 +361,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
+            builder: (context, setState) => Column(
                 children: [
                   VooLabeledRadio<String>(
                     value: 'A',
@@ -396,8 +382,7 @@ void main() {
                     label: 'Option B',
                   ),
                 ],
-              );
-            },
+              ),
           ),
         ),
       );
@@ -488,8 +473,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooRadioCard<String>(
+            builder: (context, setState) => VooRadioCard<String>(
                 value: 'plan',
                 groupValue: groupValue,
                 onChanged: (value) {
@@ -497,8 +481,7 @@ void main() {
                   callbacks.onChanged(value);
                 },
                 title: const Text('Select Plan'),
-              );
-            },
+              ),
           ),
         ),
       );

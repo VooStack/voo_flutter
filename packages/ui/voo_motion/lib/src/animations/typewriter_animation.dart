@@ -59,7 +59,7 @@ class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
     ).animate(CurvedAnimation(
       parent: _typeController,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -98,8 +98,7 @@ class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _characterCount,
       builder: (context, child) {
         final text = widget.text.substring(0, _characterCount.value);
@@ -117,15 +116,13 @@ class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
               ),
               AnimatedBuilder(
                 animation: _cursorController,
-                builder: (context, _) {
-                  return Opacity(
+                builder: (context, _) => Opacity(
                     opacity: _cursorController.value,
                     child: Text(
                       widget.cursor,
                       style: widget.style,
                     ),
-                  );
-                },
+                  ),
               ),
             ],
           );
@@ -140,5 +137,4 @@ class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
         );
       },
     );
-  }
 }

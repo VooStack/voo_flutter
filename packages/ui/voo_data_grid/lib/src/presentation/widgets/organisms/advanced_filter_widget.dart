@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/advanced_remote_data_source.dart';
-import 'package:voo_data_grid/src/models/advanced_filters.dart';
-import 'package:voo_data_grid/src/models/filter_type_extensions.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Advanced filter widget for complex filtering UI
@@ -29,7 +27,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: EdgeInsets.all(design.spacingMd),
       decoration: BoxDecoration(
@@ -86,22 +84,20 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
     );
   }
 
-  Widget _buildFilterList(VooDesignSystemData design) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 300),
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          ..._filters.map((filter) => _buildFilterRow(filter, design)),
-          _buildAddFilterButton(design),
-        ],
-      ),
-    );
-  }
+  Widget _buildFilterList(VooDesignSystemData design) => Container(
+        constraints: const BoxConstraints(maxHeight: 300),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ..._filters.map((filter) => _buildFilterRow(filter, design)),
+            _buildAddFilterButton(design),
+          ],
+        ),
+      );
 
   Widget _buildFilterRow(FilterEntry filter, VooDesignSystemData design) {
     final theme = Theme.of(context);
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: design.spacingSm),
       child: Padding(
@@ -118,12 +114,14 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                   prefixIcon: Icon(filter.field?.type.icon),
                 ),
                 initialValue: filter.field,
-                items: widget.fields.map((field) {
-                  return DropdownMenuItem(
-                    value: field,
-                    child: Text(field.displayName),
-                  );
-                }).toList(),
+                items: widget.fields
+                    .map(
+                      (field) => DropdownMenuItem(
+                        value: field,
+                        child: Text(field.displayName),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (value) {
                   setState(() {
                     filter.field = value;
@@ -135,7 +133,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               ),
             ),
             SizedBox(width: design.spacingSm),
-            
+
             // Operator selector
             if (filter.field != null) ...[
               Expanded(
@@ -146,12 +144,14 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                     border: OutlineInputBorder(),
                   ),
                   initialValue: filter.operator,
-                  items: filter.field!.type.operators.map((op) {
-                    return DropdownMenuItem(
-                      value: op,
-                      child: Text(op.displayText),
-                    );
-                  }).toList(),
+                  items: filter.field!.type.operators
+                      .map(
+                        (op) => DropdownMenuItem(
+                          value: op,
+                          child: Text(op.displayText),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (value) {
                     setState(() {
                       filter.operator = value;
@@ -164,7 +164,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               ),
               SizedBox(width: design.spacingSm),
             ],
-            
+
             // Value input
             if (filter.field != null && filter.operator != null) ...[
               Expanded(
@@ -173,7 +173,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               ),
               SizedBox(width: design.spacingSm),
             ],
-            
+
             // Secondary value for range operations
             if (filter.operator?.requiresSecondaryValue == true) ...[
               Expanded(
@@ -182,7 +182,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               ),
               SizedBox(width: design.spacingSm),
             ],
-            
+
             // Remove button
             IconButton(
               icon: const Icon(Icons.remove_circle_outline),
@@ -201,7 +201,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
 
   Widget _buildValueInput(FilterEntry filter, VooDesignSystemData design) {
     final type = filter.field!.type;
-    
+
     switch (type.inputType) {
       case FilterInputType.text:
         return TextFormField(
@@ -214,7 +214,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             filter.value = value;
           },
         );
-        
+
       case FilterInputType.number:
         return TextFormField(
           decoration: const InputDecoration(
@@ -227,7 +227,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             filter.value = int.tryParse(value);
           },
         );
-        
+
       case FilterInputType.decimal:
         return TextFormField(
           decoration: const InputDecoration(
@@ -240,7 +240,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             filter.value = double.tryParse(value);
           },
         );
-        
+
       case FilterInputType.datePicker:
         return InkWell(
           onTap: () async {
@@ -263,13 +263,11 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               suffixIcon: Icon(Icons.calendar_today),
             ),
             child: Text(
-              filter.value != null 
-                ? type.formatValue(filter.value)
-                : 'Select date',
+              filter.value != null ? type.formatValue(filter.value) : 'Select date',
             ),
           ),
         );
-        
+
       case FilterInputType.dateTimePicker:
         return InkWell(
           onTap: () async {
@@ -306,13 +304,11 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               suffixIcon: Icon(Icons.access_time),
             ),
             child: Text(
-              filter.value != null 
-                ? type.formatValue(filter.value)
-                : 'Select date & time',
+              filter.value != null ? type.formatValue(filter.value) : 'Select date & time',
             ),
           ),
         );
-        
+
       case FilterInputType.checkbox:
         return DropdownButtonFormField<bool>(
           decoration: const InputDecoration(
@@ -330,7 +326,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             });
           },
         );
-        
+
       default:
         return const SizedBox.shrink();
     }
@@ -338,7 +334,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
 
   Widget _buildSecondaryValueInput(FilterEntry filter, VooDesignSystemData design) {
     final type = filter.field!.type;
-    
+
     switch (type.inputType) {
       case FilterInputType.number:
         return TextFormField(
@@ -352,7 +348,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             filter.secondaryValue = int.tryParse(value);
           },
         );
-        
+
       case FilterInputType.decimal:
         return TextFormField(
           decoration: const InputDecoration(
@@ -365,7 +361,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             filter.secondaryValue = double.tryParse(value);
           },
         );
-        
+
       case FilterInputType.datePicker:
         return InkWell(
           onTap: () async {
@@ -388,52 +384,44 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
               suffixIcon: Icon(Icons.calendar_today),
             ),
             child: Text(
-              filter.secondaryValue != null 
-                ? type.formatValue(filter.secondaryValue)
-                : 'Select end date',
+              filter.secondaryValue != null ? type.formatValue(filter.secondaryValue) : 'Select end date',
             ),
           ),
         );
-        
+
       default:
         return const SizedBox.shrink();
     }
   }
 
-  Widget _buildAddFilterButton(VooDesignSystemData design) {
-    return TextButton.icon(
-      icon: const Icon(Icons.add_circle_outline),
-      label: const Text('Add Filter'),
-      onPressed: () {
-        setState(() {
-          _filters.add(FilterEntry());
-        });
-      },
-    );
-  }
+  Widget _buildAddFilterButton(VooDesignSystemData design) => TextButton.icon(
+        icon: const Icon(Icons.add_circle_outline),
+        label: const Text('Add Filter'),
+        onPressed: () {
+          setState(() {
+            _filters.add(FilterEntry());
+          });
+        },
+      );
 
-  Widget _buildActions(VooDesignSystemData design) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _filters.clear();
-            });
-            widget.dataSource.clearAdvancedFilters();
-          },
-          child: const Text('Clear All'),
-        ),
-        SizedBox(width: design.spacingSm),
-        FilledButton.icon(
-          icon: const Icon(Icons.search),
-          label: const Text('Apply Filters'),
-          onPressed: _applyFilters,
-        ),
-      ],
-    );
-  }
+  Widget _buildActions(VooDesignSystemData design) => Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () {
+              setState(_filters.clear);
+              widget.dataSource.clearAdvancedFilters();
+            },
+            child: const Text('Clear All'),
+          ),
+          SizedBox(width: design.spacingSm),
+          FilledButton.icon(
+            icon: const Icon(Icons.search),
+            label: const Text('Apply Filters'),
+            onPressed: _applyFilters,
+          ),
+        ],
+      );
 
   void _applyFilters() {
     final stringFilters = <StringFilter>[];
@@ -441,74 +429,81 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
     final decimalFilters = <DecimalFilter>[];
     final dateFilters = <DateFilter>[];
     final boolFilters = <BoolFilter>[];
-    
+
     for (final filter in _filters) {
-      if (filter.field == null || 
-          filter.operator == null || 
-          filter.value == null) {
+      if (filter.field == null || filter.operator == null || filter.value == null) {
         continue;
       }
-      
+
       final field = filter.field!;
       SecondaryFilter? secondaryFilter;
-      
-      if (filter.operator!.requiresSecondaryValue && 
-          filter.secondaryValue != null) {
+
+      if (filter.operator!.requiresSecondaryValue && filter.secondaryValue != null) {
         secondaryFilter = SecondaryFilter(
           logic: FilterLogic.and,
           value: filter.secondaryValue,
           operator: 'LessThanOrEqual',
         );
       }
-      
+
       switch (field.type) {
         case FilterType.string:
-          stringFilters.add(StringFilter(
-            fieldName: field.fieldName,
-            value: filter.value.toString(),
-            operator: filter.operator!,
-            secondaryFilter: secondaryFilter,
-          ));
+          stringFilters.add(
+            StringFilter(
+              fieldName: field.fieldName,
+              value: filter.value.toString(),
+              operator: filter.operator!,
+              secondaryFilter: secondaryFilter,
+            ),
+          );
           break;
-          
+
         case FilterType.int:
-          intFilters.add(IntFilter(
-            fieldName: field.fieldName,
-            value: filter.value as int,
-            operator: filter.operator!,
-            secondaryFilter: secondaryFilter,
-          ));
+          intFilters.add(
+            IntFilter(
+              fieldName: field.fieldName,
+              value: filter.value as int,
+              operator: filter.operator!,
+              secondaryFilter: secondaryFilter,
+            ),
+          );
           break;
-          
+
         case FilterType.decimal:
-          decimalFilters.add(DecimalFilter(
-            fieldName: field.fieldName,
-            value: (filter.value as num).toDouble(),
-            operator: filter.operator!,
-            secondaryFilter: secondaryFilter,
-          ));
+          decimalFilters.add(
+            DecimalFilter(
+              fieldName: field.fieldName,
+              value: (filter.value as num).toDouble(),
+              operator: filter.operator!,
+              secondaryFilter: secondaryFilter,
+            ),
+          );
           break;
-          
+
         case FilterType.date:
         case FilterType.dateTime:
-          dateFilters.add(DateFilter(
-            fieldName: field.fieldName,
-            value: filter.value as DateTime,
-            operator: filter.operator!,
-            secondaryFilter: secondaryFilter,
-          ));
+          dateFilters.add(
+            DateFilter(
+              fieldName: field.fieldName,
+              value: filter.value as DateTime,
+              operator: filter.operator!,
+              secondaryFilter: secondaryFilter,
+            ),
+          );
           break;
-          
+
         case FilterType.bool:
-          boolFilters.add(BoolFilter(
-            fieldName: field.fieldName,
-            value: filter.value as bool,
-            operator: filter.operator!,
-          ));
+          boolFilters.add(
+            BoolFilter(
+              fieldName: field.fieldName,
+              value: filter.value as bool,
+              operator: filter.operator!,
+            ),
+          );
           break;
       }
     }
-    
+
     final request = AdvancedFilterRequest(
       stringFilters: stringFilters,
       intFilters: intFilters,
@@ -516,10 +511,8 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
       dateFilters: dateFilters,
       boolFilters: boolFilters,
       logic: _globalLogic,
-      pageNumber: 1,
-      pageSize: 20,
     );
-    
+
     widget.dataSource.setAdvancedFilterRequest(request);
     widget.onFilterApplied?.call(request);
   }
@@ -531,7 +524,7 @@ class FilterFieldConfig {
   final String displayName;
   final FilterType type;
   final List<String>? options; // For dropdown fields
-  
+
   const FilterFieldConfig({
     required this.fieldName,
     required this.displayName,
@@ -546,7 +539,7 @@ class FilterEntry {
   String? operator;
   dynamic value;
   dynamic secondaryValue; // For range operations
-  
+
   FilterEntry({
     this.field,
     this.operator,

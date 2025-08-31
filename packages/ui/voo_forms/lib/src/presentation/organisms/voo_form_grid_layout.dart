@@ -41,8 +41,7 @@ class VooFormGridLayout extends StatelessWidget {
         return Wrap(
           spacing: design.spacingMd,
           runSpacing: design.spacingMd,
-          children: form.fields.map((field) {
-            return SizedBox(
+          children: form.fields.map((field) => SizedBox(
               width: field.gridColumns != null
                   ? (itemWidth * field.gridColumns! + design.spacingMd * (field.gridColumns! - 1))
                   : itemWidth,
@@ -52,8 +51,7 @@ class VooFormGridLayout extends StatelessWidget {
                 showError: showValidation,
                 config: config,
               ),
-            );
-          }).toList(),
+            ),).toList(),
         );
       },
     );

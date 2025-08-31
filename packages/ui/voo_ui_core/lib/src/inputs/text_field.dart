@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 class VooTextField extends StatefulWidget {
   final TextEditingController? controller;

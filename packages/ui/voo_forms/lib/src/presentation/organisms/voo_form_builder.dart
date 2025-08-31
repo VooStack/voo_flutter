@@ -9,7 +9,6 @@ import 'package:voo_forms/src/presentation/organisms/voo_form_horizontal_layout.
 import 'package:voo_forms/src/presentation/organisms/voo_form_stepped_layout.dart';
 import 'package:voo_forms/src/presentation/organisms/voo_form_tabbed_layout.dart';
 import 'package:voo_forms/src/presentation/organisms/voo_form_vertical_layout.dart';
-import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 import 'package:voo_forms/src/utils/form_theme.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -79,37 +78,33 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final design = context.vooDesign;
-    
+
     // Apply the enhanced form theme
     final formTheme = VooFormTheme.generateFormTheme(
       colorScheme: theme.colorScheme,
       textTheme: theme.textTheme,
     );
-    
+
     // Create default config with floating labels if not provided
-    final effectiveConfig = widget.defaultConfig ?? const VooFormConfig(
-      labelPosition: LabelPosition.floating,
-      fieldVariant: FieldVariant.outlined,
-      showFieldIcons: true,
-      showRequiredIndicator: true,
-    );
-    
+    final effectiveConfig = widget.defaultConfig ?? const VooFormConfig();
+
     // Make responsive optional
     final responsive = VooResponsive.maybeOf(context);
     final spacing = responsive?.device(
-      phone: design.spacingMd,
-      tablet: design.spacingLg,
-      desktop: design.spacingXl,
-      defaultValue: design.spacingMd,
-    ) ?? design.spacingMd;
+          phone: design.spacingMd,
+          tablet: design.spacingLg,
+          desktop: design.spacingXl,
+          defaultValue: design.spacingMd,
+        ) ??
+        design.spacingMd;
 
     return Theme(
       data: formTheme,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final hasInfiniteHeight = constraints.maxHeight == double.infinity;
-          
-          final formContent = Container(
+
+          final formContent = DecoratedBox(
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(20.0),
@@ -126,7 +121,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (widget.showProgress)
-                  Container(
+                  DecoratedBox(
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       borderRadius: const BorderRadius.only(
@@ -140,10 +135,10 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
                       showProgress: widget.showProgress,
                     ),
                   ),
-                if (widget.header != null) 
+                if (widget.header != null)
                   Padding(
                     padding: EdgeInsets.all(spacing),
-                    child: widget.header!,
+                    child: widget.header,
                   ),
                 if (hasInfiniteHeight)
                   Flexible(
@@ -163,12 +158,12 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
                       child: _buildFormLayout(context, effectiveConfig),
                     ),
                   ),
-                if (widget.footer != null) 
+                if (widget.footer != null)
                   Padding(
                     padding: EdgeInsets.all(spacing),
-                    child: widget.footer!,
+                    child: widget.footer,
                   ),
-                Container(
+                DecoratedBox(
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
                     borderRadius: const BorderRadius.only(
@@ -176,19 +171,20 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
                       bottomRight: Radius.circular(20.0),
                     ),
                   ),
-                  padding: EdgeInsets.all(spacing),
-                  child: VooFormActions(
-                    controller: _controller,
-                    onSubmit: widget.onSubmit != null ? () => _handleSubmit() : null,
-                    onCancel: widget.onCancel,
-                    showCancel: widget.onCancel != null,
-                    customBuilder: widget.actionsBuilder,
+                  child: Padding(
+                    padding: EdgeInsets.all(spacing),
+                    child: VooFormActions(
+                      controller: _controller,
+                      onSubmit: widget.onSubmit != null ? _handleSubmit : null,
+                      onCancel: widget.onCancel,
+                      customBuilder: widget.actionsBuilder,
+                    ),
                   ),
                 ),
               ],
             ),
           );
-          
+
           return formContent;
         },
       ),
@@ -235,7 +231,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
     }
   }
 
-  void _handleSubmit() async {
+  Future<void> _handleSubmit() async {
     if (widget.onSubmit != null) {
       await _controller.submit(
         onSubmit: (values) async {
@@ -264,5 +260,4 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
       );
     }
   }
-
 }

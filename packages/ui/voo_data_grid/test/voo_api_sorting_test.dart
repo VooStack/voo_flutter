@@ -4,7 +4,7 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 void main() {
   group('VooApiStandard Sorting', () {
     test('should include sortBy and sortDescending in request', () {
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
         fieldPrefix: 'Site',
       );
@@ -15,7 +15,7 @@ void main() {
         pageSize: 20,
         filters: {},
         sorts: [
-          VooColumnSort(
+          const VooColumnSort(
             field: 'siteNumber',
             direction: VooSortDirection.ascending,
           ),
@@ -32,7 +32,7 @@ void main() {
         pageSize: 20,
         filters: {},
         sorts: [
-          VooColumnSort(
+          const VooColumnSort(
             field: 'siteName',
             direction: VooSortDirection.descending,
           ),
@@ -57,7 +57,7 @@ void main() {
     });
 
     test('should handle multiple sorts but only use first one', () {
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
       );
 
@@ -66,11 +66,11 @@ void main() {
         pageSize: 20,
         filters: {},
         sorts: [
-          VooColumnSort(
+          const VooColumnSort(
             field: 'name',
             direction: VooSortDirection.ascending,
           ),
-          VooColumnSort(
+          const VooColumnSort(
             field: 'date',
             direction: VooSortDirection.descending,
           ),
@@ -83,7 +83,7 @@ void main() {
     });
 
     test('should not filter out none direction before sending', () {
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
       );
 
@@ -93,7 +93,7 @@ void main() {
         pageSize: 20,
         filters: {},
         sorts: [
-          VooColumnSort(
+          const VooColumnSort(
             field: 'name',
             direction: VooSortDirection.none, // This should not happen in practice
           ),

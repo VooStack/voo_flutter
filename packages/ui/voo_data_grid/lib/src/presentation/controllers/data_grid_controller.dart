@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_source.dart';
-import 'package:voo_data_grid/src/models/data_grid_constraints.dart';
-import 'package:voo_data_grid/src/utils/synchronized_scroll_controller.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Controller for VooDataGrid
-/// 
+///
 /// Generic type parameter T represents the row data type.
 /// Use dynamic if working with untyped Map data.
 class VooDataGridController<T> extends ChangeNotifier {
@@ -30,13 +27,13 @@ class VooDataGridController<T> extends ChangeNotifier {
 
   /// Synchronized horizontal scroll controller for header, filter and body
   final SynchronizedScrollController horizontalSyncController = SynchronizedScrollController();
-  
+
   /// Horizontal scroll controller for header
   final ScrollController horizontalScrollController = ScrollController();
-  
+
   /// Horizontal scroll controller for filter row
   final ScrollController filterHorizontalScrollController = ScrollController();
-  
+
   /// Horizontal scroll controller for body
   final ScrollController bodyHorizontalScrollController = ScrollController();
 
@@ -118,7 +115,7 @@ class VooDataGridController<T> extends ChangeNotifier {
 
     // Listen to data source changes
     dataSource.addListener(_onDataSourceChanged);
-    
+
     // Register scroll controllers for synchronization
     horizontalSyncController.registerController(horizontalScrollController);
     horizontalSyncController.registerController(filterHorizontalScrollController);
@@ -153,7 +150,7 @@ class VooDataGridController<T> extends ChangeNotifier {
 
   /// Set visible columns for responsive behavior
   void setVisibleColumns(List<VooDataColumn<T>> visibleColumns) {
-    for (var column in _columns) {
+    for (final column in _columns) {
       final shouldBeVisible = visibleColumns.any((col) => col.field == column.field);
       if (column.visible != shouldBeVisible) {
         final index = _columns.indexWhere((col) => col.field == column.field);
@@ -281,9 +278,7 @@ class VooDataGridController<T> extends ChangeNotifier {
     }
 
     // Check max sort columns constraint
-    if (_constraints.maxSortColumns > 0 && 
-        dataSource.sorts.length >= _constraints.maxSortColumns &&
-        currentSort.direction == VooSortDirection.none) {
+    if (_constraints.maxSortColumns > 0 && dataSource.sorts.length >= _constraints.maxSortColumns && currentSort.direction == VooSortDirection.none) {
       // Remove the oldest sort if we're at the limit
       if (dataSource.sorts.isNotEmpty) {
         dataSource.sorts.removeAt(0);

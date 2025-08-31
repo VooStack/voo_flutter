@@ -40,8 +40,6 @@ void main() {
     });
     
     testWidgets('Should handle dropdown with custom types correctly', (tester) async {
-      TestOption? capturedValue;
-      
       final field = VooField.dropdown<TestOption>(
         name: 'test_dropdown',
         label: 'Test Dropdown',
@@ -53,8 +51,8 @@ void main() {
           label: option.label,
           value: option,
         ),
-        onChanged: (TestOption? value) {
-          capturedValue = value;
+        onChanged: (_) {
+          // Callback required but value not used in this test
         },
       );
       
@@ -77,13 +75,11 @@ void main() {
     });
     
     testWidgets('Should handle async dropdown callbacks correctly', (tester) async {
-      TestOption? capturedValue;
-      
       final field = VooField.dropdownAsync<TestOption>(
         name: 'async_dropdown',
         label: 'Async Dropdown',
         asyncOptionsLoader: (query) async {
-          await Future.delayed(const Duration(milliseconds: 100));
+          await Future<void>.delayed(const Duration(milliseconds: 100));
           return [
             TestOption('async1', 'Async Option 1'),
             TestOption('async2', 'Async Option 2'),
@@ -93,8 +89,8 @@ void main() {
           label: option.label,
           value: option,
         ),
-        onChanged: (TestOption? value) {
-          capturedValue = value;
+        onChanged: (_) {
+          // Callback required but value not used in this test
         },
       );
       

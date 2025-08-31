@@ -41,7 +41,9 @@ class _LogExportDialogState extends State<LogExportDialog> {
                 title: Text(format.displayName),
                 subtitle: Text(format.description),
                 value: format,
+                // ignore: deprecated_member_use
                 groupValue: _selectedFormat,
+                // ignore: deprecated_member_use
                 onChanged: (value) {
                   setState(() {
                     _selectedFormat = value!;

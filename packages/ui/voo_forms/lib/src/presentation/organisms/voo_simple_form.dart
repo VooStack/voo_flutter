@@ -113,9 +113,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
     // Create VooForm from fields
     _form = VooForm(
       id: 'simple_form_${DateTime.now().millisecondsSinceEpoch}',
-      title: null,
       fields: widget.fields,
-      layout: widget.layout,
       sections: widget.sections,
       metadata: widget.metadata,
     );
@@ -131,7 +129,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
 
   @override
   Widget build(BuildContext context) {
-    Widget formContent = VooFormBuilder(
+    final Widget formContent = VooFormBuilder(
       form: _form,
       controller: _controller,
       onSubmit: widget.onSubmit,
@@ -143,8 +141,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
       padding: widget.padding,
       defaultConfig: widget.defaultConfig,
       actionsBuilder: widget.actionsBuilder ??
-          (context, controller) {
-            return VooFormActions(
+          (context, controller) => VooFormActions(
               controller: controller,
               onSubmit:
                   widget.onSubmit != null ? () => _handleSubmit(context) : null,
@@ -152,8 +149,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
               submitLabel: widget.submitLabel,
               cancelLabel: widget.cancelLabel,
               showCancel: widget.showCancel && widget.onCancel != null,
-            );
-          },
+            ),
     );
 
     // Wrap with field options provider if default options provided
@@ -167,7 +163,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
     return formContent;
   }
 
-  void _handleSubmit(BuildContext context) async {
+  Future<void> _handleSubmit(BuildContext context) async {
     if (widget.onSubmit != null) {
       await _controller.submit(
         onSubmit: (values) async {
@@ -224,8 +220,7 @@ extension VooSimpleFormExtensions on List<VooFormField> {
     String submitLabel = 'Submit',
     String cancelLabel = 'Cancel',
     bool showCancel = true,
-  }) {
-    return VooSimpleForm(
+  }) => VooSimpleForm(
       fields: this,
       layout: layout,
       sections: sections,
@@ -242,5 +237,4 @@ extension VooSimpleFormExtensions on List<VooFormField> {
       cancelLabel: cancelLabel,
       showCancel: showCancel,
     );
-  }
 }

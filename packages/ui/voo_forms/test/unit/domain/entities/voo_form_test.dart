@@ -29,13 +29,13 @@ void main() {
           VooField.email(name: 'email', label: 'Email'),
           VooField.text(name: 'phone', label: 'Phone'),
         ],
-        sections: [
-          const VooFormSection(
+        sections: const [
+          VooFormSection(
             id: 'personal',
             title: 'Personal Info',
             fieldIds: ['firstName', 'lastName'],
           ),
-          const VooFormSection(
+          VooFormSection(
             id: 'contact',
             title: 'Contact Info',
             fieldIds: ['email', 'phone'],
@@ -50,11 +50,10 @@ void main() {
     });
 
     test('Should handle form configuration', () {
-      final form = VooForm(
+      const form = VooForm(
         id: 'configured_form',
         fields: [],
         layout: FormLayout.horizontal,
-        validationMode: FormValidationMode.onSubmit,
       );
 
       expect(form.layout, equals(FormLayout.horizontal));
@@ -88,11 +87,10 @@ void main() {
         fields: [
           VooField.text(name: 'username', label: 'Username'),
         ],
-        values: {'username': 'testuser'},
-        errors: {'username': 'Username is taken'},
+        values: const {'username': 'testuser'},
+        errors: const {'username': 'Username is taken'},
         isValid: false,
         isDirty: true,
-        isSubmitting: false,
         isSubmitted: true,
       );
 
@@ -129,11 +127,11 @@ void main() {
           VooField.text(name: 'username', label: 'Username'),
           VooField.email(name: 'email', label: 'Email'),
         ],
-        values: {
+        values: const {
           'username': 'john_doe',
           'email': 'john@example.com',
         },
-        errors: {
+        errors: const {
           'username': 'Username already taken',
         },
       );
@@ -175,7 +173,7 @@ void main() {
           VooField.text(name: 'lastName', label: 'Last Name'),
           VooField.number(name: 'age', label: 'Age'),
         ],
-        values: {
+        values: const {
           'firstName': 'John',
           'lastName': 'Doe',
           'age': 30,
@@ -190,7 +188,7 @@ void main() {
     });
 
     test('Should handle form metadata', () {
-      final form = VooForm(
+      const form = VooForm(
         id: 'metadata_form',
         fields: [],
         metadata: {
@@ -217,7 +215,7 @@ void main() {
       for (final layout in layouts) {
         final form = VooForm(
           id: 'layout_test',
-          fields: [],
+          fields: const [],
           layout: layout,
         );
         
@@ -237,7 +235,7 @@ void main() {
       for (final mode in modes) {
         final form = VooForm(
           id: 'validation_mode_test',
-          fields: [],
+          fields: const [],
           validationMode: mode,
         );
         
@@ -246,7 +244,7 @@ void main() {
     });
 
     test('Should track enabled and readOnly states', () {
-      final form = VooForm(
+      const form = VooForm(
         id: 'state_test',
         fields: [],
         enabled: false,

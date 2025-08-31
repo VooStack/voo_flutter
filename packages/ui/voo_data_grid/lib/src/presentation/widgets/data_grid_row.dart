@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/data_grid.dart';
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_controller.dart';
-import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Row widget for VooDataGrid
@@ -60,16 +57,13 @@ class VooDataGridRow<T> extends StatelessWidget {
           child: Row(
             children: [
               // Selection checkbox column
-              if (controller.dataSource.selectionMode != VooSelectionMode.none)
-                _buildSelectionCell(design),
+              if (controller.dataSource.selectionMode != VooSelectionMode.none) _buildSelectionCell(design),
 
               // Frozen columns
-              for (final column in controller.frozenColumns)
-                _buildDataCell(context, column, design),
+              for (final column in controller.frozenColumns) _buildDataCell(context, column, design),
 
               // Scrollable columns - these will be scrolled at the parent level
-              for (final column in controller.scrollableColumns)
-                _buildDataCell(context, column, design),
+              for (final column in controller.scrollableColumns) _buildDataCell(context, column, design),
             ],
           ),
         ),
@@ -77,34 +71,32 @@ class VooDataGridRow<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildSelectionCell(VooDesignSystemData design) {
-    return Container(
-      width: 48,
-      padding: EdgeInsets.symmetric(horizontal: design.spacingSm),
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
-          ),
-          bottom: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
+  Widget _buildSelectionCell(VooDesignSystemData design) => Container(
+        width: 48,
+        padding: EdgeInsets.symmetric(horizontal: design.spacingSm),
+        decoration: BoxDecoration(
+          border: Border(
+            right: BorderSide(
+              color: theme.gridLineColor,
+              width: controller.showGridLines ? 1 : 0,
+            ),
+            bottom: BorderSide(
+              color: theme.gridLineColor,
+              width: controller.showGridLines ? 1 : 0,
+            ),
           ),
         ),
-      ),
-      child: controller.dataSource.selectionMode == VooSelectionMode.single
-          ? Checkbox(
-              value: isSelected,
-              onChanged: (_) => onTap?.call(),
-              shape: const CircleBorder(),
-            )
-          : Checkbox(
-              value: isSelected,
-              onChanged: (_) => onTap?.call(),
-            ),
-    );
-  }
+        child: controller.dataSource.selectionMode == VooSelectionMode.single
+            ? Checkbox(
+                value: isSelected,
+                onChanged: (_) => onTap?.call(),
+                shape: const CircleBorder(),
+              )
+            : Checkbox(
+                value: isSelected,
+                onChanged: (_) => onTap?.call(),
+              ),
+      );
 
   Widget _buildDataCell(
     BuildContext context,
@@ -153,8 +145,7 @@ class VooDataGridRow<T> extends StatelessWidget {
       value = null;
     }
 
-    final displayValue =
-        column.valueFormatter?.call(value) ?? value?.toString() ?? '';
+    final displayValue = column.valueFormatter?.call(value) ?? value?.toString() ?? '';
 
     final cellContent = Align(
       alignment: _getAlignment(column.textAlign),

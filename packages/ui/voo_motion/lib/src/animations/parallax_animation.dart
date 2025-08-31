@@ -92,22 +92,18 @@ class VooParallaxContainer extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       height: height,
       width: width,
       child: Stack(
-        children: layers.map((layer) {
-          return VooParallaxAnimation(
+        children: layers.map((layer) => VooParallaxAnimation(
             scrollController: scrollController,
             parallaxFactor: layer.parallaxFactor,
             alignment: layer.alignment,
             child: layer.child,
-          );
-        }).toList(),
+          ),).toList(),
       ),
     );
-  }
 }
 
 class ParallaxLayer {

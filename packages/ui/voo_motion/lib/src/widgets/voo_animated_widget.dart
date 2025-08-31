@@ -76,12 +76,8 @@ class _VooAnimatedWidgetState extends State<VooAnimatedWidget>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return widget.builder(context, _animation, widget.child);
-      },
+      builder: (context, child) => widget.builder(context, _animation, widget.child),
     );
-  }
 }

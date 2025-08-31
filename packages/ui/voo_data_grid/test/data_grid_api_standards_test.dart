@@ -8,15 +8,15 @@ void main() {
 
     setUp(() {
       testFilters = {
-        'status': VooDataFilter(
+        'status': const VooDataFilter(
           operator: VooFilterOperator.equals,
           value: 'active',
         ),
-        'age': VooDataFilter(
+        'age': const VooDataFilter(
           operator: VooFilterOperator.greaterThan,
           value: 25,
         ),
-        'price': VooDataFilter(
+        'price': const VooDataFilter(
           operator: VooFilterOperator.between,
           value: 100,
           valueTo: 500,
@@ -24,9 +24,9 @@ void main() {
       };
 
       testSorts = [
-        VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
-        VooColumnSort(field: 'date', direction: VooSortDirection.descending),
-        VooColumnSort(field: 'price', direction: VooSortDirection.ascending),
+        const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+        const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
+        const VooColumnSort(field: 'price', direction: VooSortDirection.ascending),
       ];
     });
 
@@ -34,7 +34,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.simple);
+        builder = const DataGridRequestBuilder(standard: ApiFilterStandard.simple);
       });
 
       test('should build simple request with basic pagination', () {
@@ -55,7 +55,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
@@ -72,11 +72,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 25,
             ),
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.lessThanOrEqual,
               value: 100,
             ),
@@ -94,7 +94,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 100,
               valueTo: 500,
@@ -113,7 +113,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'john',
             ),
@@ -142,7 +142,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.jsonApi);
+        builder = const DataGridRequestBuilder(standard: ApiFilterStandard.jsonApi);
       });
 
       test('should use 1-based pagination', () {
@@ -163,7 +163,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
@@ -180,7 +180,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 25,
             ),
@@ -197,7 +197,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 100,
               valueTo: 500,
@@ -228,7 +228,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
+        builder = const DataGridRequestBuilder(standard: ApiFilterStandard.odata);
       });
 
       test('should build OData query string', () {
@@ -249,11 +249,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 25,
             ),
@@ -270,7 +270,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 100,
               valueTo: 500,
@@ -288,7 +288,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'john',
             ),
@@ -305,11 +305,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedAt': VooDataFilter(
+            'deletedAt': const VooDataFilter(
               operator: VooFilterOperator.isNull,
               value: null,
             ),
-            'createdAt': VooDataFilter(
+            'createdAt': const VooDataFilter(
               operator: VooFilterOperator.isNotNull,
               value: null,
             ),
@@ -338,7 +338,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.mongodb);
+        builder = const DataGridRequestBuilder(standard: ApiFilterStandard.mongodb);
       });
 
       test('should build MongoDB request body', () {
@@ -359,7 +359,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
@@ -377,11 +377,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 25,
             ),
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.lessThanOrEqual,
               value: 100,
             ),
@@ -400,7 +400,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 100,
               valueTo: 500,
@@ -419,7 +419,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'john',
             ),
@@ -437,11 +437,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedAt': VooDataFilter(
+            'deletedAt': const VooDataFilter(
               operator: VooFilterOperator.isNull,
               value: null,
             ),
-            'createdAt': VooDataFilter(
+            'createdAt': const VooDataFilter(
               operator: VooFilterOperator.isNotNull,
               value: null,
             ),
@@ -476,7 +476,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.graphql);
+        builder = const DataGridRequestBuilder(standard: ApiFilterStandard.graphql);
       });
 
       test('should build GraphQL variables with pagination', () {
@@ -498,11 +498,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 25,
             ),
@@ -521,15 +521,15 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'john',
             ),
-            'email': VooDataFilter(
+            'email': const VooDataFilter(
               operator: VooFilterOperator.startsWith,
               value: 'admin',
             ),
-            'role': VooDataFilter(
+            'role': const VooDataFilter(
               operator: VooFilterOperator.endsWith,
               value: 'manager',
             ),
@@ -548,7 +548,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 100,
               valueTo: 500,
@@ -558,7 +558,9 @@ void main() {
         );
         final variables = result['variables'] as Map<String, dynamic>;
 
-        expect(variables['where']['price'], {'between': [100, 500]});
+        expect(variables['where']['price'], {
+          'between': [100, 500],
+        });
       });
 
       test('should handle list operators', () {
@@ -566,11 +568,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'category': VooDataFilter(
+            'category': const VooDataFilter(
               operator: VooFilterOperator.inList,
               value: ['electronics', 'books', 'toys'],
             ),
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.notInList,
               value: ['deleted', 'archived'],
             ),
@@ -580,10 +582,10 @@ void main() {
         final variables = result['variables'] as Map<String, dynamic>;
 
         expect(variables['where']['category'], {
-          'in': ['electronics', 'books', 'toys']
+          'in': ['electronics', 'books', 'toys'],
         });
         expect(variables['where']['status'], {
-          'notIn': ['deleted', 'archived']
+          'notIn': ['deleted', 'archived'],
         });
       });
 
@@ -592,11 +594,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedAt': VooDataFilter(
+            'deletedAt': const VooDataFilter(
               operator: VooFilterOperator.isNull,
               value: null,
             ),
-            'createdAt': VooDataFilter(
+            'createdAt': const VooDataFilter(
               operator: VooFilterOperator.isNotNull,
               value: null,
             ),
@@ -631,7 +633,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.custom);
+        builder = const DataGridRequestBuilder();
       });
 
       test('should build custom request body', () {
@@ -663,26 +665,25 @@ void main() {
         expect(filters.length, 3);
 
         expect(
-            filters.any((f) =>
-                f['field'] == 'status' &&
-                f['operator'] == 'eq' &&
-                f['value'] == 'active'),
-            isTrue);
+          filters.any(
+            (f) => f['field'] == 'status' && f['operator'] == 'eq' && f['value'] == 'active',
+          ),
+          isTrue,
+        );
 
         expect(
-            filters.any((f) =>
-                f['field'] == 'age' &&
-                f['operator'] == 'gt' &&
-                f['value'] == 25),
-            isTrue);
+          filters.any(
+            (f) => f['field'] == 'age' && f['operator'] == 'gt' && f['value'] == 25,
+          ),
+          isTrue,
+        );
 
         expect(
-            filters.any((f) =>
-                f['field'] == 'price' &&
-                f['operator'] == 'between' &&
-                f['value'] == 100 &&
-                f['valueTo'] == 500),
-            isTrue);
+          filters.any(
+            (f) => f['field'] == 'price' && f['operator'] == 'between' && f['value'] == 100 && f['valueTo'] == 500,
+          ),
+          isTrue,
+        );
       });
 
       test('should handle sorts in custom format', () {
@@ -721,23 +722,22 @@ void main() {
 
     group('URL Encoding', () {
       test('should URL encode values in simple format', () {
-        final builder =
-            DataGridRequestBuilder(standard: ApiFilterStandard.simple);
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.simple);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'search': VooDataFilter(
+            'search': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'hello world & special chars',
             ),
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'John & Jane',
             ),
           },
           sorts: [],
-);
+        );
         final params = result['params'] as Map<String, String>;
 
         expect(params['search_like'], 'hello world & special chars');
@@ -745,23 +745,22 @@ void main() {
       });
 
       test('should URL encode values in JSON:API format', () {
-        final builder =
-            DataGridRequestBuilder(standard: ApiFilterStandard.jsonApi);
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.jsonApi);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'search': VooDataFilter(
+            'search': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'hello world & special chars',
             ),
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'John & Jane',
             ),
           },
           sorts: [],
-);
+        );
         final params = result['params'] as Map<String, String>;
 
         expect(params['filter[search][contains]'], 'hello world & special chars');
@@ -769,23 +768,22 @@ void main() {
       });
 
       test('should escape single quotes in OData format', () {
-        final builder =
-            DataGridRequestBuilder(standard: ApiFilterStandard.odata);
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: "O'Reilly's",
             ),
-            'description': VooDataFilter(
+            'description': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: "It's a 'special' value",
             ),
           },
           sorts: [],
-);
+        );
         final params = result['params'] as Map<String, String>;
         final filter = params['\$filter']!;
 
@@ -795,23 +793,22 @@ void main() {
       });
 
       test('should handle numeric values without quotes in OData', () {
-        final builder =
-            DataGridRequestBuilder(standard: ApiFilterStandard.odata);
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 25,
             ),
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 100.50,
             ),
           },
           sorts: [],
-);
+        );
         final params = result['params'] as Map<String, String>;
         final filter = params['\$filter']!;
 
@@ -826,7 +823,7 @@ void main() {
       late DataGridRequestBuilder builder;
 
       setUp(() {
-        builder = DataGridRequestBuilder(standard: ApiFilterStandard.custom);
+        builder = const DataGridRequestBuilder();
       });
 
       test('should accept any value type for numeric operators', () {
@@ -836,7 +833,7 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'age': VooDataFilter(
+              'age': const VooDataFilter(
                 operator: VooFilterOperator.greaterThan,
                 value: 'not a number', // API will handle type validation
               ),
@@ -853,11 +850,11 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'age': VooDataFilter(
+              'age': const VooDataFilter(
                 operator: VooFilterOperator.greaterThan,
                 value: 25,
               ),
-              'price': VooDataFilter(
+              'price': const VooDataFilter(
                 operator: VooFilterOperator.lessThanOrEqual,
                 value: '100.50',
               ),
@@ -875,7 +872,7 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'categories': VooDataFilter(
+              'categories': const VooDataFilter(
                 operator: VooFilterOperator.inList,
                 value: 'not a list',
               ),
@@ -892,11 +889,11 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'categories': VooDataFilter(
+              'categories': const VooDataFilter(
                 operator: VooFilterOperator.inList,
                 value: ['electronics', 'books'],
               ),
-              'tags': VooDataFilter(
+              'tags': const VooDataFilter(
                 operator: VooFilterOperator.notInList,
                 value: ['archived', 'deleted'],
               ),
@@ -914,10 +911,9 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'price': VooDataFilter(
+              'price': const VooDataFilter(
                 operator: VooFilterOperator.between,
                 value: 100,
-                valueTo: null,
               ),
             },
             sorts: [],
@@ -933,7 +929,7 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'price': VooDataFilter(
+              'price': const VooDataFilter(
                 operator: VooFilterOperator.between,
                 value: 100,
                 valueTo: 'not a number',
@@ -951,7 +947,7 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'price': VooDataFilter(
+              'price': const VooDataFilter(
                 operator: VooFilterOperator.between,
                 value: 100,
                 valueTo: 500,
@@ -973,11 +969,11 @@ void main() {
               page: 0,
               pageSize: 20,
               filters: {
-                'status': VooDataFilter(
+                'status': const VooDataFilter(
                   operator: VooFilterOperator.equals,
                   value: 'active',
                 ),
-                'age': VooDataFilter(
+                'age': const VooDataFilter(
                   operator: VooFilterOperator.greaterThan,
                   value: 25,
                 ),
@@ -1016,11 +1012,9 @@ void main() {
           dynamic value;
           if (operator == VooFilterOperator.between) {
             value = 1;
-          } else if (operator == VooFilterOperator.inList ||
-              operator == VooFilterOperator.notInList) {
+          } else if (operator == VooFilterOperator.inList || operator == VooFilterOperator.notInList) {
             value = [1, 2, 3];
-          } else if (operator == VooFilterOperator.isNull ||
-              operator == VooFilterOperator.isNotNull) {
+          } else if (operator == VooFilterOperator.isNull || operator == VooFilterOperator.isNotNull) {
             value = null;
           } else if (operator == VooFilterOperator.greaterThan ||
               operator == VooFilterOperator.greaterThanOrEqual ||

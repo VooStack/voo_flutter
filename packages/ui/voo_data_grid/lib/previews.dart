@@ -767,11 +767,7 @@ Widget customCellsDataGrid() {
         flex: 2,
         cellBuilder: (context, value, row) {
           final name = value as String;
-          final initials = name
-              .split(' ')
-              .map((e) => e.isNotEmpty ? e[0] : '')
-              .take(2)
-              .join();
+          final initials = name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join();
 
           return Row(
             children: [
@@ -893,6 +889,207 @@ Widget customCellsDataGrid() {
     child: SizedBox(
       height: 450,
       child: VooDataGrid(controller: controller),
+    ),
+  );
+}
+
+@Preview(name: 'Stateless Data Grid')
+Widget statelessDataGrid() {
+  // Sample data model
+  final products = List.generate(
+    50,
+    (index) => {
+      'id': 'P${index + 1}',
+      'name': 'Product ${index + 1}',
+      'price': (index + 1) * 10.0,
+      'stock': (index + 1) * 5,
+      'category': index % 3 == 0
+          ? 'Electronics'
+          : index % 2 == 0
+              ? 'Clothing'
+              : 'Food',
+      'created': DateTime.now().subtract(Duration(days: index)),
+    },
+  );
+
+  // Create initial state
+  final state = VooDataGridState<Map<String, dynamic>>(
+    rows: products.take(10).toList(),
+    totalRows: products.length,
+    pageSize: 10,
+    sorts: [
+      const VooColumnSort(
+        field: 'name',
+        direction: VooSortDirection.ascending,
+      ),
+    ],
+    filters: {},
+    filtersVisible: true,
+  );
+
+  // Define columns
+  final columns = [
+    VooDataColumn<Map<String, dynamic>>(
+      field: 'id',
+      label: 'ID',
+      width: 80,
+      valueGetter: (row) => row['id'],
+    ),
+    VooDataColumn<Map<String, dynamic>>(
+      field: 'name',
+      label: 'Product Name',
+      valueGetter: (row) => row['name'],
+    ),
+    VooDataColumn<Map<String, dynamic>>(
+      field: 'price',
+      label: 'Price',
+      valueGetter: (row) => row['price'],
+      valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+    ),
+    VooDataColumn<Map<String, dynamic>>(
+      field: 'stock',
+      label: 'Stock',
+      valueGetter: (row) => row['stock'],
+      cellBuilder: (context, value, row) {
+        final stock = value as int;
+        final color = stock > 20
+            ? Colors.green
+            : stock > 10
+                ? Colors.orange
+                : Colors.red;
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            stock.toString(),
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+      },
+    ),
+    VooDataColumn<Map<String, dynamic>>(
+      field: 'category',
+      label: 'Category',
+      valueGetter: (row) => row['category'],
+    ),
+  ];
+
+  return Material(
+    child: SizedBox(
+      height: 600,
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          var currentState = state;
+
+          return VooDataGridStateless<Map<String, dynamic>>(
+            state: currentState,
+            columns: columns,
+            onPageChanged: (page) {
+              setState(() {
+                final start = page * currentState.pageSize;
+                final end = (start + currentState.pageSize).clamp(0, products.length);
+                currentState = currentState.copyWith(
+                  currentPage: page,
+                  rows: products.sublist(start, end),
+                );
+              });
+            },
+            onPageSizeChanged: (size) {
+              setState(() {
+                currentState = currentState.copyWith(
+                  pageSize: size,
+                  currentPage: 0,
+                  rows: products.take(size).toList(),
+                );
+              });
+            },
+            onSortChanged: (field, direction) {
+              setState(() {
+                List<VooColumnSort> newSorts = [];
+                // ignore: unnecessary_null_comparison
+                if (direction != null) {
+                  newSorts = [
+                    VooColumnSort(
+                      field: field,
+                      direction: direction,
+                    ),
+                  ];
+                }
+
+                // Sort the data
+                final sortedProducts = List<Map<String, dynamic>>.from(products);
+                if (newSorts.isNotEmpty) {
+                  final sort = newSorts.first;
+                  sortedProducts.sort((a, b) {
+                    final aValue = a[sort.field];
+                    final bValue = b[sort.field];
+                    if (aValue == null && bValue == null) return 0;
+                    if (aValue == null) return 1;
+                    if (bValue == null) return -1;
+
+                    final comparison = aValue.toString().compareTo(bValue.toString());
+                    return sort.direction == VooSortDirection.ascending ? comparison : -comparison;
+                  });
+                }
+
+                final start = currentState.currentPage * currentState.pageSize;
+                final end = (start + currentState.pageSize).clamp(0, sortedProducts.length);
+
+                currentState = currentState.copyWith(
+                  sorts: newSorts,
+                  rows: sortedProducts.sublist(start, end),
+                );
+              });
+            },
+            onFilterChanged: (field, filter) {
+              setState(() {
+                final newFilters = Map<String, VooDataFilter>.from(currentState.filters);
+                if (filter == null) {
+                  newFilters.remove(field);
+                } else {
+                  newFilters[field] = filter;
+                }
+
+                // Filter the data
+                final filteredProducts = products.where((row) {
+                  for (final entry in newFilters.entries) {
+                    final value = row[entry.key]?.toString().toLowerCase() ?? '';
+                    final filterValue = entry.value.value?.toString().toLowerCase() ?? '';
+                    if (!value.contains(filterValue)) {
+                      return false;
+                    }
+                  }
+                  return true;
+                }).toList();
+
+                const start = 0; // Reset to first page when filtering
+                final end = currentState.pageSize.clamp(0, filteredProducts.length);
+
+                currentState = currentState.copyWith(
+                  filters: newFilters,
+                  currentPage: 0,
+                  rows: filteredProducts.sublist(start, end),
+                  totalRows: filteredProducts.length,
+                );
+              });
+            },
+            onRowTap: (row) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Tapped: ${row['name']}'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            },
+          );
+        },
+      ),
     ),
   );
 }

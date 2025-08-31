@@ -255,7 +255,7 @@ void main() {
       // Simulate mouse enter
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(
-          location: tester.getCenter(find.byType(Container)));
+          location: tester.getCenter(find.byType(Container)),);
       addTearDown(gesture.removePointer);
 
       // Check hover callbacks

@@ -86,12 +86,10 @@ void main() {
           const VooDataColumn<Map<String, dynamic>>(
             field: 'siteNumber',
             label: 'Site Number',
-            sortable: true,
           ),
           const VooDataColumn<Map<String, dynamic>>(
             field: 'siteName', 
             label: 'Site Name',
-            sortable: true,
           ),
         ],
       );

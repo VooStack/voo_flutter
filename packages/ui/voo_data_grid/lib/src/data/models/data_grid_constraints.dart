@@ -103,8 +103,7 @@ class VooDataGridConstraints {
     bool? allowPagination,
     List<int>? availablePageSizes,
     int? defaultPageSize,
-  }) {
-    return VooDataGridConstraints(
+  }) => VooDataGridConstraints(
       maxSortColumns: maxSortColumns ?? this.maxSortColumns,
       maxActiveFilters: maxActiveFilters ?? this.maxActiveFilters,
       allowMultiSort: allowMultiSort ?? this.allowMultiSort,
@@ -125,13 +124,10 @@ class VooDataGridConstraints {
       availablePageSizes: availablePageSizes ?? this.availablePageSizes,
       defaultPageSize: defaultPageSize ?? this.defaultPageSize,
     );
-  }
 
   /// Preset for single sort mode (most common)
   static const VooDataGridConstraints singleSort = VooDataGridConstraints(
-    maxSortColumns: 1,
-    allowMultiSort: false,
-    clearSortsOnNewSort: true,
+    
   );
 
   /// Preset for multi-sort mode
@@ -163,8 +159,6 @@ class VooDataGridConstraints {
   static const VooDataGridConstraints mobile = VooDataGridConstraints(
     allowColumnReordering: false,
     allowColumnResizing: false,
-    maxSortColumns: 1,
-    allowMultiSort: false,
     minColumnWidth: 80.0,
     maxColumnWidth: 200.0,
     defaultPageSize: 10,

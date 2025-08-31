@@ -11,10 +11,7 @@ void main() {
             body: VooFadeAnimation(
               config: VooAnimationConfig(
                 duration: Duration(milliseconds: 300),
-                autoPlay: true,
               ),
-              fromOpacity: 0.0,
-              toOpacity: 1.0,
               child: Text('Fade Test'),
             ),
           ),
@@ -62,10 +59,7 @@ void main() {
               config: VooAnimationConfig(
                 duration: Duration(milliseconds: 200),
                 delay: Duration(milliseconds: 100),
-                autoPlay: true,
               ),
-              fromOpacity: 0.0,
-              toOpacity: 1.0,
               child: Text('Delayed Fade'),
             ),
           ),
@@ -102,8 +96,6 @@ void main() {
                 duration: Duration(milliseconds: 200),
                 autoPlay: false,
               ),
-              fromOpacity: 0.0,
-              toOpacity: 1.0,
               child: Text('No AutoPlay'),
             ),
           ),
@@ -129,10 +121,7 @@ void main() {
               config: VooAnimationConfig(
                 duration: Duration(milliseconds: 300),
                 curve: Curves.bounceOut,
-                autoPlay: true,
               ),
-              fromOpacity: 0.0,
-              toOpacity: 1.0,
               child: Text('Custom Curve'),
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 radio button
 class VooRadio<T> extends StatelessWidget {
@@ -44,7 +44,9 @@ class VooRadio<T> extends StatelessWidget {
     
     return Radio<T>(
       value: value,
+      // ignore: deprecated_member_use
       groupValue: groupValue,
+      // ignore: deprecated_member_use
       onChanged: onChanged,
       activeColor: isError ? colorScheme.error : activeColor,
       materialTapTargetSize: materialTapTargetSize,
@@ -125,7 +127,9 @@ class VooRadioListTile<T> extends StatelessWidget {
     
     return RadioListTile<T>(
       value: value,
+      // ignore: deprecated_member_use
       groupValue: groupValue,
+      // ignore: deprecated_member_use
       onChanged: enabled ? onChanged : null,
       toggleable: toggleable,
       activeColor: isError ? colorScheme.error : activeColor,

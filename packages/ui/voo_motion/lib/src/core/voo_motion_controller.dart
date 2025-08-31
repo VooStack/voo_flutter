@@ -45,14 +45,14 @@ class VooMotionController extends ChangeNotifier {
 
   /// Play all animations
   void playAll() {
-    for (var controller in _controllers.values) {
+    for (final controller in _controllers.values) {
       controller.forward();
     }
   }
 
   /// Reset all animations
   void resetAll() {
-    for (var controller in _controllers.values) {
+    for (final controller in _controllers.values) {
       controller.reset();
     }
   }
@@ -67,7 +67,7 @@ class VooMotionController extends ChangeNotifier {
 
   @override
   void dispose() {
-    for (var controller in _controllers.values) {
+    for (final controller in _controllers.values) {
       controller.dispose();
     }
     _controllers.clear();
@@ -86,9 +86,7 @@ class VooMotionProvider extends InheritedWidget {
     required super.child,
   });
 
-  static VooMotionProvider? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<VooMotionProvider>();
-  }
+  static VooMotionProvider? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooMotionProvider>();
 
   static VooMotionProvider of(BuildContext context) {
     final provider = maybeOf(context);
@@ -97,7 +95,5 @@ class VooMotionProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(VooMotionProvider oldWidget) {
-    return controller != oldWidget.controller;
-  }
+  bool updateShouldNotify(VooMotionProvider oldWidget) => controller != oldWidget.controller;
 }

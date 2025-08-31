@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_data_grid/src/data_grid.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Mobile-optimized pagination controls for VooDataGrid
@@ -56,10 +56,12 @@ class VooDataGridMobilePagination extends StatelessWidget {
               PopupMenuButton<int>(
                 onSelected: onPageSizeChanged,
                 itemBuilder: (context) => pageSizeOptions
-                    .map((size) => PopupMenuItem<int>(
-                          value: size,
-                          child: Text('$size rows per page'),
-                        ))
+                    .map(
+                      (size) => PopupMenuItem<int>(
+                        value: size,
+                        child: Text('$size rows per page'),
+                      ),
+                    )
                     .toList(),
                 child: Container(
                   padding: EdgeInsets.symmetric(
@@ -96,9 +98,7 @@ class VooDataGridMobilePagination extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.chevron_left),
-                onPressed: currentPage > 0
-                    ? () => onPageChanged(currentPage - 1)
-                    : null,
+                onPressed: currentPage > 0 ? () => onPageChanged(currentPage - 1) : null,
                 tooltip: 'Previous',
               ),
               Container(
@@ -106,22 +106,18 @@ class VooDataGridMobilePagination extends StatelessWidget {
                 child: Text(
                   '${currentPage + 1} / $totalPages',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.chevron_right),
-                onPressed: currentPage < totalPages - 1
-                    ? () => onPageChanged(currentPage + 1)
-                    : null,
+                onPressed: currentPage < totalPages - 1 ? () => onPageChanged(currentPage + 1) : null,
                 tooltip: 'Next',
               ),
               IconButton(
                 icon: const Icon(Icons.last_page),
-                onPressed: currentPage < totalPages - 1
-                    ? () => onPageChanged(totalPages - 1)
-                    : null,
+                onPressed: currentPage < totalPages - 1 ? () => onPageChanged(totalPages - 1) : null,
                 tooltip: 'Last',
               ),
             ],

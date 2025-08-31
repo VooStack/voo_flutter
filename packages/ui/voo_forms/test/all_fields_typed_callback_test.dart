@@ -24,8 +24,7 @@ class CustomOption {
 void main() {
   group('All Fields Typed Callback Tests', () {
     // Helper to create test app
-    Widget createTestApp(Widget child) {
-      return MaterialApp(
+    Widget createTestApp(Widget child) => MaterialApp(
         home: VooDesignSystem(
           data: VooDesignSystemData.defaultSystem,
           child: VooResponsiveBuilder(
@@ -33,7 +32,6 @@ void main() {
           ),
         ),
       );
-    }
 
     testWidgets('Text field should handle typed String callbacks', (tester) async {
       String? capturedValue;
@@ -53,7 +51,7 @@ void main() {
             capturedValue = value as String;
           },
         ),
-      ));
+      ),);
       
       // Type text
       await tester.enterText(find.byType(TextFormField), 'test');
@@ -82,7 +80,7 @@ void main() {
             capturedValue = num.tryParse(value.toString());
           },
         ),
-      ));
+      ),);
       
       // Type number
       await tester.enterText(find.byType(TextFormField), '42');
@@ -97,7 +95,6 @@ void main() {
       final field = VooField.boolean(
         name: 'boolean',
         label: 'Boolean Field',
-        initialValue: false,
         onChanged: (bool? value) {
           // Field callback with nullable type
         },
@@ -110,7 +107,7 @@ void main() {
             capturedValue = value as bool;
           },
         ),
-      ));
+      ),);
       
       // Toggle switch
       await tester.tap(find.byType(Switch));
@@ -125,7 +122,6 @@ void main() {
       final field = VooField.checkbox(
         name: 'checkbox',
         label: 'Checkbox Field',
-        initialValue: false,
         onChanged: (bool? value) {
           // Field callback with nullable type
         },
@@ -138,7 +134,7 @@ void main() {
             capturedValue = value as bool?;
           },
         ),
-      ));
+      ),);
       
       // Toggle checkbox
       await tester.tap(find.byType(Checkbox));
@@ -176,7 +172,7 @@ void main() {
             capturedValue = value as CustomOption?;
           },
         ),
-      ));
+      ),);
       
       // Open dropdown
       await tester.tap(find.byType(DropdownButtonFormField));
@@ -211,7 +207,7 @@ void main() {
             capturedValue = value as String;
           },
         ),
-      ));
+      ),);
       
       // Select second radio option
       final radioButtons = find.byType(Radio<String>);
@@ -229,8 +225,6 @@ void main() {
       final field = VooField.slider(
         name: 'slider',
         label: 'Slider Field',
-        min: 0,
-        max: 100,
         initialValue: 50,
         onChanged: (double? value) {
           // Field callback with nullable type
@@ -244,7 +238,7 @@ void main() {
             capturedValue = value as double;
           },
         ),
-      ));
+      ),);
       
       // Move slider
       final slider = find.byType(Slider);
@@ -275,7 +269,7 @@ void main() {
             // Widget callback
           },
         ),
-      ));
+      ),);
       
       // Check that the date field renders without type errors
       expect(find.byType(TextFormField), findsOneWidget);
@@ -297,7 +291,7 @@ void main() {
             // Widget callback
           },
         ),
-      ));
+      ),);
       
       // Check that the time field renders without type errors
       expect(find.byType(TextFormField), findsOneWidget);
@@ -321,7 +315,7 @@ void main() {
             capturedValue = value as String;
           },
         ),
-      ));
+      ),);
       
       // Type multiline text
       await tester.enterText(find.byType(TextFormField), 'Line 1\nLine 2');
@@ -348,7 +342,7 @@ void main() {
             capturedValue = value as String;
           },
         ),
-      ));
+      ),);
       
       await tester.enterText(find.byType(TextFormField), 'test@example.com');
       await tester.pump();
@@ -418,7 +412,7 @@ void main() {
         for (final field in fields) {
           await tester.pumpWidget(createTestApp(
             VooFieldWidget(field: field),
-          ));
+          ),);
           await tester.pump();
         }
       } catch (e) {
@@ -427,7 +421,7 @@ void main() {
       }
       
       expect(hasError, isFalse,
-          reason: 'No type casting errors should occur. Error: $errorMessage');
+          reason: 'No type casting errors should occur. Error: $errorMessage',);
     });
   });
 }

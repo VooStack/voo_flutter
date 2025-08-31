@@ -87,7 +87,7 @@ void main() {
         }
 
         // Test with a text field using string callback
-        const stringField = VooFormField(
+        const stringField = VooFormField<String>(
           id: 'string_field',
           name: 'string_field',
           type: VooFieldType.text,
@@ -136,19 +136,19 @@ void main() {
         final results = <String, dynamic>{};
 
         final fields = [
-          const VooFormField(
+          const VooFormField<String>(
             id: 'text',
             name: 'text',
             type: VooFieldType.text,
             label: 'Text',
           ),
-          const VooFormField(
+          const VooFormField<num>(
             id: 'number',
             name: 'number',
             type: VooFieldType.number,
             label: 'Number',
           ),
-          const VooFormField(
+          const VooFormField<bool>(
             id: 'bool',
             name: 'bool',
             type: VooFieldType.boolean,
@@ -160,15 +160,13 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: Column(
-                children: fields.map((field) {
-                  return VooFieldWidget(
+                children: fields.map((field) => VooFieldWidget(
                     field: field,
                     onChanged: (value) {
                       // This should handle any type
                       results[field.id] = value;
                     },
-                  );
-                }).toList(),
+                  ),).toList(),
               ),
             ),
           ),
@@ -247,7 +245,7 @@ void main() {
       test('Async dropdown should accept loader function', () {
         // Test that async dropdowns can be created with loader functions
         Future<List<VooFieldOption<String>>> loadOptions(String query) async {
-          await Future.delayed(const Duration(milliseconds: 100));
+          await Future<List<VooFieldOption<String>>>.delayed(const Duration(milliseconds: 100));
           return [
             const VooFieldOption<String>(value: 'async1', label: 'Async Option 1'),
             const VooFieldOption<String>(value: 'async2', label: 'Async Option 2'),
@@ -276,7 +274,7 @@ void main() {
         // Test that the async loader returns the expected option types
         
         Future<List<VooFieldOption<String>>> loadOptions(String query) async {
-          await Future.delayed(const Duration(milliseconds: 50));
+          await Future<void>.delayed(const Duration(milliseconds: 50));
           final options = [
             const VooFieldOption<String>(value: 'user1', label: 'User 1'),
             const VooFieldOption<String>(value: 'user2', label: 'User 2'),
@@ -314,7 +312,7 @@ void main() {
         // Test that async dropdown widgets properly handle loading states
         await tester.runAsync(() async {
           Future<List<VooFieldOption<String>>> loadOptions(String query) async {
-            await Future.delayed(const Duration(milliseconds: 100));
+            await Future<void>.delayed(const Duration(milliseconds: 100));
             return [
               const VooFieldOption<String>(value: 'option1', label: 'Option 1'),
               const VooFieldOption<String>(value: 'option2', label: 'Option 2'),
@@ -353,12 +351,10 @@ void main() {
         // Test that async dropdowns can have initial values
         String? capturedValue;
         
-        Future<List<VooFieldOption<String>>> loadOptions(String query) async {
-          return [
+        Future<List<VooFieldOption<String>>> loadOptions(String query) async => [
             const VooFieldOption<String>(value: 'initial', label: 'Initial Option'),
             const VooFieldOption<String>(value: 'other', label: 'Other Option'),
           ];
-        }
 
         final asyncDropdown = VooFormField<String>(
           id: 'async_dropdown',
@@ -383,7 +379,7 @@ void main() {
         User? selectedUser;
         
         Future<List<VooFieldOption<User>>> loadUsers(String query) async {
-          await Future.delayed(const Duration(milliseconds: 50));
+          await Future<void>.delayed(const Duration(milliseconds: 50));
           final users = [
             User(id: '1', name: 'John Doe'),
             User(id: '2', name: 'Jane Smith'),
@@ -444,7 +440,7 @@ void main() {
       });
 
       test('Widget onChanged should accept various callback signatures', () {
-        const field = VooFormField(
+        const field = VooFormField<String>(
           id: 'test',
           name: 'test',
           type: VooFieldType.text,
@@ -475,25 +471,25 @@ void main() {
         final formData = <String, dynamic>{};
 
         final formFields = [
-          const VooFormField(
+          const VooFormField<String>(
             id: 'name',
             name: 'name',
             type: VooFieldType.text,
             label: 'Name',
           ),
-          const VooFormField(
+          const VooFormField<num>(
             id: 'age',
             name: 'age',
             type: VooFieldType.number,
             label: 'Age',
           ),
-          const VooFormField(
+          const VooFormField<String>(
             id: 'email',
             name: 'email',
             type: VooFieldType.email,
             label: 'Email',
           ),
-          const VooFormField(
+          const VooFormField<bool>(
             id: 'subscribe',
             name: 'subscribe',
             type: VooFieldType.boolean,
@@ -510,12 +506,10 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: Column(
-                children: formFields.map((field) {
-                  return VooFieldWidget(
+                children: formFields.map((field) => VooFieldWidget(
                     field: field,
                     onChanged: (value) => handleFieldChange(field.id, value),
-                  );
-                }).toList(),
+                  ),).toList(),
               ),
             ),
           ),
@@ -529,7 +523,7 @@ void main() {
         // Test using a text editing controller pattern
         final textController = TextEditingController();
         
-        const field = VooFormField(
+        const field = VooFormField<String>(
           id: 'controlled',
           name: 'controlled',
           type: VooFieldType.text,
@@ -566,7 +560,7 @@ void main() {
           final formData = <String, dynamic>{};
         
           Future<List<VooFieldOption<String>>> loadCountries(String query) async {
-            await Future.delayed(const Duration(milliseconds: 100));
+            await Future<void>.delayed(const Duration(milliseconds: 100));
             final countries = ['USA', 'Canada', 'Mexico', 'Brazil'];
             if (query.isEmpty) {
               return countries.map((c) => 
@@ -581,7 +575,7 @@ void main() {
           }
 
           final fields = [
-            const VooFormField(
+            const VooFormField<String>(
               id: 'name',
               name: 'name',
               type: VooFieldType.text,
@@ -596,7 +590,7 @@ void main() {
               enableSearch: true,
               searchHint: 'Search countries...',
             ),
-            const VooFormField(
+            const VooFormField<bool>(
               id: 'terms',
               name: 'terms',
               type: VooFieldType.boolean,
@@ -608,14 +602,12 @@ void main() {
             MaterialApp(
               home: Scaffold(
                 body: Column(
-                  children: fields.map((field) {
-                    return VooFieldWidget(
+                  children: fields.map((field) => VooFieldWidget(
                       field: field,
                       onChanged: (value) {
                         formData[field.id] = value;
                       },
-                    );
-                  }).toList(),
+                    ),).toList(),
                 ),
               ),
             ),

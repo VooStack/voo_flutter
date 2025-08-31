@@ -6,7 +6,7 @@ void main() {
     late DataGridRequestBuilder builder;
 
     setUp(() {
-      builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
+      builder = const DataGridRequestBuilder(standard: ApiFilterStandard.odata);
     });
 
     group('OData v4 Query Options', () {
@@ -110,8 +110,10 @@ void main() {
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(params[r'$apply'], 
-            'groupby((Category), aggregate(Price with sum as TotalPrice))');
+        expect(
+          params[r'$apply'],
+          'groupby((Category), aggregate(Price with sum as TotalPrice))',
+        );
       });
     });
 
@@ -121,7 +123,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: "O'Reilly's Books",
             ),
@@ -134,7 +136,7 @@ void main() {
       });
 
       test('should format DateTime values in ISO 8601', () {
-        final testDate = DateTime(2024, 3, 15, 10, 30, 0);
+        final testDate = DateTime(2024, 3, 15, 10, 30);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
@@ -148,8 +150,10 @@ void main() {
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(params[r'$filter'], 
-            contains(testDate.toUtc().toIso8601String()));
+        expect(
+          params[r'$filter'],
+          contains(testDate.toUtc().toIso8601String()),
+        );
       });
 
       test('should not quote numeric values', () {
@@ -157,11 +161,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': VooDataFilter(
+            'age': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 25,
             ),
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.greaterThan,
               value: 99.99,
             ),
@@ -178,11 +182,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'isActive': VooDataFilter(
+            'isActive': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: true,
             ),
-            'isDeleted': VooDataFilter(
+            'isDeleted': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: false,
             ),
@@ -199,11 +203,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedDate': VooDataFilter(
+            'deletedDate': const VooDataFilter(
               operator: VooFilterOperator.isNull,
               value: null,
             ),
-            'updatedDate': VooDataFilter(
+            'updatedDate': const VooDataFilter(
               operator: VooFilterOperator.isNotNull,
               value: null,
             ),
@@ -212,8 +216,10 @@ void main() {
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(params[r'$filter'], 
-            'deletedDate eq null and updatedDate ne null');
+        expect(
+          params[r'$filter'],
+          'deletedDate eq null and updatedDate ne null',
+        );
       });
     });
 
@@ -223,7 +229,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.inList,
               value: ['active', 'pending', 'processing'],
             ),
@@ -232,8 +238,10 @@ void main() {
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(params[r'$filter'], 
-            "status in ('active','pending','processing')");
+        expect(
+          params[r'$filter'],
+          "status in ('active','pending','processing')",
+        );
       });
 
       test('should support not in operator with proper negation', () {
@@ -241,7 +249,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.notInList,
               value: ['deleted', 'archived'],
             ),
@@ -250,8 +258,10 @@ void main() {
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(params[r'$filter'], 
-            "not (status in ('deleted','archived'))");
+        expect(
+          params[r'$filter'],
+          "not (status in ('deleted','archived'))",
+        );
       });
 
       test('should support not contains operator', () {
@@ -259,7 +269,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'description': VooDataFilter(
+            'description': const VooDataFilter(
               operator: VooFilterOperator.notContains,
               value: 'discontinued',
             ),
@@ -268,8 +278,10 @@ void main() {
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(params[r'$filter'], 
-            "not contains(description, 'discontinued')");
+        expect(
+          params[r'$filter'],
+          "not contains(description, 'discontinued')",
+        );
       });
 
       test('should properly group between operator expressions', () {
@@ -277,7 +289,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 10.0,
               valueTo: 100.0,
@@ -297,11 +309,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
-            'priority': VooDataFilter(
+            'priority': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'high',
             ),
@@ -319,11 +331,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
-            'priority': VooDataFilter(
+            'priority': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'high',
             ),
@@ -350,8 +362,6 @@ void main() {
 
         final response = DataGridRequestBuilder.parseODataResponse(
           json: odataResponse,
-          page: 0,
-          pageSize: 20,
         );
 
         expect(response.rows.length, 2);
@@ -435,7 +445,7 @@ void main() {
 
     group('OData v4 with Field Prefix', () {
       test('should apply field prefix to filter fields', () {
-        final builderWithPrefix = DataGridRequestBuilder(
+        const builderWithPrefix = DataGridRequestBuilder(
           standard: ApiFilterStandard.odata,
           fieldPrefix: 'data',
         );
@@ -444,7 +454,7 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.contains,
               value: 'test',
             ),
@@ -457,7 +467,7 @@ void main() {
       });
 
       test('should apply field prefix to sort fields', () {
-        final builderWithPrefix = DataGridRequestBuilder(
+        const builderWithPrefix = DataGridRequestBuilder(
           standard: ApiFilterStandard.odata,
           fieldPrefix: 'data',
         );
@@ -467,7 +477,7 @@ void main() {
           pageSize: 20,
           filters: {},
           sorts: [
-            VooColumnSort(
+            const VooColumnSort(
               field: 'price',
               direction: VooSortDirection.descending,
             ),
@@ -481,21 +491,21 @@ void main() {
 
     group('OData v4 Complex Scenarios', () {
       test('should handle multiple filters with different types', () {
-        final testDate = DateTime(2024, 1, 1);
+        final testDate = DateTime(2024);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'name': VooDataFilter(
+            'name': const VooDataFilter(
               operator: VooFilterOperator.startsWith,
               value: 'Pro',
             ),
-            'price': VooDataFilter(
+            'price': const VooDataFilter(
               operator: VooFilterOperator.between,
               value: 10.0,
               valueTo: 100.0,
             ),
-            'category': VooDataFilter(
+            'category': const VooDataFilter(
               operator: VooFilterOperator.inList,
               value: ['electronics', 'computers'],
             ),
@@ -503,14 +513,14 @@ void main() {
               operator: VooFilterOperator.greaterThan,
               value: testDate,
             ),
-            'deletedDate': VooDataFilter(
+            'deletedDate': const VooDataFilter(
               operator: VooFilterOperator.isNull,
               value: null,
             ),
           },
           sorts: [
-            VooColumnSort(field: 'price', direction: VooSortDirection.ascending),
-            VooColumnSort(field: 'name', direction: VooSortDirection.descending),
+            const VooColumnSort(field: 'price', direction: VooSortDirection.ascending),
+            const VooColumnSort(field: 'name', direction: VooSortDirection.descending),
           ],
         );
         final params = result['params'] as Map<String, String>;
@@ -528,13 +538,13 @@ void main() {
           page: 2,
           pageSize: 50,
           filters: {
-            'status': VooDataFilter(
+            'status': const VooDataFilter(
               operator: VooFilterOperator.equals,
               value: 'active',
             ),
           },
           sorts: [
-            VooColumnSort(
+            const VooColumnSort(
               field: 'createdDate',
               direction: VooSortDirection.descending,
             ),

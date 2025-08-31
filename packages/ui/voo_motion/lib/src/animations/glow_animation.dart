@@ -46,7 +46,7 @@ class _VooGlowAnimationState extends State<VooGlowAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -77,18 +77,15 @@ class _VooGlowAnimationState extends State<VooGlowAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return Container(
+      builder: (context, child) => DecoratedBox(
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
                 color: widget.glowColor.withValues(alpha: widget.glowIntensity),
                 blurRadius: _animation.value,
                 spreadRadius: _animation.value / 2,
-                blurStyle: BlurStyle.normal,
               ),
               BoxShadow(
                 color: widget.glowColor.withValues(alpha: widget.glowIntensity * 0.5),
@@ -99,8 +96,6 @@ class _VooGlowAnimationState extends State<VooGlowAnimation>
             ],
           ),
           child: widget.child,
-        );
-      },
+        ),
     );
-  }
 }

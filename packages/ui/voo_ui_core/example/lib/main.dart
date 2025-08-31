@@ -9,8 +9,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         title: 'VooUI Core Example',
@@ -21,7 +20,6 @@ class MyApp extends StatelessWidget {
         home: const MyHomePage(),
       ),
     );
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -39,8 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? _selectedDate;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('VooUI Core Components'),
@@ -139,7 +136,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Text('Value: ${_sliderValue.toStringAsFixed(0)}'),
             VooSlider(
               value: _sliderValue,
-              min: 0,
               max: 100,
               divisions: 20,
               label: _sliderValue.toStringAsFixed(0),
@@ -225,15 +221,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
+  Widget _buildSectionTitle(String title) => Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Text(
         title,
         style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
-  }
 }

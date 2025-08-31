@@ -91,13 +91,11 @@ void main() {
         VooDataColumn<OrderList>(
           field: 'siteNumber',
           label: 'Site Number',
-          sortable: true,  // Must be true!
           valueGetter: (row) => row.siteNumber,
         ),
         VooDataColumn<OrderList>(
           field: 'siteName',
           label: 'Site Name',
-          sortable: true,  // Must be true!
           valueGetter: (row) => row.siteName,
         ),
         VooDataColumn<OrderList>(

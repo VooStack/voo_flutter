@@ -48,12 +48,10 @@ class VooTimeFieldWidget extends StatelessWidget {
         final picked = await showTimePicker(
           context: context,
           initialTime: currentValue ?? TimeOfDay.now(),
-          builder: (context, child) {
-            return Theme(
-              data: theme,
-              child: child!,
-            );
-          },
+          builder: (context, child) => Theme(
+            data: theme,
+            child: child!,
+          ),
         );
         
         if (picked != null && context.mounted) {

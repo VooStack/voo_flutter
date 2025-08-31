@@ -96,8 +96,7 @@ class VooValidator {
     bool requireNumbers = true,
     bool requireSpecialChars = true,
     String? message,
-  }) {
-    return CustomValidation<String>(
+  }) => CustomValidation<String>(
       validator: (value) {
         if (value == null || value.isEmpty) return null;
         
@@ -105,15 +104,15 @@ class VooValidator {
           return message ?? 'Password must be at least $minLength characters';
         }
         
-        if (requireUppercase && !value.contains(RegExp(r'[A-Z]'))) {
+        if (requireUppercase && !value.contains(RegExp('[A-Z]'))) {
           return message ?? 'Password must contain uppercase letters';
         }
         
-        if (requireLowercase && !value.contains(RegExp(r'[a-z]'))) {
+        if (requireLowercase && !value.contains(RegExp('[a-z]'))) {
           return message ?? 'Password must contain lowercase letters';
         }
         
-        if (requireNumbers && !value.contains(RegExp(r'[0-9]'))) {
+        if (requireNumbers && !value.contains(RegExp('[0-9]'))) {
           return message ?? 'Password must contain numbers';
         }
         
@@ -125,11 +124,9 @@ class VooValidator {
       },
       errorMessage: message ?? 'Password does not meet requirements',
     );
-  }
 
   /// Credit card validator
-  static VooValidationRule<String> creditCard([String? message]) {
-    return CustomValidation<String>(
+  static VooValidationRule<String> creditCard([String? message]) => CustomValidation<String>(
       validator: (value) {
         if (value == null || value.isEmpty) return null;
         
@@ -169,7 +166,6 @@ class VooValidator {
       },
       errorMessage: message ?? 'Invalid credit card number',
     );
-  }
 
   /// Date range validator
   static VooValidationRule<DateTime> dateRange({
@@ -188,8 +184,7 @@ class VooValidator {
     int minAge = 0,
     int maxAge = 150,
     String? message,
-  }) {
-    return CustomValidation<DateTime>(
+  }) => CustomValidation<DateTime>(
       validator: (value) {
         if (value == null) return null;
         
@@ -212,11 +207,9 @@ class VooValidator {
       },
       errorMessage: message ?? 'Invalid age',
     );
-  }
 
   /// SSN validator (US)
-  static VooValidationRule<String> ssn([String? message]) {
-    return CustomValidation<String>(
+  static VooValidationRule<String> ssn([String? message]) => CustomValidation<String>(
       validator: (value) {
         if (value == null || value.isEmpty) return null;
         
@@ -239,20 +232,15 @@ class VooValidator {
       },
       errorMessage: message ?? 'Invalid SSN',
     );
-  }
 
   /// ZIP code validator (US)
-  static VooValidationRule<String> zipCode([String? message]) {
-    return PatternValidation(
+  static VooValidationRule<String> zipCode([String? message]) => PatternValidation(
       pattern: r'^\d{5}(-\d{4})?$',
       errorMessage: message ?? 'Invalid ZIP code',
     );
-  }
   
   /// Postal code validator (US) - alias for zipCode
-  static VooValidationRule<String> postalCode([String? message]) {
-    return zipCode(message);
-  }
+  static VooValidationRule<String> postalCode([String? message]) => zipCode(message);
 
   /// Alpha-only validator
   static VooValidationRule<String> alpha({
@@ -279,12 +267,10 @@ class VooValidator {
   }
 
   /// Numeric validator
-  static VooValidationRule<String> numeric([String? message]) {
-    return PatternValidation(
+  static VooValidationRule<String> numeric([String? message]) => PatternValidation(
       pattern: r'^\d+$',
       errorMessage: message ?? 'Only numbers are allowed',
     );
-  }
 
   /// Decimal validator
   static VooValidationRule<String> decimal({
@@ -314,15 +300,13 @@ class VooValidator {
   static VooValidationRule<T> all<T>(List<VooValidationRule<T>> validators) =>
       CompoundValidation<T>(
         rules: validators,
-        errorMessage: 'Validation failed',
       );
 
   /// At least one validator must pass
   static VooValidationRule<T> any<T>(
     List<VooValidationRule<T>> validators, {
     String? message,
-  }) {
-    return CustomValidation<T>(
+  }) => CustomValidation<T>(
       validator: (value) {
         for (final validator in validators) {
           if (validator.validate(value) == null) {
@@ -333,5 +317,4 @@ class VooValidator {
       },
       errorMessage: message ?? 'Validation failed',
     );
-  }
 }

@@ -306,9 +306,7 @@ class DesignSystemProvider extends InheritedWidget {
     required super.child,
   });
 
-  static DesignSystemProvider? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<DesignSystemProvider>();
-  }
+  static DesignSystemProvider? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DesignSystemProvider>();
 
   static DesignSystemProvider of(BuildContext context) {
     final provider = maybeOf(context);
@@ -317,51 +315,29 @@ class DesignSystemProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(DesignSystemProvider oldWidget) {
-    return designSystem != oldWidget.designSystem ||
+  bool updateShouldNotify(DesignSystemProvider oldWidget) => designSystem != oldWidget.designSystem ||
         systemType != oldWidget.systemType;
-  }
 }
 
 /// Extension for easy access to design system
 extension DesignSystemContext on BuildContext {
-  DesignSystem get designSystem {
-    return DesignSystemProvider.of(this).designSystem;
-  }
+  DesignSystem get designSystem => DesignSystemProvider.of(this).designSystem;
 
-  DesignSystemType get designSystemType {
-    return DesignSystemProvider.of(this).systemType;
-  }
+  DesignSystemType get designSystemType => DesignSystemProvider.of(this).systemType;
 
-  DesignColorTokens get designColors {
-    return designSystem.colors;
-  }
+  DesignColorTokens get designColors => designSystem.colors;
 
-  DesignTypographyTokens get designTypography {
-    return designSystem.typography;
-  }
+  DesignTypographyTokens get designTypography => designSystem.typography;
 
-  DesignSpacingTokens get designSpacing {
-    return designSystem.spacing;
-  }
+  DesignSpacingTokens get designSpacing => designSystem.spacing;
 
-  DesignRadiusTokens get designRadius {
-    return designSystem.radius;
-  }
+  DesignRadiusTokens get designRadius => designSystem.radius;
 
-  DesignElevationTokens get designElevation {
-    return designSystem.elevation;
-  }
+  DesignElevationTokens get designElevation => designSystem.elevation;
 
-  DesignAnimationTokens get designAnimation {
-    return designSystem.animation;
-  }
+  DesignAnimationTokens get designAnimation => designSystem.animation;
 
-  DesignIconTokens get designIcons {
-    return designSystem.icons;
-  }
+  DesignIconTokens get designIcons => designSystem.icons;
 
-  ComponentStyles get componentStyles {
-    return designSystem.components;
-  }
+  ComponentStyles get componentStyles => designSystem.components;
 }

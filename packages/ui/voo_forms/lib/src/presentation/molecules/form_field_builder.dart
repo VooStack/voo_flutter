@@ -34,9 +34,6 @@ class VooFormFieldBuilder extends StatelessWidget {
     final formConfig = config ??
         const VooFormConfig(
           labelPosition: LabelPosition.floating,
-          fieldVariant: FieldVariant.outlined,
-          showFieldIcons: true,
-          showRequiredIndicator: true,
         );
 
     // Create field options from config

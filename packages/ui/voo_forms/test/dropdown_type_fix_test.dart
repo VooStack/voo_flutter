@@ -138,8 +138,7 @@ void main() {
             data: VooDesignSystemData.defaultSystem,
             child: VooResponsiveBuilder(
               child: StatefulBuilder(
-                builder: (context, setState) {
-                  return Scaffold(
+                builder: (context, setState) => Scaffold(
                     body: VooFieldWidget(
                       field: field.copyWith(value: currentValue),
                       onChanged: (value) {
@@ -148,8 +147,7 @@ void main() {
                         });
                       },
                     ),
-                  );
-                },
+                  ),
               ),
             ),
           ),

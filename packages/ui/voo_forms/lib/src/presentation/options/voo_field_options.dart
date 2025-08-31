@@ -191,8 +191,7 @@ class VooFieldOptions {
     EdgeInsetsGeometry? contentPadding,
     Duration? animationDuration,
     Curve? animationCurve,
-  }) {
-    return VooFieldOptions(
+  }) => VooFieldOptions(
       labelPosition: labelPosition ?? this.labelPosition,
       fieldVariant: fieldVariant ?? this.fieldVariant,
       fieldSize: fieldSize ?? this.fieldSize,
@@ -221,5 +220,4 @@ class VooFieldOptions {
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
     );
-  }
 }

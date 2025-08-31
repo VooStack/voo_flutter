@@ -377,7 +377,7 @@ void main() {
           // Act & Assert - Should not throw
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
           await expectLater(
-            () async => await enterTextWithVerification(
+            () async => enterTextWithVerification(
               tester,
               'test',
               fieldName: 'no_callback',
@@ -396,7 +396,7 @@ void main() {
           
           final field = VooField.text(
             name: 'rapid_input',
-            onChanged: (String? value) => capturedValues.add(value),
+            onChanged: capturedValues.add,
           );
           
           // Act

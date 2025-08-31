@@ -1,7 +1,4 @@
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_source.dart';
-import 'package:voo_data_grid/src/data_grid_types.dart';
-import 'package:voo_data_grid/src/models/advanced_filters.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Enum for different API filtering standards
 enum ApiFilterStandard {

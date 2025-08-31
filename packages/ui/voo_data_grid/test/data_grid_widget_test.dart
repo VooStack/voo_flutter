@@ -48,29 +48,24 @@ void main() {
                 'category': ['Electronics', 'Clothing', 'Food'][index % 3],
                 'quantity': (index + 1) * 5,
                 'date': DateTime.now().subtract(Duration(days: index)),
-              });
+              },);
 
       columns = [
-        VooDataColumn(
+        const VooDataColumn(
           field: 'id',
           label: 'ID',
           width: 60,
           frozen: true,
-          sortable: true,
         ),
-        VooDataColumn(
+        const VooDataColumn(
           field: 'name',
           label: 'Name',
           width: 150,
-          sortable: true,
-          filterable: true,
         ),
         VooDataColumn(
           field: 'price',
           label: 'Price',
           width: 100,
-          sortable: true,
-          filterable: true,
           valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
           textAlign: TextAlign.right,
         ),
@@ -78,10 +73,7 @@ void main() {
           field: 'status',
           label: 'Status',
           width: 100,
-          sortable: true,
-          filterable: true,
-          cellBuilder: (context, value, row) {
-            return Container(
+          cellBuilder: (context, value, row) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: value == 'active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
@@ -95,29 +87,23 @@ void main() {
                   fontSize: 12,
                 ),
               ),
-            );
-          },
+            ),
         ),
-        VooDataColumn(
+        const VooDataColumn(
           field: 'category',
           label: 'Category',
           width: 120,
-          sortable: true,
-          filterable: true,
         ),
-        VooDataColumn(
+        const VooDataColumn(
           field: 'quantity',
           label: 'Quantity',
           width: 100,
-          sortable: true,
-          filterable: true,
           textAlign: TextAlign.center,
         ),
         VooDataColumn(
           field: 'date',
           label: 'Date',
           width: 150,
-          sortable: true,
           valueFormatter: (value) {
             final date = value as DateTime;
             return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -126,7 +112,6 @@ void main() {
       ];
 
       final dataSource = TestDataGridSource(
-        mode: VooDataGridMode.local,
         data: testData,
       );
       
@@ -228,7 +213,6 @@ void main() {
           home: Scaffold(
             body: VooDataGrid(
               controller: controller,
-              showPagination: true,
             ),
           ),
         ),
@@ -300,7 +284,6 @@ void main() {
 
     testWidgets('handles empty state', (tester) async {
       final emptySource = TestDataGridSource(
-        mode: VooDataGridMode.local,
         data: [],
       );
 
@@ -330,7 +313,7 @@ void main() {
     testWidgets('shows loading indicator', (tester) async {
       // Skip this test as it has timeout issues with the async loading
       // The loading functionality is tested in other integration tests
-    }, skip: true);
+    }, skip: true,);
 
     testWidgets('handles error state', (tester) async {
       await tester.pumpWidget(
@@ -474,7 +457,6 @@ void main() {
           home: Scaffold(
             body: VooDataGrid(
               controller: controller,
-              displayMode: VooDataGridDisplayMode.auto,
             ),
           ),
         ),

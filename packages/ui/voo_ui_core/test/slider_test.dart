@@ -28,15 +28,13 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooSlider(
+            builder: (context, setState) => VooSlider(
                 value: value,
                 onChanged: (newValue) {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -59,17 +57,14 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooSlider(
+            builder: (context, setState) => VooSlider(
                 value: value,
-                min: 0,
                 max: 100,
                 onChanged: (newValue) {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -87,7 +82,6 @@ void main() {
         createTestApp(
           child: VooSlider(
             value: 2,
-            min: 0,
             max: 10,
             divisions: 10,
             onChanged: (_) {},
@@ -105,7 +99,6 @@ void main() {
         createTestApp(
           child: VooSlider(
             value: 5,
-            min: 0,
             max: 10,
             divisions: 10,
             label: '5',
@@ -141,7 +134,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSlider(
+          child: const VooSlider(
             value: 0.5,
             onChanged: null,
           ),
@@ -204,15 +197,13 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooRangeSlider(
+            builder: (context, setState) => VooRangeSlider(
                 values: values,
                 onChanged: (newValues) {
                   setState(() => values = newValues);
                   callbacks.onChanged(newValues);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -236,7 +227,6 @@ void main() {
         createTestApp(
           child: VooRangeSlider(
             values: const RangeValues(25, 75),
-            min: 0,
             max: 100,
             onChanged: (_) {},
           ),
@@ -256,7 +246,6 @@ void main() {
         createTestApp(
           child: VooRangeSlider(
             values: const RangeValues(2, 8),
-            min: 0,
             max: 10,
             divisions: 10,
             onChanged: (_) {},
@@ -274,7 +263,6 @@ void main() {
         createTestApp(
           child: VooRangeSlider(
             values: const RangeValues(2, 8),
-            min: 0,
             max: 10,
             labels: const RangeLabels('2', '8'),
             onChanged: (_) {},
@@ -312,7 +300,6 @@ void main() {
         createTestApp(
           child: VooLabeledSlider(
             value: 50,
-            min: 0,
             max: 100,
             label: 'Volume',
             onChanged: (_) {},
@@ -330,8 +317,6 @@ void main() {
         createTestApp(
           child: VooLabeledSlider(
             value: 0.75,
-            min: 0,
-            max: 1,
             label: 'Progress',
             valueFormatter: (value) => '${(value * 100).toInt()}%',
             onChanged: (_) {},
@@ -350,7 +335,6 @@ void main() {
             children: [
               VooLabeledSlider(
                 value: 5,
-                min: 0,
                 max: 10,
                 label: 'With Helper',
                 helperText: 'Adjust the value',
@@ -358,7 +342,6 @@ void main() {
               ),
               VooLabeledSlider(
                 value: 5,
-                min: 0,
                 max: 10,
                 label: 'With Error',
                 errorText: 'Value too low',
@@ -379,7 +362,6 @@ void main() {
         createTestApp(
           child: VooLabeledSlider(
             value: 50,
-            min: 0,
             max: 100,
             label: 'Brightness',
             leading: const Icon(Icons.brightness_low),
@@ -399,7 +381,6 @@ void main() {
         createTestApp(
           child: VooLabeledSlider(
             value: 50,
-            min: 0,
             max: 100,
             label: 'No Value',
             showValue: false,
@@ -419,7 +400,6 @@ void main() {
         createTestApp(
           child: VooLabeledRangeSlider(
             values: const RangeValues(20, 80),
-            min: 0,
             max: 100,
             label: 'Price Range',
             onChanged: (_) {},
@@ -437,7 +417,6 @@ void main() {
         createTestApp(
           child: VooLabeledRangeSlider(
             values: const RangeValues(100, 500),
-            min: 0,
             max: 1000,
             label: 'Budget',
             valueFormatter: (value) => '\$${value.toInt()}',
@@ -457,7 +436,6 @@ void main() {
         createTestApp(
           child: VooDiscreteSlider(
             value: 3,
-            min: 0,
             max: 5,
             divisions: 5,
             label: 'Rating',
@@ -482,11 +460,9 @@ void main() {
         createTestApp(
           child: VooDiscreteSlider(
             value: 1,
-            min: 0,
             max: 3,
             divisions: 3,
             labels: const ['Small', 'Medium', 'Large', 'XL'],
-            showLabels: true,
             onChanged: (_) {},
           ),
         ),
@@ -527,8 +503,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooIconSlider(
+            builder: (context, setState) => VooIconSlider(
                 value: value,
                 startIcon: Icons.brightness_low,
                 endIcon: Icons.brightness_high,
@@ -536,8 +511,7 @@ void main() {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -554,7 +528,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooIconSlider(
+          child: const VooIconSlider(
             value: 0.5,
             startIcon: Icons.volume_mute,
             endIcon: Icons.volume_up,
@@ -580,9 +554,6 @@ void main() {
         createTestApp(
           child: VooTickMarkSlider(
             value: 50,
-            min: 0,
-            max: 100,
-            tickCount: 11,
             label: 'Progress',
             onChanged: (_) {},
           ),
@@ -606,8 +577,6 @@ void main() {
         createTestApp(
           child: VooTickMarkSlider(
             value: 50,
-            min: 0,
-            max: 100,
             tickCount: 3,
             showTickLabels: true,
             tickLabels: const ['0', '50', '100'],
@@ -627,8 +596,6 @@ void main() {
         createTestApp(
           child: VooTickMarkSlider(
             value: 60,
-            min: 0,
-            max: 100,
             tickCount: 5,
             activeColor: Colors.blue,
             inactiveColor: Colors.grey,

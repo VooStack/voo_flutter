@@ -1,18 +1,19 @@
 
 // App
 export 'src/app/voo_material_app.dart';
-
+// Design System
+export 'src/design_system/design_system.dart';
+export 'src/design_system/material_design_tokens.dart';
+export 'src/design_system/voo_design_tokens.dart' hide VooSpacing, VooTypography;
 // Display
 export 'src/display/card.dart';
 export 'src/display/chip.dart';
 export 'src/display/list_tile.dart';
 export 'src/display/timestamp_text.dart';
-
 // Feedback
 export 'src/feedback/empty_state.dart';
 export 'src/feedback/progress_indicators.dart';
 export 'src/feedback/status_badge.dart';
-
 // Foundations
 export 'src/foundations/colors.dart';
 export 'src/foundations/design_system.dart';
@@ -20,13 +21,6 @@ export 'src/foundations/responsive.dart';
 export 'src/foundations/spacing.dart';
 export 'src/foundations/theme.dart';
 export 'src/foundations/typography.dart';
-
-// Design System
-export 'src/design_system/design_system.dart';
-export 'src/design_system/voo_design_tokens.dart' hide VooTypography, VooSpacing;
-export 'src/design_system/material_design_tokens.dart';
-export 'src/widgets/voo_design_system.dart' hide VooDesignSystemData, VooDesignSystem, VooResponsiveBuilder, VooResponsive;
-
 // Inputs (excluding calendar and data grid)
 // export 'src/inputs/advanced_date_time_picker.dart'; // TODO: Re-enable when voo_calendar dependency is added
 export 'src/inputs/button.dart';
@@ -41,10 +35,9 @@ export 'src/inputs/slider.dart';
 export 'src/inputs/switch.dart';
 export 'src/inputs/text_field.dart';
 export 'src/inputs/time_picker.dart';
-
 // Layout
 export 'src/layout/container.dart';
 export 'src/layout/page_header.dart';
-
 // Navigation
 export 'src/navigation/app_bar.dart';
+export 'src/widgets/voo_design_system.dart' hide VooDesignSystem, VooDesignSystemData, VooResponsive, VooResponsiveBuilder;

@@ -95,7 +95,7 @@ void main() {
             min: 0,
             max: 100,
             hint: 'Enter percentage (0-100)',
-            onChanged: (num? value) => capturedValues.add(value),
+            onChanged: capturedValues.add,
           );
           
           // Act
@@ -232,8 +232,6 @@ void main() {
           final field = VooField.slider(
             name: 'volume',
             label: 'Volume',
-            min: 0,
-            max: 100,
             initialValue: 50,
             divisions: 10,
             onChanged: (double? value) {
@@ -285,7 +283,6 @@ void main() {
           final field = VooField.slider(
             name: 'rating',
             label: 'Rating',
-            min: 0,
             max: 5,
             divisions: 5, // 0, 1, 2, 3, 4, 5
             initialValue: 0,
@@ -322,8 +319,6 @@ void main() {
           final field = VooField.slider(
             name: 'brightness',
             label: 'Brightness',
-            min: 0,
-            max: 100,
             initialValue: 75,
             onChanged: (_) {},
           );
@@ -349,7 +344,6 @@ void main() {
           final field = VooField.slider(
             name: 'precision',
             label: 'Precision',
-            min: 0.0,
             max: 1.0,
             initialValue: 0.5,
             // No divisions - continuous
@@ -384,7 +378,6 @@ void main() {
           final field = VooField.slider(
             name: 'speed',
             label: 'Speed',
-            min: 0,
             max: 3,
             divisions: 3,
             initialValue: 1,
@@ -445,8 +438,6 @@ void main() {
         'should validate numeric range and show error',
         (tester) async {
           // Arrange
-          String? validationError;
-          
           final field = VooField.number(
             name: 'validated_number',
             label: 'Age (18-65)',
@@ -537,8 +528,6 @@ void main() {
           final field = VooField.slider(
             name: 'rapid_slider',
             label: 'Rapid Test',
-            min: 0,
-            max: 100,
             onChanged: (double? value) {
               if (value != null) values.add(value);
             },

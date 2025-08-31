@@ -29,8 +29,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: form.fields.map((field) {
-          return Container(
+        children: form.fields.map((field) => Container(
             width: fieldWidth,
             padding: EdgeInsets.only(right: design.spacingMd),
             child: VooFormFieldBuilder(
@@ -39,8 +38,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
               showError: showValidation,
               config: config,
             ),
-          );
-        }).toList(),
+          ),).toList(),
       ),
     );
   }

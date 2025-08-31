@@ -42,7 +42,7 @@ class _VooScaleAnimationState extends State<VooScaleAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -76,11 +76,9 @@ class _VooScaleAnimationState extends State<VooScaleAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
+  Widget build(BuildContext context) => ScaleTransition(
       scale: _animation,
       alignment: widget.alignment,
       child: widget.child,
     );
-  }
 }

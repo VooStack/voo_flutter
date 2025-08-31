@@ -95,7 +95,6 @@ void main() {
           field: 'actions',
           label: 'Actions',
           excludeFromApi: true,
-          filterable: true, // This should be ignored
         );
         
         // The filter row should skip this column even if filterable is true
@@ -109,7 +108,6 @@ void main() {
           field: 'actions',
           label: 'Actions',
           excludeFromApi: true,
-          sortable: true, // This should be ignored
         );
         
         // The header should not allow sorting even if sortable is true

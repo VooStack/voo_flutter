@@ -52,12 +52,10 @@ class VooDateFieldWidget extends StatelessWidget {
           initialDate: currentValue ?? DateTime.now(),
           firstDate: field.minDate ?? DateTime(1900),
           lastDate: field.maxDate ?? DateTime(2100),
-          builder: (context, child) {
-            return Theme(
-              data: theme,
-              child: child!,
-            );
-          },
+          builder: (context, child) => Theme(
+            data: theme,
+            child: child!,
+          ),
         );
         
         if (picked != null) {

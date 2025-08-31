@@ -17,7 +17,6 @@ class VooFieldOptionsProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(VooFieldOptionsProvider oldWidget) {
-    return options != oldWidget.options;
-  }
+  bool updateShouldNotify(VooFieldOptionsProvider oldWidget) =>
+      options != oldWidget.options;
 }

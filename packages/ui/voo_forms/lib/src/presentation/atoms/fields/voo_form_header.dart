@@ -87,7 +87,7 @@ class FormHeaderWidget extends StatelessWidget {
           theme.colorScheme.onSurfaceVariant,
     );
 
-    Widget titleWidget = Text(
+    final Widget titleWidget = Text(
       header.title,
       style: titleStyle,
       textAlign: _getTextAlign(),
@@ -119,7 +119,6 @@ class FormHeaderWidget extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: mainAxisAlignment,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (header.leading != null) ...[
           header.leading!,
@@ -187,57 +186,51 @@ class FormHeaderWidget extends StatelessWidget {
         const TextStyle();
   }
 
-  double _getIconSize(VooDesignSystemData design) {
-    return switch (header.style) {
+  double _getIconSize(VooDesignSystemData design) =>
+    switch (header.style) {
       HeaderStyle.large => design.iconSizeXl,
       HeaderStyle.small => design.iconSizeSm,
       HeaderStyle.chip => design.iconSizeSm,
       _ => design.iconSizeLg,
     };
-  }
 
-  Color? _getBackgroundColor(BuildContext context, ThemeData theme) {
-    return switch (header.style) {
+  Color? _getBackgroundColor(BuildContext context, ThemeData theme) =>
+    switch (header.style) {
       HeaderStyle.card => theme.colorScheme.surfaceContainerHighest,
       HeaderStyle.banner => theme.colorScheme.primaryContainer,
       HeaderStyle.gradient => null,
       _ => Colors.transparent,
     };
-  }
 
-  MainAxisAlignment _getMainAxisAlignment() {
-    return switch (header.alignment) {
+  MainAxisAlignment _getMainAxisAlignment() =>
+    switch (header.alignment) {
       HeaderAlignment.center => MainAxisAlignment.center,
       HeaderAlignment.right => MainAxisAlignment.end,
       HeaderAlignment.spaceBetween => MainAxisAlignment.spaceBetween,
       HeaderAlignment.spaceAround => MainAxisAlignment.spaceAround,
       _ => MainAxisAlignment.start,
     };
-  }
 
-  CrossAxisAlignment _getCrossAxisAlignment() {
-    return switch (header.alignment) {
+  CrossAxisAlignment _getCrossAxisAlignment() =>
+    switch (header.alignment) {
       HeaderAlignment.center => CrossAxisAlignment.center,
       HeaderAlignment.right => CrossAxisAlignment.end,
       _ => CrossAxisAlignment.start,
     };
-  }
 
-  WrapAlignment _getWrapAlignment() {
-    return switch (header.alignment) {
+  WrapAlignment _getWrapAlignment() =>
+    switch (header.alignment) {
       HeaderAlignment.center => WrapAlignment.center,
       HeaderAlignment.right => WrapAlignment.end,
       HeaderAlignment.spaceBetween => WrapAlignment.spaceBetween,
       HeaderAlignment.spaceAround => WrapAlignment.spaceAround,
       _ => WrapAlignment.start,
     };
-  }
 
-  TextAlign _getTextAlign() {
-    return switch (header.alignment) {
+  TextAlign _getTextAlign() =>
+    switch (header.alignment) {
       HeaderAlignment.center => TextAlign.center,
       HeaderAlignment.right => TextAlign.end,
       _ => TextAlign.start,
     };
-  }
 }

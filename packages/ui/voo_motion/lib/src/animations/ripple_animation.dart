@@ -48,7 +48,7 @@ class _VooRippleAnimationState extends State<VooRippleAnimation>
       ).animate(CurvedAnimation(
         parent: controller,
         curve: widget.config.curve,
-      ));
+      ),);
       
       final opacityAnimation = Tween<double>(
         begin: 0.8,
@@ -56,7 +56,7 @@ class _VooRippleAnimationState extends State<VooRippleAnimation>
       ).animate(CurvedAnimation(
         parent: controller,
         curve: Curves.easeOut,
-      ));
+      ),);
       
       _controllers.add(controller);
       _radiusAnimations.add(radiusAnimation);
@@ -104,8 +104,7 @@ class _VooRippleAnimationState extends State<VooRippleAnimation>
       ripples.add(
         AnimatedBuilder(
           animation: _controllers[i],
-          builder: (context, child) {
-            return Center(
+          builder: (context, child) => Center(
               child: Container(
                 width: _radiusAnimations[i].value * 2,
                 height: _radiusAnimations[i].value * 2,
@@ -119,8 +118,7 @@ class _VooRippleAnimationState extends State<VooRippleAnimation>
                   ),
                 ),
               ),
-            );
-          },
+            ),
         ),
       );
     }

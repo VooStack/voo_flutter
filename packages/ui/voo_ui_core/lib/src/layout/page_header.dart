@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/spacing.dart';
+import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooPageHeader extends StatelessWidget {
   final IconData icon;

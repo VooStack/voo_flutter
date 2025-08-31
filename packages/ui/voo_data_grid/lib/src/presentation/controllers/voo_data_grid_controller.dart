@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_source_base.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Data grid controller with ChangeNotifier for Provider/ChangeNotifierProvider
-/// 
+///
 /// This controller can be used with Provider for those who prefer that approach.
 /// For other state management solutions, use the appropriate adapter.
 class VooDataGridStateController<T> extends ChangeNotifier {
@@ -137,9 +136,7 @@ class VooDataGridStateController<T> extends ChangeNotifier {
           comparison = aValue.toString().compareTo(bValue.toString());
         }
 
-        return sort.direction == VooSortDirection.ascending
-            ? comparison
-            : -comparison;
+        return sort.direction == VooSortDirection.ascending ? comparison : -comparison;
       });
     }
 
@@ -178,28 +175,16 @@ class VooDataGridStateController<T> extends ChangeNotifier {
         return value != filter.value;
       case VooFilterOperator.contains:
         if (value == null) return false;
-        return value
-            .toString()
-            .toLowerCase()
-            .contains(filter.value.toString().toLowerCase());
+        return value.toString().toLowerCase().contains(filter.value.toString().toLowerCase());
       case VooFilterOperator.notContains:
         if (value == null) return true;
-        return !value
-            .toString()
-            .toLowerCase()
-            .contains(filter.value.toString().toLowerCase());
+        return !value.toString().toLowerCase().contains(filter.value.toString().toLowerCase());
       case VooFilterOperator.startsWith:
         if (value == null) return false;
-        return value
-            .toString()
-            .toLowerCase()
-            .startsWith(filter.value.toString().toLowerCase());
+        return value.toString().toLowerCase().startsWith(filter.value.toString().toLowerCase());
       case VooFilterOperator.endsWith:
         if (value == null) return false;
-        return value
-            .toString()
-            .toLowerCase()
-            .endsWith(filter.value.toString().toLowerCase());
+        return value.toString().toLowerCase().endsWith(filter.value.toString().toLowerCase());
       case VooFilterOperator.greaterThan:
         if (value == null || filter.value == null) return false;
         if (value is num && filter.value is num) {
@@ -243,11 +228,8 @@ class VooDataGridStateController<T> extends ChangeNotifier {
         if (value is num && filter.value is num && filter.valueTo is num) {
           return value >= (filter.value as num) && value <= (filter.valueTo as num);
         }
-        if (value is DateTime &&
-            filter.value is DateTime &&
-            filter.valueTo is DateTime) {
-          return !value.isBefore(filter.value as DateTime) &&
-              !value.isAfter(filter.valueTo as DateTime);
+        if (value is DateTime && filter.value is DateTime && filter.valueTo is DateTime) {
+          return !value.isBefore(filter.value as DateTime) && !value.isAfter(filter.valueTo as DateTime);
         }
         return false;
       case VooFilterOperator.inList:

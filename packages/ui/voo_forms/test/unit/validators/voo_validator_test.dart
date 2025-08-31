@@ -183,8 +183,8 @@ void main() {
         final validators = [
           VooValidator.required(),
           VooValidator.minLength(8),
-          VooValidator.pattern(r'[A-Z]', 'Must contain uppercase'),
-          VooValidator.pattern(r'[0-9]', 'Must contain number'),
+          VooValidator.pattern('[A-Z]', 'Must contain uppercase'),
+          VooValidator.pattern('[0-9]', 'Must contain number'),
         ];
         
         // Test each validator

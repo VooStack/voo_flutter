@@ -100,13 +100,13 @@ void main() {
     });
     
     test('should calculate total pages correctly', () {
-      const state1 = VooDataGridState<dynamic>(totalRows: 100, pageSize: 20);
+      const state1 = VooDataGridState<dynamic>(totalRows: 100);
       expect(state1.totalPages, 5);
       
-      const state2 = VooDataGridState<dynamic>(totalRows: 101, pageSize: 20);
+      const state2 = VooDataGridState<dynamic>(totalRows: 101);
       expect(state2.totalPages, 6);
       
-      const state3 = VooDataGridState<dynamic>(totalRows: 0, pageSize: 20);
+      const state3 = VooDataGridState<dynamic>();
       expect(state3.totalPages, 0);
     });
     
@@ -487,7 +487,7 @@ void main() {
         dataSource: dataSource,
       );
       
-      expect(() => controller.dispose(), returnsNormally);
+      expect(controller.dispose, returnsNormally);
     });
   });
   

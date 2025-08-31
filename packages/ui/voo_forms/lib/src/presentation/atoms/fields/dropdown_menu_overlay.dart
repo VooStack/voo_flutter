@@ -101,8 +101,7 @@ class DropdownSearchField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: EdgeInsets.all(design.spacingMd),
       decoration: BoxDecoration(
         border: Border(
@@ -155,7 +154,6 @@ class DropdownSearchField extends StatelessWidget {
         onChanged: onSearchChanged,
       ),
     );
-  }
 }
 
 /// List of dropdown items
@@ -238,8 +236,7 @@ class VooDropdownMenuItem<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
+  Widget build(BuildContext context) => Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: option.enabled ? onTap : null,
@@ -306,5 +303,4 @@ class VooDropdownMenuItem<T> extends StatelessWidget {
         ),
       ),
     );
-  }
 }

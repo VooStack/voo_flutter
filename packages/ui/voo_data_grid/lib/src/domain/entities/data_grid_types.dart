@@ -3,7 +3,7 @@
 /// These types are shared between the legacy ChangeNotifier-based
 /// implementation and the new state-management agnostic implementation.
 
-import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 
 /// Data grid operation mode
 enum VooDataGridMode {

@@ -96,13 +96,13 @@ void main() {
 
       testWidgets('Dropdown field callbacks should handle generic types correctly', (tester) async {
         String? capturedValue;
-        final field = VooFormField<String>(
+        const field = VooFormField<String>(
           id: 'dropdown_field',
           name: 'dropdown_field',
           type: VooFieldType.dropdown,
           label: 'Dropdown Field',
           value: 'option1',
-          options: const [
+          options: [
             VooFieldOption(value: 'option1', label: 'Option 1'),
             VooFieldOption(value: 'option2', label: 'Option 2'),
             VooFieldOption(value: 'option3', label: 'Option 3'),
@@ -211,7 +211,7 @@ void main() {
 
     group('Generic Type Safety', () {
       test('VooFormField should maintain generic type', () {
-        final stringField = VooFormField<String>(
+        const stringField = VooFormField<String>(
           id: 'string_field',
           name: 'string_field',
           type: VooFieldType.text,
@@ -221,7 +221,7 @@ void main() {
         expect(stringField.value, isA<String>());
         expect(stringField.value, equals('test'));
 
-        final intField = VooFormField<int>(
+        const intField = VooFormField<int>(
           id: 'int_field',
           name: 'int_field',
           type: VooFieldType.number,
@@ -231,7 +231,7 @@ void main() {
         expect(intField.value, isA<int>());
         expect(intField.value, equals(42));
 
-        final boolField = VooFormField<bool>(
+        const boolField = VooFormField<bool>(
           id: 'bool_field',
           name: 'bool_field',
           type: VooFieldType.boolean,
@@ -277,9 +277,7 @@ void main() {
             home: Scaffold(
               body: VooFieldWidget(
                 field: textField,
-                onChanged: (dynamic value) {
-                  capturedValues.add(value);
-                },
+                onChanged: capturedValues.add,
               ),
             ),
           ),
@@ -560,11 +558,10 @@ void main() {
         );
 
         await tester.pumpWidget(
-          MaterialApp(
+          const MaterialApp(
             home: Scaffold(
               body: VooFieldWidget(
                 field: field,
-                showError: true,
               ),
             ),
           ),
@@ -583,7 +580,7 @@ void main() {
         );
 
         await tester.pumpWidget(
-          MaterialApp(
+          const MaterialApp(
             home: Scaffold(
               body: VooFieldWidget(
                 field: field,

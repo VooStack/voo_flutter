@@ -68,19 +68,15 @@ class _VooHoverAnimationState extends State<VooHoverAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
+  Widget build(BuildContext context) => MouseRegion(
       cursor: widget.cursor ?? MouseCursor.defer,
       onEnter: (_) => _handleHoverChange(true),
       onExit: (_) => _handleHoverChange(false),
       child: AnimatedBuilder(
         animation: _animation,
-        builder: (context, child) {
-          return widget.builder(context, _isHovered, widget.child);
-        },
+        builder: (context, child) => widget.builder(context, _isHovered, widget.child),
       ),
     );
-  }
 }
 
 /// Hover grow animation - scales up on hover
@@ -106,33 +102,27 @@ class VooHoverGrowAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
             begin: 1.0,
             end: isHovered ? growScale : 1.0,
           ),
-          builder: (context, scale, child) {
-            return Transform.scale(
+          builder: (context, scale, child) => Transform.scale(
               scale: scale,
               alignment: alignment,
               child: child,
-            );
-          },
+            ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 /// Hover lift animation - elevates with shadow on hover
@@ -160,24 +150,21 @@ class VooHoverLiftAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
             begin: 0.0,
             end: isHovered ? 1.0 : 0.0,
           ),
-          builder: (context, value, child) {
-            return Transform.translate(
+          builder: (context, value, child) => Transform.translate(
               offset: Offset(0, -liftHeight * value),
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -189,14 +176,11 @@ class VooHoverLiftAnimation extends StatelessWidget {
                 ),
                 child: child,
               ),
-            );
-          },
+            ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 /// Hover glow animation - adds glow effect on hover
@@ -214,7 +198,6 @@ class VooHoverGlowAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
     ),
     this.glowColor = Colors.blue,
     this.glowRadius = 20.0,
@@ -224,22 +207,19 @@ class VooHoverGlowAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
             begin: 0.0,
             end: isHovered ? 1.0 : 0.0,
           ),
-          builder: (context, value, child) {
-            return Container(
+          builder: (context, value, child) => DecoratedBox(
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
@@ -250,14 +230,11 @@ class VooHoverGlowAnimation extends StatelessWidget {
                 ],
               ),
               child: child,
-            );
-          },
+            ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 /// Hover tilt animation - 3D perspective tilt effect on hover
@@ -312,8 +289,7 @@ class _VooHoverTiltAnimationState extends State<VooHoverTiltAnimation> {
   }
   
   @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
+  Widget build(BuildContext context) => MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (event) {
         setState(() => _isHovered = true);
@@ -324,7 +300,7 @@ class _VooHoverTiltAnimationState extends State<VooHoverTiltAnimation> {
         widget.onExit?.call();
       },
       onHover: (event) {
-        final RenderBox box = context.findRenderObject() as RenderBox;
+        final RenderBox box = context.findRenderObject()! as RenderBox;
         final localPosition = box.globalToLocal(event.position);
         _updateTilt(localPosition, box.size);
       },
@@ -335,20 +311,17 @@ class _VooHoverTiltAnimationState extends State<VooHoverTiltAnimation> {
           begin: 0.0,
           end: _isHovered ? 1.0 : 0.0,
         ),
-        builder: (context, value, child) {
-          return Transform(
+        builder: (context, value, child) => Transform(
             alignment: Alignment.center,
             transform: Matrix4.identity()
               ..setEntry(3, 2, widget.enableDepth ? 0.001 * widget.depthFactor : 0)
               ..rotateX(_rotateX * value)
               ..rotateY(_rotateY * value),
             child: child,
-          );
-        },
+          ),
         child: widget.child,
       ),
     );
-  }
 }
 
 /// Hover shine animation - adds a shine/shimmer effect on hover
@@ -366,7 +339,6 @@ class VooHoverShineAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 600),
-      curve: Curves.easeInOut,
     ),
     this.shineColor = Colors.white24,
     this.shineWidth = 0.3,
@@ -376,24 +348,20 @@ class VooHoverShineAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
             begin: -1.0,
             end: isHovered ? 2.0 : -1.0,
           ),
-          builder: (context, value, child) {
-            return ShaderMask(
-              shaderCallback: (bounds) {
-                return LinearGradient(
+          builder: (context, value, child) => ShaderMask(
+              shaderCallback: (bounds) => LinearGradient(
                   begin: const Alignment(-1, -1),
                   end: const Alignment(1, 1),
                   stops: [
@@ -407,18 +375,14 @@ class VooHoverShineAnimation extends StatelessWidget {
                     Colors.transparent,
                   ],
                   transform: GradientRotation(shineAngle * 3.14159 / 180),
-                ).createShader(bounds);
-              },
+                ).createShader(bounds),
               blendMode: BlendMode.srcOver,
               child: child,
-            );
-          },
+            ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 /// Hover rotate animation - rotates on hover
@@ -435,7 +399,6 @@ class VooHoverRotateAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
     ),
     this.rotationAngle = 0.1,
     this.rotationAxis = Axis.vertical,
@@ -444,22 +407,19 @@ class VooHoverRotateAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
             begin: 0.0,
             end: isHovered ? rotationAngle : 0.0,
           ),
-          builder: (context, angle, child) {
-            return Transform(
+          builder: (context, angle, child) => Transform(
               alignment: Alignment.center,
               transform: Matrix4.identity()
                 ..setEntry(3, 2, 0.001)
@@ -470,12 +430,9 @@ class VooHoverRotateAnimation extends StatelessWidget {
                   angle,
                 ),
               child: child,
-            );
-          },
+            ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }

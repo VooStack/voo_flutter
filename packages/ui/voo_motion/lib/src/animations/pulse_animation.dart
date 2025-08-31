@@ -47,7 +47,7 @@ class _VooPulseAnimationState extends State<VooPulseAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     _opacityAnimation = Tween<double>(
       begin: widget.pulseOpacity,
@@ -55,7 +55,7 @@ class _VooPulseAnimationState extends State<VooPulseAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeOut,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -84,8 +84,7 @@ class _VooPulseAnimationState extends State<VooPulseAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         final pulseWidget = Transform.scale(
@@ -102,7 +101,7 @@ class _VooPulseAnimationState extends State<VooPulseAnimation>
                 scale: 1.0 + (_scaleAnimation.value - widget.minScale) * 2,
                 child: Opacity(
                   opacity: _opacityAnimation.value,
-                  child: Container(
+                  child: DecoratedBox(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: widget.pulseColor ?? Theme.of(context).primaryColor,
@@ -120,5 +119,4 @@ class _VooPulseAnimationState extends State<VooPulseAnimation>
         return pulseWidget;
       },
     );
-  }
 }

@@ -224,7 +224,7 @@ class AdvancedFilterRequest {
 
   factory AdvancedFilterRequest.fromJson(Map<String, dynamic> json) {
     // Check if it's an advanced format or legacy format
-    bool isAdvancedFormat = json.containsKey('stringFilters') ||
+    final bool isAdvancedFormat = json.containsKey('stringFilters') ||
         json.containsKey('intFilters') ||
         json.containsKey('dateFilters') ||
         json.containsKey('decimalFilters') ||
@@ -295,13 +295,11 @@ class AdvancedFilterRequest {
     required int pageSize,
     String? sortBy,
     bool sortDescending = false,
-  }) {
-    return AdvancedFilterRequest(
+  }) => AdvancedFilterRequest(
       legacyFilters: filters,
       pageNumber: pageNumber,
       pageSize: pageSize,
       sortBy: sortBy,
       sortDescending: sortDescending,
     );
-  }
 }

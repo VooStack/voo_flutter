@@ -45,7 +45,7 @@ class _VooFlipAnimationState extends State<VooFlipAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -81,8 +81,7 @@ class _VooFlipAnimationState extends State<VooFlipAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         final isShowingFront = _animation.value < math.pi / 2;
@@ -92,10 +91,10 @@ class _VooFlipAnimationState extends State<VooFlipAnimation>
             ..setEntry(3, 2, 0.001) // perspective
             ..rotateX(widget.direction == FlipDirection.vertical 
                 ? _animation.value 
-                : 0)
+                : 0,)
             ..rotateY(widget.direction == FlipDirection.horizontal 
                 ? _animation.value 
-                : 0),
+                : 0,),
           child: isShowingFront
               ? widget.child
               : Transform(
@@ -103,14 +102,13 @@ class _VooFlipAnimationState extends State<VooFlipAnimation>
                   transform: Matrix4.identity()
                     ..rotateX(widget.direction == FlipDirection.vertical 
                         ? math.pi 
-                        : 0)
+                        : 0,)
                     ..rotateY(widget.direction == FlipDirection.horizontal 
                         ? math.pi 
-                        : 0),
+                        : 0,),
                   child: widget.child,
                 ),
         );
       },
     );
-  }
 }

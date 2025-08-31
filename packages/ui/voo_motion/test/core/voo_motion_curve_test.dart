@@ -17,7 +17,7 @@ void main() {
     });
     
     test('springCurve should create elastic curve with custom tension', () {
-      final curve1 = VooMotionCurve.springCurve(tension: 1.0);
+      final curve1 = VooMotionCurve.springCurve();
       final curve2 = VooMotionCurve.springCurve(tension: 2.0);
       
       expect(curve1, isA<ElasticOutCurve>());
@@ -28,7 +28,7 @@ void main() {
     });
     
     test('bounceCurve should create custom bounce curve', () {
-      final curve1 = VooMotionCurve.bounceCurve(bounces: 3);
+      final curve1 = VooMotionCurve.bounceCurve();
       final curve2 = VooMotionCurve.bounceCurve(bounces: 5);
       
       expect(curve1, isA<Curve>());
@@ -47,7 +47,7 @@ void main() {
     });
     
     test('custom bounce curve should produce valid values', () {
-      final curve = VooMotionCurve.bounceCurve(bounces: 3);
+      final curve = VooMotionCurve.bounceCurve();
       
       // Test various points along the curve
       for (double t = 0.0; t <= 1.0; t += 0.1) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/advanced_remote_data_source.dart';
+import 'package:voo_data_grid/src/data/datasources/advanced_remote_data_source.dart';
 
 /// Extension methods for FilterType enum
 extension FilterTypeExtensions on FilterType {

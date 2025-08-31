@@ -28,7 +28,6 @@ class FieldLabelWrapper extends StatelessWidget {
     switch (labelPosition) {
       case LabelPosition.left:
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               width: 120,

@@ -773,11 +773,11 @@ class VooComponentStyles extends ComponentStyles {
         elevation: WidgetStateProperty.all(0),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(
           borderRadius: design.radius.button,
-        )),
+        ),),
         padding: WidgetStateProperty.all(EdgeInsets.symmetric(
           horizontal: design.spacing.md,
           vertical: design.spacing.sm,
-        )),
+        ),),
         textStyle: WidgetStateProperty.all(design.typography.button),
       );
 
@@ -799,11 +799,11 @@ class VooComponentStyles extends ComponentStyles {
         elevation: WidgetStateProperty.all(0),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(
           borderRadius: design.radius.button,
-        )),
+        ),),
         padding: WidgetStateProperty.all(EdgeInsets.symmetric(
           horizontal: design.spacing.md,
           vertical: design.spacing.sm,
-        )),
+        ),),
         textStyle: WidgetStateProperty.all(design.typography.button),
       );
 
@@ -815,11 +815,11 @@ class VooComponentStyles extends ComponentStyles {
         shape: WidgetStateProperty.all(RoundedRectangleBorder(
           borderRadius: design.radius.button,
           side: BorderSide(color: design.colors.outline),
-        )),
+        ),),
         padding: WidgetStateProperty.all(EdgeInsets.symmetric(
           horizontal: design.spacing.md,
           vertical: design.spacing.sm,
-        )),
+        ),),
         textStyle: WidgetStateProperty.all(design.typography.button),
       );
 
@@ -830,11 +830,11 @@ class VooComponentStyles extends ComponentStyles {
         elevation: WidgetStateProperty.all(0),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(
           borderRadius: design.radius.button,
-        )),
+        ),),
         padding: WidgetStateProperty.all(EdgeInsets.symmetric(
           horizontal: design.spacing.md,
           vertical: design.spacing.sm,
-        )),
+        ),),
         textStyle: WidgetStateProperty.all(design.typography.button),
       );
 
@@ -856,11 +856,11 @@ class VooComponentStyles extends ComponentStyles {
         elevation: WidgetStateProperty.all(0),
         shape: WidgetStateProperty.all(RoundedRectangleBorder(
           borderRadius: design.radius.button,
-        )),
+        ),),
         padding: WidgetStateProperty.all(EdgeInsets.symmetric(
           horizontal: design.spacing.md,
           vertical: design.spacing.sm,
-        )),
+        ),),
         textStyle: WidgetStateProperty.all(design.typography.button),
       );
 
@@ -874,7 +874,7 @@ class VooComponentStyles extends ComponentStyles {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: design.radius.input,
-          borderSide: BorderSide(color: design.colors.outline, width: 1),
+          borderSide: BorderSide(color: design.colors.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: design.radius.input,
@@ -882,7 +882,7 @@ class VooComponentStyles extends ComponentStyles {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: design.radius.input,
-          borderSide: BorderSide(color: design.colors.error, width: 1),
+          borderSide: BorderSide(color: design.colors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: design.radius.input,

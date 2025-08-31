@@ -202,8 +202,6 @@ void main() {
         final field = VooField.slider(
           name: 'test_slider',
           label: 'Test Slider',
-          min: 0,
-          max: 100,
           initialValue: 50,
           onChanged: (double? value) {
             capturedValue = value;
@@ -244,7 +242,6 @@ void main() {
         final field = VooField.boolean(
           name: 'test_boolean',
           label: 'Test Boolean',
-          initialValue: false,
           onChanged: (bool? value) {
             capturedValue = value;
           },
@@ -280,7 +277,6 @@ void main() {
         final field = VooField.checkbox(
           name: 'test_checkbox',
           label: 'Test Checkbox',
-          initialValue: false,
           onChanged: (bool? value) {
             capturedValue = value;
           },
@@ -313,8 +309,6 @@ void main() {
     group('Selection Field Types', () {
       testWidgets('Dropdown field onChanged should capture value',
           (tester) async {
-        String? capturedValue;
-
         final field = VooField.dropdown<String>(
           name: 'test_dropdown',
           label: 'Test Dropdown',
@@ -324,7 +318,7 @@ void main() {
             value: option,
           ),
           onChanged: (String? value) {
-            capturedValue = value;
+            // TODO: Capture and test value
           },
         );
 
@@ -387,13 +381,11 @@ void main() {
 
     group('Date and Time Field Types', () {
       testWidgets('Date field onChanged should capture value', (tester) async {
-        DateTime? capturedValue;
-
         final field = VooField.date(
           name: 'test_date',
           label: 'Test Date',
           onChanged: (DateTime? value) {
-            capturedValue = value;
+            // TODO: Capture and test value
           },
         );
 
@@ -422,13 +414,11 @@ void main() {
       });
 
       testWidgets('Time field onChanged should capture value', (tester) async {
-        TimeOfDay? capturedValue;
-
         final field = VooField.time(
           name: 'test_time',
           label: 'Test Time',
           onChanged: (TimeOfDay? value) {
-            capturedValue = value;
+            // TODO: Capture and test value
           },
         );
 
@@ -460,8 +450,6 @@ void main() {
     group('Complex Type Field Tests', () {
       testWidgets('Typed dropdown with enum should capture value',
           (tester) async {
-        TestEnum? capturedValue;
-
         final field = VooField.dropdown<TestEnum>(
           name: 'test_enum_dropdown',
           label: 'Test Enum Dropdown',
@@ -471,7 +459,7 @@ void main() {
             value: value,
           ),
           onChanged: (TestEnum? value) {
-            capturedValue = value;
+            // TODO: Capture and test value
           },
         );
 
@@ -493,8 +481,6 @@ void main() {
       });
 
       testWidgets('Async dropdown should handle onChanged', (tester) async {
-        TestData? capturedValue;
-
         final field = VooField.dropdownAsync<TestData>(
           name: 'test_async_dropdown',
           label: 'Test Async Dropdown',
@@ -510,7 +496,7 @@ void main() {
             value: data,
           ),
           onChanged: (TestData? value) {
-            capturedValue = value;
+            // TODO: Capture and test value
           },
         );
 

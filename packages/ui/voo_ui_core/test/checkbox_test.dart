@@ -29,15 +29,13 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooCheckbox(
+            builder: (context, setState) => VooCheckbox(
                 value: value,
                 onChanged: (newValue) {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -58,16 +56,14 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooCheckbox(
+            builder: (context, setState) => VooCheckbox(
                 value: value,
                 tristate: true,
                 onChanged: (newValue) {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -111,7 +107,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckbox(
+          child: const VooCheckbox(
             value: false,
             onChanged: null,
           ),
@@ -168,16 +164,14 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooCheckboxListTile(
+            builder: (context, setState) => VooCheckboxListTile(
                 value: value,
                 onChanged: (newValue) {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
                 title: const Text('Option'),
-              );
-            },
+              ),
           ),
         ),
       );
@@ -221,8 +215,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooCheckboxGroup<String>(
+            builder: (context, setState) => VooCheckboxGroup<String>(
                 items: items,
                 values: selectedItems,
                 labelBuilder: (item) => item,
@@ -230,8 +223,7 @@ void main() {
                   setState(() => selectedItems = newSelection);
                   callbacks.onChanged(newSelection);
                 },
-              );
-            },
+              ),
           ),
         ),
       );
@@ -377,16 +369,14 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooLabeledCheckbox(
+            builder: (context, setState) => VooLabeledCheckbox(
                 value: value,
                 onChanged: (newValue) {
                   setState(() => value = newValue);
                   callbacks.onChanged(newValue);
                 },
                 label: 'Tap anywhere',
-              );
-            },
+              ),
           ),
         ),
       );
@@ -407,8 +397,7 @@ void main() {
         tester,
         createTestApp(
           child: StatefulBuilder(
-            builder: (context, setState) {
-              return VooLabeledCheckbox(
+            builder: (context, setState) => VooLabeledCheckbox(
                 value: value,
                 tristate: true,
                 onChanged: (newValue) {
@@ -416,8 +405,7 @@ void main() {
                   callbacks.onChanged(newValue);
                 },
                 label: 'Tristate',
-              );
-            },
+              ),
           ),
         ),
       );

@@ -152,9 +152,7 @@ class VooResponsive extends InheritedWidget {
   }
 
   /// Try to get the responsive context, returns null if not found
-  static VooResponsive? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<VooResponsive>();
-  }
+  static VooResponsive? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooResponsive>();
 
   /// Check if current device is phone
   bool get isPhone => deviceType == VooDeviceType.phone;
@@ -249,13 +247,11 @@ class VooResponsive extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(VooResponsive oldWidget) {
-    return deviceType != oldWidget.deviceType ||
+  bool updateShouldNotify(VooResponsive oldWidget) => deviceType != oldWidget.deviceType ||
         screenSize != oldWidget.screenSize ||
         orientation != oldWidget.orientation ||
         screenDimensions != oldWidget.screenDimensions ||
         safeArea != oldWidget.safeArea;
-  }
 }
 
 /// Widget that provides responsive context to its children

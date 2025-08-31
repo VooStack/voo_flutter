@@ -7,8 +7,7 @@ Widget createTestApp({
   required Widget child,
   ThemeData? theme,
   Size? screenSize,
-}) {
-  return MaterialApp(
+}) => MaterialApp(
     theme: theme ?? ThemeData(useMaterial3: true),
     home: screenSize != null
         ? MediaQuery(
@@ -25,15 +24,13 @@ Widget createTestApp({
             child: Scaffold(body: child),
           ),
   );
-}
 
 /// Creates a test app with responsive context
 Widget createResponsiveTestApp({
   required Widget child,
   required Size screenSize,
   ThemeData? theme,
-}) {
-  return MaterialApp(
+}) => MaterialApp(
     theme: theme ?? ThemeData(useMaterial3: true),
     home: MediaQuery(
       data: MediaQueryData(size: screenSize),
@@ -45,7 +42,6 @@ Widget createResponsiveTestApp({
       ),
     ),
   );
-}
 
 /// Pumps widget and settles animations
 Future<void> pumpWidgetAndSettle(
@@ -95,7 +91,6 @@ class TestThemes {
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
       seedColor: Colors.blue,
-      brightness: Brightness.light,
     ),
   );
   
@@ -112,29 +107,21 @@ class TestThemes {
 /// Extension for widget tester convenience methods
 extension WidgetTesterExtensions on WidgetTester {
   /// Gets the Material widget ancestor
-  Material getMaterial(Finder finder) {
-    return widget<Material>(
+  Material getMaterial(Finder finder) => widget<Material>(
       find.ancestor(
         of: finder,
         matching: find.byType(Material),
       ).first,
     );
-  }
   
   /// Gets the Container widget
-  Container getContainer(Finder finder) {
-    return widget<Container>(finder);
-  }
+  Container getContainer(Finder finder) => widget<Container>(finder);
   
   /// Gets the Text widget
-  Text getText(Finder finder) {
-    return widget<Text>(finder);
-  }
+  Text getText(Finder finder) => widget<Text>(finder);
   
   /// Gets the Icon widget
-  Icon getIcon(Finder finder) {
-    return widget<Icon>(finder);
-  }
+  Icon getIcon(Finder finder) => widget<Icon>(finder);
   
   /// Simulates entering text
   Future<void> enterTextAndSettle(Finder finder, String text) async {
@@ -209,19 +196,13 @@ class MockCallbacks {
 
 /// Test data generators
 class TestData {
-  static List<String> generateStringList(int count) {
-    return List.generate(count, (i) => 'Item ${i + 1}');
-  }
+  static List<String> generateStringList(int count) => List.generate(count, (i) => 'Item ${i + 1}');
   
-  static List<int> generateIntList(int count) {
-    return List.generate(count, (i) => i);
-  }
+  static List<int> generateIntList(int count) => List.generate(count, (i) => i);
   
-  static Map<String, bool> generateBoolMap(List<String> keys, {bool defaultValue = false}) {
-    return Map.fromEntries(
+  static Map<String, bool> generateBoolMap(List<String> keys, {bool defaultValue = false}) => Map.fromEntries(
       keys.map((key) => MapEntry(key, defaultValue)),
     );
-  }
   
   static DateTimeRange generateDateRange({int days = 7}) {
     final now = DateTime.now();

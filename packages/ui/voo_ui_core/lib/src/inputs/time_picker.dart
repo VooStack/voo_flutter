@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 compliant time picker
 class VooTimePicker extends StatefulWidget {
@@ -462,8 +462,7 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
     );
   }
   
-  Widget _buildInputMode(VooDesignSystemData design, ColorScheme colorScheme) {
-    return Padding(
+  Widget _buildInputMode(VooDesignSystemData design, ColorScheme colorScheme) => Padding(
       padding: EdgeInsets.all(design.spacingLg),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -514,7 +513,6 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
         ],
       ),
     );
-  }
   
   Widget _buildTimeInput({
     required TextEditingController controller,
@@ -524,8 +522,7 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
     required void Function(String) onChanged,
     required VooDesignSystemData design,
     required ColorScheme colorScheme,
-  }) {
-    return SizedBox(
+  }) => SizedBox(
       width: 80,
       child: TextField(
         controller: controller,
@@ -549,7 +546,6 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
         style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
-  }
   
   Widget _buildClockMode(VooDesignSystemData design, ColorScheme colorScheme) {
     // Simplified clock mode - in a real implementation, this would be an

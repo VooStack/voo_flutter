@@ -10,8 +10,7 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 Widget createTestApp({
   required Widget child,
   VooDesignSystemData? designSystem,
-}) {
-  return MaterialApp(
+}) => MaterialApp(
     home: VooDesignSystem(
       data: designSystem ?? VooDesignSystemData.defaultSystem,
       child: VooResponsiveBuilder(
@@ -24,7 +23,6 @@ Widget createTestApp({
       ),
     ),
   );
-}
 
 /// Helper to tap dropdown fields that works with both DropdownButtonFormField and TextFormField
 Future<void> tapDropdown(WidgetTester tester, {String? reason}) async {
@@ -133,8 +131,7 @@ VooFormField createTestField<T>({
   bool readOnly = false,
   List<VooFieldOption<T>>? options,
   List<VooValidationRule<T>>? validators,
-}) {
-  return VooFormField<T>(
+}) => VooFormField<T>(
     id: name,
     name: name,
     type: type,
@@ -146,10 +143,7 @@ VooFormField createTestField<T>({
     readOnly: readOnly,
     options: options,
     validators: validators ?? [],
-    required: false,
-    visible: true,
   );
-}
 
 /// Helper for async testing with timeout and error handling
 Future<void> testWithTimeout(

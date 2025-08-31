@@ -48,7 +48,7 @@ class VooFormatters {
   /// Letters only formatter
   static TextInputFormatter lettersOnly({bool allowSpaces = false}) =>
       FilteringTextInputFormatter.allow(
-        RegExp(allowSpaces ? '[a-zA-Z\s]' : '[a-zA-Z]'),
+        RegExp(allowSpaces ? r'[a-zA-Z\s]' : '[a-zA-Z]'),
       );
 
   /// Numbers only formatter
@@ -58,7 +58,7 @@ class VooFormatters {
   /// Decimal number formatter
   static TextInputFormatter decimal({int decimalPlaces = 2}) =>
       FilteringTextInputFormatter.allow(
-        RegExp('^\d*\.?\d{0,${decimalPlaces}}'),
+        RegExp('^\\d*\\.?\\d{0,$decimalPlaces}'),
       );
 
   /// SSN formatter (XXX-XX-XXXX)
@@ -189,12 +189,9 @@ class _CurrencyFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    var text = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
+    final text = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
     if (text.isEmpty) {
-      return const TextEditingValue(
-        text: '',
-        selection: TextSelection.collapsed(offset: 0),
-      );
+      return TextEditingValue.empty;
     }
 
     // Convert to double and format
@@ -283,10 +280,7 @@ class _PercentageFormatter extends TextInputFormatter {
   ) {
     final text = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
     if (text.isEmpty) {
-      return const TextEditingValue(
-        text: '',
-        selection: TextSelection.collapsed(offset: 0),
-      );
+      return TextEditingValue.empty;
     }
     
     final value = int.tryParse(text) ?? 0;

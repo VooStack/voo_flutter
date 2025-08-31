@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
@@ -125,13 +125,11 @@ void main() {
         field: 'age',
         label: 'Age',
         typedValueGetter: (user) => user.age,
-        typedCellBuilder: (context, age, user) {
-          return Container(
+        typedCellBuilder: (context, age, user) => Container(
             padding: const EdgeInsets.all(8.0),
             color: age >= 30 ? Colors.green : Colors.blue,
             child: Text('$age years'),
-          );
-        },
+          ),
       );
 
       final testUser = TestUser(

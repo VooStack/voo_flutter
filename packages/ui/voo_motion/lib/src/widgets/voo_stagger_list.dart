@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_motion/src/core/voo_animation_config.dart';
 import 'package:voo_motion/src/animations/fade_animation.dart';
-import 'package:voo_motion/src/animations/slide_animation.dart';
 import 'package:voo_motion/src/animations/scale_animation.dart';
+import 'package:voo_motion/src/animations/slide_animation.dart';
+import 'package:voo_motion/src/core/voo_animation_config.dart';
 
 /// Animation type for staggered list items
 enum StaggerAnimationType {
@@ -58,16 +58,12 @@ class _VooStaggerListState extends State<VooStaggerList> {
         case StaggerAnimationType.fadeIn:
           animatedChild = VooFadeAnimation(
             config: config,
-            fromOpacity: 0,
-            toOpacity: 1,
             child: widget.children[i],
           );
           break;
         case StaggerAnimationType.slideLeft:
           animatedChild = VooSlideAnimation(
             config: config,
-            fromOffset: const Offset(-1, 0),
-            toOffset: Offset.zero,
             child: widget.children[i],
           );
           break;
@@ -75,7 +71,6 @@ class _VooStaggerListState extends State<VooStaggerList> {
           animatedChild = VooSlideAnimation(
             config: config,
             fromOffset: const Offset(1, 0),
-            toOffset: Offset.zero,
             child: widget.children[i],
           );
           break;
@@ -83,7 +78,6 @@ class _VooStaggerListState extends State<VooStaggerList> {
           animatedChild = VooSlideAnimation(
             config: config,
             fromOffset: const Offset(0, -1),
-            toOffset: Offset.zero,
             child: widget.children[i],
           );
           break;
@@ -91,15 +85,12 @@ class _VooStaggerListState extends State<VooStaggerList> {
           animatedChild = VooSlideAnimation(
             config: config,
             fromOffset: const Offset(0, 1),
-            toOffset: Offset.zero,
             child: widget.children[i],
           );
           break;
         case StaggerAnimationType.scale:
           animatedChild = VooScaleAnimation(
             config: config,
-            fromScale: 0,
-            toScale: 1,
             child: widget.children[i],
           );
           break;

@@ -49,7 +49,6 @@ void main() {
     group('Local Mode', () {
       setUp(() {
         dataSource = TestDataGridSource(
-          mode: VooDataGridMode.local,
           data: testData,
         );
       });
@@ -80,24 +79,24 @@ void main() {
       });
 
       test('should apply filters', () {
-        dataSource.applyFilter('status', VooDataFilter(
+        dataSource.applyFilter('status', const VooDataFilter(
           operator: VooFilterOperator.equals,
           value: 'active',
-        ));
+        ),);
 
         expect(dataSource.filters.length, 1);
         expect(dataSource.filters['status']?.value, 'active');
       });
 
       test('should clear filters', () {
-        dataSource.applyFilter('status', VooDataFilter(
+        dataSource.applyFilter('status', const VooDataFilter(
           operator: VooFilterOperator.equals,
           value: 'active',
-        ));
-        dataSource.applyFilter('age', VooDataFilter(
+        ),);
+        dataSource.applyFilter('age', const VooDataFilter(
           operator: VooFilterOperator.greaterThan,
           value: 30,
-        ));
+        ),);
 
         expect(dataSource.filters.length, 2);
 
@@ -222,10 +221,10 @@ void main() {
       });
 
       test('should apply filter in remote mode', () {
-        dataSource.applyFilter('test', VooDataFilter(
+        dataSource.applyFilter('test', const VooDataFilter(
           operator: VooFilterOperator.equals,
           value: 'value',
-        ));
+        ),);
 
         // In remote mode, applying filter updates the filters
         expect(dataSource.filters.containsKey('test'), true);
@@ -294,7 +293,7 @@ void main() {
 
     group('Filter Operators', () {
       test('should have all expected operators', () {
-        final operators = VooFilterOperator.values;
+        const operators = VooFilterOperator.values;
         
         expect(operators.contains(VooFilterOperator.equals), true);
         expect(operators.contains(VooFilterOperator.notEquals), true);
@@ -316,7 +315,7 @@ void main() {
 
     group('Selection Modes', () {
       test('should have all expected selection modes', () {
-        final modes = VooSelectionMode.values;
+        const modes = VooSelectionMode.values;
         
         expect(modes.contains(VooSelectionMode.none), true);
         expect(modes.contains(VooSelectionMode.single), true);
@@ -326,7 +325,7 @@ void main() {
 
     group('Data Grid Modes', () {
       test('should have all expected data grid modes', () {
-        final modes = VooDataGridMode.values;
+        const modes = VooDataGridMode.values;
         
         expect(modes.contains(VooDataGridMode.local), true);
         expect(modes.contains(VooDataGridMode.remote), true);

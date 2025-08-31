@@ -280,8 +280,6 @@ void main() {
               from: 0.2,
               onStart: () => startCalled = true,
               onComplete: () => completeCalled = true,
-              repeat: false,
-              reverse: false,
               autoPlay: false,
             ),
           ),

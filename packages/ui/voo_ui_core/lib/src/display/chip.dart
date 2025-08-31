@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 chip variants
 enum VooChipVariant {
@@ -160,7 +160,7 @@ class VooChip extends StatelessWidget {
 
     if (tooltip != null) {
       return Tooltip(
-        message: tooltip!,
+        message: tooltip,
         child: chip,
       );
     }
@@ -222,7 +222,7 @@ class VooChoiceChip<T> extends StatelessWidget {
 
     if (tooltip != null) {
       return Tooltip(
-        message: tooltip!,
+        message: tooltip,
         child: chip,
       );
     }
@@ -263,8 +263,7 @@ class VooChipGroup<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Wrap(
+  Widget build(BuildContext context) => Wrap(
       alignment: alignment,
       spacing: spacing,
       runSpacing: runSpacing,
@@ -300,7 +299,6 @@ class VooChipGroup<T> extends StatelessWidget {
         );
       }).toList(),
     );
-  }
 }
 
 /// Deletable chip list
@@ -329,23 +327,19 @@ class VooDeletableChipList<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Wrap(
+  Widget build(BuildContext context) => Wrap(
       alignment: alignment,
       spacing: spacing,
       runSpacing: runSpacing,
-      children: items.map((item) {
-        return VooChip(
+      children: items.map((item) => VooChip(
           label: Text(labelBuilder(item)),
           avatar: avatarBuilder?.call(item),
           variant: VooChipVariant.input,
           backgroundColor: backgroundColor,
           side: side,
           onDeleted: onDeleted != null ? () => onDeleted!(item) : null,
-        );
-      }).toList(),
+        ),).toList(),
     );
-  }
 }
 
 /// Icon chip with label
@@ -389,7 +383,6 @@ class VooIconChip extends StatelessWidget {
       padding: padding ??
           EdgeInsets.symmetric(
             horizontal: design.spacingSm,
-            vertical: 0,
           ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(design.radiusSm),

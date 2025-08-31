@@ -42,7 +42,7 @@ class _VooRotationAnimationState extends State<VooRotationAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -67,16 +67,12 @@ class _VooRotationAnimationState extends State<VooRotationAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return Transform.rotate(
+      builder: (context, child) => Transform.rotate(
           angle: _animation.value,
           alignment: widget.alignment,
           child: widget.child,
-        );
-      },
+        ),
     );
-  }
 }

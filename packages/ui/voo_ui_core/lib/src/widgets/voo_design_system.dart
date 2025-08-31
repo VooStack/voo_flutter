@@ -19,19 +19,16 @@ class VooDesignSystemData {
   
   /// Default Voo Design System (light mode)
   static const VooDesignSystemData defaultSystem = VooDesignSystemData(
-    type: DesignSystemType.voo,
-    isDarkMode: false,
+    
   );
   
   /// Default Material Design System (light mode)
   static const VooDesignSystemData materialSystem = VooDesignSystemData(
     type: DesignSystemType.material,
-    isDarkMode: false,
   );
   
   /// Dark Voo Design System
   static const VooDesignSystemData darkVooSystem = VooDesignSystemData(
-    type: DesignSystemType.voo,
     isDarkMode: true,
   );
   
@@ -46,14 +43,12 @@ class VooDesignSystemData {
     bool? isDarkMode,
     ColorScheme? materialColorScheme,
     ThemeData? customTheme,
-  }) {
-    return VooDesignSystemData(
+  }) => VooDesignSystemData(
       type: type ?? this.type,
       isDarkMode: isDarkMode ?? this.isDarkMode,
       materialColorScheme: materialColorScheme ?? this.materialColorScheme,
       customTheme: customTheme ?? this.customTheme,
     );
-  }
 }
 
 /// Main widget for providing design system to the app
@@ -69,9 +64,7 @@ class VooDesignSystem extends StatefulWidget {
     this.adaptToSystemBrightness = true,
   });
   
-  static VooDesignSystemState? maybeOf(BuildContext context) {
-    return context.findAncestorStateOfType<VooDesignSystemState>();
-  }
+  static VooDesignSystemState? maybeOf(BuildContext context) => context.findAncestorStateOfType<VooDesignSystemState>();
   
   static VooDesignSystemState of(BuildContext context) {
     final state = maybeOf(context);
@@ -196,8 +189,7 @@ class VooResponsiveBuilder extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
+  Widget build(BuildContext context) => LayoutBuilder(
       builder: (context, constraints) {
         // Determine device type based on width
         final width = constraints.maxWidth;
@@ -218,7 +210,6 @@ class VooResponsiveBuilder extends StatelessWidget {
         );
       },
     );
-  }
 }
 
 /// Device type enum
@@ -240,9 +231,7 @@ class VooResponsive extends InheritedWidget {
     required super.child,
   });
   
-  static VooResponsive? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<VooResponsive>();
-  }
+  static VooResponsive? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooResponsive>();
   
   static VooResponsive of(BuildContext context) {
     final responsive = maybeOf(context);
@@ -251,10 +240,8 @@ class VooResponsive extends InheritedWidget {
   }
   
   @override
-  bool updateShouldNotify(VooResponsive oldWidget) {
-    return deviceType != oldWidget.deviceType || 
+  bool updateShouldNotify(VooResponsive oldWidget) => deviceType != oldWidget.deviceType || 
            screenSize != oldWidget.screenSize;
-  }
   
   bool get isPhone => deviceType == DeviceType.phone;
   bool get isTablet => deviceType == DeviceType.tablet;

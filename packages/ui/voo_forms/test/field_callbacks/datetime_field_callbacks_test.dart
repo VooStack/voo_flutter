@@ -88,7 +88,6 @@ void main() {
         'should respect date constraints (firstDate/lastDate)',
         (tester) async {
           // Arrange
-          DateTime? capturedValue;
           final today = DateTime.now();
           final minDate = today.subtract(const Duration(days: 7));
           final maxDate = today.add(const Duration(days: 7));
@@ -99,7 +98,7 @@ void main() {
             min: minDate,
             max: maxDate,
             initialValue: today,
-            onChanged: (DateTime? value) => capturedValue = value,
+            onChanged: (_) {}, // Callback required but value not used in this test
           );
           
           // Act
@@ -167,7 +166,6 @@ void main() {
           final field = VooField.date(
             name: 'optional_date',
             label: 'Optional Date',
-            required: false,
             // No initial value
             onChanged: (DateTime? value) => capturedValue = value,
           );
@@ -326,7 +324,6 @@ void main() {
         'should handle both date and time selection',
         (tester) async {
           // Arrange
-          DateTime? capturedDateTime;
           final initialDateTime = DateTime(2024, 6, 15, 14, 30);
           
           // Note: dateTime combined field doesn't exist in current API
@@ -335,7 +332,7 @@ void main() {
             name: 'event_datetime',
             label: 'Event Date & Time',
             initialValue: initialDateTime,
-            onChanged: (DateTime? value) => capturedDateTime = value,
+            onChanged: (_) {}, // Callback required but value not used in this test
           );
           
           // Act
@@ -364,9 +361,8 @@ void main() {
         'should handle date range selection',
         (tester) async {
           // Arrange
-          DateTimeRange? capturedRange;
           final initialRange = DateTimeRange(
-            start: DateTime(2024, 1, 1),
+            start: DateTime(2024),
             end: DateTime(2024, 1, 31),
           );
           
@@ -376,9 +372,7 @@ void main() {
             name: 'vacation_dates',
             label: 'Vacation Dates',
             initialValue: initialRange.start, // Only using start date
-            onChanged: (DateTime? value) => capturedRange = value != null
-                ? DateTimeRange(start: value, end: value.add(const Duration(days: 30)))
-                : null,
+            onChanged: (_) {}, // Callback required but value not used in this test
           );
           
           // Act
@@ -405,15 +399,13 @@ void main() {
         'should handle invalid date gracefully',
         (tester) async {
           // Arrange
-          DateTime? capturedValue;
-          
           final field = VooField.date(
             name: 'validated_date',
             label: 'Validated Date',
-            min: DateTime(2024, 1, 1),
+            min: DateTime(2024),
             max: DateTime(2024, 12, 31),
             required: true,
-            onChanged: (DateTime? value) => capturedValue = value,
+            onChanged: (_) {}, // Callback required but value not used in this test
           );
           
           // Act
@@ -466,14 +458,13 @@ void main() {
         'should handle leap year dates correctly',
         (tester) async {
           // Arrange
-          DateTime? capturedValue;
           final leapDay = DateTime(2024, 2, 29); // 2024 is a leap year
           
           final field = VooField.date(
             name: 'leap_date',
             label: 'Leap Year Date',
             initialValue: leapDay,
-            onChanged: (DateTime? value) => capturedValue = value,
+            onChanged: (_) {}, // Callback required but value not used in this test
           );
           
           // Act

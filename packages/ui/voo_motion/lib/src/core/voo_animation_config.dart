@@ -52,8 +52,7 @@ class VooAnimationConfig {
     VoidCallback? onStart,
     VoidCallback? onComplete,
     bool? autoPlay,
-  }) {
-    return VooAnimationConfig(
+  }) => VooAnimationConfig(
       duration: duration ?? this.duration,
       delay: delay ?? this.delay,
       curve: curve ?? this.curve,
@@ -64,7 +63,6 @@ class VooAnimationConfig {
       onComplete: onComplete ?? this.onComplete,
       autoPlay: autoPlay ?? this.autoPlay,
     );
-  }
   
   /// Quick config for fast animations
   static const VooAnimationConfig fast = VooAnimationConfig(

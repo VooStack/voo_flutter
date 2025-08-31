@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 segmented button segment
 class VooButtonSegment<T> {
@@ -50,7 +50,7 @@ class VooSegmentedButton<T> extends StatelessWidget {
         icon: segment.icon,
         tooltip: segment.tooltip,
         enabled: segment.enabled && enabled,
-      )).toList(),
+      ),).toList(),
       selected: selected != null ? {selected as T} : {},
       onSelectionChanged: enabled && onSelectionChanged != null
         ? (Set<T> selection) {
@@ -104,7 +104,7 @@ class VooMultiSegmentedButton<T> extends StatelessWidget {
         icon: segment.icon,
         tooltip: segment.tooltip,
         enabled: segment.enabled && enabled,
-      )).toList(),
+      ),).toList(),
       selected: selected,
       onSelectionChanged: enabled && onSelectionChanged != null
         ? onSelectionChanged
@@ -222,7 +222,7 @@ class VooIconSegmentedButton<T> extends StatelessWidget {
         label: segment.showLabel ? Text(segment.label) : const SizedBox.shrink(),
         tooltip: segment.tooltip ?? segment.label,
         enabled: segment.enabled && enabled,
-      )).toList(),
+      ),).toList(),
       selected: selected != null ? {selected as T} : {},
       onSelectionChanged: enabled && onSelectionChanged != null
         ? (Set<T> selection) {
@@ -413,7 +413,7 @@ class VooViewSwitcher<T> extends StatelessWidget {
               icon: showIcons && view.icon != null ? Icon(view.icon) : null,
               tooltip: view.tooltip,
               enabled: view.enabled,
-            )).toList(),
+            ),).toList(),
             selected: selected,
             onSelectionChanged: onViewChanged,
                 ),

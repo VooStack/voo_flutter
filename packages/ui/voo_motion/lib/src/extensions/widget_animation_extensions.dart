@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:voo_motion/src/animations/blur_animation.dart';
+import 'package:voo_motion/src/animations/bounce_animation.dart';
 import 'package:voo_motion/src/animations/drop_animation.dart';
 import 'package:voo_motion/src/animations/fade_animation.dart';
-import 'package:voo_motion/src/animations/slide_animation.dart';
-import 'package:voo_motion/src/animations/scale_animation.dart';
-import 'package:voo_motion/src/animations/rotation_animation.dart';
-import 'package:voo_motion/src/animations/bounce_animation.dart';
-import 'package:voo_motion/src/animations/shake_animation.dart';
 import 'package:voo_motion/src/animations/flip_animation.dart';
-import 'package:voo_motion/src/animations/blur_animation.dart';
 import 'package:voo_motion/src/animations/glow_animation.dart';
-import 'package:voo_motion/src/animations/pulse_animation.dart';
-import 'package:voo_motion/src/animations/shimmer_animation.dart';
-import 'package:voo_motion/src/animations/wave_animation.dart';
-import 'package:voo_motion/src/animations/ripple_animation.dart';
-import 'package:voo_motion/src/animations/parallax_animation.dart';
 import 'package:voo_motion/src/animations/hover_animation.dart';
 import 'package:voo_motion/src/animations/hover_color_animation.dart';
+import 'package:voo_motion/src/animations/parallax_animation.dart';
+import 'package:voo_motion/src/animations/pulse_animation.dart';
+import 'package:voo_motion/src/animations/ripple_animation.dart';
+import 'package:voo_motion/src/animations/rotation_animation.dart';
+import 'package:voo_motion/src/animations/scale_animation.dart';
+import 'package:voo_motion/src/animations/shake_animation.dart';
+import 'package:voo_motion/src/animations/shimmer_animation.dart';
+import 'package:voo_motion/src/animations/slide_animation.dart';
+import 'package:voo_motion/src/animations/wave_animation.dart';
 import 'package:voo_motion/src/core/voo_animation_config.dart';
 
 /// Extension methods to easily apply animations to any widget
@@ -32,8 +32,7 @@ extension VooMotionExtensions on Widget {
     bool reverse = false,
     int repeatCount = 1,
     bool autoPlay = true,
-  }) {
-    return VooDropAnimation(
+  }) => VooDropAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 600),
         delay: delay ?? Duration.zero,
@@ -48,7 +47,6 @@ extension VooMotionExtensions on Widget {
       fromHeight: fromHeight ?? 50,
       child: this,
     );
-  }
   
   /// Fade in animation
   Widget fadeIn({
@@ -63,8 +61,7 @@ extension VooMotionExtensions on Widget {
     bool reverse = false,
     int repeatCount = 1,
     bool autoPlay = true,
-  }) {
-    return VooFadeAnimation(
+  }) => VooFadeAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -80,7 +77,6 @@ extension VooMotionExtensions on Widget {
       toOpacity: to ?? 1.0,
       child: this,
     );
-  }
   
   /// Fade out animation
   Widget fadeOut({
@@ -89,8 +85,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     double? to,
     VoidCallback? onComplete,
-  }) {
-    return VooFadeAnimation(
+  }) => VooFadeAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -101,7 +96,6 @@ extension VooMotionExtensions on Widget {
       toOpacity: to ?? 0.0,
       child: this,
     );
-  }
   
   /// Slide in from left
   Widget slideInLeft({
@@ -110,8 +104,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     double? offset,
     VoidCallback? onComplete,
-  }) {
-    return VooSlideAnimation(
+  }) => VooSlideAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -119,10 +112,8 @@ extension VooMotionExtensions on Widget {
         onComplete: onComplete,
       ),
       fromOffset: Offset(-(offset ?? 1.0), 0),
-      toOffset: Offset.zero,
       child: this,
     );
-  }
   
   /// Slide in from right
   Widget slideInRight({
@@ -131,8 +122,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     double? offset,
     VoidCallback? onComplete,
-  }) {
-    return VooSlideAnimation(
+  }) => VooSlideAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -140,10 +130,8 @@ extension VooMotionExtensions on Widget {
         onComplete: onComplete,
       ),
       fromOffset: Offset(offset ?? 1.0, 0),
-      toOffset: Offset.zero,
       child: this,
     );
-  }
   
   /// Slide in from top
   Widget slideInTop({
@@ -152,8 +140,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     double? offset,
     VoidCallback? onComplete,
-  }) {
-    return VooSlideAnimation(
+  }) => VooSlideAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -161,10 +148,8 @@ extension VooMotionExtensions on Widget {
         onComplete: onComplete,
       ),
       fromOffset: Offset(0, -(offset ?? 1.0)),
-      toOffset: Offset.zero,
       child: this,
     );
-  }
   
   /// Slide in from bottom
   Widget slideInBottom({
@@ -173,8 +158,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     double? offset,
     VoidCallback? onComplete,
-  }) {
-    return VooSlideAnimation(
+  }) => VooSlideAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -182,10 +166,8 @@ extension VooMotionExtensions on Widget {
         onComplete: onComplete,
       ),
       fromOffset: Offset(0, offset ?? 1.0),
-      toOffset: Offset.zero,
       child: this,
     );
-  }
   
   /// Scale in animation
   Widget scaleIn({
@@ -195,8 +177,7 @@ extension VooMotionExtensions on Widget {
     double? from,
     double? to,
     VoidCallback? onComplete,
-  }) {
-    return VooScaleAnimation(
+  }) => VooScaleAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -207,7 +188,6 @@ extension VooMotionExtensions on Widget {
       toScale: to ?? 1.0,
       child: this,
     );
-  }
   
   /// Scale out animation
   Widget scaleOut({
@@ -217,8 +197,7 @@ extension VooMotionExtensions on Widget {
     double? from,
     double? to,
     VoidCallback? onComplete,
-  }) {
-    return VooScaleAnimation(
+  }) => VooScaleAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -229,7 +208,6 @@ extension VooMotionExtensions on Widget {
       toScale: to ?? 0.0,
       child: this,
     );
-  }
   
   /// Rotate animation
   Widget rotate({
@@ -240,8 +218,7 @@ extension VooMotionExtensions on Widget {
     double? to,
     bool repeat = false,
     VoidCallback? onComplete,
-  }) {
-    return VooRotationAnimation(
+  }) => VooRotationAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 1000),
         delay: delay ?? Duration.zero,
@@ -253,7 +230,6 @@ extension VooMotionExtensions on Widget {
       toAngle: to ?? 6.28319, // 2 * pi
       child: this,
     );
-  }
   
   /// Bounce animation
   Widget bounce({
@@ -263,8 +239,7 @@ extension VooMotionExtensions on Widget {
     int? bounces,
     bool repeat = false,
     VoidCallback? onComplete,
-  }) {
-    return VooBounceAnimation(
+  }) => VooBounceAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 1000),
         delay: delay ?? Duration.zero,
@@ -275,7 +250,6 @@ extension VooMotionExtensions on Widget {
       numberOfBounces: bounces ?? 3,
       child: this,
     );
-  }
   
   /// Shake animation
   Widget shake({
@@ -284,8 +258,7 @@ extension VooMotionExtensions on Widget {
     double? intensity,
     int? shakes,
     VoidCallback? onComplete,
-  }) {
-    return VooShakeAnimation(
+  }) => VooShakeAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -295,7 +268,6 @@ extension VooMotionExtensions on Widget {
       numberOfShakes: shakes ?? 5,
       child: this,
     );
-  }
   
   /// Flip animation (horizontal)
   Widget flipX({
@@ -303,18 +275,15 @@ extension VooMotionExtensions on Widget {
     Duration? delay,
     Curve? curve,
     VoidCallback? onComplete,
-  }) {
-    return VooFlipAnimation(
+  }) => VooFlipAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 600),
         delay: delay ?? Duration.zero,
         curve: curve ?? Curves.easeInOut,
         onComplete: onComplete,
       ),
-      direction: FlipDirection.horizontal,
       child: this,
     );
-  }
   
   /// Flip animation (vertical)
   Widget flipY({
@@ -322,8 +291,7 @@ extension VooMotionExtensions on Widget {
     Duration? delay,
     Curve? curve,
     VoidCallback? onComplete,
-  }) {
-    return VooFlipAnimation(
+  }) => VooFlipAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 600),
         delay: delay ?? Duration.zero,
@@ -333,7 +301,6 @@ extension VooMotionExtensions on Widget {
       direction: FlipDirection.vertical,
       child: this,
     );
-  }
   
   /// Chain multiple animations together
   Widget animate(List<Widget Function(Widget)> animations) {
@@ -357,8 +324,7 @@ extension VooMotionExtensions on Widget {
     bool repeat = false,
     bool reverse = false,
     bool autoPlay = true,
-  }) {
-    return VooBlurAnimation(
+  }) => VooBlurAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 500),
         delay: delay ?? Duration.zero,
@@ -374,7 +340,6 @@ extension VooMotionExtensions on Widget {
       blurY: blurY ?? 0.0,
       child: this,
     );
-  }
   
   /// Glow animation
   Widget glow({
@@ -389,8 +354,7 @@ extension VooMotionExtensions on Widget {
     bool repeat = false,
     bool reverse = false,
     bool autoPlay = true,
-  }) {
-    return VooGlowAnimation(
+  }) => VooGlowAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 1000),
         delay: delay ?? Duration.zero,
@@ -406,7 +370,6 @@ extension VooMotionExtensions on Widget {
       glowIntensity: intensity ?? 0.8,
       child: this,
     );
-  }
   
   /// Pulse animation
   Widget pulse({
@@ -421,8 +384,7 @@ extension VooMotionExtensions on Widget {
     VoidCallback? onComplete,
     bool repeat = true,
     bool autoPlay = true,
-  }) {
-    return VooPulseAnimation(
+  }) => VooPulseAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 1000),
         delay: delay ?? Duration.zero,
@@ -438,7 +400,6 @@ extension VooMotionExtensions on Widget {
       showPulseEffect: showPulseEffect,
       child: this,
     );
-  }
   
   /// Shimmer loading animation
   Widget shimmer({
@@ -452,8 +413,7 @@ extension VooMotionExtensions on Widget {
     VoidCallback? onComplete,
     bool repeat = true,
     bool autoPlay = true,
-  }) {
-    return VooShimmerAnimation(
+  }) => VooShimmerAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 1500),
         delay: delay ?? Duration.zero,
@@ -468,7 +428,6 @@ extension VooMotionExtensions on Widget {
       direction: direction ?? ShimmerDirection.leftToRight,
       child: this,
     );
-  }
   
   /// Wave animation
   Widget wave({
@@ -482,8 +441,7 @@ extension VooMotionExtensions on Widget {
     VoidCallback? onComplete,
     bool repeat = true,
     bool autoPlay = true,
-  }) {
-    return VooWaveAnimation(
+  }) => VooWaveAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 2000),
         delay: delay ?? Duration.zero,
@@ -498,7 +456,6 @@ extension VooMotionExtensions on Widget {
       direction: direction ?? Axis.vertical,
       child: this,
     );
-  }
   
   /// Ripple animation
   Widget ripple({
@@ -513,8 +470,7 @@ extension VooMotionExtensions on Widget {
     VoidCallback? onComplete,
     bool repeat = true,
     bool autoPlay = true,
-  }) {
-    return VooRippleAnimation(
+  }) => VooRippleAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 2000),
         delay: delay ?? Duration.zero,
@@ -530,7 +486,6 @@ extension VooMotionExtensions on Widget {
       rippleDelay: rippleDelay ?? const Duration(milliseconds: 300),
       child: this,
     );
-  }
   
   /// Parallax animation for scroll effects
   Widget parallax({
@@ -539,8 +494,7 @@ extension VooMotionExtensions on Widget {
     Axis? scrollDirection,
     bool reversed = false,
     Alignment? alignment,
-  }) {
-    return VooParallaxAnimation(
+  }) => VooParallaxAnimation(
       scrollController: scrollController,
       parallaxFactor: parallaxFactor ?? 0.5,
       scrollDirection: scrollDirection ?? Axis.vertical,
@@ -548,7 +502,6 @@ extension VooMotionExtensions on Widget {
       alignment: alignment ?? Alignment.center,
       child: this,
     );
-  }
   
   /// Hover grow animation
   Widget hoverGrow({
@@ -557,8 +510,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverGrowAnimation(
+  }) => VooHoverGrowAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 200),
         curve: curve ?? Curves.easeOutCubic,
@@ -568,7 +520,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover lift animation
   Widget hoverLift({
@@ -579,8 +530,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverLiftAnimation(
+  }) => VooHoverLiftAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 200),
         curve: curve ?? Curves.easeOutCubic,
@@ -592,7 +542,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover glow animation
   Widget hoverGlow({
@@ -603,8 +552,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverGlowAnimation(
+  }) => VooHoverGlowAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 300),
         curve: curve ?? Curves.easeInOut,
@@ -616,7 +564,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover tilt animation
   Widget hoverTilt({
@@ -627,8 +574,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverTiltAnimation(
+  }) => VooHoverTiltAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 200),
         curve: curve ?? Curves.easeOutCubic,
@@ -640,7 +586,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover shine animation
   Widget hoverShine({
@@ -651,8 +596,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverShineAnimation(
+  }) => VooHoverShineAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 600),
         curve: curve ?? Curves.easeInOut,
@@ -664,7 +608,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover rotate animation
   Widget hoverRotate({
@@ -674,8 +617,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverRotateAnimation(
+  }) => VooHoverRotateAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 300),
         curve: curve ?? Curves.easeInOut,
@@ -686,7 +628,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover color animation
   Widget hoverColor({
@@ -697,8 +638,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverColorAnimation(
+  }) => VooHoverColorAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 200),
         curve: curve ?? Curves.easeInOut,
@@ -710,7 +650,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover blur animation
   Widget hoverBlur({
@@ -720,8 +659,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverBlurAnimation(
+  }) => VooHoverBlurAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 300),
         curve: curve ?? Curves.easeInOut,
@@ -732,7 +670,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover underline animation
   Widget hoverUnderline({
@@ -743,8 +680,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverUnderlineAnimation(
+  }) => VooHoverUnderlineAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 200),
         curve: curve ?? Curves.easeInOut,
@@ -756,7 +692,6 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Hover border animation
   Widget hoverBorder({
@@ -767,8 +702,7 @@ extension VooMotionExtensions on Widget {
     Curve? curve,
     VoidCallback? onHover,
     VoidCallback? onExit,
-  }) {
-    return VooHoverBorderAnimation(
+  }) => VooHoverBorderAnimation(
       config: VooAnimationConfig(
         duration: duration ?? const Duration(milliseconds: 200),
         curve: curve ?? Curves.easeInOut,
@@ -780,13 +714,10 @@ extension VooMotionExtensions on Widget {
       onExit: onExit,
       child: this,
     );
-  }
   
   /// Apply animation with custom configuration
   Widget withAnimation({
     required Widget Function(Widget child, VooAnimationConfig config) builder,
     VooAnimationConfig config = const VooAnimationConfig(),
-  }) {
-    return builder(this, config);
-  }
+  }) => builder(this, config);
 }

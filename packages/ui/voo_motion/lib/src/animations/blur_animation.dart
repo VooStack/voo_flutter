@@ -47,7 +47,7 @@ class _VooBlurAnimationState extends State<VooBlurAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -81,8 +81,7 @@ class _VooBlurAnimationState extends State<VooBlurAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         final blur = _animation.value;
@@ -103,5 +102,4 @@ class _VooBlurAnimationState extends State<VooBlurAnimation>
         );
       },
     );
-  }
 }

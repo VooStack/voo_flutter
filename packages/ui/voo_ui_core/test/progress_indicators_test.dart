@@ -213,7 +213,6 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           child: const VooLabeledProgress(
-            value: null,
             label: 'Loading',
           ),
         ),
@@ -383,7 +382,7 @@ void main() {
           matching: find.byType(Container),
         ).first,
       );
-      final decoration = container.decoration as BoxDecoration;
+      final decoration = container.decoration! as BoxDecoration;
       expect(decoration.borderRadius, BorderRadius.circular(12));
     });
   });
@@ -393,7 +392,7 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           child: const VooListSkeletonLoader(
-            itemCount: 3,
+            
           ),
         ),
       );
@@ -409,7 +408,6 @@ void main() {
         createTestApp(
           child: const VooListSkeletonLoader(
             itemCount: 1,
-            showAvatar: true,
           ),
         ),
       );
@@ -429,7 +427,6 @@ void main() {
         createTestApp(
           child: const VooListSkeletonLoader(
             itemCount: 1,
-            showSubtitle: true,
           ),
         ),
       );
@@ -446,7 +443,7 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           child: const VooCardSkeletonLoader(
-            height: 200,
+            
           ),
         ),
       );
@@ -461,8 +458,7 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           child: const VooCardSkeletonLoader(
-            height: 200,
-            showImage: true,
+            
           ),
         ),
       );

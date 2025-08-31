@@ -4,7 +4,7 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 void main() {
   group('VooApiStandard Field Prefix PascalCase', () {
     test('should capitalize field names after prefix in VooApiStandard', () {
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
         fieldPrefix: 'Site',
       );
@@ -14,17 +14,17 @@ void main() {
         page: 0,
         pageSize: 20,
         filters: {
-          'siteNumber': VooDataFilter(
+          'siteNumber': const VooDataFilter(
             value: 100,
             operator: VooFilterOperator.equals,
           ),
-          'siteName': VooDataFilter(
+          'siteName': const VooDataFilter(
             value: 'Test',
             operator: VooFilterOperator.contains,
           ),
         },
         sorts: [
-          VooColumnSort(
+          const VooColumnSort(
             field: 'siteNumber',
             direction: VooSortDirection.ascending,
           ),
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('should handle number range with PascalCase fields', () {
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.voo,
         fieldPrefix: 'Site',
       );
@@ -51,7 +51,7 @@ void main() {
         page: 0,
         pageSize: 20,
         filters: {
-          'siteNumber': VooDataFilter(
+          'siteNumber': const VooDataFilter(
             value: 100,
             valueTo: 200,
             operator: VooFilterOperator.between,
@@ -76,7 +76,7 @@ void main() {
     });
 
     test('should not capitalize for other API standards', () {
-      final builder = DataGridRequestBuilder(
+      const builder = DataGridRequestBuilder(
         standard: ApiFilterStandard.jsonApi,
         fieldPrefix: 'site',
       );
@@ -85,7 +85,7 @@ void main() {
         page: 0,
         pageSize: 20,
         filters: {
-          'siteNumber': VooDataFilter(
+          'siteNumber': const VooDataFilter(
             value: 100,
             operator: VooFilterOperator.equals,
           ),

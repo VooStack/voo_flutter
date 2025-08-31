@@ -36,12 +36,10 @@ class VooFormTabbedLayout extends StatelessWidget {
       children: [
         TabBar(
           controller: tabController,
-          tabs: form.sections!.map((section) {
-            return Tab(
+          tabs: form.sections!.map((section) => Tab(
               text: section.title ?? 'Section',
               icon: section.icon != null ? Icon(section.icon) : null,
-            );
-          }).toList(),
+            ),).toList(),
         ),
         Expanded(
           child: TabBarView(

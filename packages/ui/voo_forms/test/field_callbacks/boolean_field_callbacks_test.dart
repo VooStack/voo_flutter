@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/voo_forms.dart';
+
 import '../test_helpers.dart';
 
 /// Comprehensive tests for boolean field types (checkbox, switch, radio)
@@ -18,7 +19,6 @@ void main() {
           final field = VooField.checkbox(
             name: 'terms_checkbox',
             label: 'I agree to the terms',
-            initialValue: false,
             onChanged: (bool? value) {
               capturedValue = value;
               callbackCount++;
@@ -76,16 +76,12 @@ void main() {
         'should handle checkbox with null initial value',
         (tester) async {
           // Arrange
-          bool? capturedValue;
           final stateSequence = <bool?>[];
           
           final field = VooField.checkbox(
             name: 'nullable_checkbox',
             label: 'Nullable option',
-            // Note: tristate is not supported in current API
-            initialValue: false,
             onChanged: (bool? value) {
-              capturedValue = value;
               stateSequence.add(value);
             },
           );
@@ -161,7 +157,6 @@ void main() {
           final field = VooField.boolean(
             name: 'notifications_switch',
             label: 'Enable notifications',
-            initialValue: false,
             onChanged: (bool? value) {
               capturedValue = value;
               callbackCount++;
@@ -330,9 +325,9 @@ void main() {
           String? capturedValue;
           
           final plans = [
-            Plan(id: 'basic', name: 'Basic', price: 9.99),
-            Plan(id: 'pro', name: 'Professional', price: 19.99),
-            Plan(id: 'enterprise', name: 'Enterprise', price: 49.99),
+            const Plan(id: 'basic', name: 'Basic', price: 9.99),
+            const Plan(id: 'pro', name: 'Professional', price: 19.99),
+            const Plan(id: 'enterprise', name: 'Enterprise', price: 49.99),
           ];
           
           final field = VooField.radio(
@@ -412,7 +407,7 @@ void main() {
           final field = VooField.boolean(
             name: 'rapid_toggle',
             label: 'Rapid Toggle Test',
-            onChanged: (bool? value) => toggleSequence.add(value),
+            onChanged: toggleSequence.add,
           );
           
           // Act

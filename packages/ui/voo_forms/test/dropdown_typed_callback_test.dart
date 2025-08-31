@@ -86,9 +86,9 @@ void main() {
 
         // Assert - Should build without type errors
         expect(errorMessage, isNull, 
-          reason: 'Widget should build without type casting errors');
+          reason: 'Widget should build without type casting errors',);
         expect(find.text('California'), findsOneWidget,
-          reason: 'Initial value should be displayed');
+          reason: 'Initial value should be displayed',);
 
         // Try to open dropdown and select an option
         // Use a more generic finder since the exact type might not match
@@ -103,11 +103,11 @@ void main() {
 
           // Verify callback was invoked with correct type
           expect(callbackInvoked, isTrue,
-            reason: 'Callback should be invoked when selection changes');
+            reason: 'Callback should be invoked when selection changes',);
           expect(capturedValue?.name, equals('Texas'),
-            reason: 'Selected value should be Texas');
+            reason: 'Selected value should be Texas',);
           expect(capturedValue?.code, equals('TX'),
-            reason: 'Selected value should have correct code');
+            reason: 'Selected value should have correct code',);
         }
       },
     );
@@ -176,7 +176,7 @@ void main() {
 
         // Assert - Should build without type errors
         expect(errorMessage, isNull,
-          reason: 'Async dropdown should build without type casting errors');
+          reason: 'Async dropdown should build without type casting errors',);
 
         // Open searchable dropdown
         await tester.tap(find.byType(TextFormField));
@@ -188,7 +188,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
 
         expect(loaderCalled, isTrue,
-          reason: 'Async loader should be called');
+          reason: 'Async loader should be called',);
 
         // Try to find and select an option if available
         final californiaOptions = find.text('California');
@@ -197,13 +197,13 @@ void main() {
           await tester.pump();
 
           expect(callbackInvoked, isTrue,
-            reason: 'Callback should be invoked for async dropdown');
+            reason: 'Callback should be invoked for async dropdown',);
           expect(capturedValue?.name, equals('California'),
-            reason: 'Selected async value should be California');
+            reason: 'Selected async value should be California',);
         } else {
           // If California option isn't visible, just verify no type errors occurred
           expect(errorMessage, isNull,
-            reason: 'Should handle async dropdown without type errors even if options not visible');
+            reason: 'Should handle async dropdown without type errors even if options not visible',);
         }
       },
     );
@@ -260,7 +260,7 @@ void main() {
 
           // Verify null was properly handled
           expect(capturedValue, isNull,
-            reason: 'Should handle null selection in typed callback');
+            reason: 'Should handle null selection in typed callback',);
         }
       },
     );
@@ -319,9 +319,9 @@ void main() {
 
           // Both callbacks should receive the value
           expect(fieldCapturedValue?.name, equals('Texas'),
-            reason: 'Field callback should receive typed value');
+            reason: 'Field callback should receive typed value',);
           expect((widgetCapturedValue as JurisdictionListOption?)?.name, equals('Texas'),
-            reason: 'Widget callback should receive dynamic value');
+            reason: 'Widget callback should receive dynamic value',);
         }
       },
     );

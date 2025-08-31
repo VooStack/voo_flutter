@@ -26,8 +26,7 @@ Future<void> tapDropdown(WidgetTester tester) async {
 }
 
 void main() {
-  Widget createTestApp(Widget child) {
-    return MaterialApp(
+  Widget createTestApp(Widget child) => MaterialApp(
       home: VooDesignSystem(
         data: VooDesignSystemData.defaultSystem,
         child: VooResponsiveBuilder(
@@ -40,7 +39,6 @@ void main() {
         ),
       ),
     );
-  }
 
   group('Form Workflow Integration Tests', () {
     testWidgets('Complete registration form workflow', (tester) async {
@@ -77,11 +75,10 @@ void main() {
             validators: [
               VooValidator.required(),
               VooValidator.custom(
-                validator: (value) {
-                  // Note: Can't access other field values directly here
-                  // This would need to be handled at the controller level
-                  return null;
-                },
+                validator: (value) =>
+                    // Note: Can't access other field values directly here
+                    // This would need to be handled at the controller level
+                    null,
               ),
             ],
           ),
@@ -388,8 +385,7 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
+            builder: (context, setState) => Column(
                 children: [
                   ...form.fields.map((field) {
                     final error = controller.getError(field.id);
@@ -398,7 +394,6 @@ void main() {
                       child: VooFieldWidget(
                         field: field,
                         error: error,
-                        showError: true,
                         onChanged: (value) {
                           controller.setValue(field.id, value);
                         },
@@ -407,15 +402,12 @@ void main() {
                   }),
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        controller.validate();
-                      });
+                      setState(controller.validate);
                     },
                     child: const Text('Validate'),
                   ),
                 ],
-              );
-            },
+              ),
           ),
         ),
       );
@@ -455,8 +447,7 @@ void main() {
       await tester.pumpWidget(
         createTestApp(
           StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
+            builder: (context, setState) => Column(
                 children: [
                   ...form.fields.map((field) => 
                     Padding(
@@ -474,9 +465,7 @@ void main() {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          setState(() {
-                            controller.reset();
-                          });
+                          setState(controller.reset);
                         },
                         child: const Text('Reset'),
                       ),
@@ -494,8 +483,7 @@ void main() {
                     ],
                   ),
                 ],
-              );
-            },
+              ),
           ),
         ),
       );

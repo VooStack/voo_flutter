@@ -43,7 +43,7 @@ class _VooBounceAnimationState extends State<VooBounceAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -68,17 +68,13 @@ class _VooBounceAnimationState extends State<VooBounceAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return Transform.translate(
+      builder: (context, child) => Transform.translate(
           offset: Offset(0, -_animation.value),
           child: widget.child,
-        );
-      },
+        ),
     );
-  }
 }
 
 /// Custom bounce curve that creates multiple bounces

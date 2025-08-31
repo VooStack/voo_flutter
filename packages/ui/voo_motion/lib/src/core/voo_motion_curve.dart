@@ -30,14 +30,10 @@ class VooMotionCurve {
   static const Curve overshoot = Curves.elasticInOut;
   
   /// Custom spring curve with configurable tension
-  static Curve springCurve({double tension = 1.0}) {
-    return ElasticOutCurve(tension);
-  }
+  static Curve springCurve({double tension = 1.0}) => ElasticOutCurve(tension);
   
   /// Custom bounce curve with configurable bounces
-  static Curve bounceCurve({int bounces = 3}) {
-    return _CustomBounceCurve(bounces);
-  }
+  static Curve bounceCurve({int bounces = 3}) => _CustomBounceCurve(bounces);
 }
 
 /// Custom bounce curve implementation
@@ -51,7 +47,7 @@ class _CustomBounceCurve extends Curve {
     if (t == 1.0) return 1.0;
     
     double amplitude = 1.0;
-    double period = 1.0 / (bounces + 1);
+    final double period = 1.0 / (bounces + 1);
     
     if (t < period) {
       return amplitude * t / period;

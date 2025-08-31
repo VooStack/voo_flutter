@@ -52,16 +52,16 @@ class VooRadioFieldWidget<T> extends StatelessWidget {
           ),
           SizedBox(height: design.spacingSm),
         ],
-        Container(
+        DecoratedBox(
           decoration: hasError
               ? BoxDecoration(
                   border: Border.all(color: theme.colorScheme.error),
                   borderRadius: BorderRadius.circular(design.radiusMd),
                 )
-              : null,
+              : const BoxDecoration(),
           child: Column(
-            children: field.options?.map<Widget>((option) {
-                  return VooRadioListTile<T>(
+            children: field.options?.map<Widget>((option) =>
+                  VooRadioListTile<T>(
                     value: option.value,
                     groupValue: field.value,
                     onChanged:
@@ -90,8 +90,8 @@ class VooRadioFieldWidget<T> extends StatelessWidget {
                           )
                         : null,
                     isError: hasError,
-                  );
-                }).toList() ??
+                  ),
+                ).toList() ??
                 [],
           ),
         ),

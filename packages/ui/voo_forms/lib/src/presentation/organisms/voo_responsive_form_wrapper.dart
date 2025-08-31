@@ -185,8 +185,7 @@ extension ResponsiveFormExtension on VooForm {
     bool showProgress = true,
     bool showValidation = true,
     FormAlignment alignment = FormAlignment.center,
-  }) {
-    return VooResponsiveFormWrapper(
+  }) => VooResponsiveFormWrapper(
       form: this,
       controller: controller,
       onSubmit: onSubmit,
@@ -197,5 +196,4 @@ extension ResponsiveFormExtension on VooForm {
       showValidation: showValidation,
       alignment: alignment,
     );
-  }
 }

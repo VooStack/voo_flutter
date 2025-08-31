@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Simple date and time picker using Flutter's built-in pickers
 /// TODO: Replace with full VooCalendar-based implementation when voo_calendar is added as dependency

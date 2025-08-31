@@ -40,7 +40,7 @@ class _VooFadeAnimationState extends State<VooFadeAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -74,15 +74,11 @@ class _VooFadeAnimationState extends State<VooFadeAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
-        return Opacity(
+      builder: (context, child) => Opacity(
           opacity: _animation.value,
           child: widget.child,
-        );
-      },
+        ),
     );
-  }
 }

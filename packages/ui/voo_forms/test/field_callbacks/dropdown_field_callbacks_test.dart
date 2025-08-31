@@ -119,9 +119,9 @@ void main() {
           bool callbackInvoked = false;
           
           final users = [
-            User(id: 1, name: 'John Doe', email: 'john@example.com'),
-            User(id: 2, name: 'Jane Smith', email: 'jane@example.com'),
-            User(id: 3, name: 'Bob Johnson', email: 'bob@example.com'),
+            const User(id: 1, name: 'John Doe', email: 'john@example.com'),
+            const User(id: 2, name: 'Jane Smith', email: 'jane@example.com'),
+            const User(id: 3, name: 'Bob Johnson', email: 'bob@example.com'),
           ];
           
           final field = VooField.dropdown<User>(
@@ -347,14 +347,14 @@ void main() {
             name: 'icon_dropdown',
             label: 'Select Status',
             enableSearch: true, // Icons/subtitles only show in searchable
-            options: statusOptions.map((opt) => opt['value'] as String).toList(),
+            options: statusOptions.map((opt) => opt['value']! as String).toList(),
             converter: (value) {
               final option = statusOptions.firstWhere((opt) => opt['value'] == value);
               return VooDropdownChild(
                 value: value,
-                label: option['label'] as String,
-                subtitle: option['subtitle'] as String,
-                icon: option['icon'] as IconData,
+                label: option['label']! as String,
+                subtitle: option['subtitle']! as String,
+                icon: option['icon']! as IconData,
               );
             },
             onChanged: (String? value) => capturedValue = value,

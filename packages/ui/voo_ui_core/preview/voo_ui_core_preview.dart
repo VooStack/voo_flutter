@@ -8,8 +8,7 @@ class VooButtonPreview extends StatelessWidget {
   const VooButtonPreview({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -34,9 +33,8 @@ class VooButtonPreview extends StatelessWidget {
                   child: const Text('Text Button'),
                 ),
                 const SizedBox(height: 16),
-                VooButton(
-                  onPressed: null,
-                  child: const Text('Disabled Button'),
+                const VooButton(
+                  child: Text('Disabled Button'),
                 ),
                 const SizedBox(height: 16),
                 VooButton(
@@ -50,7 +48,6 @@ class VooButtonPreview extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -66,8 +63,7 @@ class _VooCheckboxPreviewState extends State<VooCheckboxPreview> {
   bool? _tristate;
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -92,8 +88,8 @@ class _VooCheckboxPreviewState extends State<VooCheckboxPreview> {
                   onChanged: (value) => setState(() => _tristate = value),
                 ),
                 const SizedBox(height: 16),
-                VooCheckboxListTile(
-                  title: const Text('Disabled Checkbox'),
+                const VooCheckboxListTile(
+                  title: Text('Disabled Checkbox'),
                   value: true,
                   onChanged: null,
                 ),
@@ -103,7 +99,6 @@ class _VooCheckboxPreviewState extends State<VooCheckboxPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -124,8 +119,7 @@ class _VooTextFieldPreviewState extends State<VooTextFieldPreview> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -171,7 +165,6 @@ class _VooTextFieldPreviewState extends State<VooTextFieldPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -186,8 +179,7 @@ class _VooRadioGroupPreviewState extends State<VooRadioGroupPreview> {
   String? _selectedValue = 'option1';
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -202,7 +194,6 @@ class _VooRadioGroupPreviewState extends State<VooRadioGroupPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -217,8 +208,7 @@ class _VooSwitchPreviewState extends State<VooSwitchPreview> {
   bool _enabled = false;
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -248,7 +238,6 @@ class _VooSwitchPreviewState extends State<VooSwitchPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -263,8 +252,7 @@ class _VooSliderPreviewState extends State<VooSliderPreview> {
   double _value = 50;
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -294,7 +282,6 @@ class _VooSliderPreviewState extends State<VooSliderPreview> {
                   VooSlider(
                     value: _value,
                     onChanged: (value) => setState(() => _value = value),
-                    min: 0,
                     max: 100,
                     divisions: 10,
                     label: _value.toStringAsFixed(0),
@@ -306,7 +293,6 @@ class _VooSliderPreviewState extends State<VooSliderPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -322,8 +308,7 @@ class _VooDateTimePickerPreviewState extends State<VooDateTimePickerPreview> {
   DateTime? _selectedDateTime;
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -352,7 +337,6 @@ class _VooDateTimePickerPreviewState extends State<VooDateTimePickerPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -367,8 +351,7 @@ class _VooDateRangePickerPreviewState extends State<VooDateRangePickerPreview> {
   DateTimeRange? _selectedRange;
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
@@ -385,7 +368,6 @@ class _VooDateRangePickerPreviewState extends State<VooDateRangePickerPreview> {
         ),
       ),
     );
-  }
 }
 
 @pragma('preview')
@@ -400,25 +382,24 @@ class _VooSegmentedButtonPreviewState extends State<VooSegmentedButtonPreview> {
   String _selected = 'option1';
 
   @override
-  Widget build(BuildContext context) {
-    return VooDesignSystem(
+  Widget build(BuildContext context) => VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
           body: Center(
             child: VooSegmentedButton<String>(
-              segments: [
+              segments: const [
                 VooButtonSegment(
                   value: 'option1',
-                  label: const Text('Option 1'),
+                  label: Text('Option 1'),
                 ),
                 VooButtonSegment(
                   value: 'option2',
-                  label: const Text('Option 2'),
+                  label: Text('Option 2'),
                 ),
                 VooButtonSegment(
                   value: 'option3',
-                  label: const Text('Option 3'),
+                  label: Text('Option 3'),
                 ),
               ],
               selected: _selected,
@@ -428,5 +409,4 @@ class _VooSegmentedButtonPreviewState extends State<VooSegmentedButtonPreview> {
         ),
       ),
     );
-  }
 }

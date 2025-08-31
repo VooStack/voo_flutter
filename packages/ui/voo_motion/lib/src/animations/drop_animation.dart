@@ -39,7 +39,7 @@ class _VooDropAnimationState extends State<VooDropAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     _opacityAnimation = Tween<double>(
       begin: 0,
@@ -47,7 +47,7 @@ class _VooDropAnimationState extends State<VooDropAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeIn,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -68,18 +68,14 @@ class _VooDropAnimationState extends State<VooDropAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _controller,
-      builder: (context, child) {
-        return Transform.translate(
+      builder: (context, child) => Transform.translate(
           offset: Offset(0, _translateAnimation.value),
           child: Opacity(
             opacity: _opacityAnimation.value,
             child: widget.child,
           ),
-        );
-      },
+        ),
     );
-  }
 }

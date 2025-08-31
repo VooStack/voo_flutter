@@ -170,7 +170,7 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
 
     // Build fields content
     Widget content;
-    if ((columns) > 1 && !(responsive?.isPhone ?? false)) {
+    if (columns > 1 && !(responsive?.isPhone ?? false)) {
       // Grid layout for multiple columns
       content = LayoutBuilder(
         builder: (context, constraints) {
@@ -182,8 +182,8 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
           return Wrap(
             spacing: design.spacingMd,
             runSpacing: design.spacingMd,
-            children: widget.fields.map((field) {
-              return SizedBox(
+            children: widget.fields.map((field) =>
+              SizedBox(
                 width: field.gridColumns != null
                     ? (itemWidth * field.gridColumns! +
                         design.spacingMd * (field.gridColumns! - 1))
@@ -194,8 +194,8 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
                   showError: widget.showErrors,
                   config: widget.config,
                 ),
-              );
-            }).toList(),
+              ),
+            ).toList(),
           );
         },
       );
@@ -249,7 +249,6 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
         borderRadius: BorderRadius.circular(design.radiusLg),
         side: BorderSide(
           color: theme.colorScheme.outlineVariant,
-          width: 1,
         ),
       ),
       child: Column(

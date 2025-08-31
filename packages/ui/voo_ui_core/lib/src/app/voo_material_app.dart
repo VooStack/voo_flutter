@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// A wrapper around MaterialApp that injects VooDesignSystem
 class VooMaterialApp extends StatelessWidget {

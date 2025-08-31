@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/text_field_helpers.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Enhanced text form field that uses Flutter's default theme
@@ -42,6 +43,11 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
   late FocusNode _focusNode;
   bool _obscureText = false;
   bool _hasBeenFocused = false;
+  
+  // Helper instances
+  static const _prefixBuilder = TextFieldPrefixBuilder();
+  static const _suffixBuilder = TextFieldSuffixBuilder();
+  static const _formattersBuilder = TextFieldFormattersBuilder();
 
   @override
   void initState() {
@@ -78,69 +84,6 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
       _focusNode.dispose();
     }
     super.dispose();
-  }
-
-  Widget? _buildPrefixWidget() {
-    if (widget.field.prefix != null) {
-      return widget.field.prefix;
-    }
-    if (widget.field.prefixIcon != null) {
-      return Icon(widget.field.prefixIcon);
-    }
-    return null;
-  }
-
-  Widget? _buildSuffixWidget() {
-    if (widget.field.type == VooFieldType.password) {
-      return IconButton(
-        icon: Icon(
-          _obscureText 
-              ? Icons.visibility_outlined 
-              : Icons.visibility_off_outlined,
-        ),
-        onPressed: () {
-          setState(() {
-            _obscureText = !_obscureText;
-          });
-        },
-        tooltip: _obscureText ? 'Show password' : 'Hide password',
-      );
-    }
-    if (widget.field.suffix != null) {
-      return widget.field.suffix;
-    }
-    if (widget.field.suffixIcon != null) {
-      return Icon(widget.field.suffixIcon);
-    }
-    return null;
-  }
-
-  List<TextInputFormatter> _buildInputFormatters() {
-    final List<TextInputFormatter> formatters = [];
-
-    // Add custom formatters
-    if (widget.field.inputFormatters != null) {
-      formatters.addAll(widget.field.inputFormatters!);
-    }
-
-    // Add length formatter
-    if (widget.field.maxLength != null) {
-      formatters.add(LengthLimitingTextInputFormatter(widget.field.maxLength));
-    }
-
-    // Add type-specific formatters
-    switch (widget.field.type) {
-      case VooFieldType.number:
-        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9.\-]')));
-        break;
-      case VooFieldType.phone:
-        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-\(\) ]')));
-        break;
-      default:
-        break;
-    }
-
-    return formatters;
   }
 
   TextInputAction _getTextInputAction() {
@@ -200,7 +143,13 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
         // Only add prefix/suffix if not already in decoration
         prefixIcon: widget.decoration!.prefixIcon ?? 
             (widget.field.prefixIcon != null ? Icon(widget.field.prefixIcon) : null),
-        suffixIcon: widget.decoration!.suffixIcon ?? _buildSuffixWidget(),
+        suffixIcon: widget.decoration!.suffixIcon ?? _suffixBuilder.build(
+          field: widget.field,
+          obscureText: _obscureText,
+          onToggleObscureText: widget.field.type == VooFieldType.password
+              ? () => setState(() => _obscureText = !_obscureText)
+              : null,
+        ),
       );
     }
     
@@ -213,14 +162,23 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
       labelText = '$labelText *';
     }
     
+    final prefixWidget = _prefixBuilder.build(widget.field);
+    final suffixWidget = _suffixBuilder.build(
+      field: widget.field,
+      obscureText: _obscureText,
+      onToggleObscureText: widget.field.type == VooFieldType.password
+          ? () => setState(() => _obscureText = !_obscureText)
+          : null,
+    );
+    
     if (widget.options.labelPosition == LabelPosition.floating) {
       decoration = InputDecoration(
         labelText: labelText,
         hintText: widget.field.hint,
         errorText: widget.showError ? (widget.error ?? widget.field.error) : null,
         helperText: widget.field.helper,
-        prefixIcon: _buildPrefixWidget(),
-        suffixIcon: _buildSuffixWidget(),
+        prefixIcon: prefixWidget,
+        suffixIcon: suffixWidget,
         contentPadding: widget.field.padding,
       );
     } else if (widget.options.labelPosition == LabelPosition.placeholder) {
@@ -228,8 +186,8 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
         hintText: labelText ?? widget.field.hint,
         errorText: widget.showError ? (widget.error ?? widget.field.error) : null,
         helperText: widget.field.helper,
-        prefixIcon: _buildPrefixWidget(),
-        suffixIcon: _buildSuffixWidget(),
+        prefixIcon: prefixWidget,
+        suffixIcon: suffixWidget,
         contentPadding: widget.field.padding,
       );
     } else {
@@ -238,8 +196,8 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
         hintText: widget.field.hint,
         errorText: widget.showError ? (widget.error ?? widget.field.error) : null,
         helperText: widget.field.helper,
-        prefixIcon: _buildPrefixWidget(),
-        suffixIcon: _buildSuffixWidget(),
+        prefixIcon: prefixWidget,
+        suffixIcon: suffixWidget,
         contentPadding: widget.field.padding,
       );
     }
@@ -283,7 +241,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final inputFormatters = _buildInputFormatters();
+    final inputFormatters = _formattersBuilder.build(widget.field);
     final decoration = _buildDecoration(context);
     final maxLines = _getMaxLines();
     final textInputAction = _getTextInputAction();

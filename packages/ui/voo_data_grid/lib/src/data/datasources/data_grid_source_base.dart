@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
+import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
 
 // Re-export types for convenience
-export 'package:voo_data_grid/src/data_grid_types.dart';
+export 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
 
 /// State-management agnostic data source interface for VooDataGrid
 ///
@@ -97,8 +97,7 @@ class VooDataGridState<T> {
     Set<T>? selectedRows,
     VooSelectionMode? selectionMode,
     bool? filtersVisible,
-  }) {
-    return VooDataGridState<T>(
+  }) => VooDataGridState<T>(
       mode: mode ?? this.mode,
       allRows: allRows ?? this.allRows,
       rows: rows ?? this.rows,
@@ -113,7 +112,6 @@ class VooDataGridState<T> {
       selectionMode: selectionMode ?? this.selectionMode,
       filtersVisible: filtersVisible ?? this.filtersVisible,
     );
-  }
 
   /// Get total number of pages
   int get totalPages => (totalRows / pageSize).ceil();

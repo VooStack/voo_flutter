@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../foundations/design_system.dart';
+import 'package:voo_ui_core/src/foundations/design_system.dart';
 
 /// Material 3 slider component
 class VooSlider extends StatelessWidget {
@@ -450,7 +450,7 @@ class VooDiscreteSlider extends StatelessWidget {
               children: labels!.map((label) => Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall,
-              )).toList(),
+              ),).toList(),
             ),
           ),
         ],
@@ -546,7 +546,7 @@ class VooTickMarkSlider extends StatelessWidget {
               children: tickLabels!.map((label) => Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall,
-              )).toList(),
+              ),).toList(),
             ),
           ),
         ],

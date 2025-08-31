@@ -1,3 +1,43 @@
+## 0.6.1
+
+* **Architecture Reorganization & Bug Fixes**
+  * Reorganized entire package structure to follow clean architecture principles
+  * Created proper separation of concerns with data/, domain/, and presentation/ layers
+  * Moved 20+ files into appropriate architectural layers for better maintainability
+  * Fixed all import paths and updated export structure
+
+* **Widget Organization Improvements**
+  * Implemented atomic design pattern for UI components
+  * Created atoms/, molecules/, and organisms/ folder structure
+  * Moved advanced_filter_widget to organisms/ folder
+  * Ensured all widgets follow proper atomic design classification
+
+* **Test Suite Fixes**
+  * Fixed all 11 failing tests in stateless_data_grid_test.dart
+  * Resolved _StateBasedController implementation issues
+  * Fixed missing getSortDirection() method
+  * Improved test reliability with proper widget initialization
+  * Fixed VooDesignSystemData initialization (now uses defaultSystem)
+
+* **New Features**
+  * Added comprehensive Stateless Data Grid preview to previews.dart
+  * Preview demonstrates sorting, filtering, pagination with 50 sample products
+  * Includes custom cell rendering with visual stock level indicators
+  * Interactive row selection with user feedback
+
+* **Bug Fixes**
+  * Fixed deprecated withOpacity() usage (now uses withValues(alpha:))
+  * Fixed VooDataColumn parameter names (isSortable → sortable, isFilterable → filterable)
+  * Fixed state sorts type from Map to List structure
+  * Resolved compilation errors and type mismatches
+  * Fixed missing data parameter in VooDesignSystem constructor
+
+* **Code Quality**
+  * Applied dart fix across entire package
+  * Reduced linting issues from 145+ to under 50
+  * Improved code organization and readability
+  * Enhanced separation of concerns between layers
+
 ## 0.6.0
 
 * **BREAKING CHANGE: Major Architecture Update**

@@ -86,8 +86,8 @@ class VooFormWidget extends HookWidget {
 
         // Apply form decoration
         if (formConfig.decoration != null) {
-          formContent = Container(
-            decoration: formConfig.decoration,
+          formContent = DecoratedBox(
+            decoration: formConfig.decoration!,
             child: formContent,
           );
         }
@@ -215,15 +215,15 @@ class VooFormWidget extends HookWidget {
     VooFormController controller,
     VooFormConfig config,
     double screenWidth,
-  ) {
-    return Column(
-      children: fieldGroups!.map((group) {
-        return _buildFieldGroup(
-            context, controller, config, group, screenWidth,
-        );
-      }).toList(),
+  ) => Column(
+      children: fieldGroups!.map((group) => _buildFieldGroup(
+            context,
+            controller,
+            config,
+            group,
+            screenWidth,
+        ),).toList(),
     );
-  }
 
   Widget _buildFieldGroup(
     BuildContext context,
@@ -317,12 +317,10 @@ class VooFormWidget extends HookWidget {
 
     if (effectiveColumns == 1) {
       return Column(
-        children: fields.map((field) {
-          return Padding(
+        children: fields.map((field) => Padding(
             padding: EdgeInsets.only(bottom: config.fieldSpacing),
             child: _buildField(context, controller, config, field),
-          );
-        }).toList(),
+          ),).toList(),
       );
     }
 
@@ -358,8 +356,7 @@ class VooFormWidget extends HookWidget {
     VooFormController controller,
     VooFormConfig config,
     double screenWidth,
-  ) {
-    return Column(
+  ) => Column(
       children: form.sections!.map((section) {
         final sectionFields = form.fields
             .where((field) => section.fieldIds.contains(field.id))
@@ -376,41 +373,32 @@ class VooFormWidget extends HookWidget {
         );
       }).toList(),
     );
-  }
 
   Widget _buildVerticalLayout(
     BuildContext context,
     VooFormController controller,
     VooFormConfig config,
-  ) {
-    return Column(
+  ) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: form.fields.map((field) {
-        return Padding(
+      children: form.fields.map((field) => Padding(
           padding: EdgeInsets.only(bottom: config.fieldSpacing),
           child: _buildField(context, controller, config, field),
-        );
-      }).toList(),
+        ),).toList(),
     );
-  }
 
   Widget _buildHorizontalLayout(
     BuildContext context,
     VooFormController controller,
     VooFormConfig config,
-  ) {
-    return Row(
+  ) => Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: form.fields.map((field) {
-        return Expanded(
+      children: form.fields.map((field) => Expanded(
           child: Padding(
             padding: EdgeInsets.only(right: config.fieldSpacing),
             child: _buildField(context, controller, config, field),
           ),
-        );
-      }).toList(),
+        ),).toList(),
     );
-  }
 
   Widget _buildGridLayout(
     BuildContext context,
@@ -517,14 +505,12 @@ class VooFormWidget extends HookWidget {
               borderRadius: BorderRadius.circular(8.0),
               borderSide: const BorderSide(
                 color: Colors.transparent,
-                width: 1.0,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
               borderSide: const BorderSide(
                 color: Colors.transparent,
-                width: 1.0,
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -556,7 +542,7 @@ class VooFormWidget extends HookWidget {
   ) {
     final theme = Theme.of(context);
 
-    Widget submitButton = ElevatedButton.icon(
+    final Widget submitButton = ElevatedButton.icon(
       onPressed: controller.isSubmitting || onSubmit == null
           ? null
           : () async {
@@ -588,7 +574,7 @@ class VooFormWidget extends HookWidget {
           ),
     );
 
-    Widget resetButton = TextButton(
+    final Widget resetButton = TextButton(
       onPressed: controller.isSubmitting
           ? null
           : () {
@@ -602,7 +588,6 @@ class VooFormWidget extends HookWidget {
     switch (config.submitButtonPosition) {
       case ButtonPosition.bottomLeft:
         buttonRow = Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [submitButton, const SizedBox(width: 8), resetButton],
         );
         break;
@@ -631,7 +616,6 @@ class VooFormWidget extends HookWidget {
         border: Border(
           top: BorderSide(
             color: theme.colorScheme.outlineVariant,
-            width: 1.0,
           ),
         ),
       ),
@@ -679,7 +663,6 @@ class VooFormConfigProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(VooFormConfigProvider oldWidget) {
-    return config != oldWidget.config;
-  }
+  bool updateShouldNotify(VooFormConfigProvider oldWidget) =>
+    config != oldWidget.config;
 }

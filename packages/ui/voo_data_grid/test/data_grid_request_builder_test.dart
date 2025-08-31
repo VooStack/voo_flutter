@@ -24,11 +24,11 @@ void main() {
 
       test('should include filters when provided', () {
         final filters = {
-          'name': VooDataFilter(
+          'name': const VooDataFilter(
             operator: VooFilterOperator.contains,
             value: 'John',
           ),
-          'age': VooDataFilter(
+          'age': const VooDataFilter(
             operator: VooFilterOperator.greaterThan,
             value: 18,
           ),
@@ -44,7 +44,7 @@ void main() {
         expect(result['filters'], isNotNull);
         expect(result['filters'], isList);
         expect((result['filters'] as List).length, 2);
-        
+
         final filtersList = result['filters'] as List;
         expect(filtersList.any((f) => f['field'] == 'name'), isTrue);
         expect(filtersList.any((f) => f['field'] == 'age'), isTrue);
@@ -52,8 +52,8 @@ void main() {
 
       test('should include sorts when provided', () {
         final sorts = [
-          VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
-          VooColumnSort(field: 'date', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ];
 
         final result = DataGridRequestBuilder.buildRequestBody(
@@ -66,7 +66,7 @@ void main() {
         expect(result['sorts'], isNotNull);
         expect(result['sorts'], isList);
         expect((result['sorts'] as List).length, 2);
-        
+
         final sortsList = result['sorts'] as List;
         expect(sortsList[0], {
           'field': 'name',
@@ -97,7 +97,7 @@ void main() {
 
       test('should handle between operator with valueTo', () {
         final filters = {
-          'price': VooDataFilter(
+          'price': const VooDataFilter(
             operator: VooFilterOperator.between,
             value: 100,
             valueTo: 500,
@@ -120,11 +120,11 @@ void main() {
 
       test('should handle null operators without values', () {
         final filters = {
-          'deletedAt': VooDataFilter(
+          'deletedAt': const VooDataFilter(
             operator: VooFilterOperator.isNull,
             value: null,
           ),
-          'createdAt': VooDataFilter(
+          'createdAt': const VooDataFilter(
             operator: VooFilterOperator.isNotNull,
             value: null,
           ),
@@ -146,11 +146,11 @@ void main() {
 
       test('should handle list operators', () {
         final filters = {
-          'status': VooDataFilter(
+          'status': const VooDataFilter(
             operator: VooFilterOperator.inList,
             value: ['active', 'pending', 'draft'],
           ),
-          'type': VooDataFilter(
+          'type': const VooDataFilter(
             operator: VooFilterOperator.notInList,
             value: 'archived',
           ),
@@ -166,16 +166,16 @@ void main() {
         final filtersList = result['filters'] as List;
         final statusFilter = filtersList.firstWhere((f) => f['field'] == 'status');
         expect(statusFilter['values'], ['active', 'pending', 'draft']);
-        
+
         final typeFilter = filtersList.firstWhere((f) => f['field'] == 'type');
         expect(typeFilter['values'], ['archived']);
       });
 
       test('should filter out sorts with none direction', () {
         final sorts = [
-          VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
-          VooColumnSort(field: 'date', direction: VooSortDirection.none),
-          VooColumnSort(field: 'price', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'date', direction: VooSortDirection.none),
+          const VooColumnSort(field: 'price', direction: VooSortDirection.descending),
         ];
 
         final result = DataGridRequestBuilder.buildRequestBody(
@@ -207,11 +207,11 @@ void main() {
 
       test('should build filter query params with indexed format', () {
         final filters = {
-          'name': VooDataFilter(
+          'name': const VooDataFilter(
             operator: VooFilterOperator.contains,
             value: 'John',
           ),
-          'status': VooDataFilter(
+          'status': const VooDataFilter(
             operator: VooFilterOperator.equals,
             value: 'active',
           ),
@@ -234,8 +234,8 @@ void main() {
 
       test('should build sort query params with indexed format', () {
         final sorts = [
-          VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
-          VooColumnSort(field: 'date', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ];
 
         final params = DataGridRequestBuilder.buildQueryParams(
@@ -253,7 +253,7 @@ void main() {
 
       test('should handle list values as comma-separated string', () {
         final filters = {
-          'status': VooDataFilter(
+          'status': const VooDataFilter(
             operator: VooFilterOperator.inList,
             value: ['active', 'pending', 'draft'],
           ),
@@ -271,7 +271,7 @@ void main() {
 
       test('should skip value for null operators', () {
         final filters = {
-          'deletedAt': VooDataFilter(
+          'deletedAt': const VooDataFilter(
             operator: VooFilterOperator.isNull,
             value: null,
           ),
@@ -291,7 +291,7 @@ void main() {
 
       test('should include valueTo for between operator', () {
         final filters = {
-          'price': VooDataFilter(
+          'price': const VooDataFilter(
             operator: VooFilterOperator.between,
             value: 100,
             valueTo: 500,
@@ -311,9 +311,9 @@ void main() {
 
       test('should include all sorts maintaining index but skip direction for none', () {
         final sorts = [
-          VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
-          VooColumnSort(field: 'skip', direction: VooSortDirection.none),
-          VooColumnSort(field: 'date', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'skip', direction: VooSortDirection.none),
+          const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ];
 
         final params = DataGridRequestBuilder.buildQueryParams(
@@ -391,7 +391,9 @@ void main() {
 
       test('should handle null page and pageSize keys', () {
         final json = {
-          'data': [{'id': 1}],
+          'data': [
+            {'id': 1},
+          ],
           'total': 10,
         };
 
@@ -451,8 +453,8 @@ void main() {
     group('sort direction conversions', () {
       test('should convert sort directions correctly', () {
         final sorts = [
-          VooColumnSort(field: 'asc_field', direction: VooSortDirection.ascending),
-          VooColumnSort(field: 'desc_field', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'asc_field', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'desc_field', direction: VooSortDirection.descending),
         ];
 
         final result = DataGridRequestBuilder.buildRequestBody(
@@ -470,17 +472,17 @@ void main() {
 
     group('field prefix', () {
       test('should apply field prefix to filters in Voo API standard', () {
-        final builder = DataGridRequestBuilder(
+        const builder = DataGridRequestBuilder(
           standard: ApiFilterStandard.voo,
           fieldPrefix: 'Site',
         );
 
         final filters = {
-          'SiteNumber': VooDataFilter(
+          'SiteNumber': const VooDataFilter(
             operator: VooFilterOperator.equals,
             value: 100,
           ),
-          'Name': VooDataFilter(
+          'Name': const VooDataFilter(
             operator: VooFilterOperator.contains,
             value: 'Tech',
           ),
@@ -500,7 +502,7 @@ void main() {
             'operator': 'Equals',
           }
         ]);
-        
+
         expect(result['stringFilters'], [
           {
             'fieldName': 'Site.Name',
@@ -511,13 +513,13 @@ void main() {
       });
 
       test('should apply field prefix to sorting in Voo API standard', () {
-        final builder = DataGridRequestBuilder(
+        const builder = DataGridRequestBuilder(
           standard: ApiFilterStandard.voo,
           fieldPrefix: 'Client',
         );
 
         final sorts = [
-          VooColumnSort(field: 'CompanyName', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'CompanyName', direction: VooSortDirection.ascending),
         ];
 
         final result = builder.buildRequest(
@@ -532,13 +534,12 @@ void main() {
       });
 
       test('should not apply prefix when fieldPrefix is null', () {
-        final builder = DataGridRequestBuilder(
+        const builder = DataGridRequestBuilder(
           standard: ApiFilterStandard.voo,
-          fieldPrefix: null,
         );
 
         final filters = {
-          'OrderStatus': VooDataFilter(
+          'OrderStatus': const VooDataFilter(
             operator: VooFilterOperator.equals,
             value: 1,
           ),
@@ -561,28 +562,28 @@ void main() {
       });
 
       test('should handle mixed types with field prefix', () {
-        final builder = DataGridRequestBuilder(
+        const builder = DataGridRequestBuilder(
           standard: ApiFilterStandard.voo,
           fieldPrefix: 'Order',
         );
 
         final filters = {
-          'Status': VooDataFilter(
+          'Status': const VooDataFilter(
             operator: VooFilterOperator.equals,
             value: 1,
           ),
           'Date': VooDataFilter(
             operator: VooFilterOperator.greaterThanOrEqual,
-            value: DateTime(2024, 1, 1),
+            value: DateTime(2024),
           ),
-          'Cost': VooDataFilter(
+          'Cost': const VooDataFilter(
             operator: VooFilterOperator.greaterThan,
             value: 1000.50,
           ),
         };
 
         final sorts = [
-          VooColumnSort(field: 'Date', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'Date', direction: VooSortDirection.descending),
         ];
 
         final result = builder.buildRequest(
@@ -606,13 +607,12 @@ void main() {
       });
 
       test('should apply field prefix to custom format', () {
-        final builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.custom,
+        const builder = DataGridRequestBuilder(
           fieldPrefix: 'User',
         );
 
         final filters = {
-          'Name': VooDataFilter(
+          'Name': const VooDataFilter(
             operator: VooFilterOperator.contains,
             value: 'John',
           ),

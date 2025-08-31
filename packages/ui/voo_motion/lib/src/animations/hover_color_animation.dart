@@ -18,7 +18,6 @@ class VooHoverColorAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
     ),
     this.fromColor,
     required this.hoverColor,
@@ -36,8 +35,7 @@ class VooHoverColorAnimation extends StatelessWidget {
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<Color?>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<Color?>(
           duration: config.duration,
           curve: config.curve,
           tween: ColorTween(
@@ -56,13 +54,12 @@ class VooHoverColorAnimation extends StatelessWidget {
                   color ?? Colors.transparent,
                   BlendMode.modulate,
                 ),
-                child: child!,
+                child: child,
               );
             }
           },
           child: child,
-        );
-      },
+        ),
       child: child,
     );
   }
@@ -82,7 +79,6 @@ class VooHoverBlurAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
     ),
     this.blurAmount = 5.0,
     this.blurBackground = true,
@@ -91,14 +87,12 @@ class VooHoverBlurAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
@@ -146,11 +140,9 @@ class VooHoverBlurAnimation extends StatelessWidget {
             }
           },
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 /// Hover underline animation for text
@@ -168,7 +160,6 @@ class VooHoverUnderlineAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
     ),
     this.underlineColor = Colors.blue,
     this.underlineThickness = 2.0,
@@ -178,14 +169,12 @@ class VooHoverUnderlineAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return Stack(
+      builder: (context, isHovered, child) => Stack(
           children: [
             child,
             Positioned(
@@ -199,22 +188,18 @@ class VooHoverUnderlineAnimation extends StatelessWidget {
                   begin: 0.0,
                   end: isHovered ? 1.0 : 0.0,
                 ),
-                builder: (context, value, _) {
-                  return Container(
+                builder: (context, value, _) => Container(
                     height: underlineThickness,
                     color: underlineColor.withValues(alpha: underlineColor.a * value),
                     transform: Matrix4.diagonal3Values(value, 1.0, 1.0),
                     transformAlignment: Alignment.centerLeft,
-                  );
-                },
+                  ),
               ),
             ),
           ],
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 /// Hover border animation
@@ -232,7 +217,6 @@ class VooHoverBorderAnimation extends StatelessWidget {
     required this.child,
     this.config = const VooAnimationConfig(
       duration: Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
     ),
     this.borderColor = Colors.blue,
     this.borderWidth = 2.0,
@@ -242,22 +226,19 @@ class VooHoverBorderAnimation extends StatelessWidget {
   });
   
   @override
-  Widget build(BuildContext context) {
-    return VooHoverAnimation(
+  Widget build(BuildContext context) => VooHoverAnimation(
       config: config,
       onHover: onHover,
       onExit: onExit,
       cursor: SystemMouseCursors.click,
-      builder: (context, isHovered, child) {
-        return TweenAnimationBuilder<double>(
+      builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
           duration: config.duration,
           curve: config.curve,
           tween: Tween<double>(
             begin: 0.0,
             end: isHovered ? 1.0 : 0.0,
           ),
-          builder: (context, value, child) {
-            return Container(
+          builder: (context, value, child) => DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
                   color: borderColor.withValues(alpha: borderColor.a * value),
@@ -266,12 +247,9 @@ class VooHoverBorderAnimation extends StatelessWidget {
                 borderRadius: borderRadius,
               ),
               child: child,
-            );
-          },
+            ),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }

@@ -43,7 +43,8 @@ void main() {
   );
 
   // Create a widget that uses these fields
-  final widget = MaterialApp(
+  // This verifies that the fields can be used without type errors
+  MaterialApp(
     home: Scaffold(
       body: Column(
         children: [

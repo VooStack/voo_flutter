@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../foundations/colors.dart';
-import '../foundations/spacing.dart';
+import 'package:voo_ui_core/src/foundations/colors.dart';
+import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooStatusBadge extends StatelessWidget {
   final int statusCode;

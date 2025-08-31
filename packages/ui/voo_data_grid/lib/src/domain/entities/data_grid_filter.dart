@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_data_grid/src/data_grid.dart';
-import 'package:voo_data_grid/src/data_grid_column.dart';
-import 'package:voo_data_grid/src/data_grid_controller.dart';
-import 'package:voo_data_grid/src/data_grid_types.dart';
+import 'package:voo_data_grid/src/presentation/widgets/data_grid.dart';
+import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
+import 'package:voo_data_grid/src/presentation/controllers/data_grid_controller.dart';
+import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Filter row widget for VooDataGrid

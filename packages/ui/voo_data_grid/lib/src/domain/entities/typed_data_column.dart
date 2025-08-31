@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/data_grid_column.dart';
+import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 
 /// A typed version of VooDataColumn that provides type safety for column values
 /// 
@@ -122,8 +122,7 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     String Function(V value)? typedValueFormatter,
     Widget Function(BuildContext context, V value, T row)? typedCellBuilder,
     void Function(BuildContext context, T row, V value)? typedOnCellTap,
-  }) {
-    return TypedVooDataColumn<T, V>(
+  }) => TypedVooDataColumn<T, V>(
       field: field ?? this.field,
       label: label ?? this.label,
       width: width ?? this.width,
@@ -150,5 +149,4 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
       showFilterOperator: showFilterOperator ?? this.showFilterOperator,
       excludeFromApi: excludeFromApi ?? this.excludeFromApi,
     );
-  }
 }

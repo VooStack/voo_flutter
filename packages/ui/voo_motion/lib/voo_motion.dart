@@ -1,37 +1,33 @@
 library;
 
-// Core
-export 'src/core/voo_motion_controller.dart';
-export 'src/core/voo_animation_config.dart';
-export 'src/core/voo_motion_curve.dart';
-
-// Extensions
-export 'src/extensions/widget_animation_extensions.dart';
-
+export 'src/animations/blur_animation.dart';
+export 'src/animations/bounce_animation.dart';
+export 'src/animations/drop_animation.dart';
 // Animations
 export 'src/animations/fade_animation.dart';
-export 'src/animations/slide_animation.dart';
-export 'src/animations/scale_animation.dart';
-export 'src/animations/rotation_animation.dart';
-export 'src/animations/drop_animation.dart';
-export 'src/animations/bounce_animation.dart';
-export 'src/animations/shake_animation.dart';
 export 'src/animations/flip_animation.dart';
-export 'src/animations/blur_animation.dart';
 export 'src/animations/glow_animation.dart';
-export 'src/animations/pulse_animation.dart';
-export 'src/animations/shimmer_animation.dart';
-export 'src/animations/wave_animation.dart';
-export 'src/animations/ripple_animation.dart';
-export 'src/animations/parallax_animation.dart';
-export 'src/animations/typewriter_animation.dart';
 export 'src/animations/hover_animation.dart';
 export 'src/animations/hover_color_animation.dart';
-
-// Widgets
-export 'src/widgets/voo_animated_widget.dart';
-export 'src/widgets/voo_stagger_list.dart';
-export 'src/widgets/voo_hero_animation.dart';
-
+export 'src/animations/parallax_animation.dart';
+export 'src/animations/pulse_animation.dart';
+export 'src/animations/ripple_animation.dart';
+export 'src/animations/rotation_animation.dart';
+export 'src/animations/scale_animation.dart';
+export 'src/animations/shake_animation.dart';
+export 'src/animations/shimmer_animation.dart';
+export 'src/animations/slide_animation.dart';
+export 'src/animations/typewriter_animation.dart';
+export 'src/animations/wave_animation.dart';
 // Config
 export 'src/config/voo_motion_settings.dart';
+export 'src/core/voo_animation_config.dart';
+// Core
+export 'src/core/voo_motion_controller.dart';
+export 'src/core/voo_motion_curve.dart';
+// Extensions
+export 'src/extensions/widget_animation_extensions.dart';
+// Widgets
+export 'src/widgets/voo_animated_widget.dart';
+export 'src/widgets/voo_hero_animation.dart';
+export 'src/widgets/voo_stagger_list.dart';

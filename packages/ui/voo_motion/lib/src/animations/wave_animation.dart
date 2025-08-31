@@ -53,7 +53,7 @@ class _VooWaveAnimationState extends State<VooWaveAnimation>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.config.curve,
-    ));
+    ),);
     
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
@@ -97,8 +97,7 @@ class _VooWaveAnimationState extends State<VooWaveAnimation>
   }
   
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         final waveValue = _calculateWaveValue(_animation.value);
@@ -112,5 +111,4 @@ class _VooWaveAnimationState extends State<VooWaveAnimation>
         );
       },
     );
-  }
 }
