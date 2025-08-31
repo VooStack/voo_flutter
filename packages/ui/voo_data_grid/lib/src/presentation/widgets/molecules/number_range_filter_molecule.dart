@@ -55,12 +55,12 @@ class NumberRangeFilterMolecule<T> extends StatelessWidget {
               controller: minController,
               decoration: InputDecoration(
                 hintText: 'Min',
-                hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+                hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 border: InputBorder.none,
               ),
-              style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+              style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
@@ -94,12 +94,12 @@ class NumberRangeFilterMolecule<T> extends StatelessWidget {
               controller: maxController,
               decoration: InputDecoration(
                 hintText: 'Max',
-                hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+                hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 border: InputBorder.none,
               ),
-              style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+              style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),

@@ -4,6 +4,7 @@ library;
 export 'src/data/datasources/advanced_remote_data_source.dart';
 export 'src/data/datasources/data_grid_source.dart'; // Legacy ChangeNotifier-based - will be deprecated
 export 'src/data/datasources/data_grid_source_base.dart'; // New state-agnostic interface
+export 'src/data/datasources/voo_local_data_source.dart'; // Local data source implementation
 // Data Layer - Models
 export 'src/data/models/advanced_filters.dart';
 export 'src/data/models/data_grid_constraints.dart';

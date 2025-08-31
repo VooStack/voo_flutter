@@ -1,3 +1,21 @@
+## 0.6.4 - 2025-08-31
+
+* **Bug Fixes & UI Improvements**
+  * Fixed dropdown filter layout issues - dropdowns now properly expand within column width
+  * Fixed onSort callback not working in VooDataGridStateless - sortColumn method now properly invokes callback
+  * Standardized filter widget font sizes to 12px for consistent UI appearance
+  * Fixed theme consistency across all filter widget types
+
+* **Code Quality Improvements**
+  * Fixed all 76 lint issues including:
+    - Removed incorrect @override annotations on non-overriding methods
+    - Converted block function bodies to expression functions where appropriate
+    - Added const constructors where applicable
+    - Removed redundant default argument values
+    - Added ignore comments for intentionally unused test variables
+  * Created VooLocalDataSource for local data management
+  * Added comprehensive test examples validating all grid functionality
+
 ## 0.6.3 - 2024-12-31
 
 * **Test Suite Maintenance**

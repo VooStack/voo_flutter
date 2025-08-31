@@ -84,82 +84,70 @@ class DropdownFilterFieldMolecule<T> extends StatelessWidget {
   
   Widget _buildCompactDropdown(ThemeData theme) => Container(
       height: height ?? 32,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(4),
       ),
       child: DropdownButtonHideUnderline(
-        child: ButtonTheme(
-          alignedDropdown: true,
-          child: DropdownButton<T>(
-            value: value,
-            hint: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                hintText ?? allOptionLabel,
-                style: TextStyle(fontSize: 13, color: theme.hintColor),
-              ),
-            ),
-            items: [
-              DropdownMenuItem<T>(
-                child: Text(
-                  allOptionLabel,
-                  style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-                ),
-              ),
-              ...options.map(
-                (option) => DropdownMenuItem<T>(
-                  value: option.value as T?,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (option.icon != null) ...[
-                        Icon(option.icon, size: 14),
-                        const SizedBox(width: 6),
-                      ],
-                      Flexible(
-                        child: Text(
-                          option.label,
-                          style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            onChanged: onChanged,
-            isExpanded: true,
-            isDense: true,
-            icon: Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Icon(Icons.arrow_drop_down, size: 18, color: theme.iconTheme.color),
-            ),
-            selectedItemBuilder: (context) => [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  allOptionLabel,
-                  style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-                ),
-              ),
-              ...options.map(
-                (option) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    option.label,
-                    style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ],
-            style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
-            dropdownColor: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(4),
+        child: DropdownButton<T>(
+          value: value,
+          hint: Text(
+            hintText ?? allOptionLabel,
+            style: TextStyle(fontSize: 12, color: theme.hintColor),
+            overflow: TextOverflow.ellipsis,
           ),
+          items: [
+            DropdownMenuItem<T>(
+              child: Text(
+                allOptionLabel,
+                style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+              ),
+            ),
+            ...options.map(
+              (option) => DropdownMenuItem<T>(
+                value: option.value as T?,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (option.icon != null) ...[
+                      Icon(option.icon, size: 14),
+                      const SizedBox(width: 4),
+                    ],
+                    Flexible(
+                      child: Text(
+                        option.label,
+                        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          onChanged: onChanged,
+          isExpanded: true,
+          isDense: true,
+          icon: Icon(Icons.arrow_drop_down, size: 16, color: theme.iconTheme.color),
+          selectedItemBuilder: (context) => [
+            Text(
+              allOptionLabel,
+              style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+              overflow: TextOverflow.ellipsis,
+            ),
+            ...options.map(
+              (option) => Text(
+                option.label,
+                style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+          style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+          dropdownColor: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(4),
         ),
       ),
     );

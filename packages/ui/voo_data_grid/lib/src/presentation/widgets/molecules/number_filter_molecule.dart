@@ -48,7 +48,7 @@ class NumberFilterMolecule<T> extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           hintText: column.filterHint ?? 'Number...',
-          hintStyle: TextStyle(fontSize: 13, color: theme.hintColor),
+          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           border: InputBorder.none,
@@ -63,7 +63,7 @@ class NumberFilterMolecule<T> extends StatelessWidget {
               : null,
           suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
         ),
-        style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
+        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),

@@ -64,7 +64,7 @@ class DateRangeFilterMolecule<T> extends StatelessWidget {
                       ? '${_formatDate(currentFilter!.value as DateTime)} - ${_formatDate(currentFilter!.valueTo as DateTime)}'
                       : column.filterHint ?? 'Select range',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     color: currentFilter?.value != null 
                         ? theme.textTheme.bodyMedium?.color 
                         : theme.hintColor,

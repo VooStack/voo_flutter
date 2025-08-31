@@ -217,34 +217,33 @@ class _DataGridCoreOrganismState<T> extends State<DataGridCoreOrganism<T>> {
     );
   }
 
-  Widget _buildContent(BoxConstraints constraints) {
-    return _effectiveDisplayMode == VooDataGridDisplayMode.cards 
-        ? DataGridCardViewOrganism<T>(
-            controller: widget.controller,
-            theme: _theme,
-            loadingWidget: widget.loadingWidget,
-            emptyStateWidget: widget.emptyStateWidget,
-            errorBuilder: widget.errorBuilder,
-            cardBuilder: widget.cardBuilder,
-            onRowTap: widget.onRowTap,
-            onRowDoubleTap: widget.onRowDoubleTap,
-            mobilePriorityColumns: widget.mobilePriorityColumns,
-          )
-        : DataGridTableViewOrganism<T>(
-            controller: widget.controller,
-            theme: _theme,
-            width: constraints.maxWidth,
-            loadingWidget: widget.loadingWidget,
-            emptyStateWidget: widget.emptyStateWidget,
-            errorBuilder: widget.errorBuilder,
-            onRowTap: widget.onRowTap,
-            onRowDoubleTap: widget.onRowDoubleTap,
-            onRowHover: widget.onRowHover,
-            alwaysShowVerticalScrollbar: widget.alwaysShowVerticalScrollbar,
-            alwaysShowHorizontalScrollbar: widget.alwaysShowHorizontalScrollbar,
-            mobilePriorityColumns: widget.mobilePriorityColumns,
-          );
-  }
+  Widget _buildContent(BoxConstraints constraints) =>
+      _effectiveDisplayMode == VooDataGridDisplayMode.cards 
+          ? DataGridCardViewOrganism<T>(
+              controller: widget.controller,
+              theme: _theme,
+              loadingWidget: widget.loadingWidget,
+              emptyStateWidget: widget.emptyStateWidget,
+              errorBuilder: widget.errorBuilder,
+              cardBuilder: widget.cardBuilder,
+              onRowTap: widget.onRowTap,
+              onRowDoubleTap: widget.onRowDoubleTap,
+              mobilePriorityColumns: widget.mobilePriorityColumns,
+            )
+          : DataGridTableViewOrganism<T>(
+              controller: widget.controller,
+              theme: _theme,
+              width: constraints.maxWidth,
+              loadingWidget: widget.loadingWidget,
+              emptyStateWidget: widget.emptyStateWidget,
+              errorBuilder: widget.errorBuilder,
+              onRowTap: widget.onRowTap,
+              onRowDoubleTap: widget.onRowDoubleTap,
+              onRowHover: widget.onRowHover,
+              alwaysShowVerticalScrollbar: widget.alwaysShowVerticalScrollbar,
+              alwaysShowHorizontalScrollbar: widget.alwaysShowHorizontalScrollbar,
+              mobilePriorityColumns: widget.mobilePriorityColumns,
+            );
 
   Widget _buildPagination(double width) {
     if (_isMobile(width)) {

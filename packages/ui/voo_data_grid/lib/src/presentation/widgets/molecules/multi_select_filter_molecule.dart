@@ -50,7 +50,7 @@ class MultiSelectFilterMolecule<T> extends StatelessWidget {
                       ? column.filterHint ?? 'Select...' 
                       : '${selectedValues.length} selected',
                   style: TextStyle(
-                    fontSize: 13, 
+                    fontSize: 12, 
                     color: selectedValues.isEmpty 
                         ? theme.hintColor 
                         : theme.textTheme.bodyMedium?.color,
@@ -78,7 +78,7 @@ class MultiSelectFilterMolecule<T> extends StatelessWidget {
                   });
                   onFilterChanged(selectedValues.isEmpty ? null : selectedValues);
                 },
-                title: Text(option.label, style: const TextStyle(fontSize: 13)),
+                title: Text(option.label, style: const TextStyle(fontSize: 12)),
                 dense: true,
                 controlAffinity: ListTileControlAffinity.leading,
               ),
