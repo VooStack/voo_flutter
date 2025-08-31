@@ -73,7 +73,28 @@ class VooFormController extends ChangeNotifier {
   String? getError(String fieldId) => _fieldErrors[fieldId];
 
   void setValue(String fieldId, dynamic value, {bool validate = false}) {
-    _fieldValues[fieldId] = value;
+    // Convert value to appropriate type based on field type
+    final field = _form.fields.firstWhere(
+      (f) => f.id == fieldId,
+      orElse: () => throw StateError('Field with id $fieldId not found'),
+    );
+    
+    dynamic convertedValue = value;
+    
+    // Convert string values to appropriate types for specific field types
+    if (value is String) {
+      if (field.type == VooFieldType.number) {
+        if (value.isEmpty) {
+          // For empty strings on number fields, use null
+          convertedValue = null;
+        } else {
+          // Try to parse as number, use null if parsing fails
+          convertedValue = num.tryParse(value);
+        }
+      }
+    }
+    
+    _fieldValues[fieldId] = convertedValue;
 
     if (!_form.isDirty) {
       _form = _form.copyWith(isDirty: true);
@@ -121,8 +142,29 @@ class VooFormController extends ChangeNotifier {
   }
 
   void _handleFieldChange(String fieldId, dynamic value) {
-    if (_fieldValues[fieldId] != value) {
-      setValue(fieldId, value);
+    // Convert value to appropriate type before checking equality
+    final field = _form.fields.firstWhere(
+      (f) => f.id == fieldId,
+      orElse: () => throw StateError('Field with id $fieldId not found'),
+    );
+    
+    dynamic convertedValue = value;
+    
+    // Convert string values to appropriate types for specific field types
+    if (value is String) {
+      if (field.type == VooFieldType.number) {
+        if (value.isEmpty) {
+          // For empty strings on number fields, use null
+          convertedValue = null;
+        } else {
+          // Try to parse as number, use null if parsing fails
+          convertedValue = num.tryParse(value);
+        }
+      }
+    }
+    
+    if (_fieldValues[fieldId] != convertedValue) {
+      setValue(fieldId, convertedValue);
 
       final field = _form.getField(fieldId);
       field?.onChanged?.call(value);

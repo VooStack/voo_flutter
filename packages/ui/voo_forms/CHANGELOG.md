@@ -1,4 +1,27 @@
-## [0.1.17] - 2024-12-31
+## [0.1.18]
+
+### Fixed
+- **Type Conversion in Number Fields**: Fixed TypeError when entering string values in number fields
+  - VooFormController now properly converts string inputs to numbers for number fields
+  - Invalid number strings are converted to null instead of causing type errors
+  - Empty strings in number fields are handled as null values
+
+### Added
+- **Comprehensive Form Submission Tests**: Added extensive test coverage for form submission
+  - Tests for isSubmitting state management and preventing concurrent submissions
+  - Tests for isSubmitted state tracking across successful/failed submissions
+  - Tests for onSubmit, onSuccess, and onError callbacks
+  - Tests for validation during submission and error handling
+  - Tests for isDirty state management during submission flow
+  - Edge case tests for rapid submissions and empty forms
+  - Total of 28 new submission-related tests
+
+### Testing
+- Added `voo_form_controller_submission_test.dart` with comprehensive submission tests
+- Added `voo_form_controller_type_test.dart` with 15 type conversion tests
+- All tests passing with proper type safety
+
+## [0.1.17]
 
 ### Added
 - **Type Enforcement System**: Comprehensive type safety for all form fields
@@ -28,7 +51,7 @@
 - Added tests for all error display modes (14 tests)
 - All existing tests pass with new implementations
 
-## [0.1.16] - 2024-12-31
+## [0.1.16]
 
 ### Fixed
 - **Test Improvements**: Fixed all failing tests in voo_forms package

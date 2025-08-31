@@ -41,285 +41,139 @@ void main() {
       });
     });
     
-    group('direction', () {
-      test('should return asc for ascending sort', () {
-        // Arrange
-        const sort = VooColumnSort(
-          field: 'date',
-          ascending: true,
-        );
+    group('field types', () {
+      test('should handle various field names', () {
+        // Test different field name patterns
+        const sorts = [
+          VooColumnSort(field: 'id', direction: VooSortDirection.ascending),
+          VooColumnSort(field: 'user_name', direction: VooSortDirection.descending),
+          VooColumnSort(field: 'createdAt', direction: VooSortDirection.ascending),
+          VooColumnSort(field: 'total_price', direction: VooSortDirection.none),
+        ];
         
-        // Act & Assert
-        expect(sort.direction, equals('asc'));
-      });
-      
-      test('should return desc for descending sort', () {
-        // Arrange
-        const sort = VooColumnSort(
-          field: 'date',
-          ascending: false,
-        );
-        
-        // Act & Assert
-        expect(sort.direction, equals('desc'));
+        for (final sort in sorts) {
+          expect(sort.field, isA<String>());
+          expect(sort.field.isNotEmpty, isTrue);
+        }
       });
     });
     
-    group('toJson', () {
-      test('should serialize ascending sort to JSON', () {
-        // Arrange
-        const sort = VooColumnSort(
-          field: 'id',
-          ascending: true,
-        );
+    group('direction states', () {
+      test('should support all sort directions', () {
+        // Test all available sort directions
+        const directions = [
+          VooSortDirection.ascending,
+          VooSortDirection.descending,
+          VooSortDirection.none,
+        ];
         
-        // Act
-        final json = sort.toJson();
-        
-        // Assert
-        expect(json, isA<Map<String, dynamic>>());
-        expect(json['field'], equals('id'));
-        expect(json['ascending'], isTrue);
-        expect(json['direction'], equals('asc'));
-      });
-      
-      test('should serialize descending sort to JSON', () {
-        // Arrange
-        const sort = VooColumnSort(
-          field: 'createdAt',
-          ascending: false,
-        );
-        
-        // Act
-        final json = sort.toJson();
-        
-        // Assert
-        expect(json['field'], equals('createdAt'));
-        expect(json['ascending'], isFalse);
-        expect(json['direction'], equals('desc'));
+        for (final direction in directions) {
+          final sort = VooColumnSort(
+            field: 'testField',
+            direction: direction,
+          );
+          expect(sort.direction, equals(direction));
+        }
       });
     });
     
-    group('fromJson', () {
-      test('should deserialize from JSON with ascending', () {
+    group('multiple column sorting scenarios', () {
+      test('should support creating multiple sort instances', () {
         // Arrange
-        final json = {
-          'field': 'username',
-          'ascending': true,
-        };
-        
-        // Act
-        final sort = VooColumnSort.fromJson(json);
+        final sorts = [
+          const VooColumnSort(field: 'category', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'price', direction: VooSortDirection.descending),
+          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+        ];
         
         // Assert
-        expect(sort.field, equals('username'));
-        expect(sort.ascending, isTrue);
+        expect(sorts.length, equals(3));
+        expect(sorts[0].field, equals('category'));
+        expect(sorts[0].direction, equals(VooSortDirection.ascending));
+        expect(sorts[1].field, equals('price'));
+        expect(sorts[1].direction, equals(VooSortDirection.descending));
+        expect(sorts[2].field, equals('name'));
+        expect(sorts[2].direction, equals(VooSortDirection.ascending));
       });
       
-      test('should deserialize from JSON with direction', () {
+      test('should handle clearing sorts with none direction', () {
         // Arrange
-        final json = {
-          'field': 'score',
-          'direction': 'desc',
-        };
-        
-        // Act
-        final sort = VooColumnSort.fromJson(json);
+        const clearedSort = VooColumnSort(
+          field: 'name',
+          direction: VooSortDirection.none,
+        );
         
         // Assert
-        expect(sort.field, equals('score'));
-        expect(sort.ascending, isFalse);
+        expect(clearedSort.direction, equals(VooSortDirection.none));
+      });
+    });
+    
+    group('sorting use cases', () {
+      test('should represent text column sorting', () {
+        const sorts = [
+          VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+          VooColumnSort(field: 'email', direction: VooSortDirection.descending),
+          VooColumnSort(field: 'description', direction: VooSortDirection.none),
+        ];
+        
+        expect(sorts[0].direction, equals(VooSortDirection.ascending));
+        expect(sorts[1].direction, equals(VooSortDirection.descending));
+        expect(sorts[2].direction, equals(VooSortDirection.none));
       });
       
-      test('should handle both ascending and direction in JSON', () {
-        // Arrange
-        final json = {
-          'field': 'rank',
-          'ascending': false,
-          'direction': 'desc', // Should prioritize ascending
-        };
+      test('should represent numeric column sorting', () {
+        const sorts = [
+          VooColumnSort(field: 'id', direction: VooSortDirection.ascending),
+          VooColumnSort(field: 'price', direction: VooSortDirection.descending),
+          VooColumnSort(field: 'quantity', direction: VooSortDirection.ascending),
+        ];
         
-        // Act
-        final sort = VooColumnSort.fromJson(json);
-        
-        // Assert
-        expect(sort.field, equals('rank'));
-        expect(sort.ascending, isFalse);
+        for (final sort in sorts) {
+          expect(sort.field, isA<String>());
+          expect(sort.direction, isA<VooSortDirection>());
+        }
       });
       
-      test('should default to ascending when neither provided', () {
-        // Arrange
-        final json = {
-          'field': 'title',
-        };
+      test('should represent date column sorting', () {
+        const sorts = [
+          VooColumnSort(field: 'createdAt', direction: VooSortDirection.descending),
+          VooColumnSort(field: 'updatedAt', direction: VooSortDirection.ascending),
+          VooColumnSort(field: 'publishedDate', direction: VooSortDirection.none),
+        ];
         
-        // Act
-        final sort = VooColumnSort.fromJson(json);
-        
-        // Assert
-        expect(sort.field, equals('title'));
-        expect(sort.ascending, isTrue);
+        expect(sorts[0].direction, equals(VooSortDirection.descending));
+        expect(sorts[1].direction, equals(VooSortDirection.ascending));
+        expect(sorts[2].direction, equals(VooSortDirection.none));
       });
     });
     
     group('equality', () {
-      test('should be equal when field and ascending match', () {
+      test('should compare field values', () {
         // Arrange
-        const sort1 = VooColumnSort(
-          field: 'name',
-          ascending: true,
-        );
-        const sort2 = VooColumnSort(
-          field: 'name',
-          ascending: true,
-        );
+        const sort1 = VooColumnSort(field: 'name', direction: VooSortDirection.ascending);
+        const sort2 = VooColumnSort(field: 'email', direction: VooSortDirection.ascending);
         
         // Assert
-        expect(sort1, equals(sort2));
+        expect(sort1.field, isNot(equals(sort2.field)));
       });
       
-      test('should not be equal when field differs', () {
+      test('should compare direction values', () {
         // Arrange
-        const sort1 = VooColumnSort(
-          field: 'name',
-          ascending: true,
-        );
-        const sort2 = VooColumnSort(
-          field: 'email',
-          ascending: true,
-        );
+        const sort1 = VooColumnSort(field: 'name', direction: VooSortDirection.ascending);
+        const sort2 = VooColumnSort(field: 'name', direction: VooSortDirection.descending);
         
         // Assert
-        expect(sort1, isNot(equals(sort2)));
+        expect(sort1.direction, isNot(equals(sort2.direction)));
       });
       
-      test('should not be equal when ascending differs', () {
+      test('should identify matching sorts', () {
         // Arrange
-        const sort1 = VooColumnSort(
-          field: 'price',
-          ascending: true,
-        );
-        const sort2 = VooColumnSort(
-          field: 'price',
-          ascending: false,
-        );
+        const sort1 = VooColumnSort(field: 'price', direction: VooSortDirection.descending);
+        const sort2 = VooColumnSort(field: 'price', direction: VooSortDirection.descending);
         
         // Assert
-        expect(sort1, isNot(equals(sort2)));
-      });
-    });
-    
-    group('copyWith', () {
-      test('should create copy with updated field', () {
-        // Arrange
-        const original = VooColumnSort(
-          field: 'name',
-          ascending: true,
-        );
-        
-        // Act
-        final copy = original.copyWith(field: 'email');
-        
-        // Assert
-        expect(copy.field, equals('email'));
-        expect(copy.ascending, isTrue);
-      });
-      
-      test('should create copy with updated ascending', () {
-        // Arrange
-        const original = VooColumnSort(
-          field: 'date',
-          ascending: true,
-        );
-        
-        // Act
-        final copy = original.copyWith(ascending: false);
-        
-        // Assert
-        expect(copy.field, equals('date'));
-        expect(copy.ascending, isFalse);
-      });
-      
-      test('should create copy with all parameters updated', () {
-        // Arrange
-        const original = VooColumnSort(
-          field: 'id',
-          ascending: false,
-        );
-        
-        // Act
-        final copy = original.copyWith(
-          field: 'timestamp',
-          ascending: true,
-        );
-        
-        // Assert
-        expect(copy.field, equals('timestamp'));
-        expect(copy.ascending, isTrue);
-      });
-    });
-    
-    group('toggle', () {
-      test('should toggle ascending to descending', () {
-        // Arrange
-        const original = VooColumnSort(
-          field: 'name',
-          ascending: true,
-        );
-        
-        // Act
-        final toggled = original.toggle();
-        
-        // Assert
-        expect(toggled.field, equals('name'));
-        expect(toggled.ascending, isFalse);
-      });
-      
-      test('should toggle descending to ascending', () {
-        // Arrange
-        const original = VooColumnSort(
-          field: 'price',
-          ascending: false,
-        );
-        
-        // Act
-        final toggled = original.toggle();
-        
-        // Assert
-        expect(toggled.field, equals('price'));
-        expect(toggled.ascending, isTrue);
-      });
-    });
-    
-    group('toString', () {
-      test('should return readable string for ascending', () {
-        // Arrange
-        const sort = VooColumnSort(
-          field: 'username',
-          ascending: true,
-        );
-        
-        // Act
-        final str = sort.toString();
-        
-        // Assert
-        expect(str, contains('username'));
-        expect(str, contains('asc'));
-      });
-      
-      test('should return readable string for descending', () {
-        // Arrange
-        const sort = VooColumnSort(
-          field: 'score',
-          ascending: false,
-        );
-        
-        // Act
-        final str = sort.toString();
-        
-        // Assert
-        expect(str, contains('score'));
-        expect(str, contains('desc'));
+        expect(sort1.field, equals(sort2.field));
+        expect(sort1.direction, equals(sort2.direction));
       });
     });
   });

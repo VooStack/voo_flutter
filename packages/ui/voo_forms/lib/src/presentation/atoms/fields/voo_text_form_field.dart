@@ -43,10 +43,10 @@ class VooTextFormField extends StatefulWidget {
 class _VooTextFormFieldState extends State<VooTextFormField> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
-  
+
   bool _obscureText = false;
   bool _hasBeenFocused = false;
-  
+
   // Helper instances
   static const _prefixBuilder = TextFieldPrefixBuilder();
   static const _suffixBuilder = TextFieldSuffixBuilder();
@@ -55,8 +55,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ??
-        TextEditingController(text: widget.field.value?.toString() ?? widget.field.initialValue?.toString() ?? '');
+    _controller = widget.controller ?? TextEditingController(text: widget.field.value?.toString() ?? widget.field.initialValue?.toString() ?? '');
     _focusNode = widget.focusNode ?? FocusNode();
     _obscureText = widget.field.type == VooFieldType.password;
 
@@ -93,7 +92,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
     if (widget.field.textInputAction != null) {
       return widget.field.textInputAction!;
     }
-    
+
     switch (widget.field.type) {
       case VooFieldType.multiline:
         return TextInputAction.newline;
@@ -119,7 +118,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
     if (widget.field.textCapitalization != null) {
       return widget.field.textCapitalization!;
     }
-    
+
     switch (widget.field.type) {
       case VooFieldType.email:
       case VooFieldType.password:
@@ -134,46 +133,40 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
 
   InputDecoration _buildDecoration(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // If a decoration was explicitly provided, use it as-is with minimal changes
     if (widget.decoration != null) {
-      final errorText = widget.showError 
-          ? (widget.error ?? widget.field.error) 
-          : null;
-      
+      final errorText = widget.showError ? (widget.error ?? widget.field.error) : null;
+
       return widget.decoration!.copyWith(
         errorText: errorText,
         // Only add prefix/suffix if not already in decoration
-        prefixIcon: widget.decoration!.prefixIcon ?? 
-            (widget.field.prefixIcon != null ? Icon(widget.field.prefixIcon) : null),
-        suffixIcon: widget.decoration!.suffixIcon ?? _suffixBuilder.build(
-          field: widget.field,
-          obscureText: _obscureText,
-          onToggleObscureText: widget.field.type == VooFieldType.password
-              ? () => setState(() => _obscureText = !_obscureText)
-              : null,
-        ),
+        prefixIcon: widget.decoration!.prefixIcon ?? (widget.field.prefixIcon != null ? Icon(widget.field.prefixIcon) : null),
+        suffixIcon: widget.decoration!.suffixIcon ??
+            _suffixBuilder.build(
+              field: widget.field,
+              obscureText: _obscureText,
+              onToggleObscureText: widget.field.type == VooFieldType.password ? () => setState(() => _obscureText = !_obscureText) : null,
+            ),
       );
     }
-    
+
     // Build decoration based on label position from options
     InputDecoration decoration;
-    
+
     // Build label with required indicator
     String? labelText = widget.field.label;
     if (labelText != null && widget.field.required) {
       labelText = '$labelText *';
     }
-    
+
     final prefixWidget = _prefixBuilder.build(widget.field);
     final suffixWidget = _suffixBuilder.build(
       field: widget.field,
       obscureText: _obscureText,
-      onToggleObscureText: widget.field.type == VooFieldType.password
-          ? () => setState(() => _obscureText = !_obscureText)
-          : null,
+      onToggleObscureText: widget.field.type == VooFieldType.password ? () => setState(() => _obscureText = !_obscureText) : null,
     );
-    
+
     if (widget.options.labelPosition == LabelPosition.floating) {
       decoration = InputDecoration(
         labelText: labelText,
@@ -204,7 +197,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
         contentPadding: widget.field.padding,
       );
     }
-    
+
     // Apply field variant styling
     switch (widget.options.fieldVariant) {
       case FieldVariant.filled:
@@ -268,19 +261,17 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
       style: widget.options.textStyle ?? theme.textTheme.bodyLarge,
       cursorColor: theme.colorScheme.primary,
       validator: (_) => widget.field.validate(),
-      autovalidateMode: widget.field.validateOnChange 
-          ? AutovalidateMode.onUserInteraction 
-          : AutovalidateMode.disabled,
+      autovalidateMode: widget.field.validateOnChange ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
       onChanged: (value) {
         // Always call widget.onChanged with the string value
         widget.onChanged?.call(value);
-        
+
         // For field.onChanged, parse the value if needed
         dynamic callbackValue = value;
         if (widget.field.type == VooFieldType.number && value.isNotEmpty) {
           callbackValue = num.tryParse(value) ?? value;
         }
-        
+
         // Safely call field.onChanged with type checking
         try {
           final dynamic dynField = widget.field;

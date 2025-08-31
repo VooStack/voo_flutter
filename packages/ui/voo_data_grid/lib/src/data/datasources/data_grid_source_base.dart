@@ -70,6 +70,12 @@ class VooDataGridState<T> {
   /// Whether filters are visible
   final bool filtersVisible;
 
+  /// Whether data is being submitted
+  final bool isSubmitting;
+
+  /// Whether data has been submitted successfully
+  final bool isSubmitted;
+
   const VooDataGridState({
     this.mode = VooDataGridMode.remote,
     this.allRows = const [],
@@ -84,6 +90,8 @@ class VooDataGridState<T> {
     this.selectedRows = const {},
     this.selectionMode = VooSelectionMode.none,
     this.filtersVisible = false,
+    this.isSubmitting = false,
+    this.isSubmitted = false,
   });
 
   /// Create a copy with updated values
@@ -101,6 +109,8 @@ class VooDataGridState<T> {
     Set<T>? selectedRows,
     VooSelectionMode? selectionMode,
     bool? filtersVisible,
+    bool? isSubmitting,
+    bool? isSubmitted,
   }) => VooDataGridState<T>(
       mode: mode ?? this.mode,
       allRows: allRows ?? this.allRows,
@@ -115,6 +125,8 @@ class VooDataGridState<T> {
       selectedRows: selectedRows ?? this.selectedRows,
       selectionMode: selectionMode ?? this.selectionMode,
       filtersVisible: filtersVisible ?? this.filtersVisible,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      isSubmitted: isSubmitted ?? this.isSubmitted,
     );
 
   /// Get total number of pages

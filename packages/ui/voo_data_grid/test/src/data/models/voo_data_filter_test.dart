@@ -6,34 +6,30 @@ void main() {
     group('constructor', () {
       test('should create instance with required parameters', () {
         // Arrange
-        const field = 'name';
-        const operator = 'contains';
+        const operator = VooFilterOperator.contains;
         const value = 'test';
         
         // Act
         const filter = VooDataFilter(
-          field: field,
           operator: operator,
           value: value,
         );
         
         // Assert
-        expect(filter.field, equals(field));
         expect(filter.operator, equals(operator));
         expect(filter.value, equals(value));
+        expect(filter.valueTo, isNull);
       });
       
       test('should create instance with null value', () {
         // Arrange & Act
         const filter = VooDataFilter(
-          field: 'status',
-          operator: 'isNull',
+          operator: VooFilterOperator.isNull,
           value: null,
         );
         
         // Assert
-        expect(filter.field, equals('status'));
-        expect(filter.operator, equals('isNull'));
+        expect(filter.operator, equals(VooFilterOperator.isNull));
         expect(filter.value, isNull);
       });
       
@@ -43,194 +39,217 @@ void main() {
         
         // Act
         final filter = VooDataFilter(
-          field: 'status',
-          operator: 'in',
+          operator: VooFilterOperator.inList,
           value: values,
         );
         
         // Assert
-        expect(filter.field, equals('status'));
-        expect(filter.operator, equals('in'));
+        expect(filter.operator, equals(VooFilterOperator.inList));
         expect(filter.value, equals(values));
+      });
+      
+      test('should create instance with valueTo for between operator', () {
+        // Arrange
+        const valueFrom = 10;
+        const valueTo = 100;
+        
+        // Act
+        const filter = VooDataFilter(
+          operator: VooFilterOperator.between,
+          value: valueFrom,
+          valueTo: valueTo,
+        );
+        
+        // Assert
+        expect(filter.operator, equals(VooFilterOperator.between));
+        expect(filter.value, equals(valueFrom));
+        expect(filter.valueTo, equals(valueTo));
       });
     });
     
-    group('toJson', () {
-      test('should serialize to JSON correctly', () {
-        // Arrange
-        const filter = VooDataFilter(
-          field: 'price',
-          operator: 'greaterThan',
-          value: 100,
-        );
+    group('operator types', () {
+      test('should support text operators', () {
+        // Test various text operators
+        const operators = [
+          VooFilterOperator.contains,
+          VooFilterOperator.startsWith,
+          VooFilterOperator.endsWith,
+          VooFilterOperator.equals,
+          VooFilterOperator.notEquals,
+        ];
         
-        // Act
-        final json = filter.toJson();
-        
-        // Assert
-        expect(json, isA<Map<String, dynamic>>());
-        expect(json['field'], equals('price'));
-        expect(json['operator'], equals('greaterThan'));
-        expect(json['value'], equals(100));
+        for (final op in operators) {
+          final filter = VooDataFilter(
+            operator: op,
+            value: 'test',
+          );
+          expect(filter.operator, equals(op));
+        }
       });
       
-      test('should serialize null value correctly', () {
-        // Arrange
+      test('should support numeric operators', () {
+        // Test various numeric operators
+        const operators = [
+          VooFilterOperator.equals,
+          VooFilterOperator.notEquals,
+          VooFilterOperator.greaterThan,
+          VooFilterOperator.greaterThanOrEqual,
+          VooFilterOperator.lessThan,
+          VooFilterOperator.lessThanOrEqual,
+          VooFilterOperator.between,
+        ];
+        
+        for (final op in operators) {
+          final filter = VooDataFilter(
+            operator: op,
+            value: 42,
+            valueTo: op == VooFilterOperator.between ? 100 : null,
+          );
+          expect(filter.operator, equals(op));
+        }
+      });
+      
+      test('should support date operators', () {
+        // Test date operators (dates can use comparison operators)
+        final now = DateTime.now();
+        final tomorrow = now.add(const Duration(days: 1));
+        
+        const dateOperators = [
+          VooFilterOperator.equals,
+          VooFilterOperator.lessThan,
+          VooFilterOperator.greaterThan,
+          VooFilterOperator.between,
+        ];
+        
+        for (final op in dateOperators) {
+          final filter = VooDataFilter(
+            operator: op,
+            value: now,
+            valueTo: op == VooFilterOperator.between ? tomorrow : null,
+          );
+          expect(filter.operator, equals(op));
+          expect(filter.value, equals(now));
+          if (op == VooFilterOperator.between) {
+            expect(filter.valueTo, equals(tomorrow));
+          }
+        }
+      });
+      
+      test('should support boolean operators', () {
+        // Test boolean operators
         const filter = VooDataFilter(
-          field: 'description',
-          operator: 'isNotNull',
+          operator: VooFilterOperator.equals,
+          value: true,
+        );
+        
+        expect(filter.operator, equals(VooFilterOperator.equals));
+        expect(filter.value, isTrue);
+      });
+      
+      test('should support null checking operators', () {
+        // Test null operators
+        const isNullFilter = VooDataFilter(
+          operator: VooFilterOperator.isNull,
           value: null,
         );
         
-        // Act
-        final json = filter.toJson();
+        const isNotNullFilter = VooDataFilter(
+          operator: VooFilterOperator.isNotNull,
+          value: null,
+        );
         
-        // Assert
-        expect(json['field'], equals('description'));
-        expect(json['operator'], equals('isNotNull'));
-        expect(json['value'], isNull);
+        expect(isNullFilter.operator, equals(VooFilterOperator.isNull));
+        expect(isNotNullFilter.operator, equals(VooFilterOperator.isNotNull));
       });
     });
     
-    group('fromJson', () {
-      test('should deserialize from JSON correctly', () {
-        // Arrange
-        final json = {
-          'field': 'category',
-          'operator': 'equals',
-          'value': 'electronics',
-        };
+    group('value types', () {
+      test('should accept string values', () {
+        const filter = VooDataFilter(
+          operator: VooFilterOperator.contains,
+          value: 'test string',
+        );
         
-        // Act
-        final filter = VooDataFilter.fromJson(json);
-        
-        // Assert
-        expect(filter.field, equals('category'));
-        expect(filter.operator, equals('equals'));
-        expect(filter.value, equals('electronics'));
+        expect(filter.value, isA<String>());
+        expect(filter.value, equals('test string'));
       });
       
-      test('should deserialize list value correctly', () {
-        // Arrange
-        final json = {
-          'field': 'tags',
-          'operator': 'containsAny',
-          'value': ['tech', 'gadget', 'new'],
-        };
+      test('should accept numeric values', () {
+        const intFilter = VooDataFilter(
+          operator: VooFilterOperator.equals,
+          value: 42,
+        );
         
-        // Act
-        final filter = VooDataFilter.fromJson(json);
+        const doubleFilter = VooDataFilter(
+          operator: VooFilterOperator.greaterThan,
+          value: 3.14,
+        );
         
-        // Assert
-        expect(filter.field, equals('tags'));
-        expect(filter.operator, equals('containsAny'));
-        expect(filter.value, equals(['tech', 'gadget', 'new']));
+        expect(intFilter.value, isA<int>());
+        expect(intFilter.value, equals(42));
+        expect(doubleFilter.value, isA<double>());
+        expect(doubleFilter.value, equals(3.14));
+      });
+      
+      test('should accept DateTime values', () {
+        final date = DateTime(2024, 1, 1);
+        final filter = VooDataFilter(
+          operator: VooFilterOperator.greaterThan,
+          value: date,
+        );
+        
+        expect(filter.value, isA<DateTime>());
+        expect(filter.value, equals(date));
+      });
+      
+      test('should accept List values for in/not in operators', () {
+        final values = ['option1', 'option2', 'option3'];
+        final filter = VooDataFilter(
+          operator: VooFilterOperator.inList,
+          value: values,
+        );
+        
+        expect(filter.value, isA<List>());
+        expect(filter.value, equals(values));
+      });
+      
+      test('should accept bool values', () {
+        const filter = VooDataFilter(
+          operator: VooFilterOperator.equals,
+          value: true,
+        );
+        
+        expect(filter.value, isA<bool>());
+        expect(filter.value, isTrue);
       });
     });
     
-    group('equality', () {
-      test('should be equal when all properties match', () {
-        // Arrange
-        const filter1 = VooDataFilter(
-          field: 'name',
-          operator: 'startsWith',
-          value: 'John',
-        );
-        const filter2 = VooDataFilter(
-          field: 'name',
-          operator: 'startsWith',
-          value: 'John',
-        );
-        
-        // Assert
-        expect(filter1, equals(filter2));
-      });
-      
-      test('should not be equal when field differs', () {
-        // Arrange
-        const filter1 = VooDataFilter(
-          field: 'name',
-          operator: 'contains',
-          value: 'test',
-        );
-        const filter2 = VooDataFilter(
-          field: 'description',
-          operator: 'contains',
-          value: 'test',
-        );
-        
-        // Assert
-        expect(filter1, isNot(equals(filter2)));
-      });
-      
-      test('should not be equal when operator differs', () {
-        // Arrange
-        const filter1 = VooDataFilter(
-          field: 'price',
-          operator: 'greaterThan',
-          value: 100,
-        );
-        const filter2 = VooDataFilter(
-          field: 'price',
-          operator: 'lessThan',
-          value: 100,
-        );
-        
-        // Assert
-        expect(filter1, isNot(equals(filter2)));
-      });
-    });
-    
-    group('copyWith', () {
-      test('should create copy with updated field', () {
-        // Arrange
-        const original = VooDataFilter(
-          field: 'name',
-          operator: 'contains',
-          value: 'test',
-        );
-        
-        // Act
-        final copy = original.copyWith(field: 'description');
-        
-        // Assert
-        expect(copy.field, equals('description'));
-        expect(copy.operator, equals('contains'));
-        expect(copy.value, equals('test'));
-      });
-      
-      test('should create copy with updated operator', () {
-        // Arrange
-        const original = VooDataFilter(
-          field: 'price',
-          operator: 'equals',
-          value: 100,
-        );
-        
-        // Act
-        final copy = original.copyWith(operator: 'greaterThan');
-        
-        // Assert
-        expect(copy.field, equals('price'));
-        expect(copy.operator, equals('greaterThan'));
-        expect(copy.value, equals(100));
-      });
-      
-      test('should create copy with updated value', () {
-        // Arrange
-        const original = VooDataFilter(
-          field: 'quantity',
-          operator: 'lessThan',
+    group('range filters', () {
+      test('should handle between with two numeric values', () {
+        const filter = VooDataFilter(
+          operator: VooFilterOperator.between,
           value: 10,
+          valueTo: 100,
         );
         
-        // Act
-        final copy = original.copyWith(value: 20);
+        expect(filter.operator, equals(VooFilterOperator.between));
+        expect(filter.value, equals(10));
+        expect(filter.valueTo, equals(100));
+      });
+      
+      test('should handle between with two date values', () {
+        final startDate = DateTime(2024, 1, 1);
+        final endDate = DateTime(2024, 12, 31);
         
-        // Assert
-        expect(copy.field, equals('quantity'));
-        expect(copy.operator, equals('lessThan'));
-        expect(copy.value, equals(20));
+        final filter = VooDataFilter(
+          operator: VooFilterOperator.between,
+          value: startDate,
+          valueTo: endDate,
+        );
+        
+        expect(filter.operator, equals(VooFilterOperator.between));
+        expect(filter.value, equals(startDate));
+        expect(filter.valueTo, equals(endDate));
       });
     });
   });

@@ -74,6 +74,9 @@ class VooDataGrid<T> extends StatelessWidget {
   /// Whether to show primary filters
   final bool showPrimaryFilters;
 
+  /// Callback when data is submitted
+  final void Function(List<T> data)? onSubmitted;
+
   const VooDataGrid({
     super.key,
     required this.controller,
@@ -97,6 +100,7 @@ class VooDataGrid<T> extends StatelessWidget {
     this.selectedPrimaryFilterId,
     this.onPrimaryFilterSelected,
     this.showPrimaryFilters = false,
+    this.onSubmitted,
   });
 
   @override

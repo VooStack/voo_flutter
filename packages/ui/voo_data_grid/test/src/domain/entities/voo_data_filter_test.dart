@@ -44,18 +44,18 @@ void main() {
         expect(filter.valueTo, equals(100));
       });
       
-      test('should create instance with list value for in operator', () {
+      test('should create instance with list value for inList operator', () {
         // Arrange
         final values = ['active', 'pending', 'completed'];
         
         // Act
         final filter = VooDataFilter(
-          operator: VooFilterOperator.isIn,
+          operator: VooFilterOperator.inList,
           value: values,
         );
         
         // Assert
-        expect(filter.operator, equals(VooFilterOperator.isIn));
+        expect(filter.operator, equals(VooFilterOperator.inList));
         expect(filter.value, equals(values));
         expect(filter.valueTo, isNull);
       });

@@ -1,11 +1,11 @@
 import 'package:mockito/annotations.dart';
-import 'package:voo_data_grid/src/presentation/controllers/voo_data_grid_controller.dart';
-import 'package:voo_data_grid/src/presentation/controllers/data_grid_controller.dart';
+import 'package:voo_data_grid/src/data/datasources/data_grid_source_base.dart';
+import 'package:voo_data_grid/src/data/datasources/voo_local_data_source.dart';
 
 // Generate mocks for testing
 // Note: Generic classes like VooDataGridSource<T> need manual mocking
 @GenerateMocks([
-  VooDataGridController,
-  DataGridController,
+  DataGridSourceBase,
+  VooLocalDataSource,
 ])
 void main() {}

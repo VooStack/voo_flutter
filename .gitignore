@@ -19,12 +19,12 @@ coverage/
 # If you don't generate documentation locally you can remove this line.
 doc/api/
 CLAUDE.md
-*ISSUES.md
+**/ISSUES.md
 
 # dotenv environment variables file
 .env*
 .claude
-*/tasks
+**/tasks
 # Avoid committing generated Javascript files:
 *.dart.js
 *.info.json      # Produced by the --dump-info flag.
