@@ -993,42 +993,17 @@ Widget statelessDataGrid() {
         builder: (context, setState) {
           var currentState = state;
 
-          return Column(
-            children: [
-              // Add a toggle button for filters
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        currentState.filtersVisible ? Icons.filter_list_off : Icons.filter_list,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          currentState = currentState.copyWith(
-                            filtersVisible: !currentState.filtersVisible,
-                          );
-                        });
-                      },
-                      tooltip: currentState.filtersVisible ? 'Hide Filters' : 'Show Filters',
-                    ),
-                    Text(
-                      currentState.filtersVisible ? 'Filters Visible' : 'Filters Hidden',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: VooDataGridStateless<Map<String, dynamic>>(
-                  state: currentState,
-                  columns: columns,
-                  onPageChanged: (page) {
+          return VooDataGridStateless<Map<String, dynamic>>(
+            state: currentState,
+            columns: columns,
+            onToggleFilters: () {
+              setState(() {
+                currentState = currentState.copyWith(
+                  filtersVisible: !currentState.filtersVisible,
+                );
+              });
+            },
+            onPageChanged: (page) {
               setState(() {
                 final start = page * currentState.pageSize;
                 final end = (start + currentState.pageSize).clamp(0, products.length);
@@ -1125,9 +1100,6 @@ Widget statelessDataGrid() {
                 ),
               );
             },
-                ),
-              ),
-            ],
           );
         },
       ),

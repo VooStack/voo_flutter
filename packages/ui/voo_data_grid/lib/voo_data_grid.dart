@@ -26,6 +26,7 @@ export 'src/presentation/widgets/data_grid.dart';
 export 'src/presentation/widgets/data_grid_header.dart';
 export 'src/presentation/widgets/data_grid_pagination.dart';
 export 'src/presentation/widgets/data_grid_row.dart';
+export 'src/presentation/widgets/optimized_data_grid_row.dart'; // Performance-optimized row widget
 export 'src/presentation/widgets/voo_data_grid_stateless.dart'; // New state-agnostic widget
 
 // Presentation Layer - Organisms

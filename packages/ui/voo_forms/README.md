@@ -1,435 +1,440 @@
 # VooForms
 
-A comprehensive cross-platform forms package with atomic design, clean architecture, and Material 3 support for Flutter applications.
+A comprehensive, type-safe forms package for Flutter with clean architecture, atomic design pattern, and excellent developer experience.
 
-## Features
+[![pub package](https://img.shields.io/pub/v/voo_forms.svg)](https://pub.dev/packages/voo_forms)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- 🎨 **Atomic Design Pattern** - Components organized as atoms, molecules, and organisms
-- 🏛️ **Clean Architecture** - Clear separation of concerns with domain, data, and presentation layers
+## ✨ Features
+
+- 🎯 **Type-Safe Fields** - Full type safety with generics throughout
+- 🏛️ **Clean Architecture** - Follows SOLID principles with clear separation of concerns
+- 🎨 **Atomic Design** - Components organized as atoms, molecules, and organisms
 - 📱 **Cross-Platform** - Works seamlessly on iOS, Android, Web, Desktop
-- 🎯 **Type-Safe** - Full type safety with generics support
 - 🎨 **Material 3** - Built with the latest Material Design guidelines
-- 📐 **Responsive** - Adapts to all screen sizes automatically
-- ✅ **Built-in Validators** - Comprehensive validation rules out of the box
-- 🔧 **Custom Formatters** - Phone, credit card, date, currency, and more
-- 🎮 **Form Controller** - Powerful state management for forms
-- 🌈 **Highly Customizable** - Theming, layouts, and custom field types
+- ✅ **Rich Validators** - 13+ built-in validators with composable validation
+- 🔧 **Smart Formatters** - 12+ formatters for phone, credit card, currency, etc.
+- 🎮 **Powerful Controller** - Advanced form state management
+- 📐 **Multiple Layouts** - Vertical, grid, stepped, tabbed layouts
+- 🚀 **Excellent DX** - Intuitive API with great IDE support
 
-## Installation
+## 📦 Installation
 
 Add `voo_forms` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  voo_forms:
-    path: ../voo_forms  # Or use published version when available
+  voo_forms: ^0.1.14
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Simple Form Example
 
 ```dart
 import 'package:voo_forms/voo_forms.dart';
-import 'package:flutter/material.dart';
 
-// Define your form
-final loginForm = VooForm(
-  id: 'login',
-  title: 'Sign In',
+// Create a form using the intuitive VooField API
+final form = VooForm(
   fields: [
-    VooFormField<String>(
-      id: 'email',
-      name: 'email',
-      label: 'Email',
-      type: VooFieldType.email,
-      required: true,
+    VooField.text(
+      name: 'username',
+      label: 'Username',
       validators: [
-        VooValidator.required(),
-        VooValidator.email(),
+        RequiredValidation(),
+        MinLengthValidation(minLength: 3),
       ],
     ),
-    VooFormField<String>(
-      id: 'password',
+    VooField.email(
+      name: 'email',
+      label: 'Email Address',
+      validators: [
+        RequiredValidation(),
+        EmailValidation(),
+      ],
+    ),
+    VooField.password(
       name: 'password',
       label: 'Password',
-      type: VooFieldType.password,
-      required: true,
       validators: [
-        VooValidator.required(),
-        VooValidator.minLength(8),
+        RequiredValidation(),
+        MinLengthValidation(minLength: 8),
+        PatternValidation(
+          pattern: r'^(?=.*[A-Z])(?=.*[0-9])',
+          errorMessage: 'Must contain uppercase and number',
+        ),
       ],
     ),
   ],
+  onSubmit: (values) {
+    print('Form submitted: $values');
+  },
 );
-
-// Use the form in your widget
-class LoginScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: VooFormWidget(
-        form: loginForm,
-        onSubmit: (values) async {
-          // Handle form submission
-          print('Email: ${values['email']}');
-          print('Password: ${values['password']}');
-        },
-        onSuccess: () {
-          // Handle success
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login successful!')),
-          );
-        },
-        onError: (error) {
-          // Handle error
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login failed: $error')),
-          );
-        },
-      ),
-    );
-  }
-}
 ```
 
-### Using Form Controller
+### Even Simpler with Extension Method
 
 ```dart
-class AdvancedForm extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final form = VooForm(
-      id: 'registration',
-      fields: [
-        VooFormField<String>(
-          id: 'username',
-          name: 'username',
-          label: 'Username',
-          type: VooFieldType.text,
-          validators: [
-            VooValidator.required(),
-            VooValidator.alphanumeric(),
-            VooValidator.minLength(3),
-          ],
-        ),
-        VooFormField<String>(
-          id: 'phone',
-          name: 'phone',
-          label: 'Phone Number',
-          type: VooFieldType.phone,
-          inputFormatters: [VooFormatters.phoneUS()],
-          validators: [
-            VooValidator.required(),
-            VooValidator.phone(),
-          ],
-        ),
-      ],
-    );
-
-    final controller = useVooFormController(form);
-
-    return VooFormBuilder(
-      form: form,
-      controller: controller,
-      builder: (context, controller) {
-        return Column(
-          children: [
-            // Access field values
-            Text('Username: ${controller.getValue('username') ?? 'Not set'}'),
-            
-            // Custom field rendering
-            VooFormFieldBuilder(
-              field: form.fields[0],
-              controller: controller,
-            ),
-            
-            // Custom submit button
-            ElevatedButton(
-              onPressed: controller.isValid
-                  ? () async {
-                      if (controller.validate()) {
-                        // Submit form
-                        final values = controller.toJson();
-                        print('Form data: $values');
-                      }
-                    }
-                  : null,
-              child: Text('Submit'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
+// Convert a list of fields directly to a form
+final loginForm = [
+  VooField.email(name: 'email', label: 'Email'),
+  VooField.password(name: 'password', label: 'Password'),
+].toForm(
+  onSubmit: (values) => print('Login: $values'),
+);
 ```
 
-## Field Types
+## 🎨 Field Types
 
-VooForms supports a wide range of field types:
-
-- `text` - Single line text input
-- `multiline` - Multi-line text input
-- `number` - Numeric input
-- `email` - Email input with validation
-- `password` - Password input with obscured text
-- `phone` - Phone number input
-- `url` - URL input
-- `date` - Date picker
-- `time` - Time picker
-- `dateTime` - Date and time picker
-- `boolean` - Checkbox
-- `checkbox` - Checkbox with label
-- `dropdown` - Dropdown selection
-- `radio` - Radio button group
-- `multiSelect` - Multiple selection
-- `slider` - Numeric slider
-- `file` - File upload
-- `color` - Color picker
-- `rating` - Star rating
-- `custom` - Custom field type
-
-## Validators
-
-Built-in validators for common use cases:
+VooForms provides factory constructors for all common field types:
 
 ```dart
-// Required field
-VooValidator.required('This field is required')
+// Text Fields
+VooField.text(name: 'username', label: 'Username')
+VooField.email(name: 'email', label: 'Email')
+VooField.password(name: 'password', label: 'Password')
+VooField.phone(name: 'phone', label: 'Phone')
+VooField.url(name: 'website', label: 'Website')
+VooField.multiline(name: 'bio', label: 'Bio')
+VooField.number(name: 'age', label: 'Age')
 
-// Email validation
-VooValidator.email()
+// Selection Fields
+VooField.dropdown<String>(
+  name: 'country',
+  label: 'Country',
+  options: [
+    VooFieldOption(value: 'us', label: 'United States'),
+    VooFieldOption(value: 'uk', label: 'United Kingdom'),
+  ],
+)
+VooField.radio<String>(
+  name: 'gender',
+  label: 'Gender',
+  options: [...],
+)
+VooField.checkbox(name: 'terms', label: 'Accept Terms')
+VooField.boolean(name: 'newsletter', label: 'Subscribe')
 
-// Phone number
-VooValidator.phone()
+// Date & Time
+VooField.date(name: 'birthday', label: 'Birthday')
+VooField.time(name: 'appointment', label: 'Time')
 
-// URL
-VooValidator.url()
+// Other Types
+VooField.slider(name: 'rating', label: 'Rating', min: 0, max: 10)
+VooField.color(name: 'theme', label: 'Theme Color')
+VooField.file(name: 'avatar', label: 'Avatar')
+```
 
-// Length validators
-VooValidator.minLength(3)
-VooValidator.maxLength(50)
-VooValidator.lengthRange(3, 50)
+## ✅ Validators
 
-// Numeric validators
-VooValidator.min(0)
-VooValidator.max(100)
-VooValidator.range(0, 100)
+### Built-in Validators
 
-// Pattern matching
-VooValidator.pattern(r'^[A-Z]{2}\d{4}$', 'Invalid format')
+Each validator is in its own file for better organization:
 
-// Password strength
-VooValidator.password(
-  minLength: 8,
-  requireUppercase: true,
-  requireNumbers: true,
+```dart
+// Basic Validators
+RequiredValidation()
+EmailValidation()
+PhoneValidation()
+UrlValidation()
+
+// String Validators
+MinLengthValidation(minLength: 3)
+MaxLengthValidation(maxLength: 50)
+PatternValidation(pattern: r'^[A-Z]', errorMessage: 'Must start with capital')
+
+// Numeric Validators
+MinValueValidation(minValue: 0)
+MaxValueValidation(maxValue: 100)
+RangeValidation(minValue: 0, maxValue: 100)
+
+// Date Validators
+DateRangeValidation(
+  minDate: DateTime(2020),
+  maxDate: DateTime(2030),
 )
 
-// Credit card
-VooValidator.creditCard()
-
-// Custom validation
-VooValidator.custom(
+// Custom Validation
+CustomValidation(
   validator: (value) {
-    if (value == 'admin') {
-      return 'Username not available';
-    }
+    if (value == 'admin') return 'Username not available';
     return null;
   },
 )
 
-// Combine validators
-VooValidator.all([
-  VooValidator.required(),
-  VooValidator.email(),
+// Combine Multiple Validators
+CompoundValidation(rules: [
+  RequiredValidation(),
+  EmailValidation(),
 ])
 ```
 
-## Formatters
-
-Text input formatters for better UX:
+### Creating Custom Validators
 
 ```dart
-// Phone number (US format)
-VooFormatters.phoneUS() // (123) 456-7890
+class PasswordMatchValidation extends VooValidationRule<String> {
+  final String Function() getPassword;
+  
+  PasswordMatchValidation({required this.getPassword})
+    : super(errorMessage: 'Passwords do not match');
+  
+  @override
+  String? validate(String? value) {
+    if (value != getPassword()) {
+      return errorMessage;
+    }
+    return null;
+  }
+}
+```
 
-// Credit card
-VooFormatters.creditCard() // 1234 5678 9012 3456
+## 🔧 Formatters
 
-// Date formatters
-VooFormatters.dateUS() // MM/DD/YYYY
-VooFormatters.dateEU() // DD/MM/YYYY
-VooFormatters.dateISO() // YYYY-MM-DD
+Smart input formatting for better UX:
 
-// Currency
-VooFormatters.currency(
-  symbol: '\$',
-  decimalPlaces: 2,
-)
+```dart
+// Phone Formatters
+VooFormatters.phoneUS()              // (123) 456-7890
+VooFormatters.phoneInternational()   // +1 234 567 8900
 
-// Case formatters
+// Card & Financial
+VooFormatters.creditCard()           // 1234 5678 9012 3456
+VooFormatters.currency(symbol: '\$') // $1,234.56
+
+// Date Formatters
+VooFormatters.dateUS()               // MM/DD/YYYY
+VooFormatters.dateEU()               // DD/MM/YYYY
+VooFormatters.dateISO()              // YYYY-MM-DD
+
+// Text Formatters
 VooFormatters.uppercase()
 VooFormatters.lowercase()
-
-// Filter inputs
 VooFormatters.alphanumeric()
-VooFormatters.lettersOnly()
 VooFormatters.numbersOnly()
-VooFormatters.decimal(decimalPlaces: 2)
 
-// SSN
-VooFormatters.ssn() // 123-45-6789
+// US Specific
+VooFormatters.ssn()                  // 123-45-6789
+VooFormatters.zipCode()              // 12345 or 12345-6789
 
-// ZIP code
-VooFormatters.zipCode() // 12345 or 12345-6789
-
-// Custom mask
-VooFormatters.mask('###-##-####') // For SSN
-```
-
-## Form Layouts
-
-VooForms supports multiple layout options:
-
-```dart
-// Vertical layout (default)
-VooForm(
-  layout: FormLayout.vertical,
-  // ...
-)
-
-// Horizontal layout
-VooForm(
-  layout: FormLayout.horizontal,
-  // ...
-)
-
-// Grid layout
-VooForm(
-  layout: FormLayout.grid,
-  // ...
-)
-
-// Stepped layout (wizard)
-VooForm(
-  layout: FormLayout.stepped,
-  // ...
-)
-
-// Tabbed layout
-VooForm(
-  layout: FormLayout.tabbed,
-  // ...
-)
-```
-
-## Form Sections
-
-Group related fields into sections:
-
-```dart
-final form = VooForm(
-  id: 'user-profile',
-  sections: [
-    VooFormSection(
-      id: 'personal',
-      title: 'Personal Information',
-      icon: Icons.person,
-      fieldIds: ['firstName', 'lastName', 'email'],
-      collapsible: true,
-    ),
-    VooFormSection(
-      id: 'address',
-      title: 'Address',
-      icon: Icons.location_on,
-      fieldIds: ['street', 'city', 'zipCode'],
-      collapsible: true,
-      collapsed: true, // Start collapsed
-    ),
-  ],
-  fields: [
-    // Define fields...
-  ],
-);
-```
-
-## Responsive Design
-
-VooForms automatically adapts to different screen sizes:
-
-```dart
-VooFormField(
-  // ...
-  gridColumns: 2, // Span 2 columns in grid layout
-)
-```
-
-## Custom Field Types
-
-Create custom field types:
-
-```dart
-VooFormField(
-  type: VooFieldType.custom,
-  customBuilder: (context, field) {
-    return MyCustomWidget(
-      value: field.value,
-      onChanged: field.onChanged,
-    );
+// Custom Patterns
+VooFormatters.mask('###-##-####')    // Custom mask
+VooFormatters.pattern(
+  pattern: 'AA-####',
+  patternMapping: {
+    'A': RegExp(r'[A-Z]'),
+    '#': RegExp(r'[0-9]'),
   },
 )
 ```
 
-## Form Controller API
+## 🎭 Field Options
 
-The form controller provides powerful form management:
+Customize field appearance and behavior:
 
 ```dart
-final controller = VooFormController(form: myForm);
+VooField.text(
+  name: 'username',
+  options: VooFieldOptions(
+    // Label positioning
+    labelPosition: LabelPosition.floating,  // or above, left, placeholder, hidden
+    
+    // Field styling
+    fieldVariant: FieldVariant.filled,     // or outlined, underlined, ghost, rounded, sharp
+    
+    // Validation behavior
+    validateOnChange: true,
+    validateOnFocusLost: true,
+    
+    // Error display
+    errorDisplayMode: ErrorDisplayMode.always,  // or onFocus, onSubmit
+    
+    // Focus behavior
+    focusBehavior: FocusBehavior.next,     // or submit, none
+  ),
+)
+```
 
-// Get/set values
-controller.setValue('email', 'user@example.com');
-final email = controller.getValue('email');
+### Preset Options
 
-// Validation
-controller.validateField('email');
-controller.validateAll();
-final isValid = controller.isValid;
+Use built-in presets for consistency:
 
-// Form state
-controller.reset(); // Reset to initial values
-controller.clear(); // Clear all values
-controller.clearErrors(); // Clear all errors
+```dart
+options: VooFieldOptions.material     // Material Design defaults
+options: VooFieldOptions.comfortable  // Spacious layout
+options: VooFieldOptions.compact      // Dense layout
+options: VooFieldOptions.minimal      // Minimal styling
+```
+
+## 🎮 Form Controller
+
+Advanced form control:
+
+```dart
+final controller = VooFormController(
+  form: form,
+  onFieldChange: (field, value) {
+    print('${field.name} changed to $value');
+  },
+  onValidationChange: (isValid) {
+    print('Form valid: $isValid');
+  },
+);
+
+// Programmatic control
+controller.setValue('username', 'john_doe');
+controller.getValue('username');  // 'john_doe'
+controller.validate();            // Validate all fields
+controller.validateField('email'); // Validate specific field
+controller.reset();               // Reset to initial values
+controller.clear();               // Clear all values
+controller.submit();              // Submit the form
 
 // Field management
 controller.enableField('email');
 controller.disableField('password');
 controller.showField('optional');
 controller.hideField('advanced');
-
-// Navigation
-controller.focusField('email');
-controller.focusNextField('email');
-
-// Submission
-await controller.submit(
-  onSubmit: (values) async {
-    // API call
-  },
-  onSuccess: () {
-    // Handle success
-  },
-  onError: (error) {
-    // Handle error
-  },
-);
+controller.focusField('username');
 ```
 
-## Theming
+## 📐 Layouts
 
-VooForms respects your app's Material theme and works with VooUI design system:
+Multiple layout options:
+
+### Vertical Layout (Default)
+```dart
+VooFormVerticalLayout(
+  fields: fields,
+  spacing: 16.0,
+)
+```
+
+### Grid Layout
+```dart
+VooFormGridLayout(
+  fields: fields,
+  columns: 2,
+  spacing: 16.0,
+  crossAxisSpacing: 12.0,
+)
+```
+
+### Stepped Layout (Wizard)
+```dart
+VooFormSteppedLayout(
+  steps: [
+    VooFormStep(
+      title: 'Personal Info',
+      fields: [/* fields */],
+    ),
+    VooFormStep(
+      title: 'Contact',
+      fields: [/* fields */],
+    ),
+  ],
+)
+```
+
+### Tabbed Layout
+```dart
+VooFormTabbedLayout(
+  tabs: [
+    VooFormTab(
+      label: 'Basic',
+      fields: [/* fields */],
+    ),
+    VooFormTab(
+      label: 'Advanced',
+      fields: [/* fields */],
+    ),
+  ],
+)
+```
+
+## 🔍 Async Options & Search
+
+Support for dynamic dropdown options:
+
+```dart
+// Async dropdown with search
+VooField.dropdown<City>(
+  name: 'city',
+  label: 'City',
+  enableSearch: true,
+  asyncOptionsLoader: (query) async {
+    final cities = await api.searchCities(query);
+    return cities.map((city) => VooFieldOption(
+      value: city,
+      label: city.name,
+      subtitle: city.state,
+      icon: Icons.location_city,
+    )).toList();
+  },
+)
+```
+
+## 🧪 Testing
+
+VooForms is designed for easy testing:
+
+```dart
+testWidgets('Form submission', (tester) async {
+  final form = VooForm(
+    fields: [
+      VooField.text(name: 'username'),
+      VooField.email(name: 'email'),
+    ],
+    onSubmit: expectAsync1((values) {
+      expect(values['username'], 'testuser');
+      expect(values['email'], 'test@example.com');
+    }),
+  );
+  
+  await tester.pumpWidget(MaterialApp(home: form));
+  
+  // Enter values
+  await tester.enterText(
+    find.byType(TextFormField).first,
+    'testuser',
+  );
+  await tester.enterText(
+    find.byType(TextFormField).last,
+    'test@example.com',
+  );
+  
+  // Submit
+  await tester.tap(find.text('Submit'));
+  await tester.pump();
+});
+```
+
+## 🏛️ Architecture
+
+VooForms follows clean architecture principles:
+
+```
+Presentation Layer (UI/Widgets)
+        ↓
+Domain Layer (Entities/Business Logic)  
+        ↓
+Data Layer (Models/Repositories)
+```
+
+### Atomic Design Pattern
+- **Atoms**: Basic input widgets (text field, checkbox, etc.)
+- **Molecules**: Composed components (field with label, field with error)
+- **Organisms**: Complete forms and layouts
+
+### Key Principles
+- **One class per file** - Better organization and navigation
+- **No _buildXXX methods** - Using helper classes instead
+- **Clean imports** - No relative imports, properly ordered
+- **Type safety** - Generics used throughout
+- **SOLID principles** - Single responsibility, open/closed, etc.
+
+## 🎨 Theming
+
+VooForms respects your app's Material theme:
 
 ```dart
 MaterialApp(
@@ -437,13 +442,36 @@ MaterialApp(
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
     useMaterial3: true,
   ),
-  home: VooDesignSystem(
-    data: VooDesignSystemData.comfortable,
-    child: MyApp(),
-  ),
+  home: MyApp(),
 )
 ```
 
-## License
+## 📖 Documentation
 
-MIT
+- [Developer Guide](./DEVELOPER_GUIDE.md) - Comprehensive guide with examples
+- [API Documentation](./doc/api/) - Full API reference
+- [Example App](../../apps/voo_example) - Complete example implementation
+- [Changelog](./CHANGELOG.md) - Version history
+
+## 🤝 Contributing
+
+Contributions welcome! Please ensure:
+- Follow clean architecture principles
+- One class per file
+- No _buildXXX methods returning widgets
+- Add tests for new features
+- Update documentation
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🚀 What's New in 0.1.14
+
+- **Major Technical Debt Cleanup** - Eliminated all _buildXXX methods
+- **Better Organization** - 25+ classes split into individual files
+- **Improved DX** - Each validator/formatter in its own file
+- **Clean Architecture** - Proper separation of concerns throughout
+- **Enhanced Testing** - 92.6% test success rate
+
+See [CHANGELOG.md](CHANGELOG.md) for full details.

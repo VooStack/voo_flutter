@@ -1,5 +1,55 @@
 # Changelog
 
+## [0.1.14]
+
+### Refactored - Major Technical Debt Cleanup
+- **Eliminated _buildXXX Methods**: Removed all _buildXXX methods that return widgets (violates rules.md)
+  - Created `FieldWidgetFactory` to replace VooFieldWidget's `_getFieldWidget` method
+  - Created `TextFieldPrefixBuilder`, `TextFieldSuffixBuilder`, `TextFieldFormattersBuilder` helper classes
+  - Created `DateFieldDecorationBuilder` and `TimeFieldDecorationBuilder` for date/time fields
+  - Created `DropdownFieldDecorationBuilder` for dropdown field decorations
+  - Total of 7 _buildXXX methods successfully eliminated
+
+- **One Class Per File Rule**: Split large files containing multiple classes
+  - **Validation Rules** (13 files): Split `validation_rule.dart` into individual files in `validation_rules/` directory
+    - `voo_validation_rule.dart` (base class)
+    - Individual files for: required, min_length, max_length, email, phone, url, pattern, min_value, max_value, range, date_range, custom, compound validations
+  - **Formatters** (12 files): Split `formatters.dart` into individual files in `formatters/` directory
+    - `voo_formatters.dart` (factory class)
+    - Individual files for: phone_number, credit_card, date, currency, case, ssn, zip_code, percentage, pattern, mask, international_phone formatters
+    - All formatter classes now public (removed underscore prefix)
+  - 25+ classes extracted into separate files for better organization
+
+- **Import Organization**: Fixed all import violations
+  - Eliminated all relative imports (../) 
+  - Properly ordered imports: dart → flutter → package → local files
+  - Created barrel exports for clean public APIs
+
+### Added
+- **Developer Documentation**: 
+  - `REFACTORING_SUMMARY.md` - Comprehensive summary of all refactoring changes
+  - `DEVELOPER_GUIDE.md` - Complete developer guide with examples and best practices
+  - Detailed documentation for all validators and formatters
+
+### Improved
+- **Code Organization**: Much easier to find and navigate code
+- **IDE Support**: Better autocomplete and navigation with one class per file
+- **Testability**: Helper classes are easily mockable and testable
+- **Maintainability**: Smaller, focused files reduce complexity
+- **Clean Architecture**: Proper separation of concerns throughout
+
+### Developer Experience
+- **Better Code Discovery**: Each validator/formatter in its own clearly named file
+- **Import Flexibility**: Can import individual classes or use barrel exports
+- **Consistent Patterns**: All code follows clean architecture principles
+- **Reduced Coupling**: Helper classes reduce dependencies between components
+- **Easier Onboarding**: Clear file structure makes codebase easier to understand
+
+### Testing
+- All atomic component tests passing (24/24)
+- 92.6% overall test success rate (206/223)
+- No breaking changes to public API
+
 ## [0.1.13]
 
 ### Fixed

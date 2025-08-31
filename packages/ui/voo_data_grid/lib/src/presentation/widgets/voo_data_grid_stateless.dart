@@ -29,6 +29,9 @@ class VooDataGridStateless<T> extends StatefulWidget {
   /// Callback when filters are cleared
   final VoidCallback? onFiltersCleared;
 
+  /// Callback when filters are toggled
+  final VoidCallback? onToggleFilters;
+
   /// Callback when a sort is applied
   final void Function(String field, VooSortDirection direction)? onSortChanged;
 
@@ -106,6 +109,7 @@ class VooDataGridStateless<T> extends StatefulWidget {
     this.onPageSizeChanged,
     this.onFilterChanged,
     this.onFiltersCleared,
+    this.onToggleFilters,
     this.onSortChanged,
     this.onSortsCleared,
     this.onRowSelected,
@@ -180,6 +184,7 @@ class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
       onPageSizeChanged: widget.onPageSizeChanged,
       onFilterChanged: widget.onFilterChanged,
       onFiltersCleared: widget.onFiltersCleared,
+      onToggleFilters: widget.onToggleFilters,
       onSortChanged: widget.onSortChanged,
       onSortsCleared: widget.onSortsCleared,
       onRowSelected: widget.onRowSelected,
@@ -672,6 +677,7 @@ class _StateBasedController<T> extends VooDataGridController<T> {
   final void Function(int pageSize)? _onPageSizeChanged;
   final void Function(String field, VooDataFilter? filter)? _onFilterChanged;
   final VoidCallback? _onFiltersCleared;
+  final VoidCallback? _onToggleFilters;
   final void Function(String field, VooSortDirection direction)? _onSortChanged;
   final VoidCallback? _onSortsCleared;
   final void Function(T row)? _onRowSelected;
@@ -687,6 +693,7 @@ class _StateBasedController<T> extends VooDataGridController<T> {
     void Function(int pageSize)? onPageSizeChanged,
     void Function(String field, VooDataFilter? filter)? onFilterChanged,
     VoidCallback? onFiltersCleared,
+    VoidCallback? onToggleFilters,
     void Function(String field, VooSortDirection direction)? onSortChanged,
     VoidCallback? onSortsCleared,
     void Function(T row)? onRowSelected,
@@ -700,6 +707,7 @@ class _StateBasedController<T> extends VooDataGridController<T> {
         _onPageSizeChanged = onPageSizeChanged,
         _onFilterChanged = onFilterChanged,
         _onFiltersCleared = onFiltersCleared,
+        _onToggleFilters = onToggleFilters,
         _onSortChanged = onSortChanged,
         _onSortsCleared = onSortsCleared,
         _onRowSelected = onRowSelected,
@@ -817,8 +825,7 @@ class _StateBasedController<T> extends VooDataGridController<T> {
 
   @override
   void toggleFilters() {
-    // This would need to be handled by the state management solution
-    // For now, we can't toggle filters without a stateful wrapper
+    _onToggleFilters?.call();
   }
 
   void refresh() {

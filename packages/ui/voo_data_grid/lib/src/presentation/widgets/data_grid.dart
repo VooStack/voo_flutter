@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/atoms.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/molecules.dart';
+import 'package:voo_data_grid/src/presentation/widgets/optimized_data_grid_row.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_card_view_organism.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_table_view_organism.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -108,7 +113,7 @@ class VooDataGrid<T> extends StatefulWidget {
 }
 
 class _VooDataGridState<T> extends State<VooDataGrid<T>> {
-  T? _hoveredRow;
+  // Removed _hoveredRow - now managed in each row independently
   late VooDataGridTheme _theme;
   late VooDataGridDisplayMode _effectiveDisplayMode;
   VooDataGridDisplayMode? _userSelectedMode;
@@ -170,7 +175,32 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
               children: [
                 if (widget.showToolbar) _buildResponsiveToolbar(design, constraints.maxWidth),
                 Expanded(
-                  child: _effectiveDisplayMode == VooDataGridDisplayMode.cards ? _buildCardView(design) : _buildGridContent(design, constraints.maxWidth),
+                  child: _effectiveDisplayMode == VooDataGridDisplayMode.cards 
+                      ? DataGridCardViewOrganism<T>(
+                          controller: widget.controller,
+                          theme: _theme,
+                          loadingWidget: widget.loadingWidget,
+                          emptyStateWidget: widget.emptyStateWidget,
+                          errorBuilder: widget.errorBuilder,
+                          cardBuilder: widget.cardBuilder,
+                          onRowTap: widget.onRowTap,
+                          onRowDoubleTap: widget.onRowDoubleTap,
+                          mobilePriorityColumns: widget.mobilePriorityColumns,
+                        )
+                      : DataGridTableViewOrganism<T>(
+                          controller: widget.controller,
+                          theme: _theme,
+                          width: constraints.maxWidth,
+                          loadingWidget: widget.loadingWidget,
+                          emptyStateWidget: widget.emptyStateWidget,
+                          errorBuilder: widget.errorBuilder,
+                          onRowTap: widget.onRowTap,
+                          onRowDoubleTap: widget.onRowDoubleTap,
+                          onRowHover: widget.onRowHover,
+                          alwaysShowVerticalScrollbar: widget.alwaysShowVerticalScrollbar,
+                          alwaysShowHorizontalScrollbar: widget.alwaysShowHorizontalScrollbar,
+                          mobilePriorityColumns: widget.mobilePriorityColumns,
+                        ),
                 ),
                 if (widget.showPagination && !widget.controller.dataSource.isLoading) _buildResponsivePagination(constraints.maxWidth),
               ],
@@ -183,133 +213,61 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
 
   Widget _buildResponsiveToolbar(VooDesignSystemData design, double width) {
     final isMobile = _isMobile(width);
-    final isTablet = _isTablet(width);
     final hasActiveFilters = widget.controller.dataSource.filters.isNotEmpty;
 
-    if (isMobile || isTablet) {
-      return Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(design.spacingSm),
-            decoration: BoxDecoration(
-              color: _theme.headerBackgroundColor,
-              border: Border(bottom: BorderSide(color: _theme.borderColor)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      onPressed: widget.controller.dataSource.refresh,
-                      tooltip: 'Refresh',
-                    ),
-                    Stack(
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            hasActiveFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
-                            color: hasActiveFilters ? Theme.of(context).colorScheme.primary : null,
-                          ),
-                          onPressed: () => _showMobileFilterSheet(context),
-                          tooltip: 'Filters',
-                        ),
-                        if (hasActiveFilters)
-                          Positioned(
-                            right: 8,
-                            top: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                '${widget.controller.dataSource.filters.length}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    if (_effectiveDisplayMode == VooDataGridDisplayMode.table)
-                      if (isMobile) // Only show view switcher on mobile
-                        IconButton(
-                          icon: Icon(
-                            _effectiveDisplayMode == VooDataGridDisplayMode.table ? Icons.view_agenda : Icons.table_chart,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _userSelectedMode =
-                                  _effectiveDisplayMode == VooDataGridDisplayMode.table ? VooDataGridDisplayMode.cards : VooDataGridDisplayMode.table;
-                            });
-                          },
-                          tooltip: _effectiveDisplayMode == VooDataGridDisplayMode.table ? 'Switch to Card View' : 'Switch to Table View',
-                        ),
-                    const Spacer(),
-                    if (widget.toolbarActions != null && widget.toolbarActions!.isNotEmpty)
-                      PopupMenuButton(
-                        icon: const Icon(Icons.more_vert),
-                        itemBuilder: (context) => widget.toolbarActions!
-                            .map(
-                              (action) => PopupMenuItem<Widget>(
-                                child: action,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          if (hasActiveFilters) _buildFilterChips(design),
-        ],
-      );
-    }
-
-    // Desktop toolbar
     return Column(
       children: [
-        Container(
-          height: 48,
-          padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-          decoration: BoxDecoration(
-            color: _theme.headerBackgroundColor,
-            border: Border(bottom: BorderSide(color: _theme.borderColor)),
-          ),
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: widget.controller.dataSource.refresh,
-                tooltip: 'Refresh',
-              ),
-              IconButton(
-                icon: Icon(
-                  widget.controller.showFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
-                ),
-                onPressed: widget.controller.toggleFilters,
-                tooltip: 'Toggle Filters',
-              ),
-              if (widget.controller.dataSource.filters.isNotEmpty)
-                TextButton.icon(
-                  icon: const Icon(Icons.clear, size: 16),
-                  label: Text(
-                    'Clear Filters (${widget.controller.dataSource.filters.length})',
-                  ),
-                  onPressed: widget.controller.dataSource.clearFilters,
-                ),
-              const Spacer(),
-              if (widget.toolbarActions != null) ...widget.toolbarActions!,
-            ],
-          ),
+        DataGridToolbarMolecule(
+          onRefresh: widget.controller.dataSource.refresh,
+          onFilterToggle: isMobile ? null : widget.controller.toggleFilters,
+          filtersVisible: widget.controller.showFilters,
+          activeFilterCount: widget.controller.dataSource.filters.length,
+          displayMode: _effectiveDisplayMode,
+          onDisplayModeChanged: isMobile 
+              ? (mode) => setState(() => _userSelectedMode = mode)
+              : null,
+          showViewModeToggle: isMobile && _effectiveDisplayMode == VooDataGridDisplayMode.table,
+          additionalActions: widget.toolbarActions,
+          backgroundColor: _theme.headerBackgroundColor,
+          borderColor: _theme.borderColor,
+          isMobile: isMobile,
+          onShowMobileFilters: isMobile ? () => _showMobileFilterSheet(context) : null,
         ),
-        if (hasActiveFilters) _buildFilterChips(design),
+        if (hasActiveFilters) ...[
+          // Inline filter chips - using the molecule directly
+          Builder(builder: (context) {
+            final filters = widget.controller.dataSource.filters;
+            if (filters.isEmpty) return const SizedBox.shrink();
+
+            // Prepare filter data for the molecule
+            final filterData = <String, FilterChipData>{};
+            for (final entry in filters.entries) {
+              final column = widget.controller.columns.firstWhere(
+                (col) => col.field == entry.key,
+              );
+              final filter = entry.value;
+              final displayValue = filter.value != null
+                  ? (column.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '')
+                  : null;
+              
+              filterData[entry.key] = FilterChipData(
+                label: column.label,
+                value: filter.value,
+                displayValue: displayValue,
+              );
+            }
+
+            return FilterChipListMolecule(
+              filters: filterData,
+              onFilterRemoved: (field) {
+                widget.controller.dataSource.applyFilter(field, null);
+              },
+              onClearAll: widget.controller.dataSource.clearFilters,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              borderColor: _theme.borderColor,
+            );
+          }),
+        ],
       ],
     );
   }
@@ -608,26 +566,18 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
         // Build rows
         final rowsList = List.generate(
           rows.length,
-          (i) => VooDataGridRow<T>(
+          (i) => OptimizedDataGridRow<T>(
             row: rows[i],
             index: i,
             controller: widget.controller,
             theme: _theme,
             isSelected: selectedRows.contains(rows[i]),
-            isHovered: _hoveredRow == rows[i],
             onTap: () {
               widget.controller.dataSource.toggleRowSelection(rows[i]);
               widget.onRowTap?.call(rows[i]);
             },
             onDoubleTap: () => widget.onRowDoubleTap?.call(rows[i]),
-            onHover: (isHovered) {
-              setState(() {
-                _hoveredRow = isHovered ? rows[i] : null;
-              });
-              if (isHovered) {
-                widget.onRowHover?.call(rows[i]);
-              }
-            },
+            onRowHover: widget.onRowHover,
           ),
         );
 
@@ -673,59 +623,6 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
     );
   }
 
-  Widget _buildFilterChips(VooDesignSystemData design) {
-    final filters = widget.controller.dataSource.filters;
-    if (filters.isEmpty) return const SizedBox.shrink();
-
-    return Container(
-      padding: EdgeInsets.all(design.spacingSm),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        border: Border(
-          bottom: BorderSide(color: _theme.borderColor, width: 0.5),
-        ),
-      ),
-      child: Wrap(
-        spacing: design.spacingXs,
-        runSpacing: design.spacingXs,
-        children: [
-          ...filters.entries.map((entry) {
-            final column = widget.controller.columns.firstWhere(
-              (col) => col.field == entry.key,
-            );
-            final filter = entry.value;
-            String label = column.label;
-            if (filter.value != null) {
-              final displayValue = column.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '';
-              label = '$label: $displayValue';
-            }
-            return InputChip(
-              label: Text(
-                label,
-                style: const TextStyle(fontSize: 12),
-              ),
-              deleteIcon: const Icon(Icons.close, size: 16),
-              onDeleted: () {
-                widget.controller.dataSource.applyFilter(entry.key, null);
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              visualDensity: VisualDensity.compact,
-            );
-          }),
-          if (filters.length > 1)
-            ActionChip(
-              label: const Text(
-                'Clear All',
-                style: TextStyle(fontSize: 12),
-              ),
-              onPressed: widget.controller.dataSource.clearFilters,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              visualDensity: VisualDensity.compact,
-            ),
-        ],
-      ),
-    );
-  }
 
   void _showMobileFilterSheet(BuildContext context) {
     showModalBottomSheet(
@@ -1033,28 +930,15 @@ class _MobileFilterSheetState extends State<_MobileFilterSheet> {
       ),
     );
 
-    return TextField(
+    return TextFilterFieldMolecule(
+      value: _tempFilters[column.field]?.toString(),
       controller: controller,
-      decoration: InputDecoration(
-        hintText: column.filterHint ?? 'Enter ${column.label.toLowerCase()}...',
-        border: const OutlineInputBorder(),
-        suffixIcon: controller.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  controller.clear();
-                  setState(() {
-                    _tempFilters[column.field] = null;
-                  });
-                },
-              )
-            : null,
-      ),
       onChanged: (value) {
         setState(() {
-          _tempFilters[column.field] = value.isEmpty ? null : value;
+          _tempFilters[column.field] = value;
         });
       },
+      hintText: column.filterHint ?? 'Enter ${column.label.toLowerCase()}...',
     );
   }
 
