@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/error_display_mode.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/text_field_helpers.dart';
@@ -17,6 +18,7 @@ class VooTextFormField extends StatefulWidget {
   final bool showError;
   final InputDecoration? decoration;
   final bool autoFocus;
+  final VooFormErrorConfig? errorConfig;
 
   const VooTextFormField({
     super.key,
@@ -31,6 +33,7 @@ class VooTextFormField extends StatefulWidget {
     this.showError = true,
     this.decoration,
     this.autoFocus = false,
+    this.errorConfig,
   });
 
   @override
@@ -40,6 +43,7 @@ class VooTextFormField extends StatefulWidget {
 class _VooTextFormFieldState extends State<VooTextFormField> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
+  
   bool _obscureText = false;
   bool _hasBeenFocused = false;
   

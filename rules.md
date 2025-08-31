@@ -2,6 +2,12 @@
 
 ## Core Development Principles
 
+### 0. KISS (Keep It Simple, Stupid) - The Prime Directive
+- **Simplicity above all else**: Every solution should be as simple as possible, but no simpler
+- **Avoid over-engineering**: Don't add complexity for hypothetical future needs
+- **Clear over clever**: Readable, maintainable code beats clever one-liners
+- **When in doubt, choose the simpler approach**: If two solutions work, pick the simpler one
+
 ### 1. Planning & Task Management
 - **Always plan before implementation**: Read relevant code, understand the context, create a detailed todo list
 - **Use tasks/todo.md for tracking**: Document all planned changes with checkboxes
@@ -13,6 +19,10 @@
 - **Single Responsibility**: Each function/class should do one thing well
 - **No massive changes**: Break large changes into small, reviewable commits
 - **Clean Architecture compliance**: Strict separation of concerns across all layers
+- **Zero lint issues policy**: Never commit code with lint warnings or errors
+  - Run `flutter analyze` before every commit
+  - Fix all warnings, not just errors
+  - Use `flutter analyze --fatal-warnings` in CI/CD
 
 ### 3. Import & Module Rules
 - **No relative imports**: Always use absolute imports from package root

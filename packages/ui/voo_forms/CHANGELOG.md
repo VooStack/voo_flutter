@@ -1,3 +1,33 @@
+## [0.1.17] - 2024-12-31
+
+### Added
+- **Type Enforcement System**: Comprehensive type safety for all form fields
+  - Created `StrictNumberFormatter` to prevent invalid character input in number fields
+  - Added specialized formatters: `IntegerFormatter`, `CurrencyFormatter`, `PercentageFormatter`
+  - New factory methods: `VooField.integer()`, `VooField.decimal()`, `VooField.currency()`, `VooField.percentage()`
+  - Created `FieldValueConverter` system for safe type conversions between UI strings and field values
+
+- **Error Display Modes**: Flexible error display system with multiple modes
+  - `VooFormErrorDisplay` enum with 7 display modes (never, onType, onBlur, onSubmit, onInteraction, onTypeDebounced, always)
+  - `VooFormErrorConfig` for configurable error behavior with predefined configurations
+  - Smart error display based on field interaction state
+
+- **Material 3 Design Components**: 
+  - Created `VooFormButton` with Material 3 compliant button variants (filled, filledTonal, outlined, text, elevated)
+  - Predefined factories for common actions: Submit, Cancel, Secondary, Danger buttons
+  - Added `VooFormActions` for consistent button layout in forms
+
+### Fixed
+- **Critical Type Error**: Fixed "type 'String' is not a subtype of type 'num?'" error in VooField.number
+  - Users can no longer type invalid characters in number fields
+  - Proper type conversion between text input and field values
+  - Real-time validation with min/max value enforcement
+
+### Testing
+- Added comprehensive test suite for type enforcement (31 tests)
+- Added tests for all error display modes (14 tests)
+- All existing tests pass with new implementations
+
 ## [0.1.16] - 2024-12-31
 
 ### Fixed

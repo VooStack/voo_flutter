@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
+import 'package:voo_forms/src/presentation/formatters/strict_number_formatter.dart';
 
 /// Seamless field creation API using factory constructors
 /// Returns VooFormField objects that can be used directly with forms
@@ -192,7 +193,7 @@ class VooField {
         onChanged: onChanged,
       );
 
-  /// Number field factory
+  /// Number field factory with strict type enforcement
   static VooFormField<num> number({
     required String name,
     String? label,
@@ -208,6 +209,9 @@ class VooField {
     num? min,
     num? max,
     num? step,
+    bool allowDecimals = true,
+    bool allowNegative = true,
+    int? maxDecimalPlaces,
     IconData? prefixIcon,
     IconData? suffixIcon,
     int? gridColumns,
@@ -219,15 +223,26 @@ class VooField {
         type: VooFieldType.number,
         label: label,
         hint: hint,
-        placeholder: placeholder,
+        placeholder: placeholder ?? '0',
         helper: helper,
         initialValue: initialValue ?? defaultValue,
         required: required,
         enabled: enabled,
         readOnly: readOnly,
         validators: validators ?? [],
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9.-]'))],
+        keyboardType: const TextInputType.numberWithOptions(
+          signed: true,
+          decimal: true,
+        ),
+        inputFormatters: [
+          StrictNumberFormatter(
+            allowDecimals: allowDecimals,
+            allowNegative: allowNegative,
+            maxDecimalPlaces: maxDecimalPlaces,
+            minValue: min,
+            maxValue: max,
+          ),
+        ],
         min: min,
         max: max,
         step: step,
@@ -629,6 +644,207 @@ class VooField {
         validators: validators ?? [],
         prefixIcon: prefixIcon ?? Icons.access_time,
         suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
+
+  /// Integer field factory with strict integer-only input
+  static VooFormField<int> integer({
+    required String name,
+    String? label,
+    String? hint,
+    String? placeholder,
+    String? helper,
+    int? initialValue,
+    int? defaultValue,
+    List<VooValidationRule<int>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    int? min,
+    int? max,
+    bool allowNegative = true,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    int? gridColumns,
+    ValueChanged<int?>? onChanged,
+  }) =>
+      VooFormField<int>(
+        id: name,
+        name: name,
+        type: VooFieldType.number,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? '0',
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: const TextInputType.numberWithOptions(
+          signed: true,
+        ),
+        inputFormatters: [
+          StrictIntegerFormatter(
+            allowNegative: allowNegative,
+            minValue: min,
+            maxValue: max,
+          ),
+        ],
+        min: min,
+        max: max,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
+
+  /// Decimal field factory with configurable decimal places
+  static VooFormField<double> decimal({
+    required String name,
+    String? label,
+    String? hint,
+    String? placeholder,
+    String? helper,
+    double? initialValue,
+    double? defaultValue,
+    List<VooValidationRule<double>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    double? min,
+    double? max,
+    int maxDecimalPlaces = 2,
+    bool allowNegative = true,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    int? gridColumns,
+    ValueChanged<double?>? onChanged,
+  }) =>
+      VooFormField<double>(
+        id: name,
+        name: name,
+        type: VooFieldType.number,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? '0.00',
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: const TextInputType.numberWithOptions(
+          signed: true,
+          decimal: true,
+        ),
+        inputFormatters: [
+          StrictNumberFormatter(
+            allowNegative: allowNegative,
+            maxDecimalPlaces: maxDecimalPlaces,
+            minValue: min,
+            maxValue: max,
+          ),
+        ],
+        min: min,
+        max: max,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
+
+  /// Currency field factory with 2 decimal places and no negative values
+  static VooFormField<double> currency({
+    required String name,
+    String? label,
+    String? hint,
+    String? placeholder,
+    String? helper,
+    double? initialValue,
+    double? defaultValue,
+    List<VooValidationRule<double>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    double? max,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    String? prefix,
+    int? gridColumns,
+    ValueChanged<double?>? onChanged,
+  }) =>
+      VooFormField<double>(
+        id: name,
+        name: name,
+        type: VooFieldType.number,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? '0.00',
+        helper: helper,
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: const TextInputType.numberWithOptions(
+          decimal: true,
+        ),
+        inputFormatters: [
+          CurrencyFormatter(maxValue: max),
+        ],
+        min: 0,
+        max: max,
+        prefixIcon: prefixIcon ?? Icons.attach_money,
+        suffixIcon: suffixIcon,
+        prefix: prefix != null ? Text(prefix) : null,
+        gridColumns: gridColumns,
+        onChanged: onChanged,
+      );
+
+  /// Percentage field factory (0-100)
+  static VooFormField<double> percentage({
+    required String name,
+    String? label,
+    String? hint,
+    String? placeholder,
+    String? helper,
+    double? initialValue,
+    double? defaultValue,
+    List<VooValidationRule<double>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    bool allowDecimals = true,
+    IconData? prefixIcon,
+    IconData? suffixIcon,
+    int? gridColumns,
+    ValueChanged<double?>? onChanged,
+  }) =>
+      VooFormField<double>(
+        id: name,
+        name: name,
+        type: VooFieldType.number,
+        label: label,
+        hint: hint,
+        placeholder: placeholder ?? (allowDecimals ? '0.00' : '0'),
+        helper: helper ?? 'Enter a value between 0 and 100',
+        initialValue: initialValue ?? defaultValue,
+        required: required,
+        enabled: enabled,
+        readOnly: readOnly,
+        validators: validators ?? [],
+        keyboardType: const TextInputType.numberWithOptions(
+          decimal: true,
+        ),
+        inputFormatters: [
+          PercentageFormatter(allowDecimals: allowDecimals),
+        ],
+        min: 0,
+        max: 100,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon ?? Icons.percent,
         gridColumns: gridColumns,
         onChanged: onChanged,
       );
