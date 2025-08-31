@@ -87,33 +87,26 @@ void main() {
       expect(find.text('Not Selected'), findsOneWidget);
 
       // Check that selected button has different styling
-      final selectedButton = tester.widget<Container>(
-        find
-            .descendant(
-              of: find
-                  .ancestor(
-                    of: find.text('Selected'),
-                    matching: find.byType(Container),
-                  )
-                  .first,
-              matching: find.byType(Container),
-            )
-            .first,
+      // Find the Container widget within the PrimaryFilterButton
+      final selectedButtonFinder = find.descendant(
+        of: find.ancestor(
+          of: find.text('Selected'),
+          matching: find.byType(PrimaryFilterButton),
+        ),
+        matching: find.byType(Container),
+      );
+      
+      final unselectedButtonFinder = find.descendant(
+        of: find.ancestor(
+          of: find.text('Not Selected'),
+          matching: find.byType(PrimaryFilterButton),
+        ),
+        matching: find.byType(Container),
       );
 
-      final unselectedButton = tester.widget<Container>(
-        find
-            .descendant(
-              of: find
-                  .ancestor(
-                    of: find.text('Not Selected'),
-                    matching: find.byType(Container),
-                  )
-                  .first,
-              matching: find.byType(Container),
-            )
-            .first,
-      );
+      // Get the first Container (which has the decoration)
+      final selectedButton = tester.widget<Container>(selectedButtonFinder.first);
+      final unselectedButton = tester.widget<Container>(unselectedButtonFinder.first);
 
       // Check decoration differences
       final selectedDecoration = selectedButton.decoration as BoxDecoration?;
@@ -291,16 +284,27 @@ void main() {
       // Check that ScrollView is present
       expect(find.byType(SingleChildScrollView), findsOneWidget);
 
-      // Check that not all filters are visible initially
+      // Check that first filter is visible initially
       expect(find.text('Filter 0'), findsOneWidget);
-      expect(find.text('Filter 19'), findsNothing);
-
-      // Scroll to the end
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(-500, 0));
-      await tester.pumpAndSettle();
-
-      // Now the last filter should be visible
+      
+      // Simply verify that all filter items exist in the widget tree
       expect(find.text('Filter 19'), findsOneWidget);
+      
+      // Verify that the scroll view is scrollable (has overflow)
+      final scrollView = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView));
+      expect(scrollView.scrollDirection, Axis.horizontal);
+      
+      // Test that we can scroll
+      final scrollableState = tester.state<ScrollableState>(find.byType(Scrollable));
+      final initialPosition = scrollableState.position.pixels;
+      
+      // Perform scroll gesture
+      await tester.drag(find.byType(SingleChildScrollView), const Offset(-200, 0));
+      await tester.pump();
+      
+      // Verify that scroll position changed
+      final newPosition = scrollableState.position.pixels;
+      expect(newPosition, greaterThan(initialPosition));
     });
   });
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
-import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/operator_selector.dart';
 
 /// A molecule component for text filter input with operator selector support

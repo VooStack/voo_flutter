@@ -4,6 +4,8 @@ import 'package:voo_data_grid/src/data/datasources/data_grid_source.dart';
 import 'package:voo_data_grid/src/data/models/advanced_filters.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_column_sort.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_grid_response.dart';
 import 'package:voo_data_grid/src/utils/data_grid_request_builder.dart';
 
 /// Advanced remote data source with support for complex filtering

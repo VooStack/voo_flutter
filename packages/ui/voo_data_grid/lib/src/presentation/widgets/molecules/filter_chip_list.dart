@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/clear_all_chip.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_chip.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_chip_data.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// A molecule component that displays a list of filter chips
@@ -78,17 +79,4 @@ class FilterChipList extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Data class for filter chip information
-class FilterChipData {
-  final String label;
-  final dynamic value;
-  final String? displayValue;
-
-  const FilterChipData({
-    required this.label,
-    required this.value,
-    this.displayValue,
-  });
 }

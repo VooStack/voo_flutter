@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_column_sort.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_grid_response.dart';
 
 // Re-export types for convenience
 export 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
+export 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
+export 'package:voo_data_grid/src/domain/entities/voo_data_grid_response.dart';
 
 /// State-management agnostic data source interface for VooDataGrid
 ///

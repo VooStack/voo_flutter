@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_chip_data.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_chip_list.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 

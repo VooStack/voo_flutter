@@ -894,138 +894,155 @@ Widget customCellsDataGrid() {
 }
 
 @Preview(name: 'Primary Filters Data Grid')
-Widget primaryFiltersDataGrid() {
-  // Sample order data
-  final orders = List.generate(
-    100,
-    (index) {
-      final statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-      final status = statuses[index % 5];
-      return {
-        'id': 'ORD-${1000 + index}',
-        'customer': 'Customer ${index % 20 + 1}',
-        'product': 'Product ${index % 10 + 1}',
-        'amount': (index + 1) * 25.99,
-        'status': status,
-        'date': DateTime.now().subtract(Duration(days: index)),
-      };
-    },
-  );
+Widget primaryFiltersDataGrid() => const PrimaryFiltersDataGridPreview();
 
-  // Create data source with initial data
-  final dataSource = _LocalDataGridSource(data: orders);
+class PrimaryFiltersDataGridPreview extends StatefulWidget {
+  const PrimaryFiltersDataGridPreview({super.key});
 
-  // Define columns
-  final controller = VooDataGridController(
-    dataSource: dataSource,
-    columns: [
-      const VooDataColumn<dynamic>(
-        field: 'id',
-        label: 'Order ID',
-        width: 100,
-      ),
-      const VooDataColumn<dynamic>(
-        field: 'customer',
-        label: 'Customer',
-        flex: 2,
-      ),
-      const VooDataColumn<dynamic>(
-        field: 'product',
-        label: 'Product',
-        flex: 2,
-      ),
-      VooDataColumn<dynamic>(
-        field: 'amount',
-        label: 'Amount',
-        width: 100,
-        valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
-        textAlign: TextAlign.right,
-      ),
-      VooDataColumn<dynamic>(
-        field: 'status',
-        label: 'Status',
-        width: 120,
-        cellBuilder: (context, value, row) {
-          final status = value as String;
-          final colors = {
-            'pending': Colors.orange,
-            'processing': Colors.blue,
-            'shipped': Colors.purple,
-            'delivered': Colors.green,
-            'cancelled': Colors.red,
-          };
-          final icons = {
-            'pending': Icons.pending_outlined,
-            'processing': Icons.settings,
-            'shipped': Icons.local_shipping,
-            'delivered': Icons.check_circle,
-            'cancelled': Icons.cancel,
-          };
-          
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: colors[status]?.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: colors[status]?.withValues(alpha: 0.3) ?? Colors.grey,
+  @override
+  State<PrimaryFiltersDataGridPreview> createState() => _PrimaryFiltersDataGridPreviewState();
+}
+
+class _PrimaryFiltersDataGridPreviewState extends State<PrimaryFiltersDataGridPreview> {
+  String? selectedFilter;
+  late List<Map<String, dynamic>> orders;
+  late _LocalDataGridSource dataSource;
+  late VooDataGridController controller;
+  late Map<String, int> statusCounts;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Sample order data
+    orders = List.generate(
+      100,
+      (index) {
+        final statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        final status = statuses[index % 5];
+        return {
+          'id': 'ORD-${1000 + index}',
+          'customer': 'Customer ${index % 20 + 1}',
+          'product': 'Product ${index % 10 + 1}',
+          'amount': (index + 1) * 25.99,
+          'status': status,
+          'date': DateTime.now().subtract(Duration(days: index)),
+        };
+      },
+    );
+
+    // Create data source with initial data
+    dataSource = _LocalDataGridSource(data: orders);
+
+    // Define columns
+    controller = VooDataGridController(
+      dataSource: dataSource,
+      columns: [
+        const VooDataColumn<dynamic>(
+          field: 'id',
+          label: 'Order ID',
+          width: 100,
+        ),
+        const VooDataColumn<dynamic>(
+          field: 'customer',
+          label: 'Customer',
+          flex: 2,
+        ),
+        const VooDataColumn<dynamic>(
+          field: 'product',
+          label: 'Product',
+          flex: 2,
+        ),
+        VooDataColumn<dynamic>(
+          field: 'amount',
+          label: 'Amount',
+          width: 100,
+          valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+          textAlign: TextAlign.right,
+        ),
+        VooDataColumn<dynamic>(
+          field: 'status',
+          label: 'Status',
+          width: 120,
+          cellBuilder: (context, value, row) {
+            final status = value as String;
+            final colors = {
+              'pending': Colors.orange,
+              'processing': Colors.blue,
+              'shipped': Colors.purple,
+              'delivered': Colors.green,
+              'cancelled': Colors.red,
+            };
+            final icons = {
+              'pending': Icons.pending_outlined,
+              'processing': Icons.settings,
+              'shipped': Icons.local_shipping,
+              'delivered': Icons.check_circle,
+              'cancelled': Icons.cancel,
+            };
+
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors[status]?.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: colors[status]?.withValues(alpha: 0.3) ?? Colors.grey,
+                ),
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icons[status],
-                  size: 14,
-                  color: colors[status],
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  status.toUpperCase(),
-                  style: TextStyle(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    icons[status],
+                    size: 14,
                     color: colors[status],
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
                   ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      VooDataColumn<dynamic>(
-        field: 'date',
-        label: 'Date',
-        width: 100,
-        valueFormatter: (value) {
-          if (value is DateTime) {
-            return '${value.month}/${value.day}/${value.year}';
-          }
-          return '';
-        },
-      ),
-    ],
-  );
+                  const SizedBox(width: 4),
+                  Text(
+                    status.toUpperCase(),
+                    style: TextStyle(
+                      color: colors[status],
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        VooDataColumn<dynamic>(
+          field: 'date',
+          label: 'Date',
+          width: 100,
+          valueFormatter: (value) {
+            if (value is DateTime) {
+              return '${value.month}/${value.day}/${value.year}';
+            }
+            return '';
+          },
+        ),
+      ],
+    );
 
-  dataSource.loadData();
+    dataSource.loadData();
 
-  // Count orders by status
-  final statusCounts = <String, int>{};
-  for (final order in orders) {
-    final status = order['status'] as String?;
-    if (status != null) {
-      statusCounts[status] = (statusCounts[status] ?? 0) + 1;
+    // Count orders by status
+    statusCounts = <String, int>{};
+    for (final order in orders) {
+      final status = order['status'] as String?;
+      if (status != null) {
+        statusCounts[status] = (statusCounts[status] ?? 0) + 1;
+      }
     }
   }
 
-  return Material(
-    child: SizedBox(
-      height: 600,
-      child: StatefulBuilder(
-        builder: (context, setState) {
-          String? selectedFilter;
-          
-          return VooDataGrid(
+  @override
+  Widget build(BuildContext context) => Material(
+        child: SizedBox(
+          height: 600,
+          child: VooDataGrid(
             controller: controller,
             showPrimaryFilters: true,
             primaryFilters: [
@@ -1037,7 +1054,7 @@ Widget primaryFiltersDataGrid() {
                 value: 'pending',
               ),
               PrimaryFilter(
-                id: 'processing', 
+                id: 'processing',
                 label: 'Processing',
                 icon: Icons.sync,
                 count: statusCounts['processing'],
@@ -1069,7 +1086,7 @@ Widget primaryFiltersDataGrid() {
             onPrimaryFilterSelected: (filterId) {
               setState(() {
                 selectedFilter = filterId;
-                
+
                 // Apply filter to data source
                 if (filterId != null) {
                   // Filter by selected status
@@ -1081,108 +1098,121 @@ Widget primaryFiltersDataGrid() {
                 }
               });
             },
-          );
-        },
-      ),
-    ),
-  );
+          ),
+        ),
+      );
 }
 
 @Preview(name: 'Stateless Data Grid')
-Widget statelessDataGrid() {
-  // Sample data model
-  final products = List.generate(
-    50,
-    (index) => {
-      'id': 'P${index + 1}',
-      'name': 'Product ${index + 1}',
-      'price': (index + 1) * 10.0,
-      'stock': (index + 1) * 5,
-      'category': index % 3 == 0
-          ? 'Electronics'
-          : index % 2 == 0
-              ? 'Clothing'
-              : 'Food',
-      'created': DateTime.now().subtract(Duration(days: index)),
-    },
-  );
+Widget statelessDataGrid() => const StatelessDataGridPreview();
 
-  // Create initial state
-  final state = VooDataGridState<Map<String, dynamic>>(
-    rows: products.take(10).toList(),
-    totalRows: products.length,
-    pageSize: 10,
-    sorts: [
-      const VooColumnSort(
-        field: 'name',
-        direction: VooSortDirection.ascending,
-      ),
-    ],
-    filters: {},
-    filtersVisible: true,
-  );
+class StatelessDataGridPreview extends StatefulWidget {
+  const StatelessDataGridPreview({super.key});
 
-  // Define columns
-  final columns = [
-    VooDataColumn<Map<String, dynamic>>(
-      field: 'id',
-      label: 'ID',
-      width: 80,
-      valueGetter: (row) => row['id'],
-    ),
-    VooDataColumn<Map<String, dynamic>>(
-      field: 'name',
-      label: 'Product Name',
-      valueGetter: (row) => row['name'],
-    ),
-    VooDataColumn<Map<String, dynamic>>(
-      field: 'price',
-      label: 'Price',
-      valueGetter: (row) => row['price'],
-      valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
-    ),
-    VooDataColumn<Map<String, dynamic>>(
-      field: 'stock',
-      label: 'Stock',
-      valueGetter: (row) => row['stock'],
-      cellBuilder: (context, value, row) {
-        final stock = value as int;
-        final color = stock > 20
-            ? Colors.green
-            : stock > 10
-                ? Colors.orange
-                : Colors.red;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            stock.toString(),
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
+  @override
+  State<StatelessDataGridPreview> createState() => _StatelessDataGridPreviewState();
+}
+
+class _StatelessDataGridPreviewState extends State<StatelessDataGridPreview> {
+  late List<Map<String, dynamic>> products;
+  late VooDataGridState<Map<String, dynamic>> currentState;
+  late List<VooDataColumn<Map<String, dynamic>>> columns;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Sample data model
+    products = List.generate(
+      50,
+      (index) => {
+        'id': 'P${index + 1}',
+        'name': 'Product ${index + 1}',
+        'price': (index + 1) * 10.0,
+        'stock': (index + 1) * 5,
+        'category': index % 3 == 0
+            ? 'Electronics'
+            : index % 2 == 0
+                ? 'Clothing'
+                : 'Food',
+        'created': DateTime.now().subtract(Duration(days: index)),
       },
-    ),
-    VooDataColumn<Map<String, dynamic>>(
-      field: 'category',
-      label: 'Category',
-      valueGetter: (row) => row['category'],
-    ),
-  ];
+    );
 
-  return Material(
-    child: SizedBox(
-      height: 600,
-      child: StatefulBuilder(
-        builder: (context, setState) {
-          var currentState = state;
+    // Create initial state
+    currentState = VooDataGridState<Map<String, dynamic>>(
+      rows: products.take(10).toList(),
+      totalRows: products.length,
+      pageSize: 10,
+      sorts: [
+        const VooColumnSort(
+          field: 'name',
+          direction: VooSortDirection.ascending,
+        ),
+      ],
+      filters: {},
+      filtersVisible: true,
+    );
 
-          return VooDataGridStateless<Map<String, dynamic>>(
+    // Define columns
+    columns = [
+      VooDataColumn<Map<String, dynamic>>(
+        field: 'id',
+        label: 'ID',
+        width: 80,
+        valueGetter: (row) => row['id'],
+      ),
+      VooDataColumn<Map<String, dynamic>>(
+        field: 'name',
+        label: 'Product Name',
+        valueGetter: (row) => row['name'],
+      ),
+      VooDataColumn<Map<String, dynamic>>(
+        field: 'price',
+        label: 'Price',
+        valueGetter: (row) => row['price'],
+        valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+      ),
+      VooDataColumn<Map<String, dynamic>>(
+        field: 'stock',
+        label: 'Stock',
+        valueGetter: (row) => row['stock'],
+        cellBuilder: (context, value, row) {
+          final stock = value as int;
+          final color = stock > 20
+              ? Colors.green
+              : stock > 10
+                  ? Colors.orange
+                  : Colors.red;
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              stock.toString(),
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        },
+      ),
+      VooDataColumn<Map<String, dynamic>>(
+        field: 'category',
+        label: 'Category',
+        valueGetter: (row) => row['category'],
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) => Material(
+        child: SizedBox(
+          height: 600,
+          child: VooDataGridStateless<Map<String, dynamic>>(
             state: currentState,
             columns: columns,
             onToggleFilters: () {
@@ -1289,9 +1319,7 @@ Widget statelessDataGrid() {
                 ),
               );
             },
-          );
-        },
-      ),
-    ),
-  );
+          ),
+        ),
+      );
 }

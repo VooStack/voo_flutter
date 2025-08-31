@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
-import 'package:voo_data_grid/src/domain/entities/data_grid_types.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
 
 /// A molecule component for number range filter input (min/max)

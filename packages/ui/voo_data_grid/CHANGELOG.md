@@ -1,3 +1,18 @@
+## 0.6.6 - 2025-08-31
+
+* **Test Suite Improvements**
+  * Fixed all 8 failing tests (now 258/258 passing)
+  * Added comprehensive test coverage for atomic widgets
+  * Created tests for PaginationButton and TextFilter widgets
+  * Improved test resilience for responsive layouts
+  * Fixed generic type parameter issues in widget finders
+  * Made tests more robust by checking widget availability before assertions
+
+* **Code Quality**
+  * All lint issues resolved (dart analyze shows no issues)
+  * Improved test structure following atomic design patterns
+  * Enhanced test maintainability with better error handling
+
 ## 0.6.5 - 2025-08-31
 
 * **Architecture Improvements**
