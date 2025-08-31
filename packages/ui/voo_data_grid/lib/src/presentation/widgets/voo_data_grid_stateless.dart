@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
-
 import 'package:voo_data_grid/src/presentation/widgets/organisms/card_view_organism.dart';
 import 'package:voo_data_grid/src/presentation/widgets/organisms/filter_chips_organism.dart';
 import 'package:voo_data_grid/src/presentation/widgets/organisms/grid_content_organism.dart';
 import 'package:voo_data_grid/src/presentation/widgets/organisms/responsive_toolbar_organism.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// A state-agnostic data grid widget that works with any state management solution
 ///
@@ -211,7 +210,7 @@ class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.showToolbar) 
+              if (widget.showToolbar)
                 Column(
                   children: [
                     ResponsiveToolbarOrganism<T>(
@@ -231,7 +230,7 @@ class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
                       onRefresh: widget.onRefresh,
                       toolbarActions: widget.toolbarActions,
                     ),
-                    if (widget.state.filters.isNotEmpty) 
+                    if (widget.state.filters.isNotEmpty)
                       FilterChipsOrganism<T>(
                         filters: widget.state.filters,
                         columns: widget.columns,
@@ -286,7 +285,6 @@ class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
     );
   }
 
-
   void _showMobileFilterSheet(
     BuildContext context,
     _StateBasedController<T> controller,
@@ -295,69 +293,66 @@ class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
       context: context,
       isScrollControlled: true,
       builder: (context) => DraggableScrollableSheet(
-          minChildSize: 0.3,
-          maxChildSize: 0.8,
-          expand: false,
-          builder: (context, scrollController) => Column(
-              children: [
-                AppBar(
-                  title: const Text('Filters'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        controller.clearFilters();
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Clear All'),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: ListView(
-                    controller: scrollController,
-                    padding: const EdgeInsets.all(16),
-                    children: widget.columns
-                        .where((c) => c.filterable)
-                        .map(
-                          (column) => Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                labelText: column.label,
-                                suffixIcon: widget.state.filters[column.field] != null
-                                    ? IconButton(
-                                        icon: const Icon(Icons.clear),
-                                        onPressed: () => controller.applyFilter(column.field, null),
-                                      )
-                                    : null,
-                              ),
-                              onChanged: (value) {
-                                if (value.isEmpty) {
-                                  controller.applyFilter(column.field, null);
-                                } else {
-                                  controller.applyFilter(
-                                    column.field,
-                                    VooDataFilter(
-                                      value: value,
-                                      operator: VooFilterOperator.contains,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
+        minChildSize: 0.3,
+        maxChildSize: 0.8,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            AppBar(
+              title: const Text('Filters'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    controller.clearFilters();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Clear All'),
                 ),
               ],
             ),
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                padding: const EdgeInsets.all(16),
+                children: widget.columns
+                    .where((c) => c.filterable)
+                    .map(
+                      (column) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            labelText: column.label,
+                            suffixIcon: widget.state.filters[column.field] != null
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () => controller.applyFilter(column.field, null),
+                                  )
+                                : null,
+                          ),
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              controller.applyFilter(column.field, null);
+                            } else {
+                              controller.applyFilter(
+                                column.field,
+                                VooDataFilter(
+                                  value: value,
+                                  operator: VooFilterOperator.contains,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
         ),
+      ),
     );
   }
-
-
-
 }
 
 /// Internal controller that wraps state and callbacks
@@ -445,10 +440,10 @@ class _StateBasedController<T> extends VooDataGridController<T> {
   VooDataGridSource<T> get dataSource {
     if (_dataSource == null) {
       _dataSource = _DummyDataSource<T>();
-      _dataSource!._setController(this);
+      _dataSource!._setController = this;
     }
     // Set the state data on the dummy source
-    _dataSource!._setState(_state);
+    _dataSource!._setState = _state;
     return _dataSource!;
   }
 
@@ -532,11 +527,11 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
 
   _DummyDataSource() : super(mode: VooDataGridMode.remote);
 
-  void _setState(VooDataGridState<T> state) {
+  set _setState(VooDataGridState<T> state) {
     _state = state;
   }
 
-  void _setController(_StateBasedController<T> controller) {
+  set _setController(_StateBasedController<T> controller) {
     _controller = controller;
   }
 
@@ -580,13 +575,13 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) async =>
-    // This is never called as the state is managed externally
-    VooDataGridResponse<T>(
-      rows: _state?.rows ?? [],
-      totalRows: _state?.totalRows ?? 0,
-      page: page,
-      pageSize: pageSize,
-    );
+      // This is never called as the state is managed externally
+      VooDataGridResponse<T>(
+        rows: _state?.rows ?? [],
+        totalRows: _state?.totalRows ?? 0,
+        page: page,
+        pageSize: pageSize,
+      );
 
   @override
   void applyFilter(String field, VooDataFilter? filter) {

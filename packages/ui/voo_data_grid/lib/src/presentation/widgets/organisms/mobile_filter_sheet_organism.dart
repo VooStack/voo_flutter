@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/molecules.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
-
-import 'package:voo_data_grid/src/presentation/widgets/molecules/molecules.dart';
 
 /// Mobile filter sheet organism for filtering data on mobile devices
 class MobileFilterSheetOrganism extends StatefulWidget {
@@ -167,7 +166,7 @@ class _MobileFilterSheetOrganismState extends State<MobileFilterSheetOrganism> {
                           widget.controller.dataSource.applyFilter(entry.key, null);
                         }
                       }
-                      
+
                       // Clear filters that were removed
                       final tempKeys = _tempFilters.keys.toSet();
                       for (final existingKey in widget.controller.dataSource.filters.keys) {
@@ -175,7 +174,7 @@ class _MobileFilterSheetOrganismState extends State<MobileFilterSheetOrganism> {
                           widget.controller.dataSource.applyFilter(existingKey, null);
                         }
                       }
-                      
+
                       widget.onApply();
                     },
                     child: const Text('Apply Filters'),
@@ -243,13 +242,13 @@ class _MobileFilterInput extends StatelessWidget {
   });
 
   TextEditingController _getController(String field) => textControllers.putIfAbsent(field, () {
-      final controller = TextEditingController();
-      final existingValue = tempFilters[field];
-      if (existingValue != null && existingValue is! bool) {
-        controller.text = existingValue.toString();
-      }
-      return controller;
-    });
+        final controller = TextEditingController();
+        final existingValue = tempFilters[field];
+        if (existingValue != null && existingValue is! bool) {
+          controller.text = existingValue.toString();
+        }
+        return controller;
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -290,9 +289,7 @@ class _MobileFilterInput extends StatelessWidget {
 
       case VooDataColumnType.date:
         return DateFilterFieldMolecule(
-          value: tempFilters[column.field] != null 
-              ? DateTime.tryParse(tempFilters[column.field].toString())
-              : null,
+          value: tempFilters[column.field] != null ? DateTime.tryParse(tempFilters[column.field].toString()) : null,
           onChanged: (date) => onFilterChanged(column.field, date?.toIso8601String()),
         );
 
@@ -302,7 +299,7 @@ class _MobileFilterInput extends StatelessWidget {
           value: tempFilters[column.field] == true,
           onChanged: (value) => onFilterChanged(column.field, value),
         );
-        
+
       case VooDataColumnType.select:
       case VooDataColumnType.multiSelect:
       case VooDataColumnType.custom:

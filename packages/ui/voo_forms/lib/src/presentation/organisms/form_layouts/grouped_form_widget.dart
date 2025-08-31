@@ -22,15 +22,13 @@ class GroupedFormWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: fieldGroups.map((group) => FieldGroupWidget(
         form: form,
         controller: controller,
         config: config,
         group: group,
         screenWidth: screenWidth,
-      )).toList(),
+      ),).toList(),
     );
-  }
 }

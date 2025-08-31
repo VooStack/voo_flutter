@@ -18,8 +18,7 @@ class VerticalLayoutWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: form.fields.map((field) => Padding(
         padding: EdgeInsets.only(bottom: config.fieldSpacing),
@@ -28,7 +27,6 @@ class VerticalLayoutWidget extends StatelessWidget {
           controller: controller,
           config: config,
         ),
-      )).toList(),
+      ),).toList(),
     );
-  }
 }

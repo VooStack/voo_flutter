@@ -4,7 +4,7 @@ import 'package:voo_forms/src/presentation/atoms/fields/date_field_helpers.dart'
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Time form field widget
-class VooTimeFieldWidget extends StatelessWidget {
+class VooTimeFieldWidget extends StatefulWidget {
   final VooFormField field;
   final VooFieldOptions options;
   final ValueChanged<TimeOfDay?>? onChanged;
@@ -30,34 +30,62 @@ class VooTimeFieldWidget extends StatelessWidget {
   });
 
   @override
+  State<VooTimeFieldWidget> createState() => _VooTimeFieldWidgetState();
+}
+
+class _VooTimeFieldWidgetState extends State<VooTimeFieldWidget> {
+  late TimeOfDay? _value;
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = (widget.field.value ?? widget.field.initialValue) as TimeOfDay?;
+    _controller = widget.controller ?? TextEditingController(
+      text: _value != null ? _value!.format(context) : '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(VooTimeFieldWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.field.value != widget.field.value) {
+      _value = (widget.field.value ?? widget.field.initialValue) as TimeOfDay?;
+      if (widget.controller == null && context.mounted) {
+        _controller.text = _value != null ? _value!.format(context) : '';
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Use value if available, otherwise fall back to initialValue
-    final currentValue = (field.value ?? field.initialValue) as TimeOfDay?;
-    
-    // Create controller if not provided
-    final effectiveController = controller ?? 
-        TextEditingController(
-          text: currentValue != null ? currentValue.format(context) : '',
-        );
     
     return TextFormField(
-      controller: effectiveController,
-      focusNode: focusNode,
+      controller: _controller,
+      focusNode: widget.focusNode,
       readOnly: true,
-      enabled: field.enabled,
-      decoration: _decorationBuilder.build(
+      enabled: widget.field.enabled,
+      decoration: VooTimeFieldWidget._decorationBuilder.build(
         context: context,
-        field: field,
-        options: options,
-        error: error,
-        showError: showError,
+        field: widget.field,
+        options: widget.options,
+        error: widget.error,
+        showError: widget.showError,
       ),
-      style: options.textStyle ?? theme.textTheme.bodyLarge,
-      onTap: field.enabled ? () async {
+      style: widget.options.textStyle ?? theme.textTheme.bodyLarge,
+      onTap: widget.field.enabled ? () async {
         final picked = await showTimePicker(
           context: context,
-          initialTime: currentValue ?? TimeOfDay.now(),
+          initialTime: _value ?? TimeOfDay.now(),
           builder: (context, child) => Theme(
             data: theme,
             child: child!,
@@ -65,10 +93,23 @@ class VooTimeFieldWidget extends StatelessWidget {
         );
         
         if (picked != null && context.mounted) {
-          effectiveController.text = picked.format(context);
-          onChanged?.call(picked);
+          setState(() {
+            _value = picked;
+            _controller.text = picked.format(context);
+          });
+          widget.onChanged?.call(picked);
+          // Safely call field.onChanged with type checking
+          try {
+            final dynamic dynField = widget.field;
+            final callback = dynField.onChanged;
+            if (callback != null) {
+              callback(picked);
+            }
+          } catch (_) {
+            // Silently ignore type casting errors
+          }
         }
-        onTap?.call();
+        widget.onTap?.call();
       } : null,
     );
   }

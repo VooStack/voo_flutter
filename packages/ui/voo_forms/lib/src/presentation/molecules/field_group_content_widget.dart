@@ -35,7 +35,7 @@ class FieldGroupContentWidget extends StatelessWidget {
             controller: controller,
             config: config,
           ),
-        )).toList(),
+        ),).toList(),
       );
     }
 

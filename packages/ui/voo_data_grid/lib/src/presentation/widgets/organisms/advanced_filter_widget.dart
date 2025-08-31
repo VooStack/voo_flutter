@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
-
 import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_header_molecule.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_row.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Advanced filter widget for complex filtering UI
 class AdvancedFilterWidget extends StatefulWidget {
@@ -58,54 +57,58 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             child: ListView(
               shrinkWrap: true,
               children: [
-                ..._filters.map((filter) => Padding(
-                  padding: EdgeInsets.only(bottom: design.spacingSm),
-                  child: AdvancedFilterRow(
-                    filter: filter,
-                    fields: widget.fields,
-                    onFieldChanged: (field) {
-                      setState(() {
-                        filter.field = field;
-                        filter.value = null;
-                        filter.secondaryValue = null;
-                        filter.operator = field?.defaultOperator ?? 'equals';
-                      });
-                    },
-                    onOperatorChanged: (operator) {
-                      setState(() {
-                        filter.operator = operator;
-                        if (operator != null && !operator.requiresSecondaryValue) {
+                ..._filters.map(
+                  (filter) => Padding(
+                    padding: EdgeInsets.only(bottom: design.spacingSm),
+                    child: AdvancedFilterRow(
+                      filter: filter,
+                      fields: widget.fields,
+                      onFieldChanged: (field) {
+                        setState(() {
+                          filter.field = field;
+                          filter.value = null;
                           filter.secondaryValue = null;
-                        }
-                      });
-                    },
-                    onValueChanged: (value) {
-                      setState(() {
-                        filter.value = value;
-                      });
-                    },
-                    onSecondaryValueChanged: (value) {
-                      setState(() {
-                        filter.secondaryValue = value;
-                      });
-                    },
-                    onRemove: () {
-                      setState(() {
-                        _filters.remove(filter);
-                      });
-                    },
+                          filter.operator = field?.defaultOperator ?? 'equals';
+                        });
+                      },
+                      onOperatorChanged: (operator) {
+                        setState(() {
+                          filter.operator = operator;
+                          if (operator != null && !operator.requiresSecondaryValue) {
+                            filter.secondaryValue = null;
+                          }
+                        });
+                      },
+                      onValueChanged: (value) {
+                        setState(() {
+                          filter.value = value;
+                        });
+                      },
+                      onSecondaryValueChanged: (value) {
+                        setState(() {
+                          filter.secondaryValue = value;
+                        });
+                      },
+                      onRemove: () {
+                        setState(() {
+                          _filters.remove(filter);
+                        });
+                      },
+                    ),
                   ),
-                )),
+                ),
                 // Add filter button
                 TextButton.icon(
                   icon: const Icon(Icons.add),
                   label: const Text('Add Filter'),
                   onPressed: () {
                     setState(() {
-                      _filters.add(FilterEntry(
-                        field: widget.fields.first,
-                        operator: widget.fields.first.defaultOperator ?? 'equals',
-                      ));
+                      _filters.add(
+                        FilterEntry(
+                          field: widget.fields.first,
+                          operator: widget.fields.first.defaultOperator ?? 'equals',
+                        ),
+                      );
                     });
                   },
                 ),
@@ -119,9 +122,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
             children: [
               TextButton(
                 onPressed: () {
-                  setState(() {
-                    _filters.clear();
-                  });
+                  setState(_filters.clear);
                   widget.dataSource.clearFilters();
                 },
                 child: const Text('Clear All'),
@@ -137,7 +138,6 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
       ),
     );
   }
-
 
   void _applyFilters() {
     final stringFilters = <StringFilter>[];

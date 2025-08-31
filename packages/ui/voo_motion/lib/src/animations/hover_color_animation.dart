@@ -1,7 +1,8 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:voo_motion/src/core/voo_animation_config.dart';
 import 'package:voo_motion/src/animations/hover_animation.dart';
+import 'package:voo_motion/src/core/voo_animation_config.dart';
 
 /// Hover color change animation
 class VooHoverColorAnimation extends StatelessWidget {

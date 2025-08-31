@@ -5,7 +5,7 @@ import 'package:voo_forms/src/presentation/atoms/fields/date_field_helpers.dart'
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Date form field widget
-class VooDateFieldWidget extends StatelessWidget {
+class VooDateFieldWidget extends StatefulWidget {
   final VooFormField field;
   final VooFieldOptions options;
   final ValueChanged<DateTime?>? onChanged;
@@ -31,37 +31,65 @@ class VooDateFieldWidget extends StatelessWidget {
   });
 
   @override
+  State<VooDateFieldWidget> createState() => _VooDateFieldWidgetState();
+}
+
+class _VooDateFieldWidgetState extends State<VooDateFieldWidget> {
+  late DateTime? _value;
+  late TextEditingController _controller;
+  final DateFormat _dateFormat = DateFormat('MMM dd, yyyy');
+
+  @override
+  void initState() {
+    super.initState();
+    _value = (widget.field.value ?? widget.field.initialValue) as DateTime?;
+    _controller = widget.controller ?? TextEditingController(
+      text: _value != null ? _dateFormat.format(_value!) : '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(VooDateFieldWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.field.value != widget.field.value) {
+      _value = (widget.field.value ?? widget.field.initialValue) as DateTime?;
+      if (widget.controller == null) {
+        _controller.text = _value != null ? _dateFormat.format(_value!) : '';
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Use value if available, otherwise fall back to initialValue
-    final currentValue = (field.value ?? field.initialValue) as DateTime?;
-    final dateFormat = DateFormat('MMM dd, yyyy');
-    
-    // Create controller if not provided
-    final effectiveController = controller ?? 
-        TextEditingController(
-          text: currentValue != null ? dateFormat.format(currentValue) : '',
-        );
     
     return TextFormField(
-      controller: effectiveController,
-      focusNode: focusNode,
+      controller: _controller,
+      focusNode: widget.focusNode,
       readOnly: true,
-      enabled: field.enabled,
-      decoration: _decorationBuilder.build(
+      enabled: widget.field.enabled,
+      decoration: VooDateFieldWidget._decorationBuilder.build(
         context: context,
-        field: field,
-        options: options,
-        error: error,
-        showError: showError,
+        field: widget.field,
+        options: widget.options,
+        error: widget.error,
+        showError: widget.showError,
       ),
-      style: options.textStyle ?? theme.textTheme.bodyLarge,
-      onTap: field.enabled ? () async {
+      style: widget.options.textStyle ?? theme.textTheme.bodyLarge,
+      onTap: widget.field.enabled ? () async {
         final picked = await showDatePicker(
           context: context,
-          initialDate: currentValue ?? DateTime.now(),
-          firstDate: field.minDate ?? DateTime(1900),
-          lastDate: field.maxDate ?? DateTime(2100),
+          initialDate: _value ?? DateTime.now(),
+          firstDate: widget.field.minDate ?? DateTime(1900),
+          lastDate: widget.field.maxDate ?? DateTime(2100),
           builder: (context, child) => Theme(
             data: theme,
             child: child!,
@@ -69,10 +97,23 @@ class VooDateFieldWidget extends StatelessWidget {
         );
         
         if (picked != null) {
-          effectiveController.text = dateFormat.format(picked);
-          onChanged?.call(picked);
+          setState(() {
+            _value = picked;
+            _controller.text = _dateFormat.format(picked);
+          });
+          widget.onChanged?.call(picked);
+          // Safely call field.onChanged with type checking
+          try {
+            final dynamic dynField = widget.field;
+            final callback = dynField.onChanged;
+            if (callback != null) {
+              callback(picked);
+            }
+          } catch (_) {
+            // Silently ignore type casting errors
+          }
         }
-        onTap?.call();
+        widget.onTap?.call();
       } : null,
     );
   }

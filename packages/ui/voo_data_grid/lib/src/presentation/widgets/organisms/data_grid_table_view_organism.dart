@@ -48,9 +48,13 @@ class DataGridTableViewOrganism<T> extends StatelessWidget {
       );
     }
 
-    // Filter columns based on screen width
+    // Filter columns based on screen width - update controller after build
     final visibleColumns = _getVisibleColumnsForWidth(width);
-    controller.setVisibleColumns(visibleColumns);
+    
+    // Use post-frame callback to avoid setState during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.setVisibleColumns(visibleColumns);
+    });
 
     // Don't show inline filters on mobile or tablet - use bottom sheet instead
     final showInlineFilters = controller.showFilters && !_isMobile(width) && !_isTablet(width);

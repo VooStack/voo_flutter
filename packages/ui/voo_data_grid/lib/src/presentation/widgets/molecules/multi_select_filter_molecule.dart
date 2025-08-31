@@ -53,7 +53,7 @@ class MultiSelectFilterMolecule<T> extends StatelessWidget {
                     fontSize: 13, 
                     color: selectedValues.isEmpty 
                         ? theme.hintColor 
-                        : theme.textTheme.bodyMedium?.color
+                        : theme.textTheme.bodyMedium?.color,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),

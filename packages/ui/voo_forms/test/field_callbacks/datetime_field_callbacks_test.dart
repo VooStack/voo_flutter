@@ -31,8 +31,8 @@ void main() {
           // Act
           await tester.pumpWidget(createTestApp(child: VooFieldWidget(field: field)));
           
-          // Verify initial date is displayed
-          final dateDisplay = find.text('1/15/2024');
+          // Verify initial date is displayed (format: MMM dd, yyyy)
+          final dateDisplay = find.text('Jan 15, 2024');
           expect(
             dateDisplay,
             findsAny,

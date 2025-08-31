@@ -68,10 +68,10 @@ class TextFieldFormattersBuilder {
     // Add type-specific formatters
     switch (field.type) {
       case VooFieldType.number:
-        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9\.\-]')));
+        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9\.\-eE]')));
         break;
       case VooFieldType.phone:
-        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9\+\-\(\)\s]')));
+        formatters.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9\+\-\(\)\s\.]')));
         break;
       default:
         break;

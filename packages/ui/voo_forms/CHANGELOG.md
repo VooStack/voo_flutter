@@ -1,4 +1,7 @@
-# Changelog
+## [0.1.15]
+  -fixed tests
+  -fixed docs
+  -fixed type casting errors
 
 ## [0.1.14]
 

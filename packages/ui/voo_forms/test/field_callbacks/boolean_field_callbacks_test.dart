@@ -81,9 +81,7 @@ void main() {
           final field = VooField.checkbox(
             name: 'nullable_checkbox',
             label: 'Nullable option',
-            onChanged: (bool? value) {
-              stateSequence.add(value);
-            },
+            onChanged: stateSequence.add,
           );
           
           // Act

@@ -60,11 +60,9 @@ class TestProductDataSource extends VooDataGridDataSource<Product> {
 
 void main() {
   group('VooDataGridStateless Tests', () {
-    late TestProductDataSource dataSource;
     late List<VooDataColumn<Product>> columns;
     
     setUp(() {
-      dataSource = TestProductDataSource();
       columns = [
         VooDataColumn<Product>(
           field: 'id',
@@ -411,7 +409,6 @@ void main() {
     });
     
     testWidgets('should toggle filters visibility', (tester) async {
-      VoidCallback? capturedToggle;
       
       // Start with filters hidden
       var state = const VooDataGridState<Product>(
@@ -474,8 +471,6 @@ void main() {
     });
     
     testWidgets('should handle row selection', (tester) async {
-      Product? selectedProduct;
-      Product? deselectedProduct;
       
       final product1 = Product(id: 'P1', name: 'Product 1', price: 10.0, stock: 5);
       final product2 = Product(id: 'P2', name: 'Product 2', price: 20.0, stock: 10);
@@ -495,8 +490,8 @@ void main() {
               body: VooDataGridStateless<Product>(
               state: state,
               columns: columns,
-              onRowSelected: (row) => selectedProduct = row,
-              onRowDeselected: (row) => deselectedProduct = row,
+              onRowSelected: (row) { /* Test callback - selection handled */ },
+              onRowDeselected: (row) { /* Test callback - deselection handled */ },
               ),
             ),
           ),

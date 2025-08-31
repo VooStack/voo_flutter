@@ -74,7 +74,7 @@ class MobileToolbar extends StatelessWidget {
               itemBuilder: (context) => additionalActions!
                   .map((action) => PopupMenuItem<Widget>(
                         child: action,
-                      ))
+                      ),)
                   .toList(),
             ),
         ],

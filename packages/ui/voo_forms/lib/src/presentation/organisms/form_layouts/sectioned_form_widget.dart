@@ -25,8 +25,7 @@ class SectionedFormWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: sections.map((section) {
         final sectionFields = form.fields
             .where((field) => section.fieldIds.contains(field.id))
@@ -43,5 +42,4 @@ class SectionedFormWidget extends StatelessWidget {
         );
       }).toList(),
     );
-  }
 }

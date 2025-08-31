@@ -18,8 +18,7 @@ class HorizontalLayoutWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: form.fields.map((field) => Expanded(
         child: Padding(
@@ -30,7 +29,6 @@ class HorizontalLayoutWidget extends StatelessWidget {
             config: config,
           ),
         ),
-      )).toList(),
+      ),).toList(),
     );
-  }
 }

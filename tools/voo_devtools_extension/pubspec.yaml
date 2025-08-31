@@ -22,6 +22,7 @@ dependencies:
   voo_core:
   voo_ui:
 
+  vm_service: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
