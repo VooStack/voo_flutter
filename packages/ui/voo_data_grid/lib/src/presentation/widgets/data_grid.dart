@@ -146,8 +146,6 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
   }
 
   bool _isMobile(double width) => width < VooDataGridBreakpoints.mobile;
-  bool _isTablet(double width) => width >= VooDataGridBreakpoints.mobile && width < VooDataGridBreakpoints.tablet;
-  bool _isDesktop(double width) => width >= VooDataGridBreakpoints.tablet;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +191,8 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
                       ),
                       if (widget.controller.dataSource.filters.isNotEmpty) ...[
                         // Inline filter chips - using the molecule directly
-                        Builder(builder: (context) {
+                        Builder(
+                          builder: (context) {
                           final filters = widget.controller.dataSource.filters;
                           if (filters.isEmpty) return const SizedBox.shrink();
 
@@ -224,7 +223,8 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
                             backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                             borderColor: _theme.borderColor,
                           );
-                        }),
+                          },
+                        ),
                       ],
                     ],
                   ),

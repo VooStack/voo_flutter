@@ -11,8 +11,7 @@ class ResizeHandle extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onHorizontalDragUpdate: (details) {
         onResize?.call(details.delta.dx);
       },
@@ -28,5 +27,4 @@ class ResizeHandle extends StatelessWidget {
         ),
       ),
     );
-  }
 }

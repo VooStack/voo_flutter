@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+
 import 'package:voo_data_grid/src/presentation/widgets/molecules/molecules.dart';
 
 /// Mobile filter sheet organism for filtering data on mobile devices
@@ -154,7 +155,17 @@ class _MobileFilterSheetOrganismState extends State<MobileFilterSheetOrganism> {
                     onPressed: () {
                       // Apply filters
                       for (final entry in _tempFilters.entries) {
-                        widget.controller.dataSource.applyFilter(entry.key, entry.value);
+                        if (entry.value != null) {
+                          widget.controller.dataSource.applyFilter(
+                            entry.key,
+                            VooDataFilter(
+                              value: entry.value,
+                              operator: VooFilterOperator.equals,
+                            ),
+                          );
+                        } else {
+                          widget.controller.dataSource.applyFilter(entry.key, null);
+                        }
                       }
                       
                       // Clear filters that were removed
@@ -231,8 +242,7 @@ class _MobileFilterInput extends StatelessWidget {
     required this.onFilterChanged,
   });
 
-  TextEditingController _getController(String field) {
-    return textControllers.putIfAbsent(field, () {
+  TextEditingController _getController(String field) => textControllers.putIfAbsent(field, () {
       final controller = TextEditingController();
       final existingValue = tempFilters[field];
       if (existingValue != null && existingValue is! bool) {
@@ -240,7 +250,6 @@ class _MobileFilterInput extends StatelessWidget {
       }
       return controller;
     });
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -177,21 +177,21 @@ class VooDataGridController<T> extends ChangeNotifier {
   }
 
   /// Calculate flex width for column
-  double _calculateFlexWidth(VooDataColumn<T> column) {
+  double _calculateFlexWidth(VooDataColumn<T> column) =>
     // This will be calculated based on available space
     // For now, return a default width
-    return 150.0;
-  }
+    150.0;
 
   /// Reorder columns
   void reorderColumns(int oldIndex, int newIndex) {
     if (!_columnReorderable) return;
 
+    var targetIndex = newIndex;
     if (oldIndex < newIndex) {
-      newIndex -= 1;
+      targetIndex -= 1;
     }
     final column = _columns.removeAt(oldIndex);
-    _columns.insert(newIndex, column);
+    _columns.insert(targetIndex, column);
     notifyListeners();
   }
 

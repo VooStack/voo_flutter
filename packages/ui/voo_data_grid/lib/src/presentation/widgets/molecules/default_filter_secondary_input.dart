@@ -13,13 +13,11 @@ class DefaultFilterSecondaryInput extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
+  Widget build(BuildContext context) => TextField(
       decoration: const InputDecoration(
         labelText: 'To',
         border: OutlineInputBorder(),
       ),
       onChanged: onChanged,
     );
-  }
 }

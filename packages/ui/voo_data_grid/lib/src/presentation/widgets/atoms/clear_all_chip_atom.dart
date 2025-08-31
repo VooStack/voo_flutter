@@ -19,8 +19,7 @@ class ClearAllChipAtom extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ActionChip(
+  Widget build(BuildContext context) => ActionChip(
       label: Text(
         label,
         style: labelStyle ?? const TextStyle(fontSize: 12),
@@ -29,5 +28,4 @@ class ClearAllChipAtom extends StatelessWidget {
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );
-  }
 }

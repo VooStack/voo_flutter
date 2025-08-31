@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/pagination_button_atom.dart';
+
 import 'package:voo_data_grid/src/presentation/widgets/atoms/page_indicator_atom.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/pagination_button_atom.dart';
 
 /// A molecule component for pagination controls
 class PaginationControlsMolecule extends StatelessWidget {

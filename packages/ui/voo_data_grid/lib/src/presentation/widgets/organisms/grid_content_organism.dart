@@ -95,7 +95,7 @@ class GridContentOrganism<T> extends StatelessWidget {
                   isSelected: isSelected,
                   onTap: onRowTap != null ? () => onRowTap!(row) : null,
                   onDoubleTap: onRowDoubleTap != null ? () => onRowDoubleTap!(row) : null,
-                  onHover: (hover) => onRowHover?.call(row),
+                  onRowHover: (_) => onRowHover?.call(row),
                 );
               },
             ),

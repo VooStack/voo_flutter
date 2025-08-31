@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -70,7 +69,7 @@ class AdvancedFilterRow extends StatelessWidget {
                       ? Icon(filter.field!.type.icon)
                       : null,
                 ),
-                value: filter.field,
+                initialValue: filter.field,
                 items: fields
                     .map(
                       (field) => DropdownMenuItem(
@@ -93,7 +92,7 @@ class AdvancedFilterRow extends StatelessWidget {
                     labelText: 'Operator',
                     border: OutlineInputBorder(),
                   ),
-                  value: filter.operator,
+                  initialValue: filter.operator,
                   items: filter.field!.type.operators
                       .map(
                         (op) => DropdownMenuItem(

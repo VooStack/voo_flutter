@@ -128,7 +128,7 @@ class DataGridCardViewOrganism<T> extends StatelessWidget {
 /// Individual card field widget to avoid _build methods
 class _DataGridCardField<T> extends StatelessWidget {
   final VooDataColumn<T> column;
-  final dynamic row;
+  final T row;
   final VooDesignSystemData design;
 
   const _DataGridCardField({
@@ -148,7 +148,7 @@ class _DataGridCardField<T> extends StatelessWidget {
         // Safely call valueGetter with error handling
         value = column.valueGetter!(row);
       } else if (row is Map) {
-        value = row[column.field];
+        value = (row as Map)[column.field];
       } else {
         // Typed object without valueGetter - this will cause errors
         debugPrint(

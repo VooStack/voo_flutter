@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -168,7 +167,6 @@ class _VooDataGridStatelessState<T> extends State<VooDataGridStateless<T>> {
 
   // Responsive helpers
   bool _isMobile(double width) => width < VooDataGridBreakpoints.mobile;
-  bool _isTablet(double width) => width >= VooDataGridBreakpoints.mobile && width < VooDataGridBreakpoints.tablet;
 
   VooDataGridDisplayMode _getEffectiveDisplayMode(double width) {
     if (_userSelectedMode != null) return _userSelectedMode!;
@@ -581,15 +579,14 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
-  }) async {
+  }) async =>
     // This is never called as the state is managed externally
-    return VooDataGridResponse<T>(
+    VooDataGridResponse<T>(
       rows: _state?.rows ?? [],
       totalRows: _state?.totalRows ?? 0,
       page: page,
       pageSize: pageSize,
     );
-  }
 
   @override
   void applyFilter(String field, VooDataFilter? filter) {

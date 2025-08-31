@@ -102,7 +102,7 @@ class ResponsiveToolbarOrganism<T> extends StatelessWidget {
                             onDisplayModeChanged(
                               displayMode == VooDataGridDisplayMode.table 
                                 ? VooDataGridDisplayMode.cards 
-                                : VooDataGridDisplayMode.table
+                                : VooDataGridDisplayMode.table,
                             );
                           },
                           tooltip: displayMode == VooDataGridDisplayMode.table ? 'Switch to Card View' : 'Switch to Table View',

@@ -23,12 +23,10 @@ class PaginationButtonAtom extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return IconButton(
+  Widget build(BuildContext context) => IconButton(
       icon: Icon(icon, size: iconSize),
       onPressed: onPressed,
       tooltip: tooltip,
       visualDensity: VisualDensity.compact,
     );
-  }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+
 import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_header_molecule.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/advanced_filter_row.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Advanced filter widget for complex filtering UI
 class AdvancedFilterWidget extends StatefulWidget {
@@ -104,7 +105,6 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                       _filters.add(FilterEntry(
                         field: widget.fields.first,
                         operator: widget.fields.first.defaultOperator ?? 'equals',
-                        logic: FilterLogic.and,
                       ));
                     });
                   },

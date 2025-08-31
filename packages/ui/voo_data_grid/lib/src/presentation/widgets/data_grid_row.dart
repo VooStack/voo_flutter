@@ -258,7 +258,5 @@ class _DataCell<T> extends StatelessWidget {
     );
   }
 
-  Alignment _getAlignment(TextAlign textAlign) {
-    return _alignmentCache[textAlign] ?? Alignment.centerLeft;
-  }
+  Alignment _getAlignment(TextAlign textAlign) => _alignmentCache[textAlign] ?? Alignment.centerLeft;
 }

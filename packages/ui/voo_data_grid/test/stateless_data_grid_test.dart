@@ -28,7 +28,7 @@ class TestProductDataSource extends VooDataGridDataSource<Product> {
     required List<VooColumnSort> sorts,
   }) async {
     // Simulate API delay
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100), () {});
     
     // Generate test data
     final products = List.generate(
@@ -257,7 +257,7 @@ void main() {
                   field: 'name',
                   label: 'Name',
                   valueGetter: (product) => product.name,
-                  filterable: true, // Make sure column is filterable
+                  // Make sure column is filterable (default is true)
                 ),
               ],
               onFilterChanged: (field, filter) {
@@ -304,7 +304,7 @@ void main() {
                   field: 'name',
                   label: 'Name',
                   valueGetter: (product) => product.name,
-                  sortable: true, // Make sure column is sortable
+                  // Make sure column is sortable (default is true)
                 ),
               ],
               onSortChanged: (field, direction) {

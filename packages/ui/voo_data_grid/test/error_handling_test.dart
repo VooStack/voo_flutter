@@ -12,15 +12,14 @@ class TestDataSource<T> extends VooDataGridSource<T> {
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
-  }) async {
+  }) async =>
     // Not needed for these tests
-    return VooDataGridResponse<T>(
+    VooDataGridResponse<T>(
       rows: [],
       totalRows: 0,
       page: page,
       pageSize: pageSize,
     );
-  }
 }
 
 // Test model classes
@@ -223,10 +222,9 @@ void main() {
         VooDataColumn<Map<String, dynamic>>(
           field: 'value',
           label: 'Value',
-          valueGetter: (row) {
+          valueGetter: (row) =>
             // This could potentially throw if the value type changes
-            return row['value'] as int;
-          },
+            row['value'] as int,
           valueFormatter: (value) => '\$\$value',
         ),
       ];

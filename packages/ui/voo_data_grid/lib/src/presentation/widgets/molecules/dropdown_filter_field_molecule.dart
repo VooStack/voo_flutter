@@ -52,7 +52,7 @@ class DropdownFilterFieldMolecule<T> extends StatelessWidget {
     }
     
     return DropdownButtonFormField<T>(
-      value: options.any((opt) => opt.value == value) ? value : null,
+      initialValue: options.any((opt) => opt.value == value) ? value : null,
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText ?? 'Select option...',
@@ -61,12 +61,11 @@ class DropdownFilterFieldMolecule<T> extends StatelessWidget {
       items: [
         if (showAllOption)
           DropdownMenuItem<T>(
-            value: null,
             child: Text(allOptionLabel),
           ),
         ...options.map(
           (option) => DropdownMenuItem<T>(
-            value: option.value,
+            value: option.value as T?,
             child: Row(
               children: [
                 if (option.icon != null) ...[
@@ -83,8 +82,7 @@ class DropdownFilterFieldMolecule<T> extends StatelessWidget {
     );
   }
   
-  Widget _buildCompactDropdown(ThemeData theme) {
-    return Container(
+  Widget _buildCompactDropdown(ThemeData theme) => Container(
       height: height ?? 32,
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -104,15 +102,15 @@ class DropdownFilterFieldMolecule<T> extends StatelessWidget {
               ),
             ),
             items: [
-              DropdownMenuItem(
+              DropdownMenuItem<T>(
                 child: Text(
                   allOptionLabel,
                   style: TextStyle(fontSize: 13, color: theme.textTheme.bodyMedium?.color),
                 ),
               ),
               ...options.map(
-                (option) => DropdownMenuItem(
-                  value: option.value,
+                (option) => DropdownMenuItem<T>(
+                  value: option.value as T?,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -165,5 +163,4 @@ class DropdownFilterFieldMolecule<T> extends StatelessWidget {
         ),
       ),
     );
-  }
 }

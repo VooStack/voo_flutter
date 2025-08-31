@@ -939,22 +939,17 @@ Widget statelessDataGrid() {
       field: 'name',
       label: 'Product Name',
       valueGetter: (row) => row['name'],
-      sortable: true,
-      filterable: true,
     ),
     VooDataColumn<Map<String, dynamic>>(
       field: 'price',
       label: 'Price',
       valueGetter: (row) => row['price'],
       valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
-      sortable: true,
-      filterable: true,
     ),
     VooDataColumn<Map<String, dynamic>>(
       field: 'stock',
       label: 'Stock',
       valueGetter: (row) => row['stock'],
-      sortable: true,
       cellBuilder: (context, value, row) {
         final stock = value as int;
         final color = stock > 20
@@ -982,7 +977,6 @@ Widget statelessDataGrid() {
       field: 'category',
       label: 'Category',
       valueGetter: (row) => row['category'],
-      filterable: true,
     ),
   ];
 

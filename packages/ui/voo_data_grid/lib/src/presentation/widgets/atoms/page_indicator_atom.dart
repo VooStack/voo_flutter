@@ -19,12 +19,10 @@ class PageIndicatorAtom extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
+  Widget build(BuildContext context) => Text(
       '$currentPage / $totalPages',
       style: textStyle ?? Theme.of(context).textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w500,
       ),
     );
-  }
 }

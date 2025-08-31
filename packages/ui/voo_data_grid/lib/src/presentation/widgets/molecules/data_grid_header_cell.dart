@@ -81,7 +81,6 @@ class DataGridHeaderCell<T> extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 4),
                 child: SortIndicatorAtom(
                   direction: sortDirection,
-                  iconSize: 16,
                 ),
               ),
             if (resizable) 

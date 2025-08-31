@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_chip_atom.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/clear_all_chip_atom.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
+
+import 'package:voo_data_grid/src/presentation/widgets/atoms/clear_all_chip_atom.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_chip_atom.dart';
 
 /// A molecule component that displays a list of filter chips
 class FilterChipListMolecule extends StatelessWidget {

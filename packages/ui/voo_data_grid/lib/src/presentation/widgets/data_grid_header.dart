@@ -234,8 +234,7 @@ class _ResizeHandle<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
+  Widget build(BuildContext context) => MouseRegion(
       cursor: SystemMouseCursors.resizeColumn,
       child: GestureDetector(
         onHorizontalDragUpdate: (details) {
@@ -253,5 +252,4 @@ class _ResizeHandle<T> extends StatelessWidget {
         ),
       ),
     );
-  }
 }
