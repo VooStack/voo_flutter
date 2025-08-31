@@ -939,17 +939,22 @@ Widget statelessDataGrid() {
       field: 'name',
       label: 'Product Name',
       valueGetter: (row) => row['name'],
+      sortable: true,
+      filterable: true,
     ),
     VooDataColumn<Map<String, dynamic>>(
       field: 'price',
       label: 'Price',
       valueGetter: (row) => row['price'],
       valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
+      sortable: true,
+      filterable: true,
     ),
     VooDataColumn<Map<String, dynamic>>(
       field: 'stock',
       label: 'Stock',
       valueGetter: (row) => row['stock'],
+      sortable: true,
       cellBuilder: (context, value, row) {
         final stock = value as int;
         final color = stock > 20
@@ -977,6 +982,7 @@ Widget statelessDataGrid() {
       field: 'category',
       label: 'Category',
       valueGetter: (row) => row['category'],
+      filterable: true,
     ),
   ];
 
@@ -987,10 +993,42 @@ Widget statelessDataGrid() {
         builder: (context, setState) {
           var currentState = state;
 
-          return VooDataGridStateless<Map<String, dynamic>>(
-            state: currentState,
-            columns: columns,
-            onPageChanged: (page) {
+          return Column(
+            children: [
+              // Add a toggle button for filters
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        currentState.filtersVisible ? Icons.filter_list_off : Icons.filter_list,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentState = currentState.copyWith(
+                            filtersVisible: !currentState.filtersVisible,
+                          );
+                        });
+                      },
+                      tooltip: currentState.filtersVisible ? 'Hide Filters' : 'Show Filters',
+                    ),
+                    Text(
+                      currentState.filtersVisible ? 'Filters Visible' : 'Filters Hidden',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: VooDataGridStateless<Map<String, dynamic>>(
+                  state: currentState,
+                  columns: columns,
+                  onPageChanged: (page) {
               setState(() {
                 final start = page * currentState.pageSize;
                 final end = (start + currentState.pageSize).clamp(0, products.length);
@@ -1087,6 +1125,9 @@ Widget statelessDataGrid() {
                 ),
               );
             },
+                ),
+              ),
+            ],
           );
         },
       ),
