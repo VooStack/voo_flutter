@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_checkbox_field_widget.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_date_field_widget.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_dropdown_field_widget.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_radio_field_widget.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_slider_field_widget.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_switch_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_checkbox_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_date_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_dropdown_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_radio_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_slider_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_switch_field.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_text_form_field.dart';
-import 'package:voo_forms/src/presentation/atoms/fields/voo_time_field_widget.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_time_field.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Factory class for creating field widgets based on field type

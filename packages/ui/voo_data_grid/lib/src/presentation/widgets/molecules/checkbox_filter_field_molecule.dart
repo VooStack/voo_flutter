@@ -9,7 +9,7 @@ class CheckboxFilterFieldMolecule extends StatelessWidget {
   final void Function(bool?) onChanged;
   
   /// Label text for the checkbox
-  final String label;
+  final String? label;
   
   /// Whether the checkbox is enabled
   final bool enabled;
@@ -20,20 +20,41 @@ class CheckboxFilterFieldMolecule extends StatelessWidget {
   /// Content padding
   final EdgeInsets? contentPadding;
   
+  /// Custom height for filter styling
+  final double? height;
+  
+  /// Whether to use compact filter styling (no label, just checkbox)
+  final bool compactStyle;
+  
   const CheckboxFilterFieldMolecule({
     super.key,
     required this.value,
     required this.onChanged,
-    required this.label,
+    this.label,
     this.enabled = true,
     this.controlAffinity = ListTileControlAffinity.leading,
     this.contentPadding,
+    this.height,
+    this.compactStyle = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (compactStyle) {
+      return SizedBox(
+        height: height ?? 32,
+        child: Center(
+          child: Checkbox(
+            value: value,
+            onChanged: enabled ? onChanged : null,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+      );
+    }
+    
     return CheckboxListTile(
-      title: Text(label),
+      title: label != null ? Text(label!) : null,
       value: value,
       onChanged: enabled ? onChanged : null,
       controlAffinity: controlAffinity,

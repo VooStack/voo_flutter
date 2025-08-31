@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:voo_core/voo_core.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_data_grid/src/presentation/widgets/data_grid_header.dart';
-import 'package:voo_data_grid/src/presentation/widgets/optimized_data_grid_row.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Table view organism for displaying data grid rows in a table format
 class DataGridTableViewOrganism<T> extends StatelessWidget {
   final VooDataGridController<T> controller;
   final Widget? loadingWidget;
   final Widget? emptyStateWidget;
-  final Widget Function(String?)? errorBuilder;
+  final Widget Function(String)? errorBuilder;
   final VooDataGridTheme theme;
   final void Function(T)? onRowTap;
   final void Function(T)? onRowDoubleTap;
-  final void Function(T, bool)? onRowHover;
+  final void Function(T)? onRowHover;
   final double width;
   final bool alwaysShowVerticalScrollbar;
   final bool alwaysShowHorizontalScrollbar;
@@ -41,7 +39,7 @@ class DataGridTableViewOrganism<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = VooProvider.of<VooDesignSystem>(context);
+    final design = context.vooDesign;
     final dataSource = controller.dataSource;
 
     if (dataSource.isLoading && dataSource.rows.isEmpty) {
@@ -77,7 +75,7 @@ class DataGridTableViewOrganism<T> extends StatelessWidget {
         Expanded(
           child: dataSource.error != null
               ? Center(
-                  child: errorBuilder?.call(dataSource.error!) ??
+                  child: errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
                       VooEmptyState(
                         icon: Icons.error_outline,
                         title: 'Error Loading Data',
@@ -148,7 +146,7 @@ class _DataGridRowsSection<T> extends StatelessWidget {
   final VooDesignSystemData design;
   final void Function(T)? onRowTap;
   final void Function(T)? onRowDoubleTap;
-  final void Function(T, bool)? onRowHover;
+  final void Function(T)? onRowHover;
   final bool alwaysShowVerticalScrollbar;
   final bool alwaysShowHorizontalScrollbar;
 
@@ -191,7 +189,7 @@ class _DataGridRowsSection<T> extends StatelessWidget {
         // Build rows
         final rowsList = List.generate(
           rows.length,
-          (i) => OptimizedDataGridRow<T>(
+          (i) => VooDataGridRow<T>(
             row: rows[i],
             index: i,
             controller: controller,

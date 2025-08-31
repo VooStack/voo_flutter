@@ -551,7 +551,7 @@ void main() {
       test('should handle empty OData response', () {
         final emptyResponse = {
           '@odata.context': r'$metadata#Products',
-          'value': [],
+          'value': <Map<String, dynamic>>[],
         };
 
         final parsed = DataGridRequestBuilder.parseODataResponse(

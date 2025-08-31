@@ -5,6 +5,7 @@ import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/controllers/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/molecules/form_field_builder.dart';
+import 'package:voo_forms/src/presentation/molecules/form_header_widget.dart';
 import 'package:voo_forms/src/presentation/molecules/form_section.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
@@ -133,7 +134,11 @@ class VooFormWidget extends HookWidget {
           children: [
             if (header != null) header!,
             if (form.title != null || form.description != null)
-              _buildFormHeader(context, formConfig),
+              FormHeaderWidget(
+                form: form,
+                config: formConfig,
+                padding: padding,
+              ),
             if (shrinkWrap)
               formContent
             else
@@ -149,37 +154,6 @@ class VooFormWidget extends HookWidget {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildFormHeader(BuildContext context, VooFormConfig config) {
-    final theme = Theme.of(context);
-    final effectivePadding =
-        padding ?? config.padding ?? const EdgeInsets.all(16.0);
-
-    return Padding(
-      padding: effectivePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (form.title != null)
-            Text(
-              form.title!,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          if (form.description != null) ...[
-            const SizedBox(height: 8.0),
-            Text(
-              form.description!,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 
@@ -503,15 +477,11 @@ class VooFormWidget extends HookWidget {
           decoration = decoration.copyWith(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
-              borderSide: const BorderSide(
-                color: Colors.transparent,
-              ),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
-              borderSide: const BorderSide(
-                color: Colors.transparent,
-              ),
+              borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),

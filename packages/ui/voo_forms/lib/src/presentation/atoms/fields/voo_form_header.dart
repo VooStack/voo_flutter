@@ -176,7 +176,7 @@ class FormHeaderWidget extends StatelessWidget {
     return baseStyle?.copyWith(
           color: header.color ??
               (header.style == HeaderStyle.gradient
-                  ? Colors.white
+                  ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface),
           fontWeight: header.style == HeaderStyle.large ||
                   header.style == HeaderStyle.banner
@@ -199,7 +199,7 @@ class FormHeaderWidget extends StatelessWidget {
       HeaderStyle.card => theme.colorScheme.surfaceContainerHighest,
       HeaderStyle.banner => theme.colorScheme.primaryContainer,
       HeaderStyle.gradient => null,
-      _ => Colors.transparent,
+      _ => null,
     };
 
   MainAxisAlignment _getMainAxisAlignment() =>

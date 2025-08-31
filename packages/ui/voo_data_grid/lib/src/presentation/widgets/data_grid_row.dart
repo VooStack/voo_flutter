@@ -3,18 +3,18 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Row widget for VooDataGrid
+/// Manages its own hover state to prevent entire grid rebuilds
 ///
 /// Generic type parameter T represents the row data type.
-class VooDataGridRow<T> extends StatelessWidget {
+class VooDataGridRow<T> extends StatefulWidget {
   final T row;
   final int index;
   final VooDataGridController<T> controller;
   final VooDataGridTheme theme;
   final bool isSelected;
-  final bool isHovered;
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;
-  final void Function(bool isHovered)? onHover;
+  final void Function(T row)? onRowHover;
 
   const VooDataGridRow({
     super.key,
@@ -23,56 +23,126 @@ class VooDataGridRow<T> extends StatelessWidget {
     required this.controller,
     required this.theme,
     this.isSelected = false,
-    this.isHovered = false,
     this.onTap,
     this.onDoubleTap,
-    this.onHover,
+    this.onRowHover,
   });
+
+  @override
+  State<VooDataGridRow<T>> createState() => _VooDataGridRowState<T>();
+}
+
+class _VooDataGridRowState<T> extends State<VooDataGridRow<T>> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
 
-    Color backgroundColor;
-    if (isSelected) {
-      backgroundColor = theme.selectedRowBackgroundColor;
-    } else if (isHovered && controller.showHoverEffect) {
-      backgroundColor = theme.hoveredRowBackgroundColor;
-    } else if (controller.alternatingRowColors && index.isOdd) {
-      backgroundColor = theme.alternateRowBackgroundColor;
-    } else {
-      backgroundColor = theme.rowBackgroundColor;
-    }
+    // Calculate background color based on state
+    final backgroundColor = _getBackgroundColor();
 
-    return MouseRegion(
-      onEnter: (_) => onHover?.call(true),
-      onExit: (_) => onHover?.call(false),
-      child: GestureDetector(
-        onTap: onTap,
-        onDoubleTap: onDoubleTap,
-        behavior: HitTestBehavior.opaque, // Make entire row clickable
-        child: Container(
-          height: controller.rowHeight,
-          color: backgroundColor,
-          child: Row(
-            children: [
-              // Selection checkbox column
-              if (controller.dataSource.selectionMode != VooSelectionMode.none) _buildSelectionCell(design),
+    // Wrap in RepaintBoundary to isolate repaints to this row only
+    return RepaintBoundary(
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() {
+            _isHovered = true;
+          });
+          widget.onRowHover?.call(widget.row);
+        },
+        onExit: (_) {
+          setState(() {
+            _isHovered = false;
+          });
+        },
+        child: GestureDetector(
+          onTap: widget.onTap,
+          onDoubleTap: widget.onDoubleTap,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            height: widget.controller.rowHeight,
+            color: backgroundColor,
+            child: Row(
+              children: [
+                // Selection checkbox column
+                if (widget.controller.dataSource.selectionMode != VooSelectionMode.none)
+                  _SelectionCell<T>(
+                    controller: widget.controller,
+                    theme: widget.theme,
+                    design: design,
+                    isSelected: widget.isSelected,
+                    onTap: widget.onTap,
+                  ),
 
-              // Frozen columns
-              for (final column in controller.frozenColumns) _buildDataCell(context, column, design),
+                // Frozen columns
+                for (final column in widget.controller.frozenColumns)
+                  RepaintBoundary(
+                    child: _DataCell<T>(
+                      row: widget.row,
+                      column: column,
+                      controller: widget.controller,
+                      theme: widget.theme,
+                      design: design,
+                    ),
+                  ),
 
-              // Scrollable columns - these will be scrolled at the parent level
-              for (final column in controller.scrollableColumns) _buildDataCell(context, column, design),
-            ],
+                // Scrollable columns
+                for (final column in widget.controller.scrollableColumns)
+                  RepaintBoundary(
+                    child: _DataCell<T>(
+                      row: widget.row,
+                      column: column,
+                      controller: widget.controller,
+                      theme: widget.theme,
+                      design: design,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSelectionCell(VooDesignSystemData design) => Container(
-        width: 48,
+  Color _getBackgroundColor() {
+    if (widget.isSelected) {
+      return widget.theme.selectedRowBackgroundColor;
+    } else if (_isHovered && widget.controller.showHoverEffect) {
+      return widget.theme.hoveredRowBackgroundColor;
+    } else if (widget.controller.alternatingRowColors && widget.index.isOdd) {
+      return widget.theme.alternateRowBackgroundColor;
+    } else {
+      return widget.theme.rowBackgroundColor;
+    }
+  }
+}
+
+/// Selection cell widget
+class _SelectionCell<T> extends StatelessWidget {
+  final VooDataGridController<T> controller;
+  final VooDataGridTheme theme;
+  final VooDesignSystemData design;
+  final bool isSelected;
+  final VoidCallback? onTap;
+
+  const _SelectionCell({
+    required this.controller,
+    required this.theme,
+    required this.design,
+    required this.isSelected,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Use const width for better performance
+    const cellWidth = 48.0;
+    
+    return SizedBox(
+      width: cellWidth,
+      child: Container(
         padding: EdgeInsets.symmetric(horizontal: design.spacingSm),
         decoration: BoxDecoration(
           border: Border(
@@ -96,57 +166,64 @@ class VooDataGridRow<T> extends StatelessWidget {
                 value: isSelected,
                 onChanged: (_) => onTap?.call(),
               ),
-      );
+      ),
+    );
+  }
+}
 
-  Widget _buildDataCell(
-    BuildContext context,
-    VooDataColumn<T> column,
-    VooDesignSystemData design,
-  ) {
+/// Data cell widget
+class _DataCell<T> extends StatelessWidget {
+  final T row;
+  final VooDataColumn<T> column;
+  final VooDataGridController<T> controller;
+  final VooDataGridTheme theme;
+  final VooDesignSystemData design;
+
+  const _DataCell({
+    required this.row,
+    required this.column,
+    required this.controller,
+    required this.theme,
+    required this.design,
+  });
+
+  // Static method with const values for better performance
+  static const Map<TextAlign, Alignment> _alignmentCache = {
+    TextAlign.left: Alignment.centerLeft,
+    TextAlign.start: Alignment.centerLeft,
+    TextAlign.right: Alignment.centerRight,
+    TextAlign.end: Alignment.centerRight,
+    TextAlign.center: Alignment.center,
+    TextAlign.justify: Alignment.centerLeft,
+  };
+
+  @override
+  Widget build(BuildContext context) {
     final width = controller.getColumnWidth(column);
 
-    // For typed objects, valueGetter MUST be provided.
-    // Try column's valueGetter first, then fallback to bracket notation for Maps.
+    // Get value from row
     dynamic value;
-
     try {
       if (column.valueGetter != null) {
-        // Safely call valueGetter with error handling
         value = column.valueGetter!(row);
       } else if (row is Map) {
         value = (row as Map)[column.field];
       } else {
-        // Typed object without valueGetter - this will cause errors
-        // Log warning in debug mode
         debugPrint(
-          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects. '
-          'Row type: ${row.runtimeType}. '
-          'Please provide a valueGetter function in the VooDataColumn definition.',
-        );
-        assert(
-          false,
-          'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
-          'Provide a valueGetter function in the VooDataColumn definition.',
+          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects.',
         );
         value = null;
       }
-    } catch (e, stackTrace) {
-      // Log detailed error information to help debugging
+    } catch (e) {
       debugPrint(
-        '[VooDataGrid Error] Failed to get value for column "${column.field}":\n'
-        'Error: $e\n'
-        'Row type: ${row.runtimeType}\n'
-        'Column field: ${column.field}\n'
-        'ValueGetter type: ${column.valueGetter.runtimeType}\n'
-        'Stack trace:\n$stackTrace',
+        '[VooDataGrid Error] Failed to get value for column "${column.field}": $e',
       );
-
-      // In production, show a placeholder instead of crashing
       value = null;
     }
 
     final displayValue = column.valueFormatter?.call(value) ?? value?.toString() ?? '';
 
+    // Use const where possible for better performance
     final cellContent = Align(
       alignment: _getAlignment(column.textAlign),
       child: column.cellBuilder?.call(context, value, row) ??
@@ -182,17 +259,6 @@ class VooDataGridRow<T> extends StatelessWidget {
   }
 
   Alignment _getAlignment(TextAlign textAlign) {
-    switch (textAlign) {
-      case TextAlign.left:
-      case TextAlign.start:
-        return Alignment.centerLeft;
-      case TextAlign.right:
-      case TextAlign.end:
-        return Alignment.centerRight;
-      case TextAlign.center:
-        return Alignment.center;
-      case TextAlign.justify:
-        return Alignment.centerLeft;
-    }
+    return _alignmentCache[textAlign] ?? Alignment.centerLeft;
   }
 }

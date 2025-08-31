@@ -19,7 +19,7 @@ class TestDataSource extends VooDataGridDataSource<Map<String, dynamic>> {
     fetchCalled = true;
     
     // Simulate async operation
-    await Future.delayed(const Duration(milliseconds: 10));
+    await Future.delayed<void>(const Duration(milliseconds: 10));
     
     final startIndex = page * pageSize;
     final endIndex = (startIndex + pageSize).clamp(0, testData.length);
@@ -62,7 +62,7 @@ class TypedTestDataSource extends VooDataGridDataSource<Order> {
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 10));
+    await Future.delayed<void>(const Duration(milliseconds: 10));
     
     final startIndex = page * pageSize;
     final endIndex = (startIndex + pageSize).clamp(0, orders.length);
@@ -337,7 +337,7 @@ void main() {
       expect(controller.state.rows.first['id'], 1);
       
       controller.changePage(1);
-      await Future.delayed(const Duration(milliseconds: 20));
+      await Future.delayed<void>(const Duration(milliseconds: 20));
       
       expect(controller.state.currentPage, 1);
       expect(controller.state.rows.first['id'], 11);

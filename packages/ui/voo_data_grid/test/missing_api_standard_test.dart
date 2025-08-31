@@ -11,7 +11,7 @@ void main() {
       httpClient: (url, requestData, headers) async {
         capturedRequest = requestData;
         return {
-          'data': [],
+          'data': <Map<String, dynamic>>[],
           'total': 0,
           'page': 0,
           'pageSize': 20,
@@ -42,7 +42,7 @@ void main() {
       httpClient: (url, requestData, headers) async {
         capturedRequest = requestData;
         return {
-          'data': [],
+          'data': <Map<String, dynamic>>[],
           'total': 0,
           'page': 0,
           'pageSize': 20,

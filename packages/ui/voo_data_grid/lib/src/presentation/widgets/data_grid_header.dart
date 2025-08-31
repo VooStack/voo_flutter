@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
-/// Header widget for VooDataGrid
-///
-/// Generic type parameter T represents the row data type.
+/// Header widget for VooDataGrid showing column headers
 class VooDataGridHeader<T> extends StatelessWidget {
   final VooDataGridController<T> controller;
   final VooDataGridTheme theme;
@@ -22,7 +20,7 @@ class VooDataGridHeader<T> extends StatelessWidget {
     final design = context.vooDesign;
 
     return Container(
-      height: controller.headerHeight,
+      height: 56.0, // Default header height
       decoration: BoxDecoration(
         color: theme.headerBackgroundColor,
         border: Border(
@@ -35,10 +33,22 @@ class VooDataGridHeader<T> extends StatelessWidget {
       child: Row(
         children: [
           // Selection checkbox column
-          if (controller.dataSource.selectionMode != VooSelectionMode.none) _buildSelectionHeader(design),
+          if (controller.dataSource.selectionMode != VooSelectionMode.none)
+            _SelectionHeaderCell<T>(
+              controller: controller,
+              theme: theme,
+              design: design,
+            ),
 
           // Frozen columns
-          for (final column in controller.frozenColumns) _buildHeaderCell(context, column, design),
+          for (final column in controller.frozenColumns)
+            _HeaderCell<T>(
+              column: column,
+              controller: controller,
+              theme: theme,
+              design: design,
+              onSort: onSort,
+            ),
 
           // Scrollable columns - no scrollbar here, just synchronized scrolling
           Expanded(
@@ -47,7 +57,14 @@ class VooDataGridHeader<T> extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  for (final column in controller.scrollableColumns) _buildHeaderCell(context, column, design),
+                  for (final column in controller.scrollableColumns)
+                    _HeaderCell<T>(
+                      column: column,
+                      controller: controller,
+                      theme: theme,
+                      design: design,
+                      onSort: onSort,
+                    ),
                 ],
               ),
             ),
@@ -56,9 +73,24 @@ class VooDataGridHeader<T> extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSelectionHeader(VooDesignSystemData design) {
-    final isAllSelected = controller.dataSource.selectedRows.length == controller.dataSource.rows.length && controller.dataSource.rows.isNotEmpty;
+/// Selection header cell widget
+class _SelectionHeaderCell<T> extends StatelessWidget {
+  final VooDataGridController<T> controller;
+  final VooDataGridTheme theme;
+  final VooDesignSystemData design;
+
+  const _SelectionHeaderCell({
+    required this.controller,
+    required this.theme,
+    required this.design,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isAllSelected = controller.dataSource.selectedRows.length == controller.dataSource.rows.length && 
+                         controller.dataSource.rows.isNotEmpty;
 
     return Container(
       width: 48,
@@ -86,12 +118,26 @@ class VooDataGridHeader<T> extends StatelessWidget {
           : null,
     );
   }
+}
 
-  Widget _buildHeaderCell(
-    BuildContext context,
-    VooDataColumn<T> column,
-    VooDesignSystemData design,
-  ) {
+/// Individual header cell widget
+class _HeaderCell<T> extends StatelessWidget {
+  final VooDataColumn<T> column;
+  final VooDataGridController<T> controller;
+  final VooDataGridTheme theme;
+  final VooDesignSystemData design;
+  final void Function(String field) onSort;
+
+  const _HeaderCell({
+    required this.column,
+    required this.controller,
+    required this.theme,
+    required this.design,
+    required this.onSort,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final sortDirection = controller.getSortDirection(column.field);
     final width = controller.getColumnWidth(column);
 
@@ -119,15 +165,35 @@ class VooDataGridHeader<T> extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
             ),
-            if (column.sortable && !column.excludeFromApi) _buildSortIcon(sortDirection),
-            if (controller.columnResizable) _buildResizeHandle(column),
+            if (column.sortable && !column.excludeFromApi)
+              _SortIcon(
+                direction: sortDirection,
+                theme: theme,
+              ),
+            if (controller.columnResizable)
+              _ResizeHandle<T>(
+                column: column,
+                controller: controller,
+              ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildSortIcon(VooSortDirection direction) {
+/// Sort icon widget
+class _SortIcon extends StatelessWidget {
+  final VooSortDirection direction;
+  final VooDataGridTheme theme;
+
+  const _SortIcon({
+    required this.direction,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     IconData icon;
     Color? color;
 
@@ -155,20 +221,37 @@ class VooDataGridHeader<T> extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildResizeHandle(VooDataColumn<T> column) => MouseRegion(
-        cursor: SystemMouseCursors.resizeColumn,
-        child: GestureDetector(
-          onHorizontalDragUpdate: (details) {
-            final currentWidth = controller.getColumnWidth(column);
-            final newWidth = (currentWidth + details.delta.dx).clamp(column.minWidth, column.maxWidth ?? double.infinity);
-            controller.resizeColumn(column.field, newWidth);
-          },
-          child: Container(
-            width: 4,
-            height: double.infinity,
-            color: Colors.transparent,
-          ),
+/// Resize handle widget
+class _ResizeHandle<T> extends StatelessWidget {
+  final VooDataColumn<T> column;
+  final VooDataGridController<T> controller;
+
+  const _ResizeHandle({
+    required this.column,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.resizeColumn,
+      child: GestureDetector(
+        onHorizontalDragUpdate: (details) {
+          final currentWidth = controller.getColumnWidth(column);
+          final newWidth = (currentWidth + details.delta.dx).clamp(
+            column.minWidth,
+            column.maxWidth ?? double.infinity,
+          );
+          controller.resizeColumn(column.field, newWidth);
+        },
+        child: Container(
+          width: 4,
+          height: double.infinity,
+          color: Colors.transparent,
         ),
-      );
+      ),
+    );
+  }
 }

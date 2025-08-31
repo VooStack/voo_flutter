@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:voo_core/voo_core.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Card view organism for displaying data grid rows as cards
 class DataGridCardViewOrganism<T> extends StatelessWidget {
   final VooDataGridController<T> controller;
   final Widget? loadingWidget;
   final Widget? emptyStateWidget;
-  final Widget Function(String?)? errorBuilder;
+  final Widget Function(String)? errorBuilder;
   final VooDataGridTheme theme;
   final Widget Function(BuildContext, T, int)? cardBuilder;
   final void Function(T)? onRowTap;
@@ -29,7 +29,7 @@ class DataGridCardViewOrganism<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = VooProvider.of<VooDesignSystem>(context);
+    final design = context.vooDesign;
     final dataSource = controller.dataSource;
 
     if (dataSource.isLoading && dataSource.rows.isEmpty) {
@@ -41,7 +41,7 @@ class DataGridCardViewOrganism<T> extends StatelessWidget {
     // Handle error state but still allow filtering to remain visible
     if (dataSource.error != null) {
       return Center(
-        child: errorBuilder?.call(dataSource.error!) ??
+        child: errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
             VooEmptyState(
               icon: Icons.error_outline,
               title: 'Error Loading Data',

@@ -21,6 +21,115 @@
 
 ### 4. Architecture Rules
 
+#### Naming Conventions
+
+##### File Naming Rules
+- **Use snake_case**: All Dart files must use snake_case
+  - ✅ `data_grid.dart`, `user_profile_widget.dart`
+  - ❌ `DataGrid.dart`, `userProfileWidget.dart`
+- **Match class names**: File names should match the primary class they contain
+  - File `user_profile_widget.dart` contains class `UserProfileWidget`
+- **Descriptive suffixes**: Use appropriate suffixes for clarity
+  - Widgets: `_widget.dart` (e.g., `button_widget.dart`)
+  - Screens/Pages: `_screen.dart` or `_page.dart`
+  - Models: `_model.dart`
+  - Services: `_service.dart`
+  - Repositories: `_repository.dart`
+  - Controllers: `_controller.dart`
+  - Utils: `_utils.dart`
+- **Test files**: Must end with `_test.dart` and mirror source structure
+  - Source: `lib/src/widgets/button_widget.dart`
+  - Test: `test/src/widgets/button_widget_test.dart`
+
+##### Class Naming Rules
+- **Use PascalCase**: All classes must use PascalCase
+  - ✅ `UserProfileWidget`, `DataGridController`
+  - ❌ `userProfileWidget`, `data_grid_controller`
+- **Descriptive suffixes**: Clearly indicate the class purpose
+  - Widgets: `*Widget` (e.g., `ButtonWidget`, `HeaderWidget`)
+  - Stateless: `*Widget` (no special suffix needed)
+  - Stateful: `*Widget` with `*State` for state class
+  - Controllers: `*Controller`
+  - Services: `*Service`
+  - Repositories: `*Repository`
+  - Models: `*Model` or just descriptive name (e.g., `User`, `Product`)
+  - BLoCs: `*Bloc`
+  - Cubits: `*Cubit`
+- **Interface naming**: Prefix abstract classes with `I` or use descriptive names
+  - ✅ `IUserRepository`, `BaseWidget`, `AbstractService`
+  - ❌ `UserRepositoryInterface` (too verbose)
+
+##### Widget Naming Rules
+- **Atomic Design Folder Structure Only**:
+  - Atomic design level is indicated ONLY by folder structure
+  - Files and classes should NOT contain `atom`, `molecule`, or `organism` suffixes
+  - Folder structure: `atoms/`, `molecules/`, `organisms/`, `templates/`, `pages/`
+  - Example structure:
+    ```
+    presentation/
+    ├── atoms/
+    │   └── button_widget.dart (contains class ButtonWidget)
+    ├── molecules/
+    │   └── search_bar.dart (contains class SearchBar)
+    └── organisms/
+        └── header.dart (contains class Header)
+    ```
+- **File and Class Naming**:
+  - ✅ Folder: `atoms/` → File: `button_widget.dart` → Class: `ButtonWidget`
+  - ✅ Folder: `molecules/` → File: `form_section.dart` → Class: `FormSection`
+  - ✅ Folder: `organisms/` → File: `voo_form.dart` → Class: `VooForm`
+  - ❌ File: `button_atom.dart` (Don't add atomic suffix to files)
+  - ❌ Class: `ButtonAtom` (Don't add atomic suffix to classes)
+- **Component clarity**: Name should immediately convey purpose
+  - ✅ `UserAvatarWidget`, `NavigationDrawer`
+  - ❌ `Avatar`, `Drawer` (too generic)
+
+##### Variable & Method Naming Rules
+- **Use camelCase**: All variables and methods use camelCase
+  - ✅ `userName`, `getUserData()`, `isLoading`
+  - ❌ `user_name`, `GetUserData()`, `IsLoading`
+- **Boolean naming**: Prefix with `is`, `has`, `can`, `should`
+  - ✅ `isLoading`, `hasError`, `canEdit`, `shouldRefresh`
+  - ❌ `loading`, `error`, `editable`
+- **Private members**: Prefix with underscore
+  - ✅ `_controller`, `_calculateTotal()`
+  - Use sparingly, prefer proper encapsulation
+- **Constants**: Use SCREAMING_SNAKE_CASE or lowerCamelCase
+  - ✅ `const MAX_RETRY_COUNT = 3` or `const maxRetryCount = 3`
+  - Prefer lowerCamelCase for Dart conventions
+
+##### Package & Directory Naming Rules
+- **Use snake_case**: All directories and packages use snake_case
+  - ✅ `voo_core`, `data_grid`, `user_management`
+  - ❌ `VooCore`, `dataGrid`, `UserManagement`
+- **Logical grouping**: Group by feature or layer
+  - By feature: `features/authentication/`, `features/shopping_cart/`
+  - By layer: `presentation/`, `domain/`, `data/`
+  - By type: `widgets/`, `models/`, `services/`
+
+##### Enum Naming Rules
+- **Use PascalCase**: Enum types use PascalCase
+  - ✅ `enum UserRole { admin, user, guest }`
+  - ❌ `enum user_role { Admin, User, Guest }`
+- **Values use camelCase**: Enum values should be camelCase
+  - ✅ `UserStatus.active`, `UserStatus.inactive`
+  - ❌ `UserStatus.ACTIVE`, `UserStatus.Active`
+
+##### File Refactoring Rules
+- **No v2 or optimized naming**: When refactoring a file, ALWAYS replace the original file
+  - ❌ Never create `data_grid_v2.dart` or `optimized_data_grid.dart`
+  - ✅ Always replace the existing `data_grid.dart` directly
+  - This prevents confusion and maintains clean codebase
+  - Old versions belong in git history, not in the codebase
+
+##### Import Naming Rules
+- **Avoid naming imports unless necessary**: Only use `as` for conflicts
+  - ✅ `import 'package:flutter/material.dart';`
+  - ⚠️ `import 'package:flutter/material.dart' as material;` (only if needed)
+- **Consistent aliasing**: When aliasing is necessary, use clear prefixes
+  - ✅ `import 'package:http/http.dart' as http;`
+  - ❌ `import 'package:http/http.dart' as h;`
+
 #### Clean Architecture Layers
 1. **Domain Layer**
    - Pure business logic

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/sort_indicator_atom.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/resize_handle.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// A molecule component for data grid header cells
-class DataGridHeaderCellMolecule<T> extends StatelessWidget {
+class DataGridHeaderCell<T> extends StatelessWidget {
   /// The column configuration
   final VooDataColumn<T> column;
   
@@ -32,7 +33,7 @@ class DataGridHeaderCellMolecule<T> extends StatelessWidget {
   /// Callback for column resize
   final void Function(double delta)? onResize;
   
-  const DataGridHeaderCellMolecule({
+  const DataGridHeaderCell({
     super.key,
     required this.column,
     required this.sortDirection,
@@ -83,27 +84,11 @@ class DataGridHeaderCellMolecule<T> extends StatelessWidget {
                   iconSize: 16,
                 ),
               ),
-            if (resizable) _buildResizeHandle(),
+            if (resizable) 
+              ResizeHandle(
+                onResize: onResize,
+              ),
           ],
-        ),
-      ),
-    );
-  }
-  
-  Widget _buildResizeHandle() {
-    return GestureDetector(
-      onHorizontalDragUpdate: (details) {
-        onResize?.call(details.delta.dx);
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.resizeColumn,
-        child: Container(
-          width: 8,
-          height: double.infinity,
-          color: Colors.transparent,
-          child: const Center(
-            child: VerticalDivider(width: 2),
-          ),
         ),
       ),
     );

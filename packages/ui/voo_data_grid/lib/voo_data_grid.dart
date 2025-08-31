@@ -2,7 +2,6 @@ library;
 
 // Domain Layer - Entities
 export 'src/domain/entities/data_grid_column.dart';
-export 'src/domain/entities/data_grid_filter.dart';
 export 'src/domain/entities/data_grid_types.dart';
 export 'src/domain/entities/typed_data_column.dart';
 export 'src/domain/entities/filter_type_extensions.dart';
@@ -24,9 +23,9 @@ export 'src/presentation/controllers/voo_data_grid_controller.dart'
 // Presentation Layer - Widgets
 export 'src/presentation/widgets/data_grid.dart';
 export 'src/presentation/widgets/data_grid_header.dart';
+export 'src/presentation/widgets/data_grid_filter_row.dart';
 export 'src/presentation/widgets/data_grid_pagination.dart';
 export 'src/presentation/widgets/data_grid_row.dart';
-export 'src/presentation/widgets/optimized_data_grid_row.dart'; // Performance-optimized row widget
 export 'src/presentation/widgets/voo_data_grid_stateless.dart'; // New state-agnostic widget
 
 // Presentation Layer - Organisms

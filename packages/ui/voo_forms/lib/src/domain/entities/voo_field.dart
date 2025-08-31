@@ -11,17 +11,21 @@ import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 /// ```dart
 /// VooSimpleForm(
 ///   fields: [
-///     VooField.text(name: 'firstName', label: 'First Name'),
-///     VooField.email(name: 'email', label: 'Email'),
-///     VooField.dropdown(name: 'country', options: ['USA', 'Canada']),
+///     VooFormField.text(name: 'firstName', label: 'First Name'),
+///     VooFormField.email(name: 'email', label: 'Email'),
+///     VooFormField.dropdown(name: 'country', options: ['USA', 'Canada']),
 ///   ],
 /// )
 /// ```
+/// 
+/// Note: VooField static methods are now available as factory constructors on VooFormField.
+/// VooField is maintained for backward compatibility.
 class VooField {
   // Private constructor to prevent instantiation
   VooField._();
 
   /// Text field factory
+  /// @deprecated Use VooFormField.text() instead
   static VooFormField<String> text({
     required String name,
     String? label,

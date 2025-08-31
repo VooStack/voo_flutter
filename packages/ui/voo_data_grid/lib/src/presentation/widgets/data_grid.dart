@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:voo_data_grid/src/presentation/widgets/atoms/atoms.dart';
+
 import 'package:voo_data_grid/src/presentation/widgets/molecules/molecules.dart';
-import 'package:voo_data_grid/src/presentation/widgets/optimized_data_grid_row.dart';
 import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_card_view_organism.dart';
 import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_table_view_organism.dart';
+import 'package:voo_data_grid/src/presentation/widgets/organisms/mobile_filter_sheet_organism.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -173,7 +172,63 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.showToolbar) _buildResponsiveToolbar(design, constraints.maxWidth),
+                if (widget.showToolbar) ...[
+                  Column(
+                    children: [
+                      DataGridToolbar(
+                        onRefresh: widget.controller.dataSource.refresh,
+                        onFilterToggle: _isMobile(constraints.maxWidth) ? null : widget.controller.toggleFilters,
+                        filtersVisible: widget.controller.showFilters,
+                        activeFilterCount: widget.controller.dataSource.filters.length,
+                        displayMode: _effectiveDisplayMode,
+                        onDisplayModeChanged: _isMobile(constraints.maxWidth) 
+                            ? (mode) => setState(() => _userSelectedMode = mode)
+                            : null,
+                        showViewModeToggle: _isMobile(constraints.maxWidth) && _effectiveDisplayMode == VooDataGridDisplayMode.table,
+                        additionalActions: widget.toolbarActions,
+                        backgroundColor: _theme.headerBackgroundColor,
+                        borderColor: _theme.borderColor,
+                        isMobile: _isMobile(constraints.maxWidth),
+                        onShowMobileFilters: _isMobile(constraints.maxWidth) ? () => _showMobileFilterSheet(context) : null,
+                      ),
+                      if (widget.controller.dataSource.filters.isNotEmpty) ...[
+                        // Inline filter chips - using the molecule directly
+                        Builder(builder: (context) {
+                          final filters = widget.controller.dataSource.filters;
+                          if (filters.isEmpty) return const SizedBox.shrink();
+
+                          // Prepare filter data for the molecule
+                          final filterData = <String, FilterChipData>{};
+                          for (final entry in filters.entries) {
+                            final column = widget.controller.columns.firstWhere(
+                              (col) => col.field == entry.key,
+                            );
+                            final filter = entry.value;
+                            final displayValue = filter.value != null
+                                ? (column.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '')
+                                : null;
+                            
+                            filterData[entry.key] = FilterChipData(
+                              label: column.label,
+                              value: filter.value,
+                              displayValue: displayValue,
+                            );
+                          }
+
+                          return FilterChipListMolecule(
+                            filters: filterData,
+                            onFilterRemoved: (field) {
+                              widget.controller.dataSource.applyFilter(field, null);
+                            },
+                            onClearAll: widget.controller.dataSource.clearFilters,
+                            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                            borderColor: _theme.borderColor,
+                          );
+                        }),
+                      ],
+                    ],
+                  ),
+                ],
                 Expanded(
                   child: _effectiveDisplayMode == VooDataGridDisplayMode.cards 
                       ? DataGridCardViewOrganism<T>(
@@ -202,7 +257,28 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
                           mobilePriorityColumns: widget.mobilePriorityColumns,
                         ),
                 ),
-                if (widget.showPagination && !widget.controller.dataSource.isLoading) _buildResponsivePagination(constraints.maxWidth),
+                if (widget.showPagination && !widget.controller.dataSource.isLoading) ...[
+                  if (_isMobile(constraints.maxWidth))
+                    VooDataGridMobilePagination(
+                      currentPage: widget.controller.dataSource.currentPage,
+                      totalPages: widget.controller.dataSource.totalPages,
+                      pageSize: widget.controller.dataSource.pageSize,
+                      totalRows: widget.controller.dataSource.totalRows,
+                      onPageChanged: widget.controller.dataSource.changePage,
+                      onPageSizeChanged: widget.controller.dataSource.changePageSize,
+                      theme: _theme,
+                    )
+                  else
+                    VooDataGridPagination(
+                      currentPage: widget.controller.dataSource.currentPage,
+                      totalPages: widget.controller.dataSource.totalPages,
+                      pageSize: widget.controller.dataSource.pageSize,
+                      totalRows: widget.controller.dataSource.totalRows,
+                      onPageChanged: widget.controller.dataSource.changePage,
+                      onPageSizeChanged: widget.controller.dataSource.changePageSize,
+                      theme: _theme,
+                    ),
+                ],
               ],
             ),
           ),
@@ -211,417 +287,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
     );
   }
 
-  Widget _buildResponsiveToolbar(VooDesignSystemData design, double width) {
-    final isMobile = _isMobile(width);
-    final hasActiveFilters = widget.controller.dataSource.filters.isNotEmpty;
 
-    return Column(
-      children: [
-        DataGridToolbarMolecule(
-          onRefresh: widget.controller.dataSource.refresh,
-          onFilterToggle: isMobile ? null : widget.controller.toggleFilters,
-          filtersVisible: widget.controller.showFilters,
-          activeFilterCount: widget.controller.dataSource.filters.length,
-          displayMode: _effectiveDisplayMode,
-          onDisplayModeChanged: isMobile 
-              ? (mode) => setState(() => _userSelectedMode = mode)
-              : null,
-          showViewModeToggle: isMobile && _effectiveDisplayMode == VooDataGridDisplayMode.table,
-          additionalActions: widget.toolbarActions,
-          backgroundColor: _theme.headerBackgroundColor,
-          borderColor: _theme.borderColor,
-          isMobile: isMobile,
-          onShowMobileFilters: isMobile ? () => _showMobileFilterSheet(context) : null,
-        ),
-        if (hasActiveFilters) ...[
-          // Inline filter chips - using the molecule directly
-          Builder(builder: (context) {
-            final filters = widget.controller.dataSource.filters;
-            if (filters.isEmpty) return const SizedBox.shrink();
-
-            // Prepare filter data for the molecule
-            final filterData = <String, FilterChipData>{};
-            for (final entry in filters.entries) {
-              final column = widget.controller.columns.firstWhere(
-                (col) => col.field == entry.key,
-              );
-              final filter = entry.value;
-              final displayValue = filter.value != null
-                  ? (column.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '')
-                  : null;
-              
-              filterData[entry.key] = FilterChipData(
-                label: column.label,
-                value: filter.value,
-                displayValue: displayValue,
-              );
-            }
-
-            return FilterChipListMolecule(
-              filters: filterData,
-              onFilterRemoved: (field) {
-                widget.controller.dataSource.applyFilter(field, null);
-              },
-              onClearAll: widget.controller.dataSource.clearFilters,
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              borderColor: _theme.borderColor,
-            );
-          }),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildCardView(VooDesignSystemData design) {
-    final dataSource = widget.controller.dataSource;
-
-    if (dataSource.isLoading && dataSource.rows.isEmpty) {
-      return Center(
-        child: widget.loadingWidget ?? const CircularProgressIndicator(),
-      );
-    }
-
-    // Handle error state but still allow filtering to remain visible
-    if (dataSource.error != null) {
-      return Center(
-        child: widget.errorBuilder?.call(dataSource.error!) ??
-            VooEmptyState(
-              icon: Icons.error_outline,
-              title: 'Error Loading Data',
-              message: dataSource.error!,
-              action: TextButton(
-                onPressed: dataSource.refresh,
-                child: const Text('Retry'),
-              ),
-            ),
-      );
-    }
-
-    if (dataSource.rows.isEmpty) {
-      return Center(
-        child: widget.emptyStateWidget ??
-            const VooEmptyState(
-              icon: Icons.table_rows_outlined,
-              title: 'No Data',
-              message: 'No rows to display',
-            ),
-      );
-    }
-
-    final selectedRows = widget.controller.dataSource.selectedRows;
-    final priorityColumns = _getPriorityColumns();
-
-    return ListView.builder(
-      padding: EdgeInsets.all(design.spacingMd),
-      itemCount: dataSource.rows.length,
-      itemBuilder: (context, index) {
-        final row = dataSource.rows[index];
-        final isSelected = selectedRows.contains(row);
-
-        if (widget.cardBuilder != null) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: design.spacingMd),
-            child: widget.cardBuilder!(context, row, index),
-          );
-        }
-
-        return Card(
-          elevation: isSelected ? 4 : 1,
-          color: isSelected ? _theme.selectedRowBackgroundColor : null,
-          margin: EdgeInsets.only(bottom: design.spacingMd),
-          child: InkWell(
-            onTap: () {
-              widget.controller.dataSource.toggleRowSelection(row);
-              widget.onRowTap?.call(row);
-            },
-            onDoubleTap: () => widget.onRowDoubleTap?.call(row),
-            borderRadius: BorderRadius.circular(design.radiusMd),
-            child: Padding(
-              padding: EdgeInsets.all(design.spacingMd),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final column in priorityColumns) _buildCardField(context, column, row, design),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCardField(
-    BuildContext context,
-    VooDataColumn column,
-    dynamic row,
-    VooDesignSystemData design,
-  ) {
-    // For typed objects, valueGetter MUST be provided.
-    // Try column's valueGetter first, then fallback to bracket notation for Maps.
-    dynamic value;
-
-    try {
-      if (column.valueGetter != null) {
-        // Safely call valueGetter with error handling
-        value = column.valueGetter!(row);
-      } else if (row is Map) {
-        value = row[column.field];
-      } else {
-        // Typed object without valueGetter - this will cause errors
-        debugPrint(
-          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects. '
-          'Row type: ${row.runtimeType}. '
-          'Please provide a valueGetter function in the VooDataColumn definition.',
-        );
-        assert(
-          false,
-          'VooDataGrid: Column "${column.field}" requires a valueGetter for typed objects. '
-          'Provide a valueGetter function in the VooDataColumn definition.',
-        );
-        value = null;
-      }
-    } catch (e, stackTrace) {
-      // Log detailed error information to help debugging
-      debugPrint(
-        '[VooDataGrid Error] Failed to get value for column "${column.field}" in card view:\n'
-        'Error: $e\n'
-        'Row type: ${row.runtimeType}\n'
-        'Column field: ${column.field}\n'
-        'ValueGetter type: ${column.valueGetter.runtimeType}\n'
-        'Stack trace:\n$stackTrace',
-      );
-
-      // In production, show a placeholder instead of crashing
-      value = null;
-    }
-
-    final displayValue = column.valueFormatter?.call(value) ?? value?.toString() ?? '';
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: design.spacingSm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '${column.label}:',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: column.cellBuilder?.call(context, value, row) ??
-                Text(
-                  displayValue,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<VooDataColumn<T>> _getPriorityColumns() {
-    final allColumns = widget.controller.columns;
-
-    if (widget.mobilePriorityColumns != null && widget.mobilePriorityColumns!.isNotEmpty) {
-      return allColumns.where((col) => widget.mobilePriorityColumns!.contains(col.field)).toList();
-    }
-
-    // Default: show first 4 visible columns
-    return allColumns.where((col) => col.visible).take(4).toList();
-  }
-
-  Widget _buildGridContent(VooDesignSystemData design, double width) {
-    final dataSource = widget.controller.dataSource;
-
-    if (dataSource.isLoading && dataSource.rows.isEmpty) {
-      return Center(
-        child: widget.loadingWidget ?? const CircularProgressIndicator(),
-      );
-    }
-
-    // Filter columns based on screen width
-    final visibleColumns = _getVisibleColumnsForWidth(width);
-    widget.controller.setVisibleColumns(visibleColumns);
-
-    // Don't show inline filters on mobile or tablet - use bottom sheet instead
-    final showInlineFilters = widget.controller.showFilters && !_isMobile(width) && !_isTablet(width);
-
-    return Column(
-      children: [
-        // Header - Always show headers even when no data or error
-        VooDataGridHeader<T>(
-          controller: widget.controller,
-          theme: _theme,
-          onSort: widget.controller.sortColumn,
-        ),
-
-        // Filters (only on desktop) - Keep visible even during errors
-        if (showInlineFilters)
-          VooDataGridFilterRow<T>(
-            controller: widget.controller,
-            theme: _theme,
-          ),
-
-        // Data rows, error state, or empty state
-        Expanded(
-          child: dataSource.error != null
-              ? Center(
-                  child: widget.errorBuilder?.call(dataSource.error!) ??
-                      VooEmptyState(
-                        icon: Icons.error_outline,
-                        title: 'Error Loading Data',
-                        message: dataSource.error!,
-                        action: TextButton(
-                          onPressed: dataSource.refresh,
-                          child: const Text('Retry'),
-                        ),
-                      ),
-                )
-              : dataSource.rows.isEmpty
-                  ? Center(
-                      child: widget.emptyStateWidget ??
-                          const VooEmptyState(
-                            icon: Icons.table_rows_outlined,
-                            title: 'No Data',
-                            message: 'No rows to display',
-                          ),
-                    )
-                  : _buildDataRows(design),
-        ),
-
-        // Loading overlay
-        if (dataSource.isLoading && dataSource.rows.isNotEmpty) const LinearProgressIndicator(),
-      ],
-    );
-  }
-
-  List<VooDataColumn<T>> _getVisibleColumnsForWidth(double width) {
-    final allColumns = widget.controller.columns;
-
-    if (_isDesktop(width)) {
-      return allColumns;
-    } else if (_isTablet(width)) {
-      // Show frozen columns and high priority columns
-      return allColumns.where((col) => col.frozen || col.visible).toList();
-    } else {
-      // Mobile: Show only priority columns
-      return _getPriorityColumns();
-    }
-  }
-
-  Widget _buildResponsivePagination(double width) {
-    if (_isMobile(width)) {
-      return VooDataGridMobilePagination(
-        currentPage: widget.controller.dataSource.currentPage,
-        totalPages: widget.controller.dataSource.totalPages,
-        pageSize: widget.controller.dataSource.pageSize,
-        totalRows: widget.controller.dataSource.totalRows,
-        onPageChanged: widget.controller.dataSource.changePage,
-        onPageSizeChanged: widget.controller.dataSource.changePageSize,
-        theme: _theme,
-      );
-    }
-
-    return VooDataGridPagination(
-      currentPage: widget.controller.dataSource.currentPage,
-      totalPages: widget.controller.dataSource.totalPages,
-      pageSize: widget.controller.dataSource.pageSize,
-      totalRows: widget.controller.dataSource.totalRows,
-      onPageChanged: widget.controller.dataSource.changePage,
-      onPageSizeChanged: widget.controller.dataSource.changePageSize,
-      theme: _theme,
-    );
-  }
-
-  Widget _buildDataRows(VooDesignSystemData design) {
-    final rows = widget.controller.dataSource.rows;
-    final selectedRows = widget.controller.dataSource.selectedRows;
-
-    // Calculate total width needed for scrollable columns
-    double scrollableWidth = 0;
-    for (final column in widget.controller.scrollableColumns) {
-      scrollableWidth += widget.controller.getColumnWidth(column);
-    }
-
-    // Calculate width for fixed columns
-    double fixedWidth = 0;
-    if (widget.controller.dataSource.selectionMode != VooSelectionMode.none) {
-      fixedWidth += 48; // Selection checkbox width
-    }
-    for (final column in widget.controller.frozenColumns) {
-      fixedWidth += widget.controller.getColumnWidth(column);
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final needsHorizontalScroll = (fixedWidth + scrollableWidth) > constraints.maxWidth;
-        final totalWidth = fixedWidth + scrollableWidth;
-
-        // Build rows
-        final rowsList = List.generate(
-          rows.length,
-          (i) => OptimizedDataGridRow<T>(
-            row: rows[i],
-            index: i,
-            controller: widget.controller,
-            theme: _theme,
-            isSelected: selectedRows.contains(rows[i]),
-            onTap: () {
-              widget.controller.dataSource.toggleRowSelection(rows[i]);
-              widget.onRowTap?.call(rows[i]);
-            },
-            onDoubleTap: () => widget.onRowDoubleTap?.call(rows[i]),
-            onRowHover: widget.onRowHover,
-          ),
-        );
-
-        // Build scrollable content with proper scrollbar visibility
-        if (needsHorizontalScroll) {
-          // Both horizontal and vertical scrolling needed
-          return Scrollbar(
-            controller: widget.controller.verticalScrollController,
-            thumbVisibility: widget.alwaysShowVerticalScrollbar,
-            trackVisibility: widget.alwaysShowVerticalScrollbar,
-            child: Scrollbar(
-              controller: widget.controller.bodyHorizontalScrollController,
-              scrollbarOrientation: ScrollbarOrientation.bottom,
-              thumbVisibility: widget.alwaysShowHorizontalScrollbar,
-              trackVisibility: widget.alwaysShowHorizontalScrollbar,
-              notificationPredicate: (notification) => notification.depth == 1,
-              child: SingleChildScrollView(
-                controller: widget.controller.verticalScrollController,
-                child: SingleChildScrollView(
-                  controller: widget.controller.bodyHorizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: totalWidth,
-                    child: Column(children: rowsList),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-
-        // Only vertical scrolling needed
-        return Scrollbar(
-          controller: widget.controller.verticalScrollController,
-          thumbVisibility: widget.alwaysShowVerticalScrollbar,
-          trackVisibility: widget.alwaysShowVerticalScrollbar,
-          child: SingleChildScrollView(
-            controller: widget.controller.verticalScrollController,
-            child: Column(children: rowsList),
-          ),
-        );
-      },
-    );
-  }
 
 
   void _showMobileFilterSheet(BuildContext context) {
@@ -632,7 +298,7 @@ class _VooDataGridState<T> extends State<VooDataGrid<T>> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => _MobileFilterSheet(
+      builder: (context) => MobileFilterSheetOrganism(
         controller: widget.controller,
         theme: _theme,
         onApply: () {
@@ -694,468 +360,3 @@ class VooDataGridTheme {
 }
 
 /// Mobile filter sheet for VooDataGrid
-class _MobileFilterSheet extends StatefulWidget {
-  final VooDataGridController controller;
-  final VooDataGridTheme theme;
-  final VoidCallback onApply;
-
-  const _MobileFilterSheet({
-    required this.controller,
-    required this.theme,
-    required this.onApply,
-  });
-
-  @override
-  State<_MobileFilterSheet> createState() => _MobileFilterSheetState();
-}
-
-class _MobileFilterSheetState extends State<_MobileFilterSheet> {
-  final Map<String, TextEditingController> _textControllers = {};
-  final Map<String, dynamic> _tempFilters = {};
-
-  @override
-  void initState() {
-    super.initState();
-    // Copy existing filters to temporary map
-    for (final entry in widget.controller.dataSource.filters.entries) {
-      _tempFilters[entry.key] = entry.value.value;
-    }
-  }
-
-  @override
-  void dispose() {
-    for (final controller in _textControllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final design = context.vooDesign;
-    final theme = Theme.of(context);
-    final filterableColumns = widget.controller.columns.where((col) => col.filterable).toList();
-    final activeFilterCount = _tempFilters.values.where((v) => v != null).length;
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (context, scrollController) => Column(
-        children: [
-          // Handle bar
-          Container(
-            margin: EdgeInsets.only(top: design.spacingMd),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.outline.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          // Header
-          Padding(
-            padding: EdgeInsets.all(design.spacingLg),
-            child: Row(
-              children: [
-                Text(
-                  'Filters',
-                  style: theme.textTheme.headlineSmall,
-                ),
-                if (activeFilterCount > 0) ...[
-                  SizedBox(width: design.spacingSm),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacingSm,
-                      vertical: design.spacingXs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(design.radiusSm),
-                    ),
-                    child: Text(
-                      '$activeFilterCount active',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                    ),
-                  ),
-                ],
-                const Spacer(),
-                if (activeFilterCount > 0)
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _tempFilters.clear();
-                        for (final controller in _textControllers.values) {
-                          controller.clear();
-                        }
-                      });
-                    },
-                    child: const Text('Clear All'),
-                  ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          // Filter list
-          Expanded(
-            child: ListView.separated(
-              controller: scrollController,
-              padding: EdgeInsets.all(design.spacingLg),
-              itemCount: filterableColumns.length,
-              separatorBuilder: (context, index) => SizedBox(height: design.spacingMd),
-              itemBuilder: (context, index) {
-                final column = filterableColumns[index];
-                return _buildFilterField(column);
-              },
-            ),
-          ),
-          // Bottom buttons
-          Container(
-            padding: EdgeInsets.all(design.spacingLg),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              border: Border(
-                top: BorderSide(color: theme.dividerColor),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
-                ),
-                SizedBox(width: design.spacingMd),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      // Apply filters
-                      for (final entry in _tempFilters.entries) {
-                        final column = widget.controller.columns.firstWhere(
-                          (col) => col.field == entry.key,
-                        );
-                        if (entry.value != null) {
-                          widget.controller.dataSource.applyFilter(
-                            entry.key,
-                            VooDataFilter(
-                              operator: column.effectiveDefaultFilterOperator,
-                              value: entry.value,
-                            ),
-                          );
-                        } else {
-                          widget.controller.dataSource.applyFilter(entry.key, null);
-                        }
-                      }
-                      // Clear any filters that were removed
-                      for (final key in widget.controller.dataSource.filters.keys) {
-                        if (!_tempFilters.containsKey(key)) {
-                          widget.controller.dataSource.applyFilter(key, null);
-                        }
-                      }
-                      widget.onApply();
-                    },
-                    child: Text(
-                      activeFilterCount > 0 ? 'Apply $activeFilterCount Filter${activeFilterCount > 1 ? 's' : ''}' : 'Apply',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterField(VooDataColumn column) {
-    final design = context.vooDesign;
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          column.label,
-          style: theme.textTheme.titleSmall,
-        ),
-        SizedBox(height: design.spacingSm),
-        _buildFilterInput(column),
-      ],
-    );
-  }
-
-  Widget _buildFilterInput(VooDataColumn column) {
-    // Use custom filter builder if provided
-    if (column.filterBuilder != null) {
-      return column.filterBuilder!(
-        context,
-        column,
-        _tempFilters[column.field],
-        (value) {
-          setState(() {
-            _tempFilters[column.field] = value;
-          });
-        },
-      );
-    }
-
-    switch (column.effectiveFilterWidgetType) {
-      case VooFilterWidgetType.textField:
-        return _buildTextFilter(column);
-      case VooFilterWidgetType.numberField:
-      case VooFilterWidgetType.numberRange:
-        return _buildNumberFilter(column);
-      case VooFilterWidgetType.datePicker:
-        return _buildDateFilter(column);
-      case VooFilterWidgetType.dropdown:
-        return _buildDropdownFilter(column);
-      case VooFilterWidgetType.multiSelect:
-        return _buildMultiSelectFilter(column);
-      case VooFilterWidgetType.checkbox:
-        return _buildCheckboxFilter(column);
-      default:
-        return _buildTextFilter(column);
-    }
-  }
-
-  Widget _buildTextFilter(VooDataColumn column) {
-    final controller = _textControllers.putIfAbsent(
-      column.field,
-      () => TextEditingController(
-        text: _tempFilters[column.field]?.toString() ?? '',
-      ),
-    );
-
-    return TextFilterFieldMolecule(
-      value: _tempFilters[column.field]?.toString(),
-      controller: controller,
-      onChanged: (value) {
-        setState(() {
-          _tempFilters[column.field] = value;
-        });
-      },
-      hintText: column.filterHint ?? 'Enter ${column.label.toLowerCase()}...',
-    );
-  }
-
-  Widget _buildNumberFilter(VooDataColumn column) {
-    final controller = _textControllers.putIfAbsent(
-      column.field,
-      () => TextEditingController(
-        text: _tempFilters[column.field]?.toString() ?? '',
-      ),
-    );
-
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: column.filterHint ?? 'Enter number...',
-        border: const OutlineInputBorder(),
-        suffixIcon: controller.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  controller.clear();
-                  setState(() {
-                    _tempFilters[column.field] = null;
-                  });
-                },
-              )
-            : null,
-      ),
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
-      ],
-      onChanged: (value) {
-        setState(() {
-          final number = num.tryParse(value);
-          _tempFilters[column.field] = number;
-        });
-      },
-    );
-  }
-
-  Widget _buildDateFilter(VooDataColumn column) {
-    final currentValue = _tempFilters[column.field];
-    final displayValue = currentValue != null && currentValue is DateTime
-        ? '${currentValue.year}-${currentValue.month.toString().padLeft(2, '0')}-${currentValue.day.toString().padLeft(2, '0')}'
-        : null;
-
-    return InkWell(
-      onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: currentValue is DateTime ? currentValue : DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100),
-        );
-        if (date != null) {
-          setState(() {
-            _tempFilters[column.field] = date;
-          });
-        }
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(
-          hintText: column.filterHint ?? 'Select date...',
-          border: const OutlineInputBorder(),
-          suffixIcon: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (displayValue != null)
-                IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    setState(() {
-                      _tempFilters[column.field] = null;
-                    });
-                  },
-                ),
-              const Icon(Icons.calendar_today),
-            ],
-          ),
-        ),
-        child: Text(displayValue ?? ''),
-      ),
-    );
-  }
-
-  Widget _buildDropdownFilter(VooDataColumn column) {
-    final options = column.filterOptions ?? [];
-    final currentValue = _tempFilters[column.field];
-
-    return DropdownButtonFormField<dynamic>(
-      initialValue: options.any((opt) => opt.value == currentValue) ? currentValue : null,
-      decoration: InputDecoration(
-        hintText: column.filterHint ?? 'Select ${column.label.toLowerCase()}...',
-        border: const OutlineInputBorder(),
-      ),
-      items: [
-        const DropdownMenuItem(
-          child: Text('All'),
-        ),
-        ...options.map(
-          (option) => DropdownMenuItem(
-            value: option.value,
-            child: Row(
-              children: [
-                if (option.icon != null) ...[
-                  Icon(option.icon, size: 18),
-                  const SizedBox(width: 8),
-                ],
-                Text(option.label),
-              ],
-            ),
-          ),
-        ),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _tempFilters[column.field] = value;
-        });
-      },
-    );
-  }
-
-  Widget _buildMultiSelectFilter(VooDataColumn column) {
-    final options = column.filterOptions ?? [];
-    final selectedValues = _tempFilters[column.field] is List ? List<dynamic>.from(_tempFilters[column.field] as List) : <dynamic>[];
-
-    return InkWell(
-      onTap: () {
-        _showMultiSelectDialog(column, options, selectedValues);
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(
-          hintText: column.filterHint ?? 'Select multiple...',
-          border: const OutlineInputBorder(),
-          suffixIcon: selectedValues.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    setState(() {
-                      _tempFilters[column.field] = null;
-                    });
-                  },
-                )
-              : null,
-        ),
-        child: Text(
-          selectedValues.isEmpty ? '' : '${selectedValues.length} selected',
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCheckboxFilter(VooDataColumn column) {
-    final currentValue = _tempFilters[column.field] == true;
-
-    return CheckboxListTile(
-      title: Text(column.filterHint ?? 'Enable'),
-      value: currentValue,
-      onChanged: (value) {
-        setState(() {
-          _tempFilters[column.field] = value;
-        });
-      },
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
-
-  void _showMultiSelectDialog(
-    VooDataColumn column,
-    List<VooFilterOption> options,
-    List<dynamic> selectedValues,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Select ${column.label}'),
-        content: StatefulBuilder(
-          builder: (context, setDialogState) => SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: options.map((option) {
-                final isSelected = selectedValues.contains(option.value);
-                return CheckboxListTile(
-                  title: Text(option.label),
-                  value: isSelected,
-                  onChanged: (checked) {
-                    setDialogState(() {
-                      if (checked == true) {
-                        selectedValues.add(option.value);
-                      } else {
-                        selectedValues.remove(option.value);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              setState(() {
-                _tempFilters[column.field] = selectedValues.isEmpty ? null : selectedValues;
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Apply'),
-          ),
-        ],
-      ),
-    );
-  }
-}

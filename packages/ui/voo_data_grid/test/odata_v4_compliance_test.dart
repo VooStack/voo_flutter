@@ -393,7 +393,7 @@ void main() {
           '@odata.count': 100,
           '@odata.nextLink': r'Products?$skip=20&$top=20',
           '@odata.deltaLink': 'Products?delta=xyz',
-          'value': [],
+          'value': <Map<String, dynamic>>[],
         };
 
         final metadata = DataGridRequestBuilder.extractODataMetadata(
@@ -433,7 +433,7 @@ void main() {
 
       test('should return null for non-error responses', () {
         final normalResponse = {
-          'value': [],
+          'value': <Map<String, dynamic>>[],
           '@odata.context': r'$metadata#Products',
         };
 

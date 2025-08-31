@@ -297,7 +297,7 @@ void main() {
 
       // The valueGetter should be properly typed
       final valueGetter = controller.columns.first.valueGetter;
-      expect(valueGetter, isA<Function(OrderList)?>());
+      expect(valueGetter, isA<String? Function(OrderList)?>());
     });
   });
 }

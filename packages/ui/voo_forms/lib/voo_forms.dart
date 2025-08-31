@@ -12,16 +12,16 @@ export 'src/domain/entities/validation_rule.dart';
 export 'src/domain/entities/voo_field.dart';
 
 // Presentation - Atoms
-export 'src/presentation/atoms/fields/voo_checkbox_field_widget.dart';
-export 'src/presentation/atoms/fields/voo_date_field_widget.dart';
-export 'src/presentation/atoms/fields/voo_dropdown_field_widget.dart';
+export 'src/presentation/atoms/fields/voo_checkbox_field.dart';
+export 'src/presentation/atoms/fields/voo_date_field.dart';
+export 'src/presentation/atoms/fields/voo_dropdown_field.dart';
 export 'src/presentation/atoms/fields/voo_form_header.dart';
 export 'src/presentation/atoms/fields/voo_form_section_divider.dart';
-export 'src/presentation/atoms/fields/voo_radio_field_widget.dart';
-export 'src/presentation/atoms/fields/voo_slider_field_widget.dart';
-export 'src/presentation/atoms/fields/voo_switch_field_widget.dart';
+export 'src/presentation/atoms/fields/voo_radio_field.dart';
+export 'src/presentation/atoms/fields/voo_slider_field.dart';
+export 'src/presentation/atoms/fields/voo_switch_field.dart';
 export 'src/presentation/atoms/fields/voo_text_form_field.dart';
-export 'src/presentation/atoms/fields/voo_time_field_widget.dart';
+export 'src/presentation/atoms/fields/voo_time_field.dart';
 
 // Presentation - Controllers
 export 'src/presentation/controllers/voo_form_controller.dart';
@@ -50,8 +50,7 @@ export 'src/presentation/widgets/voo_field_widget.dart';
 // Utilities
 export 'src/utils/form_theme.dart';
 export 'src/utils/form_utils.dart';
-export 'src/utils/formatters.dart' hide VooFormatters;
-export 'src/utils/voo_formatters.dart';
+export 'src/utils/formatters.dart';
 export 'src/utils/validators.dart';
 
 // Individual formatters

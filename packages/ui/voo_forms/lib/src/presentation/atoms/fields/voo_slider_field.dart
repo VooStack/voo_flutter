@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
-/// Atomic widget for slider form field
+/// Slider form field widget
 class VooSliderFieldWidget extends StatelessWidget {
   final VooFormField field;
   final VooFieldOptions options;

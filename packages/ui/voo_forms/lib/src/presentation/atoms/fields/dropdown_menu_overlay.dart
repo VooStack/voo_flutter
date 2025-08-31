@@ -46,7 +46,7 @@ class DropdownMenuOverlay<T> extends StatelessWidget {
         borderRadius: BorderRadius.circular(design.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: theme.shadowColor.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

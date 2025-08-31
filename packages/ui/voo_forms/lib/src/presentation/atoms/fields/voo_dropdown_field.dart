@@ -44,7 +44,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   final LayerLink _layerLink = LayerLink();
   Timer? _debounceTimer;
   T? _currentValue;
-  
+
   // Helper instance for building decorations
   static const _decorationBuilder = DropdownFieldDecorationBuilder();
 

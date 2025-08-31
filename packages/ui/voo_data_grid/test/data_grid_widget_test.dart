@@ -21,7 +21,7 @@ class TestDataGridSource extends VooDataGridSource {
     required List<VooColumnSort> sorts,
   }) async {
     // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed<void>(const Duration(milliseconds: 100));
     return VooDataGridResponse(
       rows: [],
       totalRows: 0,

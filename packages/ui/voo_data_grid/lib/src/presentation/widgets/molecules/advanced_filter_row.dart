@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
+import 'package:voo_data_grid/src/presentation/widgets/molecules/default_filter_secondary_input.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/default_filter_value_input.dart';
+
 /// A molecule component for an advanced filter row
-class AdvancedFilterRowMolecule extends StatelessWidget {
+class AdvancedFilterRow extends StatelessWidget {
   /// The filter entry being edited
   final FilterEntry filter;
   
@@ -31,7 +35,7 @@ class AdvancedFilterRowMolecule extends StatelessWidget {
   /// Widget builder for secondary value input
   final Widget Function(FilterEntry filter)? secondaryValueInputBuilder;
   
-  const AdvancedFilterRowMolecule({
+  const AdvancedFilterRow({
     super.key,
     required this.filter,
     required this.fields,
@@ -109,7 +113,12 @@ class AdvancedFilterRowMolecule extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: valueInputBuilder?.call(filter) ?? 
-                    _buildDefaultValueInput(filter),
+                    DefaultFilterValueInput(
+                      filter: filter,
+                      onChanged: onValueChanged != null 
+                          ? (value) => onValueChanged!(value)
+                          : null,
+                    ),
               ),
               SizedBox(width: design.spacingSm),
             ],
@@ -119,7 +128,12 @@ class AdvancedFilterRowMolecule extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: secondaryValueInputBuilder?.call(filter) ??
-                    _buildDefaultSecondaryValueInput(filter),
+                    DefaultFilterSecondaryInput(
+                      filter: filter,
+                      onChanged: onSecondaryValueChanged != null
+                          ? (value) => onSecondaryValueChanged!(value)
+                          : null,
+                    ),
               ),
               SizedBox(width: design.spacingSm),
             ],
@@ -135,65 +149,8 @@ class AdvancedFilterRowMolecule extends StatelessWidget {
       ),
     );
   }
-  
-  Widget _buildDefaultValueInput(FilterEntry filter) {
-    return TextField(
-      decoration: const InputDecoration(
-        labelText: 'Value',
-        border: OutlineInputBorder(),
-      ),
-      onChanged: onValueChanged,
-    );
-  }
-  
-  Widget _buildDefaultSecondaryValueInput(FilterEntry filter) {
-    return TextField(
-      decoration: const InputDecoration(
-        labelText: 'To',
-        border: OutlineInputBorder(),
-      ),
-      onChanged: onSecondaryValueChanged,
-    );
-  }
 }
 
-/// Extension for filter operator display text
-extension FilterOperatorExtension on String {
-  String get displayText {
-    switch (this) {
-      case 'equals':
-        return 'Equals';
-      case 'not_equals':
-        return 'Not Equals';
-      case 'contains':
-        return 'Contains';
-      case 'starts_with':
-        return 'Starts With';
-      case 'ends_with':
-        return 'Ends With';
-      case 'greater_than':
-        return 'Greater Than';
-      case 'less_than':
-        return 'Less Than';
-      case 'between':
-        return 'Between';
-      case 'in':
-        return 'In';
-      case 'not_in':
-        return 'Not In';
-      case 'is_null':
-        return 'Is Null';
-      case 'is_not_null':
-        return 'Is Not Null';
-      default:
-        return this;
-    }
-  }
-  
-  bool get requiresSecondaryValue {
-    return this == 'between';
-  }
-}
 
 /// Data model for filter field type
 class FilterFieldType {

@@ -4,7 +4,7 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/date_field_helpers.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
-/// Atomic widget for date form field
+/// Date form field widget
 class VooDateFieldWidget extends StatelessWidget {
   final VooFormField field;
   final VooFieldOptions options;
