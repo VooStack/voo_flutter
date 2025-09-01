@@ -68,14 +68,15 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
       return;
     }
     
-    final newIndex = _items.length;
+    // Use timestamp to ensure unique IDs
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
     final template = widget.field.itemTemplate!;
     
     setState(() {
       _items.add(
         template.copyWith(
-          id: '${widget.field.name}_item_$newIndex',
-          name: '${widget.field.name}_$newIndex',
+          id: '${widget.field.name}_item_$timestamp',
+          name: '${widget.field.name}_$timestamp',
           value: null,
         ),
       );
@@ -100,14 +101,7 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
     setState(() {
       _items.removeAt(index);
       _itemKeys.removeAt(index);
-      
-      // Re-index remaining items
-      for (int i = index; i < _items.length; i++) {
-        _items[i] = _items[i].copyWith(
-          id: '${widget.field.name}_item_$i',
-          name: '${widget.field.name}_$i',
-        );
-      }
+      // Don't re-index the items to preserve their state
     });
     
     _notifyChange();
@@ -126,23 +120,17 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
   }
   
   void _moveItem(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
+    var adjustedNewIndex = newIndex;
+    if (adjustedNewIndex > oldIndex) {
+      adjustedNewIndex -= 1;
     }
     
     setState(() {
       final item = _items.removeAt(oldIndex);
       final key = _itemKeys.removeAt(oldIndex);
-      _items.insert(newIndex, item);
-      _itemKeys.insert(newIndex, key);
-      
-      // Re-index all items
-      for (int i = 0; i < _items.length; i++) {
-        _items[i] = _items[i].copyWith(
-          id: '${widget.field.name}_item_$i',
-          name: '${widget.field.name}_$i',
-        );
-      }
+      _items.insert(adjustedNewIndex, item);
+      _itemKeys.insert(adjustedNewIndex, key);
+      // Don't re-index the items to preserve their state
     });
     
     _notifyChange();
@@ -207,34 +195,33 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
     );
   }
   
-  Widget _buildStaticList(VooDesignSystemData design, ThemeData theme) {
-    return Column(
+  Widget _buildStaticList(VooDesignSystemData design, ThemeData theme) => Column(
       children: [
         for (int i = 0; i < _items.length; i++) ...[
-          _buildListItem(i, design, theme),
-          if (i < _items.length - 1) SizedBox(height: design.spacingMd),
+          Container(
+            key: _itemKeys[i],
+            margin: i < _items.length - 1 
+                ? EdgeInsets.only(bottom: design.spacingMd)
+                : EdgeInsets.zero,
+            child: _buildListItem(i, design, theme),
+          ),
         ],
       ],
     );
-  }
   
-  Widget _buildReorderableList(VooDesignSystemData design, ThemeData theme) {
-    return ReorderableListView.builder(
+  Widget _buildReorderableList(VooDesignSystemData design, ThemeData theme) => ReorderableListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _items.length,
       onReorder: _moveItem,
-      itemBuilder: (context, index) {
-        return Container(
+      itemBuilder: (context, index) => Container(
           key: _itemKeys[index],
           margin: index < _items.length - 1 
               ? EdgeInsets.only(bottom: design.spacingMd)
               : EdgeInsets.zero,
           child: _buildListItem(index, design, theme),
-        );
-      },
+        ),
     );
-  }
   
   Widget _buildListItem(int index, VooDesignSystemData design, ThemeData theme) {
     final item = _items[index];
@@ -243,7 +230,7 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
       padding: EdgeInsets.all(design.spacingSm),
       decoration: BoxDecoration(
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.3),
+          color: theme.colorScheme.outline.withValues(alpha: 0.3),
         ),
         borderRadius: BorderRadius.circular(design.radiusMd),
       ),

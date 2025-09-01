@@ -45,8 +45,8 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
         VooFormSection(
           id: 'other_section',
           title: 'Other Fields',
-          description: 'Slider and custom fields',
-          fieldIds: ['slider', 'custom'],
+          description: 'List, slider, and custom fields',
+          fieldIds: ['list_emails', 'slider', 'custom'],
         ),
       ],
       fields: [
@@ -172,6 +172,20 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
         ),
 
         // Other Fields
+        VooField.list<String>(
+          name: 'list_emails',
+          label: 'Team Emails',
+          helper: 'Add team member email addresses',
+          itemTemplate: VooField.email(
+            name: 'email',
+            label: 'Email',
+          ),
+          initialItems: ['team@example.com', 'support@example.com'],
+          minItems: 1,
+          maxItems: 5,
+          addButtonText: 'Add Team Member',
+          addButtonIcon: Icons.person_add,
+        ),
         const VooFormField<double>(
           id: 'slider',
           name: 'slider_field',
@@ -677,6 +691,63 @@ Widget buildTimeFieldPreview() => const _FieldPreview(
         label: 'Meeting Time',
         hint: 'Select meeting time',
         initialValue: TimeOfDay(hour: 10, minute: 30),
+      ),
+    );
+
+@Preview(name: 'List Field - Email Addresses')
+Widget buildListFieldPreview() => _FieldPreview(
+      field: VooField.list<String>(
+        name: 'email_list',
+        label: 'Email Addresses',
+        hint: 'Add multiple email addresses',
+        helper: 'You can add up to 5 email addresses',
+        itemTemplate: VooField.email(
+          name: 'email',
+          label: 'Email',
+          hint: 'Enter email address',
+        ),
+        initialItems: ['user@example.com', 'admin@example.com'],
+        minItems: 1,
+        maxItems: 5,
+        addButtonText: 'Add Email',
+        removeButtonText: 'Remove',
+        addButtonIcon: Icons.email,
+        removeButtonIcon: Icons.delete_outline,
+      ),
+    );
+
+@Preview(name: 'List Field - Phone Numbers')
+Widget buildListFieldPhonePreview() => _FieldPreview(
+      field: VooField.list<String>(
+        name: 'phone_list',
+        label: 'Contact Numbers',
+        itemTemplate: VooField.phone(
+          name: 'phone',
+          label: 'Phone',
+          prefixIcon: Icons.phone,
+        ),
+        initialItems: ['555-0001'],
+        minItems: 1,
+        maxItems: 3,
+        canReorderItems: true,
+      ),
+    );
+
+@Preview(name: 'List Field - Dynamic Tags')
+Widget buildListFieldTagsPreview() => _FieldPreview(
+      field: VooField.list<String>(
+        name: 'tags',
+        label: 'Tags',
+        helper: 'Add tags to categorize this item',
+        itemTemplate: VooField.text(
+          name: 'tag',
+          label: 'Tag',
+          maxLength: 20,
+        ),
+        initialItems: ['flutter', 'dart', 'mobile'],
+        maxItems: 10,
+        addButtonText: 'Add Tag',
+        addButtonIcon: Icons.label,
       ),
     );
 

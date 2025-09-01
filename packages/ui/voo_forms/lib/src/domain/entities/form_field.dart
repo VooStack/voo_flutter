@@ -71,6 +71,7 @@ class VooFormField<T> extends Equatable {
   final int? gridColumns;
   final double? width;
   final double? height;
+  final bool expanded;
   
   // List field specific
   final VooFormField? itemTemplate;
@@ -154,6 +155,7 @@ class VooFormField<T> extends Equatable {
     this.gridColumns,
     this.width,
     this.height,
+    this.expanded = false,
     this.itemTemplate,
     this.listItems,
     this.minItems,
@@ -232,6 +234,7 @@ class VooFormField<T> extends Equatable {
     int? gridColumns,
     double? width,
     double? height,
+    bool? expanded,
     VooFormField? itemTemplate,
     List<VooFormField>? listItems,
     int? minItems,
@@ -309,6 +312,7 @@ class VooFormField<T> extends Equatable {
         gridColumns: gridColumns ?? this.gridColumns,
         width: width ?? this.width,
         height: height ?? this.height,
+        expanded: expanded ?? this.expanded,
         itemTemplate: itemTemplate ?? this.itemTemplate,
         listItems: listItems ?? this.listItems,
         minItems: minItems ?? this.minItems,

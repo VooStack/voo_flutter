@@ -9,6 +9,7 @@ import 'package:voo_forms/src/presentation/atoms/fields/voo_slider_field.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_switch_field.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_text_form_field.dart';
 import 'package:voo_forms/src/presentation/atoms/fields/voo_time_field.dart';
+import 'package:voo_forms/src/presentation/atoms/fields/voo_list_field.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
 
 /// Factory class for creating field widgets based on field type
@@ -37,7 +38,7 @@ class FieldWidgetFactory {
     // 1. The entire form is not editable (isEditable = false), OR
     // 2. The individual field is marked as readOnly
     final effectiveReadOnly = !isEditable || field.readOnly;
-    
+
     // If field is read-only, return the read-only widget
     if (effectiveReadOnly) {
       return _createReadOnlyWidget(
@@ -46,19 +47,19 @@ class FieldWidgetFactory {
         options: options,
       );
     }
-    
+
     // Handle custom field type
     if (field.type == VooFieldType.custom) {
       // If custom widget is provided directly
       if (field.customWidget != null) {
         return field.customWidget!;
       }
-      
+
       // If custom builder is provided
       if (field.customBuilder != null) {
         return field.customBuilder!(context, field, field.value ?? field.initialValue);
       }
-      
+
       // Fallback to a placeholder
       return Container(
         padding: const EdgeInsets.all(16.0),
@@ -72,7 +73,7 @@ class FieldWidgetFactory {
         ),
       );
     }
-    
+
     switch (field.type) {
       case VooFieldType.text:
       case VooFieldType.email:
@@ -116,22 +117,39 @@ class FieldWidgetFactory {
 
       case VooFieldType.dropdown:
         // Create a generic helper method to build the dropdown
-        Widget buildDropdown<DropdownType>() => VooDropdownFieldWidget<DropdownType>(
-            field: field as VooFormField<DropdownType>,
-            options: options,
-            onChanged: (DropdownType? value) {
-              onChanged?.call(value);
-            },
-            error: error,
-            showError: showError,
-          );
-        
+        Widget buildDropdown<DropdownType>() {
+          // Try to cast the field - if it fails, use dynamic
+          try {
+            final typedField = field as VooFormField<DropdownType>;
+            return VooDropdownFieldWidget<DropdownType>(
+              field: typedField,
+              options: options,
+              onChanged: (DropdownType? value) {
+                onChanged?.call(value);
+              },
+              error: error,
+              showError: showError,
+            );
+          } catch (_) {
+            // If cast fails, create with dynamic type
+            return VooDropdownFieldWidget<dynamic>(
+              field: field,
+              options: options,
+              onChanged: (dynamic value) {
+                onChanged?.call(value);
+              },
+              error: error,
+              showError: showError,
+            );
+          }
+        }
+
         // Determine the type based on field configuration
         // First check if we have options to infer type from
         if (field.options != null && field.options!.isNotEmpty) {
           final firstOption = field.options!.first;
           final valueType = firstOption.value.runtimeType;
-          
+
           if (valueType == String) {
             return buildDropdown<String>();
           } else if (valueType == int) {
@@ -142,11 +160,11 @@ class FieldWidgetFactory {
             return buildDropdown<bool>();
           }
         }
-        
+
         // For async dropdowns or empty dropdowns, try to infer from initial value
         if (field.initialValue != null) {
           final valueType = field.initialValue.runtimeType;
-          
+
           if (valueType == String) {
             return buildDropdown<String>();
           } else if (valueType == int) {
@@ -157,11 +175,11 @@ class FieldWidgetFactory {
             return buildDropdown<bool>();
           }
         }
-        
+
         // If we have a value, use its type
         if (field.value != null) {
           final valueType = field.value.runtimeType;
-          
+
           if (valueType == String) {
             return buildDropdown<String>();
           } else if (valueType == int) {
@@ -172,7 +190,7 @@ class FieldWidgetFactory {
             return buildDropdown<bool>();
           }
         }
-        
+
         // Default fallback for truly dynamic dropdowns
         return buildDropdown<dynamic>();
 
@@ -224,6 +242,62 @@ class FieldWidgetFactory {
           showError: showError,
         );
 
+      case VooFieldType.list:
+        // Create a generic helper method to build the list widget with proper type
+        Widget buildListWidget<ItemType>() {
+          // Try to cast the field - if it fails, use dynamic
+          try {
+            final typedField = field as VooFormField<List<ItemType>>;
+            return VooListFieldWidget<ItemType>(
+              field: typedField,
+              options: options,
+              onChanged: onChanged != null ? (List<ItemType>? value) => onChanged(value) : null,
+              error: error,
+              showError: showError,
+            );
+          } catch (_) {
+            // If cast fails, create with dynamic type
+            return VooListFieldWidget<dynamic>(
+              field: field as VooFormField<List<dynamic>>,
+              options: options,
+              onChanged: onChanged != null ? (List<dynamic>? value) => onChanged(value) : null,
+              error: error,
+              showError: showError,
+            );
+          }
+        }
+
+        // Try to infer the type from the item template
+        if (field.itemTemplate != null) {
+          final templateType = field.itemTemplate!.type;
+
+          // Infer type based on the template field type
+          if (templateType == VooFieldType.text ||
+              templateType == VooFieldType.email ||
+              templateType == VooFieldType.phone ||
+              templateType == VooFieldType.url ||
+              templateType == VooFieldType.multiline ||
+              templateType == VooFieldType.password) {
+            return buildListWidget<String>();
+          } else if (templateType == VooFieldType.number) {
+            // Check if it's int or double based on validation or initial value
+            if (field.itemTemplate!.initialValue is int) {
+              return buildListWidget<int>();
+            } else {
+              return buildListWidget<double>();
+            }
+          } else if (templateType == VooFieldType.boolean || templateType == VooFieldType.checkbox) {
+            return buildListWidget<bool>();
+          } else if (templateType == VooFieldType.date) {
+            return buildListWidget<DateTime>();
+          } else if (templateType == VooFieldType.time) {
+            return buildListWidget<TimeOfDay>();
+          }
+        }
+
+        // Default fallback for dynamic lists
+        return buildListWidget<dynamic>();
+
       default:
         // Fallback for unsupported types
         return Container(
@@ -250,26 +324,26 @@ class FieldWidgetFactory {
     if (field.readOnlyWidget != null) {
       return field.readOnlyWidget!;
     }
-    
+
     final theme = Theme.of(context);
     final value = field.value ?? field.initialValue;
-    
+
     // Build the display value based on field type
     String displayValue = '';
     Widget? trailingWidget;
-    
+
     // Handle custom field in read-only mode
     if (field.type == VooFieldType.custom) {
       // If custom widget is provided, show it as-is (developer's responsibility to handle read-only)
       if (field.customWidget != null) {
         return field.customWidget!;
       }
-      
+
       // If custom builder is provided, use it (developer can check isEditable in their builder)
       if (field.customBuilder != null) {
         return field.customBuilder!(context, field, field.value ?? field.initialValue);
       }
-      
+
       // Fallback
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -286,7 +360,7 @@ class FieldWidgetFactory {
         ),
       );
     }
-    
+
     switch (field.type) {
       case VooFieldType.text:
       case VooFieldType.email:
@@ -296,22 +370,26 @@ class FieldWidgetFactory {
       case VooFieldType.multiline:
         displayValue = value?.toString() ?? '-';
         break;
-        
+
       case VooFieldType.password:
         displayValue = value != null ? '••••••••' : '-';
         break;
-        
+
       case VooFieldType.boolean:
       case VooFieldType.checkbox:
         final boolValue = value as bool?;
-        displayValue = boolValue == true ? 'Yes' : boolValue == false ? 'No' : '-';
+        displayValue = boolValue == true
+            ? 'Yes'
+            : boolValue == false
+                ? 'No'
+                : '-';
         trailingWidget = Icon(
           boolValue == true ? Icons.check_circle : Icons.cancel,
           color: boolValue == true ? theme.colorScheme.primary : theme.colorScheme.error,
           size: 20,
         );
         break;
-        
+
       case VooFieldType.dropdown:
       case VooFieldType.radio:
         if (value != null) {
@@ -334,12 +412,10 @@ class FieldWidgetFactory {
           displayValue = '-';
         }
         break;
-        
+
       case VooFieldType.slider:
         final sliderValue = value as double?;
-        displayValue = sliderValue != null 
-            ? sliderValue.toStringAsFixed(1)
-            : '-';
+        displayValue = sliderValue != null ? sliderValue.toStringAsFixed(1) : '-';
         if (sliderValue != null) {
           final minValue = (field.min ?? 0).toDouble();
           final maxValue = (field.max ?? 100).toDouble();
@@ -353,7 +429,7 @@ class FieldWidgetFactory {
           );
         }
         break;
-        
+
       case VooFieldType.date:
         if (value is DateTime) {
           displayValue = _formatDate(value);
@@ -362,7 +438,7 @@ class FieldWidgetFactory {
         }
         trailingWidget = Icon(Icons.calendar_today, size: 18, color: theme.colorScheme.primary);
         break;
-        
+
       case VooFieldType.time:
         if (value is TimeOfDay) {
           displayValue = value.format(context);
@@ -371,11 +447,24 @@ class FieldWidgetFactory {
         }
         trailingWidget = Icon(Icons.access_time, size: 18, color: theme.colorScheme.primary);
         break;
-        
+
+      case VooFieldType.list:
+        if (value is List) {
+          final itemCount = value.length;
+          displayValue = '$itemCount ${itemCount == 1 ? 'item' : 'items'}';
+          if (itemCount > 0 && field.itemTemplate?.label != null) {
+            displayValue = '$itemCount ${field.itemTemplate!.label}${itemCount == 1 ? '' : 's'}';
+          }
+        } else {
+          displayValue = '0 items';
+        }
+        trailingWidget = Icon(Icons.list_alt, size: 18, color: theme.colorScheme.primary);
+        break;
+
       default:
         displayValue = value?.toString() ?? '-';
     }
-    
+
     // Create the read-only display widget
     final detailsWidget = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -430,10 +519,10 @@ class FieldWidgetFactory {
         ],
       ),
     );
-    
+
     return detailsWidget;
   }
-  
+
   String _formatDate(DateTime date) {
     final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
