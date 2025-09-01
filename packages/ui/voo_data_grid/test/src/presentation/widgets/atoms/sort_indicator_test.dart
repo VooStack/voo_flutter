@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/sort_indicator.dart';
+import 'package:voo_data_grid/voo_data_grid.dart';
+
 import '../../../../helpers/test_helpers.dart';
 
 void main() {

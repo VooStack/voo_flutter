@@ -192,7 +192,7 @@ void main() {
       });
       
       test('should accept DateTime values', () {
-        final date = DateTime(2024, 1, 1);
+        final date = DateTime(2024);
         final filter = VooDataFilter(
           operator: VooFilterOperator.greaterThan,
           value: date,
@@ -238,7 +238,7 @@ void main() {
       });
       
       test('should handle between with two date values', () {
-        final startDate = DateTime(2024, 1, 1);
+        final startDate = DateTime(2024);
         final endDate = DateTime(2024, 12, 31);
         
         final filter = VooDataFilter(

@@ -128,13 +128,13 @@ void main() {
         // Arrange & Act
         final filter = VooDataFilter(
           operator: VooFilterOperator.between,
-          value: DateTime(2024, 1, 1),
+          value: DateTime(2024),
           valueTo: DateTime(2024, 12, 31),
         );
         
         // Assert
         expect(filter.operator, equals(VooFilterOperator.between));
-        expect(filter.value, equals(DateTime(2024, 1, 1)));
+        expect(filter.value, equals(DateTime(2024)));
         expect(filter.valueTo, equals(DateTime(2024, 12, 31)));
       });
       

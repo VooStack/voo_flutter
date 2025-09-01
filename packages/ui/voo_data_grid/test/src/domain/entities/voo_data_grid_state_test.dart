@@ -159,7 +159,6 @@ void main() {
         // Arrange & Act
         const state = VooDataGridState<Map<String, dynamic>>(
           totalRows: 100,
-          pageSize: 20,
         );
         
         // Assert
@@ -181,7 +180,6 @@ void main() {
         // Arrange & Act
         const state = VooDataGridState<Map<String, dynamic>>(
           totalRows: 95,
-          pageSize: 20,
         );
         
         // Assert

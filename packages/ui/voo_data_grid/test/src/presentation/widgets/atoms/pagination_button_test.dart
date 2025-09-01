@@ -64,7 +64,6 @@ void main() {
           theme: ThemeData(
             colorScheme: const ColorScheme.light(
               primary: Colors.blue,
-              onSurface: Colors.black,
             ),
           ),
           home: Scaffold(
