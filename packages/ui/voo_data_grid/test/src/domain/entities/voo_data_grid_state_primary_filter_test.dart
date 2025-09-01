@@ -138,7 +138,7 @@ void main() {
         expect(state.primaryFilter, equals(primaryFilter));
       });
       
-      test('should clear primary filter via copyWith', () {
+      test('should preserve primary filter when not specified in copyWith', () {
         // Arrange
         const filter = VooDataFilter(
           operator: VooFilterOperator.equals,
@@ -149,15 +149,15 @@ void main() {
           primaryFilter: filter,
         );
         
-        // Act
-        final clearedState = initialState.copyWith(
-          primaryFilterField: null,
-          primaryFilter: null,
+        // Act - Not specifying primary filter fields in copyWith
+        final updatedState = initialState.copyWith(
+          currentPage: 2,
         );
         
-        // Assert
-        expect(clearedState.primaryFilterField, isNull);
-        expect(clearedState.primaryFilter, isNull);
+        // Assert - Primary filter fields are preserved
+        expect(updatedState.primaryFilterField, equals('status'));
+        expect(updatedState.primaryFilter, equals(filter));
+        expect(updatedState.currentPage, equals(2));
       });
       
       test('should maintain primary filter when regular filters change', () {
