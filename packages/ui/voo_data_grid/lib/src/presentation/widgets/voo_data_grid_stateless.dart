@@ -110,6 +110,14 @@ class VooDataGridStateless<T> extends StatelessWidget {
   /// Whether to show primary filters
   final bool showPrimaryFilters;
 
+  /// Callback when primary filter is selected
+  final void Function(String field, VooDataFilter? filter)? onPrimaryFilterChanged;
+
+  /// Whether to combine primary filters with regular filters
+  /// When true (default), primary filters are added to the filters map
+  /// When false, primary filters are tracked separately
+  final bool combineFiltersAndPrimaryFilters;
+
   const VooDataGridStateless({
     super.key,
     required this.state,
@@ -145,6 +153,8 @@ class VooDataGridStateless<T> extends StatelessWidget {
     this.primaryFilters,
     this.selectedPrimaryFilter,
     this.showPrimaryFilters = false,
+    this.onPrimaryFilterChanged,
+    this.combineFiltersAndPrimaryFilters = true,
   });
 
 
@@ -190,7 +200,9 @@ class VooDataGridStateless<T> extends StatelessWidget {
       primaryFilters: primaryFilters,
       selectedPrimaryFilter: selectedPrimaryFilter,
       onFilterChanged: onFilterChanged,
+      onPrimaryFilterChanged: onPrimaryFilterChanged,
       showPrimaryFilters: showPrimaryFilters,
+      combineFiltersAndPrimaryFilters: combineFiltersAndPrimaryFilters,
     );
   }
 }

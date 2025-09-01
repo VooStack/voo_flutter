@@ -1,3 +1,12 @@
+## 0.6.9 - 2025-09-01
+
+* **VooDataGridStateless Bug Fixes**
+  * Fixed "bad state no element" error when using primary filters without matching columns
+  * Added missing `onPrimaryFilterChanged` callback parameter for handling primary filter changes
+  * Added missing `combineFiltersAndPrimaryFilters` parameter to control filter combination behavior
+  * Both parameters now properly passed through to DataGridCore widget
+  * Ensures full feature parity between VooDataGrid and VooDataGridStateless
+
 ## 0.6.8 - 2025-09-01
 
 * **Enhanced Primary Filter Support**
