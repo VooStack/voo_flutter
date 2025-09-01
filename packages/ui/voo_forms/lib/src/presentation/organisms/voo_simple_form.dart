@@ -76,6 +76,9 @@ class VooSimpleForm extends StatefulWidget {
 
   /// Custom actions builder
   final Widget Function(BuildContext, VooFormController)? actionsBuilder;
+  
+  /// Whether the form fields are editable
+  final bool isEditable;
 
   const VooSimpleForm({
     super.key,
@@ -96,6 +99,7 @@ class VooSimpleForm extends StatefulWidget {
     this.showCancel = true,
     this.metadata,
     this.actionsBuilder,
+    this.isEditable = true,
   });
 
   @override
@@ -140,6 +144,7 @@ class _VooSimpleFormState extends State<VooSimpleForm> {
       showValidation: widget.showValidation,
       padding: widget.padding,
       defaultConfig: widget.defaultConfig,
+      isEditable: widget.isEditable,
       actionsBuilder: widget.actionsBuilder ??
           (context, controller) => VooFormActions(
               controller: controller,

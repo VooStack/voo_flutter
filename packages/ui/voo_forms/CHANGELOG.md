@@ -1,4 +1,19 @@
-## [0.1.21] - 2025-09-01
+## [0.2.0]
+
+### Added
+- **VooSimpleForm Enhancements**: Added `isEditable` parameter to VooSimpleForm
+  - VooSimpleForm now supports form-level editability control
+  - Properly passes `isEditable` to underlying VooFormBuilder
+
+### Fixed
+- **Field-Level Read-Only Control**: Individual fields now properly respect their `readOnly` property
+  - Fields marked as `readOnly: true` display as read-only even when the form is editable
+  - Enables mixed forms with both editable and read-only fields (e.g., auto-generated IDs, timestamps)
+  - Logic: Field is read-only if form `isEditable` is false OR field `readOnly` is true
+  - Useful for forms with system-managed fields, calculated values, and display-only data
+  - Added comprehensive tests for field-level read-only behavior
+
+## [0.1.21]
 
 ### Enhanced
 - **VooField Factory Methods**: All VooField factory methods now support `readOnlyWidget` parameter
@@ -7,7 +22,7 @@
   - Works seamlessly with existing `isEditable` functionality in VooFormBuilder
   - Provides complete control over read-only field appearance
 
-## [0.1.20] - 2025-09-01
+## [0.1.20]
 
 ### Added
 - **Custom Read-Only Widget Support**: Fields can now have custom read-only display widgets

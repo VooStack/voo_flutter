@@ -32,8 +32,14 @@ class FieldWidgetFactory {
     bool showError = true,
     bool autofocus = false,
   }) {
-    // If not editable, return the read-only details widget
-    if (!isEditable) {
+    // Determine if field should be read-only
+    // Field is read-only if:
+    // 1. The entire form is not editable (isEditable = false), OR
+    // 2. The individual field is marked as readOnly
+    final effectiveReadOnly = !isEditable || field.readOnly;
+    
+    // If field is read-only, return the read-only widget
+    if (effectiveReadOnly) {
       return _createReadOnlyWidget(
         context: context,
         field: field,
