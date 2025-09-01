@@ -14,6 +14,7 @@ class FormSectionWidget extends StatefulWidget {
   final bool showErrors;
   final EdgeInsetsGeometry? padding;
   final VooFormConfig? config;
+  final bool isEditable;
 
   const FormSectionWidget({
     super.key,
@@ -23,6 +24,7 @@ class FormSectionWidget extends StatefulWidget {
     this.showErrors = true,
     this.padding,
     this.config,
+    this.isEditable = true,
   });
 
   @override
@@ -193,6 +195,7 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
                   controller: widget.controller,
                   showError: widget.showErrors,
                   config: widget.config,
+                  isEditable: widget.isEditable,
                 ),
               ),
             ).toList(),
@@ -212,6 +215,7 @@ class _FormSectionWidgetState extends State<FormSectionWidget>
                   controller: widget.controller,
                   showError: widget.showErrors,
                   config: widget.config,
+                  isEditable: widget.isEditable,
                 ),
               ),
             )

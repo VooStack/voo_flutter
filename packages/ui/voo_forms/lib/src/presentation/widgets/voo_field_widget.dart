@@ -19,6 +19,7 @@ class VooFieldWidget extends StatelessWidget {
   final String? error;
   final bool showError;
   final bool autofocus;
+  final bool isEditable;
 
   // Factory instance for creating field widgets
   static const _factory = FieldWidgetFactory();
@@ -36,6 +37,7 @@ class VooFieldWidget extends StatelessWidget {
     this.error,
     this.showError = true,
     this.autofocus = false,
+    this.isEditable = true,
   });
 
 
@@ -48,6 +50,7 @@ class VooFieldWidget extends StatelessWidget {
       context: context,
       field: field,
       options: effectiveOptions,
+      isEditable: isEditable,
       onChanged: onChanged,
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,

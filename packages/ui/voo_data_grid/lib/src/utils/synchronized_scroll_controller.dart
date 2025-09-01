@@ -3,18 +3,26 @@ import 'package:flutter/material.dart';
 /// Synchronized scroll controller for coordinating multiple scrollables
 class SynchronizedScrollController {
   final List<ScrollController> _controllers = [];
+  final Map<ScrollController, VoidCallback> _listeners = {};
   bool _isUpdating = false;
 
   /// Register a scroll controller
   void registerController(ScrollController controller) {
     if (!_controllers.contains(controller)) {
       _controllers.add(controller);
-      controller.addListener(() => _onScroll(controller));
+      void listener() => _onScroll(controller);
+      _listeners[controller] = listener;
+      controller.addListener(listener);
     }
   }
 
   /// Unregister a scroll controller
   void unregisterController(ScrollController controller) {
+    final listener = _listeners[controller];
+    if (listener != null) {
+      controller.removeListener(listener);
+      _listeners.remove(controller);
+    }
     _controllers.remove(controller);
   }
 
@@ -76,8 +84,14 @@ class SynchronizedScrollController {
 
   /// Clear registered controllers
   void dispose() {
-    // Don't dispose the controllers themselves as they are owned by VooDataGridController
-    // Just clear the list
+    // Remove all listeners before clearing
+    for (final controller in _controllers) {
+      final listener = _listeners[controller];
+      if (listener != null) {
+        controller.removeListener(listener);
+      }
+    }
+    _listeners.clear();
     _controllers.clear();
   }
 }

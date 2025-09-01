@@ -12,6 +12,7 @@ class VooFormGridLayout extends StatelessWidget {
   final bool showValidation;
   final int? columns;
   final VooFormConfig? config;
+  final bool isEditable;
 
   const VooFormGridLayout({
     super.key,
@@ -20,6 +21,7 @@ class VooFormGridLayout extends StatelessWidget {
     this.showValidation = true,
     this.columns,
     this.config,
+    this.isEditable = true,
   });
 
   @override
@@ -50,6 +52,7 @@ class VooFormGridLayout extends StatelessWidget {
                 controller: controller,
                 showError: showValidation,
                 config: config,
+                isEditable: isEditable,
               ),
             ),).toList(),
         );

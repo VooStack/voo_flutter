@@ -12,6 +12,7 @@ class VooFormSteppedLayout extends StatelessWidget {
   final bool showValidation;
   final Widget Function(int step, int totalSteps)? stepIndicatorBuilder;
   final VooFormConfig? config;
+  final bool isEditable;
 
   const VooFormSteppedLayout({
     super.key,
@@ -20,6 +21,7 @@ class VooFormSteppedLayout extends StatelessWidget {
     this.showValidation = true,
     this.stepIndicatorBuilder,
     this.config,
+    this.isEditable = true,
   });
 
   @override
@@ -56,6 +58,7 @@ class VooFormSteppedLayout extends StatelessWidget {
               controller: controller,
               showErrors: showValidation,
               config: config,
+              isEditable: isEditable,
             ),
           ),
         

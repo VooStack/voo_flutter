@@ -220,7 +220,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                     alwaysShowHorizontalScrollbar: widget.alwaysShowHorizontalScrollbar,
                   ),
                 ),
-                if (widget.showPagination && !widget.controller.dataSource.isLoading) ...[
+                if (widget.showPagination) ...[
                   DataGridPaginationSection<T>(
                     controller: widget.controller,
                     theme: _theme,

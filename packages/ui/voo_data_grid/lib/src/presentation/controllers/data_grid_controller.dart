@@ -314,12 +314,18 @@ class VooDataGridController<T> extends ChangeNotifier {
 
   @override
   void dispose() {
+    // Remove data source listener first
     dataSource.removeListener(_onDataSourceChanged);
+    
+    // Dispose synchronized controller to remove all scroll listeners
     horizontalSyncController.dispose();
+    
+    // Now safe to dispose individual scroll controllers
     horizontalScrollController.dispose();
     filterHorizontalScrollController.dispose();
     bodyHorizontalScrollController.dispose();
     verticalScrollController.dispose();
+    
     super.dispose();
   }
 }

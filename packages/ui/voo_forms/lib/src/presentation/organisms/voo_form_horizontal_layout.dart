@@ -12,6 +12,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
   final bool showValidation;
   final double fieldWidth;
   final VooFormConfig? config;
+  final bool isEditable;
 
   const VooFormHorizontalLayout({
     super.key,
@@ -20,6 +21,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
     this.showValidation = true,
     this.fieldWidth = 300,
     this.config,
+    this.isEditable = true,
   });
 
   @override
@@ -37,6 +39,7 @@ class VooFormHorizontalLayout extends StatelessWidget {
               controller: controller,
               showError: showValidation,
               config: config,
+              isEditable: isEditable,
             ),
           ),).toList(),
       ),

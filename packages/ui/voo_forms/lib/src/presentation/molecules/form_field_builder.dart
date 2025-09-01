@@ -14,6 +14,7 @@ class VooFormFieldBuilder extends StatelessWidget {
   final VooFormConfig? config;
   final bool showError;
   final EdgeInsetsGeometry? padding;
+  final bool isEditable;
 
   const VooFormFieldBuilder({
     super.key,
@@ -22,6 +23,7 @@ class VooFormFieldBuilder extends StatelessWidget {
     this.config,
     this.showError = true,
     this.padding,
+    this.isEditable = true,
   });
 
   @override
@@ -47,6 +49,7 @@ class VooFormFieldBuilder extends StatelessWidget {
     Widget fieldWidget = VooFieldWidget(
       field: field,
       options: fieldOptions,
+      isEditable: isEditable,
       onChanged: (dynamic value) {
         controller.setValue(field.id, value);
         if (controller.form.validationMode == FormValidationMode.onChange) {

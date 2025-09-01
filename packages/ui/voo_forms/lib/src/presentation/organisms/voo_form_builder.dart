@@ -26,6 +26,7 @@ class VooFormBuilder extends StatefulWidget {
   final ScrollPhysics? physics;
   final Widget Function(BuildContext, VooFormController)? actionsBuilder;
   final VooFormConfig? defaultConfig;
+  final bool isEditable;
 
   const VooFormBuilder({
     super.key,
@@ -41,6 +42,7 @@ class VooFormBuilder extends StatefulWidget {
     this.physics,
     this.actionsBuilder,
     this.defaultConfig,
+    this.isEditable = true,
   });
 
   @override
@@ -171,15 +173,17 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
                       bottomRight: Radius.circular(20.0),
                     ),
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.all(spacing),
-                    child: VooFormActions(
-                      controller: _controller,
-                      onSubmit: widget.onSubmit != null ? _handleSubmit : null,
-                      onCancel: widget.onCancel,
-                      customBuilder: widget.actionsBuilder,
-                    ),
-                  ),
+                  child: widget.isEditable
+                      ? Padding(
+                          padding: EdgeInsets.all(spacing),
+                          child: VooFormActions(
+                            controller: _controller,
+                            onSubmit: widget.onSubmit != null ? _handleSubmit : null,
+                            onCancel: widget.onCancel,
+                            customBuilder: widget.actionsBuilder,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
               ],
             ),
@@ -199,6 +203,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
           controller: _controller,
           showValidation: widget.showValidation,
           config: config,
+          isEditable: widget.isEditable,
         );
       case FormLayout.horizontal:
         return VooFormHorizontalLayout(
@@ -206,6 +211,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
           controller: _controller,
           showValidation: widget.showValidation,
           config: config,
+          isEditable: widget.isEditable,
         );
       case FormLayout.grid:
         return VooFormGridLayout(
@@ -213,6 +219,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
           controller: _controller,
           showValidation: widget.showValidation,
           config: config,
+          isEditable: widget.isEditable,
         );
       case FormLayout.stepped:
         return VooFormSteppedLayout(
@@ -220,6 +227,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
           controller: _controller,
           showValidation: widget.showValidation,
           config: config,
+          isEditable: widget.isEditable,
         );
       case FormLayout.tabbed:
         return VooFormTabbedLayout(
@@ -227,6 +235,7 @@ class _VooFormBuilderState extends State<VooFormBuilder> {
           controller: _controller,
           showValidation: widget.showValidation,
           config: config,
+          isEditable: widget.isEditable,
         );
     }
   }

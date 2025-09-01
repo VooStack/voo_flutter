@@ -13,6 +13,7 @@ class VooFormVerticalLayout extends StatelessWidget {
   final bool showValidation;
   final EdgeInsetsGeometry? padding;
   final VooFormConfig? config;
+  final bool isEditable;
 
   const VooFormVerticalLayout({
     super.key,
@@ -21,6 +22,7 @@ class VooFormVerticalLayout extends StatelessWidget {
     this.showValidation = true,
     this.padding,
     this.config,
+    this.isEditable = true,
   });
 
   @override
@@ -55,6 +57,7 @@ class VooFormVerticalLayout extends StatelessWidget {
               controller: controller,
               showErrors: showValidation,
               config: config,
+              isEditable: isEditable,
             ),
           );
         }).toList(),
@@ -84,6 +87,7 @@ class VooFormVerticalLayout extends StatelessWidget {
                   controller: controller,
                   showError: showValidation,
                   config: config,
+                  isEditable: isEditable,
                 ),
               ),
             ),

@@ -1,3 +1,14 @@
+## 0.6.10 - 2025-09-01
+
+* **Performance Optimizations and Bug Fixes**
+  * Fixed pagination controls hiding during loading state, preventing UI jumps
+  * Created PageInputField atom widget with proper TextEditingController lifecycle management
+  * Created PageInfoDisplay atom widget for optimized row calculation rendering
+  * Removed unnecessary widget rebuilds in pagination components
+  * Fixed memory leaks from improper TextEditingController disposal
+  * Fixed lint issues (removed unnecessary imports, fixed function declarations)
+  * Improved perceived performance by maintaining consistent UI during loading states
+
 ## 0.6.9 - 2025-09-01
 
 * **VooDataGridStateless Bug Fixes**

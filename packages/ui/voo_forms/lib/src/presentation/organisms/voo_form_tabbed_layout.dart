@@ -12,6 +12,7 @@ class VooFormTabbedLayout extends StatelessWidget {
   final bool showValidation;
   final TabController? tabController;
   final VooFormConfig? config;
+  final bool isEditable;
 
   const VooFormTabbedLayout({
     super.key,
@@ -20,6 +21,7 @@ class VooFormTabbedLayout extends StatelessWidget {
     this.showValidation = true,
     this.tabController,
     this.config,
+    this.isEditable = true,
   });
 
   @override
@@ -57,6 +59,7 @@ class VooFormTabbedLayout extends StatelessWidget {
                   controller: controller,
                   showErrors: showValidation,
                   config: config,
+                  isEditable: isEditable,
                 ),
               );
             }).toList(),

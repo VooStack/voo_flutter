@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/page_info_display.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/page_input_field.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -29,8 +30,6 @@ class VooDataGridMobilePagination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    final startRow = currentPage * pageSize + 1;
-    final endRow = ((currentPage + 1) * pageSize).clamp(0, totalRows);
 
     return Container(
       padding: EdgeInsets.all(design.spacingMd),
@@ -49,9 +48,10 @@ class VooDataGridMobilePagination extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '$startRow-$endRow of $totalRows',
-                style: Theme.of(context).textTheme.bodySmall,
+              PageInfoDisplay(
+                currentPage: currentPage,
+                pageSize: pageSize,
+                totalRows: totalRows,
               ),
               PopupMenuButton<int>(
                 onSelected: onPageSizeChanged,
@@ -155,9 +155,6 @@ class VooDataGridPagination extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
 
-    final startRow = currentPage * pageSize + 1;
-    final endRow = ((currentPage + 1) * pageSize).clamp(0, totalRows);
-
     return Container(
       height: 56,
       padding: EdgeInsets.symmetric(horizontal: design.spacingLg),
@@ -201,9 +198,10 @@ class VooDataGridPagination extends StatelessWidget {
           const Spacer(),
 
           // Row info
-          Text(
-            '$startRow-$endRow of $totalRows',
-            style: Theme.of(context).textTheme.bodySmall,
+          PageInfoDisplay(
+            currentPage: currentPage,
+            pageSize: pageSize,
+            totalRows: totalRows,
           ),
 
           SizedBox(width: design.spacingLg),
@@ -221,32 +219,10 @@ class VooDataGridPagination extends StatelessWidget {
           ),
 
           // Page number input
-          SizedBox(
-            width: 60,
-            child: TextField(
-              controller: TextEditingController(text: '${currentPage + 1}'),
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: design.spacingSm,
-                  vertical: design.spacingXs,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(design.radiusSm),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
-              onSubmitted: (value) {
-                final page = int.tryParse(value);
-                if (page != null && page > 0 && page <= totalPages) {
-                  onPageChanged(page - 1);
-                }
-              },
-            ),
+          PageInputField(
+            currentPage: currentPage,
+            totalPages: totalPages,
+            onPageChanged: onPageChanged,
           ),
 
           Text(
