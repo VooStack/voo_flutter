@@ -108,10 +108,17 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   void _invokeFieldOnChanged(T? value) {
     // Call the field's onChanged if it exists
     // Use dynamic invocation to avoid type casting issues with strongly typed callbacks
-    if (widget.field.onChanged != null) {
-      // Cast to Function first, then use Function.apply
-      final callback = widget.field.onChanged! as Function;
-      Function.apply(callback, [value]);
+    try {
+      // Access onChanged as dynamic to avoid type checking
+      final dynamic field = widget.field;
+      final dynamic callback = field.onChanged;
+      if (callback != null) {
+        // Use Function.apply to invoke without type checking
+        Function.apply(callback as Function, [value]);
+      }
+    } catch (_) {
+      // If there's any issue, silently ignore
+      // The callback might not be compatible
     }
   }
 

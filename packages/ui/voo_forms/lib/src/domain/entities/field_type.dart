@@ -20,6 +20,7 @@ enum VooFieldType {
   file,
   color,
   rating,
+  list,
   custom,
 }
 
@@ -64,6 +65,8 @@ extension VooFieldTypeExtension on VooFieldType {
         return 'Color';
       case VooFieldType.rating:
         return 'Rating';
+      case VooFieldType.list:
+        return 'List';
       case VooFieldType.custom:
         return 'Custom';
     }

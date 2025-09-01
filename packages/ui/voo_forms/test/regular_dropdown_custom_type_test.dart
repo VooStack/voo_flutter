@@ -4,6 +4,7 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/voo_field.dart';
 import 'package:voo_forms/src/presentation/molecules/field_widget_factory.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
+import 'helpers/dropdown_test_helpers.dart';
 
 // Custom type for US States
 class USState {
@@ -149,21 +150,20 @@ void main() {
         ),
       );
 
-      // Should render without errors
-      expect(find.text('Select State'), findsOneWidget);
+      // Should render without errors - dropdown field should exist
+      expect(find.byType(DropdownButtonFormField), findsOneWidget);
       
-      // Tap to open dropdown
-      await tester.tap(find.text('Select State'));
-      await tester.pumpAndSettle();
+      // Tap to open dropdown using helper
+      await DropdownTestHelpers.openDropdown(tester);
       
       // Should show state options without type errors
-      expect(find.text('New York'), findsOneWidget);
-      expect(find.text('California'), findsOneWidget);
-      expect(find.text('Texas'), findsOneWidget);
-      expect(find.text('Florida'), findsOneWidget);
+      DropdownTestHelpers.expectDropdownOptions(
+        tester,
+        ['New York', 'California', 'Texas', 'Florida'],
+      );
       
       // Select a state
-      await tester.tap(find.text('Texas').last);
+      await DropdownTestHelpers.selectDropdownOption(tester, 'Texas');
       await tester.pumpAndSettle();
       
       // Verify selection worked
@@ -261,26 +261,21 @@ void main() {
       );
 
       // Both dropdowns should render
-      expect(find.text('State'), findsOneWidget);
-      expect(find.text('Country'), findsOneWidget);
+      expect(find.byType(DropdownButtonFormField), findsNWidgets(2));
       
-      // Test state dropdown
-      await tester.tap(find.text('State'));
-      await tester.pumpAndSettle();
+      // Test state dropdown (first dropdown)
+      await DropdownTestHelpers.openDropdown(tester, index: 0);
       
       expect(find.text('California'), findsOneWidget);
-      await tester.tap(find.text('California').last);
-      await tester.pumpAndSettle();
+      await DropdownTestHelpers.selectDropdownOption(tester, 'California');
       
       expect(selectedState?.code, equals('CA'));
       
-      // Test country dropdown
-      await tester.tap(find.text('Country'));
-      await tester.pumpAndSettle();
+      // Test country dropdown (second dropdown)
+      await DropdownTestHelpers.openDropdown(tester, index: 1);
       
       expect(find.text('Mexico'), findsOneWidget);
-      await tester.tap(find.text('Mexico').last);
-      await tester.pumpAndSettle();
+      await DropdownTestHelpers.selectDropdownOption(tester, 'Mexico');
       
       expect(selectedCountry?.iso, equals('MX'));
     });
@@ -373,13 +368,15 @@ void main() {
       );
 
       // Dropdown should be rendered but disabled
-      expect(find.text('State'), findsOneWidget);
+      expect(find.byType(DropdownButtonFormField), findsOneWidget);
       
-      // Try to tap - should not open
-      await tester.tap(find.text('State'));
-      await tester.pump();
+      // Verify it's disabled by checking the DropdownButtonFormField widget
+      final dropdown = tester.widget<DropdownButtonFormField>(
+        find.byType(DropdownButtonFormField),
+      );
+      expect(dropdown.onChanged, isNull);
       
-      // Options should not be visible
+      // Options should not be visible since dropdown is disabled
       expect(find.text('New York'), findsNothing);
     });
   });

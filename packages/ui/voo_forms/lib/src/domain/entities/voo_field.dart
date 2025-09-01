@@ -919,4 +919,101 @@ class VooField {
         onChanged: onChanged,
         readOnlyWidget: readOnlyWidget,
       );
+
+  /// List field factory for dynamic collections of fields
+  /// 
+  /// Creates a field that can contain multiple instances of the same field type.
+  /// Supports adding, removing, and optionally reordering items.
+  /// 
+  /// Example:
+  /// ```dart
+  /// VooField.list<String>(
+  ///   name: 'emails',
+  ///   label: 'Email Addresses',
+  ///   itemTemplate: VooField.email(
+  ///     name: 'email',
+  ///     label: 'Email',
+  ///     validators: [EmailValidator()],
+  ///   ),
+  ///   minItems: 1,
+  ///   maxItems: 5,
+  ///   initialItems: ['john@example.com'],
+  /// )
+  /// ```
+  static VooFormField<List<T>> list<T>({
+    required String name,
+    String? label,
+    String? hint,
+    String? helper,
+    required VooFormField<T> itemTemplate,
+    List<T>? initialItems,
+    int? minItems,
+    int? maxItems,
+    bool canAddItems = true,
+    bool canRemoveItems = true,
+    bool canReorderItems = false,
+    String? addButtonText,
+    String? removeButtonText,
+    IconData? addButtonIcon,
+    IconData? removeButtonIcon,
+    List<VooValidationRule<List<T>>>? validators,
+    bool required = false,
+    bool enabled = true,
+    bool readOnly = false,
+    int? gridColumns,
+    ValueChanged<List<T>?>? onChanged,
+    Widget? readOnlyWidget,
+  }) {
+    // Create initial list items based on initialItems
+    final List<VooFormField> listItems = [];
+    if (initialItems != null) {
+      for (int i = 0; i < initialItems.length; i++) {
+        listItems.add(
+          itemTemplate.copyWith(
+            id: '${name}_item_$i',
+            name: '${name}_$i',
+            value: initialItems[i],
+          ),
+        );
+      }
+    } else if (minItems != null && minItems > 0) {
+      // Add minimum required items
+      for (int i = 0; i < minItems; i++) {
+        listItems.add(
+          itemTemplate.copyWith(
+            id: '${name}_item_$i',
+            name: '${name}_$i',
+          ),
+        );
+      }
+    }
+    
+    return VooFormField<List<T>>(
+      id: name,
+      name: name,
+      type: VooFieldType.list,
+      label: label,
+      hint: hint,
+      helper: helper,
+      initialValue: initialItems,
+      required: required,
+      enabled: enabled,
+      readOnly: readOnly,
+      validators: validators ?? [],
+      itemTemplate: itemTemplate,
+      listItems: listItems,
+      minItems: minItems,
+      maxItems: maxItems,
+      canAddItems: canAddItems && !readOnly,
+      canRemoveItems: canRemoveItems && !readOnly,
+      canReorderItems: canReorderItems && !readOnly,
+      addButtonText: addButtonText ?? 'Add ${itemTemplate.label ?? 'Item'}',
+      removeButtonText: removeButtonText ?? 'Remove',
+      addButtonIcon: Icon(addButtonIcon ?? Icons.add_circle_outline),
+      removeButtonIcon: Icon(removeButtonIcon ?? Icons.remove_circle_outline),
+      gridColumns: gridColumns,
+      onChanged: onChanged,
+      readOnlyWidget: readOnlyWidget,
+    );
+  }
 }

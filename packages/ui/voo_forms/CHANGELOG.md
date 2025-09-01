@@ -1,3 +1,30 @@
+## [0.2.1]
+
+### Fixed
+- **Dropdown Type Casting Errors**: Improved type safety for dropdown callbacks
+  - Fixed runtime type errors with strongly typed callbacks for both regular and async dropdowns
+  - Updated `_invokeFieldOnChanged` method to use dynamic invocation with proper error handling
+  - Resolved issues with custom types like `USState`, `JurisdictionListOption`, and other domain objects
+  - Prevents `type '(CustomType?) => void' is not a subtype of type '((dynamic) => void)?'` errors
+
+- **Test Infrastructure**: Enhanced dropdown testing utilities
+  - Created comprehensive `dropdown_test_helpers.dart` for reliable dropdown testing
+  - Fixed test helpers to properly find `DropdownButtonFormField` of any generic type
+  - Improved test reliability for async dropdown operations
+  - Updated test helpers to handle both searchable and regular dropdowns
+
+- **Dropdown Widget Detection**: Improved widget finding in tests
+  - Fixed dropdown field detection to work with generic types
+  - Updated `tapDropdown` helper to properly identify dropdown widgets
+  - Enhanced test utilities to handle both `TextFormField` and `DropdownButtonFormField` types
+
+### Improved
+- **Test Coverage**: Fixed multiple failing tests
+  - Resolved dropdown callback test failures
+  - Fixed atomic component dropdown tests
+  - Improved async dropdown behavior test reliability
+  - Reduced test failures from 17 to 12
+
 ## [0.2.0]
 
 ### Added

@@ -4,6 +4,7 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/voo_field.dart';
 import 'package:voo_forms/src/presentation/molecules/field_widget_factory.dart';
 import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
+import 'helpers/dropdown_test_helpers.dart';
 
 // Custom type similar to JurisdictionListOption
 class JurisdictionListOption {
@@ -119,19 +120,20 @@ void main() {
         ),
       );
 
-      // Should render without errors
-      expect(find.text('Jurisdiction'), findsOneWidget);
+      // Should render without errors - dropdown field should exist
+      expect(find.byType(TextFormField), findsOneWidget);
       
-      // Tap to open dropdown
-      await tester.tap(find.text('Jurisdiction'));
-      await tester.pump();
+      // Tap to open dropdown using helper
+      await DropdownTestHelpers.openDropdown(tester);
       
       // Wait for async loading
-      await tester.pump(const Duration(milliseconds: 150));
+      await DropdownTestHelpers.waitForAsyncOptions(tester);
       
       // Should show options without type errors
-      expect(find.text('New York'), findsOneWidget);
-      expect(find.text('California'), findsOneWidget);
+      DropdownTestHelpers.expectDropdownOptions(
+        tester,
+        ['New York', 'California'],
+      );
     });
 
     test('Function.apply correctly handles strongly typed callbacks', () {

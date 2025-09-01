@@ -3,6 +3,7 @@ description: 'Simple and powerful animation package with extension methods for F
 version: 0.0.1
 homepage: https://github.com/VooStack/VooFlutter
 repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_motion
+publish_to: none
 
 environment:
   sdk: ^3.0.0
@@ -12,7 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   vector_math: ^2.1.4
-  voo_ui_core: ^0.1.0
+  voo_ui_core:
+    path: ../voo_ui_core
 
 dev_dependencies:
   flutter_test:

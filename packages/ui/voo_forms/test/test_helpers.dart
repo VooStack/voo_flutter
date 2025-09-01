@@ -28,8 +28,10 @@ Widget createTestApp({
 Future<void> tapDropdown(WidgetTester tester, {String? reason}) async {
   reason ??= 'Tapping dropdown field';
   
-  // Try to find DropdownButtonFormField first (non-searchable dropdowns)
-  final dropdownButton = find.byType(DropdownButtonFormField);
+  // Try to find DropdownButtonFormField of any generic type
+  final dropdownButton = find.byWidgetPredicate((widget) {
+    return widget.runtimeType.toString().startsWith('DropdownButtonFormField');
+  });
   if (dropdownButton.evaluate().isNotEmpty) {
     await tester.tap(dropdownButton.first);
     return;

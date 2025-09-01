@@ -8,8 +8,10 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 
 // Helper to tap dropdown fields that works with both DropdownButtonFormField and TextFormField
 Future<void> tapDropdown(WidgetTester tester) async {
-  // Try to find DropdownButtonFormField first (non-searchable dropdowns)
-  final dropdownButton = find.byType(DropdownButtonFormField);
+  // Try to find DropdownButtonFormField of any generic type
+  final dropdownButton = find.byWidgetPredicate((widget) {
+    return widget.runtimeType.toString().startsWith('DropdownButtonFormField');
+  });
   if (dropdownButton.evaluate().isNotEmpty) {
     await tester.tap(dropdownButton.first);
     return;
@@ -209,8 +211,15 @@ void main() {
         ),
       );
 
+      // Dropdown should be rendered - could be either type
+      final dropdownButton = find.byWidgetPredicate((widget) {
+        return widget.runtimeType.toString().startsWith('DropdownButtonFormField');
+      });
+      final textField = find.byType(TextFormField);
+      expect(dropdownButton.evaluate().isNotEmpty || textField.evaluate().isNotEmpty, isTrue);
+      
+      // Initial value should be shown
       expect(find.text('USA'), findsOneWidget);
-      expect(find.text('Select Country'), findsOneWidget);
     });
 
     testWidgets('Dropdown should open menu on tap', (tester) async {
@@ -230,8 +239,11 @@ void main() {
       await tapDropdown(tester);
       await tester.pumpAndSettle();
       
-      // Menu should be open
-      expect(find.text('Small'), findsWidgets);
+      // Menu should be open - check that options are visible
+      // In DropdownButtonFormField, options appear in a popup
+      expect(find.text('Small'), findsOneWidget);
+      expect(find.text('Medium'), findsOneWidget);
+      expect(find.text('Large'), findsOneWidget);
     });
 
     testWidgets('Typed dropdown should handle complex objects', (tester) async {

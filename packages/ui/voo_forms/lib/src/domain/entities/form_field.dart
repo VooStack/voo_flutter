@@ -72,6 +72,19 @@ class VooFormField<T> extends Equatable {
   final double? width;
   final double? height;
   
+  // List field specific
+  final VooFormField? itemTemplate;
+  final List<VooFormField>? listItems;
+  final int? minItems;
+  final int? maxItems;
+  final bool canAddItems;
+  final bool canRemoveItems;
+  final bool canReorderItems;
+  final String? addButtonText;
+  final String? removeButtonText;
+  final Widget? addButtonIcon;
+  final Widget? removeButtonIcon;
+  
   // Validation
   final String? error;
   final bool showError;
@@ -141,6 +154,17 @@ class VooFormField<T> extends Equatable {
     this.gridColumns,
     this.width,
     this.height,
+    this.itemTemplate,
+    this.listItems,
+    this.minItems,
+    this.maxItems,
+    this.canAddItems = true,
+    this.canRemoveItems = true,
+    this.canReorderItems = false,
+    this.addButtonText,
+    this.removeButtonText,
+    this.addButtonIcon,
+    this.removeButtonIcon,
     this.error,
     this.showError = true,
     this.validateOnChange = false,
@@ -208,6 +232,17 @@ class VooFormField<T> extends Equatable {
     int? gridColumns,
     double? width,
     double? height,
+    VooFormField? itemTemplate,
+    List<VooFormField>? listItems,
+    int? minItems,
+    int? maxItems,
+    bool? canAddItems,
+    bool? canRemoveItems,
+    bool? canReorderItems,
+    String? addButtonText,
+    String? removeButtonText,
+    Widget? addButtonIcon,
+    Widget? removeButtonIcon,
     String? error,
     bool? showError,
     bool? validateOnChange,
@@ -274,6 +309,17 @@ class VooFormField<T> extends Equatable {
         gridColumns: gridColumns ?? this.gridColumns,
         width: width ?? this.width,
         height: height ?? this.height,
+        itemTemplate: itemTemplate ?? this.itemTemplate,
+        listItems: listItems ?? this.listItems,
+        minItems: minItems ?? this.minItems,
+        maxItems: maxItems ?? this.maxItems,
+        canAddItems: canAddItems ?? this.canAddItems,
+        canRemoveItems: canRemoveItems ?? this.canRemoveItems,
+        canReorderItems: canReorderItems ?? this.canReorderItems,
+        addButtonText: addButtonText ?? this.addButtonText,
+        removeButtonText: removeButtonText ?? this.removeButtonText,
+        addButtonIcon: addButtonIcon ?? this.addButtonIcon,
+        removeButtonIcon: removeButtonIcon ?? this.removeButtonIcon,
         error: error ?? this.error,
         showError: showError ?? this.showError,
         validateOnChange: validateOnChange ?? this.validateOnChange,
