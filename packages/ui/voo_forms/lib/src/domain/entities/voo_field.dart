@@ -48,6 +48,7 @@ class VooField {
     Widget? suffix,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<String>(
         id: name,
@@ -73,6 +74,7 @@ class VooField {
         suffix: suffix,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Email field factory
@@ -91,6 +93,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<String>(
         id: name,
@@ -111,6 +114,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Password field factory
@@ -129,6 +133,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<String>(
         id: name,
@@ -151,6 +156,7 @@ class VooField {
         suffixIcon: suffixIcon ?? Icons.visibility,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Phone field factory
@@ -170,6 +176,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<String>(
         id: name,
@@ -191,6 +198,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Number field factory with strict type enforcement
@@ -216,6 +224,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<num?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<num>(
         id: name,
@@ -250,6 +259,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Multiline text field factory
@@ -270,6 +280,7 @@ class VooField {
     IconData? prefixIcon,
     int? gridColumns,
     ValueChanged<String?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<String>(
         id: name,
@@ -292,6 +303,7 @@ class VooField {
         prefixIcon: prefixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Generic dropdown field factory with custom type and converter
@@ -339,6 +351,7 @@ class VooField {
     bool enableSearch = false,
     String? searchHint,
     ValueChanged<T?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<T>(
         id: name,
@@ -359,6 +372,7 @@ class VooField {
         enableSearch: enableSearch,
         searchHint: searchHint,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Async dropdown field factory with dynamic loading
@@ -400,6 +414,7 @@ class VooField {
     Duration? searchDebounce,
     int minSearchLength = 0,
     ValueChanged<T?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<T>(
         id: name,
@@ -425,6 +440,7 @@ class VooField {
         suffixIcon: suffixIcon ?? Icons.arrow_drop_down,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
   
   /// Simple dropdown field factory with strings
@@ -454,6 +470,7 @@ class VooField {
     bool enableSearch = false,
     String? searchHint,
     ValueChanged? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField(
         id: name,
@@ -481,6 +498,7 @@ class VooField {
         enableSearch: enableSearch,
         searchHint: searchHint,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Boolean/Switch field factory
@@ -495,6 +513,7 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged<bool?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<bool>(
         id: name,
@@ -508,6 +527,7 @@ class VooField {
         readOnly: readOnly,
         validators: validators ?? [],
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Checkbox field factory
@@ -521,6 +541,7 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged<bool?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<bool>(
         id: name,
@@ -534,6 +555,7 @@ class VooField {
         readOnly: readOnly,
         validators: validators ?? [],
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Radio field factory - simple version with strings
@@ -549,6 +571,7 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField(
         id: name,
@@ -570,6 +593,7 @@ class VooField {
               )
             .toList(),
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Date field factory
@@ -590,6 +614,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<DateTime?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<DateTime>(
         id: name,
@@ -610,6 +635,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Time field factory
@@ -628,6 +654,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<TimeOfDay?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<TimeOfDay>(
         id: name,
@@ -646,6 +673,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Integer field factory with strict integer-only input
@@ -668,6 +696,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<int?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<int>(
         id: name,
@@ -698,6 +727,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Decimal field factory with configurable decimal places
@@ -721,6 +751,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<double?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<double>(
         id: name,
@@ -753,6 +784,7 @@ class VooField {
         suffixIcon: suffixIcon,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Currency field factory with 2 decimal places and no negative values
@@ -774,6 +806,7 @@ class VooField {
     String? prefix,
     int? gridColumns,
     ValueChanged<double?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<double>(
         id: name,
@@ -801,6 +834,7 @@ class VooField {
         prefix: prefix != null ? Text(prefix) : null,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Percentage field factory (0-100)
@@ -821,6 +855,7 @@ class VooField {
     IconData? suffixIcon,
     int? gridColumns,
     ValueChanged<double?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<double>(
         id: name,
@@ -847,6 +882,7 @@ class VooField {
         suffixIcon: suffixIcon ?? Icons.percent,
         gridColumns: gridColumns,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 
   /// Slider field factory
@@ -864,6 +900,7 @@ class VooField {
     bool enabled = true,
     bool readOnly = false,
     ValueChanged<double?>? onChanged,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<double>(
         id: name,
@@ -880,5 +917,6 @@ class VooField {
         max: max,
         divisions: divisions,
         onChanged: onChanged,
+        readOnlyWidget: readOnlyWidget,
       );
 }

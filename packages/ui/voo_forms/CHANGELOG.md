@@ -1,3 +1,12 @@
+## [0.1.21] - 2025-09-01
+
+### Enhanced
+- **VooField Factory Methods**: All VooField factory methods now support `readOnlyWidget` parameter
+  - Added `Widget? readOnlyWidget` parameter to all 19 field factory methods
+  - Enables custom read-only display for every field type (text, email, password, phone, number, multiline, dropdown, dropdownAsync, dropdownSimple, boolean, checkbox, radio, date, time, integer, decimal, currency, percentage, slider)
+  - Works seamlessly with existing `isEditable` functionality in VooFormBuilder
+  - Provides complete control over read-only field appearance
+
 ## [0.1.20] - 2025-09-01
 
 ### Added
