@@ -105,10 +105,7 @@ class VooDataGridStateless<T> extends StatelessWidget {
   final List<PrimaryFilter>? primaryFilters;
 
   /// Currently selected primary filter
-  final String? selectedPrimaryFilterId;
-
-  /// Callback when primary filter is selected
-  final void Function(String? filterId)? onPrimaryFilterSelected;
+  final VooDataFilter? selectedPrimaryFilter;
 
   /// Whether to show primary filters
   final bool showPrimaryFilters;
@@ -146,8 +143,7 @@ class VooDataGridStateless<T> extends StatelessWidget {
     this.alwaysShowVerticalScrollbar = false,
     this.alwaysShowHorizontalScrollbar = false,
     this.primaryFilters,
-    this.selectedPrimaryFilterId,
-    this.onPrimaryFilterSelected,
+    this.selectedPrimaryFilter,
     this.showPrimaryFilters = false,
   });
 
@@ -192,8 +188,8 @@ class VooDataGridStateless<T> extends StatelessWidget {
       alwaysShowVerticalScrollbar: alwaysShowVerticalScrollbar,
       alwaysShowHorizontalScrollbar: alwaysShowHorizontalScrollbar,
       primaryFilters: primaryFilters,
-      selectedPrimaryFilterId: selectedPrimaryFilterId,
-      onPrimaryFilterSelected: onPrimaryFilterSelected,
+      selectedPrimaryFilter: selectedPrimaryFilter,
+      onFilterChanged: onFilterChanged,
       showPrimaryFilters: showPrimaryFilters,
     );
   }

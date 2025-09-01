@@ -53,7 +53,7 @@ void main() {
       
       test('should create instance with empty rows', () {
         // Arrange & Act
-        final response = VooDataGridResponse<Map<String, dynamic>>(
+        const response = VooDataGridResponse<Map<String, dynamic>>(
           rows: [],
           totalRows: 0,
           page: 1,

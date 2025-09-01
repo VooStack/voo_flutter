@@ -1,3 +1,9 @@
+## [0.1.19] - 2025-08-31
+
+### Maintenance
+- Version bump for package maintenance
+- Updated dependencies compatibility
+
 ## [0.1.18]
 
 ### Fixed

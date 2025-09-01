@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Test data for grid rows
@@ -56,6 +57,43 @@ final List<VooDataColumn> testColumns = [
   ),
 ];
 
+/// Test columns for Map<String, dynamic> data
+final List<VooDataColumn<Map<String, dynamic>>> testColumnsTyped = [
+  const VooDataColumn<Map<String, dynamic>>(
+    field: 'id',
+    label: 'ID',
+    width: 60,
+    frozen: true,
+  ),
+  const VooDataColumn<Map<String, dynamic>>(
+    field: 'name',
+    label: 'Name',
+    width: 150,
+  ),
+  const VooDataColumn<Map<String, dynamic>>(
+    field: 'price',
+    label: 'Price',
+    width: 100,
+    textAlign: TextAlign.right,
+  ),
+  const VooDataColumn<Map<String, dynamic>>(
+    field: 'status',
+    label: 'Status',
+    width: 100,
+  ),
+  const VooDataColumn<Map<String, dynamic>>(
+    field: 'category',
+    label: 'Category',
+    width: 120,
+  ),
+  const VooDataColumn<Map<String, dynamic>>(
+    field: 'quantity',
+    label: 'Quantity',
+    width: 100,
+    textAlign: TextAlign.right,
+  ),
+];
+
 /// Minimal columns for simple tests
 final List<VooDataColumn> minimalColumns = [
   const VooDataColumn(
@@ -72,27 +110,25 @@ final List<VooDataColumn> minimalColumns = [
 
 /// Create test filter
 VooDataFilter createTestFilter({
-  String field = 'name',
-  String operator = 'contains',
+  VooFilterOperator operator = VooFilterOperator.contains,
   dynamic value = 'test',
-}) {
-  return VooDataFilter(
-    field: field,
-    operator: operator,
-    value: value,
-  );
-}
+  dynamic valueTo,
+}) =>
+    VooDataFilter(
+      operator: operator,
+      value: value,
+      valueTo: valueTo,
+    );
 
 /// Create test sort
 VooColumnSort createTestSort({
   String field = 'id',
-  bool ascending = true,
-}) {
-  return VooColumnSort(
-    field: field,
-    ascending: ascending,
-  );
-}
+  VooSortDirection direction = VooSortDirection.ascending,
+}) =>
+    VooColumnSort(
+      field: field,
+      direction: direction,
+    );
 
 /// Create test grid response
 VooDataGridResponse createTestResponse({
@@ -100,26 +136,10 @@ VooDataGridResponse createTestResponse({
   int? totalRows,
   int page = 1,
   int pageSize = 10,
-}) {
-  return VooDataGridResponse(
-    rows: rows ?? smallTestData,
-    totalRows: totalRows ?? smallTestData.length,
-    page: page,
-    pageSize: pageSize,
-  );
-}
-
-/// Create test grid request
-VooDataGridRequest createTestRequest({
-  int page = 1,
-  int pageSize = 10,
-  Map<String, VooDataFilter>? filters,
-  List<VooColumnSort>? sorts,
-}) {
-  return VooDataGridRequest(
-    page: page,
-    pageSize: pageSize,
-    filters: filters ?? {},
-    sorts: sorts ?? [],
-  );
-}
+}) =>
+    VooDataGridResponse(
+      rows: rows ?? smallTestData,
+      totalRows: totalRows ?? smallTestData.length,
+      page: page,
+      pageSize: pageSize,
+    );

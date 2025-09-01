@@ -37,7 +37,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
   late VooDataGridController _controller;
   late AdvancedRemoteDataSource _dataSource;
   bool _showAdvancedFilters = false;
-  String? _selectedPrimaryFilter;
+  VooDataFilter? _selectedPrimaryFilter;
 
   @override
   void initState() {
@@ -366,61 +366,64 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                 showPrimaryFilters: true,
                 primaryFilters: [
                   PrimaryFilter(
-                    id: 'pending',
+                    field: 'orderStatus',
                     label: 'Pending',
                     icon: Icons.pending_outlined,
                     count: 12,
-                    value: 'Pending',
+                    filter: const VooDataFilter(
+                      operator: VooFilterOperator.equals,
+                      value: 'Pending',
+                    ),
                   ),
                   PrimaryFilter(
-                    id: 'processing',
+                    field: 'orderStatus',
                     label: 'Processing',
                     icon: Icons.settings,
                     count: 5,
-                    value: 'Processing',
+                    filter: const VooDataFilter(
+                      operator: VooFilterOperator.equals,
+                      value: 'Processing',
+                    ),
                   ),
                   PrimaryFilter(
-                    id: 'shipped',
+                    field: 'orderStatus',
                     label: 'Shipped',
                     icon: Icons.local_shipping,
                     count: 23,
-                    value: 'Shipped',
+                    filter: const VooDataFilter(
+                      operator: VooFilterOperator.equals,
+                      value: 'Shipped',
+                    ),
                   ),
                   PrimaryFilter(
-                    id: 'delivered',
+                    field: 'orderStatus',
                     label: 'Delivered',
                     icon: Icons.check_circle,
                     count: 45,
-                    value: 'Delivered',
+                    filter: const VooDataFilter(
+                      operator: VooFilterOperator.equals,
+                      value: 'Delivered',
+                    ),
                   ),
                   PrimaryFilter(
-                    id: 'hold',
+                    field: 'orderStatus',
                     label: 'On Hold',
                     icon: Icons.pause_circle,
                     count: 3,
-                    value: 'Hold',
+                    filter: const VooDataFilter(
+                      operator: VooFilterOperator.equals,
+                      value: 'Hold',
+                    ),
                   ),
                 ],
-                selectedPrimaryFilterId: _selectedPrimaryFilter,
-                onPrimaryFilterSelected: (filterId) {
+                selectedPrimaryFilter: _selectedPrimaryFilter,
+                onFilterChanged: (field, filter) {
                   setState(() {
-                    _selectedPrimaryFilter = filterId;
+                    _selectedPrimaryFilter = filter;
                   });
                   
-                  // Apply filter based on selection
-                  if (filterId != null) {
-                    final filter = [
-                      PrimaryFilter(id: 'pending', label: 'Pending', value: 'Pending'),
-                      PrimaryFilter(id: 'processing', label: 'Processing', value: 'Processing'),
-                      PrimaryFilter(id: 'shipped', label: 'Shipped', value: 'Shipped'),
-                      PrimaryFilter(id: 'delivered', label: 'Delivered', value: 'Delivered'),
-                      PrimaryFilter(id: 'hold', label: 'On Hold', value: 'Hold'),
-                    ].firstWhere((f) => f.id == filterId);
-                    
-                    _dataSource.applyFilter('orderStatus', filter.value);
-                  } else {
-                    _dataSource.applyFilter('orderStatus', null);
-                  }
+                  // Apply the filter directly to the data source
+                  _dataSource.applyFilter(field, filter);
                 },
                 theme: VooDataGridTheme.fromContext(context),
                 emptyStateWidget: const VooEmptyState(

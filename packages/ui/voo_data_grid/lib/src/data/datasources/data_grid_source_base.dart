@@ -70,7 +70,7 @@ class VooDataGridState<T> {
   /// Whether filters are visible
   final bool filtersVisible;
 
-  /// Whether data is being submitted
+  /// Whether data is currently being submitted
   final bool isSubmitting;
 
   /// Whether data has been submitted successfully
@@ -130,5 +130,5 @@ class VooDataGridState<T> {
     );
 
   /// Get total number of pages
-  int get totalPages => (totalRows / pageSize).ceil();
+  int get totalPages => pageSize > 0 ? (totalRows / pageSize).ceil() : 0;
 }

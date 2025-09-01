@@ -6,26 +6,23 @@ Widget makeTestableWidget({
   required Widget child,
   ThemeData? theme,
   Size? screenSize,
-}) {
-  return MaterialApp(
-    theme: theme ?? ThemeData.light(),
-    home: Scaffold(body: child),
-  );
-}
+}) =>
+    MaterialApp(
+      theme: theme ?? ThemeData.light(),
+      home: Scaffold(body: child),
+    );
 
 /// Wraps a widget with Material for simple tests
-Widget wrapWithMaterial(Widget widget) {
-  return MaterialApp(
-    home: Material(child: widget),
-  );
-}
+Widget wrapWithMaterial(Widget widget) =>
+    MaterialApp(
+      home: Material(child: widget),
+    );
 
 /// Creates a simple MaterialApp wrapper for widgets that need navigation
-Widget wrapWithNavigation(Widget widget) {
-  return MaterialApp(
-    home: widget,
-  );
-}
+Widget wrapWithNavigation(Widget widget) =>
+    MaterialApp(
+      home: widget,
+    );
 
 /// Pumps widget and settles all animations
 Future<void> pumpAndSettle(

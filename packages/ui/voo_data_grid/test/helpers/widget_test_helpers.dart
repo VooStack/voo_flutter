@@ -21,7 +21,7 @@ class TestDataGridSource extends VooDataGridSource {
     required List<VooColumnSort> sorts,
   }) async {
     // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future<void>.delayed(const Duration(milliseconds: 100));
     return VooDataGridResponse(
       rows: [],
       totalRows: 0,
@@ -32,33 +32,51 @@ class TestDataGridSource extends VooDataGridSource {
 }
 
 /// Test controller for VooDataGrid
-class TestDataGridController extends VooDataGridController {
+class TestDataGridController<T> extends VooDataGridController<T> {
   TestDataGridController({
-    super.initialPageSize = 10,
-    super.initialPage = 1,
+    required super.dataSource,
+    super.columns,
+    super.rowHeight,
+    super.headerHeight,
+    super.filterHeight,
+    super.showFilters,
+    super.showGridLines,
+    super.alternatingRowColors,
+    super.showHoverEffect,
+    super.columnResizable,
+    super.columnReorderable,
+    super.constraints,
+    super.fieldPrefix,
   });
 }
 
 /// Helper to create a testable data grid
-Widget createTestDataGrid({
-  required List<VooDataColumn> columns,
-  required VooDataGridSource source,
-  VooDataGridController? controller,
+Widget createTestDataGrid<T>({
+  required VooDataGridController<T> controller,
   bool showPagination = true,
-  bool showFilters = true,
-}) {
-  return MaterialApp(
-    home: Scaffold(
-      body: VooDataGrid(
-        columns: columns,
-        source: source,
-        controller: controller ?? TestDataGridController(),
-        showPagination: showPagination,
-        showFilters: showFilters,
+  bool showToolbar = true,
+  Widget? emptyStateWidget,
+  Widget? loadingWidget,
+  Widget Function(String error)? errorBuilder,
+  void Function(T row)? onRowTap,
+  void Function(T row)? onRowDoubleTap,
+  void Function(T)? onRowHover,
+}) =>
+    MaterialApp(
+      home: Scaffold(
+        body: VooDataGrid<T>(
+          controller: controller,
+          showPagination: showPagination,
+          showToolbar: showToolbar,
+          emptyStateWidget: emptyStateWidget,
+          loadingWidget: loadingWidget,
+          errorBuilder: errorBuilder,
+          onRowTap: onRowTap,
+          onRowDoubleTap: onRowDoubleTap,
+          onRowHover: onRowHover,
+        ),
       ),
-    ),
-  );
-}
+    );
 
 /// Helper to tap a widget and wait for animations
 Future<void> tapAndSettle(
@@ -110,7 +128,7 @@ void verifyDataCell(String value) {
 int? getCurrentPageNumber(WidgetTester tester) {
   final pageFinder = find.textContaining('Page');
   if (pageFinder.evaluate().isEmpty) return null;
-  
+
   final text = tester.widget<Text>(pageFinder).data!;
   final match = RegExp(r'Page (\d+)').firstMatch(text);
   return match != null ? int.parse(match.group(1)!) : null;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/primary_filter_button.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/primary_filter.dart';
 
@@ -7,11 +8,11 @@ class PrimaryFiltersBar extends StatelessWidget {
   /// List of available primary filters
   final List<PrimaryFilter> filters;
   
-  /// Currently selected filter ID (null means "All" is selected)
-  final String? selectedFilterId;
+  /// Currently selected filter (null means "All" is selected)
+  final VooDataFilter? selectedFilter;
   
-  /// Callback when a filter is selected
-  final void Function(String? filterId) onFilterSelected;
+  /// Callback when a filter is changed - same signature as regular filters
+  final void Function(String field, VooDataFilter? filter)? onFilterChanged;
   
   /// Whether to show an "All" option
   final bool showAllOption;
@@ -25,8 +26,8 @@ class PrimaryFiltersBar extends StatelessWidget {
   const PrimaryFiltersBar({
     super.key,
     required this.filters,
-    this.selectedFilterId,
-    required this.onFilterSelected,
+    this.selectedFilter,
+    this.onFilterChanged,
     this.showAllOption = true,
     this.allOptionLabel = 'All',
     this.allOptionIcon,
@@ -58,8 +59,13 @@ class PrimaryFiltersBar extends StatelessWidget {
                 PrimaryFilterButton(
                   label: allOptionLabel,
                   icon: allOptionIcon,
-                  isSelected: selectedFilterId == null,
-                  onPressed: () => onFilterSelected(null),
+                  isSelected: selectedFilter == null,
+                  onPressed: () {
+                    // Clear the primary filter
+                    if (filters.isNotEmpty) {
+                      onFilterChanged?.call(filters.first.field, null);
+                    }
+                  },
                 ),
                 const SizedBox(width: 6),
               ],
@@ -69,8 +75,8 @@ class PrimaryFiltersBar extends StatelessWidget {
                   label: filter.label,
                   icon: filter.icon,
                   count: filter.count,
-                  isSelected: selectedFilterId == filter.id,
-                  onPressed: () => onFilterSelected(filter.id),
+                  isSelected: selectedFilter == filter.filter,
+                  onPressed: () => onFilterChanged?.call(filter.field, filter.filter),
                 ),
               ),),
             ],

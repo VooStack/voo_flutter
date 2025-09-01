@@ -65,13 +65,16 @@ class DataGridCore<T> extends StatefulWidget {
   final List<PrimaryFilter>? primaryFilters;
 
   /// Currently selected primary filter
-  final String? selectedPrimaryFilterId;
+  final VooDataFilter? selectedPrimaryFilter;
 
-  /// Callback when primary filter is selected
-  final void Function(String? filterId)? onPrimaryFilterSelected;
+  /// Callback when filter is changed - used for both regular and primary filters
+  final void Function(String field, VooDataFilter? filter)? onFilterChanged;
 
   /// Whether to show primary filters
   final bool showPrimaryFilters;
+
+  /// Callback when data is submitted
+  final void Function(List<T> data)? onSubmitted;
 
   const DataGridCore({
     super.key,
@@ -93,9 +96,10 @@ class DataGridCore<T> extends StatefulWidget {
     this.alwaysShowVerticalScrollbar = false,
     this.alwaysShowHorizontalScrollbar = false,
     this.primaryFilters,
-    this.selectedPrimaryFilterId,
-    this.onPrimaryFilterSelected,
+    this.selectedPrimaryFilter,
+    this.onFilterChanged,
     this.showPrimaryFilters = false,
+    this.onSubmitted,
   });
 
   @override
@@ -154,10 +158,8 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                 if (widget.showPrimaryFilters && widget.primaryFilters != null) ...[
                   PrimaryFiltersBar(
                     filters: widget.primaryFilters!,
-                    selectedFilterId: widget.selectedPrimaryFilterId,
-                    onFilterSelected: (String? filterId) {
-                      widget.onPrimaryFilterSelected?.call(filterId);
-                    },
+                    selectedFilter: widget.selectedPrimaryFilter,
+                    onFilterChanged: widget.onFilterChanged,
                   ),
                 ],
                 if (widget.showToolbar) ...[

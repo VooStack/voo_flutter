@@ -32,7 +32,7 @@ class DataGridCardView<T> extends StatelessWidget {
     final design = context.vooDesign;
     final dataSource = controller.dataSource;
 
-    if (dataSource.isLoading && dataSource.rows.isEmpty) {
+    if ((dataSource.isLoading || dataSource.isSubmitting) && dataSource.rows.isEmpty) {
       return Center(
         child: loadingWidget ?? const CircularProgressIndicator(),
       );
@@ -114,7 +114,7 @@ class DataGridCardView<T> extends StatelessWidget {
           },
         ),
         // Loading overlay at the top of cards only
-        if (dataSource.isLoading && dataSource.rows.isNotEmpty)
+        if ((dataSource.isLoading || dataSource.isSubmitting) && dataSource.rows.isNotEmpty)
           Positioned(
             top: 0,
             left: 0,

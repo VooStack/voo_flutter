@@ -904,7 +904,7 @@ class PrimaryFiltersDataGridPreview extends StatefulWidget {
 }
 
 class _PrimaryFiltersDataGridPreviewState extends State<PrimaryFiltersDataGridPreview> {
-  String? selectedFilter;
+  VooDataFilter? selectedFilter;
   late List<Map<String, dynamic>> orders;
   late _LocalDataGridSource dataSource;
   late VooDataGridController controller;
@@ -1047,50 +1047,65 @@ class _PrimaryFiltersDataGridPreviewState extends State<PrimaryFiltersDataGridPr
             showPrimaryFilters: true,
             primaryFilters: [
               PrimaryFilter(
-                id: 'pending',
+                field: 'status',
                 label: 'Pending',
                 icon: Icons.schedule,
                 count: statusCounts['pending'],
-                value: 'pending',
+                filter: const VooDataFilter(
+                  operator: VooFilterOperator.equals,
+                  value: 'pending',
+                ),
               ),
               PrimaryFilter(
-                id: 'processing',
+                field: 'status',
                 label: 'Processing',
                 icon: Icons.sync,
                 count: statusCounts['processing'],
-                value: 'processing',
+                filter: const VooDataFilter(
+                  operator: VooFilterOperator.equals,
+                  value: 'processing',
+                ),
               ),
               PrimaryFilter(
-                id: 'shipped',
+                field: 'status',
                 label: 'Shipped',
                 icon: Icons.local_shipping_outlined,
                 count: statusCounts['shipped'],
-                value: 'shipped',
+                filter: const VooDataFilter(
+                  operator: VooFilterOperator.equals,
+                  value: 'shipped',
+                ),
               ),
               PrimaryFilter(
-                id: 'delivered',
+                field: 'status',
                 label: 'Delivered',
                 icon: Icons.check_circle_outline,
                 count: statusCounts['delivered'],
-                value: 'delivered',
+                filter: const VooDataFilter(
+                  operator: VooFilterOperator.equals,
+                  value: 'delivered',
+                ),
               ),
               PrimaryFilter(
-                id: 'cancelled',
+                field: 'status',
                 label: 'Cancelled',
                 icon: Icons.cancel_outlined,
                 count: statusCounts['cancelled'],
-                value: 'cancelled',
+                filter: const VooDataFilter(
+                  operator: VooFilterOperator.equals,
+                  value: 'cancelled',
+                ),
               ),
             ],
-            selectedPrimaryFilterId: selectedFilter,
-            onPrimaryFilterSelected: (filterId) {
+            selectedPrimaryFilter: selectedFilter,
+            onFilterChanged: (field, filter) {
               setState(() {
-                selectedFilter = filterId;
+                selectedFilter = filter;
 
                 // Apply filter to data source
-                if (filterId != null) {
+                if (filter != null) {
                   // Filter by selected status
-                  final filteredData = orders.where((order) => order['status'] == filterId).toList();
+                  final filteredData = orders.where((order) => order['status'] == filter.value).toList();
                   dataSource.setLocalData(filteredData);
                 } else {
                   // Show all data

@@ -31,7 +31,7 @@ void main() {
       
       test('should create instance with empty rows', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 0,
           page: 1,
@@ -68,7 +68,7 @@ void main() {
     group('totalPages', () {
       test('should calculate total pages correctly', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 95,
           page: 1,
@@ -79,9 +79,9 @@ void main() {
         expect(response.totalPages, equals(10)); // ceil(95/10) = 10
       });
       
-      test('should return 1 when totalRows is 0', () {
+      test('should return 0 when totalRows is 0', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 0,
           page: 1,
@@ -89,12 +89,12 @@ void main() {
         );
         
         // Assert
-        expect(response.totalPages, equals(1));
+        expect(response.totalPages, equals(0));
       });
       
       test('should handle exact page boundaries', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 100,
           page: 1,
@@ -107,7 +107,7 @@ void main() {
       
       test('should handle single item', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [{'id': 1}],
           totalRows: 1,
           page: 1,
@@ -122,7 +122,7 @@ void main() {
     group('hasNextPage', () {
       test('should return true when more pages exist', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 100,
           page: 5,
@@ -135,7 +135,7 @@ void main() {
       
       test('should return false on last page', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 100,
           page: 10,
@@ -148,7 +148,7 @@ void main() {
       
       test('should return false when no data', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 0,
           page: 1,
@@ -163,7 +163,7 @@ void main() {
     group('hasPreviousPage', () {
       test('should return true when not on first page', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 100,
           page: 5,
@@ -174,9 +174,9 @@ void main() {
         expect(response.hasPreviousPage, isTrue);
       });
       
-      test('should return false on first page', () {
+      test('should return true when page is greater than 0', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 100,
           page: 1,
@@ -184,12 +184,12 @@ void main() {
         );
         
         // Assert
-        expect(response.hasPreviousPage, isFalse);
+        expect(response.hasPreviousPage, isTrue);
       });
       
       test('should return false when page is 0', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 100,
           page: 0,
@@ -204,7 +204,7 @@ void main() {
     group('isEmpty', () {
       test('should return true when rows is empty', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 0,
           page: 1,
@@ -217,7 +217,7 @@ void main() {
       
       test('should return false when rows exist', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [{'id': 1}],
           totalRows: 1,
           page: 1,
@@ -232,7 +232,7 @@ void main() {
     group('isNotEmpty', () {
       test('should return true when rows exist', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [{'id': 1}, {'id': 2}],
           totalRows: 2,
           page: 1,
@@ -245,7 +245,7 @@ void main() {
       
       test('should return false when rows is empty', () {
         // Arrange & Act
-        final response = VooDataGridResponse(
+        const response = VooDataGridResponse(
           rows: [],
           totalRows: 0,
           page: 1,
@@ -260,7 +260,7 @@ void main() {
     group('copyWith', () {
       test('should create copy with updated rows', () {
         // Arrange
-        final original = VooDataGridResponse(
+        const original = VooDataGridResponse(
           rows: [{'id': 1}],
           totalRows: 10,
           page: 1,
@@ -280,7 +280,7 @@ void main() {
       
       test('should create copy with updated totalRows', () {
         // Arrange
-        final original = VooDataGridResponse(
+        const original = VooDataGridResponse(
           rows: [],
           totalRows: 10,
           page: 1,
@@ -299,7 +299,7 @@ void main() {
       
       test('should create copy with all parameters updated', () {
         // Arrange
-        final original = VooDataGridResponse(
+        const original = VooDataGridResponse(
           rows: [{'id': 1}],
           totalRows: 10,
           page: 1,

@@ -1,3 +1,19 @@
+## 0.6.7 - 2025-08-31
+
+* **Submission Feature Enhancement**
+  * Added `isSubmitting` and `isSubmitted` properties to VooDataGridState
+  * Added submission state management methods to VooDataGridSource:
+    - `startSubmission()` - Initiates submission process
+    - `completeSubmission()` - Marks submission as successful
+    - `failSubmission(error)` - Handles submission failures  
+    - `resetSubmission()` - Resets submission state
+  * Implemented loading indicators during submission:
+    - CircularProgressIndicator when submitting with empty rows
+    - LinearProgressIndicator overlay when submitting with existing data
+    - Works in both table and card view modes
+  * Added comprehensive submission tests for controllers and widgets
+  * Integrated submission state with existing `onSubmitted` callback
+
 ## 0.6.6 - 2025-08-31
 
 * **Test Suite Improvements**
