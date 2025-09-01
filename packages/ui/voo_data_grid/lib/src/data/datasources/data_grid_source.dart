@@ -62,14 +62,6 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
   VooSelectionMode _selectionMode = VooSelectionMode.none;
   VooSelectionMode get selectionMode => _selectionMode;
 
-  /// Whether data is currently being submitted
-  bool _isSubmitting = false;
-  bool get isSubmitting => _isSubmitting;
-
-  /// Whether data has been submitted successfully
-  bool _isSubmitted = false;
-  bool get isSubmitted => _isSubmitted;
-
   /// Debounce timer for remote filtering
   Timer? _debounceTimer;
 
@@ -445,48 +437,6 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
   void _debouncedLoadData() {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), loadData);
-  }
-
-  /// Set submission state
-  void setSubmitting(bool value) {
-    _isSubmitting = value;
-    notifyListeners();
-  }
-
-  /// Set submitted state
-  void setSubmitted(bool value) {
-    _isSubmitted = value;
-    notifyListeners();
-  }
-
-  /// Start submission process
-  void startSubmission() {
-    _isSubmitting = true;
-    _isSubmitted = false;
-    _error = null;
-    notifyListeners();
-  }
-
-  /// Complete submission successfully
-  void completeSubmission() {
-    _isSubmitting = false;
-    _isSubmitted = true;
-    notifyListeners();
-  }
-
-  /// Fail submission with error
-  void failSubmission(String error) {
-    _isSubmitting = false;
-    _isSubmitted = false;
-    _error = error;
-    notifyListeners();
-  }
-
-  /// Reset submission state
-  void resetSubmission() {
-    _isSubmitting = false;
-    _isSubmitted = false;
-    notifyListeners();
   }
 
   @override

@@ -3,92 +3,6 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 
 void main() {
   group('VooDataGridState', () {
-    group('submission states', () {
-      test('should default to false for isSubmitting', () {
-        // Arrange & Act
-        const state = VooDataGridState<Map<String, dynamic>>();
-        
-        // Assert
-        expect(state.isSubmitting, isFalse);
-      });
-      
-      test('should default to false for isSubmitted', () {
-        // Arrange & Act
-        const state = VooDataGridState<Map<String, dynamic>>();
-        
-        // Assert
-        expect(state.isSubmitted, isFalse);
-      });
-      
-      test('should set isSubmitting to true', () {
-        // Arrange & Act
-        const state = VooDataGridState<Map<String, dynamic>>(
-          isSubmitting: true,
-        );
-        
-        // Assert
-        expect(state.isSubmitting, isTrue);
-        expect(state.isSubmitted, isFalse);
-      });
-      
-      test('should set isSubmitted to true', () {
-        // Arrange & Act
-        const state = VooDataGridState<Map<String, dynamic>>(
-          isSubmitted: true,
-        );
-        
-        // Assert
-        expect(state.isSubmitted, isTrue);
-        expect(state.isSubmitting, isFalse);
-      });
-      
-      test('should update isSubmitting via copyWith', () {
-        // Arrange
-        const initialState = VooDataGridState<Map<String, dynamic>>();
-        
-        // Act
-        final updatedState = initialState.copyWith(isSubmitting: true);
-        
-        // Assert
-        expect(updatedState.isSubmitting, isTrue);
-        expect(initialState.isSubmitting, isFalse);
-      });
-      
-      test('should update isSubmitted via copyWith', () {
-        // Arrange
-        const initialState = VooDataGridState<Map<String, dynamic>>();
-        
-        // Act
-        final updatedState = initialState.copyWith(isSubmitted: true);
-        
-        // Assert
-        expect(updatedState.isSubmitted, isTrue);
-        expect(initialState.isSubmitted, isFalse);
-      });
-      
-      test('should preserve other state when updating submission states', () {
-        // Arrange
-        const initialState = VooDataGridState<Map<String, dynamic>>(
-          currentPage: 2,
-          pageSize: 50,
-          totalRows: 100,
-          isLoading: true,
-        );
-        
-        // Act
-        final updatedState = initialState.copyWith(
-          isSubmitting: true,
-        );
-        
-        // Assert
-        expect(updatedState.isSubmitting, isTrue);
-        expect(updatedState.currentPage, equals(2));
-        expect(updatedState.pageSize, equals(50));
-        expect(updatedState.totalRows, equals(100));
-        expect(updatedState.isLoading, isTrue);
-      });
-    });
-    
     group('loading state', () {
       test('should default to false for isLoading', () {
         // Arrange & Act
@@ -106,18 +20,6 @@ void main() {
         
         // Assert
         expect(state.isLoading, isTrue);
-      });
-      
-      test('should allow both isLoading and isSubmitting to be true', () {
-        // Arrange & Act
-        const state = VooDataGridState<Map<String, dynamic>>(
-          isLoading: true,
-          isSubmitting: true,
-        );
-        
-        // Assert
-        expect(state.isLoading, isTrue);
-        expect(state.isSubmitting, isTrue);
       });
     });
     

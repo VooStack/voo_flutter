@@ -67,14 +67,19 @@ class DataGridCore<T> extends StatefulWidget {
   /// Currently selected primary filter
   final VooDataFilter? selectedPrimaryFilter;
 
-  /// Callback when filter is changed - used for both regular and primary filters
+  /// Callback when regular filter is changed
   final void Function(String field, VooDataFilter? filter)? onFilterChanged;
+
+  /// Callback when primary filter is selected
+  final void Function(String field, VooDataFilter? filter)? onPrimaryFilterChanged;
 
   /// Whether to show primary filters
   final bool showPrimaryFilters;
 
-  /// Callback when data is submitted
-  final void Function(List<T> data)? onSubmitted;
+  /// Whether to combine primary filters with regular filters
+  /// When true (default), primary filters are added to the filters map
+  /// When false, primary filters are tracked separately
+  final bool combineFiltersAndPrimaryFilters;
 
   const DataGridCore({
     super.key,
@@ -98,8 +103,9 @@ class DataGridCore<T> extends StatefulWidget {
     this.primaryFilters,
     this.selectedPrimaryFilter,
     this.onFilterChanged,
+    this.onPrimaryFilterChanged,
     this.showPrimaryFilters = false,
-    this.onSubmitted,
+    this.combineFiltersAndPrimaryFilters = true,
   });
 
   @override
@@ -159,7 +165,15 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                   PrimaryFiltersBar(
                     filters: widget.primaryFilters!,
                     selectedFilter: widget.selectedPrimaryFilter,
-                    onFilterChanged: widget.onFilterChanged,
+                    onFilterChanged: (field, filter) {
+                      // Call primary filter callback
+                      widget.onPrimaryFilterChanged?.call(field, filter);
+                      
+                      // Also add to regular filters if combining
+                      if (widget.combineFiltersAndPrimaryFilters) {
+                        widget.onFilterChanged?.call(field, filter);
+                      }
+                    },
                   ),
                 ],
                 if (widget.showToolbar) ...[

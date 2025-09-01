@@ -25,16 +25,29 @@ class DataGridFilterChipsSection<T> extends StatelessWidget {
     // Prepare filter data for the molecule
     final filterData = <String, FilterChipData>{};
     for (final entry in filters.entries) {
-      final column = controller.columns.firstWhere(
-        (col) => col.field == entry.key,
-      );
+      // Try to find matching column, but it's optional (for primary filters)
+      VooDataColumn<T>? column;
+      try {
+        column = controller.columns.firstWhere(
+          (col) => col.field == entry.key,
+        );
+      } catch (_) {
+        // No matching column found - this is OK for primary filters
+        column = null;
+      }
+      
       final filter = entry.value;
+      
+      // Use column formatter if available, otherwise use the value directly
       final displayValue = filter.value != null 
-          ? (column.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '') 
+          ? (column?.valueFormatter?.call(filter.value) ?? filter.value?.toString() ?? '') 
           : null;
 
+      // Use column label if available, otherwise use the field name
+      final label = column?.label ?? entry.key;
+
       filterData[entry.key] = FilterChipData(
-        label: column.label,
+        label: label,
         value: filter.value,
         displayValue: displayValue,
       );

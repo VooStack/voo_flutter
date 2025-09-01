@@ -70,11 +70,11 @@ class VooDataGridState<T> {
   /// Whether filters are visible
   final bool filtersVisible;
 
-  /// Whether data is currently being submitted
-  final bool isSubmitting;
+  /// Currently selected primary filter field
+  final String? primaryFilterField;
 
-  /// Whether data has been submitted successfully
-  final bool isSubmitted;
+  /// Currently selected primary filter
+  final VooDataFilter? primaryFilter;
 
   const VooDataGridState({
     this.mode = VooDataGridMode.remote,
@@ -90,8 +90,8 @@ class VooDataGridState<T> {
     this.selectedRows = const {},
     this.selectionMode = VooSelectionMode.none,
     this.filtersVisible = false,
-    this.isSubmitting = false,
-    this.isSubmitted = false,
+    this.primaryFilterField,
+    this.primaryFilter,
   });
 
   /// Create a copy with updated values
@@ -109,8 +109,8 @@ class VooDataGridState<T> {
     Set<T>? selectedRows,
     VooSelectionMode? selectionMode,
     bool? filtersVisible,
-    bool? isSubmitting,
-    bool? isSubmitted,
+    String? primaryFilterField,
+    VooDataFilter? primaryFilter,
   }) => VooDataGridState<T>(
       mode: mode ?? this.mode,
       allRows: allRows ?? this.allRows,
@@ -125,8 +125,8 @@ class VooDataGridState<T> {
       selectedRows: selectedRows ?? this.selectedRows,
       selectionMode: selectionMode ?? this.selectionMode,
       filtersVisible: filtersVisible ?? this.filtersVisible,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSubmitted: isSubmitted ?? this.isSubmitted,
+      primaryFilterField: primaryFilterField ?? this.primaryFilterField,
+      primaryFilter: primaryFilter ?? this.primaryFilter,
     );
 
   /// Get total number of pages

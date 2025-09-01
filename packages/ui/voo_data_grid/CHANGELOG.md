@@ -1,18 +1,28 @@
+## 0.6.8 - 2025-09-01
+
+* **Enhanced Primary Filter Support**
+  * Added `primaryFilterField` and `primaryFilter` to VooDataGridState for tracking primary filters
+  * Added `onPrimaryFilterChanged` callback for handling primary filter selection separately
+  * Added `combineFiltersAndPrimaryFilters` parameter (defaults to true)
+    - When true: primary filters are automatically added to regular filters map
+    - When false: primary filters are tracked separately from regular filters
+  * Fixed "No element" error when primary filters don't have matching columns
+  * Enhanced DataGridFilterChipsSection to handle filters without column definitions
+  * Added comprehensive tests for primary filter functionality
+  * No duplication: Map structure ensures only one filter per field
+
+* **Removed Submission Feature**
+  * Removed all onSubmitting/onSubmitted logic as it's no longer needed
+  * Cleaned up related state properties and methods
+  * Simplified codebase following KISS principle
+
 ## 0.6.7 - 2025-08-31
 
-* **Submission Feature Enhancement**
-  * Added `isSubmitting` and `isSubmitted` properties to VooDataGridState
-  * Added submission state management methods to VooDataGridSource:
-    - `startSubmission()` - Initiates submission process
-    - `completeSubmission()` - Marks submission as successful
-    - `failSubmission(error)` - Handles submission failures  
-    - `resetSubmission()` - Resets submission state
-  * Implemented loading indicators during submission:
-    - CircularProgressIndicator when submitting with empty rows
-    - LinearProgressIndicator overlay when submitting with existing data
-    - Works in both table and card view modes
-  * Added comprehensive submission tests for controllers and widgets
-  * Integrated submission state with existing `onSubmitted` callback
+* **Filter Documentation**
+  * Added comprehensive filter map structure documentation to README
+  * Documented primary filter usage and configuration
+  * Added examples of programmatic filter application
+  * Listed all available filter operators with descriptions
 
 ## 0.6.6 - 2025-08-31
 

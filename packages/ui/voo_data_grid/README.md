@@ -499,6 +499,128 @@ VooDataGridColumn(
 
 ## Advanced Filtering
 
+### Understanding the Filters Map Structure
+
+The filters in VooDataGrid are stored as a `Map<String, VooDataFilter>` where:
+- **Key**: The field name (e.g., 'name', 'status', 'price')
+- **Value**: A `VooDataFilter` object containing the operator and value
+
+```dart
+// Example of what the filters map looks like internally:
+Map<String, VooDataFilter> filters = {
+  'name': VooDataFilter(
+    operator: VooFilterOperator.contains,
+    value: 'John',
+  ),
+  'status': VooDataFilter(
+    operator: VooFilterOperator.equals,
+    value: 'active',
+  ),
+  'price': VooDataFilter(
+    operator: VooFilterOperator.greaterThan,
+    value: 100,
+  ),
+};
+```
+
+### Applying Filters Programmatically
+
+You can apply filters directly to the data source:
+
+```dart
+// Apply a single filter
+controller.dataSource.applyFilter(
+  'status',
+  VooDataFilter(
+    operator: VooFilterOperator.equals,
+    value: 'active',
+  ),
+);
+
+// Apply multiple filters at once
+controller.dataSource.applyFilters({
+  'name': VooDataFilter(
+    operator: VooFilterOperator.startsWith,
+    value: 'A',
+  ),
+  'age': VooDataFilter(
+    operator: VooFilterOperator.greaterThanOrEqual,
+    value: 18,
+  ),
+});
+
+// Clear a specific filter
+controller.dataSource.clearFilter('name');
+
+// Clear all filters
+controller.dataSource.clearAllFilters();
+```
+
+### Using Primary Filters
+
+Primary filters are pre-configured filters that users can quickly apply. They work with the same filter map structure:
+
+```dart
+VooDataGrid(
+  controller: controller,
+  showPrimaryFilters: true,
+  primaryFilters: [
+    PrimaryFilter(
+      label: 'Active Only',
+      field: 'status',
+      filter: VooDataFilter(
+        operator: VooFilterOperator.equals,
+        value: 'active',
+      ),
+    ),
+    PrimaryFilter(
+      label: 'High Priority',
+      field: 'priority',
+      filter: VooDataFilter(
+        operator: VooFilterOperator.greaterThanOrEqual,
+        value: 8,
+      ),
+    ),
+    PrimaryFilter(
+      label: 'Recent Items',
+      field: 'createdAt',
+      filter: VooDataFilter(
+        operator: VooFilterOperator.greaterThan,
+        value: DateTime.now().subtract(Duration(days: 7)),
+      ),
+    ),
+  ],
+  onFilterChanged: (field, filter) {
+    // This callback is triggered when any filter changes
+    // field: The field name (e.g., 'status')
+    // filter: The VooDataFilter object or null if clearing
+    print('Filter changed: $field = ${filter?.value}');
+  },
+);
+```
+
+### Available Filter Operators
+
+```dart
+enum VooFilterOperator {
+  equals,           // Exact match
+  notEquals,        // Not equal to
+  contains,         // String contains
+  notContains,      // String does not contain
+  startsWith,       // String starts with
+  endsWith,         // String ends with
+  greaterThan,      // Greater than (numbers/dates)
+  greaterThanOrEqual, // Greater than or equal
+  lessThan,         // Less than (numbers/dates)
+  lessThanOrEqual,  // Less than or equal
+  between,          // Between two values (requires List value)
+  inList,           // Value in list
+  notInList,        // Value not in list
+  isEmpty,          // Field is empty/null
+  isNotEmpty,       // Field has value
+}
+```
+
 ### Complex Filter with Secondary Conditions
 
 ```dart
