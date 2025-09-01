@@ -13,6 +13,12 @@
   - Useful for forms with system-managed fields, calculated values, and display-only data
   - Added comprehensive tests for field-level read-only behavior
 
+- **Async Dropdown Type Casting**: Fixed type casting error with strongly typed callbacks
+  - Error: `TypeError: Instance of '(CustomType?) => void' is not a subtype of type '((dynamic) => void)?'`
+  - Updated `VooDropdownFieldWidget` to use `Function.apply` for invoking field callbacks
+  - Async dropdowns now properly handle custom types like `JurisdictionListOption`
+  - Prevents runtime type errors when using strongly typed onChanged callbacks
+
 ## [0.1.21]
 
 ### Enhanced

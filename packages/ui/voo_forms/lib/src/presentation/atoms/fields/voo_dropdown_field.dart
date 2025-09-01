@@ -107,8 +107,12 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
   /// Invoke field.onChanged callback with proper type handling
   void _invokeFieldOnChanged(T? value) {
     // Call the field's onChanged if it exists
-    // The generic type T ensures type safety
-    widget.field.onChanged?.call(value);
+    // Use dynamic invocation to avoid type casting issues with strongly typed callbacks
+    if (widget.field.onChanged != null) {
+      // Cast to Function first, then use Function.apply
+      final callback = widget.field.onChanged! as Function;
+      Function.apply(callback, [value]);
+    }
   }
 
   void _removeOverlay() {
