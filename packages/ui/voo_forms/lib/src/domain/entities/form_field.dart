@@ -84,6 +84,7 @@ class VooFormField<T> extends Equatable {
   final Map<String, dynamic>? customWidgetData;
   final Widget? customWidget;
   final Widget Function(BuildContext context, VooFormField field, dynamic value)? customBuilder;
+  final Widget? readOnlyWidget;
 
   const VooFormField({
     required this.id,
@@ -149,6 +150,7 @@ class VooFormField<T> extends Equatable {
     this.customWidgetData,
     this.customWidget,
     this.customBuilder,
+    this.readOnlyWidget,
   });
 
   VooFormField<T> copyWith({
@@ -215,6 +217,7 @@ class VooFormField<T> extends Equatable {
     Map<String, dynamic>? customWidgetData,
     Widget? customWidget,
     Widget Function(BuildContext context, VooFormField field, dynamic value)? customBuilder,
+    Widget? readOnlyWidget,
   }) =>
       VooFormField<T>(
         id: id ?? this.id,
@@ -280,6 +283,7 @@ class VooFormField<T> extends Equatable {
         customWidgetData: customWidgetData ?? this.customWidgetData,
         customWidget: customWidget ?? this.customWidget,
         customBuilder: customBuilder ?? this.customBuilder,
+        readOnlyWidget: readOnlyWidget ?? this.readOnlyWidget,
       );
 
   String? validate() {

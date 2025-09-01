@@ -1,3 +1,40 @@
+## [0.1.20] - 2025-09-01
+
+### Added
+- **Custom Read-Only Widget Support**: Fields can now have custom read-only display widgets
+  - Added `readOnlyWidget` parameter to `VooFormField` for custom read-only displays
+  - When `isEditable: false` is set on `VooFormBuilder`, custom widgets are used if provided
+  - Falls back to default read-only display when no custom widget is specified
+  - Enables complete customization of how fields appear in read-only mode
+
+### Fixed
+- **Dropdown Type Safety**: Fixed VooFieldOption type mismatch errors
+  - Resolved runtime type errors with generic dropdown fields
+  - Fixed read-only mode dropdown type handling  
+  - Improved type inference for String, int, double, and bool dropdowns
+  - Added proper support for async dropdowns with type preservation
+
+### Enhanced
+- **Read-Only Mode**: Comprehensive automatic details view for forms
+  - Added `isEditable` parameter to `VooFormBuilder` (defaults to true)
+  - All field types now have elegant read-only displays with icons
+  - Password fields show masked values in read-only mode
+  - Date/time fields show formatted values with appropriate icons
+  - Boolean fields display check/cancel icons with Yes/No text
+  - Slider fields show progress indicators in read-only mode
+
+### Added
+- **Custom Field Support**: Added VooFieldType.custom for arbitrary widgets
+  - Support for `customWidget` property for direct widget insertion
+  - Support for `customBuilder` function for dynamic widget generation
+  - Custom fields work in both editable and read-only modes
+
+### Testing
+- Added comprehensive type safety tests for all field types
+- Added tests for custom readOnlyWidget functionality
+- Added tests for form toggle between editable and read-only modes
+- All tests passing with proper generic type constraints
+
 ## [0.1.19] - 2025-08-31
 
 ### Maintenance

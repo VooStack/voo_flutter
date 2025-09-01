@@ -104,21 +104,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     });
   }
 
-  /// Safely invoke field.onChanged callback without type casting errors
+  /// Invoke field.onChanged callback with proper type handling
   void _invokeFieldOnChanged(T? value) {
-    try {
-      // Access field.onChanged dynamically to avoid compile-time type checking
-      final dynamic field = widget.field;
-      final callback = field.onChanged;
-      if (callback != null && callback is Function) {
-        // Use Function.apply to invoke the callback with proper type handling
-        Function.apply(callback as Function, [value]);
-      }
-    } catch (e) {
-      // If there's a type mismatch, silently ignore
-      // This can happen when field.onChanged expects a specific type
-      // but we're passing dynamic. This is expected behavior.
-    }
+    // Call the field's onChanged if it exists
+    // The generic type T ensures type safety
+    widget.field.onChanged?.call(value);
   }
 
   void _removeOverlay() {
@@ -164,7 +154,6 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                       _currentValue = value;
                     });
                     widget.onChanged?.call(value);
-                    // Safely invoke field.onChanged if it exists
                     _invokeFieldOnChanged(value);
                     _removeOverlay();
                     _searchController.clear();
@@ -400,7 +389,6 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
                 _currentValue = value;
               });
               widget.onChanged?.call(value);
-              // Safely invoke field.onChanged if it exists
               _invokeFieldOnChanged(value);
             }
           : null,

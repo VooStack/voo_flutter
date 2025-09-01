@@ -109,30 +109,66 @@ class FieldWidgetFactory {
         );
 
       case VooFieldType.dropdown:
-        // Create dropdown with dynamic type to handle all field types
-        // Create a wrapper callback that handles both widget onChanged and field onChanged
-        void handleChange(dynamic value) {
-          // Call widget's onChanged
-          onChanged?.call(value);
+        // Create a generic helper method to build the dropdown
+        Widget buildDropdown<DropdownType>() => VooDropdownFieldWidget<DropdownType>(
+            field: field as VooFormField<DropdownType>,
+            options: options,
+            onChanged: (DropdownType? value) {
+              onChanged?.call(value);
+            },
+            error: error,
+            showError: showError,
+          );
+        
+        // Determine the type based on field configuration
+        // First check if we have options to infer type from
+        if (field.options != null && field.options!.isNotEmpty) {
+          final firstOption = field.options!.first;
+          final valueType = firstOption.value.runtimeType;
           
-          // Safely invoke field.onChanged using reflection to avoid type casting
-          try {
-            final fieldOnChanged = field.onChanged;
-            if (fieldOnChanged != null) {
-              // Create a Function.apply call to invoke the callback without type checking
-              Function.apply(fieldOnChanged, [value]);
-            }
-          } catch (_) {
-            // If Function.apply fails, field.onChanged is incompatible
-            // This is expected when types don't match, so we silently ignore
+          if (valueType == String) {
+            return buildDropdown<String>();
+          } else if (valueType == int) {
+            return buildDropdown<int>();
+          } else if (valueType == double) {
+            return buildDropdown<double>();
+          } else if (valueType == bool) {
+            return buildDropdown<bool>();
           }
         }
-
-        return VooDropdownFieldWidget<dynamic>(
-          field: field,
-          options: options,
-          onChanged: handleChange,
-        );
+        
+        // For async dropdowns or empty dropdowns, try to infer from initial value
+        if (field.initialValue != null) {
+          final valueType = field.initialValue.runtimeType;
+          
+          if (valueType == String) {
+            return buildDropdown<String>();
+          } else if (valueType == int) {
+            return buildDropdown<int>();
+          } else if (valueType == double) {
+            return buildDropdown<double>();
+          } else if (valueType == bool) {
+            return buildDropdown<bool>();
+          }
+        }
+        
+        // If we have a value, use its type
+        if (field.value != null) {
+          final valueType = field.value.runtimeType;
+          
+          if (valueType == String) {
+            return buildDropdown<String>();
+          } else if (valueType == int) {
+            return buildDropdown<int>();
+          } else if (valueType == double) {
+            return buildDropdown<double>();
+          } else if (valueType == bool) {
+            return buildDropdown<bool>();
+          }
+        }
+        
+        // Default fallback for truly dynamic dropdowns
+        return buildDropdown<dynamic>();
 
       case VooFieldType.radio:
         return VooRadioFieldWidget(
@@ -204,6 +240,11 @@ class FieldWidgetFactory {
     required VooFormField field,
     required VooFieldOptions options,
   }) {
+    // If custom readOnlyWidget is provided, use it
+    if (field.readOnlyWidget != null) {
+      return field.readOnlyWidget!;
+    }
+    
     final theme = Theme.of(context);
     final value = field.value ?? field.initialValue;
     
@@ -269,12 +310,17 @@ class FieldWidgetFactory {
       case VooFieldType.radio:
         if (value != null) {
           // If it's an option with label, try to display the label
-          if (field.options != null) {
-            final option = field.options!.firstWhere(
-              (opt) => opt.value == value,
-              orElse: () => VooFieldOption(value: value, label: value.toString()),
-            );
-            displayValue = option.label;
+          if (field.options != null && field.options!.isNotEmpty) {
+            // Try to find the matching option
+            try {
+              final option = field.options!.firstWhere(
+                (opt) => opt.value == value,
+              );
+              displayValue = option.label;
+            } catch (_) {
+              // If not found, just use the value's string representation
+              displayValue = value.toString();
+            }
           } else {
             displayValue = value.toString();
           }

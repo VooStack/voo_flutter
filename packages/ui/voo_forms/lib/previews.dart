@@ -79,7 +79,7 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
           hint: 'Enter your password',
           required: true,
           prefixIcon: Icons.lock,
-          initialValue: 'secretpassword',
+          initialValue: 'secretPassword',
         ),
         const VooFormField(
           id: 'phone',
@@ -108,7 +108,7 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
           maxLines: 5,
           initialValue: 'This is a multiline text field.\nIt can contain multiple lines of text.\nPerfect for descriptions and comments.',
         ),
-        
+
         // Selection Fields
         const VooFormField<String>(
           id: 'dropdown',
@@ -152,7 +152,7 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
           helper: 'Receive email updates about your account',
           initialValue: true,
         ),
-        
+
         // Date & Time Fields
         VooFormField<DateTime>(
           id: 'date',
@@ -170,7 +170,7 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
           hint: 'Select preferred time',
           initialValue: TimeOfDay(hour: 14, minute: 30),
         ),
-        
+
         // Other Fields
         const VooFormField<double>(
           id: 'slider',
@@ -277,9 +277,7 @@ class _ToggleableFormPreviewState extends State<ToggleableFormPreview> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        _isEditable
-                            ? 'Form is EDITABLE - All fields can be modified'
-                            : 'Form is READ-ONLY - Displaying values in detail view',
+                        _isEditable ? 'Form is EDITABLE - All fields can be modified' : 'Form is READ-ONLY - Displaying values in detail view',
                         style: TextStyle(
                           color: _isEditable ? Colors.blue.shade700 : Colors.orange.shade700,
                           fontWeight: FontWeight.w500,
@@ -317,7 +315,7 @@ class SimpleToggleableForm extends StatefulWidget {
 
 class _SimpleToggleableFormState extends State<SimpleToggleableForm> {
   bool _isEditable = true;
-  
+
   @override
   Widget build(BuildContext context) {
     const form = VooForm(
@@ -395,9 +393,7 @@ class _SimpleToggleableFormState extends State<SimpleToggleableForm> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              _isEditable 
-                                  ? 'You can edit all fields below' 
-                                  : 'Fields are displayed in read-only mode',
+                              _isEditable ? 'You can edit all fields below' : 'Fields are displayed in read-only mode',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -419,7 +415,7 @@ class _SimpleToggleableFormState extends State<SimpleToggleableForm> {
                                 _isEditable = value;
                               });
                             },
-                            activeColor: Colors.blue,
+                            activeThumbColor: Colors.blue,
                             inactiveThumbColor: Colors.orange,
                           ),
                         ],
@@ -436,7 +432,7 @@ class _SimpleToggleableFormState extends State<SimpleToggleableForm> {
                     form: form,
                     isEditable: _isEditable,
                     showProgress: false,
-                    onSubmit: _isEditable 
+                    onSubmit: _isEditable
                         ? (values) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -561,232 +557,230 @@ Widget buildReadOnlyFormPreview() => ReadOnlyFormPreview.build();
 
 @Preview(name: 'Text Field')
 Widget buildTextFieldPreview() => const _FieldPreview(
-  field: VooFormField(
-    id: 'text_preview',
-    name: 'text_field',
-    type: VooFieldType.text,
-    label: 'Username',
-    hint: 'Enter your username',
-    helper: 'Must be 3-20 characters',
-    required: true,
-    prefixIcon: Icons.person,
-    initialValue: 'flutter_dev',
-  ),
-);
+      field: VooFormField(
+        id: 'text_preview',
+        name: 'text_field',
+        type: VooFieldType.text,
+        label: 'Username',
+        hint: 'Enter your username',
+        helper: 'Must be 3-20 characters',
+        required: true,
+        prefixIcon: Icons.person,
+        initialValue: 'flutter_dev',
+      ),
+    );
 
 @Preview(name: 'Email Field')
 Widget buildEmailFieldPreview() => const _FieldPreview(
-  field: VooFormField(
-    id: 'email_preview',
-    name: 'email_field',
-    type: VooFieldType.email,
-    label: 'Email Address',
-    hint: 'your.email@example.com',
-    required: true,
-    prefixIcon: Icons.email,
-    initialValue: 'user@flutter.dev',
-  ),
-);
+      field: VooFormField(
+        id: 'email_preview',
+        name: 'email_field',
+        type: VooFieldType.email,
+        label: 'Email Address',
+        hint: 'your.email@example.com',
+        required: true,
+        prefixIcon: Icons.email,
+        initialValue: 'user@flutter.dev',
+      ),
+    );
 
 @Preview(name: 'Password Field')
 Widget buildPasswordFieldPreview() => const _FieldPreview(
-  field: VooFormField(
-    id: 'password_preview',
-    name: 'password_field',
-    type: VooFieldType.password,
-    label: 'Password',
-    hint: 'Enter secure password',
-    helper: 'Minimum 8 characters',
-    required: true,
-    prefixIcon: Icons.lock,
-    initialValue: 'MySecretPass123!',
-  ),
-);
+      field: VooFormField(
+        id: 'password_preview',
+        name: 'password_field',
+        type: VooFieldType.password,
+        label: 'Password',
+        hint: 'Enter secure password',
+        helper: 'Minimum 8 characters',
+        required: true,
+        prefixIcon: Icons.lock,
+        initialValue: 'MySecretPass123!',
+      ),
+    );
 
 @Preview(name: 'Dropdown Field')
 Widget buildDropdownFieldPreview() => const _FieldPreview(
-  field: VooFormField<String>(
-    id: 'dropdown_preview',
-    name: 'dropdown_field',
-    type: VooFieldType.dropdown,
-    label: 'Select Framework',
-    hint: 'Choose your favorite',
-    initialValue: 'flutter',
-    options: [
-      VooFieldOption(value: 'flutter', label: 'Flutter', icon: Icons.flutter_dash),
-      VooFieldOption(value: 'react', label: 'React Native', icon: Icons.code),
-      VooFieldOption(value: 'swift', label: 'SwiftUI', icon: Icons.apple),
-      VooFieldOption(value: 'kotlin', label: 'Kotlin', icon: Icons.android),
-    ],
-  ),
-);
+      field: VooFormField<String>(
+        id: 'dropdown_preview',
+        name: 'dropdown_field',
+        type: VooFieldType.dropdown,
+        label: 'Select Framework',
+        hint: 'Choose your favorite',
+        initialValue: 'flutter',
+        options: [
+          VooFieldOption(value: 'flutter', label: 'Flutter', icon: Icons.flutter_dash),
+          VooFieldOption(value: 'react', label: 'React Native', icon: Icons.code),
+          VooFieldOption(value: 'swift', label: 'SwiftUI', icon: Icons.apple),
+          VooFieldOption(value: 'kotlin', label: 'Kotlin', icon: Icons.android),
+        ],
+      ),
+    );
 
 @Preview(name: 'Checkbox Field')
 Widget buildCheckboxFieldPreview() => const _FieldPreview(
-  field: VooFormField<bool>(
-    id: 'checkbox_preview',
-    name: 'checkbox_field',
-    type: VooFieldType.checkbox,
-    label: 'I accept the terms and conditions',
-    helper: 'Please read our terms before accepting',
-    initialValue: false,
-  ),
-);
+      field: VooFormField<bool>(
+        id: 'checkbox_preview',
+        name: 'checkbox_field',
+        type: VooFieldType.checkbox,
+        label: 'I accept the terms and conditions',
+        helper: 'Please read our terms before accepting',
+        initialValue: false,
+      ),
+    );
 
 @Preview(name: 'Switch Field')
 Widget buildSwitchFieldPreview() => const _FieldPreview(
-  field: VooFormField<bool>(
-    id: 'switch_preview',
-    name: 'switch_field',
-    type: VooFieldType.boolean,
-    label: 'Dark Mode',
-    helper: 'Toggle application theme',
-    initialValue: true,
-  ),
-);
+      field: VooFormField<bool>(
+        id: 'switch_preview',
+        name: 'switch_field',
+        type: VooFieldType.boolean,
+        label: 'Dark Mode',
+        helper: 'Toggle application theme',
+        initialValue: true,
+      ),
+    );
 
 @Preview(name: 'Slider Field')
 Widget buildSliderFieldPreview() => const _FieldPreview(
-  field: VooFormField<double>(
-    id: 'slider_preview',
-    name: 'slider_field',
-    type: VooFieldType.slider,
-    label: 'Volume',
-    helper: 'Adjust the volume level',
-    initialValue: 65,
-    min: 0,
-    max: 100,
-    divisions: 20,
-  ),
-);
+      field: VooFormField<double>(
+        id: 'slider_preview',
+        name: 'slider_field',
+        type: VooFieldType.slider,
+        label: 'Volume',
+        helper: 'Adjust the volume level',
+        initialValue: 65,
+        min: 0,
+        max: 100,
+        divisions: 20,
+      ),
+    );
 
 @Preview(name: 'Date Field')
 Widget buildDateFieldPreview() => _FieldPreview(
-  field: VooFormField<DateTime>(
-    id: 'date_preview',
-    name: 'date_field',
-    type: VooFieldType.date,
-    label: 'Birthday',
-    hint: 'Select your birth date',
-    initialValue: DateTime(2000),
-  ),
-);
+      field: VooFormField<DateTime>(
+        id: 'date_preview',
+        name: 'date_field',
+        type: VooFieldType.date,
+        label: 'Birthday',
+        hint: 'Select your birth date',
+        initialValue: DateTime(2000),
+      ),
+    );
 
 @Preview(name: 'Time Field')
 Widget buildTimeFieldPreview() => const _FieldPreview(
-  field: VooFormField<TimeOfDay>(
-    id: 'time_preview',
-    name: 'time_field',
-    type: VooFieldType.time,
-    label: 'Meeting Time',
-    hint: 'Select meeting time',
-    initialValue: TimeOfDay(hour: 10, minute: 30),
-  ),
-);
+      field: VooFormField<TimeOfDay>(
+        id: 'time_preview',
+        name: 'time_field',
+        type: VooFieldType.time,
+        label: 'Meeting Time',
+        hint: 'Select meeting time',
+        initialValue: TimeOfDay(hour: 10, minute: 30),
+      ),
+    );
 
 @Preview(name: 'Custom Field - Card')
 Widget buildCustomCardFieldPreview() => _FieldPreview(
-  field: VooFormField(
-    id: 'custom_card',
-    name: 'custom_card',
-    type: VooFieldType.custom,
-    label: 'Status Card',
-    customWidget: Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.green.shade100,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.check_circle, color: Colors.green.shade700),
-            ),
-            const SizedBox(width: 16),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'System Status',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+      field: VooFormField(
+        id: 'custom_card',
+        name: 'custom_card',
+        type: VooFieldType.custom,
+        label: 'Status Card',
+        customWidget: Card(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    shape: BoxShape.circle,
                   ),
-                  Text(
-                    'All systems operational',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
+                  child: Icon(Icons.check_circle, color: Colors.green.shade700),
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'System Status',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        'All systems operational',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
 @Preview(name: 'Custom Field - Builder')
 Widget buildCustomBuilderFieldPreview() => _FieldPreview(
-  field: VooFormField(
-    id: 'custom_builder',
-    name: 'custom_builder',
-    type: VooFieldType.custom,
-    label: 'Dynamic Content',
-    customBuilder: (context, field, value) {
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: isDark
-                ? [Colors.purple.shade900, Colors.blue.shade900]
-                : [Colors.purple.shade100, Colors.blue.shade100],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              Icons.auto_awesome,
-              size: 48,
-              color: isDark ? Colors.white : Colors.purple,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Custom Builder Widget',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: isDark ? Colors.white : Colors.purple.shade900,
+      field: VooFormField(
+        id: 'custom_builder',
+        name: 'custom_builder',
+        type: VooFieldType.custom,
+        label: 'Dynamic Content',
+        customBuilder: (context, field, value) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          return Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isDark ? [Colors.purple.shade900, Colors.blue.shade900] : [Colors.purple.shade100, Colors.blue.shade100],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(height: 4),
-            Text(
-              'This widget adapts to theme changes',
-              style: TextStyle(
-                fontSize: 14,
-                color: isDark ? Colors.white70 : Colors.purple.shade700,
-              ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.auto_awesome,
+                  size: 48,
+                  color: isDark ? Colors.white : Colors.purple,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Custom Builder Widget',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: isDark ? Colors.white : Colors.purple.shade900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'This widget adapts to theme changes',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.white70 : Colors.purple.shade700,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    },
-  ),
-);
+          );
+        },
+      ),
+    );
 
 // ============================================================================
 // LAYOUT PREVIEWS
