@@ -66,6 +66,7 @@ class VooFormField<T> extends Equatable {
   final Widget? suffix;
   final EdgeInsetsGeometry? padding;
   final InputDecoration? decoration;
+  final List<Widget>? actions;
   
   // Layout
   final int? gridColumns;
@@ -152,6 +153,7 @@ class VooFormField<T> extends Equatable {
     this.suffix,
     this.padding,
     this.decoration,
+    this.actions,
     this.gridColumns,
     this.width,
     this.height,
@@ -231,6 +233,7 @@ class VooFormField<T> extends Equatable {
     Widget? suffix,
     EdgeInsetsGeometry? padding,
     InputDecoration? decoration,
+    List<Widget>? actions,
     int? gridColumns,
     double? width,
     double? height,
@@ -309,6 +312,7 @@ class VooFormField<T> extends Equatable {
         suffix: suffix ?? this.suffix,
         padding: padding ?? this.padding,
         decoration: decoration ?? this.decoration,
+        actions: actions ?? this.actions,
         gridColumns: gridColumns ?? this.gridColumns,
         width: width ?? this.width,
         height: height ?? this.height,

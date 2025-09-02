@@ -98,18 +98,6 @@ class _AdaptiveScaffoldPreviewState extends State<AdaptiveScaffoldPreview> {
         onPressed: () {},
         child: const Icon(Icons.add),
       ),
-      drawerHeader: UserAccountsDrawerHeader(
-        accountName: const Text('John Doe'),
-        accountEmail: const Text('john.doe@example.com'),
-        currentAccountPicture: const CircleAvatar(
-          child: Text('JD'),
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade700, Colors.blue.shade500],
-          ),
-        ),
-      ),
       onNavigationItemSelected: (itemId) {
         setState(() {
           _selectedId = itemId;
@@ -422,78 +410,7 @@ Widget buildNavigationRailExtendedPreview() => _NavigationPreview(
   );
 
 @Preview(name: 'Navigation Drawer')
-Widget buildNavigationDrawerPreview() => _NavigationPreview(
-    title: 'Navigation Drawer',
-    builder: (List<VooNavigationItem> items, String selectedId, void Function(String) onSelected) {
-      final config = VooNavigationConfig(
-        items: items,
-        selectedId: selectedId,
-        drawerHeader: const DrawerHeader(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue, Colors.lightBlue],
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                child: Text('JD'),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'John Doe',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'john@example.com',
-                style: TextStyle(color: Colors.white70),
-              ),
-            ],
-          ),
-        ),
-        onNavigationItemSelected: onSelected,
-      );
-      
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Navigation Drawer'),
-        ),
-        drawer: Drawer(
-          child: VooAdaptiveNavigationDrawer(
-            config: config,
-            selectedId: selectedId,
-            onNavigationItemSelected: onSelected,
-            permanent: false,
-          ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.menu, size: 48, color: Colors.grey),
-              const SizedBox(height: 16),
-              const Text(
-                'Tap menu icon or swipe from left',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Selected: $selectedId',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
+Widget buildNavigationDrawerPreview() => const _NavigationDrawerPreview();
 
 // ============================================================================
 // ATOM COMPONENT PREVIEWS
@@ -1107,6 +1024,195 @@ class _BadgeExamples extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Navigation drawer preview widget
+class _NavigationDrawerPreview extends StatefulWidget {
+  const _NavigationDrawerPreview();
+
+  @override
+  State<_NavigationDrawerPreview> createState() => _NavigationDrawerPreviewState();
+}
+
+class _NavigationDrawerPreviewState extends State<_NavigationDrawerPreview> {
+  String _selectedId = 'home';
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final List<VooNavigationItem> _items = const [
+    VooNavigationItem(
+      id: 'home',
+      label: 'Home',
+      icon: Icons.home_outlined,
+      selectedIcon: Icons.home,
+      route: '/home',
+    ),
+    VooNavigationItem(
+      id: 'explore',
+      label: 'Explore',
+      icon: Icons.explore_outlined,
+      selectedIcon: Icons.explore,
+      route: '/explore',
+      badgeCount: 3,
+    ),
+    VooNavigationItem(
+      id: 'library',
+      label: 'Library',
+      icon: Icons.library_books_outlined,
+      selectedIcon: Icons.library_books,
+      route: '/library',
+    ),
+    VooNavigationItem(
+      id: 'profile',
+      label: 'Profile',
+      icon: Icons.person_outline,
+      selectedIcon: Icons.person,
+      route: '/profile',
+      showDot: true,
+    ),
+  ];
+
+  Widget? _buildBadge(VooNavigationItem item) {
+    if (item.showDot) {
+      return Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(
+          color: item.badgeColor ?? Colors.red,
+          shape: BoxShape.circle,
+        ),
+      );
+    } else if (item.badgeCount != null) {
+      return Container(
+        padding: const EdgeInsets.all(2),
+        constraints: const BoxConstraints(
+          minWidth: 20,
+          minHeight: 20,
+        ),
+        decoration: BoxDecoration(
+          color: item.badgeColor ?? Colors.red,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Text(
+            '${item.badgeCount}',
+            style: const TextStyle(color: Colors.white, fontSize: 10),
+          ),
+        ),
+      );
+    } else if (item.badgeText != null) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: item.badgeColor ?? Colors.red,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          item.badgeText!,
+          style: const TextStyle(color: Colors.white, fontSize: 10),
+        ),
+      );
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text('Navigation Drawer'),
+          leading: IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+          ),
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue.shade700, Colors.blue.shade500],
+                  ),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      child: Text(
+                        'JD',
+                        style: TextStyle(fontSize: 24, color: Colors.blue),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'John Doe',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'john@example.com',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: _items.map((item) => ListTile(
+                    leading: Icon(
+                      item.id == _selectedId ? item.effectiveSelectedIcon : item.icon,
+                      color: item.id == _selectedId ? Theme.of(context).colorScheme.primary : null,
+                    ),
+                    title: Text(item.label),
+                    selected: item.id == _selectedId,
+                    onTap: () {
+                      setState(() {
+                        _selectedId = item.id;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    trailing: _buildBadge(item),
+                  )).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.menu, size: 48, color: Colors.grey),
+              const SizedBox(height: 16),
+              const Text(
+                'Tap menu icon or swipe from left',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Selected: $_selectedId',
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

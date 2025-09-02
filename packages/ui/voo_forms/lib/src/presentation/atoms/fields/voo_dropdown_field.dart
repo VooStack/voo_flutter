@@ -376,23 +376,12 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       }
     }
 
-    final decoration = _decorationBuilder.build<T>(
-      context: context,
-      field: widget.field,
-      options: widget.options,
-      hasError: hasError,
-      isFocused: _isFocused,
-      isOpen: _isOpen,
-      error: widget.error,
-      selectedOption: selectedOption,
-    );
-
     // Create a new key to force rebuild when value changes
     final dropdownKey = ValueKey(_currentValue);
 
     return DropdownButtonFormField<T>(
       key: dropdownKey,
-      initialValue: items.any((item) => item.value == _currentValue) ? _currentValue : null,
+      initialValue: widget.field.initialValue,
       items: items,
       onChanged: widget.field.enabled && !widget.field.readOnly
           ? (T? value) {
@@ -403,7 +392,16 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
               _invokeFieldOnChanged(value);
             }
           : null,
-      decoration: decoration,
+      decoration: _decorationBuilder.build<T>(
+        context: context,
+        field: widget.field,
+        options: widget.options,
+        hasError: hasError,
+        isFocused: _isFocused,
+        isOpen: _isOpen,
+        error: widget.error,
+        selectedOption: selectedOption,
+      ),
       focusNode: _focusNode,
       style: theme.textTheme.bodyMedium,
       dropdownColor: theme.colorScheme.surface,

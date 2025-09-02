@@ -105,13 +105,16 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
   }
 
   int? _getMaxLines() {
-    if (widget.field.type == VooFieldType.multiline) {
-      return widget.field.maxLines ?? 4;
-    }
     if (widget.field.type == VooFieldType.password || _obscureText) {
       return 1;
     }
-    return widget.field.maxLines;
+    if (widget.field.maxLines != null) {
+      return widget.field.maxLines;
+    }
+    if (widget.field.type == VooFieldType.multiline) {
+      return widget.field.expanded ? null : 5;
+    }
+    return 1;
   }
 
   TextCapitalization _getTextCapitalization() {
@@ -243,7 +246,7 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
     final textInputAction = _getTextInputAction();
     final textCapitalization = _getTextCapitalization();
 
-    return TextFormField(
+    Widget textField = TextFormField(
       controller: _controller,
       focusNode: _focusNode,
       decoration: decoration,
@@ -290,5 +293,12 @@ class _VooTextFormFieldState extends State<VooTextFormField> {
         // Handle save if needed
       },
     );
+
+    // Wrap in Expanded if field.expanded is true
+    if (widget.field.expanded) {
+      return Expanded(child: textField);
+    }
+    
+    return textField;
   }
 }
