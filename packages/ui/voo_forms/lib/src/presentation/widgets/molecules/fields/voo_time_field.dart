@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/core/utils/config/voo_field_options.dart';
-import 'package:voo_forms/core/utils/builders/time_field_decoration_builder.dart';
+import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart';
+import 'package:voo_forms/src/presentation/config/builders/time_field_decoration_builder.dart';
 
 /// Time form field widget
 class VooTimeFieldWidget extends StatefulWidget {

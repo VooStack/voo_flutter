@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/enums/field_variant.dart';
 import 'package:voo_forms/src/domain/enums/label_position.dart';
-import 'package:voo_forms/core/utils/config/voo_field_options.dart';
+import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart';
 
 /// Helper class for building date field decorations
 class DateFieldDecorationBuilder {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/core/utils/config/voo_field_options.dart';
+import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart';
 
 /// InheritedWidget for providing field options to child widgets
 class VooFieldOptionsProvider extends InheritedWidget {

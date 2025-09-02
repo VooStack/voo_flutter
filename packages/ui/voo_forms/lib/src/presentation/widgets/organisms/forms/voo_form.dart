@@ -3,7 +3,7 @@ import 'package:voo_forms/src/domain/entities/form.dart' as domain;
 import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
-import 'package:voo_forms/core/theme/form_theme.dart';
+import 'package:voo_forms/src/presentation/config/theme/form_theme.dart';
 
 /// Clean, simple form widget that accepts field widgets directly
 /// No factories, no complex builders - just widgets

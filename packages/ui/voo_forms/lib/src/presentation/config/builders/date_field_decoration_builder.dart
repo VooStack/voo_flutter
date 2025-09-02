@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/enums/field_variant.dart';
 import 'package:voo_forms/src/domain/enums/label_position.dart';
-import 'package:voo_forms/core/utils/config/voo_field_options.dart';
+import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart';
 
-/// Helper class for building time field decorations
-class TimeFieldDecorationBuilder {
-  const TimeFieldDecorationBuilder();
+/// Helper class for building date field decorations
+class DateFieldDecorationBuilder {
+  const DateFieldDecorationBuilder();
 
   InputDecoration build({
     required BuildContext context,
@@ -23,29 +23,29 @@ class TimeFieldDecorationBuilder {
     if (options.labelPosition == LabelPosition.floating) {
       decoration = InputDecoration(
         labelText: field.label,
-        hintText: field.hint ?? 'Select time',
+        hintText: field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,
         helperText: field.helper,
         prefixIcon: field.prefixIcon != null ? Icon(field.prefixIcon) : null,
-        suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
+        suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     } else if (options.labelPosition == LabelPosition.placeholder) {
       decoration = InputDecoration(
-        hintText: field.label ?? field.hint ?? 'Select time',
+        hintText: field.label ?? field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,
         helperText: field.helper,
         prefixIcon: field.prefixIcon != null ? Icon(field.prefixIcon) : null,
-        suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
+        suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     } else {
       // For above, left, or hidden positions, don't include label
       // as VooFieldWidget handles it externally
       decoration = InputDecoration(
-        hintText: field.hint ?? 'Select time',
+        hintText: field.hint ?? 'Select date',
         errorText: showError && error != null ? error : null,
         helperText: field.helper,
         prefixIcon: field.prefixIcon != null ? Icon(field.prefixIcon) : null,
-        suffixIcon: Icon(field.suffixIcon ?? Icons.access_time),
+        suffixIcon: Icon(field.suffixIcon ?? Icons.calendar_today),
       );
     }
 
