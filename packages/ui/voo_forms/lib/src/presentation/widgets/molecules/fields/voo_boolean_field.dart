@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_switch_input.dart';
 
@@ -79,19 +78,4 @@ class VooBooleanField extends VooFieldBase<bool> {
       child: switchRow,
     );
   }
-
-  /// Factory constructor to create from VooFormField
-  factory VooBooleanField.fromFormField(VooFormField field) => VooBooleanField(
-        name: field.name,
-        label: field.label,
-        helper: field.helper,
-        initialValue: field.initialValue is bool && field.initialValue == true,
-        value: field.value is bool ? field.value as bool : null,
-        required: field.required,
-        enabled: field.enabled,
-        readOnly: field.readOnly,
-        validators: field.validators.cast(),
-        onChanged: field.onChanged != null ? (value) => field.onChanged!(value) : null,
-        actions: field.actions,
-      );
 }

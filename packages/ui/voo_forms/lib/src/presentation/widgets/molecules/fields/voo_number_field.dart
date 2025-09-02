@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/domain/entities/validation_rule.dart';
+import 'package:voo_forms/src/presentation/config/utils/formatters/strict_number_formatter.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_number_input.dart';
-import 'package:voo_forms/src/presentation/config/utils/formatters/strict_number_formatter.dart';
 
 /// Number field molecule that composes atoms to create a complete numeric input field
 /// Supports both integer and decimal numbers with configurable constraints
@@ -116,26 +114,4 @@ class VooNumberField extends VooFieldBase<num> {
       ),
     );
   }
-
-  /// Factory constructor to create from VooFormField
-  factory VooNumberField.fromFormField(VooFormField field) => VooNumberField(
-        name: field.name,
-        label: field.label,
-        hint: field.hint,
-        helper: field.helper,
-        placeholder: field.placeholder,
-        initialValue: field.initialValue is num ? field.initialValue as num : null,
-        value: field.value is num ? field.value as num : null,
-        required: field.required,
-        enabled: field.enabled,
-        readOnly: field.readOnly,
-        validators: field.validators is List<VooValidationRule<num>> ? field.validators as List<VooValidationRule<num>> : null,
-        onChanged: field.onChanged != null ? (value) => field.onChanged!(value) : null,
-        actions: field.actions,
-        prefixIcon: field.prefixIcon is IconData ? Icon(field.prefixIcon) : field.prefix,
-        suffixIcon: field.suffixIcon is IconData ? Icon(field.suffixIcon) : field.suffix,
-        min: field.min,
-        max: field.max,
-        step: field.step,
-      );
 }

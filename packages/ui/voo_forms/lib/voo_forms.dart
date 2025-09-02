@@ -1,51 +1,35 @@
 library voo_forms;
 
-export 'src/domain/entities/field_change.dart';
+// Domain entities
 export 'src/domain/entities/field_type.dart';
 export 'src/domain/entities/form.dart' hide VooForm;
 export 'src/domain/entities/form_config.dart';
 export 'src/domain/entities/form_field.dart';
-export 'src/domain/entities/form_header.dart';
-export 'src/domain/entities/form_section.dart';
 export 'src/domain/entities/validation_rule.dart';
+
+// Domain enums
 export 'src/domain/enums/error_display_mode.dart';
 export 'src/domain/enums/field_variant.dart';
 export 'src/domain/enums/focus_behavior.dart';
+export 'src/domain/enums/form_layout.dart';
+export 'src/domain/enums/form_validation_mode.dart';
 export 'src/domain/enums/label_position.dart';
 export 'src/domain/enums/label_style.dart';
 export 'src/domain/enums/validation_trigger.dart';
+
+// Domain utils
+export 'src/domain/utils/validators.dart';
+
+// Presentation config
 export 'src/presentation/config/options/voo_field_options.dart';
-export 'src/presentation/state/voo_form_controller.dart';
-export 'src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
-export 'src/presentation/widgets/molecules/fields/voo_boolean_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_checkbox_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_currency_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_date_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_decimal_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_dropdown_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_email_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_form_header.dart';
-export 'src/presentation/widgets/molecules/fields/voo_form_section_divider.dart';
-export 'src/presentation/widgets/molecules/fields/voo_integer_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_list_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_multiline_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_number_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_password_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_percentage_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_phone_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_radio_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_slider_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_switch_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_text_field.dart';
-export 'src/presentation/widgets/molecules/fields/voo_time_field.dart';
-export 'src/presentation/widgets/organisms/forms/voo_form.dart';
 export 'src/presentation/config/theme/form_theme.dart';
-export 'src/presentation/config/utils/form_utils.dart';
-export 'src/presentation/config/utils/formatters/formatters.dart';
+
+// Presentation formatters
 export 'src/presentation/config/utils/formatters/case_formatter.dart';
 export 'src/presentation/config/utils/formatters/credit_card_formatter.dart';
 export 'src/presentation/config/utils/formatters/currency_formatter.dart';
 export 'src/presentation/config/utils/formatters/date_formatter.dart';
+export 'src/presentation/config/utils/formatters/formatters.dart';
 export 'src/presentation/config/utils/formatters/international_phone_formatter.dart';
 export 'src/presentation/config/utils/formatters/mask_formatter.dart';
 export 'src/presentation/config/utils/formatters/pattern_formatter.dart';
@@ -53,4 +37,28 @@ export 'src/presentation/config/utils/formatters/percentage_formatter.dart';
 export 'src/presentation/config/utils/formatters/phone_number_formatter.dart';
 export 'src/presentation/config/utils/formatters/ssn_formatter.dart';
 export 'src/presentation/config/utils/formatters/zip_code_formatter.dart';
-export 'src/domain/utils/validators.dart';
+
+// Presentation state
+export 'src/presentation/state/voo_form_controller.dart';
+
+// Presentation widgets - atoms
+export 'src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
+
+// Presentation widgets - molecules (fields)
+export 'src/presentation/widgets/molecules/fields/voo_boolean_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_checkbox_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_currency_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_decimal_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_dropdown_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_email_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_integer_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_list_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_multiline_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_number_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_password_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_percentage_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_phone_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_text_field.dart';
+
+// Presentation widgets - organisms  
+export 'src/presentation/widgets/organisms/forms/voo_form.dart';

@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/domain/entities/form_section.dart';
+import 'package:voo_forms/src/domain/enums/form_layout.dart';
+import 'package:voo_forms/src/domain/enums/form_validation_mode.dart';
 
 class VooForm extends Equatable {
   final String id;
   final String? title;
   final String? description;
   final List<VooFormField> fields;
-  final List<VooFormSection>? sections;
   final bool enabled;
   final bool readOnly;
   final Map<String, dynamic> values;
@@ -18,14 +18,12 @@ class VooForm extends Equatable {
   final bool isSubmitted;
   final FormLayout layout;
   final FormValidationMode validationMode;
-  final Map<String, dynamic>? metadata;
 
   const VooForm({
     required this.id,
     this.title,
     this.description,
     required this.fields,
-    this.sections,
     this.enabled = true,
     this.readOnly = false,
     this.values = const {},
@@ -36,7 +34,6 @@ class VooForm extends Equatable {
     this.isSubmitted = false,
     this.layout = FormLayout.vertical,
     this.validationMode = FormValidationMode.onSubmit,
-    this.metadata,
   });
 
   VooForm copyWith({
@@ -44,7 +41,6 @@ class VooForm extends Equatable {
     String? title,
     String? description,
     List<VooFormField>? fields,
-    List<VooFormSection>? sections,
     bool? enabled,
     bool? readOnly,
     Map<String, dynamic>? values,
@@ -62,7 +58,6 @@ class VooForm extends Equatable {
         title: title ?? this.title,
         description: description ?? this.description,
         fields: fields ?? this.fields,
-        sections: sections ?? this.sections,
         enabled: enabled ?? this.enabled,
         readOnly: readOnly ?? this.readOnly,
         values: values ?? this.values,
@@ -73,7 +68,6 @@ class VooForm extends Equatable {
         isSubmitted: isSubmitted ?? this.isSubmitted,
         layout: layout ?? this.layout,
         validationMode: validationMode ?? this.validationMode,
-        metadata: metadata ?? this.metadata,
       );
 
   VooFormField? getField(String fieldId) {
@@ -125,7 +119,6 @@ class VooForm extends Equatable {
         id,
         title,
         fields,
-        sections,
         values,
         errors,
         isValid,
@@ -135,36 +128,4 @@ class VooForm extends Equatable {
         layout,
         validationMode,
       ];
-}
-
-enum FormLayout {
-  vertical,
-  horizontal,
-  grid,
-  stepped,
-  tabbed,
-}
-
-enum FormValidationMode {
-  onSubmit,
-  onChange,
-  onBlur,
-  manual,
-}
-
-extension FormLayoutExtension on FormLayout {
-  String get label {
-    switch (this) {
-      case FormLayout.vertical:
-        return 'Vertical';
-      case FormLayout.horizontal:
-        return 'Horizontal';
-      case FormLayout.grid:
-        return 'Grid';
-      case FormLayout.stepped:
-        return 'Stepped';
-      case FormLayout.tabbed:
-        return 'Tabbed';
-    }
-  }
 }
