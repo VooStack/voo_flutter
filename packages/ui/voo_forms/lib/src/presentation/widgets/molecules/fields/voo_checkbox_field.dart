@@ -22,6 +22,14 @@ class VooCheckboxField extends VooFieldBase<bool> {
     super.onChanged,
     super.actions,
     super.gridColumns,
+    super.error,
+    super.showError,
+    super.layout,
+    super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
     this.tristate = false,
   }) : super(
           initialValue: initialValue ?? false,
@@ -54,7 +62,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
     final currentValue = value ?? initialValue ?? false;
 
     // Build the checkbox with label in a row
-    final checkboxRow = InkWell(
+    Widget checkboxRow = InkWell(
       onTap: enabled && !readOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
       borderRadius: BorderRadius.circular(12),
       child: Container(
@@ -98,6 +106,9 @@ class VooCheckboxField extends VooFieldBase<bool> {
         ),
       ),
     );
+    
+    // Apply height constraints to the checkbox row
+    checkboxRow = applyInputHeightConstraints(checkboxRow);
 
     return buildFieldContainer(context, checkboxRow);
   }

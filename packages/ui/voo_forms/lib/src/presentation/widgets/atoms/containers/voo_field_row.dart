@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
+import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 
 /// Row container for form fields - arranges fields horizontally
@@ -53,6 +54,11 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
   /// Flex values for each field (if provided)
   final List<int>? fieldFlex;
   
+  /// Whether to wrap fields in Flexible widgets to prevent overflow
+  /// Set to false when fields have their own size constraints
+  /// When true, fields without explicit width constraints will be wrapped in Flexible
+  final bool flexibleFields;
+  
   /// Layout configuration for the row
   @override
   final VooFieldLayout layout;
@@ -83,6 +89,7 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
     this.runSpacing = 16.0,
     this.expandFields = false,
     this.fieldFlex,
+    this.flexibleFields = true,
     this.layout = VooFieldLayout.wide,
   }) : assert(label == null || title == null, 'Cannot provide both label and title. Use label instead.');
   
@@ -95,6 +102,13 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
     for (int i = 0; i < fields.length; i++) {
       Widget field = fields[i];
       
+      // Check if field has explicit width constraints
+      // If it does, we should not wrap it in Flexible to avoid constraint conflicts
+      bool hasWidthConstraints = false;
+      if (field is VooFieldBase) {
+        hasWidthConstraints = field.minWidth != null || field.maxWidth != null;
+      }
+      
       // Apply flex if expanding fields
       if (expandFields || (fieldFlex != null && i < fieldFlex!.length)) {
         final flex = fieldFlex != null && i < fieldFlex!.length 
@@ -104,13 +118,17 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
           flex: flex,
           child: field,
         );
-      } else {
-        // Wrap in Flexible to prevent unbounded constraints
-        // This allows fields to shrink if needed while preventing overflow
+      } else if (!wrap && flexibleFields && !hasWidthConstraints) {
+        // Only wrap in Flexible if:
+        // 1. Not using Wrap layout
+        // 2. flexibleFields is true
+        // 3. Field doesn't have its own width constraints
         field = Flexible(
           child: field,
         );
       }
+      // Fields with width constraints or when flexibleFields is false
+      // manage their own constraints
       
       fieldWidgets.add(field);
       

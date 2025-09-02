@@ -22,6 +22,10 @@ class VooBooleanField extends VooFieldBase<bool> {
     super.gridColumns,
     super.layout,
     super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
   }) : super(
           initialValue: initialValue ?? false,
         );
@@ -30,7 +34,7 @@ class VooBooleanField extends VooFieldBase<bool> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     final theme = Theme.of(context);
     final currentValue = value ?? initialValue ?? false;
 
@@ -44,10 +48,7 @@ class VooBooleanField extends VooFieldBase<bool> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (labelWidget != null)
-                    labelWidget!
-                  else
-                    buildLabel(context),
+                  if (labelWidget != null) labelWidget! else buildLabel(context),
                   if (helper != null) ...[
                     const SizedBox(height: 4),
                     Text(
@@ -75,7 +76,7 @@ class VooBooleanField extends VooFieldBase<bool> {
     );
 
     // Wrap in a card-like container for better visual separation
-    final container = Container(
+    Widget container = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
@@ -87,6 +88,9 @@ class VooBooleanField extends VooFieldBase<bool> {
       child: switchRow,
     );
     
+    // Apply height constraints to the input container
+    container = applyInputHeightConstraints(container);
+
     return buildFieldContainer(context, container);
   }
 }

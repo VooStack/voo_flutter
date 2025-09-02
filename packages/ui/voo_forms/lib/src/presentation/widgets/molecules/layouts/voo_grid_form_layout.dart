@@ -61,6 +61,7 @@ class VooGridFormLayout extends StatelessWidget {
         }
 
         // Add the field with appropriate flex
+        // Use Expanded to ensure fields fill their grid cells
         rowChildren.add(
           Expanded(
             flex: currentSpan,

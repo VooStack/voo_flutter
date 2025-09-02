@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
+import 'package:voo_forms/src/domain/utils/screen_size.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 
 /// Base abstract class for all form fields following atomic design
@@ -36,6 +37,14 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final VooFieldLayout layout;
   /// Whether this field should be hidden
   final bool isHidden;
+  /// Optional minimum width for the field
+  final double? minWidth;
+  /// Optional maximum width for the field
+  final double? maxWidth;
+  /// Optional minimum height for the field
+  final double? minHeight;
+  /// Optional maximum height for the field
+  final double? maxHeight;
 
   const VooFieldBase({
     super.key,
@@ -60,16 +69,67 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     this.showError = true,
     this.layout = VooFieldLayout.standard,
     this.isHidden = false,
+    this.minWidth,
+    this.maxWidth,
+    this.minHeight,
+    this.maxHeight,
   });
 
+  /// Get responsive padding based on screen size
+  EdgeInsets getFieldPadding(BuildContext context) {
+    final screenType = VooScreenSize.getType(context);
+    
+    switch (screenType) {
+      case ScreenType.mobile:
+        return const EdgeInsets.symmetric(vertical: 6.0);
+      case ScreenType.tablet:
+        return const EdgeInsets.symmetric(vertical: 8.0);
+      case ScreenType.desktop:
+      case ScreenType.extraLarge:
+        return const EdgeInsets.symmetric(vertical: 10.0);
+    }
+  }
+
   /// Builds the field container with standard decoration
+  /// Note: Only width constraints are applied at container level
+  /// Height constraints should be applied by individual fields to their input widgets
   Widget buildFieldContainer(BuildContext context, Widget child) {
     // Return empty widget if field is hidden
     if (isHidden) return const SizedBox.shrink();
+    
+    Widget fieldWidget = child;
+    
+    // Apply width constraints at container level (affects entire field)
+    if (minWidth != null || maxWidth != null) {
+      fieldWidget = ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: minWidth ?? 0.0,
+          maxWidth: maxWidth ?? double.infinity,
+        ),
+        child: fieldWidget,
+      );
+    }
+    
+    // Apply padding
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: child,
+      padding: getFieldPadding(context),
+      child: fieldWidget,
     );
+  }
+  
+  /// Helper method to apply height constraints to input widgets
+  /// Individual fields should use this for their input controls
+  Widget applyInputHeightConstraints(Widget input) {
+    if (minHeight != null || maxHeight != null) {
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: minHeight ?? 0.0,
+          maxHeight: maxHeight ?? double.infinity,
+        ),
+        child: input,
+      );
+    }
+    return input;
   }
 
   /// Builds the field with label if provided

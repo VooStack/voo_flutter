@@ -13,7 +13,6 @@ import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dar
 ///   items: myNotes,  // Your state
 ///   itemBuilder: (context, note, index) => VooTextField(...),
 ///   onAddPressed: () => setState(() => myNotes.add(Note())),
-///   onRemovePressed: (index) => setState(() => myNotes.removeAt(index)),
 /// )
 /// ```
 class VooListField<T> extends VooFieldBase<List<T>> {
@@ -27,10 +26,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
   /// Callback when add button is pressed
   /// Developer should handle adding items to their state
   final VoidCallback? onAddPressed;
-
-  /// Callback when remove button is pressed for an item
-  /// Developer should handle removing items from their state
-  final void Function(int index)? onRemovePressed;
 
   /// Callback when items are reordered
   /// Developer should handle reordering items in their state
@@ -94,7 +89,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     required this.items,
     required this.itemBuilder,
     this.onAddPressed,
-    this.onRemovePressed,
     this.onReorder,
     this.showAddButton = true,
     this.showRemoveButtons = true,
@@ -157,7 +151,40 @@ class VooListField<T> extends VooFieldBase<List<T>> {
         itemBuilder: (context, index) => Container(
           key: ValueKey(index), // Simple index key for ReorderableListView
           margin: EdgeInsets.only(bottom: index < items.length - 1 ? itemSpacing : 0),
-          child: itemBuilder(context, items[index], index),
+          child: Row(
+            children: [
+              // Item number if enabled
+              if (showItemNumbers) ...[
+                Container(
+                  width: 32,
+                  height: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '${index + 1}',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
+              // Main item content
+              Expanded(
+                child: itemBuilder(context, items[index], index),
+              ),
+              // Drag handle for reordering
+              const SizedBox(width: 8),
+              Icon(
+                Icons.drag_indicator,
+                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              ),
+            ],
+          ),
         ),
       );
     } else {
@@ -167,7 +194,34 @@ class VooListField<T> extends VooFieldBase<List<T>> {
           for (int i = 0; i < items.length; i++)
             Container(
               margin: EdgeInsets.only(bottom: i < items.length - 1 ? itemSpacing : 0),
-              child: itemBuilder(context, items[i], i),
+              child: showItemNumbers
+                  ? Row(
+                      children: [
+                        // Item number
+                        Container(
+                          width: 32,
+                          height: 32,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            '${i + 1}',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Main item content
+                        Expanded(
+                          child: itemBuilder(context, items[i], i),
+                        ),
+                      ],
+                    )
+                  : itemBuilder(context, items[i], i),
             ),
         ],
       );
@@ -191,6 +245,9 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     result = buildWithError(context, result);
     result = buildWithLabel(context, result);
     result = buildWithActions(context, result);
+    
+    // Apply field container with width constraints
+    result = buildFieldContainer(context, result);
 
     return result;
   }

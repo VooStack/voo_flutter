@@ -45,6 +45,11 @@ class VooTextField extends VooFieldBase<String> {
     super.error,
     super.showError,
     super.layout,
+    super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
     this.controller,
     this.focusNode,
     this.keyboardType = TextInputType.text,
@@ -68,7 +73,7 @@ class VooTextField extends VooFieldBase<String> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
     
-    final textInput = VooTextInput(
+    Widget textInput = VooTextInput(
       controller: controller,
       focusNode: focusNode,
       initialValue: value ?? initialValue,
@@ -92,6 +97,9 @@ class VooTextField extends VooFieldBase<String> {
       autofocus: autofocus,
       decoration: getInputDecoration(context),
     );
+    
+    // Apply height constraints to the input widget
+    textInput = applyInputHeightConstraints(textInput);
 
     // Compose with label, helper, error and actions using base class methods
     return buildWithLabel(

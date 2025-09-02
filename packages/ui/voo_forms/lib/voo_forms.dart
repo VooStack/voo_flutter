@@ -43,6 +43,7 @@ export 'src/presentation/widgets/molecules/fields/voo_boolean_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_checkbox_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_currency_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_date_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_date_field_button.dart';
 export 'src/presentation/widgets/molecules/fields/voo_decimal_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_dropdown_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_email_field.dart';

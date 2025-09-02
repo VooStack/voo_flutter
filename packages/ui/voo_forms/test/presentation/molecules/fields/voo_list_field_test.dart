@@ -70,30 +70,8 @@ void main() {
       expect(addCallCount, 1);
     });
 
-    testWidgets('shows remove buttons when enabled', (WidgetTester tester) async {
-      int? removedIndex;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: VooListField<String>(
-              name: 'items',
-              items: const ['Item 1', 'Item 2'],
-              itemBuilder: (context, item, index) => Text(item),
-              onRemovePressed: (index) {
-                removedIndex = index;
-              },
-            ),
-          ),
-        ),
-      );
-
-      // Find and tap first remove button
-      await tester.tap(find.byIcon(Icons.remove_circle_outline).first);
-      await tester.pumpAndSettle();
-
-      expect(removedIndex, 0);
-    });
+    // Test removed - onRemovePressed callback no longer exists
+    // Remove functionality should be handled within itemBuilder
 
     testWidgets('handles reordering when enabled', (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -188,7 +166,6 @@ void main() {
               items: const ['Item 1'],
               itemBuilder: (context, item, index) => Text(item),
               onAddPressed: () {},
-              onRemovePressed: (index) {},
             ),
           ),
         ),
@@ -301,7 +278,6 @@ void main() {
               items: const ['Item 1'],
               itemBuilder: (context, item, index) => Text(item),
               showRemoveButtons: false,
-              onRemovePressed: (index) {},
             ),
           ),
         ),

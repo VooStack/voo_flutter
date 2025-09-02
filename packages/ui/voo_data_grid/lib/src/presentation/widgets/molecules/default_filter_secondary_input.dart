@@ -14,26 +14,13 @@ class DefaultFilterSecondaryInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      height: 32,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(4),
+    return TextFormField(
+      decoration: const InputDecoration(
+        labelText: 'To',
+        border: OutlineInputBorder(),
       ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'To',
-          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          border: InputBorder.none,
-        ),
-        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-        onChanged: onChanged,
-      ),
+      initialValue: filter.secondaryValue?.toString() ?? '',
+      onChanged: onChanged,
     );
   }
 }

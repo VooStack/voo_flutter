@@ -60,6 +60,10 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     super.showError,
     super.layout,
     super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
     this.allowedExtensions,
     this.fileType = FileType.any,
     this.allowMultiple = false,
@@ -148,13 +152,13 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
         );
       },
     );
-    
+
     // Apply standard field building pattern
     fileField = buildWithHelper(context, fileField);
     fileField = buildWithError(context, fileField);
     fileField = buildWithLabel(context, fileField);
     fileField = buildWithActions(context, fileField);
-    
+
     return fileField;
   }
 

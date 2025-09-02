@@ -42,15 +42,16 @@ void main() {
                 VooTextField(name: 'field1'),
                 VooTextField(name: 'field2'),
               ],
-              spacing: 24.0,
             ),
           ),
         ),
       );
 
-      // Find the Column containing the fields
-      final column = tester.widget<Column>(find.byType(Column).first);
-      expect(column, isNotNull);
+      // The form should render both text fields
+      expect(find.byType(VooTextField), findsNWidgets(2));
+      
+      // Form widget should exist
+      expect(find.byType(VooForm), findsOneWidget);
     });
   });
 

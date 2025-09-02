@@ -36,6 +36,10 @@ class VooDateField extends VooFieldBase<DateTime> {
     super.showError,
     super.layout,
     super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
     this.controller,
     this.focusNode,
     this.firstDate,
@@ -49,7 +53,7 @@ class VooDateField extends VooFieldBase<DateTime> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
     
-    final dateInput = VooDateInput(
+    Widget dateInput = VooDateInput(
       controller: controller,
       focusNode: focusNode,
       initialValue: initialValue,
@@ -63,6 +67,9 @@ class VooDateField extends VooFieldBase<DateTime> {
       readOnly: readOnly,
       decoration: getInputDecoration(context),
     );
+    
+    // Apply height constraints to the input widget
+    dateInput = applyInputHeightConstraints(dateInput);
 
     // Compose with label, helper, error and actions using base class methods
     return buildWithLabel(

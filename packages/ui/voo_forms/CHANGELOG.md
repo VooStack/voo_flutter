@@ -1,3 +1,17 @@
+## [0.3.0] - 2025-09-02
+
+### Added
+- **VooDateFieldButton**: New date field widget that uses a button interface for date selection
+  - Shows selected date or placeholder text on the button
+  - Supports custom date formatting and button types
+  - Includes prefix/suffix icon support
+  - Full integration with form validation and error display
+
+### Fixed
+- **VooDateField Spacing**: Fixed inconsistent spacing and decoration in VooDateField to match other field types
+  - Removed extra container wrapping that caused visual inconsistencies
+  - Date fields now properly display with the same styling as text fields
+
 ## [0.2.3] - 2025-09-02
 
 ### Breaking Changes
