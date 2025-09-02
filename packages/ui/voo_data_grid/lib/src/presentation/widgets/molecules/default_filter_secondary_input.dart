@@ -18,6 +18,7 @@ class DefaultFilterSecondaryInput extends StatelessWidget {
     
     return Container(
       height: 32,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
@@ -28,7 +29,7 @@ class DefaultFilterSecondaryInput extends StatelessWidget {
           hintText: 'To...',
           hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           border: InputBorder.none,
         ),
         style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),

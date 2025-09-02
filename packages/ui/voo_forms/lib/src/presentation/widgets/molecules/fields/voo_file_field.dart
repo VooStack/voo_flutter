@@ -99,13 +99,14 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
       builder: (FormFieldState<PlatformFile?> fieldState) {
         final theme = Theme.of(context);
         final hasFile = fieldState.value != null;
+        final effectiveReadOnly = getEffectiveReadOnly(context);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // File selection area
             InkWell(
-              onTap: enabled && !readOnly ? () => _pickFile(context, fieldState) : null,
+              onTap: enabled && !effectiveReadOnly ? () => _pickFile(context, fieldState) : null,
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.all(16),
@@ -116,14 +117,14 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
                     style: hasFile ? BorderStyle.solid : BorderStyle.solid,
                   ),
                   borderRadius: BorderRadius.circular(12),
-                  color: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                  color: enabled && !effectiveReadOnly ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 ),
                 child: hasFile ? _buildFilePreview(context, fieldState) : _buildPlaceholder(context, fieldState),
               ),
             ),
 
             // Action buttons
-            if (hasFile && enabled && !readOnly) ...[
+            if (hasFile && enabled && !effectiveReadOnly) ...[
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

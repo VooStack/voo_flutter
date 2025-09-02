@@ -47,6 +47,7 @@ class NumberRangeFilter<T> extends StatelessWidget {
         Expanded(
           child: Container(
             height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
@@ -58,7 +59,7 @@ class NumberRangeFilter<T> extends StatelessWidget {
                 hintText: 'Min',
                 hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
                 isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 border: InputBorder.none,
               ),
               style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
@@ -86,6 +87,7 @@ class NumberRangeFilter<T> extends StatelessWidget {
         Expanded(
           child: Container(
             height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
@@ -97,7 +99,7 @@ class NumberRangeFilter<T> extends StatelessWidget {
                 hintText: 'Max',
                 hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
                 isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                 border: InputBorder.none,
               ),
               style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),

@@ -1,3 +1,21 @@
+## 0.7.0 - 2025-09-02
+
+* **UI Consistency Improvements**
+  * Fixed input decorator styling inconsistencies across all filter widgets
+  * Standardized padding for all filter input fields to match dropdown styling
+  * Added consistent container padding (`padding: const EdgeInsets.symmetric(horizontal: 4)`)
+  * Updated content padding from `horizontal: 10, vertical: 8` to `horizontal: 6, vertical: 6` for better alignment
+  * Fixed icon colors to use `theme.iconTheme.color` for consistency
+  * Applied styling improvements to all filter types:
+    - TextFilter
+    - NumberFilter
+    - NumberRangeFilter
+    - DateFilter
+    - DateRangeFilter
+    - DefaultFilterValueInput
+    - DefaultFilterSecondaryInput
+  * All filter inputs now have consistent visual appearance matching dropdown fields
+
 ## 0.6.11 - 2025-09-02
 
 * **Performance Improvements and UI Consistency**

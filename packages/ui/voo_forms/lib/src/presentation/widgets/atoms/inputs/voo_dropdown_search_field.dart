@@ -54,6 +54,11 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
     super.initState();
     _selectedValue = widget.value;
     _filteredItems = _getSortedItems(widget.items);
+    
+    // Update search controller text if there's an initial value
+    if (_selectedValue != null && widget.displayTextBuilder != null) {
+      _searchController.text = widget.displayTextBuilder!(_selectedValue as T);
+    }
 
     // If async search is provided, load initial items
     if (widget.asyncSearch != null) {
@@ -101,6 +106,12 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
         setState(() {
           _filteredItems = _getSortedItems(items);
           _isLoading = false;
+          
+          // Ensure the selected value is preserved after async load
+          // This helps maintain the initial value
+          if (_selectedValue == null && widget.value != null) {
+            _selectedValue = widget.value;
+          }
         });
         _updateOverlay();
       }
@@ -164,6 +175,9 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
       _filteredItems = _getSortedItems(widget.items);
     });
     _removeOverlay();
+    
+    // Unfocus to close keyboard if it was open
+    _searchFocus.unfocus();
   }
 
   void _selectItem(T item) {
@@ -194,12 +208,25 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
     final theme = Theme.of(context);
 
     return OverlayEntry(
-      builder: (context) => Positioned(
-        width: size.width,
-        child: CompositedTransformFollower(
-          link: _layerLink,
-          offset: Offset(0, size.height + 4),
-          child: Material(
+      builder: (context) => Stack(
+        children: [
+          // Full screen gesture detector to capture outside clicks
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _closeDropdown,
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+          ),
+          // Dropdown overlay
+          Positioned(
+            width: size.width,
+            child: CompositedTransformFollower(
+              link: _layerLink,
+              offset: Offset(0, size.height + 4),
+              child: Material(
             elevation: 8,
             borderRadius: BorderRadius.circular(12),
             color: theme.colorScheme.surface,
@@ -307,7 +334,9 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
           ),
         ),
       ),
-    );
+    ],
+  ),
+);
   }
 
   @override

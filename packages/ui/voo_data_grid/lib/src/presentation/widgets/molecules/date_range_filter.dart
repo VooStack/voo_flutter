@@ -35,6 +35,7 @@ class DateRangeFilter<T> extends StatelessWidget {
 
     return Container(
       height: 32,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
@@ -56,7 +57,7 @@ class DateRangeFilter<T> extends StatelessWidget {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Row(
             children: [
               Expanded(

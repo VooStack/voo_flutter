@@ -7,16 +7,16 @@ import 'package:voo_data_grid/src/presentation/widgets/molecules/operator_select
 class TextFilter<T> extends StatelessWidget {
   /// The column configuration
   final VooDataColumn<T> column;
-  
+
   /// The current filter value
   final VooDataFilter? currentFilter;
-  
+
   /// Callback when filter value changes
   final void Function(dynamic) onFilterChanged;
-  
+
   /// Callback to clear filter
   final void Function() onFilterCleared;
-  
+
   /// Text controllers map for maintaining state
   final Map<String, TextEditingController> textControllers;
 
@@ -39,7 +39,7 @@ class TextFilter<T> extends StatelessWidget {
 
     return Row(
       children: [
-        if (column.showFilterOperator) 
+        if (column.showFilterOperator)
           OperatorSelector<T>(
             column: column,
             currentFilter: currentFilter,
@@ -53,35 +53,38 @@ class TextFilter<T> extends StatelessWidget {
             },
           ),
         Expanded(
-          child: Container(
-            height: 32,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: column.filterHint ?? 'Filter...',
-                hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                border: InputBorder.none,
-                suffixIcon: currentFilter != null
-                    ? InkWell(
-                        onTap: () {
-                          controller.clear();
-                          onFilterCleared();
-                        },
-                        child: const Icon(Icons.clear, size: 16),
-                      )
-                    : null,
-                suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              fillColor: theme.colorScheme.surfaceContainer,
+              constraints: const BoxConstraints(maxHeight: 32),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(3),
+                borderSide: BorderSide(color: theme.primaryColor),
               ),
-              style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-              onChanged: (value) => onFilterChanged(value.isEmpty ? null : value),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(3),
+                borderSide: BorderSide(color: theme.dividerColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(3),
+                borderSide: BorderSide(color: theme.dividerColor),
+              ),
+              hintText: column.filterHint ?? 'Filter...',
+              hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              suffixIcon: currentFilter != null
+                  ? InkWell(
+                      onTap: () {
+                        controller.clear();
+                        onFilterCleared();
+                      },
+                      child: Icon(Icons.clear, size: 16, color: theme.iconTheme.color),
+                    )
+                  : null,
             ),
+            style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+            onChanged: (value) => onFilterChanged(value.isEmpty ? null : value),
           ),
         ),
       ],

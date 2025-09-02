@@ -13,10 +13,12 @@ import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_wrapped
 /// InheritedWidget to provide form-level configuration to all fields
 class VooFormScope extends InheritedWidget {
   final bool isReadOnly;
+  final bool isLoading;
   
   const VooFormScope({
     super.key,
     required this.isReadOnly,
+    required this.isLoading,
     required super.child,
   });
   
@@ -25,7 +27,8 @@ class VooFormScope extends InheritedWidget {
   
   @override
   bool updateShouldNotify(VooFormScope oldWidget) =>
-      isReadOnly != oldWidget.isReadOnly;
+      isReadOnly != oldWidget.isReadOnly ||
+      isLoading != oldWidget.isLoading;
 }
 
 /// Simple, atomic form widget that manages field collection and validation
@@ -64,6 +67,9 @@ class VooForm extends StatefulWidget {
 
   /// Whether all fields in the form should be read-only
   final bool isReadOnly;
+  
+  /// Whether the form is in a loading state
+  final bool isLoading;
 
   const VooForm({
     super.key,
@@ -78,6 +84,7 @@ class VooForm extends StatefulWidget {
     this.onChanged,
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
     this.isReadOnly = false,
+    this.isLoading = false,
   });
 
   @override
@@ -218,6 +225,7 @@ class _VooFormState extends State<VooForm> {
   @override
   Widget build(BuildContext context) => VooFormScope(
         isReadOnly: widget.isReadOnly,
+        isLoading: widget.isLoading,
         child: Form(
           key: _formKey,
           child: _buildFormContent(),

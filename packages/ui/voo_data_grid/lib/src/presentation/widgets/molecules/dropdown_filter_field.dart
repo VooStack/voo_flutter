@@ -68,8 +68,8 @@ class DropdownFilterField<T> extends StatelessWidget {
     return DropdownButtonFormField<T>(
       initialValue: options.any((opt) => opt.value == value) ? value : null,
       decoration: InputDecoration(
-        labelText: label,
         hintText: hintText ?? 'Select option...',
+        labelText: label,
         border: const OutlineInputBorder(),
       ),
       items: [

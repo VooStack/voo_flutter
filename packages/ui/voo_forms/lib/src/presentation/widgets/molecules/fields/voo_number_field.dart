@@ -74,7 +74,7 @@ class VooNumberField extends VooFieldBase<num> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     final numberInput = VooNumberInput(
       controller: controller,
       focusNode: focusNode,

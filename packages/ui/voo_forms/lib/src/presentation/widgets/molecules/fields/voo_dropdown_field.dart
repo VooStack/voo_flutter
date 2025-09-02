@@ -148,7 +148,7 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     return _AsyncDropdownFieldWidget<T>(
       field: this,
     );
@@ -179,7 +179,7 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
   @override
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
-    
+
     // Build the dropdown with integrated async search
     Widget dropdownContent = VooDropdownSearchField<T>(
       items: const [], // Empty initial items, async search will load them
@@ -200,8 +200,8 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
       asyncSearch: widget.field.asyncOptionsLoader,
       searchDebounce: widget.field.searchDebounce,
       decoration: widget.field.getInputDecoration(context).copyWith(
-        suffixIcon: widget.field.dropdownIcon,
-      ),
+            suffixIcon: widget.field.dropdownIcon,
+          ),
     );
 
     // Apply standard field building pattern

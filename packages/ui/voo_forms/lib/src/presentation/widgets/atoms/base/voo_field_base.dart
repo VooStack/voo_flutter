@@ -84,6 +84,12 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     return readOnly;
   }
   
+  /// Get effective loading state from form-level configuration
+  bool getEffectiveLoading(BuildContext context) {
+    final formScope = VooFormScope.of(context);
+    return formScope?.isLoading ?? false;
+  }
+  
   /// Get responsive padding based on screen size
   EdgeInsets getFieldPadding(BuildContext context) {
     final screenType = VooScreenSize.getType(context);

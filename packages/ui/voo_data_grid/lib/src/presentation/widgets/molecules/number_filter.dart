@@ -39,6 +39,7 @@ class NumberFilter<T> extends StatelessWidget {
 
     return Container(
       height: 32,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
@@ -50,7 +51,7 @@ class NumberFilter<T> extends StatelessWidget {
           hintText: column.filterHint ?? 'Number...',
           hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           border: InputBorder.none,
           suffixIcon: currentFilter != null
               ? InkWell(
@@ -58,7 +59,7 @@ class NumberFilter<T> extends StatelessWidget {
                     controller.clear();
                     onFilterCleared();
                   },
-                  child: const Icon(Icons.clear, size: 16),
+                  child: Icon(Icons.clear, size: 16, color: theme.iconTheme.color),
                 )
               : null,
           suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),

@@ -93,12 +93,14 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
     
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+    
     Widget button = VooFormButton(
       text: _getButtonText(),
-      onPressed: enabled && !readOnly 
+      onPressed: enabled && !effectiveReadOnly 
           ? () => _selectDate(context)
           : null,
-      enabled: enabled && !readOnly,
+      enabled: enabled && !effectiveReadOnly,
       type: buttonType,
     );
     

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:voo_forms/src/domain/enums/button_type.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/buttons/voo_form_button.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_date_field_button.dart';
+import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart';
 
 void main() {
   group('VooDateFieldButton', () {
@@ -334,6 +335,112 @@ void main() {
       );
 
       expect(find.text('2024-06-15'), findsOneWidget);
+    });
+
+    testWidgets('respects readOnly property', (WidgetTester tester) async {
+      var tapped = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooDateFieldButton(
+              name: 'date',
+              readOnly: true,
+              onChanged: (date) {
+                tapped = true;
+              },
+            ),
+          ),
+        ),
+      );
+
+      // Try to tap the date button
+      await tester.tap(find.text('Select Date'));
+      await tester.pumpAndSettle();
+
+      // Should not open date picker
+      expect(tapped, isFalse);
+      expect(find.byType(CalendarDatePicker), findsNothing);
+    });
+
+    testWidgets('respects form-level readOnly', (WidgetTester tester) async {
+      var tapped = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooFormScope(
+              isReadOnly: true,
+              isLoading: false,
+              child: VooDateFieldButton(
+                name: 'date',
+                onChanged: (date) {
+                  tapped = true;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Try to tap the date button
+      await tester.tap(find.text('Select Date'));
+      await tester.pumpAndSettle();
+
+      // Should not open date picker
+      expect(tapped, isFalse);
+      expect(find.byType(CalendarDatePicker), findsNothing);
+    });
+
+    testWidgets('displays initial value on button', (WidgetTester tester) async {
+      final date = DateTime(2024, 12, 25);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooDateFieldButton(
+              name: 'dateButton',
+              initialValue: date,
+            ),
+          ),
+        ),
+      );
+
+      // Date should be displayed on button
+      expect(find.text('2024-12-25'), findsOneWidget);
+    });
+
+    testWidgets('displays placeholder when no initial value', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooDateFieldButton(
+              name: 'dateButton',
+              placeholder: 'Pick a date',
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Pick a date'), findsOneWidget);
+    });
+
+    testWidgets('button is disabled when readOnly', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooDateFieldButton(
+              name: 'date',
+              readOnly: true,
+              initialValue: DateTime(2024, 1, 1),
+            ),
+          ),
+        ),
+      );
+
+      // Find the VooFormButton widget and check its enabled state
+      final button = tester.widget<VooFormButton>(find.byType(VooFormButton));
+      expect(button.enabled, isFalse);
     });
   });
 }

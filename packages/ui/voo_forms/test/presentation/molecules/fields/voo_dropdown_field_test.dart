@@ -304,6 +304,98 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
 
+    testWidgets('displays initial value immediately', (WidgetTester tester) async {
+      const initialValue = 'Canada';
+      
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooAsyncDropdownField<String>(
+              name: 'async_country',
+              label: 'Country',
+              asyncOptionsLoader: (query) async {
+                await Future<void>.delayed(const Duration(milliseconds: 100));
+                return ['USA', 'Canada', 'Mexico'];
+              },
+              initialValue: initialValue,
+            ),
+          ),
+        ),
+      );
+
+      // Initial value should be displayed immediately before async load
+      expect(find.text(initialValue), findsOneWidget);
+      
+      // Complete async operations
+      await tester.pumpAndSettle();
+      
+      // Value should still be displayed
+      expect(find.text(initialValue), findsOneWidget);
+    });
+
+    testWidgets('displays initial value with custom displayTextBuilder', (WidgetTester tester) async {
+      const initialValue = 42;
+      
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooAsyncDropdownField<int>(
+              name: 'async_id',
+              label: 'ID',
+              asyncOptionsLoader: (query) async {
+                await Future<void>.delayed(const Duration(milliseconds: 100));
+                return [41, 42, 43];
+              },
+              initialValue: initialValue,
+              displayTextBuilder: (value) => 'ID: $value',
+            ),
+          ),
+        ),
+      );
+
+      // Initial value should be displayed with custom format
+      expect(find.text('ID: 42'), findsOneWidget);
+      
+      // Complete async operations
+      await tester.pumpAndSettle();
+      
+      // Value should still be displayed
+      expect(find.text('ID: 42'), findsOneWidget);
+    });
+
+    testWidgets('preserves selected value after async load', (WidgetTester tester) async {
+      const initialValue = 'Mexico';
+      
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooAsyncDropdownField<String>(
+              name: 'async_country',
+              label: 'Country',
+              asyncOptionsLoader: (query) async {
+                await Future<void>.delayed(const Duration(milliseconds: 100));
+                return ['USA', 'Canada', 'Mexico'];
+              },
+              initialValue: initialValue,
+            ),
+          ),
+        ),
+      );
+
+      // Initial value displayed
+      expect(find.text(initialValue), findsOneWidget);
+      
+      // Complete async load
+      await tester.pumpAndSettle();
+      
+      // Open dropdown
+      await tester.tap(find.text(initialValue));
+      await tester.pumpAndSettle();
+      
+      // Should show check mark next to selected item
+      expect(find.byIcon(Icons.check), findsOneWidget);
+    });
+
     testWidgets('does not show duplicate labels', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
