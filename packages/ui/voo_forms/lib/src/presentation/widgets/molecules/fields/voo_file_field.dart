@@ -251,7 +251,6 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
       final result = await FilePicker.platform.pickFiles(
         type: fileType,
         allowedExtensions: fileType == FileType.custom ? allowedExtensions : null,
-        allowMultiple: false,
         allowCompression: allowCompression,
       );
 

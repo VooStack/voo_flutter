@@ -17,7 +17,7 @@ class VooDynamicFormLayout extends StatelessWidget {
   const VooDynamicFormLayout({
     super.key,
     required this.fields,
-    this.spacing = 20.0,
+    this.spacing = 24.0,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
@@ -70,7 +70,6 @@ class VooDynamicFormLayout extends StatelessWidget {
       fields: fields,
       spacing: spacing,
       runSpacing: spacing,
-      minFieldWidth: 280.0,
     );
   }
 }

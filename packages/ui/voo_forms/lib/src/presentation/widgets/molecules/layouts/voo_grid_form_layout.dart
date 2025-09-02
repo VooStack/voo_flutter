@@ -15,8 +15,8 @@ class VooGridFormLayout extends StatelessWidget {
     super.key,
     required this.fields,
     this.columns = 2,
-    this.spacing = 16.0,
-    this.horizontalSpacing = 16.0,
+    this.spacing = 20.0,
+    this.horizontalSpacing = 24.0,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
@@ -40,9 +40,6 @@ class VooGridFormLayout extends StatelessWidget {
         i++;
         continue;
       }
-
-      // Calculate how many columns this field should span
-      final fieldSpan = field.layout.gridSpan?.clamp(1, columns) ?? 1;
 
       // Build a row with fields that fit
       final rowChildren = <Widget>[];

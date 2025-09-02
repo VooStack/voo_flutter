@@ -20,6 +20,8 @@ class VooBooleanField extends VooFieldBase<bool> {
     super.onChanged,
     super.actions,
     super.gridColumns,
+    super.layout,
+    super.isHidden,
   }) : super(
           initialValue: initialValue ?? false,
         );
@@ -73,8 +75,8 @@ class VooBooleanField extends VooFieldBase<bool> {
     );
 
     // Wrap in a card-like container for better visual separation
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    final container = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
@@ -84,5 +86,7 @@ class VooBooleanField extends VooFieldBase<bool> {
       ),
       child: switchRow,
     );
+    
+    return buildFieldContainer(context, container);
   }
 }

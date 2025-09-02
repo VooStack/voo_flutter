@@ -50,7 +50,7 @@ class VooForm extends StatefulWidget {
     this.controller,
     this.layout = FormLayout.dynamic,
     this.gridColumns = 2,
-    this.spacing = 16.0,
+    this.spacing = 24.0,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,

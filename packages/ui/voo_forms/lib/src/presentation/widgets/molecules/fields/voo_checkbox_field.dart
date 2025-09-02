@@ -56,9 +56,9 @@ class VooCheckboxField extends VooFieldBase<bool> {
     // Build the checkbox with label in a row
     final checkboxRow = InkWell(
       onTap: enabled && !readOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
         child: Row(
           children: [
             VooCheckboxInput(
@@ -99,6 +99,6 @@ class VooCheckboxField extends VooFieldBase<bool> {
       ),
     );
 
-    return checkboxRow;
+    return buildFieldContainer(context, checkboxRow);
   }
 }

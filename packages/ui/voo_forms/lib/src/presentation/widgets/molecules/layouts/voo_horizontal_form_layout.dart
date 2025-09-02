@@ -13,8 +13,8 @@ class VooHorizontalFormLayout extends StatelessWidget {
   const VooHorizontalFormLayout({
     super.key,
     required this.fields,
-    this.spacing = 16.0,
-    this.fieldWidth = 250.0,
+    this.spacing = 20.0,
+    this.fieldWidth = 280.0,
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,

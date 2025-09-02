@@ -15,9 +15,9 @@ class VooWrappedFormLayout extends StatelessWidget {
   const VooWrappedFormLayout({
     super.key,
     required this.fields,
-    this.spacing = 16.0,
-    this.runSpacing = 16.0,
-    this.minFieldWidth = 250.0,
+    this.spacing = 20.0,
+    this.runSpacing = 20.0,
+    this.minFieldWidth = 280.0,
     this.alignment = WrapAlignment.start,
     this.runAlignment = WrapAlignment.start,
     this.crossAxisAlignment = WrapCrossAlignment.start,

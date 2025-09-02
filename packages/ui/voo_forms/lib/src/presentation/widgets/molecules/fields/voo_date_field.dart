@@ -34,6 +34,8 @@ class VooDateField extends VooFieldBase<DateTime> {
     super.gridColumns,
     super.error,
     super.showError,
+    super.layout,
+    super.isHidden,
     this.controller,
     this.focusNode,
     this.firstDate,

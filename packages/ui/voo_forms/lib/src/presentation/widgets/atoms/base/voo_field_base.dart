@@ -66,7 +66,10 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   Widget buildFieldContainer(BuildContext context, Widget child) {
     // Return empty widget if field is hidden
     if (isHidden) return const SizedBox.shrink();
-    return Container(child: child);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: child,
+    );
   }
 
   /// Builds the field with label if provided
