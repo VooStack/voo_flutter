@@ -111,7 +111,9 @@ void main() {
         ),
       );
 
-      expect(find.text('user@example.com'), findsOneWidget);
+      // Find the TextField and check its value
+      final textField = tester.widget<TextField>(find.byType(TextField));
+      expect(textField.controller?.text, 'user@example.com');
     });
 
     testWidgets('shows error message', (WidgetTester tester) async {

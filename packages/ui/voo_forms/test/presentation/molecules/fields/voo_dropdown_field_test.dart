@@ -114,8 +114,10 @@ void main() {
 
       // Open dropdown
       await tester.tap(find.byType(DropdownButtonFormField<int>));
-      await tester.pumpAndSettle();
+      await tester.pump(); // Use pump instead of pumpAndSettle for dropdown animation
+      await tester.pump(const Duration(seconds: 1)); // Wait for dropdown to fully open
 
+      // The dropdown items should now be visible
       expect(find.text('Number: 1'), findsOneWidget);
       expect(find.text('Number: 2'), findsOneWidget);
       expect(find.text('Number: 3'), findsOneWidget);
@@ -213,7 +215,7 @@ void main() {
               label: 'Country',
               placeholder: 'Loading countries...',
               asyncOptionsLoader: (query) async {
-                await Future<void>.delayed(const Duration(seconds: 1));
+                await Future<void>.delayed(const Duration(milliseconds: 100));
                 return ['USA', 'Canada', 'Mexico'];
               },
             ),
@@ -223,6 +225,9 @@ void main() {
 
       expect(find.text('Loading countries...'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      
+      // Wait for the async operation to complete to avoid timer issues
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
 
     testWidgets('loads options asynchronously', (WidgetTester tester) async {
@@ -281,7 +286,7 @@ void main() {
               label: 'Country',
               loadingIndicator: const Text('Loading...'),
               asyncOptionsLoader: (query) async {
-                await Future<void>.delayed(const Duration(seconds: 1));
+                await Future<void>.delayed(const Duration(milliseconds: 100));
                 return ['USA', 'Canada'];
               },
             ),
@@ -290,6 +295,9 @@ void main() {
       );
 
       expect(find.text('Loading...'), findsOneWidget);
+      
+      // Wait for the async operation to complete to avoid timer issues
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
 
     testWidgets('does not show duplicate labels', (WidgetTester tester) async {

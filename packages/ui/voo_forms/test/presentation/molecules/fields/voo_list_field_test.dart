@@ -168,7 +168,10 @@ void main() {
       );
 
       // The add button should exist but be disabled
-      final addButtonFinder = find.byType(OutlinedButton);
+      // Note: OutlinedButton.icon is used, so we look for OutlinedButton as the base type
+      final addButtonFinder = find.byWidgetPredicate(
+        (widget) => widget is OutlinedButton,
+      );
       expect(addButtonFinder, findsOneWidget);
       
       final addButton = tester.widget<OutlinedButton>(addButtonFinder);
