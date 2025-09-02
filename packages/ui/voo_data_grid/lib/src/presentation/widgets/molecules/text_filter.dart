@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/operator_selector.dart';
 
 /// A molecule component for text filter input with operator selector support
@@ -55,24 +56,9 @@ class TextFilter<T> extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: controller,
-            decoration: InputDecoration(
-              fillColor: theme.colorScheme.surfaceContainer,
-              constraints: const BoxConstraints(maxHeight: 32),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(3),
-                borderSide: BorderSide(color: theme.primaryColor),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(3),
-                borderSide: BorderSide(color: theme.dividerColor),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(3),
-                borderSide: BorderSide(color: theme.dividerColor),
-              ),
+            decoration: FilterInputDecoration.standard(
+              context: context,
               hintText: column.filterHint ?? 'Filter...',
-              hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
               suffixIcon: currentFilter != null
                   ? InkWell(
                       onTap: () {

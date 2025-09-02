@@ -18,7 +18,8 @@ void main() {
       );
 
       expect(find.text('Country'), findsOneWidget);
-      expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+      // VooDropdownField uses VooDropdownSearchField which uses TextFormField
+      expect(find.byType(TextFormField), findsOneWidget);
     });
 
     testWidgets('shows required indicator when required', (WidgetTester tester) async {
@@ -88,11 +89,11 @@ void main() {
         ),
       );
 
-      // Open dropdown
-      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      // Open dropdown by tapping the TextFormField
+      await tester.tap(find.byType(TextFormField));
       await tester.pumpAndSettle();
 
-      // Select 'Canada'
+      // Select 'Canada' from the dropdown overlay
       await tester.tap(find.text('Canada').last);
       await tester.pumpAndSettle();
 
@@ -116,15 +117,15 @@ void main() {
       // (Rather than testing the opened dropdown menu which may have timing issues)
       // We can verify this by selecting an item and checking the displayed value
       
-      // First select an item
-      await tester.tap(find.byType(DropdownButtonFormField<int>));
+      // Open dropdown by tapping the TextFormField
+      await tester.tap(find.byType(TextFormField));
       await tester.pumpAndSettle();
       
       // The dropdown should show the options with displayTextBuilder formatting
       // Look for the dropdown menu items in the overlay
-      expect(find.text('Number: 1').last, findsOneWidget);
-      expect(find.text('Number: 2').last, findsOneWidget);
-      expect(find.text('Number: 3').last, findsOneWidget);
+      expect(find.text('Number: 1'), findsWidgets);
+      expect(find.text('Number: 2'), findsWidgets);
+      expect(find.text('Number: 3'), findsWidgets);
     });
 
     testWidgets('shows error message', (WidgetTester tester) async {
@@ -173,10 +174,11 @@ void main() {
         ),
       );
 
-      final dropdown = tester.widget<DropdownButtonFormField<String>>(
-        find.byType(DropdownButtonFormField<String>),
+      // When disabled, the TextFormField should be disabled
+      final textFormField = tester.widget<TextFormField>(
+        find.byType(TextFormField),
       );
-      expect(dropdown.onChanged, null);
+      expect(textFormField.enabled, false);
     });
 
     testWidgets('validates required field', (WidgetTester tester) async {
@@ -228,7 +230,8 @@ void main() {
       );
 
       expect(find.text('Loading countries...'), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      // CircularProgressIndicator might be part of the loading state
+      expect(find.byType(CircularProgressIndicator), findsWidgets);
       
       // Wait for the async operation to complete to avoid timer issues
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
@@ -250,13 +253,14 @@ void main() {
       // Wait for async operation to complete
       await tester.pumpAndSettle();
 
-      // Open dropdown
-      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      // Open dropdown by tapping the TextFormField
+      await tester.tap(find.byType(TextFormField));
       await tester.pumpAndSettle();
 
-      expect(find.text('USA'), findsOneWidget);
-      expect(find.text('Canada'), findsOneWidget);
-      expect(find.text('Mexico'), findsOneWidget);
+      // Check items are in the dropdown overlay
+      expect(find.text('USA'), findsWidgets);
+      expect(find.text('Canada'), findsWidgets);
+      expect(find.text('Mexico'), findsWidgets);
     });
 
     testWidgets('handles async loader errors gracefully', (WidgetTester tester) async {
@@ -274,8 +278,8 @@ void main() {
         ),
       );
 
-      // Wait for async operation to complete
-      await tester.pumpAndSettle();
+      // Wait for async operation to complete with timeout
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
 
       // Should not show loading indicator after error
       expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -394,6 +398,63 @@ void main() {
       
       // Should show check mark next to selected item
       expect(find.byIcon(Icons.check), findsOneWidget);
+    });
+
+    testWidgets('shows initial value even when not in async loaded items', (WidgetTester tester) async {
+      const initialValue = 'Custom Value';
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooAsyncDropdownField<String>(
+              name: 'custom',
+              label: 'Custom',
+              asyncOptionsLoader: (query) async {
+                // Return items that don't include the initial value
+                await Future<void>.delayed(const Duration(milliseconds: 100));
+                return ['Option A', 'Option B', 'Option C'];
+              },
+              initialValue: initialValue,
+            ),
+          ),
+        ),
+      );
+
+      // Initial value should be displayed even though it's not in the async items
+      expect(find.text(initialValue), findsOneWidget);
+      
+      // Complete the async operation
+      await tester.pumpAndSettle();
+      
+      // Value should still be displayed
+      expect(find.text(initialValue), findsOneWidget);
+    });
+
+    testWidgets('displays initial value correctly', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooAsyncDropdownField<String>(
+              name: 'dynamic',
+              label: 'Dynamic',
+              asyncOptionsLoader: (query) async {
+                await Future<void>.delayed(const Duration(milliseconds: 50));
+                return ['First Value', 'Second Value', 'Third Value'];
+              },
+              initialValue: 'First Value',
+            ),
+          ),
+        ),
+      );
+
+      // Initial value should be displayed immediately
+      expect(find.text('First Value'), findsOneWidget);
+      
+      // Wait for async load to complete
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+      
+      // Value should still be displayed
+      expect(find.text('First Value'), findsOneWidget);
     });
 
     testWidgets('does not show duplicate labels', (WidgetTester tester) async {

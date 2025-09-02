@@ -340,5 +340,126 @@ void main() {
       expect(find.text('Email'), findsOneWidget);
       expect(find.text('Create'), findsOneWidget);
     });
+
+    testWidgets('shows loading indicator when isLoading is true', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: VooForm(
+              isLoading: true,
+              fields: [
+                VooTextField(name: 'name', label: 'Name'),
+                VooEmailField(name: 'email', label: 'Email'),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // Should show loading indicator
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      
+      // Should NOT show form fields
+      expect(find.text('Name'), findsNothing);
+      expect(find.text('Email'), findsNothing);
+    });
+
+    testWidgets('shows custom loading widget when provided', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: VooForm(
+              isLoading: true,
+              loadingWidget: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Loading form data...'),
+                  ],
+                ),
+              ),
+              fields: [
+                VooTextField(name: 'name', label: 'Name'),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // Should show custom loading widget
+      expect(find.text('Loading form data...'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      
+      // Should NOT show form fields
+      expect(find.text('Name'), findsNothing);
+    });
+
+    testWidgets('shows form when isLoading is false', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: VooForm(
+              isLoading: false,
+              fields: [
+                VooTextField(name: 'name', label: 'Name'),
+                VooEmailField(name: 'email', label: 'Email'),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      // Should NOT show loading indicator
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      
+      // Should show form fields
+      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Email'), findsOneWidget);
+    });
+
+    testWidgets('transitions from loading to loaded state', (WidgetTester tester) async {
+      bool isLoading = true;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) => Column(
+                children: [
+                  VooForm(
+                    isLoading: isLoading,
+                    fields: const [
+                      VooTextField(name: 'name', label: 'Name'),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                    child: const Text('Load Complete'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Initially should show loading
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text('Name'), findsNothing);
+      
+      // Trigger state change
+      await tester.tap(find.text('Load Complete'));
+      await tester.pumpAndSettle();
+      
+      // Should now show form
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('Name'), findsOneWidget);
+    });
   });
 }

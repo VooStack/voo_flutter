@@ -1,3 +1,33 @@
+## [0.3.1] - 2025-09-02
+
+### Fixed
+- **Initial Values Display**: Fixed all field types to properly display their initial values
+  - Text-based fields (VooTextField, VooEmailField, VooPasswordField, etc.) now correctly show initial values
+  - VooDateField properly formats and displays initial dates with default MM/dd/yyyy format
+  - VooDateFieldButton now correctly displays initial date values on the button
+  - VooAsyncDropdownField immediately displays initial values before async loading completes
+  - Added comprehensive test coverage for all field types' initial value display
+
+- **Dropdown Outside Click Dismissal**: VooDropdownSearchField now properly dismisses when clicking outside
+  - Added full-screen GestureDetector to capture outside clicks
+  - Improved overlay management for better UX
+
+- **ReadOnly State Enforcement**: Fixed file and date fields to respect readOnly state
+  - VooFileField now properly disables file picking when readOnly is true
+  - VooDateFieldButton correctly disables date selection when readOnly is true
+  - Both fields now use getEffectiveReadOnly(context) to check form-level and field-level states
+
+- **Form Loading State**: Added isLoading property to VooForm
+  - When isLoading is true, form content is hidden and a loading indicator is shown
+  - Added loadingWidget parameter for custom loading indicators
+  - VooFormScope now propagates loading state to all child fields
+
+### Added
+- **Comprehensive Test Coverage**: Added all_fields_initial_values_test.dart
+  - 25 test cases covering every VooField type
+  - Verifies initial value display for all field variations
+  - Integration test simulating real-world form scenarios
+
 ## [0.3.0] - 2025-09-02
 
 ### Added

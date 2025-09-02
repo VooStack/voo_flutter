@@ -301,6 +301,58 @@ void main() {
 
         expect(params[r'$filter'], '(price ge 10.0 and price le 100.0)');
       });
+
+      test('should handle between operator with only minimum value', () {
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: {
+            'quantity': const VooDataFilter(
+              operator: VooFilterOperator.between,
+              value: 5,
+            ),
+          },
+          sorts: [],
+        );
+        final params = result['params'] as Map<String, String>;
+
+        expect(params[r'$filter'], 'quantity ge 5');
+      });
+
+      test('should handle between operator with only maximum value', () {
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: {
+            'quantity': const VooDataFilter(
+              operator: VooFilterOperator.between,
+              value: null,
+              valueTo: 100,
+            ),
+          },
+          sorts: [],
+        );
+        final params = result['params'] as Map<String, String>;
+
+        expect(params[r'$filter'], 'quantity le 100');
+      });
+
+      test('should handle between operator with neither min nor max value', () {
+        final result = builder.buildRequest(
+          page: 0,
+          pageSize: 20,
+          filters: {
+            'quantity': const VooDataFilter(
+              operator: VooFilterOperator.between,
+              value: null,
+            ),
+          },
+          sorts: [],
+        );
+        final params = result['params'] as Map<String, String>;
+
+        expect(params.containsKey(r'$filter'), false);
+      });
     });
 
     group('OData v4 Logical Operators', () {

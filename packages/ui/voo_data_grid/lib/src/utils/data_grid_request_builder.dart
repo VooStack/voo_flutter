@@ -700,8 +700,22 @@ class DataGridRequestBuilder {
       case VooFilterOperator.endsWith:
         return 'endswith($field, ${_formatODataValue(filter.value)})';
       case VooFilterOperator.between:
-        // Use parentheses for proper precedence
-        return '($field ge ${_formatODataValue(filter.value)} and $field le ${_formatODataValue(filter.valueTo)})';
+        // Build expression parts based on available values
+        final expressions = <String>[];
+        if (filter.value != null) {
+          expressions.add('$field ge ${_formatODataValue(filter.value)}');
+        }
+        if (filter.valueTo != null) {
+          expressions.add('$field le ${_formatODataValue(filter.valueTo)}');
+        }
+        // Return combined expression or single expression or empty
+        if (expressions.length == 2) {
+          return '(${expressions.join(' and ')})';
+        } else if (expressions.length == 1) {
+          return expressions.first;
+        } else {
+          return '';
+        }
       case VooFilterOperator.inList:
         // OData v4 'in' operator for collections
         if (filter.value is List) {

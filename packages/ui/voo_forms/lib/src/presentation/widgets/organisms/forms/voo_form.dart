@@ -70,6 +70,9 @@ class VooForm extends StatefulWidget {
   
   /// Whether the form is in a loading state
   final bool isLoading;
+  
+  /// Custom widget to show when form is loading
+  final Widget? loadingWidget;
 
   const VooForm({
     super.key,
@@ -85,6 +88,7 @@ class VooForm extends StatefulWidget {
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
     this.isReadOnly = false,
     this.isLoading = false,
+    this.loadingWidget,
   });
 
   @override
@@ -223,14 +227,25 @@ class _VooFormState extends State<VooForm> {
   }
 
   @override
-  Widget build(BuildContext context) => VooFormScope(
-        isReadOnly: widget.isReadOnly,
-        isLoading: widget.isLoading,
-        child: Form(
-          key: _formKey,
-          child: _buildFormContent(),
-        ),
-      );
+  Widget build(BuildContext context) {
+    // Show loading indicator if form is loading
+    if (widget.isLoading) {
+      return widget.loadingWidget ?? 
+        const Center(
+          child: CircularProgressIndicator(),
+        );
+    }
+    
+    // Otherwise show the form
+    return VooFormScope(
+      isReadOnly: widget.isReadOnly,
+      isLoading: widget.isLoading,
+      child: Form(
+        key: _formKey,
+        child: _buildFormContent(),
+      ),
+    );
+  }
 }
 
 /// Extension to access VooForm methods from State

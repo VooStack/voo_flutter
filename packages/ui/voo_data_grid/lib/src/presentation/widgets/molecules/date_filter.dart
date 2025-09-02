@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 
 /// A molecule component for date picker filter input
 class DateFilter<T> extends StatelessWidget {
@@ -41,42 +42,29 @@ class DateFilter<T> extends StatelessWidget {
     );
     final theme = Theme.of(context);
 
-    return Container(
-      height: 32,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: column.filterHint ?? 'Select date',
-          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          border: InputBorder.none,
-          suffixIcon: InkWell(
-            onTap: () async {
-              final date = await showDatePicker(
-                context: context,
-                initialDate: currentFilter?.value is DateTime ? currentFilter!.value as DateTime : DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-              );
-              if (date != null) {
-                controller.text = _formatDate(date);
-                onFilterChanged(date);
-              }
-            },
-            child: Icon(Icons.calendar_today, size: 16, color: theme.iconTheme.color),
-          ),
-          suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
+    return TextField(
+      controller: controller,
+      decoration: FilterInputDecoration.standard(
+        context: context,
+        hintText: column.filterHint ?? 'Select date',
+        suffixIcon: InkWell(
+          onTap: () async {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: currentFilter?.value is DateTime ? currentFilter!.value as DateTime : DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+            );
+            if (date != null) {
+              controller.text = _formatDate(date);
+              onFilterChanged(date);
+            }
+          },
+          child: Icon(Icons.calendar_today, size: 16, color: theme.iconTheme.color),
         ),
-        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-        readOnly: true,
       ),
+      style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+      readOnly: true,
     );
   }
 }

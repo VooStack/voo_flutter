@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 
 /// A molecule component for number range filter input (min/max)
 class NumberRangeFilter<T> extends StatelessWidget {
@@ -45,82 +46,54 @@ class NumberRangeFilter<T> extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            height: 32,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-              borderRadius: BorderRadius.circular(4),
+          child: TextField(
+            controller: minController,
+            decoration: FilterInputDecoration.standard(
+              context: context,
+              hintText: 'Min',
             ),
-            child: TextField(
-              controller: minController,
-              decoration: InputDecoration(
-                hintText: 'Min',
-                hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                border: InputBorder.none,
-              ),
-              style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
-              ],
-              onChanged: (value) {
-                final min = num.tryParse(value);
-                final max = num.tryParse(maxController.text);
-                if (min != null || max != null) {
-                  onFilterChanged({
-                    'operator': VooFilterOperator.between,
-                    'value': min,
-                    'valueTo': max,
-                  });
-                } else {
-                  onFilterCleared();
-                }
-              },
-            ),
+            style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
+            ],
+            onChanged: (value) {
+              final min = num.tryParse(value);
+              final max = num.tryParse(maxController.text);
+              // Always update the filter, even with partial values
+              // Don't clear the filter row when one field is empty
+              onFilterChanged({
+                'operator': VooFilterOperator.between,
+                'value': min,
+                'valueTo': max,
+              });
+            },
           ),
         ),
         const SizedBox(width: 4),
         Expanded(
-          child: Container(
-            height: 32,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-              borderRadius: BorderRadius.circular(4),
+          child: TextField(
+            controller: maxController,
+            decoration: FilterInputDecoration.standard(
+              context: context,
+              hintText: 'Max',
             ),
-            child: TextField(
-              controller: maxController,
-              decoration: InputDecoration(
-                hintText: 'Max',
-                hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                border: InputBorder.none,
-              ),
-              style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
-              ],
-              onChanged: (value) {
-                final min = num.tryParse(minController.text);
-                final max = num.tryParse(value);
-                if (min != null || max != null) {
-                  onFilterChanged({
-                    'operator': VooFilterOperator.between,
-                    'value': min,
-                    'valueTo': max,
-                  });
-                } else {
-                  onFilterCleared();
-                }
-              },
-            ),
+            style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
+            ],
+            onChanged: (value) {
+              final min = num.tryParse(minController.text);
+              final max = num.tryParse(value);
+              // Always update the filter, even with partial values
+              // Don't clear the filter row when one field is empty
+              onFilterChanged({
+                'operator': VooFilterOperator.between,
+                'value': min,
+                'valueTo': max,
+              });
+            },
           ),
         ),
       ],

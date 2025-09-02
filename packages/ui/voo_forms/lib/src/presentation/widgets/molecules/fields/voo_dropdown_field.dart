@@ -177,6 +177,17 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
   }
 
   @override
+  void didUpdateWidget(_AsyncDropdownFieldWidget<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update selected value if initialValue changes
+    if (widget.field.initialValue != oldWidget.field.initialValue) {
+      setState(() {
+        _selectedValue = widget.field.initialValue;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Default value input widget for filter rows
@@ -16,26 +17,14 @@ class DefaultFilterValueInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Container(
-      height: 32,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(4),
+    return TextField(
+      decoration: FilterInputDecoration.standard(
+        context: context,
+        hintText: 'Value...',
       ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Value...',
-          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          border: InputBorder.none,
-        ),
-        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-        controller: TextEditingController(text: filter.value?.toString() ?? ''),
-        onChanged: onChanged,
-      ),
+      style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+      controller: TextEditingController(text: filter.value?.toString() ?? ''),
+      onChanged: onChanged,
     );
   }
 }

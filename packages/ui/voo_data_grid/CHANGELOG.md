@@ -1,3 +1,30 @@
+## 0.7.2 - 2025-09-02
+
+* **Maintenance Release**
+  * Version bump for package distribution
+  * No functional changes from 0.7.1
+
+## 0.7.1 - 2025-09-02
+
+* **Filter Input Improvements**
+  * Added FilterInputDecoration atom widget for consistent input styling
+  * Refactored all filter widgets to use the new centralized decoration
+  * Improved code maintainability by eliminating duplicate input decoration code
+  * Ensured uniform styling across all filter types with single source of truth
+
+* **OData Filter Bug Fix**
+  * Fixed OData between operator to properly handle partial range filters
+  * Now correctly generates only `ge` (greater than or equal) when only minimum value is specified
+  * Now correctly generates only `le` (less than or equal) when only maximum value is specified
+  * Prevents "binary operator LessThanOrEqual not defined" errors on backend when using partial ranges
+  * Added comprehensive tests for all between operator scenarios
+
+* **Number Range Filter UX Fix**
+  * Fixed issue where backspacing in min/max fields would remove the entire filter row
+  * Now properly maintains filter row when clearing individual min or max values
+  * Filter is only removed when both min and max values are empty
+  * Improved user experience for partial range filtering
+
 ## 0.7.0 - 2025-09-02
 
 * **UI Consistency Improvements**

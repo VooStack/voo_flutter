@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 
 /// A molecule component for number filter input
 class NumberFilter<T> extends StatelessWidget {
@@ -37,43 +38,30 @@ class NumberFilter<T> extends StatelessWidget {
     );
     final theme = Theme.of(context);
 
-    return Container(
-      height: 32,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(4),
+    return TextField(
+      controller: controller,
+      decoration: FilterInputDecoration.standard(
+        context: context,
+        hintText: column.filterHint ?? 'Number...',
+        suffixIcon: currentFilter != null
+            ? InkWell(
+                onTap: () {
+                  controller.clear();
+                  onFilterCleared();
+                },
+                child: Icon(Icons.clear, size: 16, color: theme.iconTheme.color),
+              )
+            : null,
       ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: column.filterHint ?? 'Number...',
-          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          border: InputBorder.none,
-          suffixIcon: currentFilter != null
-              ? InkWell(
-                  onTap: () {
-                    controller.clear();
-                    onFilterCleared();
-                  },
-                  child: Icon(Icons.clear, size: 16, color: theme.iconTheme.color),
-                )
-              : null,
-          suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
-        ),
-        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
-        ],
-        onChanged: (value) {
-          final number = num.tryParse(value);
-          onFilterChanged(number);
-        },
-      ),
+      style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
+      ],
+      onChanged: (value) {
+        final number = num.tryParse(value);
+        onFilterChanged(number);
+      },
     );
   }
 }

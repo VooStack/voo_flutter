@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/compact_dropdown.dart';
+import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// A molecule component for dropdown filter input with data grid styling
@@ -67,10 +68,9 @@ class DropdownFilterField<T> extends StatelessWidget {
 
     return DropdownButtonFormField<T>(
       initialValue: options.any((opt) => opt.value == value) ? value : null,
-      decoration: InputDecoration(
+      decoration: FilterInputDecoration.standard(
+        context: context,
         hintText: hintText ?? 'Select option...',
-        labelText: label,
-        border: const OutlineInputBorder(),
       ),
       items: [
         if (showAllOption)
