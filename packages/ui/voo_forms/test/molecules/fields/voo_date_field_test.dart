@@ -7,7 +7,7 @@ void main() {
   group('VooDateField', () {
     testWidgets('should display label when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -22,7 +22,7 @@ void main() {
 
     testWidgets('should display placeholder when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -93,7 +93,7 @@ void main() {
 
     testWidgets('should show calendar icon by default', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -107,7 +107,7 @@ void main() {
 
     testWidgets('should display helper text when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -122,7 +122,7 @@ void main() {
 
     testWidgets('should display error when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -137,7 +137,7 @@ void main() {
 
     testWidgets('should not display error when showError is false', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -153,7 +153,7 @@ void main() {
 
     testWidgets('should display required asterisk when required is true', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -169,7 +169,7 @@ void main() {
 
     testWidgets('should open date picker when tapped', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -189,7 +189,7 @@ void main() {
 
     testWidgets('should not open date picker when disabled', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -210,7 +210,7 @@ void main() {
 
     testWidgets('should not open date picker when readOnly', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
@@ -259,11 +259,11 @@ void main() {
 
     testWidgets('should display custom prefix icon when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
-              prefixIcon: const Icon(Icons.cake),
+              prefixIcon: Icon(Icons.cake),
             ),
           ),
         ),
@@ -274,11 +274,11 @@ void main() {
 
     testWidgets('should display custom suffix icon when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateField(
               name: 'birthdate',
-              suffixIcon: const Icon(Icons.event),
+              suffixIcon: Icon(Icons.event),
             ),
           ),
         ),

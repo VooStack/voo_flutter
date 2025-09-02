@@ -277,7 +277,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
             foregroundColor: theme.colorScheme.primary,
             side: BorderSide(
               color: enabled ? theme.colorScheme.outline.withValues(alpha: 0.5) : theme.colorScheme.outline.withValues(alpha: 0.3),
-              width: 1,
             ),
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             shape: RoundedRectangleBorder(

@@ -98,7 +98,6 @@ void main() {
                 submitCalled = true;
                 expect(values, isNotNull);
               },
-              validateOnSubmit: false,
             ),
           ),
         ),
@@ -239,7 +238,6 @@ void main() {
               onSuccess: () {
                 successCalled = true;
               },
-              validateOnSubmit: false,
             ),
           ),
         ),
@@ -270,7 +268,6 @@ void main() {
               onError: (error) {
                 capturedError = error;
               },
-              validateOnSubmit: false,
             ),
           ),
         ),

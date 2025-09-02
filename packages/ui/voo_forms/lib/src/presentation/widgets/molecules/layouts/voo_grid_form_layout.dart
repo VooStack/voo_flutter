@@ -96,7 +96,6 @@ class VooGridFormLayout extends StatelessWidget {
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.max,
               children: rowChildren,
             ),
           ),

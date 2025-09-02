@@ -132,7 +132,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
           }
           final displayText = widget.displayTextBuilder?.call(item) ?? item.toString();
           return displayText.toLowerCase().contains(searchTerm.toLowerCase());
-        }).toList());
+        }).toList(),);
       }
     });
     _updateOverlay();
@@ -309,7 +309,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final displayText = _selectedValue != null ? (widget.displayTextBuilder?.call(_selectedValue!) ?? _selectedValue.toString()) : null;
+    final displayText = _selectedValue != null ? (widget.displayTextBuilder?.call(_selectedValue as T) ?? _selectedValue.toString()) : null;
 
     return CompositedTransformTarget(
       link: _layerLink,

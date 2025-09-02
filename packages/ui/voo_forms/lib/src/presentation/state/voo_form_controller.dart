@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/form_validation_mode.dart';
 
 class VooFormController extends ChangeNotifier {
@@ -11,8 +12,13 @@ class VooFormController extends ChangeNotifier {
   final Map<String, dynamic> _fieldValues = {};
   final Map<String, String> _fieldErrors = {};
   final Map<String, GlobalKey> _fieldKeys = {};
+  final VooFormErrorDisplayMode errorDisplayMode;
+  bool _hasSubmitted = false;
 
-  VooFormController({required VooForm form}) : _form = form {
+  VooFormController({
+    required VooForm form,
+    this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
+  }) : _form = form {
     _initializeForm();
   }
 
@@ -109,7 +115,7 @@ class VooFormController extends ChangeNotifier {
       }
     }
 
-    if (validate || _form.validationMode == FormValidationMode.onChange) {
+    if (validate || (_form.validationMode == FormValidationMode.onChange && errorDisplayMode == VooFormErrorDisplayMode.onTyping)) {
       validateField(fieldId);
     }
 
@@ -165,33 +171,51 @@ class VooFormController extends ChangeNotifier {
     }
 
     if (_fieldValues[fieldId] != convertedValue) {
-      setValue(fieldId, convertedValue);
+      // Only validate onChange if errorDisplayMode is onTyping
+      final shouldValidate = errorDisplayMode == VooFormErrorDisplayMode.onTyping;
+      setValue(fieldId, convertedValue, validate: shouldValidate);
 
       final field = _form.getField(fieldId);
       field?.onChanged?.call(value);
     }
   }
 
-  bool validateField(String fieldId) {
+  bool validateField(String fieldId, {bool force = false}) {
     final field = _form.getField(fieldId);
     if (field == null) return true;
+
+    // Check if we should show errors based on errorDisplayMode
+    final shouldShowError = force || 
+        errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
+        (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted);
 
     // Create a field with the current value
     final fieldWithValue = field.copyWith(value: _fieldValues[fieldId]);
     final error = fieldWithValue.validate();
 
-    if (error != null) {
-      _fieldErrors[fieldId] = error;
-    } else {
-      _fieldErrors.remove(fieldId);
+    if (shouldShowError) {
+      if (error != null) {
+        _fieldErrors[fieldId] = error;
+      } else {
+        _fieldErrors.remove(fieldId);
+      }
+      notifyListeners();
     }
 
-    notifyListeners();
     return error == null;
   }
 
-  bool validateAll() {
-    _fieldErrors.clear();
+  bool validateAll({bool force = false}) {
+    // Check if we should show errors based on errorDisplayMode
+    final shouldShowError = force || 
+        errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
+        (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted) ||
+        errorDisplayMode == VooFormErrorDisplayMode.none;
+
+    if (shouldShowError) {
+      _fieldErrors.clear();
+    }
+    
     bool isValid = true;
 
     for (final field in _form.fields) {
@@ -200,14 +224,16 @@ class VooFormController extends ChangeNotifier {
       final error = fieldWithValue.validate();
 
       if (error != null) {
-        _fieldErrors[field.id] = error;
+        if (shouldShowError) {
+          _fieldErrors[field.id] = error;
+        }
         isValid = false;
       }
     }
 
     _form = _form.copyWith(
       isValid: isValid,
-      errors: _fieldErrors,
+      errors: shouldShowError ? _fieldErrors : {},
     );
 
     notifyListeners();
@@ -241,6 +267,7 @@ class VooFormController extends ChangeNotifier {
   void reset() {
     _fieldValues.clear();
     _fieldErrors.clear();
+    _hasSubmitted = false;
 
     // Reset to initial values
     for (final field in _form.fields) {
@@ -268,6 +295,7 @@ class VooFormController extends ChangeNotifier {
   void clear() {
     _fieldValues.clear();
     _fieldErrors.clear();
+    _hasSubmitted = false;
 
     // Clear text controllers
     for (final controller in _textControllers.values) {
@@ -292,8 +320,11 @@ class VooFormController extends ChangeNotifier {
   }) async {
     if (_form.isSubmitting) return false;
 
-    // Validate all fields
-    if (!validateAll()) {
+    // Mark as submitted for error display
+    _hasSubmitted = true;
+
+    // Validate all fields (force display of errors on submit)
+    if (!validateAll(force: true)) {
       return false;
     }
 

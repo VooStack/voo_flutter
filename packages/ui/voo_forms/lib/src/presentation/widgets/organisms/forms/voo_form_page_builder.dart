@@ -62,9 +62,6 @@ class VooFormPageBuilder extends StatefulWidget {
   /// Scroll physics for the page
   final ScrollPhysics? physics;
 
-  /// Whether to validate on submit
-  final bool validateOnSubmit;
-
   /// Whether fields are editable
   final bool isEditable;
 
@@ -102,7 +99,6 @@ class VooFormPageBuilder extends StatefulWidget {
     this.spacing = 16.0,
     this.padding,
     this.physics,
-    this.validateOnSubmit = true,
     this.isEditable = true,
     this.actionsBuilder,
     this.actionsAlignment = MainAxisAlignment.end,
@@ -152,12 +148,11 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
       // For now, just call onSubmit with empty values if no controller
       // The actual form values will be handled by VooForm internally
       if (_controller != null) {
-        if (widget.validateOnSubmit) {
-          final isValid = _controller!.validate();
-          if (!isValid) {
-            setState(() => _isSubmitting = false);
-            return;
-          }
+        // Always validate on submit, controller will handle error display based on errorDisplayMode
+        final isValid = _controller!.validateAll(force: true);
+        if (!isValid) {
+          setState(() => _isSubmitting = false);
+          return;
         }
         final values = _controller!.values;
         widget.onSubmit?.call(values);

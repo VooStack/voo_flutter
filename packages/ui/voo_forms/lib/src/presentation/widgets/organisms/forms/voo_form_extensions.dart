@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart';
 import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form_page_builder.dart';
@@ -55,7 +56,7 @@ extension VooFormExtension on List<VooFormFieldWidget> {
     double spacing = 16.0,
     EdgeInsetsGeometry? padding,
     ScrollPhysics? physics,
-    bool validateOnSubmit = true,
+    VooFormErrorDisplayMode errorDisplayMode = VooFormErrorDisplayMode.onTyping,
     bool isEditable = true,
     bool showProgress = false,
     bool wrapInCard = false,
@@ -63,7 +64,7 @@ extension VooFormExtension on List<VooFormFieldWidget> {
     EdgeInsetsGeometry? cardMargin,
   }) =>
       VooFormPageBuilder(
-        form: VooForm(fields: this, spacing: spacing),
+        form: VooForm(fields: this, spacing: spacing, errorDisplayMode: errorDisplayMode),
         onSubmit: onSubmit,
         onCancel: onCancel,
         onSuccess: onSuccess,
@@ -77,7 +78,6 @@ extension VooFormExtension on List<VooFormFieldWidget> {
         spacing: spacing,
         padding: padding,
         physics: physics,
-        validateOnSubmit: validateOnSubmit,
         isEditable: isEditable,
         showProgress: showProgress,
         wrapInCard: wrapInCard,

@@ -9,6 +9,7 @@ export 'src/domain/enums/button_type.dart';
 export 'src/domain/enums/error_display_mode.dart';
 export 'src/domain/enums/field_variant.dart';
 export 'src/domain/enums/focus_behavior.dart';
+export 'src/domain/enums/form_error_display_mode.dart';
 export 'src/domain/enums/form_layout.dart';
 export 'src/domain/enums/form_validation_mode.dart';
 export 'src/domain/enums/label_position.dart';

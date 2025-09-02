@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart' as domain;
+import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/form_layout.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
@@ -40,8 +41,8 @@ class VooForm extends StatefulWidget {
   /// Optional callback when form values change
   final void Function(Map<String, dynamic>)? onChanged;
 
-  /// Whether to show validation errors inline
-  final bool showValidationErrors;
+  /// When to display validation errors
+  final VooFormErrorDisplayMode errorDisplayMode;
 
   const VooForm({
     super.key,
@@ -54,7 +55,7 @@ class VooForm extends StatefulWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
     this.onChanged,
-    this.showValidationErrors = true,
+    this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
   });
 
   @override
@@ -75,6 +76,7 @@ class _VooFormState extends State<VooForm> {
     // Create or use provided controller
     if (widget.controller != null) {
       _controller = widget.controller!;
+      // Note: If a controller is provided, it should already have its errorDisplayMode set
     } else {
       // Create a minimal controller for value management
       _controller = VooFormController(
@@ -82,6 +84,7 @@ class _VooFormState extends State<VooForm> {
           id: 'voo_form_${DateTime.now().millisecondsSinceEpoch}',
           fields: const [],
         ),
+        errorDisplayMode: widget.errorDisplayMode,
       );
     }
     _controller.addListener(_handleControllerChange);
