@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/domain/enums/form_layout.dart';
 import 'package:voo_forms/src/domain/enums/form_validation_mode.dart';
 
 class VooForm extends Equatable {
@@ -16,7 +15,6 @@ class VooForm extends Equatable {
   final bool isDirty;
   final bool isSubmitting;
   final bool isSubmitted;
-  final FormLayout layout;
   final FormValidationMode validationMode;
 
   const VooForm({
@@ -32,7 +30,6 @@ class VooForm extends Equatable {
     this.isDirty = false,
     this.isSubmitting = false,
     this.isSubmitted = false,
-    this.layout = FormLayout.vertical,
     this.validationMode = FormValidationMode.onSubmit,
   });
 
@@ -49,9 +46,7 @@ class VooForm extends Equatable {
     bool? isDirty,
     bool? isSubmitting,
     bool? isSubmitted,
-    FormLayout? layout,
     FormValidationMode? validationMode,
-    Map<String, dynamic>? metadata,
   }) =>
       VooForm(
         id: id ?? this.id,
@@ -66,7 +61,6 @@ class VooForm extends Equatable {
         isDirty: isDirty ?? this.isDirty,
         isSubmitting: isSubmitting ?? this.isSubmitting,
         isSubmitted: isSubmitted ?? this.isSubmitted,
-        layout: layout ?? this.layout,
         validationMode: validationMode ?? this.validationMode,
       );
 
@@ -125,7 +119,6 @@ class VooForm extends Equatable {
         isDirty,
         isSubmitting,
         isSubmitted,
-        layout,
         validationMode,
       ];
 }
