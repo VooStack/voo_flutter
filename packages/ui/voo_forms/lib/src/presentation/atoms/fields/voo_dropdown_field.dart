@@ -403,7 +403,7 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
 
     return DropdownButtonFormField<T>(
       key: dropdownKey,
-      initialValue: widget.field.initialValue,
+      value: _currentValue,
       items: items,
       onChanged: widget.field.enabled && !widget.field.readOnly
           ? (T? value) {

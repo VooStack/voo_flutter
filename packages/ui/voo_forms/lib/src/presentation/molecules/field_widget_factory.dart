@@ -248,15 +248,22 @@ class FieldWidgetFactory {
               field: typedField,
               options: options,
               onChanged: onChanged != null ? (List<ItemType>? value) => onChanged(value) : null,
+              onAddItem: typedField.onAddItem != null ? (ItemType item) => typedField.onAddItem!([item] as List<ItemType>) : null,
+              onRemoveItem: typedField.onRemoveItem != null ? (int index, ItemType item) => typedField.onRemoveItem!(index, [item] as List<ItemType>) : null,
+              onEditItem: typedField.onEditItem != null ? (int index, ItemType item) => typedField.onEditItem!(index, [item] as List<ItemType>) : null,
               error: error,
               showError: showError,
             );
           } catch (_) {
             // If cast fails, create with dynamic type
+            final dynamicField = field as VooFormField<List<dynamic>>;
             return VooListFieldWidget<dynamic>(
-              field: field as VooFormField<List<dynamic>>,
+              field: dynamicField,
               options: options,
               onChanged: onChanged != null ? (List<dynamic>? value) => onChanged(value) : null,
+              onAddItem: dynamicField.onAddItem != null ? (dynamic item) => dynamicField.onAddItem!([item]) : null,
+              onRemoveItem: dynamicField.onRemoveItem != null ? (int index, dynamic item) => dynamicField.onRemoveItem!(index, [item]) : null,
+              onEditItem: dynamicField.onEditItem != null ? (int index, dynamic item) => dynamicField.onEditItem!(index, [item]) : null,
               error: error,
               showError: showError,
             );

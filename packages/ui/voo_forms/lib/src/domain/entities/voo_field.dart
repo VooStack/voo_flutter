@@ -1013,7 +1013,9 @@ class VooField {
     bool readOnly = false,
     List<Widget>? actions,
     int? gridColumns,
-    ValueChanged<List<T>?>? onChanged,
+    void Function(T item)? onAddItem,
+    void Function(int index, T item)? onRemoveItem,
+    void Function(int index, T item)? onEditItem,
     Widget? readOnlyWidget,
   }) {
     // Create initial list items based on initialItems
@@ -1065,7 +1067,15 @@ class VooField {
       removeButtonIcon: Icon(removeButtonIcon ?? Icons.remove_circle_outline),
       actions: actions,
       gridColumns: gridColumns,
-      onChanged: onChanged,
+      onAddItem: onAddItem != null ? (List<T> items) {
+        if (items.isNotEmpty) onAddItem(items.first);
+      } : null,
+      onRemoveItem: onRemoveItem != null ? (int index, List<T> items) {
+        if (items.isNotEmpty) onRemoveItem(index, items.first);
+      } : null,
+      onEditItem: onEditItem != null ? (int index, List<T> items) {
+        if (items.isNotEmpty) onEditItem(index, items.first);
+      } : null,
       readOnlyWidget: readOnlyWidget,
     );
   }

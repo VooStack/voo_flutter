@@ -54,11 +54,26 @@ class _ListFieldExamplePageState extends State<ListFieldExamplePage> {
                     initialItems: ['user@example.com'],
                     minItems: 1,
                     maxItems: 5,
-                    onChanged: (List<String>? value) {
+                    onAddItem: (String email) {
+                      debugPrint('Email added: $email');
                       setState(() {
-                        emailList = value;
+                        emailList ??= [];
+                        emailList!.add(email);
                       });
-                      debugPrint('Emails changed: $value');
+                    },
+                    onRemoveItem: (int index, String email) {
+                      debugPrint('Email removed at index $index: $email');
+                      setState(() {
+                        emailList?.removeAt(index);
+                      });
+                    },
+                    onEditItem: (int index, String email) {
+                      debugPrint('Email edited at index $index: $email');
+                      setState(() {
+                        if (emailList != null && index < emailList!.length) {
+                          emailList![index] = email;
+                        }
+                      });
                     },
                   ),
                   options: VooFieldOptions.material.copyWith(
@@ -93,11 +108,25 @@ class _ListFieldExamplePageState extends State<ListFieldExamplePage> {
                     addButtonText: 'Add Phone',
                     addButtonIcon: Icons.phone_android,
                     removeButtonIcon: Icons.delete_outline,
-                    onChanged: (List<String>? value) {
+                    onAddItem: (String phone) {
+                      debugPrint('Phone added: $phone');
                       setState(() {
-                        phoneNumbers = value
-                            ?.map((phone) => PhoneNumber(number: phone))
-                            .toList();
+                        phoneNumbers ??= [];
+                        phoneNumbers!.add(PhoneNumber(number: phone));
+                      });
+                    },
+                    onRemoveItem: (int index, String phone) {
+                      debugPrint('Phone removed at index $index: $phone');
+                      setState(() {
+                        phoneNumbers?.removeAt(index);
+                      });
+                    },
+                    onEditItem: (int index, String phone) {
+                      debugPrint('Phone edited at index $index: $phone');
+                      setState(() {
+                        if (phoneNumbers != null && index < phoneNumbers!.length) {
+                          phoneNumbers![index] = PhoneNumber(number: phone);
+                        }
                       });
                     },
                   ),
@@ -138,28 +167,48 @@ class _ListFieldExamplePageState extends State<ListFieldExamplePage> {
                         ],
                         maxItems: 3,
                         canReorderItems: true,
-                        onChanged: (List<String>? value) {
+                        onAddItem: (String addr) {
                           setState(() {
-                            addresses = value
-                                ?.map((addr) => Address(
-                                      street: addr.split(',')[0],
-                                      city: addr.split(',').length > 1
-                                          ? addr.split(',')[1].trim()
-                                          : '',
-                                      state: addr.split(',').length > 2
-                                          ? addr
-                                              .split(',')[2]
-                                              .trim()
-                                              .split(' ')[0]
-                                          : '',
-                                      zip: addr.split(',').length > 2
-                                          ? addr
-                                              .split(',')[2]
-                                              .trim()
-                                              .split(' ')[1]
-                                          : '',
-                                    ))
-                                .toList();
+                            addresses ??= [];
+                            addresses!.add(Address(
+                              street: addr.split(',')[0],
+                              city: addr.split(',').length > 1
+                                  ? addr.split(',')[1].trim()
+                                  : '',
+                              state: addr.split(',').length > 2
+                                  ? addr.split(',')[2].trim().split(' ')[0]
+                                  : '',
+                              zip: addr.split(',').length > 2
+                                  ? addr.split(',')[2].trim().split(' ').length > 1
+                                      ? addr.split(',')[2].trim().split(' ')[1]
+                                      : ''
+                                  : '',
+                            ));
+                          });
+                        },
+                        onRemoveItem: (int index, String addr) {
+                          setState(() {
+                            addresses?.removeAt(index);
+                          });
+                        },
+                        onEditItem: (int index, String addr) {
+                          setState(() {
+                            if (addresses != null && index < addresses!.length) {
+                              addresses![index] = Address(
+                                street: addr.split(',')[0],
+                                city: addr.split(',').length > 1
+                                    ? addr.split(',')[1].trim()
+                                    : '',
+                                state: addr.split(',').length > 2
+                                    ? addr.split(',')[2].trim().split(' ')[0]
+                                    : '',
+                                zip: addr.split(',').length > 2
+                                    ? addr.split(',')[2].trim().split(' ').length > 1
+                                        ? addr.split(',')[2].trim().split(' ')[1]
+                                        : ''
+                                    : '',
+                              );
+                            }
                           });
                         },
                       ),

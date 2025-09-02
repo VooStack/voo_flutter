@@ -10,6 +10,9 @@ class VooListFieldWidget<T> extends StatefulWidget {
   final VooFormField<List<T>> field;
   final VooFieldOptions options;
   final ValueChanged<List<T>?>? onChanged;
+  final void Function(T item)? onAddItem;
+  final void Function(int index, T item)? onRemoveItem;
+  final void Function(int index, T item)? onEditItem;
   final String? error;
   final bool showError;
 
@@ -18,6 +21,9 @@ class VooListFieldWidget<T> extends StatefulWidget {
     required this.field,
     required this.options,
     this.onChanged,
+    this.onAddItem,
+    this.onRemoveItem,
+    this.onEditItem,
     this.error,
     this.showError = true,
   });
@@ -72,16 +78,21 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final template = widget.field.itemTemplate!;
     
+    final newItem = template.copyWith(
+      id: '${widget.field.name}_item_$timestamp',
+      name: '${widget.field.name}_$timestamp',
+      value: null,
+    );
+    
     setState(() {
-      _items.add(
-        template.copyWith(
-          id: '${widget.field.name}_item_$timestamp',
-          name: '${widget.field.name}_$timestamp',
-          value: null,
-        ),
-      );
+      _items.add(newItem);
       _itemKeys.add(GlobalKey());
     });
+    
+    // Call the specific onAddItem callback if provided
+    if (widget.onAddItem != null && newItem.value != null) {
+      widget.onAddItem!(newItem.value as T);
+    }
     
     _notifyChange();
   }
@@ -98,11 +109,19 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
       return;
     }
     
+    // Get the item value before removing
+    final removedItem = _items[index];
+    
     setState(() {
       _items.removeAt(index);
       _itemKeys.removeAt(index);
       // Don't re-index the items to preserve their state
     });
+    
+    // Call the specific onRemoveItem callback if provided
+    if (widget.onRemoveItem != null && removedItem.value != null) {
+      widget.onRemoveItem!(index, removedItem.value as T);
+    }
     
     _notifyChange();
   }
@@ -111,6 +130,12 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
     setState(() {
       _items[index] = _items[index].copyWith(value: value);
     });
+    
+    // Call the specific onEditItem callback if provided
+    if (widget.onEditItem != null && value != null) {
+      widget.onEditItem!(index, value as T);
+    }
+    
     _notifyChange();
   }
   

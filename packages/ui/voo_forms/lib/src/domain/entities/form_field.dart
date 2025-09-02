@@ -86,6 +86,9 @@ class VooFormField<T> extends Equatable {
   final String? removeButtonText;
   final Widget? addButtonIcon;
   final Widget? removeButtonIcon;
+  final void Function(T item)? onAddItem;
+  final void Function(int index, T item)? onRemoveItem;
+  final void Function(int index, T item)? onEditItem;
   
   // Validation
   final String? error;
@@ -169,6 +172,9 @@ class VooFormField<T> extends Equatable {
     this.removeButtonText,
     this.addButtonIcon,
     this.removeButtonIcon,
+    this.onAddItem,
+    this.onRemoveItem,
+    this.onEditItem,
     this.error,
     this.showError = true,
     this.validateOnChange = false,
@@ -249,6 +255,9 @@ class VooFormField<T> extends Equatable {
     String? removeButtonText,
     Widget? addButtonIcon,
     Widget? removeButtonIcon,
+    void Function(T item)? onAddItem,
+    void Function(int index, T item)? onRemoveItem,
+    void Function(int index, T item)? onEditItem,
     String? error,
     bool? showError,
     bool? validateOnChange,
@@ -328,6 +337,9 @@ class VooFormField<T> extends Equatable {
         removeButtonText: removeButtonText ?? this.removeButtonText,
         addButtonIcon: addButtonIcon ?? this.addButtonIcon,
         removeButtonIcon: removeButtonIcon ?? this.removeButtonIcon,
+        onAddItem: onAddItem ?? this.onAddItem,
+        onRemoveItem: onRemoveItem ?? this.onRemoveItem,
+        onEditItem: onEditItem ?? this.onEditItem,
         error: error ?? this.error,
         showError: showError ?? this.showError,
         validateOnChange: validateOnChange ?? this.validateOnChange,
