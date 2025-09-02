@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/utils/screen_size.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/containers/voo_side_panel_provider.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/routes/voo_side_panel_route.dart';
 
 /// Atomic form field action button that opens a form in different ways based on screen size
 /// - XL screens: Opens form in a side panel
@@ -100,23 +100,16 @@ class VooFormFieldAction extends StatelessWidget {
     // Result handling is done through the form's own callbacks
   }
 
-  Future<dynamic> _openSidePanel(BuildContext context) async {
-    // Try to find parent side panel provider
-    final sidePanelProvider = VooSidePanelProvider.of(context);
-
-    if (sidePanelProvider != null) {
-      // Build the form widget directly
-      return sidePanelProvider.openSidePanel(
-        form: formBuilder(context),
-        title: title,
-        width: sidePanelWidth,
-        onExit: onExit,
+  Future<dynamic> _openSidePanel(BuildContext context) async =>
+      // Use Navigator to push a side panel route
+      Navigator.of(context).push(
+        VooSidePanelRoute(
+          form: formBuilder(context),
+          title: title,
+          width: sidePanelWidth,
+          dismissible: isDismissible,
+        ),
       );
-    } else {
-      // Fallback to dialog if no side panel provider
-      return _openDialog(context);
-    }
-  }
 
   Future<dynamic> _openDialog(BuildContext context) async => showDialog(
         context: context,

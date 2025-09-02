@@ -64,6 +64,9 @@ class VooTextField extends VooFieldBase<String> {
 
   @override
   Widget build(BuildContext context) {
+    // Return empty widget if hidden
+    if (isHidden) return const SizedBox.shrink();
+    
     final textInput = VooTextInput(
       controller: controller,
       focusNode: focusNode,

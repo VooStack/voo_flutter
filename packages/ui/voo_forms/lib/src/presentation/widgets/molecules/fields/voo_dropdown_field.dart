@@ -141,9 +141,14 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
   });
 
   @override
-  Widget build(BuildContext context) => _AsyncDropdownFieldWidget<T>(
-        field: this,
-      );
+  Widget build(BuildContext context) {
+    // Return empty widget if hidden
+    if (isHidden) return const SizedBox.shrink();
+    
+    return _AsyncDropdownFieldWidget<T>(
+      field: this,
+    );
+  }
 }
 
 /// Internal stateful widget for async dropdown

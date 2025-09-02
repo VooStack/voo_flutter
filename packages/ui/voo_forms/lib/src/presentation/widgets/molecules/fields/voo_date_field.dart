@@ -43,6 +43,9 @@ class VooDateField extends VooFieldBase<DateTime> {
 
   @override
   Widget build(BuildContext context) {
+    // Return empty widget if hidden
+    if (isHidden) return const SizedBox.shrink();
+    
     final dateInput = VooDateInput(
       controller: controller,
       focusNode: focusNode,

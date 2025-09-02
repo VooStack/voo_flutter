@@ -32,6 +32,8 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final bool showError;
   @override
   final VooFieldLayout layout;
+  /// Whether this field should be hidden
+  final bool isHidden;
 
   const VooFieldBase({
     super.key,
@@ -54,12 +56,15 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     this.error,
     this.showError = true,
     this.layout = VooFieldLayout.standard,
+    this.isHidden = false,
   });
 
   /// Builds the field container with standard decoration
-  Widget buildFieldContainer(BuildContext context, Widget child) => Container(
-        child: child,
-      );
+  Widget buildFieldContainer(BuildContext context, Widget child) {
+    // Return empty widget if field is hidden
+    if (isHidden) return const SizedBox.shrink();
+    return Container(child: child);
+  }
 
   /// Builds the field with label if provided
   Widget buildWithLabel(BuildContext context, Widget child) {

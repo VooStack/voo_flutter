@@ -5,7 +5,6 @@ import 'package:voo_forms/src/presentation/config/theme/form_theme.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/progress/voo_form_progress.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/actions/voo_form_actions.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/containers/voo_side_panel_provider.dart';
 import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart';
 
 /// Page builder for VooForm that handles layout, actions, and callbacks
@@ -80,6 +79,10 @@ class VooFormPageBuilder extends StatefulWidget {
   /// Card margin if wrapped in card
   final EdgeInsetsGeometry? cardMargin;
 
+  /// Whether the form is currently submitting
+  /// If provided, overrides internal submission state
+  final bool? isSubmitting;
+
   const VooFormPageBuilder({
     super.key,
     required this.form,
@@ -105,6 +108,7 @@ class VooFormPageBuilder extends StatefulWidget {
     this.wrapInCard = false,
     this.cardElevation,
     this.cardMargin,
+    this.isSubmitting,
   });
 
   @override
@@ -140,9 +144,13 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
   }
 
   Future<void> _handleSubmit() async {
-    if (_isSubmitting) return;
+    // Check both external and internal submitting state
+    if (_isSubmitting || widget.isSubmitting == true) return;
 
-    setState(() => _isSubmitting = true);
+    // Only update internal state if not controlled externally
+    if (widget.isSubmitting == null) {
+      setState(() => _isSubmitting = true);
+    }
 
     try {
       // For now, just call onSubmit with empty values if no controller
@@ -151,7 +159,10 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
         // Always validate on submit, controller will handle error display based on errorDisplayMode
         final isValid = _controller!.validateAll(force: true);
         if (!isValid) {
-          setState(() => _isSubmitting = false);
+          // Only update internal state if not controlled externally
+          if (widget.isSubmitting == null) {
+            setState(() => _isSubmitting = false);
+          }
           return;
         }
         final values = _controller!.values;
@@ -163,20 +174,26 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     } catch (error) {
       widget.onError?.call(error);
     } finally {
-      if (mounted) {
+      // Only update internal state if not controlled externally
+      if (mounted && widget.isSubmitting == null) {
         setState(() => _isSubmitting = false);
       }
     }
   }
 
-  Widget _buildForm() => widget.isEditable
-      ? widget.form
-      : AbsorbPointer(
-          child: Opacity(
-            opacity: 0.6,
-            child: widget.form,
-          ),
-        );
+  Widget _buildForm() {
+    // Disable form when submitting or not editable
+    final isEnabled = widget.isEditable && widget.isSubmitting != true && !_isSubmitting;
+
+    return isEnabled
+        ? widget.form
+        : AbsorbPointer(
+            child: Opacity(
+              opacity: 0.6,
+              child: widget.form,
+            ),
+          );
+  }
 
   Widget _buildActions(BuildContext context) {
     if (widget.actionsBuilder != null) {
@@ -199,9 +216,9 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
       showSubmit: widget.showSubmitButton,
       showCancel: widget.showCancelButton || widget.onCancel != null,
       alignment: widget.actionsAlignment,
-      submitEnabled: widget.isEditable,
-      cancelEnabled: widget.isEditable,
-      isLoading: _isSubmitting,
+      submitEnabled: widget.isEditable && widget.isSubmitting != true,
+      cancelEnabled: widget.isEditable && widget.isSubmitting != true,
+      isLoading: widget.isSubmitting ?? _isSubmitting,
     );
   }
 
@@ -237,8 +254,8 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
                 // Progress indicator
                 if (widget.showProgress) ...[
                   VooFormProgress(
-                    isIndeterminate: _isSubmitting,
-                    value: _isSubmitting ? null : 0.0,
+                    isIndeterminate: widget.isSubmitting ?? _isSubmitting,
+                    value: (widget.isSubmitting ?? _isSubmitting) ? null : 0.0,
                   ),
                   SizedBox(height: widget.spacing),
                 ],
@@ -324,11 +341,6 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
         child: content,
       );
     }
-
-    // Wrap with VooSidePanelProvider for side panel support
-    content = VooSidePanelProvider(
-      child: content,
-    );
 
     // Provide controller to form via InheritedWidget pattern if available
     if (_controller != null) {

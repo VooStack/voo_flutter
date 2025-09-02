@@ -25,6 +25,9 @@ class VooBooleanField extends VooFieldBase<bool> {
 
   @override
   Widget build(BuildContext context) {
+    // Return empty widget if hidden
+    if (isHidden) return const SizedBox.shrink();
+    
     final theme = Theme.of(context);
     final currentValue = value ?? initialValue ?? false;
 

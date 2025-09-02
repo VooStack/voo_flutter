@@ -126,13 +126,15 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
       if (searchTerm.isEmpty) {
         _filteredItems = _getSortedItems(widget.items);
       } else {
-        _filteredItems = _getSortedItems(widget.items.where((item) {
-          if (widget.searchFilter != null) {
-            return widget.searchFilter!(item, searchTerm);
-          }
-          final displayText = widget.displayTextBuilder?.call(item) ?? item.toString();
-          return displayText.toLowerCase().contains(searchTerm.toLowerCase());
-        }).toList(),);
+        _filteredItems = _getSortedItems(
+          widget.items.where((item) {
+            if (widget.searchFilter != null) {
+              return widget.searchFilter!(item, searchTerm);
+            }
+            final displayText = widget.displayTextBuilder?.call(item) ?? item.toString();
+            return displayText.toLowerCase().contains(searchTerm.toLowerCase());
+          }).toList(),
+        );
       }
     });
     _updateOverlay();

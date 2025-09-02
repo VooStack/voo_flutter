@@ -231,7 +231,7 @@ void main() {
 
     testWidgets('should call onChanged when date is selected', (tester) async {
       DateTime? selectedDate;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

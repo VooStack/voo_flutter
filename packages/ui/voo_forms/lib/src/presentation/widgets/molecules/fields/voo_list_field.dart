@@ -79,13 +79,10 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     super.hint,
     super.helper,
     super.placeholder,
-    super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
     super.validators,
-    super.onChanged,
     super.actions,
     super.prefixIcon,
     super.suffixIcon,
@@ -113,7 +110,13 @@ class VooListField<T> extends VooFieldBase<List<T>> {
   });
 
   @override
+  List<T> get value => items;
+
+  @override
   Widget build(BuildContext context) {
+    // Return empty widget if hidden
+    if (isHidden) return const SizedBox.shrink();
+    
     final theme = Theme.of(context);
 
     Widget listContent;
@@ -151,19 +154,19 @@ class VooListField<T> extends VooFieldBase<List<T>> {
           child: child,
         ),
         itemBuilder: (context, index) => Container(
-          key: ValueKey('${name}_item_$index'),
+          key: ValueKey(index), // Simple index key for ReorderableListView
           margin: EdgeInsets.only(bottom: index < items.length - 1 ? itemSpacing : 0),
-          child: _buildListItem(context, index),
+          child: itemBuilder(context, items[index], index),
         ),
       );
     } else {
-      // Static list
+      // Static list - let users control their own keys through itemBuilder
       listContent = Column(
         children: [
           for (int i = 0; i < items.length; i++)
             Container(
               margin: EdgeInsets.only(bottom: i < items.length - 1 ? itemSpacing : 0),
-              child: _buildListItem(context, i),
+              child: itemBuilder(context, items[i], i),
             ),
         ],
       );
@@ -191,81 +194,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     return result;
   }
 
-  Widget _buildListItem(BuildContext context, int index) {
-    final theme = Theme.of(context);
-    final item = items[index];
-
-    Widget itemContent = Row(
-      children: [
-        // Drag handle for reorderable lists
-        if (canReorderItems && !readOnly && onReorder != null) ...[
-          Icon(
-            Icons.drag_indicator,
-            size: 20,
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
-          const SizedBox(width: 8),
-        ],
-
-        // Item number if enabled
-        if (showItemNumbers) ...[
-          Container(
-            width: 28,
-            height: 28,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              '${index + 1}',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
-
-        // Item content - delegate to builder
-        Expanded(
-          child: itemBuilder(context, item, index),
-        ),
-
-        // Remove button
-        if (showRemoveButtons && !readOnly && onRemovePressed != null) ...[
-          const SizedBox(width: 8),
-          IconButton(
-            onPressed: enabled ? () => onRemovePressed!(index) : null,
-            icon: removeButtonIcon ?? const Icon(Icons.remove_circle_outline),
-            color: theme.colorScheme.error,
-            tooltip: removeButtonTooltip ?? 'Remove',
-            constraints: const BoxConstraints(),
-            padding: const EdgeInsets.all(4),
-            visualDensity: VisualDensity.compact,
-          ),
-        ],
-      ],
-    );
-
-    if (showItemBorders) {
-      itemContent = Container(
-        padding: const EdgeInsets.all(12),
-        decoration: itemDecoration ??
-            BoxDecoration(
-              color: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-              border: Border.all(
-                color: theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-        child: itemContent,
-      );
-    }
-
-    return itemContent;
-  }
 
   Widget _buildAddButton(ThemeData theme) => SizedBox(
         width: double.infinity,
