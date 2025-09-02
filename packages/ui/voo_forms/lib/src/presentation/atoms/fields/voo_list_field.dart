@@ -146,8 +146,10 @@ class _VooListFieldWidgetState<T> extends State<VooListFieldWidget<T>> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label
-        if (widget.field.label != null) ...[
+        // Label - only show if not using above/left label position
+        if (widget.field.label != null && 
+            widget.options.labelPosition != LabelPosition.above &&
+            widget.options.labelPosition != LabelPosition.left) ...[
           Text(
             widget.field.label!,
             style: theme.textTheme.labelLarge?.copyWith(

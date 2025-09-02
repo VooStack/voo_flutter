@@ -336,7 +336,7 @@ void main() {
         );
 
         // Dropdown should render
-        expect(find.byType(VooDropdownFieldWidget), findsOneWidget);
+        expect(find.byType(VooDropdownFieldWidget<String>), findsOneWidget);
 
         // TODO: Interact with dropdown to select value
         // This may require finding the specific dropdown implementation

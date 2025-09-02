@@ -132,6 +132,13 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
     }
   }
 
+  void _updateOverlay() {
+    // Rebuild the overlay with new data if it's open
+    if (_overlayEntry != null) {
+      _overlayEntry!.markNeedsBuild();
+    }
+  }
+
   void _showOverlay() {
     if (_overlayEntry != null) return;
 
@@ -233,6 +240,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
       _isLoading = true;
       _lastQuery = query;
     });
+    
+    // Update overlay to show loading state
+    if (_overlayEntry != null) {
+      _updateOverlay();
+    }
 
     try {
       final options = await widget.field.asyncOptionsLoader!(query);
@@ -242,6 +254,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
           _filteredOptions = options;
           _isLoading = false;
         });
+        
+        // Update overlay with new options
+        if (_overlayEntry != null) {
+          _updateOverlay();
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -249,6 +266,11 @@ class _VooDropdownFieldWidgetState<T> extends State<VooDropdownFieldWidget<T>> {
           _filteredOptions = [];
           _isLoading = false;
         });
+        
+        // Update overlay to show empty state
+        if (_overlayEntry != null) {
+          _updateOverlay();
+        }
       }
     }
   }
