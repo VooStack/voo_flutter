@@ -43,6 +43,7 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     super.key,
     required super.name,
     super.label,
+    super.labelWidget,
     super.hint,
     super.helper,
     super.placeholder,
@@ -77,7 +78,7 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
 
-    return FormField<PlatformFile?>(
+    Widget fileField = FormField<PlatformFile?>(
       initialValue: value,
       validator: (value) {
         if (this.required && value == null) {
@@ -147,6 +148,14 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
         );
       },
     );
+    
+    // Apply standard field building pattern
+    fileField = buildWithHelper(context, fileField);
+    fileField = buildWithError(context, fileField);
+    fileField = buildWithLabel(context, fileField);
+    fileField = buildWithActions(context, fileField);
+    
+    return fileField;
   }
 
   Widget _buildPlaceholder(BuildContext context, FormFieldState<PlatformFile?> fieldState) {

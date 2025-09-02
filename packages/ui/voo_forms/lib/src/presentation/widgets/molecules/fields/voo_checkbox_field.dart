@@ -11,6 +11,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
     super.key,
     required super.name,
     super.label,
+    super.labelWidget,
     super.helper,
     bool? initialValue,
     super.value,
@@ -67,14 +68,17 @@ class VooCheckboxField extends VooFieldBase<bool> {
               tristate: tristate,
             ),
             const SizedBox(width: 12),
-            if (label != null || helper != null) ...[
+            if (labelWidget != null || label != null || helper != null) ...[
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (label != null) buildLabel(context),
+                    if (labelWidget != null) 
+                      labelWidget!
+                    else if (label != null) 
+                      buildLabel(context),
                     if (helper != null) ...[
-                      if (label != null) const SizedBox(height: 4),
+                      if (labelWidget != null || label != null) const SizedBox(height: 4),
                       Text(
                         helper!,
                         style: theme.textTheme.bodySmall?.copyWith(

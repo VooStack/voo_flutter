@@ -8,6 +8,7 @@ class VooPasswordField extends VooTextField {
     super.key,
     required super.name,
     super.label,
+    super.labelWidget,
     super.hint,
     super.helper,
     super.placeholder,

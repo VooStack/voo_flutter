@@ -17,6 +17,7 @@ class VooDateField extends VooFieldBase<DateTime> {
     super.key,
     required super.name,
     super.label,
+    super.labelWidget,
     super.hint,
     super.helper,
     super.placeholder,

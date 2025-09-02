@@ -9,6 +9,7 @@ class VooBooleanField extends VooFieldBase<bool> {
     super.key,
     required super.name,
     super.label,
+    super.labelWidget,
     super.helper,
     bool? initialValue,
     super.value,
@@ -31,17 +32,20 @@ class VooBooleanField extends VooFieldBase<bool> {
     final theme = Theme.of(context);
     final currentValue = value ?? initialValue ?? false;
 
-    // Build the switch with label in a row
+    // Build the switch with label or labelWidget in a row
     final switchRow = Row(
       children: [
-        if (label != null) ...[
+        if (labelWidget != null || label != null) ...[
           Expanded(
             child: GestureDetector(
               onTap: enabled && !readOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildLabel(context),
+                  if (labelWidget != null)
+                    labelWidget!
+                  else
+                    buildLabel(context),
                   if (helper != null) ...[
                     const SizedBox(height: 4),
                     Text(

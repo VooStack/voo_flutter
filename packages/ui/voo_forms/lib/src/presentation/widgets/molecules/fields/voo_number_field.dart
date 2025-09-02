@@ -22,6 +22,7 @@ class VooNumberField extends VooFieldBase<num> {
     super.key,
     required super.name,
     super.label,
+    super.labelWidget,
     super.hint,
     super.helper,
     String? placeholder,

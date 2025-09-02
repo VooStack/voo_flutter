@@ -1,5 +1,6 @@
 library voo_forms;
 
+export 'src/domain/entities/field_layout.dart';
 export 'src/domain/entities/field_type.dart';
 export 'src/domain/entities/form.dart' hide VooForm;
 export 'src/domain/entities/form_config.dart';
@@ -35,7 +36,6 @@ export 'src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 export 'src/presentation/widgets/atoms/buttons/voo_form_button.dart';
 export 'src/presentation/widgets/atoms/buttons/voo_form_field_action.dart';
 export 'src/presentation/widgets/atoms/items/voo_list_field_item.dart';
-export 'src/presentation/widgets/molecules/routes/voo_side_panel_route.dart';
 export 'src/presentation/widgets/molecules/fields/voo_boolean_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_checkbox_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_currency_field.dart';
@@ -52,5 +52,6 @@ export 'src/presentation/widgets/molecules/fields/voo_password_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_percentage_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_phone_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_text_field.dart';
+export 'src/presentation/widgets/molecules/routes/voo_side_panel_route.dart';
 export 'src/presentation/widgets/organisms/forms/voo_form.dart';
 export 'src/presentation/widgets/organisms/forms/voo_form_page_builder.dart';

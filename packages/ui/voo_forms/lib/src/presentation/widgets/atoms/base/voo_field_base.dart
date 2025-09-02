@@ -11,6 +11,8 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final String name;
   @override
   final String? label;
+  /// Custom widget to use instead of the default label
+  final Widget? labelWidget;
   final String? hint;
   final String? helper;
   final String? placeholder;
@@ -39,6 +41,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     super.key,
     required this.name,
     this.label,
+    this.labelWidget,
     this.hint,
     this.helper,
     this.placeholder,
@@ -68,15 +71,15 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Builds the field with label if provided
   Widget buildWithLabel(BuildContext context, Widget child) {
-    if (label == null && (actions == null || actions!.isEmpty)) return child;
+    if (label == null && labelWidget == null && (actions == null || actions!.isEmpty)) return child;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (label != null || (actions != null && actions!.isNotEmpty))
+        if (labelWidget != null || label != null || (actions != null && actions!.isNotEmpty))
           buildLabelWithActions(context),
-        if (label != null) const SizedBox(height: 8),
+        if (labelWidget != null || label != null) const SizedBox(height: 8),
         child,
       ],
     );
@@ -89,7 +92,9 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (label != null)
+        if (labelWidget != null)
+          Expanded(child: labelWidget!)
+        else if (label != null)
           Expanded(
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -123,6 +128,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Builds just the label widget (deprecated, use buildLabelWithActions)
   Widget buildLabel(BuildContext context) {
+    if (labelWidget != null) return labelWidget!;
     if (label == null) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
