@@ -13,7 +13,6 @@ class VooIntegerField extends VooNumberField {
     super.helper,
     String? placeholder,
     int? super.initialValue,
-    int? super.value,
     super.required,
     super.enabled,
     super.readOnly,

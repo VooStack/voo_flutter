@@ -32,7 +32,7 @@ class _VooFormFieldActionExampleState extends State<VooFormFieldActionExample> {
               name: 'client',
               label: 'Client',
               options: _clients,
-              value: _selectedClient,
+              initialValue: _selectedClient,
               displayTextBuilder: (client) => client.name,
               onChanged: (client) => setState(() => _selectedClient = client),
               actions: [
@@ -76,7 +76,7 @@ class _VooFormFieldActionExampleState extends State<VooFormFieldActionExample> {
               items: const [],
               itemBuilder: (context, tag, index) => VooTextField(
                 name: 'tag_$index',
-                value: tag,
+                initialValue: tag,
                 placeholder: 'Enter tag',
               ),
               onAddPressed: () {

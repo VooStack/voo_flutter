@@ -1,3 +1,14 @@
+## 0.6.11 - 2025-09-02
+
+* **Performance Improvements and UI Consistency**
+  * Fixed UI freeze when displaying large datasets by implementing isolate-based data processing
+  * Added IsolateComputeHelper for offloading heavy filtering and sorting operations
+  * Improved performance by processing data in background isolates for datasets > 100 rows
+  * Fixed filter widget styling inconsistencies - all filters now use consistent compact dropdown style
+  * Standardized filter input styling with uniform 32px height, rounded borders, and consistent theming
+  * Updated DefaultFilterValueInput, DefaultFilterSecondaryInput, and all filter field components
+  * Fixed AdvancedFilterRow to use consistent dropdown styling for field and operator selectors
+
 ## 0.6.10 - 2025-09-01
 
 * **Performance Optimizations and Bug Fixes**

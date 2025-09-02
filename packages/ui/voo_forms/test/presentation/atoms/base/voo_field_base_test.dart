@@ -9,7 +9,6 @@ class TestField extends VooFieldBase<String> {
     super.key,
     required super.name,
     super.label,
-    super.value,
     super.initialValue,
     super.required,
     super.error,

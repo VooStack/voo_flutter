@@ -39,43 +39,56 @@ class NumberFilterField extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveController = controller ?? 
         TextEditingController(text: value?.toString() ?? '');
+    final theme = Theme.of(context);
     
-    return TextField(
-      controller: effectiveController,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hintText ?? 'Enter number...',
-        border: const OutlineInputBorder(),
-        suffixIcon: showClearButton && effectiveController.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  effectiveController.clear();
-                  onChanged(null);
-                },
-              )
-            : null,
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
       ),
-      keyboardType: TextInputType.numberWithOptions(
-        decimal: allowDecimals,
-      ),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(
-          allowDecimals 
-              ? RegExp(r'^\d*\.?\d*')
-              : RegExp(r'^\d*'),
+      child: TextField(
+        controller: effectiveController,
+        decoration: InputDecoration(
+          hintText: hintText ?? 'Enter number...',
+          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          border: InputBorder.none,
+          suffixIcon: showClearButton && effectiveController.text.isNotEmpty
+              ? InkWell(
+                  onTap: () {
+                    effectiveController.clear();
+                    onChanged(null);
+                  },
+                  child: const Icon(Icons.clear, size: 16),
+                )
+              : null,
+          suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
         ),
-      ],
-      onChanged: (value) {
-        if (value.isEmpty) {
-          onChanged(null);
-        } else {
-          final parsed = allowDecimals 
-              ? double.tryParse(value)
-              : int.tryParse(value);
-          onChanged(parsed);
-        }
-      },
+        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+        keyboardType: TextInputType.numberWithOptions(
+          decimal: allowDecimals,
+        ),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(
+            allowDecimals 
+                ? RegExp(r'^\d*\.?\d*')
+                : RegExp(r'^\d*'),
+          ),
+        ],
+        onChanged: (value) {
+          if (value.isEmpty) {
+            onChanged(null);
+          } else {
+            final parsed = allowDecimals 
+                ? double.tryParse(value)
+                : int.tryParse(value);
+            onChanged(parsed);
+          }
+        },
+      ),
     );
   }
 }

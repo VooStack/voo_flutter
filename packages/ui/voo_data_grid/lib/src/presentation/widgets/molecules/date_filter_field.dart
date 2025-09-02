@@ -43,37 +43,57 @@ class DateFilterField extends StatelessWidget {
   Widget build(BuildContext context) {
     final format = dateFormat ?? DateFormat('yyyy-MM-dd');
     final displayValue = value != null ? format.format(value!) : null;
+    final theme = Theme.of(context);
     
-    return InkWell(
-      onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: value ?? DateTime.now(),
-          firstDate: firstDate ?? DateTime(2000),
-          lastDate: lastDate ?? DateTime(2100),
-        );
-        if (date != null) {
-          onChanged(date);
-        }
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hintText ?? 'Select date...',
-          border: const OutlineInputBorder(),
-          suffixIcon: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (showClearButton && displayValue != null)
-                IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () => onChanged(null),
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: InkWell(
+        onTap: () async {
+          final date = await showDatePicker(
+            context: context,
+            initialDate: value ?? DateTime.now(),
+            firstDate: firstDate ?? DateTime(2000),
+            lastDate: lastDate ?? DateTime(2100),
+          );
+          if (date != null) {
+            onChanged(date);
+          }
+        },
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  displayValue ?? hintText ?? 'Select date...',
+                  style: TextStyle(
+                    fontSize: 12, 
+                    color: displayValue != null 
+                        ? theme.textTheme.bodyMedium?.color 
+                        : theme.hintColor,
+                  ),
                 ),
-              const Icon(Icons.calendar_today),
-            ],
-          ),
+              ),
+            ),
+            if (showClearButton && displayValue != null)
+              InkWell(
+                onTap: () => onChanged(null),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Icon(Icons.clear, size: 16),
+                ),
+              ),
+            const Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: Icon(Icons.calendar_today, size: 16),
+            ),
+          ],
         ),
-        child: Text(displayValue ?? ''),
       ),
     );
   }

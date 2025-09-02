@@ -10,6 +10,24 @@ import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_horizon
 import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_vertical_form_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_wrapped_form_layout.dart';
 
+/// InheritedWidget to provide form-level configuration to all fields
+class VooFormScope extends InheritedWidget {
+  final bool isReadOnly;
+  
+  const VooFormScope({
+    super.key,
+    required this.isReadOnly,
+    required super.child,
+  });
+  
+  static VooFormScope? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<VooFormScope>();
+  
+  @override
+  bool updateShouldNotify(VooFormScope oldWidget) =>
+      isReadOnly != oldWidget.isReadOnly;
+}
+
 /// Simple, atomic form widget that manages field collection and validation
 /// Layout, actions, and callbacks are handled by VooFormPageBuilder
 /// Follows KISS principle and atomic design
@@ -44,6 +62,9 @@ class VooForm extends StatefulWidget {
   /// When to display validation errors
   final VooFormErrorDisplayMode errorDisplayMode;
 
+  /// Whether all fields in the form should be read-only
+  final bool isReadOnly;
+
   const VooForm({
     super.key,
     required this.fields,
@@ -56,6 +77,7 @@ class VooForm extends StatefulWidget {
     this.mainAxisSize = MainAxisSize.min,
     this.onChanged,
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
+    this.isReadOnly = false,
   });
 
   @override
@@ -114,7 +136,7 @@ class _VooFormState extends State<VooForm> {
   void _initializeValues() {
     // Initialize values from field initial values
     for (final field in widget.fields) {
-      _values[field.name] = field.initialValue ?? field.value;
+      _values[field.name] = field.initialValue;
     }
   }
 
@@ -136,6 +158,10 @@ class _VooFormState extends State<VooForm> {
   Map<String, dynamic> get values => _values;
 
   Widget _buildFormContent() {
+    // Note: Since fields are widgets and immutable, we cannot modify their properties directly.
+    // The isReadOnly flag should be passed to VooFormController which will manage the state.
+    // For now, we'll use the fields as-is and rely on VooFormPageBuilder to handle readonly state.
+
     switch (widget.layout) {
       case FormLayout.vertical:
         return VooVerticalFormLayout(
@@ -190,9 +216,12 @@ class _VooFormState extends State<VooForm> {
   }
 
   @override
-  Widget build(BuildContext context) => Form(
-        key: _formKey,
-        child: _buildFormContent(),
+  Widget build(BuildContext context) => VooFormScope(
+        isReadOnly: widget.isReadOnly,
+        child: Form(
+          key: _formKey,
+          child: _buildFormContent(),
+        ),
       );
 }
 

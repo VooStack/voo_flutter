@@ -31,7 +31,7 @@ class _ClientFormPageExampleState extends State<ClientFormPageExample> {
               name: 'client',
               label: 'Client',
               options: _clients,
-              value: _selectedClient,
+              initialValue: _selectedClient,
               displayTextBuilder: (client) => client.name,
               onChanged: (client) => setState(() => _selectedClient = client),
               actions: [
@@ -194,14 +194,14 @@ class ClientFormPageWithBloc extends StatelessWidget {
                 VooTextField(
                   name: 'name',
                   label: 'Name',
-                  value: state.name,
+                  initialValue: state.name,
                   onChanged: (value) => 
                     context.read<ClientFormCubit>().onNameChanged(value),
                 ),
                 VooTextField(
                   name: 'companyName',
                   label: 'Company Name',
-                  value: state.companyName,
+                  initialValue: state.companyName,
                   onChanged: (value) => 
                     context.read<ClientFormCubit>().onCompanyNameChanged(value),
                 ),

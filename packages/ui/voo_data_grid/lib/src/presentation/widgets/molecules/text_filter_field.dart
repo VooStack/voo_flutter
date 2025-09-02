@@ -34,26 +34,39 @@ class TextFilterField extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveController = controller ?? 
         TextEditingController(text: value ?? '');
+    final theme = Theme.of(context);
     
-    return TextField(
-      controller: effectiveController,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hintText ?? 'Enter text...',
-        border: const OutlineInputBorder(),
-        suffixIcon: showClearButton && effectiveController.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  effectiveController.clear();
-                  onChanged(null);
-                },
-              )
-            : null,
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(4),
       ),
-      onChanged: (value) {
-        onChanged(value.isEmpty ? null : value);
-      },
+      child: TextField(
+        controller: effectiveController,
+        decoration: InputDecoration(
+          hintText: hintText ?? 'Enter text...',
+          hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          border: InputBorder.none,
+          suffixIcon: showClearButton && effectiveController.text.isNotEmpty
+              ? InkWell(
+                  onTap: () {
+                    effectiveController.clear();
+                    onChanged(null);
+                  },
+                  child: const Icon(Icons.clear, size: 16),
+                )
+              : null,
+          suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
+        ),
+        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+        onChanged: (value) {
+          onChanged(value.isEmpty ? null : value);
+        },
+      ),
     );
   }
 }

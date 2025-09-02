@@ -27,7 +27,6 @@ class VooNumberField extends VooFieldBase<num> {
     super.helper,
     String? placeholder,
     super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -79,7 +78,7 @@ class VooNumberField extends VooFieldBase<num> {
     final numberInput = VooNumberInput(
       controller: controller,
       focusNode: focusNode,
-      initialValue: value ?? initialValue,
+      initialValue: initialValue,
       placeholder: placeholder,
       inputFormatters: [
         StrictNumberFormatter(

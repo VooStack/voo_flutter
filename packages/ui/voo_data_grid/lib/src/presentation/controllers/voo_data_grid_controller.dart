@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:voo_data_grid/src/utils/isolate_compute_helper.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Data grid controller with ChangeNotifier for Provider/ChangeNotifierProvider
@@ -42,7 +43,14 @@ class VooDataGridStateController<T> extends ChangeNotifier {
   /// Set local data (for local mode)
   void setLocalData(List<T> data) {
     _state = _state.copyWith(allRows: data);
-    _applyLocalFiltersAndSorts();
+    // Schedule the async processing for next frame to avoid blocking
+    Future.microtask(_applyLocalFiltersAndSorts);
+  }
+  
+  /// Set local data and wait for processing (for tests)
+  Future<void> setLocalDataAsync(List<T> data) async {
+    _state = _state.copyWith(allRows: data);
+    await _applyLocalFiltersAndSorts();
   }
 
   /// Set operation mode
@@ -59,7 +67,7 @@ class VooDataGridStateController<T> extends ChangeNotifier {
     try {
       switch (_state.mode) {
         case VooDataGridMode.local:
-          _applyLocalFiltersAndSorts();
+          await _applyLocalFiltersAndSorts();
           break;
 
         case VooDataGridMode.remote:
@@ -87,7 +95,7 @@ class VooDataGridStateController<T> extends ChangeNotifier {
             );
             _state = _state.copyWith(allRows: response.rows);
           }
-          _applyLocalFiltersAndSorts();
+          await _applyLocalFiltersAndSorts();
           break;
       }
     } catch (e) {
@@ -103,150 +111,22 @@ class VooDataGridStateController<T> extends ChangeNotifier {
   }
 
   /// Apply local filtering and sorting
-  void _applyLocalFiltersAndSorts() {
-    var filteredData = List<T>.from(_state.allRows);
-
-    // Apply filters
-    for (final entry in _state.filters.entries) {
-      final field = entry.key;
-      final filter = entry.value;
-
-      filteredData = filteredData.where((row) {
-        final value = _getFieldValue(row, field);
-        return _applyFilter(value, filter);
-      }).toList();
-    }
-
-    // Apply sorts
-    for (final sort in _state.sorts.reversed) {
-      filteredData.sort((a, b) {
-        final aValue = _getFieldValue(a, sort.field);
-        final bValue = _getFieldValue(b, sort.field);
-
-        int comparison;
-        if (aValue == null && bValue == null) {
-          comparison = 0;
-        } else if (aValue == null) {
-          comparison = 1;
-        } else if (bValue == null) {
-          comparison = -1;
-        } else if (aValue is Comparable) {
-          comparison = aValue.compareTo(bValue);
-        } else {
-          comparison = aValue.toString().compareTo(bValue.toString());
-        }
-
-        return sort.direction == VooSortDirection.ascending ? comparison : -comparison;
-      });
-    }
-
-    // Apply pagination
-    final totalRows = filteredData.length;
-    final startIndex = _state.currentPage * _state.pageSize;
-    final endIndex = (startIndex + _state.pageSize).clamp(0, totalRows);
-    final rows = filteredData
-        .sublist(
-          startIndex.clamp(0, filteredData.length),
-          endIndex.clamp(0, filteredData.length),
-        )
-        .cast<T>();
-
-    _state = _state.copyWith(
-      rows: rows,
-      totalRows: totalRows,
+  Future<void> _applyLocalFiltersAndSorts() async {
+    // Use isolate helper for better performance
+    final computeData = IsolateComputeData<T>(
+      data: _state.allRows,
+      filters: _state.filters,
+      sorts: _state.sorts,
+      currentPage: _state.currentPage,
+      pageSize: _state.pageSize,
     );
-  }
 
-  /// Get field value from row object
-  dynamic _getFieldValue(dynamic row, String field) {
-    if (row is Map) {
-      return row[field];
-    }
-    // For typed objects, users must provide valueGetter in column definition
-    return null;
-  }
-
-  /// Apply a single filter to a value
-  bool _applyFilter(dynamic value, VooDataFilter filter) {
-    switch (filter.operator) {
-      case VooFilterOperator.equals:
-        return value == filter.value;
-      case VooFilterOperator.notEquals:
-        return value != filter.value;
-      case VooFilterOperator.contains:
-        if (value == null) return false;
-        return value.toString().toLowerCase().contains(filter.value.toString().toLowerCase());
-      case VooFilterOperator.notContains:
-        if (value == null) return true;
-        return !value.toString().toLowerCase().contains(filter.value.toString().toLowerCase());
-      case VooFilterOperator.startsWith:
-        if (value == null) return false;
-        return value.toString().toLowerCase().startsWith(filter.value.toString().toLowerCase());
-      case VooFilterOperator.endsWith:
-        if (value == null) return false;
-        return value.toString().toLowerCase().endsWith(filter.value.toString().toLowerCase());
-      case VooFilterOperator.greaterThan:
-        if (value == null || filter.value == null) return false;
-        if (value is num && filter.value is num) {
-          return value > (filter.value as num);
-        }
-        if (value is DateTime && filter.value is DateTime) {
-          return value.isAfter(filter.value as DateTime);
-        }
-        return false;
-      case VooFilterOperator.greaterThanOrEqual:
-        if (value == null || filter.value == null) return false;
-        if (value is num && filter.value is num) {
-          return value >= (filter.value as num);
-        }
-        if (value is DateTime && filter.value is DateTime) {
-          return !value.isBefore(filter.value as DateTime);
-        }
-        return false;
-      case VooFilterOperator.lessThan:
-        if (value == null || filter.value == null) return false;
-        if (value is num && filter.value is num) {
-          return value < (filter.value as num);
-        }
-        if (value is DateTime && filter.value is DateTime) {
-          return value.isBefore(filter.value as DateTime);
-        }
-        return false;
-      case VooFilterOperator.lessThanOrEqual:
-        if (value == null || filter.value == null) return false;
-        if (value is num && filter.value is num) {
-          return value <= (filter.value as num);
-        }
-        if (value is DateTime && filter.value is DateTime) {
-          return !value.isAfter(filter.value as DateTime);
-        }
-        return false;
-      case VooFilterOperator.between:
-        if (value == null || filter.value == null || filter.valueTo == null) {
-          return false;
-        }
-        if (value is num && filter.value is num && filter.valueTo is num) {
-          return value >= (filter.value as num) && value <= (filter.valueTo as num);
-        }
-        if (value is DateTime && filter.value is DateTime && filter.valueTo is DateTime) {
-          return !value.isBefore(filter.value as DateTime) && !value.isAfter(filter.valueTo as DateTime);
-        }
-        return false;
-      case VooFilterOperator.inList:
-        if (filter.value is List) {
-          return (filter.value as List).contains(value);
-        }
-        return false;
-      case VooFilterOperator.notInList:
-        if (filter.value is List) {
-          return !(filter.value as List).contains(value);
-        }
-        return true;
-      case VooFilterOperator.isNull:
-        return value == null;
-      case VooFilterOperator.isNotNull:
-        return value != null;
-    }
+    final result = await IsolateComputeHelper.processDataInIsolate(computeData);
+    
+    _state = _state.copyWith(
+      rows: result.rows,
+      totalRows: result.totalRows,
+    );
   }
 
   /// Apply filter to a column

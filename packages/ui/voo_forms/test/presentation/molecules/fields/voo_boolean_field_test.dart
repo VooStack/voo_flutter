@@ -45,7 +45,7 @@ void main() {
           home: Scaffold(
             body: VooBooleanField(
               name: 'active',
-              value: false,
+              initialValue: false,
               onChanged: (value) {
                 changedValue = value;
               },
@@ -67,7 +67,7 @@ void main() {
             body: VooBooleanField(
               name: 'active',
               enabled: false,
-              value: true,
+              initialValue: true,
             ),
           ),
         ),
@@ -167,7 +167,7 @@ void main() {
           home: Scaffold(
             body: VooCheckboxField(
               name: 'subscribe',
-              value: false,
+              initialValue: false,
               onChanged: (value) {
                 changedValue = value;
               },
@@ -201,7 +201,7 @@ void main() {
             body: VooCheckboxField(
               name: 'subscribe',
               enabled: false,
-              value: true,
+              initialValue: true,
             ),
           ),
         ),

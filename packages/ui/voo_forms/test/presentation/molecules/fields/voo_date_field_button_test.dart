@@ -49,7 +49,7 @@ void main() {
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
-              value: testDate,
+              initialValue: testDate,
             ),
           ),
         ),
@@ -68,7 +68,7 @@ void main() {
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
-              value: testDate,
+              initialValue: testDate,
               dateFormat: dateFormat,
             ),
           ),
@@ -327,7 +327,7 @@ void main() {
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
-              value: dateValue,
+              initialValue: dateValue,
             ),
           ),
         ),

@@ -12,7 +12,6 @@ class VooBooleanField extends VooFieldBase<bool> {
     super.labelWidget,
     super.helper,
     bool? initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -36,7 +35,7 @@ class VooBooleanField extends VooFieldBase<bool> {
     if (isHidden) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final currentValue = value ?? initialValue ?? false;
+    final currentValue = initialValue ?? false;
 
     // Build the switch with label or labelWidget in a row
     final switchRow = Row(

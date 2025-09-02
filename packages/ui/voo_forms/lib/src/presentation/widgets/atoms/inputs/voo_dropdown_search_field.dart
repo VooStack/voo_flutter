@@ -16,6 +16,7 @@ class VooDropdownSearchField<T> extends StatefulWidget {
   final bool Function(T item, String searchTerm)? searchFilter;
   final Future<List<T>> Function(String searchTerm)? asyncSearch;
   final Duration searchDebounce;
+  final InputDecoration? decoration;
 
   const VooDropdownSearchField({
     super.key,
@@ -30,6 +31,7 @@ class VooDropdownSearchField<T> extends StatefulWidget {
     this.searchFilter,
     this.asyncSearch,
     this.searchDebounce = const Duration(milliseconds: 500),
+    this.decoration,
   });
 
   @override
@@ -319,7 +321,13 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
         onTap: widget.enabled ? _toggleDropdown : null,
         borderRadius: BorderRadius.circular(12),
         child: InputDecorator(
-          decoration: InputDecoration(
+          decoration: widget.decoration?.copyWith(
+            suffixIcon: widget.icon ??
+                Icon(
+                  _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: widget.enabled ? null : theme.colorScheme.onSurfaceVariant,
+                ),
+          ) ?? InputDecoration(
             hintText: widget.hint,
             filled: true,
             fillColor: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
@@ -359,12 +367,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
                   displayText,
                   style: theme.textTheme.bodyLarge,
                 )
-              : Text(
-                  widget.hint ?? '',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
+              : null,
         ),
       ),
     );

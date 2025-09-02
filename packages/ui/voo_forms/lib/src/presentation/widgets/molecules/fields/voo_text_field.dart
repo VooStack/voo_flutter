@@ -32,7 +32,6 @@ class VooTextField extends VooFieldBase<String> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -76,7 +75,7 @@ class VooTextField extends VooFieldBase<String> {
     Widget textInput = VooTextInput(
       controller: controller,
       focusNode: focusNode,
-      initialValue: value ?? initialValue,
+      initialValue: initialValue,
       placeholder: placeholder,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
@@ -93,7 +92,7 @@ class VooTextField extends VooFieldBase<String> {
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,
       enabled: enabled,
-      readOnly: readOnly,
+      readOnly: getEffectiveReadOnly(context),
       autofocus: autofocus,
       decoration: getInputDecoration(context),
     );

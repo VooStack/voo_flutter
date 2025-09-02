@@ -3,6 +3,7 @@ import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 import 'package:voo_forms/src/domain/utils/screen_size.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
+import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart';
 
 /// Base abstract class for all form fields following atomic design
 /// Contains all common field properties and methods to ensure zero code duplication
@@ -19,8 +20,6 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final String? placeholder;
   @override
   final T? initialValue;
-  @override
-  final T? value;
   @override
   final bool required;
   final bool enabled;
@@ -55,7 +54,6 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     this.helper,
     this.placeholder,
     this.initialValue,
-    this.value,
     this.required = false,
     this.enabled = true,
     this.readOnly = false,
@@ -75,6 +73,17 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     this.maxHeight,
   });
 
+  /// Get effective readonly state considering form-level configuration
+  bool getEffectiveReadOnly(BuildContext context) {
+    // Check if form scope provides a readonly override
+    final formScope = VooFormScope.of(context);
+    if (formScope != null && formScope.isReadOnly) {
+      return true;
+    }
+    // Otherwise use the field's own readonly state
+    return readOnly;
+  }
+  
   /// Get responsive padding based on screen size
   EdgeInsets getFieldPadding(BuildContext context) {
     final screenType = VooScreenSize.getType(context);

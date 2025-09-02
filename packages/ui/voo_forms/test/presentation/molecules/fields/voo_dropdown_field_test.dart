@@ -167,7 +167,7 @@ void main() {
               name: 'country',
               options: ['USA', 'Canada'],
               enabled: false,
-              value: 'USA',
+              initialValue: 'USA',
             ),
           ),
         ),

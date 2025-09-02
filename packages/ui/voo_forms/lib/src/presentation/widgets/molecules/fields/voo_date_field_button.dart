@@ -34,7 +34,6 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
     super.hint,
     super.helper,
     super.placeholder,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -52,16 +51,17 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
     super.maxWidth,
     super.minHeight,
     super.maxHeight,
+    super.initialValue,
     this.firstDate,
     this.lastDate,
     this.dateFormat,
     this.buttonType = ButtonType.outlined,
     this.expandButton = true,
     this.buttonText,
-  }) : super(initialValue: null);
+  });
   
   Future<void> _selectDate(BuildContext context) async {
-    final currentValue = value;
+    final currentValue = initialValue;
     final now = DateTime.now();
     
     final DateTime? picked = await showDatePicker(
@@ -78,7 +78,7 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
   }
   
   String _getButtonText() {
-    final currentValue = value;
+    final currentValue = initialValue;
     
     if (currentValue != null) {
       final formatter = dateFormat ?? DateFormat('yyyy-MM-dd');

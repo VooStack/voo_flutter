@@ -14,7 +14,6 @@ class VooCheckboxField extends VooFieldBase<bool> {
     super.labelWidget,
     super.helper,
     bool? initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -59,7 +58,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
     if (isHidden) return const SizedBox.shrink();
     
     final theme = Theme.of(context);
-    final currentValue = value ?? initialValue ?? false;
+    final currentValue = initialValue ?? false;
 
     // Build the checkbox with label in a row
     Widget checkboxRow = InkWell(

@@ -14,9 +14,6 @@ abstract class VooFormFieldWidget extends Widget {
   /// Whether the field is required
   bool get required;
   
-  /// The current value of the field
-  dynamic get value;
-  
   /// The initial value of the field
   dynamic get initialValue;
   

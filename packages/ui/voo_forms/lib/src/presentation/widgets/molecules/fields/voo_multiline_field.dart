@@ -14,7 +14,6 @@ class VooMultilineField extends VooTextField {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,

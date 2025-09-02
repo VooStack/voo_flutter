@@ -13,7 +13,6 @@ class VooPhoneField extends VooTextField {
     super.helper,
     String? placeholder,
     super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,

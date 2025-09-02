@@ -47,7 +47,6 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     super.hint,
     super.helper,
     super.placeholder,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -64,6 +63,7 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     super.maxWidth,
     super.minHeight,
     super.maxHeight,
+    super.initialValue,
     this.allowedExtensions,
     this.fileType = FileType.any,
     this.allowMultiple = false,
@@ -83,7 +83,7 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     if (isHidden) return const SizedBox.shrink();
 
     Widget fileField = FormField<PlatformFile?>(
-      initialValue: value,
+      initialValue: initialValue,
       validator: (value) {
         if (this.required && value == null) {
           return 'This field is required';

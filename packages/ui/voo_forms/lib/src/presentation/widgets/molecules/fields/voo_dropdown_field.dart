@@ -38,7 +38,6 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -60,19 +59,23 @@ class VooDropdownField<T> extends VooFieldBase<T> {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveValue = value ?? initialValue;
+    final effectiveValue = initialValue;
+    final effectiveReadOnly = getEffectiveReadOnly(context);
 
     // Build the searchable dropdown content
     Widget dropdownContent = VooDropdownSearchField<T>(
       items: options,
       value: effectiveValue,
       displayTextBuilder: displayTextBuilder,
-      onChanged: enabled && !readOnly ? onChanged : null,
+      onChanged: enabled && !effectiveReadOnly ? onChanged : null,
       hint: placeholder ?? hint,
-      enabled: enabled && !readOnly,
+      enabled: enabled && !effectiveReadOnly,
       icon: dropdownIcon,
       sortComparator: sortOptions,
       searchFilter: searchFilter,
+      decoration: getInputDecoration(context).copyWith(
+        suffixIcon: dropdownIcon,
+      ),
     );
 
     // Apply standard field building pattern
@@ -121,7 +124,6 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.value,
     super.required,
     super.enabled,
     super.readOnly,
@@ -171,17 +173,19 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.field.value ?? widget.field.initialValue;
+    _selectedValue = widget.field.initialValue;
   }
 
   @override
   Widget build(BuildContext context) {
+    final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
+    
     // Build the dropdown with integrated async search
     Widget dropdownContent = VooDropdownSearchField<T>(
       items: const [], // Empty initial items, async search will load them
       value: _selectedValue,
       displayTextBuilder: widget.field.displayTextBuilder,
-      onChanged: widget.field.enabled && !widget.field.readOnly
+      onChanged: widget.field.enabled && !effectiveReadOnly
           ? (value) {
               setState(() {
                 _selectedValue = value;
@@ -190,11 +194,14 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
             }
           : null,
       hint: widget.field.placeholder ?? widget.field.hint,
-      enabled: widget.field.enabled && !widget.field.readOnly,
+      enabled: widget.field.enabled && !effectiveReadOnly,
       icon: widget.field.dropdownIcon,
       sortComparator: widget.field.sortOptions,
       asyncSearch: widget.field.asyncOptionsLoader,
       searchDebounce: widget.field.searchDebounce,
+      decoration: widget.field.getInputDecoration(context).copyWith(
+        suffixIcon: widget.field.dropdownIcon,
+      ),
     );
 
     // Apply standard field building pattern

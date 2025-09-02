@@ -104,8 +104,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     this.itemSpacing = 12.0,
   });
 
-  @override
-  List<T> get value => items;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +111,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     if (isHidden) return const SizedBox.shrink();
     
     final theme = Theme.of(context);
+    final effectiveReadOnly = getEffectiveReadOnly(context);
 
     Widget listContent;
 
@@ -131,7 +130,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
           ),
         ),
       );
-    } else if (canReorderItems && !readOnly && onReorder != null) {
+    } else if (canReorderItems && !effectiveReadOnly && onReorder != null) {
       // Reorderable list
       listContent = ReorderableListView.builder(
         shrinkWrap: true,
@@ -233,9 +232,9 @@ class VooListField<T> extends VooFieldBase<List<T>> {
       mainAxisSize: MainAxisSize.min,
       children: [
         listContent,
-        if (showAddButton && !readOnly && onAddPressed != null) ...[
+        if (showAddButton && !effectiveReadOnly && onAddPressed != null) ...[
           SizedBox(height: itemSpacing),
-          _buildAddButton(theme),
+          _buildAddButton(context, theme),
         ],
       ],
     );
@@ -253,10 +252,10 @@ class VooListField<T> extends VooFieldBase<List<T>> {
   }
 
 
-  Widget _buildAddButton(ThemeData theme) => SizedBox(
+  Widget _buildAddButton(BuildContext context, ThemeData theme) => SizedBox(
         width: double.infinity,
         child: OutlinedButton.icon(
-          onPressed: enabled && !readOnly ? onAddPressed : null,
+          onPressed: enabled && !getEffectiveReadOnly(context) ? onAddPressed : null,
           icon: addButtonIcon ?? const Icon(Icons.add),
           label: Text(addButtonText ?? 'Add Item'),
           style: OutlinedButton.styleFrom(

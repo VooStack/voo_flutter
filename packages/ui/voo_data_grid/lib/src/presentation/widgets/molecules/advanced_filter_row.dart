@@ -60,22 +60,38 @@ class AdvancedFilterRow extends StatelessWidget {
             // Field selector
             Expanded(
               flex: 2,
-              child: DropdownButtonFormField<FilterFieldConfig>(
-                decoration: InputDecoration(
-                  labelText: 'Field',
-                  border: const OutlineInputBorder(),
-                  prefixIcon: filter.field != null ? Icon(filter.field!.type.icon) : null,
+              child: Container(
+                height: 32,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                initialValue: filter.field,
-                items: fields
-                    .map(
-                      (field) => DropdownMenuItem(
-                        value: field,
-                        child: Text(field.displayName),
+                child: DropdownButtonHideUnderline(
+                  child: ButtonTheme(
+                    alignedDropdown: true,
+                    child: DropdownButton<FilterFieldConfig>(
+                      value: filter.field,
+                      hint: Text(
+                        'Select field',
+                        style: TextStyle(fontSize: 12, color: theme.hintColor),
                       ),
-                    )
-                    .toList(),
-                onChanged: onFieldChanged,
+                      icon: Icon(filter.field != null ? filter.field!.type.icon : Icons.arrow_drop_down, size: 16),
+                      isExpanded: true,
+                      isDense: true,
+                      style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+                      items: fields
+                          .map(
+                            (field) => DropdownMenuItem(
+                              value: field,
+                              child: Text(field.displayName, style: const TextStyle(fontSize: 12)),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: onFieldChanged,
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(width: design.spacingSm),
@@ -84,21 +100,38 @@ class AdvancedFilterRow extends StatelessWidget {
             if (filter.field != null) ...[
               Expanded(
                 flex: 2,
-                child: DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    labelText: 'Operator',
-                    border: OutlineInputBorder(),
+                child: Container(
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  initialValue: filter.operator,
-                  items: filter.field!.type.operators
-                      .map(
-                        (op) => DropdownMenuItem(
-                          value: op,
-                          child: Text(op.displayText),
+                  child: DropdownButtonHideUnderline(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        value: filter.operator,
+                        hint: Text(
+                          'Operator',
+                          style: TextStyle(fontSize: 12, color: theme.hintColor),
                         ),
-                      )
-                      .toList(),
-                  onChanged: onOperatorChanged,
+                        icon: const Icon(Icons.arrow_drop_down, size: 16),
+                        isExpanded: true,
+                        isDense: true,
+                        style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
+                        items: filter.field!.type.operators
+                            .map(
+                              (op) => DropdownMenuItem(
+                                value: op,
+                                child: Text(op.displayText, style: const TextStyle(fontSize: 12)),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: onOperatorChanged,
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: design.spacingSm),
