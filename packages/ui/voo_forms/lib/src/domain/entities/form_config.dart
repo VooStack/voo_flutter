@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/presentation/widgets/voo_field_options.dart';
+import 'package:voo_forms/src/domain/enums/error_display_mode.dart';
+import 'package:voo_forms/src/domain/enums/field_variant.dart';
+import 'package:voo_forms/src/domain/enums/label_position.dart';
+import 'package:voo_forms/src/domain/enums/label_style.dart';
+import 'package:voo_forms/src/presentation/widgets/config/voo_field_options.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Configuration for form styling and behavior

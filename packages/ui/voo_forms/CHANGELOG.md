@@ -1,3 +1,58 @@
+## [0.2.3] - 2025-09-02
+
+### Breaking Changes
+- **VooListField Refactored to Stateless**: 
+  - VooListField is now completely stateless - developers manage state externally
+  - Changed from `itemTemplate` and internal state to `items` and `itemBuilder` pattern
+  - Callbacks simplified to `onAddPressed`, `onRemovePressed`, and `onReorder`
+  - See migration guide in `example/list_field_migration.md`
+
+### Changed
+- **Widget Architecture Refactor**:
+  - Replaced factory pattern (VooField.text(), etc.) with direct widget instantiation
+  - All field widgets now extend VooFieldBase for zero code duplication
+  - Direct widget pattern: use `VooTextField()` instead of `VooField.text()`
+  - Cleaner architecture following KISS principle and atomic design
+
+### Added
+- **New Field Widgets**:
+  - `VooTextField` - Text input field
+  - `VooEmailField` - Email input with validation
+  - `VooPasswordField` - Password input with visibility toggle
+  - `VooPhoneField` - Phone number input with formatting
+  - `VooMultilineField` - Multi-line text input
+  - `VooNumberField` - Numeric input with constraints
+  - `VooIntegerField` - Integer-only input
+  - `VooDecimalField` - Decimal number input
+  - `VooCurrencyField` - Currency input with formatting
+  - `VooPercentageField` - Percentage input (0-100)
+  - `VooBooleanField` - Boolean switch/checkbox
+  - `VooCheckboxField` - Single checkbox field
+  - `VooDropdownField` - Dropdown selection
+  - `VooAsyncDropdownField` - Async loading dropdown
+  - `VooListField` - Stateless dynamic list management
+
+### Fixed
+- **Dropdown Label Issues**: Fixed duplicate label rendering in dropdown fields
+- **Number Field Validation**: Fixed min/max validation to return proper error messages
+- **Test Infrastructure**: Updated all tests to work with new widget pattern
+- **Lint Issues**: Fixed 150+ lint issues across the package
+- **File Architecture**: Cleaned up exports and removed unused factory pattern files
+
+### Removed
+- **Deprecated Factory Pattern Files**:
+  - Removed `VooFormFieldBuilder` (old factory pattern)
+  - Removed `VooFieldWidget` (old factory wrapper)
+  - Removed layout widgets that depended on old pattern
+  - Kept `VooFormBuilder` for layout management
+
+### Improved
+- **Performance**: Stateless VooListField improves performance by avoiding internal state
+- **Developer Experience**: Direct widget instantiation is more intuitive
+- **Maintainability**: Single responsibility principle with VooFieldBase
+- **Type Safety**: Better type inference with direct widget usage
+- **Testing**: Comprehensive test coverage for all new widgets
+
 ## [0.2.2]
 ### Added
 - **VooField.List
