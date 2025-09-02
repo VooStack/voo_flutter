@@ -5,6 +5,7 @@ import 'package:voo_forms/src/presentation/config/theme/form_theme.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/progress/voo_form_progress.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/actions/voo_form_actions.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/containers/voo_side_panel_provider.dart';
 import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart';
 
 /// Page builder for VooForm that handles layout, actions, and callbacks
@@ -201,7 +202,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
       submitText: widget.submitText,
       cancelText: widget.cancelText,
       showSubmit: widget.showSubmitButton,
-      showCancel: widget.showCancelButton && widget.onCancel != null,
+      showCancel: widget.showCancelButton || widget.onCancel != null,
       alignment: widget.actionsAlignment,
       submitEnabled: widget.isEditable,
       cancelEnabled: widget.isEditable,
@@ -249,14 +250,14 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
 
                 // Form
                 _buildForm(),
-                
+
                 // Add spacing at bottom to ensure content isn't hidden behind actions
                 SizedBox(height: widget.spacing * 2),
               ],
             ),
           ),
         ),
-        
+
         // Fixed footer with actions
         if (widget.showSubmitButton || widget.showCancelButton || widget.actionsBuilder != null) ...[
           Container(
@@ -328,6 +329,11 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
         child: content,
       );
     }
+
+    // Wrap with VooSidePanelProvider for side panel support
+    content = VooSidePanelProvider(
+      child: content,
+    );
 
     // Provide controller to form via InheritedWidget pattern if available
     if (_controller != null) {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/responsive_columns.dart';
 import 'package:voo_forms/src/domain/enums/error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/field_variant.dart';
 import 'package:voo_forms/src/domain/enums/label_position.dart';
 import 'package:voo_forms/src/domain/enums/label_style.dart';
+import 'package:voo_forms/src/domain/utils/screen_size.dart' as voo_screen;
 import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -10,70 +12,64 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 class VooFormConfig {
   /// Label position relative to field
   final LabelPosition labelPosition;
-  
+
   /// Label style variant
   final LabelStyle labelStyle;
-  
+
   /// Field variant (outlined, filled, underlined)
   final FieldVariant fieldVariant;
-  
+
   /// Field size (small, medium, large)
   final VooSpacingSize fieldSize;
-  
+
   /// Spacing between fields
   final double fieldSpacing;
-  
+
   /// Spacing between sections
   final double sectionSpacing;
-  
+
   /// Max width for form on large screens
   final double? maxFormWidth;
-  
+
   /// Whether to show field icons
   final bool showFieldIcons;
-  
+
   /// Whether to show required indicator
   final bool showRequiredIndicator;
-  
+
   /// Required indicator text or symbol
   final String requiredIndicator;
-  
+
   /// Error display mode
   final ErrorDisplayMode errorDisplayMode;
-  
+
   /// Submit button position
   final ButtonPosition submitButtonPosition;
-  
+
   /// Submit button style
   final ButtonStyle? submitButtonStyle;
-  
+
   /// Form padding
   final EdgeInsetsGeometry? padding;
-  
+
   /// Form margin
   final EdgeInsetsGeometry? margin;
-  
+
   /// Background color
   final Color? backgroundColor;
-  
+
   /// Border decoration
   final BoxDecoration? decoration;
-  
+
   /// Whether form should be centered on large screens
   final bool centerOnLargeScreens;
-  
-  /// Breakpoint for switching to mobile layout
-  final double mobileBreakpoint;
-  
-  /// Breakpoint for switching to tablet layout
-  final double tabletBreakpoint;
-  
+
   /// Number of columns for grid layout on different screen sizes
   final ResponsiveColumns gridColumns;
-  
+
   /// Custom theme overrides
   final ThemeData? themeOverrides;
-  
+
   /// Default field options that apply to all fields
   final VooFieldOptions? defaultFieldOptions;
 
@@ -96,8 +92,6 @@ class VooFormConfig {
     this.backgroundColor,
     this.decoration,
     this.centerOnLargeScreens = true,
-    this.mobileBreakpoint = 600.0,
-    this.tabletBreakpoint = 1024.0,
     this.gridColumns = const ResponsiveColumns(),
     this.themeOverrides,
     this.defaultFieldOptions,
@@ -150,8 +144,6 @@ class VooFormConfig {
     Color? backgroundColor,
     BoxDecoration? decoration,
     bool? centerOnLargeScreens,
-    double? mobileBreakpoint,
-    double? tabletBreakpoint,
     ResponsiveColumns? gridColumns,
     ThemeData? themeOverrides,
   }) =>
@@ -174,20 +166,21 @@ class VooFormConfig {
         backgroundColor: backgroundColor ?? this.backgroundColor,
         decoration: decoration ?? this.decoration,
         centerOnLargeScreens: centerOnLargeScreens ?? this.centerOnLargeScreens,
-        mobileBreakpoint: mobileBreakpoint ?? this.mobileBreakpoint,
-        tabletBreakpoint: tabletBreakpoint ?? this.tabletBreakpoint,
         gridColumns: gridColumns ?? this.gridColumns,
         themeOverrides: themeOverrides ?? this.themeOverrides,
       );
 
-  /// Get responsive column count based on screen width
-  int getColumnCount(double screenWidth) {
-    if (screenWidth < mobileBreakpoint) {
-      return gridColumns.mobile;
-    } else if (screenWidth < tabletBreakpoint) {
-      return gridColumns.tablet;
-    } else {
-      return gridColumns.desktop;
+  /// Get responsive column count based on screen context
+  int getColumnCount(BuildContext context) {
+    final screenType = voo_screen.VooScreenSize.getType(context);
+    switch (screenType) {
+      case voo_screen.ScreenType.mobile:
+        return gridColumns.mobile;
+      case voo_screen.ScreenType.tablet:
+        return gridColumns.tablet;
+      case voo_screen.ScreenType.desktop:
+      case voo_screen.ScreenType.extraLarge:
+        return gridColumns.desktop;
     }
   }
 
@@ -219,7 +212,7 @@ class VooFormConfig {
   TextStyle? getLabelStyle(BuildContext context) {
     final theme = Theme.of(context);
     final baseStyle = theme.textTheme.bodyMedium;
-    
+
     switch (labelStyle) {
       case LabelStyle.normal:
         return baseStyle;
@@ -256,44 +249,6 @@ enum ButtonPosition {
   topLeft,
   topCenter,
   topRight,
-  sticky,     // Sticky at bottom of viewport
-  inline,     // Inline with last field
-}
-
-/// Responsive column configuration
-class ResponsiveColumns {
-  final int mobile;
-  final int tablet;
-  final int desktop;
-
-  const ResponsiveColumns({
-    this.mobile = 1,
-    this.tablet = 2,
-    this.desktop = 3,
-  });
-}
-
-/// Field group configuration for grouping related fields
-class FieldGroup {
-  final String? title;
-  final String? description;
-  final List<String> fieldIds;
-  final int columns;
-  final bool collapsible;
-  final bool initiallyExpanded;
-  final BoxDecoration? decoration;
-  final EdgeInsetsGeometry? padding;
-  final EdgeInsetsGeometry? margin;
-
-  const FieldGroup({
-    this.title,
-    this.description,
-    required this.fieldIds,
-    this.columns = 1,
-    this.collapsible = false,
-    this.initiallyExpanded = true,
-    this.decoration,
-    this.padding,
-    this.margin,
-  });
+  sticky, // Sticky at bottom of viewport
+  inline, // Inline with last field
 }

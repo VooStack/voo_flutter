@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/enums/button_type.dart';
+import 'package:voo_forms/src/presentation/widgets/atoms/buttons/voo_form_button.dart';
 
 /// Molecule component for form action buttons
 /// Provides submit and cancel buttons with customizable appearance
@@ -60,47 +62,6 @@ class VooFormActions extends StatelessWidget {
     this.cancelButtonType = ButtonType.text,
   });
 
-  Widget _buildButton({
-    required String text,
-    required VoidCallback? onPressed,
-    required bool enabled,
-    required ButtonType type,
-    required BuildContext context,
-    bool showLoading = false,
-  }) {
-    final effectiveOnPressed = enabled ? onPressed : null;
-    
-    final Widget child = showLoading
-        ? SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                type == ButtonType.filled
-                    ? Theme.of(context).colorScheme.onPrimary
-                    : Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          )
-        : Text(text);
-
-    return switch (type) {
-      ButtonType.filled => FilledButton(
-          onPressed: effectiveOnPressed,
-          child: child,
-        ),
-      ButtonType.outlined => OutlinedButton(
-          onPressed: effectiveOnPressed,
-          child: child,
-        ),
-      ButtonType.text => TextButton(
-          onPressed: effectiveOnPressed,
-          child: child,
-        ),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     // Return empty if no buttons to show
@@ -112,31 +73,22 @@ class VooFormActions extends StatelessWidget {
       mainAxisAlignment: alignment,
       children: [
         if (showCancel)
-          _buildButton(
+          VooFormButton(
             text: cancelText,
             onPressed: onCancel,
             enabled: cancelEnabled && !isLoading,
             type: cancelButtonType,
-            context: context,
           ),
         if (showCancel && showSubmit) SizedBox(width: spacing),
         if (showSubmit)
-          _buildButton(
+          VooFormButton(
             text: submitText,
             onPressed: onSubmit,
             enabled: submitEnabled && !isLoading,
             type: submitButtonType,
-            context: context,
             showLoading: isLoading,
           ),
       ],
     );
   }
-}
-
-/// Button type enum for form actions
-enum ButtonType {
-  filled,
-  outlined,
-  text,
 }
