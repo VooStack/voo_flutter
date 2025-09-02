@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 
@@ -29,6 +30,8 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final int? gridColumns;
   final String? error;
   final bool showError;
+  @override
+  final VooFieldLayout layout;
 
   const VooFieldBase({
     super.key,
@@ -50,6 +53,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     this.gridColumns,
     this.error,
     this.showError = true,
+    this.layout = VooFieldLayout.standard,
   });
 
   /// Builds the field container with standard decoration
@@ -59,20 +63,60 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Builds the field with label if provided
   Widget buildWithLabel(BuildContext context, Widget child) {
-    if (label == null) return child;
+    if (label == null && (actions == null || actions!.isEmpty)) return child;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        buildLabel(context),
-        const SizedBox(height: 8),
+        if (label != null || (actions != null && actions!.isNotEmpty))
+          buildLabelWithActions(context),
+        if (label != null) const SizedBox(height: 8),
         child,
       ],
     );
   }
 
-  /// Builds just the label widget
+  /// Builds the label with actions aligned to the right
+  Widget buildLabelWithActions(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (label != null)
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                if (required)
+                  Text(
+                    ' *',
+                    style: TextStyle(
+                      color: theme.colorScheme.error,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        if (actions != null && actions!.isNotEmpty)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: actions!,
+          ),
+      ],
+    );
+  }
+
+  /// Builds just the label widget (deprecated, use buildLabelWithActions)
   Widget buildLabel(BuildContext context) {
     if (label == null) return const SizedBox.shrink();
 
@@ -161,17 +205,8 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   }
 
   /// Builds the field with actions
-  Widget buildWithActions(BuildContext context, Widget child) {
-    if (actions == null || actions!.isEmpty) return child;
-
-    return Row(
-      children: [
-        Expanded(child: child),
-        const SizedBox(width: 8),
-        ...actions!,
-      ],
-    );
-  }
+  /// Note: Actions are now added to the label row in buildLabelWithActions
+  Widget buildWithActions(BuildContext context, Widget child) => child;
 
   /// Standard decoration for input fields
   InputDecoration getInputDecoration(BuildContext context) {

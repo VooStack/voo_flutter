@@ -173,6 +173,15 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     }
   }
 
+  Widget _buildForm() => widget.isEditable
+      ? widget.form
+      : AbsorbPointer(
+          child: Opacity(
+            opacity: 0.6,
+            child: widget.form,
+          ),
+        );
+
   Widget _buildActions(BuildContext context) {
     if (widget.actionsBuilder != null) {
       // Create a dummy controller if needed for custom actions builder
@@ -211,49 +220,64 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
       textTheme: theme.textTheme,
     );
 
-    // Build page content
+    // Build page content with footer layout
     Widget content = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
       children: [
-        // Header
-        if (widget.header != null) ...[
-          widget.header!,
-          SizedBox(height: widget.spacing),
-        ],
+        // Scrollable form content
+        Expanded(
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            physics: widget.physics ?? const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header
+                if (widget.header != null) ...[
+                  widget.header!,
+                  SizedBox(height: widget.spacing * 1.5),
+                ],
 
-        // Progress indicator
-        if (widget.showProgress) ...[
-          VooFormProgress(
-            isIndeterminate: _isSubmitting,
-            value: _isSubmitting ? null : 0.0,
-          ),
-          SizedBox(height: widget.spacing),
-        ],
-
-        // Form (simplified version)
-        Flexible(
-          child: widget.isEditable
-              ? widget.form
-              : AbsorbPointer(
-                  child: Opacity(
-                    opacity: 0.6,
-                    child: widget.form,
+                // Progress indicator
+                if (widget.showProgress) ...[
+                  VooFormProgress(
+                    isIndeterminate: _isSubmitting,
+                    value: _isSubmitting ? null : 0.0,
                   ),
-                ),
-        ),
+                  SizedBox(height: widget.spacing),
+                ],
 
-        // Actions
+                // Form
+                _buildForm(),
+                
+                // Add spacing at bottom to ensure content isn't hidden behind actions
+                SizedBox(height: widget.spacing * 2),
+              ],
+            ),
+          ),
+        ),
+        
+        // Fixed footer with actions
         if (widget.showSubmitButton || widget.showCancelButton || widget.actionsBuilder != null) ...[
-          SizedBox(height: widget.spacing),
-          _buildActions(context),
+          Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              border: Border(
+                top: BorderSide(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: widget.spacing,
+              vertical: widget.spacing,
+            ),
+            child: _buildActions(context),
+          ),
         ],
 
         // Footer
-        if (widget.footer != null) ...[
-          SizedBox(height: widget.spacing),
-          widget.footer!,
-        ],
+        if (widget.footer != null) widget.footer!,
       ],
     );
 
@@ -266,10 +290,13 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     // Wrap in card if requested
     if (widget.wrapInCard) {
       content = Card(
-        elevation: widget.cardElevation,
-        margin: widget.cardMargin,
+        elevation: widget.cardElevation ?? 2.0,
+        margin: widget.cardMargin ?? const EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
         child: Padding(
-          padding: widget.padding ?? const EdgeInsets.all(16.0),
+          padding: widget.padding ?? const EdgeInsets.all(24.0),
           child: content,
         ),
       );
@@ -278,13 +305,10 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
         padding: widget.padding!,
         child: content,
       );
-    }
-
-    // Add scrolling if physics provided
-    if (widget.physics != null) {
-      content = SingleChildScrollView(
-        controller: _scrollController,
-        physics: widget.physics,
+    } else {
+      // Default padding if not wrapped in card and no padding specified
+      content = Padding(
+        padding: const EdgeInsets.all(16.0),
         child: content,
       );
     }
@@ -320,10 +344,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
 class _FormControllerProvider extends InheritedWidget {
   final VooFormController controller;
 
-  const _FormControllerProvider({
-    required this.controller,
-    required super.child,
-  });
+  const _FormControllerProvider({required this.controller, required super.child});
 
   @override
   bool updateShouldNotify(_FormControllerProvider oldWidget) => controller != oldWidget.controller;

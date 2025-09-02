@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/form.dart' as domain;
+import 'package:voo_forms/src/domain/enums/form_layout.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_dynamic_form_layout.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_grid_form_layout.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_horizontal_form_layout.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_vertical_form_layout.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_wrapped_form_layout.dart';
 
 /// Simple, atomic form widget that manages field collection and validation
 /// Layout, actions, and callbacks are handled by VooFormPageBuilder
@@ -12,6 +18,12 @@ class VooForm extends StatefulWidget {
 
   /// Optional form controller for external control
   final VooFormController? controller;
+
+  /// Layout type for the form
+  final FormLayout layout;
+
+  /// Number of columns for grid layout
+  final int gridColumns;
 
   /// Spacing between fields
   final double spacing;
@@ -35,6 +47,8 @@ class VooForm extends StatefulWidget {
     super.key,
     required this.fields,
     this.controller,
+    this.layout = FormLayout.dynamic,
+    this.gridColumns = 2,
     this.spacing = 16.0,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.mainAxisAlignment = MainAxisAlignment.start,
@@ -118,25 +132,64 @@ class _VooFormState extends State<VooForm> {
   /// Public method to get current values
   Map<String, dynamic> get values => _values;
 
-  @override
-  Widget build(BuildContext context) => Form(
-        key: _formKey,
-        child: Column(
+  Widget _buildFormContent() {
+    switch (widget.layout) {
+      case FormLayout.vertical:
+        return VooVerticalFormLayout(
+          fields: widget.fields,
+          spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
           mainAxisAlignment: widget.mainAxisAlignment,
           mainAxisSize: widget.mainAxisSize,
-          children: widget.fields.map((field) {
-            // Each field is already a widget, just render it with spacing
-            final isLastField = field == widget.fields.last;
+        );
+      case FormLayout.horizontal:
+        return VooHorizontalFormLayout(
+          fields: widget.fields,
+          spacing: widget.spacing,
+          mainAxisAlignment: widget.mainAxisAlignment,
+          mainAxisSize: widget.mainAxisSize,
+        );
+      case FormLayout.grid:
+        return VooGridFormLayout(
+          fields: widget.fields,
+          columns: widget.gridColumns,
+          spacing: widget.spacing,
+          crossAxisAlignment: widget.crossAxisAlignment,
+          mainAxisAlignment: widget.mainAxisAlignment,
+          mainAxisSize: widget.mainAxisSize,
+        );
+      case FormLayout.wrapped:
+        return VooWrappedFormLayout(
+          fields: widget.fields,
+          spacing: widget.spacing,
+          runSpacing: widget.spacing,
+        );
+      case FormLayout.dynamic:
+        return VooDynamicFormLayout(
+          fields: widget.fields,
+          spacing: widget.spacing,
+          crossAxisAlignment: widget.crossAxisAlignment,
+          mainAxisAlignment: widget.mainAxisAlignment,
+          mainAxisSize: widget.mainAxisSize,
+        );
+      case FormLayout.stepped:
+      case FormLayout.tabbed:
+        // TODO: Implement stepped and tabbed layouts
+        // For now, fallback to vertical
+        return VooVerticalFormLayout(
+          fields: widget.fields,
+          spacing: widget.spacing,
+          crossAxisAlignment: widget.crossAxisAlignment,
+          mainAxisAlignment: widget.mainAxisAlignment,
+          mainAxisSize: widget.mainAxisSize,
+        );
+    }
+  }
 
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: isLastField ? 0 : widget.spacing,
-              ),
-              child: field,
-            );
-          }).toList(),
-        ),
+  @override
+  Widget build(BuildContext context) => Form(
+        key: _formKey,
+        child: _buildFormContent(),
       );
 }
 

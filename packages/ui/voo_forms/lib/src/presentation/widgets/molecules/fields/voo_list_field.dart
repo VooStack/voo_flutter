@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 
 /// List field molecule that displays a list of items
@@ -91,6 +92,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     super.gridColumns,
     super.error,
     super.showError,
+    super.layout = VooFieldLayout.wide, // List fields default to full width
     required this.items,
     required this.itemBuilder,
     this.onAddPressed,
@@ -169,12 +171,12 @@ class VooListField<T> extends VooFieldBase<List<T>> {
 
     // Build the complete field
     Widget result = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         listContent,
         if (showAddButton && !readOnly && onAddPressed != null) ...[
-          if (items.isNotEmpty) SizedBox(height: itemSpacing),
+          SizedBox(height: itemSpacing),
           _buildAddButton(theme),
         ],
       ],
@@ -265,14 +267,22 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     return itemContent;
   }
 
-  Widget _buildAddButton(ThemeData theme) => OutlinedButton.icon(
-        onPressed: enabled && !readOnly ? onAddPressed : null,
-        icon: addButtonIcon ?? const Icon(Icons.add_circle_outline),
-        label: Text(addButtonText ?? 'Add Item'),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: theme.colorScheme.primary,
-          side: BorderSide(
-            color: enabled ? theme.colorScheme.primary : theme.colorScheme.outline.withValues(alpha: 0.3),
+  Widget _buildAddButton(ThemeData theme) => SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: enabled && !readOnly ? onAddPressed : null,
+          icon: addButtonIcon ?? const Icon(Icons.add),
+          label: Text(addButtonText ?? 'Add Item'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: theme.colorScheme.primary,
+            side: BorderSide(
+              color: enabled ? theme.colorScheme.outline.withValues(alpha: 0.5) : theme.colorScheme.outline.withValues(alpha: 0.3),
+              width: 1,
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       );

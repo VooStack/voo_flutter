@@ -43,6 +43,7 @@ class VooTextField extends VooFieldBase<String> {
     super.gridColumns,
     super.error,
     super.showError,
+    super.layout,
     this.controller,
     this.focusNode,
     this.keyboardType = TextInputType.text,

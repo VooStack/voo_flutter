@@ -40,6 +40,7 @@ export 'src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 export 'src/presentation/widgets/molecules/fields/voo_boolean_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_checkbox_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_currency_field.dart';
+export 'src/presentation/widgets/molecules/fields/voo_date_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_decimal_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_dropdown_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_email_field.dart';
@@ -51,6 +52,5 @@ export 'src/presentation/widgets/molecules/fields/voo_password_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_percentage_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_phone_field.dart';
 export 'src/presentation/widgets/molecules/fields/voo_text_field.dart';
-
 export 'src/presentation/widgets/organisms/forms/voo_form.dart';
 export 'src/presentation/widgets/organisms/forms/voo_form_page_builder.dart';

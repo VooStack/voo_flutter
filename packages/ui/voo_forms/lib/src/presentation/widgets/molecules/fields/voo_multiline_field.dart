@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_text_field.dart';
 
 /// Multiline text field molecule - extends VooTextField with multiline defaults
@@ -23,6 +24,7 @@ class VooMultilineField extends VooTextField {
     super.gridColumns,
     super.error,
     super.showError,
+    super.layout = VooFieldLayout.wide, // Multiline fields default to full width
     super.controller,
     super.focusNode,
     super.inputFormatters,

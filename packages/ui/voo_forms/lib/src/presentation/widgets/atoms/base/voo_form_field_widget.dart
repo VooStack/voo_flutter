@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_forms/src/domain/entities/field_layout.dart';
 
 /// Base interface for all form field widgets
 /// This allows VooForm and VooFormBuilder to accept any field widget
@@ -18,6 +19,9 @@ abstract class VooFormFieldWidget extends Widget {
   
   /// The initial value of the field
   dynamic get initialValue;
+  
+  /// Layout configuration for the field
+  VooFieldLayout get layout;
   
   const VooFormFieldWidget({super.key});
 }
