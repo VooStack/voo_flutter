@@ -3,9 +3,11 @@ import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/enums/field_variant.dart';
 import 'package:voo_forms/src/domain/enums/label_position.dart';
-import 'package:voo_forms/src/presentation/widgets/config/voo_field_options.dart';
-import 'package:voo_forms/src/presentation/widgets/config/voo_form_error_display.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/text_field_helpers.dart';
+import 'package:voo_forms/core/utils/config/voo_field_options.dart';
+import 'package:voo_forms/core/utils/config/voo_form_error_display.dart';
+import 'package:voo_forms/core/utils/builders/text_field_prefix_builder.dart';
+import 'package:voo_forms/core/utils/builders/text_field_suffix_builder.dart';
+import 'package:voo_forms/core/utils/builders/text_field_formatters_builder.dart';
 
 /// Enhanced text form field that uses Flutter's default theme
 class VooTextFormField extends StatefulWidget {

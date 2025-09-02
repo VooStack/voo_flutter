@@ -102,58 +102,58 @@ class DropdownSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      padding: EdgeInsets.all(design.spacingMd),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
-        ),
-      ),
-      child: TextField(
-        controller: searchController,
-        autofocus: true,
-        decoration: InputDecoration(
-          hintText: searchHint ?? 'Search...',
-          prefixIcon: Icon(
-            Icons.search,
-            size: design.iconSizeMd,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          suffixIcon: searchController.text.isNotEmpty
-              ? IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    size: design.iconSizeSm,
-                  ),
-                  onPressed: () {
-                    searchController.clear();
-                    onClearSearch();
-                  },
-                )
-              : null,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(design.radiusSm),
-            borderSide: BorderSide(
-              color: theme.colorScheme.outline,
+        padding: EdgeInsets.all(design.spacingMd),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: theme.colorScheme.outline.withValues(alpha: 0.2),
             ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(design.radiusSm),
-            borderSide: BorderSide(
-              color: theme.colorScheme.primary,
-              width: 2,
-            ),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: design.spacingMd,
-            vertical: design.spacingSm,
-          ),
-          isDense: true,
         ),
-        onChanged: onSearchChanged,
-      ),
-    );
+        child: TextField(
+          controller: searchController,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: searchHint ?? 'Search...',
+            prefixIcon: Icon(
+              Icons.search,
+              size: design.iconSizeMd,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            suffixIcon: searchController.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(
+                      Icons.clear,
+                      size: design.iconSizeSm,
+                    ),
+                    onPressed: () {
+                      searchController.clear();
+                      onClearSearch();
+                    },
+                  )
+                : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(design.radiusSm),
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(design.radiusSm),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 2,
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: design.spacingMd,
+              vertical: design.spacingSm,
+            ),
+            isDense: true,
+          ),
+          onChanged: onSearchChanged,
+        ),
+      );
 }
 
 /// List of dropdown items
@@ -237,70 +237,64 @@ class VooDropdownMenuItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: option.enabled ? onTap : null,
-        hoverColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.08),
-        highlightColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.12),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacingLg,
-            vertical: design.spacingMd,
-          ),
-          color: isSelected
-              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.2)
-              : null,
-          child: Row(
-            children: [
-              if (option.icon != null) ...[
-                Icon(
-                  option.icon,
-                  size: design.iconSizeMd,
-                  color: option.enabled
-                      ? (isSelected
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface)
-                      : theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                ),
-                SizedBox(width: design.spacingSm),
-              ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      option.label,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: option.enabled
-                            ? (isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface)
-                            : theme.colorScheme.onSurface.withValues(alpha: 0.38),
-                        fontWeight: isSelected ? FontWeight.w500 : null,
-                      ),
-                    ),
-                    if (option.subtitle != null) ...[
-                      const SizedBox(height: 2),
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: option.enabled ? onTap : null,
+          hoverColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.08),
+          highlightColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.12),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacingLg,
+              vertical: design.spacingMd,
+            ),
+            color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.2) : null,
+            child: Row(
+              children: [
+                if (option.icon != null) ...[
+                  Icon(
+                    option.icon,
+                    size: design.iconSizeMd,
+                    color: option.enabled
+                        ? (isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface)
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                  ),
+                  SizedBox(width: design.spacingSm),
+                ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        option.subtitle!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                        option.label,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: option.enabled
+                              ? (isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface)
+                              : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+                          fontWeight: isSelected ? FontWeight.w500 : null,
                         ),
                       ),
+                      if (option.subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          option.subtitle!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-              if (isSelected)
-                Icon(
-                  Icons.check,
-                  size: design.iconSizeMd,
-                  color: theme.colorScheme.primary,
-                ),
-            ],
+                if (isSelected)
+                  Icon(
+                    Icons.check,
+                    size: design.iconSizeMd,
+                    color: theme.colorScheme.primary,
+                  ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 }

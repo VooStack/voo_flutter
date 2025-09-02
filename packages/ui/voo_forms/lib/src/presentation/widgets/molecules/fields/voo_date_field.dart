@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/presentation/widgets/config/voo_field_options.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/date_field_helpers.dart';
+import 'package:voo_forms/core/utils/config/voo_field_options.dart';
+import 'package:voo_forms/core/utils/builders/date_field_decoration_builder.dart';
 
 /// Date form field widget
 class VooDateFieldWidget extends StatefulWidget {

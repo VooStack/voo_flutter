@@ -79,12 +79,10 @@ class FormHeaderWidget extends StatelessWidget {
 
     final titleStyle = _getTitleStyle(theme);
     final subtitleStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: header.color?.withValues(alpha: 0.8) ??
-          theme.colorScheme.onSurfaceVariant,
+      color: header.color?.withValues(alpha: 0.8) ?? theme.colorScheme.onSurfaceVariant,
     );
     final descriptionStyle = theme.textTheme.bodySmall?.copyWith(
-      color: header.color?.withValues(alpha: 0.6) ??
-          theme.colorScheme.onSurfaceVariant,
+      color: header.color?.withValues(alpha: 0.6) ?? theme.colorScheme.onSurfaceVariant,
     );
 
     final Widget titleWidget = Text(
@@ -108,8 +106,7 @@ class FormHeaderWidget extends StatelessWidget {
             ),
           Chip(
             label: titleWidget,
-            backgroundColor:
-                header.backgroundColor ?? theme.colorScheme.primaryContainer,
+            backgroundColor: header.backgroundColor ?? theme.colorScheme.primaryContainer,
             labelStyle: titleStyle,
           ),
           if (header.trailing != null) header.trailing!,
@@ -174,63 +171,51 @@ class FormHeaderWidget extends StatelessWidget {
     };
 
     return baseStyle?.copyWith(
-          color: header.color ??
-              (header.style == HeaderStyle.gradient
-                  ? theme.colorScheme.onPrimary
-                  : theme.colorScheme.onSurface),
-          fontWeight: header.style == HeaderStyle.large ||
-                  header.style == HeaderStyle.banner
-              ? FontWeight.bold
-              : FontWeight.w600,
+          color: header.color ?? (header.style == HeaderStyle.gradient ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface),
+          fontWeight: header.style == HeaderStyle.large || header.style == HeaderStyle.banner ? FontWeight.bold : FontWeight.w600,
         ) ??
         const TextStyle();
   }
 
-  double _getIconSize(VooDesignSystemData design) =>
-    switch (header.style) {
-      HeaderStyle.large => design.iconSizeXl,
-      HeaderStyle.small => design.iconSizeSm,
-      HeaderStyle.chip => design.iconSizeSm,
-      _ => design.iconSizeLg,
-    };
+  double _getIconSize(VooDesignSystemData design) => switch (header.style) {
+        HeaderStyle.large => design.iconSizeXl,
+        HeaderStyle.small => design.iconSizeSm,
+        HeaderStyle.chip => design.iconSizeSm,
+        _ => design.iconSizeLg,
+      };
 
-  Color? _getBackgroundColor(BuildContext context, ThemeData theme) =>
-    switch (header.style) {
-      HeaderStyle.card => theme.colorScheme.surfaceContainerHighest,
-      HeaderStyle.banner => theme.colorScheme.primaryContainer,
-      HeaderStyle.gradient => null,
-      _ => null,
-    };
+  Color? _getBackgroundColor(BuildContext context, ThemeData theme) => switch (header.style) {
+        HeaderStyle.card => theme.colorScheme.surfaceContainerHighest,
+        HeaderStyle.banner => theme.colorScheme.primaryContainer,
+        HeaderStyle.gradient => null,
+        _ => null,
+      };
 
-  MainAxisAlignment _getMainAxisAlignment() =>
-    switch (header.alignment) {
-      HeaderAlignment.center => MainAxisAlignment.center,
-      HeaderAlignment.right => MainAxisAlignment.end,
-      HeaderAlignment.spaceBetween => MainAxisAlignment.spaceBetween,
-      HeaderAlignment.spaceAround => MainAxisAlignment.spaceAround,
-      _ => MainAxisAlignment.start,
-    };
+  MainAxisAlignment _getMainAxisAlignment() => switch (header.alignment) {
+        HeaderAlignment.center => MainAxisAlignment.center,
+        HeaderAlignment.right => MainAxisAlignment.end,
+        HeaderAlignment.spaceBetween => MainAxisAlignment.spaceBetween,
+        HeaderAlignment.spaceAround => MainAxisAlignment.spaceAround,
+        _ => MainAxisAlignment.start,
+      };
 
-  CrossAxisAlignment _getCrossAxisAlignment() =>
-    switch (header.alignment) {
-      HeaderAlignment.center => CrossAxisAlignment.center,
-      HeaderAlignment.right => CrossAxisAlignment.end,
-      _ => CrossAxisAlignment.start,
-    };
+  CrossAxisAlignment _getCrossAxisAlignment() => switch (header.alignment) {
+        HeaderAlignment.center => CrossAxisAlignment.center,
+        HeaderAlignment.right => CrossAxisAlignment.end,
+        _ => CrossAxisAlignment.start,
+      };
 
-  WrapAlignment _getWrapAlignment() =>
-    switch (header.alignment) {
-      HeaderAlignment.center => WrapAlignment.center,
-      HeaderAlignment.right => WrapAlignment.end,
-      HeaderAlignment.spaceBetween => WrapAlignment.spaceBetween,
-      HeaderAlignment.spaceAround => WrapAlignment.spaceAround,
-      _ => WrapAlignment.start,
-    };
+  WrapAlignment _getWrapAlignment() => switch (header.alignment) {
+        HeaderAlignment.center => WrapAlignment.center,
+        HeaderAlignment.right => WrapAlignment.end,
+        HeaderAlignment.spaceBetween => WrapAlignment.spaceBetween,
+        HeaderAlignment.spaceAround => WrapAlignment.spaceAround,
+        _ => WrapAlignment.start,
+      };
 
-  TextAlign _getTextAlign() =>
-    switch (header.alignment) {
-      HeaderAlignment.center => TextAlign.center,
-      HeaderAlignment.right => TextAlign.end,
-      _ => TextAlign.start,
-    };
+  TextAlign _getTextAlign() => switch (header.alignment) {
+        HeaderAlignment.center => TextAlign.center,
+        HeaderAlignment.right => TextAlign.end,
+        _ => TextAlign.start,
+      };
 }

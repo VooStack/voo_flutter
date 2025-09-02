@@ -137,9 +137,9 @@ class PositiveNumberFormatter extends StrictNumberFormatter {
   );
 }
 
-/// Currency formatter
-class CurrencyFormatter extends StrictNumberFormatter {
-  CurrencyFormatter({
+/// Strict currency formatter
+class StrictCurrencyFormatter extends StrictNumberFormatter {
+  StrictCurrencyFormatter({
     super.maxValue,
   }) : super(
     allowDecimals: true,
@@ -149,9 +149,9 @@ class CurrencyFormatter extends StrictNumberFormatter {
   );
 }
 
-/// Percentage formatter (0-100)
-class PercentageFormatter extends StrictNumberFormatter {
-  PercentageFormatter({
+/// Strict percentage formatter (0-100)
+class StrictPercentageFormatter extends StrictNumberFormatter {
+  StrictPercentageFormatter({
     super.allowDecimals,
   }) : super(
     allowNegative: false,

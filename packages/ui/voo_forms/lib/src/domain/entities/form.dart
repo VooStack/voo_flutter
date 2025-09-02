@@ -88,19 +88,18 @@ class VooForm extends Equatable {
 
   String? getError(String fieldId) => errors[fieldId];
 
-  bool hasError(String fieldId) =>
-      errors.containsKey(fieldId) && errors[fieldId]!.isNotEmpty;
+  bool hasError(String fieldId) => errors.containsKey(fieldId) && errors[fieldId]!.isNotEmpty;
 
   Map<String, String> validateAll() {
     final Map<String, String> allErrors = {};
-    
+
     for (final field in fields) {
       final error = field.validate();
       if (error != null) {
         allErrors[field.id] = error;
       }
     }
-    
+
     return allErrors;
   }
 
@@ -111,31 +110,31 @@ class VooForm extends Equatable {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {};
-    
+
     for (final field in fields) {
       if (values.containsKey(field.id)) {
         json[field.name] = values[field.id];
       }
     }
-    
+
     return json;
   }
 
   @override
   List<Object?> get props => [
-    id,
-    title,
-    fields,
-    sections,
-    values,
-    errors,
-    isValid,
-    isDirty,
-    isSubmitting,
-    isSubmitted,
-    layout,
-    validationMode,
-  ];
+        id,
+        title,
+        fields,
+        sections,
+        values,
+        errors,
+        isValid,
+        isDirty,
+        isSubmitting,
+        isSubmitted,
+        layout,
+        validationMode,
+      ];
 }
 
 enum FormLayout {

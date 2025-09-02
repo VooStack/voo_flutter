@@ -1,15 +1,15 @@
 import 'package:flutter/services.dart';
-import 'package:voo_forms/src/utils/formatters/case_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/credit_card_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/currency_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/date_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/international_phone_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/mask_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/pattern_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/percentage_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/phone_number_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/ssn_formatter.dart';
-import 'package:voo_forms/src/utils/formatters/zip_code_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/case_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/credit_card_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/currency_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/date_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/international_phone_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/mask_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/pattern_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/percentage_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/phone_number_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/ssn_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/zip_code_formatter.dart';
 
 /// Collection of commonly used text input formatters
 class VooFormatters {

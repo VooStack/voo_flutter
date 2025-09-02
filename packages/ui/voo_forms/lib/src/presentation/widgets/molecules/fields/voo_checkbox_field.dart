@@ -83,7 +83,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
         name: field.name,
         label: field.label,
         helper: field.helper,
-        initialValue: field.initialValue is bool ? field.initialValue as bool : false,
+        initialValue: field.initialValue is bool && field.initialValue == true,
         value: field.value is bool ? field.value as bool : null,
         required: field.required,
         enabled: field.enabled,

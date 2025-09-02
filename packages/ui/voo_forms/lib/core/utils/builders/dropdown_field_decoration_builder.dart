@@ -54,7 +54,7 @@ class DropdownFieldDecorationBuilder {
               : null,
       suffixIcon: Icon(
         isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-        color: field.enabled ? theme.colorScheme.onSurfaceVariant : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+        color: field.enabled ? theme.colorScheme.onSurfaceVariant : theme.colorScheme.onSurface.withOpacity(0.38),
       ),
       enabled: field.enabled && !field.readOnly,
     );
@@ -65,8 +65,8 @@ class DropdownFieldDecorationBuilder {
         decoration = decoration.copyWith(
           filled: true,
           fillColor: field.enabled
-              ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              ? theme.colorScheme.surfaceContainerHighest.withOpacity(0.5)
+              : theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
         );
         break;
       case FieldVariant.underlined:

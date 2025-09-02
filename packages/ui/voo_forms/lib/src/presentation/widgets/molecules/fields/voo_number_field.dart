@@ -3,7 +3,7 @@ import 'package:voo_forms/src/domain/entities/form_field.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_number_input.dart';
-import 'package:voo_forms/src/utils/strict_number_formatter.dart';
+import 'package:voo_forms/core/utils/formatters/strict_number_formatter.dart';
 
 /// Number field molecule that composes atoms to create a complete numeric input field
 /// Supports both integer and decimal numbers with configurable constraints
