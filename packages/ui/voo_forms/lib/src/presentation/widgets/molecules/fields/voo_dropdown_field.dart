@@ -252,7 +252,7 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
     if (_isLoading) {
       dropdownContent = InputDecorator(
         decoration: InputDecoration(
-          hintText: widget.field.placeholder ?? widget.field.hint,
+          // Don't include hintText here since we show it in the child widget
           // Don't include errorText since we use buildWithError separately
           filled: true,
           fillColor: widget.field.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
@@ -284,14 +284,17 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
         ),
         child: Row(
           children: [
-            Expanded(
-              child: Text(
-                widget.field.placeholder ?? 'Loading...',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+            if (widget.field.loadingIndicator == null) ...[
+              Expanded(
+                child: Text(
+                  widget.field.placeholder ?? 'Loading...',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
-            ),
+            ] else
+              const Spacer(),
             widget.field.loadingIndicator ??
                 const SizedBox(
                   width: 20,

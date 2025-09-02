@@ -27,6 +27,24 @@ class VooCheckboxField extends VooFieldBase<bool> {
         );
 
   @override
+  String? validate(bool? value) {
+    // For checkboxes, required means it must be checked (true)
+    if (this.required && value != true) {
+      return '${label ?? name} must be accepted';
+    }
+    
+    // Call base validation for custom validators
+    if (validators != null) {
+      for (final validator in validators!) {
+        final error = validator.validate(value);
+        if (error != null) return error;
+      }
+    }
+    
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final currentValue = value ?? initialValue ?? false;
@@ -46,14 +64,14 @@ class VooCheckboxField extends VooFieldBase<bool> {
               tristate: tristate,
             ),
             const SizedBox(width: 12),
-            if (label != null) ...[
+            if (label != null || helper != null) ...[
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    buildLabel(context),
+                    if (label != null) buildLabel(context),
                     if (helper != null) ...[
-                      const SizedBox(height: 4),
+                      if (label != null) const SizedBox(height: 4),
                       Text(
                         helper!,
                         style: theme.textTheme.bodySmall?.copyWith(

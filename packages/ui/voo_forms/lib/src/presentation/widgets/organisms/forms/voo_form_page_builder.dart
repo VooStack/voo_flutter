@@ -123,7 +123,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    
+
     // Use provided controller if available
     _controller = widget.controller;
     _controller?.addListener(_handleControllerChange);
@@ -176,12 +176,13 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
   Widget _buildActions(BuildContext context) {
     if (widget.actionsBuilder != null) {
       // Create a dummy controller if needed for custom actions builder
-      final effectiveController = _controller ?? VooFormController(
-        form: domain.VooForm(
-          id: 'temp_form_${DateTime.now().millisecondsSinceEpoch}',
-          fields: const [],
-        ),
-      );
+      final effectiveController = _controller ??
+          VooFormController(
+            form: domain.VooForm(
+              id: 'temp_form_${DateTime.now().millisecondsSinceEpoch}',
+              fields: const [],
+            ),
+          );
       return widget.actionsBuilder!(context, effectiveController);
     }
 
@@ -203,7 +204,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final effectiveConfig = widget.defaultConfig ?? const VooFormConfig();
-    
+
     // Generate form theme
     final formTheme = VooFormTheme.generateFormTheme(
       colorScheme: theme.colorScheme,
@@ -323,7 +324,6 @@ class _FormControllerProvider extends InheritedWidget {
     required this.controller,
     required super.child,
   });
-
 
   @override
   bool updateShouldNotify(_FormControllerProvider oldWidget) => controller != oldWidget.controller;
