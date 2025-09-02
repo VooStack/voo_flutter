@@ -85,4 +85,3 @@ extension VooFormExtension on List<VooFormFieldWidget> {
         cardMargin: cardMargin,
       );
 }
-

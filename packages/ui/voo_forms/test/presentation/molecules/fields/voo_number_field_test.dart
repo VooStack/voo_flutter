@@ -144,8 +144,13 @@ void main() {
         ),
       );
 
+      // First enter a valid value with 2 decimal places
+      await tester.enterText(find.byType(TextField), '10.99');
+      expect(find.text('10.99'), findsOneWidget);
+      
+      // Try to enter a third decimal place - should be prevented
       await tester.enterText(find.byType(TextField), '10.999');
-      // Should truncate to 2 decimal places
+      // Value should remain at 10.99 (formatter prevents third decimal)
       expect(find.text('10.99'), findsOneWidget);
     });
   });
@@ -247,8 +252,13 @@ void main() {
         ),
       );
 
+      // First enter a valid integer value
+      await tester.enterText(find.byType(TextField), '15');
+      expect(find.text('15'), findsOneWidget);
+      
+      // Try to enter a decimal - should be prevented
       await tester.enterText(find.byType(TextField), '15.5');
-      // Should not accept decimals
+      // Value should remain at 15 (formatter prevents decimal when disabled)
       expect(find.text('15'), findsOneWidget);
     });
   });

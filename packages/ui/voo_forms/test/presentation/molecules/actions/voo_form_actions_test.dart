@@ -159,13 +159,9 @@ void main() {
         ),
       );
 
-      final sizedBox = tester.widget<SizedBox>(
-        find.byType(SizedBox).where((widget) {
-          final box = widget as SizedBox;
-          return box.width == 16.0;
-        }),
-      );
-      expect(sizedBox.width, 16.0);
+      // Check that spacing is applied between buttons
+      final sizedBoxes = tester.widgetList<SizedBox>(find.byType(SizedBox));
+      expect(sizedBoxes.any((box) => box.width == 16.0), true);
     });
 
     testWidgets('uses different button types', (WidgetTester tester) async {
@@ -192,7 +188,6 @@ void main() {
           home: Scaffold(
             body: VooFormActions(
               showSubmit: false,
-              showCancel: false,
             ),
           ),
         ),

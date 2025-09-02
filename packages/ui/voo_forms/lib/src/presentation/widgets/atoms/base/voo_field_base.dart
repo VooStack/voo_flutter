@@ -179,9 +179,9 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
     return InputDecoration(
       hintText: placeholder ?? hint,
-      labelText: label,
-      helperText: helper,
-      errorText: showError ? error : null,
+      // Don't include labelText since we use buildWithLabel separately
+      // Don't include helperText since we use buildWithHelper separately  
+      // Don't include errorText since we use buildWithError separately
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
       filled: true,

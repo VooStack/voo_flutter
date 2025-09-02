@@ -65,7 +65,7 @@ void main() {
 
       final progress = tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator));
       expect(progress.backgroundColor, backgroundColor);
-      expect((progress.valueColor as AlwaysStoppedAnimation<Color>).value, valueColor);
+      expect((progress.valueColor! as AlwaysStoppedAnimation<Color>).value, valueColor);
     });
 
     testWidgets('applies border radius when provided', (WidgetTester tester) async {
@@ -93,7 +93,6 @@ void main() {
             body: VooFormProgress(
               isIndeterminate: false,
               value: 0.3,
-              animate: true,
             ),
           ),
         ),
@@ -177,7 +176,7 @@ void main() {
       );
 
       final progress = tester.widget<CircularProgressIndicator>(find.byType(CircularProgressIndicator));
-      expect((progress.valueColor as AlwaysStoppedAnimation<Color>).value, valueColor);
+      expect((progress.valueColor! as AlwaysStoppedAnimation<Color>).value, valueColor);
     });
   });
 }

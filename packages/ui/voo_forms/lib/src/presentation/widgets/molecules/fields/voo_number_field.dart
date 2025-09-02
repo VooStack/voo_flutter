@@ -102,14 +102,17 @@ class VooNumberField extends VooFieldBase<num> {
       decimal: allowDecimals,
     );
 
-    // Compose with helper and error using base class methods
-    return buildWithHelper(
+    // Compose with label, helper, error and actions using base class methods
+    return buildWithLabel(
       context,
-      buildWithError(
+      buildWithHelper(
         context,
-        buildWithActions(
+        buildWithError(
           context,
-          numberInput,
+          buildWithActions(
+            context,
+            numberInput,
+          ),
         ),
       ),
     );

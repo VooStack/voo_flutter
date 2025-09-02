@@ -38,4 +38,24 @@ class VooEmailField extends VooTextField {
           enableSuggestions: false,
           textCapitalization: TextCapitalization.none,
         );
+
+  @override
+  String? validate(String? value) {
+    // First check required validation
+    final requiredError = super.validate(value);
+    if (requiredError != null) return requiredError;
+
+    // Check email format if value is not empty
+    if (value != null && value.isNotEmpty) {
+      // Basic email regex pattern
+      final emailRegex = RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      );
+      if (!emailRegex.hasMatch(value)) {
+        return 'Please enter a valid email address';
+      }
+    }
+
+    return null;
+  }
 }
