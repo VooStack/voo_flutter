@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:voo_forms/src/domain/entities/field_type.dart';
 import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/enums/form_validation_mode.dart';
 
 class VooFormController extends ChangeNotifier {
   VooForm _form;
@@ -78,9 +79,9 @@ class VooFormController extends ChangeNotifier {
       (f) => f.id == fieldId,
       orElse: () => throw StateError('Field with id $fieldId not found'),
     );
-    
+
     dynamic convertedValue = value;
-    
+
     // Convert string values to appropriate types for specific field types
     if (value is String) {
       if (field.type == VooFieldType.number) {
@@ -93,7 +94,7 @@ class VooFormController extends ChangeNotifier {
         }
       }
     }
-    
+
     _fieldValues[fieldId] = convertedValue;
 
     if (!_form.isDirty) {
@@ -147,9 +148,9 @@ class VooFormController extends ChangeNotifier {
       (f) => f.id == fieldId,
       orElse: () => throw StateError('Field with id $fieldId not found'),
     );
-    
+
     dynamic convertedValue = value;
-    
+
     // Convert string values to appropriate types for specific field types
     if (value is String) {
       if (field.type == VooFieldType.number) {
@@ -162,7 +163,7 @@ class VooFormController extends ChangeNotifier {
         }
       }
     }
-    
+
     if (_fieldValues[fieldId] != convertedValue) {
       setValue(fieldId, convertedValue);
 

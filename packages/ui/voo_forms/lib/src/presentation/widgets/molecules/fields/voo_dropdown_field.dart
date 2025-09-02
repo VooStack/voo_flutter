@@ -64,7 +64,7 @@ class VooDropdownField<T> extends VooFieldBase<T> {
       initialValue: effectiveValue,
       decoration: InputDecoration(
         hintText: placeholder ?? hint,
-        errorText: showError ? error : null,
+        // Don't include errorText since we use buildWithError separately
         filled: true,
         fillColor: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         border: OutlineInputBorder(
@@ -253,7 +253,7 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
       dropdownContent = InputDecorator(
         decoration: InputDecoration(
           hintText: widget.field.placeholder ?? widget.field.hint,
-          errorText: widget.field.showError ? widget.field.error : null,
+          // Don't include errorText since we use buildWithError separately
           filled: true,
           fillColor: widget.field.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           border: OutlineInputBorder(
@@ -307,7 +307,7 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
         focusNode: _focusNode,
         decoration: InputDecoration(
           hintText: widget.field.placeholder ?? widget.field.hint,
-          errorText: widget.field.showError ? widget.field.error : null,
+          // Don't include errorText since we use buildWithError separately
           filled: true,
           fillColor: widget.field.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           border: OutlineInputBorder(

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_forms/src/domain/entities/form_field.dart';
-import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_text_input.dart';
 
@@ -90,40 +88,19 @@ class VooTextField extends VooFieldBase<String> {
       decoration: getInputDecoration(context),
     );
 
-    // Compose with helper and error using base class methods
-    return buildWithHelper(
+    // Compose with label, helper, error and actions using base class methods
+    return buildWithLabel(
       context,
-      buildWithError(
+      buildWithHelper(
         context,
-        buildWithActions(
+        buildWithError(
           context,
-          textInput,
+          buildWithActions(
+            context,
+            textInput,
+          ),
         ),
       ),
     );
   }
-
-  /// Factory constructor to create from VooFormField
-  factory VooTextField.fromFormField(VooFormField field) => VooTextField(
-        name: field.name,
-        label: field.label,
-        hint: field.hint,
-        helper: field.helper,
-        placeholder: field.placeholder,
-        initialValue: field.initialValue?.toString(),
-        value: field.value?.toString(),
-        required: field.required,
-        enabled: field.enabled,
-        readOnly: field.readOnly,
-        validators: field.validators is List<VooValidationRule<String>> ? field.validators as List<VooValidationRule<String>> : null,
-        onChanged: field.onChanged != null ? (value) => field.onChanged!(value) : null,
-        actions: field.actions,
-        prefixIcon: field.prefixIcon is IconData ? Icon(field.prefixIcon) : field.prefix,
-        suffixIcon: field.suffixIcon is IconData ? Icon(field.suffixIcon) : field.suffix,
-        maxLines: field.maxLines,
-        maxLength: field.maxLength,
-        inputFormatters: field.inputFormatters,
-        textCapitalization: field.textCapitalization ?? TextCapitalization.none,
-        textInputAction: field.textInputAction ?? TextInputAction.next,
-      );
 }
