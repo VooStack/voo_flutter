@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_date_input.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// Date field molecule that composes atoms to create a complete date picker field
 /// Extends VooFieldBase to inherit all common field functionality
@@ -22,7 +24,6 @@ class VooDateField extends VooFieldBase<DateTime> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -51,7 +52,26 @@ class VooDateField extends VooFieldBase<DateTime> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      final format = dateFormat ?? DateFormat.yMMMd();
+      Widget readOnlyContent = VooReadOnlyField(
+        value: initialValue != null ? format.format(initialValue!) : '',
+        icon: prefixIcon ?? const Icon(Icons.calendar_today),
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
+
     Widget dateInput = VooDateInput(
       controller: controller,
       focusNode: focusNode,
@@ -65,7 +85,7 @@ class VooDateField extends VooFieldBase<DateTime> {
       readOnly: readOnly,
       decoration: getInputDecoration(context),
     );
-    
+
     // Apply height constraints to the input widget
     dateInput = applyInputHeightConstraints(dateInput);
 
@@ -84,4 +104,45 @@ class VooDateField extends VooFieldBase<DateTime> {
       ),
     );
   }
+
+  @override
+  VooDateField copyWith({
+    String? name,
+    String? label,
+    DateTime? initialValue,
+    VooFieldLayout? layout,
+    bool? readOnly,
+  }) =>
+      VooDateField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        layout: layout ?? this.layout,
+        isHidden: isHidden,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        controller: controller,
+        focusNode: focusNode,
+        firstDate: firstDate,
+        lastDate: lastDate,
+        dateFormat: dateFormat,
+        autofocus: autofocus,
+      );
 }

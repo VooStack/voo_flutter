@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/presentation/config/utils/formatters/strict_number_formatter.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_number_input.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// Number field molecule that composes atoms to create a complete numeric input field
 /// Supports both integer and decimal numbers with configurable constraints
@@ -27,7 +28,6 @@ class VooNumberField extends VooFieldBase<num> {
     super.helper,
     String? placeholder,
     super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -75,6 +75,34 @@ class VooNumberField extends VooFieldBase<num> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
 
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      String displayValue = '';
+      if (initialValue != null) {
+        // Format the number appropriately
+        if (!allowDecimals || initialValue!.toInt() == initialValue) {
+          displayValue = initialValue!.toInt().toString();
+        } else {
+          displayValue = initialValue.toString();
+        }
+      }
+      
+      Widget readOnlyContent = VooReadOnlyField(
+        value: displayValue,
+        icon: prefixIcon ?? suffixIcon,
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
+
     final numberInput = VooNumberInput(
       controller: controller,
       focusNode: focusNode,
@@ -98,7 +126,7 @@ class VooNumberField extends VooFieldBase<num> {
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,
       enabled: enabled,
-      readOnly: readOnly,
+      readOnly: false,
       autofocus: autofocus,
       decoration: getInputDecoration(context),
       signed: allowNegative,
@@ -120,4 +148,44 @@ class VooNumberField extends VooFieldBase<num> {
       ),
     );
   }
+
+  @override
+  VooNumberField copyWith({
+    num? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooNumberField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        controller: controller,
+        focusNode: focusNode,
+        min: min,
+        max: max,
+        step: step,
+        allowDecimals: allowDecimals,
+        allowNegative: allowNegative,
+        maxDecimalPlaces: maxDecimalPlaces,
+        onEditingComplete: onEditingComplete,
+        onSubmitted: onSubmitted,
+        autofocus: autofocus,
+      );
 }

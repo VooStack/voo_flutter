@@ -10,68 +10,66 @@ import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_wid
 class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
   @override
   final String name;
-  
+
   /// Fields to display in this row
   final List<VooFormFieldWidget> fields;
-  
+
   /// Optional label for the row (displayed as title)
   @override
   final String? label;
-  
+
   /// Optional title for the row (deprecated, use label instead)
   final String? title;
-  
+
   /// Custom widget to display as header
   final Widget? headerWidget;
-  
+
   /// Spacing between fields
   final double spacing;
-  
+
   /// Padding around the row
   final EdgeInsetsGeometry? padding;
-  
+
   /// Background decoration
   final BoxDecoration? decoration;
-  
+
   /// Cross axis alignment for fields
   final CrossAxisAlignment crossAxisAlignment;
-  
+
   /// Main axis alignment for fields
   final MainAxisAlignment mainAxisAlignment;
-  
+
   /// Main axis size
   final MainAxisSize? mainAxisSize;
-  
+
   /// Whether to wrap fields when they overflow
   final bool wrap;
-  
+
   /// Run spacing for wrapped layout
   final double runSpacing;
-  
+
   /// Whether to expand fields equally
   final bool expandFields;
-  
+
   /// Flex values for each field (if provided)
   final List<int>? fieldFlex;
-  
+
   /// Whether to wrap fields in Flexible widgets to prevent overflow
   /// Set to false when fields have their own size constraints
   /// When true, fields without explicit width constraints will be wrapped in Flexible
   final bool flexibleFields;
-  
+
   /// Layout configuration for the row
   @override
   final VooFieldLayout layout;
-  
-  @override
+
   bool get required => false;
-  
-  @override
+
   dynamic get value => null;
-  
+
   @override
   dynamic get initialValue => null;
-  
+
   const VooFieldRow({
     super.key,
     required this.name,
@@ -92,28 +90,26 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
     this.flexibleFields = true,
     this.layout = VooFieldLayout.wide,
   }) : assert(label == null || title == null, 'Cannot provide both label and title. Use label instead.');
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // Build fields with appropriate wrapping/expanding
     final List<Widget> fieldWidgets = [];
     for (int i = 0; i < fields.length; i++) {
       Widget field = fields[i];
-      
+
       // Check if field has explicit width constraints
       // If it does, we should not wrap it in Flexible to avoid constraint conflicts
       bool hasWidthConstraints = false;
       if (field is VooFieldBase) {
         hasWidthConstraints = field.minWidth != null || field.maxWidth != null;
       }
-      
+
       // Apply flex if expanding fields
       if (expandFields || (fieldFlex != null && i < fieldFlex!.length)) {
-        final flex = fieldFlex != null && i < fieldFlex!.length 
-            ? fieldFlex![i] 
-            : 1;
+        final flex = fieldFlex != null && i < fieldFlex!.length ? fieldFlex![i] : 1;
         field = Expanded(
           flex: flex,
           child: field,
@@ -129,17 +125,17 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
       }
       // Fields with width constraints or when flexibleFields is false
       // manage their own constraints
-      
+
       fieldWidgets.add(field);
-      
+
       // Add spacing between fields
       if (i < fields.length - 1) {
         fieldWidgets.add(SizedBox(width: spacing));
       }
     }
-    
+
     Widget content;
-    
+
     // Use Wrap if wrapping is enabled
     if (wrap) {
       content = Wrap(
@@ -151,9 +147,8 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
     } else {
       // Use MainAxisSize.min by default when not expanding to avoid unbounded constraints
       // Use MainAxisSize.max when expanding fields or if explicitly specified
-      final effectiveMainAxisSize = mainAxisSize ?? 
-          (expandFields || fieldFlex != null ? MainAxisSize.max : MainAxisSize.min);
-      
+      final effectiveMainAxisSize = mainAxisSize ?? (expandFields || fieldFlex != null ? MainAxisSize.max : MainAxisSize.min);
+
       content = Row(
         crossAxisAlignment: crossAxisAlignment,
         mainAxisAlignment: mainAxisAlignment,
@@ -161,7 +156,7 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
         children: fieldWidgets,
       );
     }
-    
+
     // Build the complete widget with optional title
     Widget result = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -184,12 +179,12 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
               ),
             ),
           ),
-        
+
         // Row content
         content,
       ],
     );
-    
+
     // Apply decoration if provided
     if (decoration != null || padding != null) {
       result = Container(
@@ -198,7 +193,24 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
         child: result,
       );
     }
-    
+
     return result;
   }
+
+  @override
+  VooFormFieldWidget copyWith() => VooFieldRow(
+        key: key,
+        name: name,
+        fields: fields.map((field) => field.copyWith()).toList(),
+        label: label,
+        title: title,
+        headerWidget: headerWidget,
+        spacing: spacing,
+        padding: padding,
+        decoration: decoration,
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        layout: layout,
+      );
 }

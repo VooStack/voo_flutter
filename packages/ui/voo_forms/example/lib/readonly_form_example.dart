@@ -39,20 +39,17 @@ class _ReadOnlyFormExampleState extends State<ReadOnlyFormExample> {
               name: 'name',
               label: 'Full Name',
               initialValue: 'John Doe',
-              required: true,
             ),
             VooEmailField(
               name: 'email',
               label: 'Email Address',
               initialValue: 'john.doe@example.com',
-              required: true,
             ),
             VooDropdownField<String>(
               name: 'state',
               label: 'State',
               options: const ['California', 'New York', 'Texas', 'Florida'],
               initialValue: 'California',
-              required: true,
             ),
             VooPhoneField(
               name: 'phone',

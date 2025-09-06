@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_switch_input.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// Boolean field molecule that composes atoms to create a complete switch field
 /// Uses VooSwitchInput atom for the actual switch control
@@ -12,7 +14,6 @@ class VooBooleanField extends VooFieldBase<bool> {
     super.labelWidget,
     super.helper,
     bool? initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -36,6 +37,26 @@ class VooBooleanField extends VooFieldBase<bool> {
 
     final theme = Theme.of(context);
     final currentValue = initialValue ?? false;
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      Widget readOnlyContent = VooReadOnlyField(
+        value: currentValue ? 'Yes' : 'No',
+        icon: Icon(
+          currentValue ? Icons.check_circle : Icons.cancel,
+          color: currentValue ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+        ),
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
 
     // Build the switch with label or labelWidget in a row
     final switchRow = Row(
@@ -43,7 +64,7 @@ class VooBooleanField extends VooFieldBase<bool> {
         if (labelWidget != null || label != null) ...[
           Expanded(
             child: GestureDetector(
-              onTap: enabled && !readOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
+              onTap: enabled && !effectiveReadOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -64,8 +85,8 @@ class VooBooleanField extends VooFieldBase<bool> {
         ],
         VooSwitchInput(
           value: currentValue,
-          onChanged: enabled && !readOnly ? onChanged : null,
-          enabled: enabled && !readOnly,
+          onChanged: enabled && !effectiveReadOnly ? onChanged : null,
+          enabled: enabled && !effectiveReadOnly,
         ),
         if (actions != null && actions!.isNotEmpty) ...[
           const SizedBox(width: 8),
@@ -86,10 +107,39 @@ class VooBooleanField extends VooFieldBase<bool> {
       ),
       child: switchRow,
     );
-    
+
     // Apply height constraints to the input container
     container = applyInputHeightConstraints(container);
 
     return buildFieldContainer(context, container);
   }
+
+  @override
+  VooBooleanField copyWith({
+    String? name,
+    String? label,
+    bool? initialValue,
+    VooFieldLayout? layout,
+    bool? readOnly,
+  }) =>
+      VooBooleanField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        helper: helper,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        gridColumns: gridColumns,
+        layout: layout ?? this.layout,
+        isHidden: isHidden,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+      );
 }

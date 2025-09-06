@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_dropdown_search_field.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// Dropdown field molecule that provides a searchable dropdown selection widget
 /// Extends VooFieldBase to inherit all common field functionality
@@ -38,7 +40,6 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -61,6 +62,29 @@ class VooDropdownField<T> extends VooFieldBase<T> {
   Widget build(BuildContext context) {
     final effectiveValue = initialValue;
     final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      String displayValue = '';
+      if (effectiveValue != null) {
+        displayValue = displayTextBuilder != null 
+          ? displayTextBuilder!(effectiveValue)
+          : effectiveValue.toString();
+      }
+      
+      Widget readOnlyContent = VooReadOnlyField(
+        value: displayValue,
+        icon: prefixIcon,
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
 
     // Build the searchable dropdown content
     Widget dropdownContent = VooDropdownSearchField<T>(
@@ -86,6 +110,42 @@ class VooDropdownField<T> extends VooFieldBase<T> {
 
     return dropdownContent;
   }
+
+  @override
+  VooDropdownField<T> copyWith({
+    T? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooDropdownField<T>(
+        key: key,
+        name: name ?? this.name,
+        options: options,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        displayTextBuilder: displayTextBuilder,
+        dropdownIcon: dropdownIcon,
+        maxDropdownHeight: maxDropdownHeight,
+        isExpanded: isExpanded,
+        sortOptions: sortOptions,
+        searchFilter: searchFilter,
+      );
 }
 
 /// Async dropdown field that loads options asynchronously
@@ -124,7 +184,6 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -148,11 +207,70 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-
-    return _AsyncDropdownFieldWidget<T>(
-      field: this,
-    );
+    
+    // Check for read-only state
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+    if (effectiveReadOnly) {
+      String displayValue = '';
+      if (initialValue != null) {
+        displayValue = displayTextBuilder != null 
+          ? displayTextBuilder!(initialValue!)
+          : initialValue.toString();
+      }
+      
+      Widget readOnlyContent = VooReadOnlyField(
+        value: displayValue,
+        icon: prefixIcon,
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
+    
+    return _AsyncDropdownFieldWidget<T>(field: this);
   }
+
+  @override
+  VooAsyncDropdownField<T> copyWith({
+    T? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooAsyncDropdownField<T>(
+        key: key,
+        name: name ?? this.name,
+        asyncOptionsLoader: asyncOptionsLoader,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        displayTextBuilder: displayTextBuilder,
+        dropdownIcon: dropdownIcon,
+        maxDropdownHeight: maxDropdownHeight,
+        isExpanded: isExpanded,
+        loadingIndicator: loadingIndicator,
+        searchDebounce: searchDebounce,
+        sortOptions: sortOptions,
+      );
 }
 
 /// Internal stateful widget for async dropdown
@@ -191,6 +309,29 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
 
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      String displayValue = '';
+      if (_selectedValue != null) {
+        displayValue = widget.field.displayTextBuilder != null 
+          ? widget.field.displayTextBuilder!(_selectedValue as T)
+          : _selectedValue.toString();
+      }
+      
+      Widget readOnlyContent = VooReadOnlyField(
+        value: displayValue,
+        icon: widget.field.prefixIcon,
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = widget.field.buildWithHelper(context, readOnlyContent);
+      readOnlyContent = widget.field.buildWithError(context, readOnlyContent);
+      readOnlyContent = widget.field.buildWithLabel(context, readOnlyContent);
+      readOnlyContent = widget.field.buildWithActions(context, readOnlyContent);
+      
+      return widget.field.buildFieldContainer(context, readOnlyContent);
+    }
+
     // Build the dropdown with integrated async search
     Widget dropdownContent = VooDropdownSearchField<T>(
       items: const [], // Empty initial items, async search will load them
@@ -210,9 +351,7 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
       sortComparator: widget.field.sortOptions,
       asyncSearch: widget.field.asyncOptionsLoader,
       searchDebounce: widget.field.searchDebounce,
-      decoration: widget.field.getInputDecoration(context).copyWith(
-            suffixIcon: widget.field.dropdownIcon,
-          ),
+      decoration: widget.field.getInputDecoration(context).copyWith(suffixIcon: widget.field.dropdownIcon),
     );
 
     // Apply standard field building pattern

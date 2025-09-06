@@ -65,7 +65,7 @@ class VooFormPageBuilder extends StatefulWidget {
   final bool isEditable;
 
   /// Custom actions builder
-  final Widget Function(BuildContext, VooFormController)? actionsBuilder;
+  final Widget Function(BuildContext context, VooFormController controller)? actionsBuilder;
 
   /// Main axis alignment for actions
   final MainAxisAlignment actionsAlignment;
@@ -234,45 +234,47 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     );
 
     // Build page content with footer layout
-    Widget content = Column(
-      children: [
-        // Scrollable form content
-        Expanded(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            physics: widget.physics ?? const BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header
-                if (widget.header != null) ...[
-                  widget.header!,
-                  SizedBox(height: widget.spacing * 1.5),
-                ],
-
-                // Progress indicator
-                if (widget.showProgress) ...[
-                  VooFormProgress(
-                    isIndeterminate: widget.isSubmitting ?? _isSubmitting,
-                    value: (widget.isSubmitting ?? _isSubmitting) ? null : 0.0,
-                  ),
-                  SizedBox(height: widget.spacing),
-                ],
-
-                // Form
-                _buildForm(),
-
-                // Add spacing at bottom to ensure content isn't hidden behind actions
-                SizedBox(height: widget.spacing * 2),
+    Widget content = LayoutBuilder(
+      builder: (context, constraints) {
+        // Check if height is bounded
+        final hasBoundedHeight = constraints.maxHeight != double.infinity;
+        
+        // Build the scrollable form content
+        final Widget formContent = SingleChildScrollView(
+          controller: _scrollController,
+          physics: widget.physics ?? const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              if (widget.header != null) ...[
+                widget.header!,
+                SizedBox(height: widget.spacing * 1.5),
               ],
-            ),
-          ),
-        ),
 
-        // Fixed footer with actions
-        if (widget.showSubmitButton || widget.showCancelButton || widget.actionsBuilder != null) ...[
-          Container(
+              // Progress indicator
+              if (widget.showProgress) ...[
+                VooFormProgress(
+                  isIndeterminate: widget.isSubmitting ?? _isSubmitting,
+                  value: (widget.isSubmitting ?? _isSubmitting) ? null : 0.0,
+                ),
+                SizedBox(height: widget.spacing),
+              ],
+
+              // Form
+              _buildForm(),
+
+              // Add spacing at bottom to ensure content isn't hidden behind actions
+              SizedBox(height: widget.spacing * 2),
+            ],
+          ),
+        );
+
+        // Build the actions container
+        Widget? actionsContainer;
+        if (widget.showSubmitButton || widget.showCancelButton || widget.actionsBuilder != null) {
+          actionsContainer = Container(
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               border: Border(
@@ -286,12 +288,33 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
               vertical: widget.spacing,
             ),
             child: _buildActions(context),
-          ),
-        ],
+          );
+        }
 
-        // Footer
-        if (widget.footer != null) widget.footer!,
-      ],
+        // Use different layouts based on constraints
+        if (hasBoundedHeight) {
+          // Use Expanded layout when height is bounded (normal app usage)
+          return Column(
+            children: [
+              Expanded(child: formContent),
+              if (actionsContainer != null) actionsContainer,
+              if (widget.footer != null) widget.footer!,
+            ],
+          );
+        } else {
+          // Use flexible layout when height is unbounded (preview/nested scroll)
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: formContent,
+              ),
+              if (actionsContainer != null) actionsContainer,
+              if (widget.footer != null) widget.footer!,
+            ],
+          );
+        }
+      },
     );
 
     // Apply theme

@@ -13,7 +13,6 @@ class VooCurrencyField extends VooDecimalField {
     super.helper,
     String? placeholder,
     super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,

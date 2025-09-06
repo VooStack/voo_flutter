@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_text_input.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// Text field molecule that composes atoms to create a complete text input field
 /// Extends VooFieldBase to inherit all common field functionality
@@ -32,7 +34,6 @@ class VooTextField extends VooFieldBase<String> {
     super.helper,
     super.placeholder,
     super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -71,7 +72,25 @@ class VooTextField extends VooFieldBase<String> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      Widget readOnlyContent = VooReadOnlyField(
+        value: initialValue ?? '',
+        icon: prefixIcon,
+      );
+
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+
+      return buildFieldContainer(context, readOnlyContent);
+    }
+
     Widget textInput = VooTextInput(
       controller: controller,
       focusNode: focusNode,
@@ -92,11 +111,11 @@ class VooTextField extends VooFieldBase<String> {
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,
       enabled: enabled,
-      readOnly: getEffectiveReadOnly(context),
+      readOnly: readOnly,
       autofocus: autofocus,
       decoration: getInputDecoration(context),
     );
-    
+
     // Apply height constraints to the input widget
     textInput = applyInputHeightConstraints(textInput);
 
@@ -115,4 +134,55 @@ class VooTextField extends VooFieldBase<String> {
       ),
     );
   }
+
+  @override
+  VooTextField copyWith({
+    String? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooTextField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        controller: controller,
+        focusNode: focusNode,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        inputFormatters: inputFormatters,
+        obscureText: obscureText,
+        enableSuggestions: enableSuggestions,
+        autocorrect: autocorrect,
+        maxLines: maxLines,
+        minLines: minLines,
+        maxLength: maxLength,
+        expands: expands,
+        textCapitalization: textCapitalization,
+        onEditingComplete: onEditingComplete,
+        onSubmitted: onSubmitted,
+        autofocus: autofocus,
+        layout: layout ?? this.layout,
+        isHidden: isHidden,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+      );
 }

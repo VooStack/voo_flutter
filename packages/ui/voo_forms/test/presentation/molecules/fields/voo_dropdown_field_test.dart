@@ -30,7 +30,6 @@ void main() {
               name: 'country',
               label: 'Country',
               options: ['USA', 'Canada'],
-              required: true,
             ),
           ),
         ),
@@ -116,11 +115,11 @@ void main() {
       // Test that the items are created with displayTextBuilder
       // (Rather than testing the opened dropdown menu which may have timing issues)
       // We can verify this by selecting an item and checking the displayed value
-      
+
       // Open dropdown by tapping the TextFormField
       await tester.tap(find.byType(TextFormField));
       await tester.pumpAndSettle();
-      
+
       // The dropdown should show the options with displayTextBuilder formatting
       // Look for the dropdown menu items in the overlay
       expect(find.text('Number: 1'), findsWidgets);
@@ -186,7 +185,6 @@ void main() {
         name: 'country',
         label: 'Country',
         options: ['USA', 'Canada'],
-        required: true,
       );
 
       expect(field.validate(null), 'Country is required');
@@ -232,7 +230,7 @@ void main() {
       expect(find.text('Loading countries...'), findsOneWidget);
       // CircularProgressIndicator might be part of the loading state
       expect(find.byType(CircularProgressIndicator), findsWidgets);
-      
+
       // Wait for the async operation to complete to avoid timer issues
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
@@ -303,14 +301,14 @@ void main() {
       );
 
       expect(find.text('Loading...'), findsOneWidget);
-      
+
       // Wait for the async operation to complete to avoid timer issues
       await tester.pumpAndSettle(const Duration(milliseconds: 200));
     });
 
     testWidgets('displays initial value immediately', (WidgetTester tester) async {
       const initialValue = 'Canada';
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -329,17 +327,17 @@ void main() {
 
       // Initial value should be displayed immediately before async load
       expect(find.text(initialValue), findsOneWidget);
-      
+
       // Complete async operations
       await tester.pumpAndSettle();
-      
+
       // Value should still be displayed
       expect(find.text(initialValue), findsOneWidget);
     });
 
     testWidgets('displays initial value with custom displayTextBuilder', (WidgetTester tester) async {
       const initialValue = 42;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -359,17 +357,17 @@ void main() {
 
       // Initial value should be displayed with custom format
       expect(find.text('ID: 42'), findsOneWidget);
-      
+
       // Complete async operations
       await tester.pumpAndSettle();
-      
+
       // Value should still be displayed
       expect(find.text('ID: 42'), findsOneWidget);
     });
 
     testWidgets('preserves selected value after async load', (WidgetTester tester) async {
       const initialValue = 'Mexico';
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -388,14 +386,14 @@ void main() {
 
       // Initial value displayed
       expect(find.text(initialValue), findsOneWidget);
-      
+
       // Complete async load
       await tester.pumpAndSettle();
-      
+
       // Open dropdown
       await tester.tap(find.text(initialValue));
       await tester.pumpAndSettle();
-      
+
       // Should show check mark next to selected item
       expect(find.byIcon(Icons.check), findsOneWidget);
     });
@@ -422,10 +420,10 @@ void main() {
 
       // Initial value should be displayed even though it's not in the async items
       expect(find.text(initialValue), findsOneWidget);
-      
+
       // Complete the async operation
       await tester.pumpAndSettle();
-      
+
       // Value should still be displayed
       expect(find.text(initialValue), findsOneWidget);
     });
@@ -449,10 +447,10 @@ void main() {
 
       // Initial value should be displayed immediately
       expect(find.text('First Value'), findsOneWidget);
-      
+
       // Wait for async load to complete
       await tester.pumpAndSettle(const Duration(milliseconds: 100));
-      
+
       // Value should still be displayed
       expect(find.text('First Value'), findsOneWidget);
     });

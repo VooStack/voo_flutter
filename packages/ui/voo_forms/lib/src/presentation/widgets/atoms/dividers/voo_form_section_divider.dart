@@ -53,10 +53,8 @@ class VooFormSectionDivider extends StatelessWidget implements VooFormFieldWidge
   @override
   final VooFieldLayout layout;
   
-  @override
   bool get required => false;
   
-  @override
   dynamic get value => null;
   
   @override
@@ -153,6 +151,26 @@ class VooFormSectionDivider extends StatelessWidget implements VooFormFieldWidge
       ),
     );
   }
+  
+  @override
+  VooFormFieldWidget copyWith() => VooFormSectionDivider(
+      key: key,
+      name: name,
+      label: label,
+      subtitle: subtitle,
+      customWidget: customWidget,
+      thickness: thickness,
+      color: color,
+      indent: indent,
+      endIndent: endIndent,
+      topSpacing: topSpacing,
+      bottomSpacing: bottomSpacing,
+      showLine: showLine,
+      labelStyle: labelStyle,
+      subtitleStyle: subtitleStyle,
+      alignment: alignment,
+      layout: layout,
+    );
 }
 
 /// Convenience constructors for common divider styles

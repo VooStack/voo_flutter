@@ -27,7 +27,6 @@ void main() {
             body: VooTextField(
               name: 'email',
               label: 'Email',
-              required: true,
             ),
           ),
         ),
@@ -204,7 +203,6 @@ void main() {
       const field = VooTextField(
         name: 'test',
         label: 'Test Field',
-        required: true,
       );
 
       expect(field.validate(null), 'Test Field is required');

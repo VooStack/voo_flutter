@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_checkbox_input.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// Checkbox field molecule that composes atoms to create a complete checkbox field
 /// Uses VooCheckboxInput atom for the actual checkbox control
@@ -14,7 +16,6 @@ class VooCheckboxField extends VooFieldBase<bool> {
     super.labelWidget,
     super.helper,
     bool? initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -37,10 +38,10 @@ class VooCheckboxField extends VooFieldBase<bool> {
   @override
   String? validate(bool? value) {
     // For checkboxes, required means it must be checked (true)
-    if (this.required && value != true) {
+    if (isRequired && value != true) {
       return '${label ?? name} must be accepted';
     }
-    
+
     // Call base validation for custom validators
     if (validators != null) {
       for (final validator in validators!) {
@@ -48,7 +49,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
         if (error != null) return error;
       }
     }
-    
+
     return null;
   }
 
@@ -56,13 +57,33 @@ class VooCheckboxField extends VooFieldBase<bool> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     final theme = Theme.of(context);
     final currentValue = initialValue ?? false;
+    final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      Widget readOnlyContent = VooReadOnlyField(
+        value: currentValue ? 'Checked' : 'Unchecked',
+        icon: Icon(
+          currentValue ? Icons.check_box : Icons.check_box_outline_blank,
+          color: currentValue ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+        ),
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
 
     // Build the checkbox with label in a row
     Widget checkboxRow = InkWell(
-      onTap: enabled && !readOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
+      onTap: enabled && !effectiveReadOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
@@ -70,8 +91,8 @@ class VooCheckboxField extends VooFieldBase<bool> {
           children: [
             VooCheckboxInput(
               value: currentValue,
-              onChanged: enabled && !readOnly ? (value) => onChanged?.call(value ?? false) : null,
-              enabled: enabled && !readOnly,
+              onChanged: enabled && !effectiveReadOnly ? (value) => onChanged?.call(value ?? false) : null,
+              enabled: enabled && !effectiveReadOnly,
               tristate: tristate,
             ),
             const SizedBox(width: 12),
@@ -80,10 +101,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (labelWidget != null) 
-                      labelWidget!
-                    else if (label != null) 
-                      buildLabel(context),
+                    if (labelWidget != null) labelWidget! else if (label != null) buildLabel(context),
                     if (helper != null) ...[
                       if (labelWidget != null || label != null) const SizedBox(height: 4),
                       Text(
@@ -105,10 +123,40 @@ class VooCheckboxField extends VooFieldBase<bool> {
         ),
       ),
     );
-    
+
     // Apply height constraints to the checkbox row
     checkboxRow = applyInputHeightConstraints(checkboxRow);
 
     return buildFieldContainer(context, checkboxRow);
   }
+
+  @override
+  VooCheckboxField copyWith({
+    String? name,
+    String? label,
+    bool? initialValue,
+    VooFieldLayout? layout,
+    bool? readOnly,
+  }) =>
+      VooCheckboxField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        helper: helper,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        onChanged: onChanged,
+        actions: actions,
+        gridColumns: gridColumns,
+        layout: layout ?? this.layout,
+        isHidden: isHidden,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        tristate: tristate,
+      );
 }

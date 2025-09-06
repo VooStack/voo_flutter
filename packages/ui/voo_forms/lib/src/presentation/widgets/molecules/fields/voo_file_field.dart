@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 /// File field molecule that handles file selection
 /// Supports mobile and web platforms via file_picker
@@ -47,7 +49,6 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     super.hint,
     super.helper,
     super.placeholder,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -85,7 +86,7 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     Widget fileField = FormField<PlatformFile?>(
       initialValue: initialValue,
       validator: (value) {
-        if (this.required && value == null) {
+        if (isRequired && value == null) {
           return 'This field is required';
         }
         if (validators != null) {
@@ -100,6 +101,30 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
         final theme = Theme.of(context);
         final hasFile = fieldState.value != null;
         final effectiveReadOnly = getEffectiveReadOnly(context);
+
+        // If read-only, show VooReadOnlyField for better UX
+        if (effectiveReadOnly) {
+          String displayValue = '';
+          if (fieldState.value != null) {
+            displayValue = fieldState.value!.name;
+            if (fieldState.value!.size > 0) {
+              displayValue += ' (${_formatFileSize(fieldState.value!.size)})';
+            }
+          }
+          
+          Widget readOnlyContent = VooReadOnlyField(
+            value: displayValue,
+            icon: const Icon(Icons.attach_file),
+          );
+          
+          // Apply standard field building pattern
+          readOnlyContent = buildWithHelper(context, readOnlyContent);
+          readOnlyContent = buildWithError(context, readOnlyContent);
+          readOnlyContent = buildWithLabel(context, readOnlyContent);
+          readOnlyContent = buildWithActions(context, readOnlyContent);
+          
+          return readOnlyContent;
+        }
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -340,4 +365,49 @@ class VooFileField extends VooFieldBase<PlatformFile?> {
     if (bytes < 1073741824) return '${(bytes / 1048576).toStringAsFixed(1)} MB';
     return '${(bytes / 1073741824).toStringAsFixed(1)} GB';
   }
+
+  @override
+  VooFileField copyWith({
+    PlatformFile? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooFileField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        layout: layout ?? this.layout,
+        isHidden: isHidden,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        allowedExtensions: allowedExtensions,
+        fileType: fileType,
+        allowMultiple: allowMultiple,
+        allowCompression: allowCompression,
+        showPreview: showPreview,
+        buttonText: buttonText,
+        buttonIcon: buttonIcon,
+        maxFileSize: maxFileSize,
+        fileSizeErrorMessage: fileSizeErrorMessage,
+        onFileSelected: onFileSelected,
+        onFileRemoved: onFileRemoved,
+      );
 }

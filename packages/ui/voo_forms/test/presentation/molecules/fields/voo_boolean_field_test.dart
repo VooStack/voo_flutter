@@ -133,7 +133,6 @@ void main() {
             body: VooCheckboxField(
               name: 'terms',
               label: 'Terms and Conditions',
-              required: true,
             ),
           ),
         ),
@@ -186,7 +185,6 @@ void main() {
       const field = VooCheckboxField(
         name: 'terms',
         label: 'Terms',
-        required: true,
       );
 
       expect(field.validate(false), 'Terms must be accepted');

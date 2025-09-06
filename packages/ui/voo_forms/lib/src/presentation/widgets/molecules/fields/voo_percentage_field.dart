@@ -13,7 +13,6 @@ class VooPercentageField extends VooNumberField {
     super.helper,
     String? placeholder,
     double? super.initialValue,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,

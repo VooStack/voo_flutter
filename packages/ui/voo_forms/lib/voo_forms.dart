@@ -37,6 +37,7 @@ export 'src/presentation/widgets/atoms/buttons/voo_form_button.dart';
 export 'src/presentation/widgets/atoms/buttons/voo_form_field_action.dart';
 export 'src/presentation/widgets/atoms/containers/voo_field_column.dart';
 export 'src/presentation/widgets/atoms/containers/voo_field_row.dart';
+export 'src/presentation/widgets/atoms/containers/voo_form_section.dart';
 export 'src/presentation/widgets/atoms/dividers/voo_form_section_divider.dart';
 export 'src/presentation/widgets/atoms/items/voo_list_field_item.dart';
 export 'src/presentation/widgets/molecules/fields/voo_boolean_field.dart';

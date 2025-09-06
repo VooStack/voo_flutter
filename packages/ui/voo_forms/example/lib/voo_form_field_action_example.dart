@@ -116,13 +116,11 @@ class _VooFormFieldActionExampleState extends State<VooFormFieldActionExample> {
             name: 'name',
             label: 'Client Name',
             placeholder: 'Enter client name',
-            required: true,
           ),
           VooEmailField(
             name: 'email',
             label: 'Email',
             placeholder: 'client@example.com',
-            required: true,
           ),
           VooPhoneField(
             name: 'phone',
@@ -175,7 +173,7 @@ class _VooFormFieldActionExampleState extends State<VooFormFieldActionExample> {
     // );
     return _buildTagFormPage();
   }
-  
+
   Widget _buildTagFormPage() {
     final availableTags = [
       'Flutter',

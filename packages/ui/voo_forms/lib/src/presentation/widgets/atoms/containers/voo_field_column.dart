@@ -9,57 +9,55 @@ import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_wid
 class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
   @override
   final String name;
-  
+
   /// Fields to display in this column
   final List<VooFormFieldWidget> fields;
-  
+
   /// Optional label for the column (displayed as title)
   @override
   final String? label;
-  
+
   /// Optional title for the column (deprecated, use label instead)
   final String? title;
-  
+
   /// Custom widget to display as header
   final Widget? headerWidget;
-  
+
   /// Spacing between fields
   final double spacing;
-  
+
   /// Padding around the column
   final EdgeInsetsGeometry? padding;
-  
+
   /// Background decoration
   final BoxDecoration? decoration;
-  
+
   /// Cross axis alignment for fields
   final CrossAxisAlignment crossAxisAlignment;
-  
+
   /// Main axis alignment for fields
   final MainAxisAlignment mainAxisAlignment;
-  
+
   /// Main axis size
   final MainAxisSize mainAxisSize;
-  
+
   /// Whether to expand to fill available space
   final bool expanded;
-  
+
   /// Flex value when expanded
   final int flex;
-  
+
   /// Layout configuration for the column
   @override
   final VooFieldLayout layout;
-  
-  @override
+
   bool get required => false;
-  
-  @override
+
   dynamic get value => null;
-  
+
   @override
   dynamic get initialValue => null;
-  
+
   const VooFieldColumn({
     super.key,
     required this.name,
@@ -77,11 +75,11 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
     this.flex = 1,
     this.layout = VooFieldLayout.standard,
   }) : assert(label == null || title == null, 'Cannot provide both label and title. Use label instead.');
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     Widget column = Column(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
@@ -101,7 +99,7 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
               ),
             ),
           ),
-        
+
         // Fields with spacing
         for (int i = 0; i < fields.length; i++) ...[
           fields[i],
@@ -109,7 +107,7 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
         ],
       ],
     );
-    
+
     // Apply decoration if provided
     if (decoration != null || padding != null) {
       column = Container(
@@ -118,7 +116,7 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
         child: column,
       );
     }
-    
+
     // Apply expansion if needed
     if (expanded) {
       return Expanded(
@@ -126,7 +124,26 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
         child: column,
       );
     }
-    
+
     return column;
   }
+
+  @override
+  VooFormFieldWidget copyWith() => VooFieldColumn(
+        key: key,
+        name: name,
+        fields: fields.map((field) => field.copyWith()).toList(),
+        label: label,
+        title: title,
+        headerWidget: headerWidget,
+        spacing: spacing,
+        padding: padding,
+        decoration: decoration,
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        expanded: expanded,
+        flex: flex,
+        layout: layout,
+      );
 }

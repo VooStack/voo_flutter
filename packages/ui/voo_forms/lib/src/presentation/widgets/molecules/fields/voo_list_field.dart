@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
-
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+ 
 /// List field molecule that displays a list of items
 /// IMPORTANT: This widget does NOT manage state internally
 /// The developer is responsible for managing items via callbacks
@@ -75,7 +76,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     super.hint,
     super.helper,
     super.placeholder,
-    super.required,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -104,14 +104,86 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     this.itemSpacing = 12.0,
   });
 
-
   @override
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     final theme = Theme.of(context);
     final effectiveReadOnly = getEffectiveReadOnly(context);
+
+    // If read-only, show simplified list view
+    if (effectiveReadOnly) {
+      return buildFieldContainer(
+        context,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (label != null || labelWidget != null) ...[
+              labelWidget ?? Text(
+                label!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (items.isEmpty)
+              VooReadOnlyField(
+                value: placeholder ?? 'No items',
+                showBorder: false,
+              )
+            else
+              ...items.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                return Padding(
+                  padding: EdgeInsets.only(bottom: index < items.length - 1 ? 8 : 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (showItemNumbers) ...[
+                        Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '${index + 1}',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                      Expanded(
+                        child: AbsorbPointer(
+                          absorbing: true,
+                          child: itemBuilder(context, item, index),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            if (helper != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                helper!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
 
     Widget listContent;
 
@@ -244,13 +316,12 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     result = buildWithError(context, result);
     result = buildWithLabel(context, result);
     result = buildWithActions(context, result);
-    
+
     // Apply field container with width constraints
     result = buildFieldContainer(context, result);
 
     return result;
   }
-
 
   Widget _buildAddButton(BuildContext context, ThemeData theme) => SizedBox(
         width: double.infinity,
@@ -282,4 +353,48 @@ class VooListField<T> extends VooFieldBase<List<T>> {
 
     return null;
   }
+
+  @override
+  VooListField<T> copyWith({
+    List<T>? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooListField<T>(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        layout: layout ?? this.layout,
+        items: initialValue ?? items,
+        itemBuilder: itemBuilder,
+        onAddPressed: onAddPressed,
+        onReorder: onReorder,
+        showAddButton: showAddButton,
+        showRemoveButtons: showRemoveButtons,
+        canReorderItems: canReorderItems,
+        addButtonText: addButtonText,
+        addButtonIcon: addButtonIcon,
+        removeButtonTooltip: removeButtonTooltip,
+        removeButtonIcon: removeButtonIcon,
+        showItemNumbers: showItemNumbers,
+        showItemBorders: showItemBorders,
+        emptyStateWidget: emptyStateWidget,
+        itemDecoration: itemDecoration,
+        itemSpacing: itemSpacing,
+      );
 }

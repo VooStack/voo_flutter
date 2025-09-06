@@ -3,6 +3,7 @@ import 'package:voo_forms/src/domain/entities/form.dart' as domain;
 import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/form_layout.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
+import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_dynamic_form_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_grid_form_layout.dart';
@@ -14,21 +15,18 @@ import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_wrapped
 class VooFormScope extends InheritedWidget {
   final bool isReadOnly;
   final bool isLoading;
-  
+
   const VooFormScope({
     super.key,
     required this.isReadOnly,
     required this.isLoading,
     required super.child,
   });
-  
-  static VooFormScope? of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<VooFormScope>();
-  
+
+  static VooFormScope? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooFormScope>();
+
   @override
-  bool updateShouldNotify(VooFormScope oldWidget) =>
-      isReadOnly != oldWidget.isReadOnly ||
-      isLoading != oldWidget.isLoading;
+  bool updateShouldNotify(VooFormScope oldWidget) => isReadOnly != oldWidget.isReadOnly || isLoading != oldWidget.isLoading;
 }
 
 /// Simple, atomic form widget that manages field collection and validation
@@ -67,10 +65,10 @@ class VooForm extends StatefulWidget {
 
   /// Whether all fields in the form should be read-only
   final bool isReadOnly;
-  
+
   /// Whether the form is in a loading state
   final bool isLoading;
-  
+
   /// Custom widget to show when form is loading
   final Widget? loadingWidget;
 
@@ -176,7 +174,17 @@ class _VooFormState extends State<VooForm> {
     switch (widget.layout) {
       case FormLayout.vertical:
         return VooVerticalFormLayout(
-          fields: widget.fields,
+          fields: widget.fields
+              .map(
+                (field) => field is VooFieldBase
+                    ? field.copyWith(
+                        readOnly: widget.isReadOnly || field.readOnly,
+                        label: field.label,
+                        layout: field.layout,
+                      )
+                    : field,
+              )
+              .toList(),
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
           mainAxisAlignment: widget.mainAxisAlignment,
@@ -184,14 +192,34 @@ class _VooFormState extends State<VooForm> {
         );
       case FormLayout.horizontal:
         return VooHorizontalFormLayout(
-          fields: widget.fields,
+          fields: widget.fields
+              .map(
+                (field) => field is VooFieldBase
+                    ? field.copyWith(
+                        readOnly: widget.isReadOnly || field.readOnly,
+                        label: field.label,
+                        layout: field.layout,
+                      )
+                    : field,
+              )
+              .toList(),
           spacing: widget.spacing,
           mainAxisAlignment: widget.mainAxisAlignment,
           mainAxisSize: widget.mainAxisSize,
         );
       case FormLayout.grid:
         return VooGridFormLayout(
-          fields: widget.fields,
+          fields: widget.fields
+              .map(
+                (field) => field is VooFieldBase
+                    ? field.copyWith(
+                        readOnly: widget.isReadOnly || field.readOnly,
+                        label: field.label,
+                        layout: field.layout,
+                      )
+                    : field,
+              )
+              .toList(),
           columns: widget.gridColumns,
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
@@ -200,13 +228,33 @@ class _VooFormState extends State<VooForm> {
         );
       case FormLayout.wrapped:
         return VooWrappedFormLayout(
-          fields: widget.fields,
+          fields: widget.fields
+              .map(
+                (field) => field is VooFieldBase
+                    ? field.copyWith(
+                        readOnly: widget.isReadOnly || field.readOnly,
+                        label: field.label,
+                        layout: field.layout,
+                      )
+                    : field,
+              )
+              .toList(),
           spacing: widget.spacing,
           runSpacing: widget.spacing,
         );
       case FormLayout.dynamic:
         return VooDynamicFormLayout(
-          fields: widget.fields,
+          fields: widget.fields
+              .map(
+                (field) => field is VooFieldBase
+                    ? field.copyWith(
+                        readOnly: widget.isReadOnly || field.readOnly,
+                        label: field.label,
+                        layout: field.layout,
+                      )
+                    : field,
+              )
+              .toList(),
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
           mainAxisAlignment: widget.mainAxisAlignment,
@@ -230,12 +278,12 @@ class _VooFormState extends State<VooForm> {
   Widget build(BuildContext context) {
     // Show loading indicator if form is loading
     if (widget.isLoading) {
-      return widget.loadingWidget ?? 
-        const Center(
-          child: CircularProgressIndicator(),
-        );
+      return widget.loadingWidget ??
+          const Center(
+            child: CircularProgressIndicator(),
+          );
     }
-    
+
     // Otherwise show the form
     return VooFormScope(
       isReadOnly: widget.isReadOnly,

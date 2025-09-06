@@ -13,6 +13,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final String name;
   @override
   final String? label;
+
   /// Custom widget to use instead of the default label
   final Widget? labelWidget;
   final String? hint;
@@ -20,8 +21,6 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final String? placeholder;
   @override
   final T? initialValue;
-  @override
-  final bool required;
   final bool enabled;
   final bool readOnly;
   final List<VooValidationRule<T>>? validators;
@@ -34,14 +33,19 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   final bool showError;
   @override
   final VooFieldLayout layout;
+
   /// Whether this field should be hidden
   final bool isHidden;
+
   /// Optional minimum width for the field
   final double? minWidth;
+
   /// Optional maximum width for the field
   final double? maxWidth;
+
   /// Optional minimum height for the field
   final double? minHeight;
+
   /// Optional maximum height for the field
   final double? maxHeight;
 
@@ -54,7 +58,6 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     this.helper,
     this.placeholder,
     this.initialValue,
-    this.required = false,
     this.enabled = true,
     this.readOnly = false,
     this.validators,
@@ -83,17 +86,17 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     // Otherwise use the field's own readonly state
     return readOnly;
   }
-  
+
   /// Get effective loading state from form-level configuration
   bool getEffectiveLoading(BuildContext context) {
     final formScope = VooFormScope.of(context);
     return formScope?.isLoading ?? false;
   }
-  
+
   /// Get responsive padding based on screen size
   EdgeInsets getFieldPadding(BuildContext context) {
     final screenType = VooScreenSize.getType(context);
-    
+
     switch (screenType) {
       case ScreenType.mobile:
         return const EdgeInsets.symmetric(vertical: 6.0);
@@ -111,9 +114,9 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   Widget buildFieldContainer(BuildContext context, Widget child) {
     // Return empty widget if field is hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     Widget fieldWidget = child;
-    
+
     // Apply width constraints at container level (affects entire field)
     if (minWidth != null || maxWidth != null) {
       fieldWidget = ConstrainedBox(
@@ -124,14 +127,14 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
         child: fieldWidget,
       );
     }
-    
+
     // Apply padding
     return Padding(
       padding: getFieldPadding(context),
       child: fieldWidget,
     );
   }
-  
+
   /// Helper method to apply height constraints to input widgets
   /// Individual fields should use this for their input controls
   Widget applyInputHeightConstraints(Widget input) {
@@ -155,8 +158,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (labelWidget != null || label != null || (actions != null && actions!.isNotEmpty))
-          buildLabelWithActions(context),
+        if (labelWidget != null || label != null || (actions != null && actions!.isNotEmpty)) buildLabelWithActions(context),
         if (labelWidget != null || label != null) const SizedBox(height: 8),
         child,
       ],
@@ -166,7 +168,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   /// Builds the label with actions aligned to the right
   Widget buildLabelWithActions(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -184,7 +186,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
-                if (required)
+                if (isRequired)
                   Text(
                     ' *',
                     style: TextStyle(
@@ -219,7 +221,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
             color: theme.colorScheme.onSurface,
           ),
         ),
-        if (required)
+        if (isRequired)
           Text(
             ' *',
             style: TextStyle(
@@ -304,7 +306,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     return InputDecoration(
       hintText: placeholder ?? hint,
       // Don't include labelText since we use buildWithLabel separately
-      // Don't include helperText since we use buildWithHelper separately  
+      // Don't include helperText since we use buildWithHelper separately
       // Don't include errorText since we use buildWithError separately
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
@@ -346,7 +348,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Validates the field value
   String? validate(T? value) {
-    if (required && (value == null || (value is String && value.isEmpty))) {
+    if (isRequired && (value == null || (value is String && value.isEmpty))) {
       return '${label ?? name} is required';
     }
 
@@ -359,4 +361,9 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
     return null;
   }
+
+  bool get isRequired => validators?.any((v) => v is RequiredValidation) ?? false;
+
+  @override
+  VooFieldBase<T> copyWith({String? name, String? label, T? initialValue, VooFieldLayout? layout, bool? readOnly});
 }

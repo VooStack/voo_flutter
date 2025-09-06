@@ -46,7 +46,7 @@ void main() {
       expect(field.validate('missing@'), contains('valid'));
       expect(field.validate('@domain.com'), contains('valid'));
       expect(field.validate('test@'), contains('valid'));
-      
+
       // Valid email formats
       expect(field.validate('user@example.com'), null);
       expect(field.validate('test.user@example.co.uk'), null);
@@ -57,7 +57,6 @@ void main() {
       const field = VooEmailField(
         name: 'email',
         label: 'Email',
-        required: true,
       );
 
       expect(field.validate(null), 'Email is required');

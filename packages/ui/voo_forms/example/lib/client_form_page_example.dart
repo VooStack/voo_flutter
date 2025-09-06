@@ -15,9 +15,9 @@ class _ClientFormPageExampleState extends State<ClientFormPageExample> {
     Client(id: '1', name: 'Acme Corp'),
     Client(id: '2', name: 'Global Tech'),
   ];
-  
+
   Client? _selectedClient;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +70,7 @@ class _ClientFormPageExampleState extends State<ClientFormPageExample> {
 /// This demonstrates how you can use providers, cubits, or other state management
 class ClientFormPage extends StatefulWidget {
   final void Function(Client) onClientAdded;
-  
+
   const ClientFormPage({
     super.key,
     required this.onClientAdded,
@@ -83,7 +83,7 @@ class ClientFormPage extends StatefulWidget {
 class _ClientFormPageState extends State<ClientFormPage> {
   // In a real app, this could be a Cubit or ChangeNotifier
   final Map<String, dynamic> _formData = {};
-  
+
   @override
   Widget build(BuildContext context) {
     // In a real app, you might wrap this with BlocProvider:
@@ -95,10 +95,10 @@ class _ClientFormPageState extends State<ClientFormPage> {
     //     builder: (context, state) => _buildForm(context),
     //   ),
     // );
-    
+
     return _buildForm();
   }
-  
+
   Widget _buildForm() {
     return VooFormPageBuilder(
       form: VooForm(
@@ -106,7 +106,6 @@ class _ClientFormPageState extends State<ClientFormPage> {
           VooTextField(
             name: 'name',
             label: 'Name',
-            required: true,
             onChanged: (value) => _formData['name'] = value,
           ),
           VooTextField(
@@ -152,7 +151,7 @@ class _ClientFormPageState extends State<ClientFormPage> {
       onSubmit: (values) {
         // In a real app with Cubit:
         // context.read<ClientFormCubit>().submitForm();
-        
+
         if (values['name'] != null) {
           final newClient = Client(
             id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -165,7 +164,7 @@ class _ClientFormPageState extends State<ClientFormPage> {
             phone: values['phone'] as String?,
             email: values['email'] as String?,
           );
-          
+
           widget.onClientAdded(newClient);
           Navigator.of(context).pop();
         }
@@ -235,7 +234,7 @@ class Client {
   final int? zip;
   final String? phone;
   final String? email;
-  
+
   const Client({
     required this.id,
     required this.name,
