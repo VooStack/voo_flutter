@@ -1,3 +1,36 @@
+## [0.3.2] - 2025-09-06
+
+### Added
+- **VooFormSection**: New container widget for organizing form fields into logical sections
+  - Supports collapsible/expandable sections with smooth animations
+  - Material 3 design with proper surface colors and elevation
+  - Title, description, and optional leading/trailing widgets
+  - Visual containment with card-based design
+  - Implements VooFormFieldWidget for seamless integration with VooForm
+
+- **VooReadOnlyField**: Improved read-only field display
+  - Consistent sizing with editable fields (56px min height)
+  - Proper Material 3 styling and alignment
+  - Better visual hierarchy with standard field padding
+
+### Fixed
+- **VooFormPageBuilder Layout**: Fixed RenderFlex overflow issues in unbounded height contexts
+  - Uses LayoutBuilder to detect bounded/unbounded constraints
+  - Adapts layout strategy based on context (Expanded vs Flexible)
+  - Properly handles preview environments and nested scrollables
+
+- **Read-only Field Consistency**: All field types now properly handle read-only state
+  - Unified approach using VooReadOnlyField for better UX
+  - Labels handled by parent widgets to avoid duplication
+  - Consistent sizing and alignment across all field types
+
+### Changed
+- **Material 3 Compliance**: Updated components to follow Material 3 design guidelines
+  - Better typography hierarchy
+  - Improved surface colors and elevation
+  - Consistent spacing and padding
+  - Professional visual appearance
+
 ## [0.3.1] - 2025-09-02
 
 ### Fixed

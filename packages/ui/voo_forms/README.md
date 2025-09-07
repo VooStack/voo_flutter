@@ -24,7 +24,7 @@ Add `voo_forms` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  voo_forms: ^0.1.14
+  voo_forms: ^0.3.2
 ```
 
 ## 🚀 Quick Start
@@ -34,10 +34,10 @@ dependencies:
 ```dart
 import 'package:voo_forms/voo_forms.dart';
 
-// Create a form using the intuitive VooField API
+// Create a form using direct widget instantiation
 final form = VooForm(
   fields: [
-    VooField.text(
+    VooTextField(
       name: 'username',
       label: 'Username',
       validators: [
@@ -45,7 +45,7 @@ final form = VooForm(
         MinLengthValidation(minLength: 3),
       ],
     ),
-    VooField.email(
+    VooEmailField(
       name: 'email',
       label: 'Email Address',
       validators: [
@@ -53,7 +53,7 @@ final form = VooForm(
         EmailValidation(),
       ],
     ),
-    VooField.password(
+    VooPasswordField(
       name: 'password',
       label: 'Password',
       validators: [
@@ -66,63 +66,76 @@ final form = VooForm(
       ],
     ),
   ],
-  onSubmit: (values) {
-    print('Form submitted: $values');
-  },
 );
 ```
 
-### Even Simpler with Extension Method
+### Organizing Fields with Sections
 
 ```dart
-// Convert a list of fields directly to a form
-final loginForm = [
-  VooField.email(name: 'email', label: 'Email'),
-  VooField.password(name: 'password', label: 'Password'),
-].toForm(
-  onSubmit: (values) => print('Login: $values'),
+// Group related fields in collapsible sections
+final form = VooForm(
+  fields: [
+    VooFormSection(
+      title: 'Personal Information',
+      description: 'Enter your basic details',
+      isCollapsible: true,
+      children: [
+        VooTextField(name: 'firstName', placeholder: 'First Name'),
+        VooTextField(name: 'lastName', placeholder: 'Last Name'),
+        VooDateField(name: 'birthDate', label: 'Date of Birth'),
+      ],
+    ),
+    VooFormSection(
+      title: 'Contact Details',
+      children: [
+        VooEmailField(name: 'email', label: 'Email'),
+        VooPhoneField(name: 'phone', label: 'Phone'),
+      ],
+    ),
+  ],
 );
 ```
 
 ## 🎨 Field Types
 
-VooForms provides factory constructors for all common field types:
+VooForms provides direct widget classes for all field types:
 
 ```dart
 // Text Fields
-VooField.text(name: 'username', label: 'Username')
-VooField.email(name: 'email', label: 'Email')
-VooField.password(name: 'password', label: 'Password')
-VooField.phone(name: 'phone', label: 'Phone')
-VooField.url(name: 'website', label: 'Website')
-VooField.multiline(name: 'bio', label: 'Bio')
-VooField.number(name: 'age', label: 'Age')
+VooTextField(name: 'username', label: 'Username')
+VooEmailField(name: 'email', label: 'Email')
+VooPasswordField(name: 'password', label: 'Password')
+VooPhoneField(name: 'phone', label: 'Phone')
+VooMultilineField(name: 'bio', label: 'Bio')
+VooNumberField(name: 'age', label: 'Age')
 
 // Selection Fields
-VooField.dropdown<String>(
+VooDropdownField<String>(
   name: 'country',
   label: 'Country',
-  options: [
-    VooFieldOption(value: 'us', label: 'United States'),
-    VooFieldOption(value: 'uk', label: 'United Kingdom'),
-  ],
+  options: ['United States', 'United Kingdom', 'Canada'],
 )
-VooField.radio<String>(
-  name: 'gender',
-  label: 'Gender',
-  options: [...],
-)
-VooField.checkbox(name: 'terms', label: 'Accept Terms')
-VooField.boolean(name: 'newsletter', label: 'Subscribe')
+VooCheckboxField(name: 'terms', label: 'Accept Terms')
+VooBooleanField(name: 'newsletter', label: 'Subscribe')
 
 // Date & Time
-VooField.date(name: 'birthday', label: 'Birthday')
-VooField.time(name: 'appointment', label: 'Time')
+VooDateField(name: 'birthday', label: 'Birthday')
+VooDateFieldButton(name: 'appointment', label: 'Appointment Date')
+
+// Numeric Fields
+VooIntegerField(name: 'age', label: 'Age')
+VooDecimalField(name: 'price', label: 'Price')
+VooCurrencyField(name: 'salary', label: 'Salary')
+VooPercentageField(name: 'discount', label: 'Discount')
 
 // Other Types
-VooField.slider(name: 'rating', label: 'Rating', min: 0, max: 10)
-VooField.color(name: 'theme', label: 'Theme Color')
-VooField.file(name: 'avatar', label: 'Avatar')
+VooFileField(name: 'avatar', label: 'Avatar')
+VooListField<String>(
+  name: 'tags',
+  label: 'Tags',
+  items: tags,
+  itemBuilder: (tag) => Chip(label: Text(tag)),
+)
 ```
 
 ## ✅ Validators
