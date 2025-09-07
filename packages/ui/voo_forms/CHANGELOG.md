@@ -1,3 +1,18 @@
+## [0.3.7] - 2025-09-07
+
+### Fixed
+- **VooCurrencyField Incremental Typing Bug**: Fixed issue where typing multiple digits resulted in incorrect values
+  - Rewrote formatter logic to properly handle incremental digit entry (e.g., typing "777" now correctly formats as "$7.77" instead of "$770.07")
+  - Improved performance by simplifying cursor positioning logic
+  - Added proper numeric value extraction that handles formatted text with leading zeros
+  - Fixed the root cause where appending digits to formatted text was incorrectly parsed
+
+### Changed
+- **CurrencyFormatter Improvements**: Enhanced formatter for better real-world usage
+  - Now correctly multiplies value by 10 when appending digits (standard calculator behavior)
+  - Simplified cursor positioning to always place at end for better UX
+  - Removed unused cursor calculation method to reduce complexity
+
 ## [0.3.6] - 2025-09-07
 
 ### Fixed
