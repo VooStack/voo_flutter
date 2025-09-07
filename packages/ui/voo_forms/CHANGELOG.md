@@ -1,3 +1,12 @@
+## [0.3.6] - 2025-09-07
+
+### Fixed
+- **VooCurrencyField Formatting Bug**: Fixed critical issue where typing numbers resulted in incorrect formatting
+  - Removed conflicting `FilteringTextInputFormatter.digitsOnly` that was fighting with `CurrencyFormatter`
+  - Improved `CurrencyFormatter` to correctly distinguish between text replacements and deletions
+  - Now correctly formats "88" as "$0.88" instead of the erroneous "8008,808.00"
+  - Added proper handling for direct text input (e.g., from tests or paste operations)
+
 ## [0.3.5] - 2025-09-07
 
 ### Added

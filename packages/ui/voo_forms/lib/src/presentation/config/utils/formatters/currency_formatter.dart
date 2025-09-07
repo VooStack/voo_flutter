@@ -65,8 +65,12 @@ class CurrencyFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Handle deletion
-    if (newValue.text.length < oldValue.text.length) {
+    // Check if this is a complete replacement (e.g., from tester.enterText or paste)
+    // If the new text is all digits and doesn't contain formatting, it's a replacement
+    final isReplacement = RegExp(r'^\d+$').hasMatch(newValue.text);
+    
+    // Handle deletion only if it's not a replacement
+    if (!isReplacement && newValue.text.length < oldValue.text.length) {
       return _handleDeletion(oldValue, newValue);
     }
     
@@ -86,11 +90,14 @@ class CurrencyFormatter extends TextInputFormatter {
     final formatted = _formatCurrency(value);
     
     // Calculate cursor position
-    final cursorPosition = _calculateCursorPosition(
-      oldValue.text,
-      formatted,
-      newValue.selection.baseOffset,
-    );
+    // For replacements or empty old value, put cursor at end
+    final cursorPosition = isReplacement || oldValue.text.isEmpty
+        ? formatted.length
+        : _calculateCursorPosition(
+            oldValue.text,
+            formatted,
+            newValue.selection.baseOffset,
+          );
     
     return TextEditingValue(
       text: formatted,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
@@ -156,7 +155,6 @@ class VooCurrencyField extends VooFieldBase<double> {
       ),
       textInputAction: TextInputAction.next,
       inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
         _getCurrencyFormatter(),
       ],
       onChanged: (text) {
