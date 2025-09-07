@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:cross_file/cross_file.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
@@ -7,6 +12,7 @@ import 'package:voo_forms/voo_forms.dart';
 /// File field molecule that handles file selection
 /// Supports mobile and web platforms via file_picker
 /// Supports both URL-based files and newly uploaded files
+/// Supports drag and drop on web and desktop platforms
 /// Follows atomic design and KISS principle
 class VooFileField extends VooFieldBase<VooFile?> {
   /// Allowed file extensions (e.g., ['pdf', 'doc', 'docx'])
@@ -44,6 +50,9 @@ class VooFileField extends VooFieldBase<VooFile?> {
 
   /// Whether to show image preview for image files
   final bool showImagePreview;
+  
+  /// Whether to enable drag and drop (web/desktop only)
+  final bool enableDragDrop;
 
   const VooFileField({
     super.key,
@@ -81,6 +90,7 @@ class VooFileField extends VooFieldBase<VooFile?> {
     this.onFileSelected,
     this.onFileRemoved,
     this.showImagePreview = true,
+    this.enableDragDrop = true,
   });
 
   @override
@@ -102,72 +112,11 @@ class VooFileField extends VooFieldBase<VooFile?> {
         }
         return null;
       },
-      builder: (FormFieldState<VooFile?> fieldState) {
-        final theme = Theme.of(context);
-        final hasFile = fieldState.value != null;
-        final effectiveReadOnly = getEffectiveReadOnly(context);
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // File selection area
-            InkWell(
-              onTap: enabled && !effectiveReadOnly
-                  ? () => _pickFile(context, fieldState)
-                  : null,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: error != null
-                        ? theme.colorScheme.error
-                        : effectiveReadOnly
-                            ? theme.colorScheme.outline.withValues(alpha: 0.2)
-                            : theme.colorScheme.outline.withValues(alpha: 0.3),
-                    width: error != null ? 2 : 1,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  color: effectiveReadOnly
-                      ? theme.colorScheme.surfaceContainerHighest
-                          .withValues(alpha: 0.3)
-                      : theme.colorScheme.surface,
-                ),
-                child: hasFile
-                    ? _buildFilePreview(context, fieldState)
-                    : _buildPlaceholder(context, fieldState, effectiveReadOnly),
-              ),
-            ),
-
-            // Action buttons (only show in edit mode)
-            if (hasFile && enabled && !effectiveReadOnly) ...[
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton.icon(
-                    onPressed: () => _removeFile(context, fieldState),
-                    icon: Icon(
-                      Icons.delete_outline,
-                      color: theme.colorScheme.error,
-                    ),
-                    label: Text(
-                      'Remove',
-                      style: TextStyle(color: theme.colorScheme.error),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton.icon(
-                    onPressed: () => _pickFile(context, fieldState),
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Change'),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        );
-      },
+      builder: (FormFieldState<VooFile?> fieldState) =>
+          _VooFileFieldContent(
+            fieldState: fieldState,
+            field: this,
+          ),
     );
 
     // Apply standard field building pattern
@@ -179,11 +128,205 @@ class VooFileField extends VooFieldBase<VooFile?> {
     return fileField;
   }
 
-  Widget _buildPlaceholder(
+  @override
+  VooFileField copyWith({
+    VooFile? initialValue,
+    String? label,
+    VooFieldLayout? layout,
+    String? name,
+    bool? readOnly,
+  }) =>
+      VooFileField(
+        key: key,
+        name: name ?? this.name,
+        label: label ?? this.label,
+        labelWidget: labelWidget,
+        hint: hint,
+        helper: helper,
+        placeholder: placeholder,
+        initialValue: initialValue ?? this.initialValue,
+        enabled: enabled,
+        readOnly: readOnly ?? this.readOnly,
+        validators: validators,
+        actions: actions,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        gridColumns: gridColumns,
+        error: error,
+        showError: showError,
+        layout: layout ?? this.layout,
+        isHidden: isHidden,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
+        allowedExtensions: allowedExtensions,
+        fileType: fileType,
+        allowMultiple: allowMultiple,
+        allowCompression: allowCompression,
+        showPreview: showPreview,
+        buttonText: buttonText,
+        buttonIcon: buttonIcon,
+        maxFileSize: maxFileSize,
+        fileSizeErrorMessage: fileSizeErrorMessage,
+        onFileSelected: onFileSelected,
+        onFileRemoved: onFileRemoved,
+        showImagePreview: showImagePreview,
+        enableDragDrop: enableDragDrop,
+      );
+}
+
+/// Internal stateful widget to handle drag and drop state
+class _VooFileFieldContent extends StatefulWidget {
+  final FormFieldState<VooFile?> fieldState;
+  final VooFileField field;
+
+  const _VooFileFieldContent({
+    required this.fieldState,
+    required this.field,
+  });
+
+  @override
+  State<_VooFileFieldContent> createState() => _VooFileFieldContentState();
+}
+
+class _VooFileFieldContentState extends State<_VooFileFieldContent> {
+  bool _isDragging = false;
+  
+  bool get _canDragDrop => 
+      widget.field.enableDragDrop && 
+      (kIsWeb || !Platform.isAndroid && !Platform.isIOS) &&
+      widget.field.enabled &&
+      !widget.field.getEffectiveReadOnly(context);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasFile = widget.fieldState.value != null;
+    final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
+
+    Widget content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // File selection area with drag and drop
+        _buildFileSelectionArea(context, theme, hasFile, effectiveReadOnly),
+
+        // Action buttons (only show in edit mode)
+        if (hasFile && widget.field.enabled && !effectiveReadOnly) ...[
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                onPressed: () => _removeFile(context),
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: theme.colorScheme.error,
+                ),
+                label: Text(
+                  'Remove',
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
+              ),
+              const SizedBox(width: 8),
+              TextButton.icon(
+                onPressed: () => _pickFile(context),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Change'),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+
+    // Wrap with DropTarget for drag and drop support
+    if (_canDragDrop) {
+      content = DropTarget(
+        onDragEntered: (details) {
+          setState(() {
+            _isDragging = true;
+          });
+        },
+        onDragExited: (details) {
+          setState(() {
+            _isDragging = false;
+          });
+        },
+        onDragDone: (details) async {
+          setState(() {
+            _isDragging = false;
+          });
+          
+          if (details.files.isNotEmpty) {
+            final file = details.files.first;
+            await _handleDroppedFile(context, file);
+          }
+        },
+        child: content,
+      );
+    }
+
+    return content;
+  }
+
+  Widget _buildFileSelectionArea(
     BuildContext context,
-    FormFieldState<VooFile?> fieldState,
+    ThemeData theme,
+    bool hasFile,
     bool effectiveReadOnly,
   ) {
+    // Determine the border and background colors based on state
+    Color borderColor;
+    Color backgroundColor;
+    double borderWidth = 1;
+    
+    if (widget.field.error != null) {
+      borderColor = theme.colorScheme.error;
+      borderWidth = 2;
+    } else if (_isDragging) {
+      borderColor = theme.colorScheme.primary;
+      borderWidth = 2;
+    } else if (effectiveReadOnly) {
+      borderColor = theme.colorScheme.outline.withValues(alpha: 0.2);
+    } else {
+      borderColor = theme.colorScheme.outline.withValues(alpha: 0.3);
+    }
+    
+    if (_isDragging) {
+      backgroundColor = theme.colorScheme.primary.withValues(alpha: 0.08);
+    } else if (effectiveReadOnly) {
+      backgroundColor = theme.colorScheme.surfaceContainerHighest
+          .withValues(alpha: 0.3);
+    } else {
+      backgroundColor = theme.colorScheme.surface;
+    }
+
+    return InkWell(
+      onTap: widget.field.enabled && !effectiveReadOnly
+          ? () => _pickFile(context)
+          : null,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: borderColor,
+            width: borderWidth,
+            style: _isDragging ? BorderStyle.solid : BorderStyle.solid,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: backgroundColor,
+        ),
+        child: hasFile
+            ? _buildFilePreview(context)
+            : _buildPlaceholder(context, effectiveReadOnly),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context, bool effectiveReadOnly) {
     final theme = Theme.of(context);
 
     if (effectiveReadOnly) {
@@ -210,23 +353,41 @@ class VooFileField extends VooFieldBase<VooFile?> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          buttonIcon != null ? null : Icons.cloud_upload_outlined,
+          _isDragging 
+              ? Icons.file_download 
+              : (widget.field.buttonIcon != null ? null : Icons.cloud_upload_outlined),
           size: 48,
-          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+          color: _isDragging 
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         ),
-        if (buttonIcon != null) buttonIcon!,
+        if (widget.field.buttonIcon != null && !_isDragging) widget.field.buttonIcon!,
         const SizedBox(height: 8),
         Text(
-          buttonText ?? 'Click to select file',
+          _isDragging 
+              ? 'Drop file here'
+              : (widget.field.buttonText ?? 'Click to select file'),
           style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.primary,
+            color: _isDragging 
+                ? theme.colorScheme.primary
+                : theme.colorScheme.primary,
             fontWeight: FontWeight.w500,
           ),
         ),
-        if (placeholder != null) ...[
+        if (!_isDragging && _canDragDrop) ...[
           const SizedBox(height: 4),
           Text(
-            placeholder!,
+            'or drag and drop',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color:
+                  theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+            ),
+          ),
+        ],
+        if (widget.field.placeholder != null && !_isDragging) ...[
+          const SizedBox(height: 4),
+          Text(
+            widget.field.placeholder!,
             style: theme.textTheme.bodySmall?.copyWith(
               color:
                   theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
@@ -234,10 +395,12 @@ class VooFileField extends VooFieldBase<VooFile?> {
             textAlign: TextAlign.center,
           ),
         ],
-        if (allowedExtensions != null && allowedExtensions!.isNotEmpty) ...[
+        if (widget.field.allowedExtensions != null && 
+            widget.field.allowedExtensions!.isNotEmpty &&
+            !_isDragging) ...[
           const SizedBox(height: 4),
           Text(
-            'Allowed: ${allowedExtensions!.join(', ')}',
+            'Allowed: ${widget.field.allowedExtensions!.join(', ')}',
             style: theme.textTheme.bodySmall?.copyWith(
               color:
                   theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
@@ -248,18 +411,15 @@ class VooFileField extends VooFieldBase<VooFile?> {
     );
   }
 
-  Widget _buildFilePreview(
-    BuildContext context,
-    FormFieldState<VooFile?> fieldState,
-  ) {
+  Widget _buildFilePreview(BuildContext context) {
     final theme = Theme.of(context);
-    final file = fieldState.value!;
+    final file = widget.fieldState.value!;
     final isImageFile = _isImageFile(file.fileExtension);
 
     return Row(
       children: [
         // File icon or image preview
-        if (isImageFile && showImagePreview && file.isFromUrl) ...[
+        if (isImageFile && widget.field.showImagePreview && file.isFromUrl) ...[
           // Show image preview from URL
           Container(
             width: 56,
@@ -275,12 +435,12 @@ class VooFileField extends VooFieldBase<VooFile?> {
               file.url!,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => ColoredBox(
-                    color: theme.colorScheme.primaryContainer,
-                    child: Icon(
-                      Icons.broken_image,
-                      color: theme.colorScheme.onPrimaryContainer,
-                    ),
-                  ),
+                color: theme.colorScheme.primaryContainer,
+                child: Icon(
+                  Icons.broken_image,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return ColoredBox(
@@ -377,29 +537,102 @@ class VooFileField extends VooFieldBase<VooFile?> {
     );
   }
 
-  Future<void> _pickFile(
-    BuildContext context,
-    FormFieldState<VooFile?> fieldState,
-  ) async {
+  Future<void> _handleDroppedFile(BuildContext context, XFile droppedFile) async {
+    try {
+      // Get file info
+      final bytes = await droppedFile.readAsBytes();
+      final fileName = droppedFile.name;
+      final fileSize = bytes.length;
+      
+      // Extract extension from filename
+      String? extension;
+      final lastDot = fileName.lastIndexOf('.');
+      if (lastDot != -1 && lastDot < fileName.length - 1) {
+        extension = fileName.substring(lastDot + 1).toLowerCase();
+      }
+      
+      // Check if extension is allowed
+      if (widget.field.allowedExtensions != null &&
+          widget.field.allowedExtensions!.isNotEmpty &&
+          extension != null &&
+          !widget.field.allowedExtensions!.contains(extension)) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'File type .$extension is not allowed. Allowed types: ${widget.field.allowedExtensions!.join(', ')}',
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Check file size
+      if (widget.field.maxFileSize != null && fileSize > widget.field.maxFileSize!) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                widget.field.fileSizeErrorMessage ?? 
+                'File size exceeds maximum allowed size of ${_formatFileSize(widget.field.maxFileSize!)}',
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Create PlatformFile from dropped file
+      final platformFile = PlatformFile(
+        name: fileName,
+        size: fileSize,
+        bytes: bytes,
+        path: droppedFile.path,
+      );
+      
+      // Create VooFile and update field
+      final vooFile = VooFile.fromPlatformFile(platformFile);
+      widget.fieldState.didChange(vooFile);
+      widget.field.onFileSelected?.call(vooFile);
+      
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error processing dropped file: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _pickFile(BuildContext context) async {
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: fileType,
+        type: widget.field.fileType,
         allowedExtensions:
-            fileType == FileType.custom ? allowedExtensions : null,
-        allowCompression: allowCompression,
+            widget.field.fileType == FileType.custom 
+                ? widget.field.allowedExtensions 
+                : null,
+        allowCompression: widget.field.allowCompression,
       );
 
       if (result != null && result.files.isNotEmpty) {
         final platformFile = result.files.first;
 
         // Check file size if specified
-        if (maxFileSize != null && platformFile.size > maxFileSize!) {
+        if (widget.field.maxFileSize != null && 
+            platformFile.size > widget.field.maxFileSize!) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  fileSizeErrorMessage ??
-                      'File size exceeds maximum allowed size of ${_formatFileSize(maxFileSize!)}',
+                  widget.field.fileSizeErrorMessage ??
+                      'File size exceeds maximum allowed size of ${_formatFileSize(widget.field.maxFileSize!)}',
                 ),
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),
@@ -412,8 +645,8 @@ class VooFileField extends VooFieldBase<VooFile?> {
         final vooFile = VooFile.fromPlatformFile(platformFile);
 
         // Update field value
-        fieldState.didChange(vooFile);
-        onFileSelected?.call(vooFile);
+        widget.fieldState.didChange(vooFile);
+        widget.field.onFileSelected?.call(vooFile);
       }
     } catch (e) {
       if (context.mounted) {
@@ -427,13 +660,10 @@ class VooFileField extends VooFieldBase<VooFile?> {
     }
   }
 
-  void _removeFile(
-    BuildContext context,
-    FormFieldState<VooFile?> fieldState,
-  ) {
-    fieldState.didChange(null);
-    onFileSelected?.call(null);
-    onFileRemoved?.call();
+  void _removeFile(BuildContext context) {
+    widget.fieldState.didChange(null);
+    widget.field.onFileSelected?.call(null);
+    widget.field.onFileRemoved?.call();
   }
 
   Future<void> _openUrl(BuildContext context, String url) async {
@@ -513,50 +743,4 @@ class VooFileField extends VooFieldBase<VooFile?> {
     }
     return '${(bytes / 1073741824).toStringAsFixed(1)} GB';
   }
-
-  @override
-  VooFileField copyWith({
-    VooFile? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooFileField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        layout: layout ?? this.layout,
-        isHidden: isHidden,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-        allowedExtensions: allowedExtensions,
-        fileType: fileType,
-        allowMultiple: allowMultiple,
-        allowCompression: allowCompression,
-        showPreview: showPreview,
-        buttonText: buttonText,
-        buttonIcon: buttonIcon,
-        maxFileSize: maxFileSize,
-        fileSizeErrorMessage: fileSizeErrorMessage,
-        onFileSelected: onFileSelected,
-        onFileRemoved: onFileRemoved,
-        showImagePreview: showImagePreview,
-      );
 }

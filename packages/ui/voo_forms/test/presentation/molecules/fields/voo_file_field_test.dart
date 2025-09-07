@@ -26,8 +26,12 @@ void main() {
         ),
       );
 
-      // Try to tap the file selection area
-      await tester.tap(find.text('Click to select file'));
+      // When readonly, should show 'No file attached' instead of 'Click to select'
+      expect(find.text('No file attached'), findsOneWidget);
+      expect(find.text('Click to select'), findsNothing);
+
+      // Try to tap the area - it should not be tappable
+      await tester.tap(find.text('No file attached'));
       await tester.pumpAndSettle();
 
       // Should not trigger file selection
@@ -52,8 +56,12 @@ void main() {
         ),
       );
 
-      // Try to tap the file selection area
-      await tester.tap(find.text('Click to select file'));
+      // When readonly, should show 'No file attached' instead of 'Click to select'
+      expect(find.text('No file attached'), findsOneWidget);
+      expect(find.text('Click to select'), findsNothing);
+
+      // Try to tap the area - it should not be tappable
+      await tester.tap(find.text('No file attached'));
       await tester.pumpAndSettle();
 
       // Should not trigger file selection

@@ -1,3 +1,26 @@
+## [0.3.5] - 2025-09-07
+
+### Added
+- **Drag and Drop Support for VooFileField**: Enhanced file upload experience
+  - Desktop and web platform drag and drop functionality via `desktop_drop` package
+  - Visual feedback with animated borders and background colors during drag
+  - "Drop file here" message and icon changes when dragging files
+  - Platform detection to enable only on supported platforms (web/desktop)
+  - Maintains existing file validation (size, extension) for dropped files
+  - Material 3 compliant animations and color transitions
+
+### Changed
+- **VooFileField Visual States**: Improved drag state visual feedback
+  - Primary color border and subtle background tint when dragging
+  - Download icon appears during drag operations
+  - Smooth animations (200ms) for all state transitions
+  - "or drag and drop" hint text below button on supported platforms
+
+### Fixed
+- Converted block function body to expression body for better code style
+- Updated tests to match new UI text and behavior
+- Ensured drag and drop properly integrates with existing file selection
+
 ## [0.3.4] - 2025-09-07
 
 ### Added
