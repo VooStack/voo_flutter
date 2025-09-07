@@ -6,6 +6,7 @@ export 'src/domain/entities/form.dart' hide VooForm;
 export 'src/domain/entities/form_config.dart';
 export 'src/domain/entities/form_field.dart';
 export 'src/domain/entities/validation_rule.dart';
+export 'src/domain/entities/voo_file.dart';
 export 'src/domain/enums/button_type.dart';
 export 'src/domain/enums/error_display_mode.dart';
 export 'src/domain/enums/field_variant.dart';

@@ -428,10 +428,12 @@ void main() {
     });
 
     testWidgets('VooFileField displays initial file', (tester) async {
-      final initialValue = PlatformFile(
-        name: 'document.pdf',
-        size: 2048,
-        path: '/path/to/document.pdf',
+      final initialValue = VooFile.fromPlatformFile(
+        PlatformFile(
+          name: 'document.pdf',
+          size: 2048,
+          path: '/path/to/document.pdf',
+        ),
       );
       
       await tester.pumpWidget(

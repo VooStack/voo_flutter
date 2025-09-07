@@ -1,3 +1,71 @@
+## [0.3.4] - 2025-09-07
+
+### Added
+- **Enhanced VooCurrencyField**: Complete rewrite with proper currency formatting
+  - Real-time formatting with thousand separators (e.g., $1,234.56)
+  - Support for multiple currencies (USD, EUR, GBP, JPY, etc.)
+  - Locale-specific number formatting
+  - Currency symbol icons for all major currencies
+  - Smart formatting that displays formatted text but returns raw numeric values
+
+- **Improved CurrencyFormatter**: Advanced text input formatter
+  - Automatic thousand separators and decimal places
+  - Factory constructors for common currencies
+  - Proper cursor positioning during editing
+  - Handles deletion and insertion correctly
+  - Configurable symbol placement (before/after amount)
+
+### Changed
+- **VooCurrencyField API**: Now extends VooFieldBase directly
+  - Better integration with form validation
+  - Min/max value constraints with formatted error messages
+  - Proper read-only state showing formatted values
+  - Material 3 design compliance
+
+### Fixed
+- Currency fields now properly format values with separators while maintaining numeric output
+- Currency symbols display correctly based on selected currency
+- Read-only currency fields show properly formatted values
+
+## [0.3.3] - 2025-09-07
+
+### Added
+- **VooFile Entity**: New domain entity for managing files from URLs or local uploads
+  - Supports both existing files (from URL) and newly uploaded files (PlatformFile)
+  - Automatic file metadata extraction (name, size, extension, MIME type)
+  - Helper methods for determining file origin and type
+  - Factory constructors for creating from URL or PlatformFile
+
+- **Enhanced VooFileField**: Major improvements to file field functionality
+  - Now uses VooFile entity instead of raw PlatformFile
+  - Support for displaying files from URLs (existing/uploaded files)
+  - Image preview support for URL-based image files
+  - "Uploaded" badge indicator for files from URLs
+  - Open file action button with URL launcher integration
+  - Proper Material 3 design compliance
+
+- **URL Launcher Integration**: Added file opening capability
+  - Opens files in new browser tab on web platforms
+  - Uses system default handler for file types on mobile/desktop
+  - Graceful error handling with user feedback
+  - Safe context checking to prevent crashes
+
+### Fixed
+- **Read-Only File Field Display**: Corrected visual presentation in read-only mode
+  - Maintains consistent Material 3 card layout in both states
+  - Shows proper file preview with icon, name, and size
+  - Displays "No file attached" message when empty
+  - Proper disabled state styling with reduced opacity
+
+### Changed
+- **File Field API**: Updated to use VooFile entity
+  - Breaking change: initialValue now accepts VooFile? instead of PlatformFile?
+  - onFileSelected callback now provides VooFile? instead of PlatformFile?
+  - Improved type safety and cleaner API surface
+
+### Dependencies
+- Added `url_launcher: ^6.2.0` for opening file URLs
+
 ## [0.3.2] - 2025-09-06
 
 ### Added

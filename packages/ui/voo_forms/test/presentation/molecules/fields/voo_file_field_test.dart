@@ -61,10 +61,12 @@ void main() {
     });
 
     testWidgets('action buttons hidden when readOnly', (tester) async {
-      final file = PlatformFile(
-        name: 'test.pdf',
-        size: 1024,
-        path: '/test.pdf',
+      final file = VooFile.fromPlatformFile(
+        PlatformFile(
+          name: 'test.pdf',
+          size: 1024,
+          path: '/test.pdf',
+        ),
       );
 
       await tester.pumpWidget(
@@ -86,10 +88,12 @@ void main() {
     });
 
     testWidgets('displays initial file', (tester) async {
-      final file = PlatformFile(
-        name: 'document.docx',
-        size: 2048,
-        path: '/path/to/document.docx',
+      final file = VooFile.fromPlatformFile(
+        PlatformFile(
+          name: 'document.docx',
+          size: 2048,
+          path: '/path/to/document.docx',
+        ),
       );
 
       await tester.pumpWidget(
@@ -119,10 +123,12 @@ void main() {
     });
 
     testWidgets('shows action buttons when file is selected and not readonly', (tester) async {
-      final file = PlatformFile(
-        name: 'image.png',
-        size: 5120,
-        path: '/path/to/image.png',
+      final file = VooFile.fromPlatformFile(
+        PlatformFile(
+          name: 'image.png',
+          size: 5120,
+          path: '/path/to/image.png',
+        ),
       );
 
       await tester.pumpWidget(

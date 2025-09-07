@@ -33,14 +33,14 @@ class VooFormatters {
   /// Currency formatter with customizable symbol and decimal places
   static TextInputFormatter currency({
     String symbol = '\$',
-    int decimalPlaces = 2,
-    String thousandSeparator = ',',
-    String decimalSeparator = '.',
+    int decimalDigits = 2,
+    String locale = 'en_US',
+    bool symbolBeforeAmount = true,
   }) => CurrencyFormatter(
     symbol: symbol,
-    decimalPlaces: decimalPlaces,
-    thousandSeparator: thousandSeparator,
-    decimalSeparator: decimalSeparator,
+    decimalDigits: decimalDigits,
+    locale: locale,
+    symbolBeforeAmount: symbolBeforeAmount,
   );
 
   /// Uppercase formatter
