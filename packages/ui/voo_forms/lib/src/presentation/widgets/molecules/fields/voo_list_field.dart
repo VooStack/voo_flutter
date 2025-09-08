@@ -111,6 +111,9 @@ class VooListField<T> extends VooFieldBase<List<T>> {
 
     final theme = Theme.of(context);
     final effectiveReadOnly = getEffectiveReadOnly(context);
+    
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     // If read-only, show simplified list view
     if (effectiveReadOnly) {
@@ -313,7 +316,12 @@ class VooListField<T> extends VooFieldBase<List<T>> {
 
     // Apply standard field building pattern
     result = buildWithHelper(context, result);
-    result = buildWithError(context, result);
+    
+    // Build with error if present
+    if (fieldError != null && fieldError.isNotEmpty) {
+      result = buildWithError(context, result);
+    }
+    
     result = buildWithLabel(context, result);
     result = buildWithActions(context, result);
 

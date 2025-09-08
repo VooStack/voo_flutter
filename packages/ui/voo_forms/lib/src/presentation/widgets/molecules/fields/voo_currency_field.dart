@@ -117,6 +117,13 @@ class VooCurrencyField extends VooFieldBase<double> {
     if (isHidden) return const SizedBox.shrink();
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
+    
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+    
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     // If read-only, show formatted currency value
     if (effectiveReadOnly) {
@@ -132,7 +139,12 @@ class VooCurrencyField extends VooFieldBase<double> {
       
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
+      
+      // Build with error if present
+      if (fieldError != null && fieldError.isNotEmpty) {
+        readOnlyContent = buildWithError(context, readOnlyContent);
+      }
+      
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
       
@@ -158,11 +170,16 @@ class VooCurrencyField extends VooFieldBase<double> {
         _getCurrencyFormatter(),
       ],
       onChanged: (text) {
-        if (onChanged != null) {
-          // Parse the formatted currency value back to double
-          final value = CurrencyFormatter.parse(text);
-          onChanged!(value);
+        // Parse the formatted currency value back to double
+        final value = CurrencyFormatter.parse(text);
+        
+        // Update form controller if available
+        if (formController != null) {
+          formController.setValue(name, value);
         }
+        
+        // Call user's onChanged if provided
+        onChanged?.call(value);
       },
       onEditingComplete: onEditingComplete,
       onFieldSubmitted: onSubmitted,
@@ -175,16 +192,22 @@ class VooCurrencyField extends VooFieldBase<double> {
       ),
     );
 
-    // Compose with label, helper, error and actions using base class methods
-    return buildWithLabel(
+    // Build with error if present
+    Widget fieldWithError = currencyInput;
+    if (fieldError != null && fieldError.isNotEmpty) {
+      fieldWithError = buildWithError(context, currencyInput);
+    }
+    
+    // Compose with label, helper and actions using base class methods
+    return buildFieldContainer(
       context,
-      buildWithHelper(
+      buildWithLabel(
         context,
-        buildWithError(
+        buildWithHelper(
           context,
           buildWithActions(
             context,
-            currencyInput,
+            fieldWithError,
           ),
         ),
       ),

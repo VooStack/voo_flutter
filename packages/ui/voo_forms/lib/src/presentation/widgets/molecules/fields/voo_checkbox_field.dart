@@ -65,8 +65,8 @@ class VooCheckboxField extends VooFieldBase<bool> {
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     
-    // Get the error for this field from the controller
-    final fieldError = formController?.getError(name) ?? error;
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(bool? value) {
@@ -124,26 +124,10 @@ class VooCheckboxField extends VooFieldBase<bool> {
     // Apply height constraints to the checkbox row
     checkboxRow = applyInputHeightConstraints(checkboxRow);
 
-    // Build the error widget if there's an error
+    // Build with error if present
     Widget fieldWithError = checkboxRow;
     if (fieldError != null && fieldError.isNotEmpty) {
-      fieldWithError = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          checkboxRow,
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              fieldError,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
-            ),
-          ),
-        ],
-      );
+      fieldWithError = buildWithError(context, checkboxRow);
     }
 
     return buildFieldContainer(context, fieldWithError);

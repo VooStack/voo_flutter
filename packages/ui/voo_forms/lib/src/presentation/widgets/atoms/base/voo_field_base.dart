@@ -92,6 +92,13 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     final formScope = VooFormScope.of(context);
     return formScope?.isLoading ?? false;
   }
+  
+  /// Get the current error for this field from the controller or use the field's error
+  String? getFieldError(BuildContext context) {
+    final formScope = VooFormScope.of(context);
+    final controllerError = formScope?.controller?.getError(name);
+    return controllerError ?? error;
+  }
 
   /// Get responsive padding based on screen size
   EdgeInsets getFieldPadding(BuildContext context) {
@@ -235,7 +242,8 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Builds the field with error display
   Widget buildWithError(BuildContext context, Widget child) {
-    if (!showError || error == null) return child;
+    final fieldError = getFieldError(context);
+    if (!showError || fieldError == null) return child;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,13 +258,14 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Builds just the error widget
   Widget buildError(BuildContext context) {
-    if (error == null || !showError) return const SizedBox.shrink();
+    final fieldError = getFieldError(context);
+    if (fieldError == null || !showError) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 12),
       child: Text(
-        error!,
+        fieldError,
         style: theme.textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.error,
         ),

@@ -104,14 +104,9 @@ class VooFormController extends ChangeNotifier {
   /// Create and register a text controller for a field
   TextEditingController registerTextController(String fieldName, {String? initialText}) {
     if (_textControllers.containsKey(fieldName)) {
-      final existingController = _textControllers[fieldName]!;
-      // Update the text if initialText is provided and different
-      if (initialText != null && existingController.text != initialText) {
-        _isInitializing = true;  // Prevent triggering changes during initialization
-        existingController.text = initialText;
-        _isInitializing = false;
-      }
-      return existingController;
+      // Return existing controller without modifying its text
+      // This preserves user input across rebuilds
+      return _textControllers[fieldName]!;
     }
     
     final controller = TextEditingController(

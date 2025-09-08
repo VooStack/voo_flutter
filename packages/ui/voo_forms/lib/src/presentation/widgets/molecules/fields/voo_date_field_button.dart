@@ -92,6 +92,9 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
     if (isHidden) return const SizedBox.shrink();
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
+    
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     Widget button = VooFormButton(
       text: _getButtonText(),
@@ -128,17 +131,23 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
 
     // Apply height constraints to the button widget
     button = applyInputHeightConstraints(button);
+    
+    // Build with error if present
+    Widget fieldWithError = button;
+    if (fieldError != null && fieldError.isNotEmpty) {
+      fieldWithError = buildWithError(context, button);
+    }
 
-    // Compose with label, helper, error and actions using base class methods
-    return buildWithLabel(
+    // Compose with label, helper and actions using base class methods
+    return buildFieldContainer(
       context,
-      buildWithHelper(
+      buildWithLabel(
         context,
-        buildWithError(
+        buildWithHelper(
           context,
           buildWithActions(
             context,
-            button,
+            fieldWithError,
           ),
         ),
       ),

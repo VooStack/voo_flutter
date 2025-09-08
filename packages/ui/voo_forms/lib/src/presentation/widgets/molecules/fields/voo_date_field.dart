@@ -59,8 +59,8 @@ class VooDateField extends VooFieldBase<DateTime> {
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     
-    // Get the error for this field from the controller
-    final fieldError = formController?.getError(name) ?? error;
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     // If read-only, show VooReadOnlyField for better UX
     if (effectiveReadOnly) {

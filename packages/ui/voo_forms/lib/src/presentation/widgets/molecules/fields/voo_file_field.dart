@@ -97,6 +97,9 @@ class VooFileField extends VooFieldBase<VooFile?> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
+    
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     Widget fileField = FormField<VooFile?>(
       initialValue: initialValue,
@@ -121,11 +124,16 @@ class VooFileField extends VooFieldBase<VooFile?> {
 
     // Apply standard field building pattern
     fileField = buildWithHelper(context, fileField);
-    fileField = buildWithError(context, fileField);
+    
+    // Build with error if present
+    if (fieldError != null && fieldError.isNotEmpty) {
+      fileField = buildWithError(context, fileField);
+    }
+    
     fileField = buildWithLabel(context, fileField);
     fileField = buildWithActions(context, fileField);
 
-    return fileField;
+    return buildFieldContainer(context, fileField);
   }
 
   @override

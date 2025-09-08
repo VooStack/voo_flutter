@@ -81,8 +81,8 @@ class VooNumberField extends VooFieldBase<num> {
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     
-    // Get the error for this field from the controller
-    final fieldError = formController?.getError(name) ?? error;
+    // Get the error for this field using the base class method
+    final fieldError = getFieldError(context);
 
     // If read-only, show VooReadOnlyField for better UX
     if (effectiveReadOnly) {
@@ -104,25 +104,9 @@ class VooNumberField extends VooFieldBase<num> {
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
       
-      // Build error widget if there's an error
+      // Build with error if present
       if (fieldError != null && fieldError.isNotEmpty) {
-        readOnlyContent = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            readOnlyContent,
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0),
-              child: Text(
-                fieldError,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              ),
-            ),
-          ],
-        );
+        readOnlyContent = buildWithError(context, readOnlyContent);
       }
       
       readOnlyContent = buildWithLabel(context, readOnlyContent);
@@ -166,26 +150,10 @@ class VooNumberField extends VooFieldBase<num> {
       decimal: allowDecimals,
     );
 
-    // Build the error widget if there's an error
+    // Build with error if present
     Widget fieldWithError = numberInput;
     if (fieldError != null && fieldError.isNotEmpty) {
-      fieldWithError = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          numberInput,
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              fieldError,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
-            ),
-          ),
-        ],
-      );
+      fieldWithError = buildWithError(context, numberInput);
     }
 
     // Compose with label, helper and actions using base class methods

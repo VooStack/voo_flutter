@@ -147,7 +147,7 @@ class CurrencyFormatter extends TextInputFormatter {
     
     // Find position in formatted text with same number of digits
     int digitCount = 0;
-    int position = 0;
+    int position = formatted.length; // Default to end if not found
     
     for (int i = 0; i < formatted.length; i++) {
       if (RegExp('[0-9]').hasMatch(formatted[i])) {
@@ -157,7 +157,6 @@ class CurrencyFormatter extends TextInputFormatter {
           break;
         }
       }
-      position = i + 1;
     }
     
     // Ensure position doesn't exceed formatted text length

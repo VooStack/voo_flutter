@@ -1,3 +1,17 @@
+## [0.3.18]
+
+### Improvements
+- **Test Coverage**: Enhanced form widget test coverage
+  - Added comprehensive tests for VooForm widget behavior
+  - Added tests for VooFormPageBuilder functionality
+  - Improved test organization and documentation
+  - Enhanced error handling and validation tests
+  
+### Internal
+- Code cleanup and maintenance improvements
+- Updated development dependencies
+- Enhanced CI/CD pipeline configuration
+
 ## [0.3.17]
 
 ### Bug Fixes
