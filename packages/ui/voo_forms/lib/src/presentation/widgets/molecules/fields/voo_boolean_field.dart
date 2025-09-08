@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_switch_input.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Boolean field molecule that composes atoms to create a complete switch field
@@ -39,23 +38,18 @@ class VooBooleanField extends VooFieldBase<bool> {
     final currentValue = initialValue ?? false;
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
-    // If read-only, show VooReadOnlyField for better UX
-    if (effectiveReadOnly) {
-      Widget readOnlyContent = VooReadOnlyField(
-        value: currentValue ? 'Yes' : 'No',
-        icon: Icon(
-          currentValue ? Icons.check_circle : Icons.cancel,
-          color: currentValue ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-        ),
-      );
-      
-      // Apply standard field building pattern
-      readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
-      readOnlyContent = buildWithLabel(context, readOnlyContent);
-      readOnlyContent = buildWithActions(context, readOnlyContent);
-      
-      return buildFieldContainer(context, readOnlyContent);
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(bool? value) {
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(name, value);
+      }
+      // Call user's onChanged if provided
+      onChanged?.call(value);
     }
 
     // Build the switch with label or labelWidget in a row
@@ -64,7 +58,7 @@ class VooBooleanField extends VooFieldBase<bool> {
         if (labelWidget != null || label != null) ...[
           Expanded(
             child: GestureDetector(
-              onTap: enabled && !effectiveReadOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
+              onTap: enabled && !effectiveReadOnly && onChanged != null ? () => handleChanged(!currentValue) : null,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -85,7 +79,7 @@ class VooBooleanField extends VooFieldBase<bool> {
         ],
         VooSwitchInput(
           value: currentValue,
-          onChanged: enabled && !effectiveReadOnly ? onChanged : null,
+          onChanged: enabled && !effectiveReadOnly ? handleChanged : null,
           enabled: enabled && !effectiveReadOnly,
         ),
         if (actions != null && actions!.isNotEmpty) ...[

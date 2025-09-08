@@ -1,3 +1,46 @@
+## [0.3.15]
+
+### Critical Fix  
+- **Automatic Form Validation**: Fixed critical bug where form validation wasn't working
+  - VooForm now automatically registers all fields with their validators when initialized
+  - Fields automatically update the form controller when values change (no manual updates needed!)
+  - Controller validation (`validateAll()`) now works correctly
+  - VooTextField automatically syncs with controller through VooFormScope
+  - Initial values are properly set in the controller
+
+### How It Works
+The form now automatically handles everything:
+```dart
+// Your existing code works without changes!
+final formController = VooFormController();
+
+// In your form:
+VooForm(
+  controller: formController,
+  fields: [
+    VooTextField(
+      name: 'site_name',
+      validators: [VooValidator.required()],
+      onChanged: (value) => context.read<OrderFormCubit>().updateSiteName(value),
+    ),
+  ],
+)
+
+// Validation now works automatically:
+onSubmit: (_) {
+  final isValid = formController.validateAll(); // This now works!
+  if (isValid) {
+    context.read<OrderFormCubit>().submitForm();
+  }
+}
+```
+
+### Technical Details
+- VooFormScope now provides controller to all child fields
+- Fields automatically register with controller on initialization
+- VooTextField wraps onChanged to update controller automatically
+- No breaking changes - existing code continues to work
+
 ## [0.3.14]
 
 ### Fixed

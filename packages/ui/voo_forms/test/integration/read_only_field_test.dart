@@ -22,10 +22,10 @@ void main() {
         ),
       );
 
-      // Should show VooReadOnlyField with the value
+      // Should show dropdown with the value but disabled
       expect(find.text('Option 1'), findsOneWidget);
-      // Should not show dropdown (check for DropdownButtonFormField which is the underlying widget)
-      expect(find.byType(DropdownButtonFormField), findsNothing);
+      // Should show dropdown input decorator
+      expect(find.byType(InputDecorator), findsOneWidget);
     });
 
     testWidgets('VooTextField respects readOnly property', (WidgetTester tester) async {
@@ -45,10 +45,17 @@ void main() {
         ),
       );
 
-      // Should show VooReadOnlyField with the value
+      // Should show TextFormField with the value but in read-only mode
       expect(find.text('Test Value'), findsOneWidget);
-      // Should not show TextFormField
-      expect(find.byType(TextFormField), findsNothing);
+      // Should show TextFormField
+      expect(find.byType(TextFormField), findsOneWidget);
+      
+      // Verify it's actually read-only by trying to change it
+      await tester.enterText(find.byType(TextFormField), 'New Value');
+      await tester.pump();
+      // Value should not change
+      expect(find.text('Test Value'), findsOneWidget);
+      expect(find.text('New Value'), findsNothing);
     });
 
     testWidgets('VooBooleanField respects readOnly property', (WidgetTester tester) async {
@@ -68,10 +75,14 @@ void main() {
         ),
       );
 
-      // Should show VooReadOnlyField with "Yes"
-      expect(find.text('Yes'), findsOneWidget);
-      // Should not show Switch
-      expect(find.byType(Switch), findsNothing);
+      // Should show Switch widget but disabled
+      expect(find.byType(Switch), findsOneWidget);
+      
+      // Verify the switch is in the correct state
+      final switchWidget = tester.widget<Switch>(find.byType(Switch));
+      expect(switchWidget.value, true);
+      // Should be disabled (onChanged is null when disabled)
+      expect(switchWidget.onChanged, null);
     });
 
     testWidgets('VooCheckboxField respects readOnly property', (WidgetTester tester) async {
@@ -91,10 +102,14 @@ void main() {
         ),
       );
 
-      // Should show VooReadOnlyField with "Checked"
-      expect(find.text('Checked'), findsOneWidget);
-      // Should not show Checkbox
-      expect(find.byType(Checkbox), findsNothing);
+      // Should show Checkbox widget but disabled
+      expect(find.byType(Checkbox), findsOneWidget);
+      
+      // Verify the checkbox is in the correct state
+      final checkboxWidget = tester.widget<Checkbox>(find.byType(Checkbox));
+      expect(checkboxWidget.value, true);
+      // Should be disabled (onChanged is null when disabled)
+      expect(checkboxWidget.onChanged, null);
     });
 
     testWidgets('VooDateField respects readOnly property', (WidgetTester tester) async {
@@ -169,12 +184,12 @@ void main() {
         ),
       );
 
-      // Both fields should show as read-only
+      // Both fields should be present but in read-only mode
       expect(find.text('Test'), findsOneWidget);
       expect(find.text('A'), findsOneWidget);
-      // Should not show input fields
-      expect(find.byType(TextFormField), findsNothing);
-      expect(find.byType(DropdownButtonFormField), findsNothing);
+      // Input fields should be shown
+      expect(find.byType(TextFormField), findsOneWidget);
+      expect(find.byType(InputDecorator), findsNWidgets(2)); // One for text field, one for dropdown
     });
   });
 }

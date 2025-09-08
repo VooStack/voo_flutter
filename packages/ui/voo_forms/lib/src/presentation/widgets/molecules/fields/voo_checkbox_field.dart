@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_checkbox_input.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Checkbox field molecule that composes atoms to create a complete checkbox field
@@ -62,28 +61,23 @@ class VooCheckboxField extends VooFieldBase<bool> {
     final currentValue = initialValue ?? false;
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
-    // If read-only, show VooReadOnlyField for better UX
-    if (effectiveReadOnly) {
-      Widget readOnlyContent = VooReadOnlyField(
-        value: currentValue ? 'Checked' : 'Unchecked',
-        icon: Icon(
-          currentValue ? Icons.check_box : Icons.check_box_outline_blank,
-          color: currentValue ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-        ),
-      );
-      
-      // Apply standard field building pattern
-      readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
-      readOnlyContent = buildWithLabel(context, readOnlyContent);
-      readOnlyContent = buildWithActions(context, readOnlyContent);
-      
-      return buildFieldContainer(context, readOnlyContent);
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(bool? value) {
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(name, value);
+      }
+      // Call user's onChanged if provided
+      onChanged?.call(value);
     }
 
     // Build the checkbox with label in a row
     Widget checkboxRow = InkWell(
-      onTap: enabled && !effectiveReadOnly && onChanged != null ? () => onChanged!(!currentValue) : null,
+      onTap: enabled && !effectiveReadOnly && onChanged != null ? () => handleChanged(!currentValue) : null,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
@@ -91,7 +85,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
           children: [
             VooCheckboxInput(
               value: currentValue,
-              onChanged: enabled && !effectiveReadOnly ? (value) => onChanged?.call(value ?? false) : null,
+              onChanged: enabled && !effectiveReadOnly ? (value) => handleChanged(value ?? false) : null,
               enabled: enabled && !effectiveReadOnly,
               tristate: tristate,
             ),

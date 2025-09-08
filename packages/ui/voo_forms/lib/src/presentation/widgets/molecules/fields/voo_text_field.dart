@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_text_input.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Text field molecule that composes atoms to create a complete text input field
@@ -75,26 +74,30 @@ class VooTextField extends VooFieldBase<String> {
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
-    // If read-only, show VooReadOnlyField for better UX
-    if (effectiveReadOnly) {
-      Widget readOnlyContent = VooReadOnlyField(
-        value: initialValue ?? '',
-        icon: prefixIcon,
-      );
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+    
+    // Use provided controller or get one from form controller if available
+    TextEditingController? effectiveController = controller;
+    if (effectiveController == null && formController != null) {
+      effectiveController = formController.registerTextController(name, initialText: initialValue);
+    }
 
-      // Apply standard field building pattern
-      readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
-      readOnlyContent = buildWithLabel(context, readOnlyContent);
-      readOnlyContent = buildWithActions(context, readOnlyContent);
-
-      return buildFieldContainer(context, readOnlyContent);
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(String? value) {
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(name, value);
+      }
+      // Call user's onChanged if provided
+      onChanged?.call(value);
     }
 
     Widget textInput = VooTextInput(
-      controller: controller,
+      controller: effectiveController,
       focusNode: focusNode,
-      initialValue: initialValue,
+      initialValue: effectiveController == null ? initialValue : null,
       placeholder: placeholder,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
@@ -107,11 +110,11 @@ class VooTextField extends VooFieldBase<String> {
       maxLength: maxLength,
       expands: expands,
       textCapitalization: textCapitalization,
-      onChanged: onChanged,
+      onChanged: handleChanged,
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,
-      enabled: enabled,
-      readOnly: readOnly,
+      enabled: enabled && !effectiveReadOnly,
+      readOnly: effectiveReadOnly,
       autofocus: autofocus,
       decoration: getInputDecoration(context),
     );
@@ -120,15 +123,18 @@ class VooTextField extends VooFieldBase<String> {
     textInput = applyInputHeightConstraints(textInput);
 
     // Compose with label, helper, error and actions using base class methods
-    return buildWithLabel(
+    return buildFieldContainer(
       context,
-      buildWithHelper(
+      buildWithLabel(
         context,
-        buildWithError(
+        buildWithHelper(
           context,
-          buildWithActions(
+          buildWithError(
             context,
-            textInput,
+            buildWithActions(
+              context,
+              textInput,
+            ),
           ),
         ),
       ),

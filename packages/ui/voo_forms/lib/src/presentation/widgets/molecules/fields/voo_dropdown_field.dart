@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_dropdown_search_field.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Dropdown field molecule that provides a searchable dropdown selection widget
@@ -63,27 +62,18 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     final effectiveValue = initialValue;
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
-    // If read-only, show VooReadOnlyField for better UX
-    if (effectiveReadOnly) {
-      String displayValue = '';
-      if (effectiveValue != null) {
-        displayValue = displayTextBuilder != null 
-          ? displayTextBuilder!(effectiveValue)
-          : effectiveValue.toString();
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(T? value) {
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(name, value);
       }
-      
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: prefixIcon,
-      );
-      
-      // Apply standard field building pattern
-      readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
-      readOnlyContent = buildWithLabel(context, readOnlyContent);
-      readOnlyContent = buildWithActions(context, readOnlyContent);
-      
-      return buildFieldContainer(context, readOnlyContent);
+      // Call user's onChanged if provided
+      onChanged?.call(value);
     }
 
     // Build the searchable dropdown content
@@ -91,7 +81,7 @@ class VooDropdownField<T> extends VooFieldBase<T> {
       items: options,
       value: effectiveValue,
       displayTextBuilder: displayTextBuilder,
-      onChanged: enabled && !effectiveReadOnly ? onChanged : null,
+      onChanged: enabled && !effectiveReadOnly ? handleChanged : null,
       hint: placeholder ?? hint,
       enabled: enabled && !effectiveReadOnly,
       icon: dropdownIcon,
@@ -108,7 +98,7 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     dropdownContent = buildWithLabel(context, dropdownContent);
     dropdownContent = buildWithActions(context, dropdownContent);
 
-    return dropdownContent;
+    return buildFieldContainer(context, dropdownContent);
   }
 
   @override
@@ -208,30 +198,6 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
     
-    // Check for read-only state
-    final effectiveReadOnly = getEffectiveReadOnly(context);
-    if (effectiveReadOnly) {
-      String displayValue = '';
-      if (initialValue != null) {
-        displayValue = displayTextBuilder != null 
-          ? displayTextBuilder!(initialValue!)
-          : initialValue.toString();
-      }
-      
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: prefixIcon,
-      );
-      
-      // Apply standard field building pattern
-      readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
-      readOnlyContent = buildWithLabel(context, readOnlyContent);
-      readOnlyContent = buildWithActions(context, readOnlyContent);
-      
-      return buildFieldContainer(context, readOnlyContent);
-    }
-    
     return _AsyncDropdownFieldWidget<T>(field: this);
   }
 
@@ -309,27 +275,21 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
 
-    // If read-only, show VooReadOnlyField for better UX
-    if (effectiveReadOnly) {
-      String displayValue = '';
-      if (_selectedValue != null) {
-        displayValue = widget.field.displayTextBuilder != null 
-          ? widget.field.displayTextBuilder!(_selectedValue as T)
-          : _selectedValue.toString();
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(T? value) {
+      setState(() {
+        _selectedValue = value;
+      });
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(widget.field.name, value);
       }
-      
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: widget.field.prefixIcon,
-      );
-      
-      // Apply standard field building pattern
-      readOnlyContent = widget.field.buildWithHelper(context, readOnlyContent);
-      readOnlyContent = widget.field.buildWithError(context, readOnlyContent);
-      readOnlyContent = widget.field.buildWithLabel(context, readOnlyContent);
-      readOnlyContent = widget.field.buildWithActions(context, readOnlyContent);
-      
-      return widget.field.buildFieldContainer(context, readOnlyContent);
+      // Call user's onChanged if provided
+      widget.field.onChanged?.call(value);
     }
 
     // Build the dropdown with integrated async search
@@ -337,14 +297,7 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
       items: const [], // Empty initial items, async search will load them
       value: _selectedValue,
       displayTextBuilder: widget.field.displayTextBuilder,
-      onChanged: widget.field.enabled && !effectiveReadOnly
-          ? (value) {
-              setState(() {
-                _selectedValue = value;
-              });
-              widget.field.onChanged?.call(value);
-            }
-          : null,
+      onChanged: widget.field.enabled && !effectiveReadOnly ? handleChanged : null,
       hint: widget.field.placeholder ?? widget.field.hint,
       enabled: widget.field.enabled && !effectiveReadOnly,
       icon: widget.field.dropdownIcon,

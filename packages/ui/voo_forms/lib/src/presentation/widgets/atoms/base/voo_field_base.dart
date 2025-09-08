@@ -348,17 +348,12 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Validates the field value
   String? validate(T? value) {
-    if (isRequired && (value == null || (value is String && value.isEmpty))) {
-      return '${label ?? name} is required';
-    }
-
     if (validators != null) {
       for (final validator in validators!) {
         final error = validator.validate(value);
         if (error != null) return error;
       }
     }
-
     return null;
   }
 

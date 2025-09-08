@@ -13,6 +13,7 @@ class TestField extends VooFieldBase<String> {
     super.initialValue,
     super.error,
     super.helper,
+    super.validators,
   });
 
   @override
@@ -47,10 +48,11 @@ void main() {
     });
 
     test('has required properties', () {
-      const field = TestField(
+      final field = TestField(
         name: 'testField',
         label: 'Test Label',
         initialValue: 'initial',
+        validators: [VooValidator.required()],
       );
 
       expect(field.name, 'testField');
@@ -60,9 +62,10 @@ void main() {
     });
 
     testWidgets('builds label correctly', (WidgetTester tester) async {
-      const field = TestField(
+      final field = TestField(
         name: 'test',
         label: 'Test Field',
+        validators: [VooValidator.required()],
       );
 
       await tester.pumpWidget(
@@ -118,13 +121,14 @@ void main() {
     });
 
     test('validates required field', () {
-      const field = TestField(
+      final field = TestField(
         name: 'test',
         label: 'Test Field',
+        validators: [VooValidator.required()],
       );
 
-      expect(field.validate(null), 'Test Field is required');
-      expect(field.validate(''), 'Test Field is required');
+      expect(field.validate(null), 'This field is required');
+      expect(field.validate(''), 'This field is required');
       expect(field.validate('value'), null);
     });
   });

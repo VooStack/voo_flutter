@@ -14,18 +14,24 @@ import 'package:voo_forms/src/presentation/widgets/molecules/layouts/voo_wrapped
 class VooFormScope extends InheritedWidget {
   final bool isReadOnly;
   final bool isLoading;
+  final VooFormController? controller;
 
   const VooFormScope({
     super.key,
     required this.isReadOnly,
     required this.isLoading,
+    this.controller,
     required super.child,
   });
 
-  static VooFormScope? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooFormScope>();
+  static VooFormScope? of(BuildContext context) => 
+      context.dependOnInheritedWidgetOfExactType<VooFormScope>();
 
   @override
-  bool updateShouldNotify(VooFormScope oldWidget) => isReadOnly != oldWidget.isReadOnly || isLoading != oldWidget.isLoading;
+  bool updateShouldNotify(VooFormScope oldWidget) => 
+      isReadOnly != oldWidget.isReadOnly || 
+      isLoading != oldWidget.isLoading ||
+      controller != oldWidget.controller;
 }
 
 /// Simple, atomic form widget that manages field collection and validation
@@ -93,38 +99,53 @@ class VooForm extends StatefulWidget {
 }
 
 class _VooFormState extends State<VooForm> {
-  final _formKey = GlobalKey<FormState>();
-  final Map<String, dynamic> _values = {};
-  final Map<String, TextEditingController> _controllers = {};
   late VooFormController _controller;
 
   @override
   void initState() {
     super.initState();
-    _initializeValues();
-
-    // Create or use provided controller
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      // Note: If a controller is provided, it should already have its errorDisplayMode set
-    } else {
-      // Create a minimal controller for value management
-      _controller = VooFormController(
-        errorDisplayMode: widget.errorDisplayMode,
-      );
-    }
+    
+    // Use provided controller or create a new one
+    _controller = widget.controller ?? VooFormController(
+      errorDisplayMode: widget.errorDisplayMode,
+    );
+    
+    // Register all fields with the controller
+    _registerFieldsWithController();
+    
     _controller.addListener(_handleControllerChange);
+  }
+  
+  void _registerFieldsWithController() {
+    for (final field in widget.fields) {
+      _controller.registerField(
+        field.name,
+        initialValue: field.initialValue,
+        validators: field is VooFieldBase ? (field.validators ?? []) : [],
+      );
+      
+      if (field.initialValue != null) {
+        _controller.setValue(field.name, field.initialValue);
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(VooForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Always clear and re-register fields when widget updates
+    // This ensures that new initial values are properly set
+    _controller.clear();
+    _registerFieldsWithController();
   }
 
   @override
   void dispose() {
     _controller.removeListener(_handleControllerChange);
+    // Only dispose if we created the controller
     if (widget.controller == null) {
       _controller.dispose();
-    }
-    // Clean up controllers
-    for (final controller in _controllers.values) {
-      controller.dispose();
     }
     super.dispose();
   }
@@ -132,54 +153,34 @@ class _VooFormState extends State<VooForm> {
   void _handleControllerChange() {
     if (mounted) {
       setState(() {});
-      // Notify parent of changes
       widget.onChanged?.call(_controller.values);
     }
   }
 
-  void _initializeValues() {
-    // Initialize values from field initial values
-    for (final field in widget.fields) {
-      _values[field.name] = field.initialValue;
-    }
+
+  /// Prepare fields with readonly state applied
+  List<VooFormFieldWidget> _prepareFields() {
+    if (!widget.isReadOnly) return widget.fields;
+    
+    return widget.fields.map((field) {
+      if (field is VooFieldBase) {
+        return field.copyWith(
+          readOnly: true,
+          label: field.label,
+          layout: field.layout,
+        );
+      }
+      return field;
+    }).toList();
   }
-
-  /// Public method to validate the form
-  bool validate() => _formKey.currentState?.validate() ?? false;
-
-  /// Public method to save the form
-  void save() {
-    _formKey.currentState?.save();
-  }
-
-  /// Public method to reset the form
-  void reset() {
-    _formKey.currentState?.reset();
-    _controller.reset();
-  }
-
-  /// Public method to get current values
-  Map<String, dynamic> get values => _values;
 
   Widget _buildFormContent() {
-    // Note: Since fields are widgets and immutable, we cannot modify their properties directly.
-    // The isReadOnly flag should be passed to VooFormController which will manage the state.
-    // For now, we'll use the fields as-is and rely on VooFormPageBuilder to handle readonly state.
+    final preparedFields = _prepareFields();
 
     switch (widget.layout) {
       case FormLayout.vertical:
         return VooVerticalFormLayout(
-          fields: widget.fields
-              .map(
-                (field) => field is VooFieldBase
-                    ? field.copyWith(
-                        readOnly: widget.isReadOnly || field.readOnly,
-                        label: field.label,
-                        layout: field.layout,
-                      )
-                    : field,
-              )
-              .toList(),
+          fields: preparedFields,
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
           mainAxisAlignment: widget.mainAxisAlignment,
@@ -187,34 +188,14 @@ class _VooFormState extends State<VooForm> {
         );
       case FormLayout.horizontal:
         return VooHorizontalFormLayout(
-          fields: widget.fields
-              .map(
-                (field) => field is VooFieldBase
-                    ? field.copyWith(
-                        readOnly: widget.isReadOnly || field.readOnly,
-                        label: field.label,
-                        layout: field.layout,
-                      )
-                    : field,
-              )
-              .toList(),
+          fields: preparedFields,
           spacing: widget.spacing,
           mainAxisAlignment: widget.mainAxisAlignment,
           mainAxisSize: widget.mainAxisSize,
         );
       case FormLayout.grid:
         return VooGridFormLayout(
-          fields: widget.fields
-              .map(
-                (field) => field is VooFieldBase
-                    ? field.copyWith(
-                        readOnly: widget.isReadOnly || field.readOnly,
-                        label: field.label,
-                        layout: field.layout,
-                      )
-                    : field,
-              )
-              .toList(),
+          fields: preparedFields,
           columns: widget.gridColumns,
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
@@ -223,33 +204,13 @@ class _VooFormState extends State<VooForm> {
         );
       case FormLayout.wrapped:
         return VooWrappedFormLayout(
-          fields: widget.fields
-              .map(
-                (field) => field is VooFieldBase
-                    ? field.copyWith(
-                        readOnly: widget.isReadOnly || field.readOnly,
-                        label: field.label,
-                        layout: field.layout,
-                      )
-                    : field,
-              )
-              .toList(),
+          fields: preparedFields,
           spacing: widget.spacing,
           runSpacing: widget.spacing,
         );
       case FormLayout.dynamic:
         return VooDynamicFormLayout(
-          fields: widget.fields
-              .map(
-                (field) => field is VooFieldBase
-                    ? field.copyWith(
-                        readOnly: widget.isReadOnly || field.readOnly,
-                        label: field.label,
-                        layout: field.layout,
-                      )
-                    : field,
-              )
-              .toList(),
+          fields: preparedFields,
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
           mainAxisAlignment: widget.mainAxisAlignment,
@@ -258,9 +219,8 @@ class _VooFormState extends State<VooForm> {
       case FormLayout.stepped:
       case FormLayout.tabbed:
         // TODO: Implement stepped and tabbed layouts
-        // For now, fallback to vertical
         return VooVerticalFormLayout(
-          fields: widget.fields,
+          fields: preparedFields,
           spacing: widget.spacing,
           crossAxisAlignment: widget.crossAxisAlignment,
           mainAxisAlignment: widget.mainAxisAlignment,
@@ -279,41 +239,13 @@ class _VooFormState extends State<VooForm> {
           );
     }
 
-    // Otherwise show the form
+    // Show the form with controller in scope
     return VooFormScope(
       isReadOnly: widget.isReadOnly,
       isLoading: widget.isLoading,
-      child: Form(
-        key: _formKey,
-        child: _buildFormContent(),
-      ),
+      controller: _controller,
+      child: _buildFormContent(),
     );
   }
 }
 
-/// Extension to access VooForm methods from State
-extension VooFormStateExtension on State {
-  /// Find and validate the nearest VooForm
-  bool? validateForm() {
-    final formState = context.findAncestorStateOfType<_VooFormState>();
-    return formState?.validate();
-  }
-
-  /// Find and save the nearest VooForm
-  void saveForm() {
-    final formState = context.findAncestorStateOfType<_VooFormState>();
-    formState?.save();
-  }
-
-  /// Find and reset the nearest VooForm
-  void resetForm() {
-    final formState = context.findAncestorStateOfType<_VooFormState>();
-    formState?.reset();
-  }
-
-  /// Get values from the nearest VooForm
-  Map<String, dynamic>? getFormValues() {
-    final formState = context.findAncestorStateOfType<_VooFormState>();
-    return formState?.values;
-  }
-}

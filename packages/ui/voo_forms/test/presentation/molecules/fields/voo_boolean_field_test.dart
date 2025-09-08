@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_boolean_field.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_checkbox_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooBooleanField', () {
@@ -128,18 +127,20 @@ void main() {
 
     testWidgets('shows required indicator when required', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
             body: VooCheckboxField(
               name: 'terms',
               label: 'Terms and Conditions',
+              validators: [VooValidator.required()],
             ),
           ),
         ),
       );
 
       expect(find.text('Terms and Conditions'), findsOneWidget);
-      expect(find.text(' *'), findsOneWidget);
+      // Required indicator should be shown as part of the label
+      expect(find.textContaining('*'), findsOneWidget);
     });
 
     testWidgets('displays initial value', (WidgetTester tester) async {
@@ -182,9 +183,14 @@ void main() {
     });
 
     testWidgets('validates required checkbox', (WidgetTester tester) async {
-      const field = VooCheckboxField(
+      final field = VooCheckboxField(
         name: 'terms',
         label: 'Terms',
+        validators: [
+          CustomValidation<bool>(
+            validator: (bool? value) => value != true ? 'Terms must be accepted' : null,
+          ),
+        ],
       );
 
       expect(field.validate(false), 'Terms must be accepted');

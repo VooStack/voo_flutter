@@ -33,8 +33,9 @@ void main() {
       // Dropdown should be open (search field visible)
       expect(find.text('Search...'), findsOneWidget);
 
-      // Click outside
-      await tester.tap(find.text('Outside Area'));
+      // Click outside by tapping at a specific position
+      // Use bottom-right corner which should be outside any dropdown overlay
+      await tester.tapAt(const Offset(750, 550));
       await tester.pumpAndSettle();
 
       // Dropdown should be closed (search field not visible)
@@ -67,8 +68,9 @@ void main() {
       // Dropdown should be open
       expect(find.text('Search...'), findsOneWidget);
 
-      // Click outside
-      await tester.tap(find.text('Outside Area'));
+      // Click outside by tapping at a specific position
+      // Use bottom-right corner which should be outside any dropdown overlay
+      await tester.tapAt(const Offset(750, 550));
       await tester.pumpAndSettle();
 
       // Dropdown should be closed

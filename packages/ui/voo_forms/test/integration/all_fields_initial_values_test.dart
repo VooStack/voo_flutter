@@ -157,8 +157,8 @@ void main() {
         ),
       );
 
-      // Currency field formats the value, verify it contains the amount
-      expect(find.textContaining('1234'), findsOneWidget);
+      // Currency field formats the value with symbol and comma separators
+      expect(find.text(r'$1,234.56'), findsOneWidget);
     });
 
     testWidgets('VooPercentageField displays initial value', (tester) async {

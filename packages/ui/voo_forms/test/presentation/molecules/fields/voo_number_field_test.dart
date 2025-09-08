@@ -183,7 +183,8 @@ void main() {
         ),
       );
 
-      expect(find.text('99.9'), findsOneWidget);
+      // Currency field formats with $ and 2 decimal places
+      expect(find.text('\$99.90'), findsOneWidget);
     });
 
     testWidgets('does not allow negative values', (WidgetTester tester) async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_email_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooEmailField', () {
@@ -54,13 +54,14 @@ void main() {
     });
 
     testWidgets('validates required email', (WidgetTester tester) async {
-      const field = VooEmailField(
+      final field = VooEmailField(
         name: 'email',
         label: 'Email',
+        validators: [VooValidator.required()],
       );
 
-      expect(field.validate(null), 'Email is required');
-      expect(field.validate(''), 'Email is required');
+      expect(field.validate(null), 'This field is required');
+      expect(field.validate(''), 'This field is required');
       expect(field.validate('user@example.com'), null);
     });
 

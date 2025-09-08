@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_text_field.dart';
+import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooTextField', () {
@@ -22,11 +22,12 @@ void main() {
 
     testWidgets('shows required indicator when required', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
             body: VooTextField(
               name: 'email',
               label: 'Email',
+              validators: [VooValidator.required()],
             ),
           ),
         ),
@@ -200,13 +201,14 @@ void main() {
     });
 
     testWidgets('validates required field', (WidgetTester tester) async {
-      const field = VooTextField(
+      final field = VooTextField(
         name: 'test',
         label: 'Test Field',
+        validators: [VooValidator.required()],
       );
 
-      expect(field.validate(null), 'Test Field is required');
-      expect(field.validate(''), 'Test Field is required');
+      expect(field.validate(null), 'This field is required');
+      expect(field.validate(''), 'This field is required');
       expect(field.validate('value'), null);
     });
   });
