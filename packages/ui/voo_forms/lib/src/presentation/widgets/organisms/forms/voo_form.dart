@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/domain/entities/form.dart' as domain;
 import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/form_layout.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
@@ -111,10 +110,6 @@ class _VooFormState extends State<VooForm> {
     } else {
       // Create a minimal controller for value management
       _controller = VooFormController(
-        form: domain.VooForm(
-          id: 'voo_form_${DateTime.now().millisecondsSinceEpoch}',
-          fields: const [],
-        ),
         errorDisplayMode: widget.errorDisplayMode,
       );
     }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
-import 'package:voo_forms/src/domain/enums/form_validation_mode.dart';
 import 'package:voo_forms/src/domain/utils/validators.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
 

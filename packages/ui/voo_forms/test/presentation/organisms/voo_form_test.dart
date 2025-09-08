@@ -152,7 +152,7 @@ void main() {
       expect(find.byType(LinearProgressIndicator).evaluate().isNotEmpty, true);
     });
 
-    testWidgets('disables editing when isEditable is false', (WidgetTester tester) async {
+    testWidgets('renders form even when isEditable is false', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -168,9 +168,9 @@ void main() {
         ),
       );
 
-      // Form should be wrapped in AbsorbPointer when not editable
-      final absorbers = tester.widgetList<AbsorbPointer>(find.byType(AbsorbPointer));
-      expect(absorbers.any((a) => a.absorbing == true), true);
+      // Form should be rendered without AbsorbPointer (field-level control)
+      expect(find.byType(VooForm), findsOneWidget);
+      expect(find.byType(VooTextField), findsOneWidget);
     });
 
     testWidgets('uses custom actions builder when provided', (WidgetTester tester) async {

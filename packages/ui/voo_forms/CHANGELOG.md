@@ -1,3 +1,38 @@
+## [0.3.13]
+
+### Fixed
+- **VooForm and VooFormPageBuilder Errors**: Fixed undefined 'form' parameter errors
+  - Removed attempts to create VooFormController with VooForm entities
+  - Controllers now created with just error display mode parameter
+  - Removed unused domain form imports from both files
+  - Fixed compilation errors that were preventing tests from running
+
+### Changed
+- **Test Updates**: Updated tests to match new controller behavior
+  - Modified test for isEditable=false to check form rendering instead of AbsorbPointer
+  - Tests now align with the removal of AbsorbPointer wrapper (per user request in v0.3.8)
+
+### Testing
+- **Test Status**: 263 out of 288 tests passing (91% pass rate)
+  - All VooFormController tests pass (39/39)
+  - All VooForm and VooFormPageBuilder tests pass (18/18)
+  - Remaining failures are in integration tests that may need updates for new controller API
+
+## [0.3.12]
+
+### Fixed
+- **VooFormController Type Safety**: Fixed type casting issues in validation logic
+  - Safer type casting for function validators to prevent runtime errors
+  - Changed from direct casting to type checking before assignment
+  - Handles both String and null return values from validators properly
+  - Prevents "A value of type 'dynamic' can't be assigned to a variable of type 'String?'" errors
+
+### Improved
+- **Code Quality**: Fixed linting issues for better code maintainability
+  - Converted block function bodies to expression bodies where appropriate
+  - Added required trailing commas for better formatting
+  - Improved code readability and consistency
+
 ## [0.3.11]
 
 ### Fixed

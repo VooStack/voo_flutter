@@ -23,6 +23,15 @@ class CurrencyFormatter extends TextInputFormatter {
   /// Whether symbol comes before amount
   final bool symbolBeforeAmount;
   
+  /// Include spacing between symbol and amount
+  final bool includeSpacing;
+  
+  /// Maximum value allowed (null for no limit)
+  final double? maxValue;
+  
+  /// Minimum value allowed (null for no limit)
+  final double? minValue;
+  
   /// Cached number formatter
   late final NumberFormat _formatter;
   
@@ -32,6 +41,9 @@ class CurrencyFormatter extends TextInputFormatter {
     this.decimalDigits = 2,
     this.locale = 'en_US',
     this.symbolBeforeAmount = true,
+    this.includeSpacing = false,
+    this.maxValue,
+    this.minValue,
   }) {
     _formatter = NumberFormat.currency(
       locale: locale,
@@ -65,146 +77,134 @@ class CurrencyFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Check if this is a complete replacement (e.g., from tester.enterText or paste)
-    // If the new text is all digits and doesn't contain formatting, it's a replacement
-    final isReplacement = RegExp(r'^\d+$').hasMatch(newValue.text);
-    
-    // Handle deletion only if it's not a replacement
-    if (!isReplacement && newValue.text.length < oldValue.text.length) {
-      return _handleDeletion(oldValue, newValue);
-    }
-    
-    String digitsToFormat;
-    
-    // If this is a replacement with raw digits, use them directly
-    if (isReplacement) {
-      digitsToFormat = newValue.text;
-    } else {
-      // For incremental typing, we need to be smart about where digits were added
-      
-      // First, get the actual numeric value from the old formatted text
-      final oldNumericValue = _extractNumericValue(oldValue.text);
-      
-      // Check if a single character was added
-      final isSingleCharAdded = newValue.text.length == oldValue.text.length + 1;
-      
-      if (isSingleCharAdded) {
-        // Find what character was added and where
-        String addedChar = '';
-        int addedPosition = -1;
-        
-        // Compare old and new text to find the added character
-        for (int i = 0; i < newValue.text.length; i++) {
-          if (i >= oldValue.text.length || 
-              (i < oldValue.text.length && newValue.text[i] != oldValue.text[i])) {
-            addedChar = newValue.text[i];
-            addedPosition = i;
-            break;
-          }
-        }
-        
-        // If a digit was added and we can detect where
-        if (RegExp(r'\d').hasMatch(addedChar)) {
-          // Check if it was added at the end of the formatted text
-          final wasAddedAtEnd = addedPosition >= oldValue.text.length ||
-              addedPosition == oldValue.text.length - 1;
-          
-          if (wasAddedAtEnd || oldValue.selection.baseOffset == oldValue.text.length) {
-            // User is typing at the end - use calculator-style entry
-            final newDigit = int.parse(addedChar);
-            final newCents = (oldNumericValue * 100).round() * 10 + newDigit;
-            digitsToFormat = newCents.toString();
-          } else {
-            // Digit was added somewhere else, just extract all digits
-            digitsToFormat = newValue.text.replaceAll(RegExp('[^0-9]'), '');
-          }
-        } else {
-          // Non-digit character added, extract all digits
-          digitsToFormat = newValue.text.replaceAll(RegExp('[^0-9]'), '');
-        }
-      } else {
-        // Multiple characters changed, extract all digits
-        digitsToFormat = newValue.text.replaceAll(RegExp('[^0-9]'), '');
-      }
-    }
-    
-    // Handle empty input
-    if (digitsToFormat.isEmpty) {
+    // Handle empty or cleared input
+    if (newValue.text.isEmpty) {
       return TextEditingValue.empty;
     }
     
-    // Convert to double with proper decimal places
+    // Extract only digits from the input
+    final digitsOnly = newValue.text.replaceAll(RegExp('[^0-9]'), '');
+    
+    // If no digits, return empty
+    if (digitsOnly.isEmpty) {
+      return TextEditingValue.empty;
+    }
+    
+    // Parse the raw number
+    final rawNumber = int.tryParse(digitsOnly) ?? 0;
+    
+    // Convert to actual value based on decimal places
     final divisor = decimalDigits > 0 ? math.pow(10, decimalDigits) : 1;
-    final double value = double.parse(digitsToFormat) / divisor;
+    final double value = rawNumber / divisor;
     
-    // Format the number
-    final formatted = _formatCurrency(value);
+    // Apply min/max constraints
+    final constrainedValue = _applyConstraints(value);
     
-    // Always position cursor at the end for consistent behavior
-    final cursorPosition = formatted.length;
+    // Format the currency
+    final formatted = _formatCurrency(constrainedValue);
+    
+    // Calculate the new cursor position
+    final newCursorPosition = _calculateCursorPosition(
+      oldValue,
+      newValue,
+      formatted,
+    );
     
     return TextEditingValue(
       text: formatted,
-      selection: TextSelection.collapsed(offset: cursorPosition),
+      selection: TextSelection.collapsed(offset: newCursorPosition),
     );
   }
   
-  /// Extract the numeric value from a formatted currency string
-  double _extractNumericValue(String formatted) {
-    if (formatted.isEmpty) return 0;
-    
-    // Remove currency symbol and any non-numeric characters except decimal point
-    final cleaned = formatted
-        .replaceAll(symbol, '')
-        .replaceAll(',', '')
-        .trim();
-    
-    // Try to parse as double
-    return double.tryParse(cleaned) ?? 0;
+  /// Apply min/max constraints to a value
+  double _applyConstraints(double value) {
+    double result = value;
+    if (minValue != null && result < minValue!) {
+      result = minValue!;
+    }
+    if (maxValue != null && result > maxValue!) {
+      result = maxValue!;
+    }
+    return result;
   }
   
-  TextEditingValue _handleDeletion(
+  /// Calculate the appropriate cursor position after formatting
+  int _calculateCursorPosition(
     TextEditingValue oldValue,
     TextEditingValue newValue,
+    String formatted,
   ) {
-    // If deleting from the end, just remove last digit
-    if (newValue.selection.baseOffset == newValue.text.length) {
-      final digitsOnly = oldValue.text.replaceAll(RegExp('[^0-9]'), '');
-      if (digitsOnly.length <= 1) {
-        return TextEditingValue.empty;
-      }
-      
-      final newDigits = digitsOnly.substring(0, digitsOnly.length - 1);
-      final divisor = decimalDigits > 0 ? math.pow(10, decimalDigits) : 1;
-      final double value = double.parse(newDigits) / divisor;
-      final formatted = _formatCurrency(value);
-      
-      return TextEditingValue(
-        text: formatted,
-        selection: TextSelection.collapsed(offset: formatted.length),
-      );
+    // If text was cleared or this is the initial input, position at end
+    if (oldValue.text.isEmpty || newValue.text.isEmpty) {
+      return formatted.length;
     }
     
-    return newValue;
+    // Count digits before cursor in the new unformatted text
+    final digitsBeforeCursor = newValue.text
+        .substring(0, math.min(newValue.selection.baseOffset, newValue.text.length))
+        .replaceAll(RegExp('[^0-9]'), '')
+        .length;
+    
+    // Find position in formatted text with same number of digits
+    int digitCount = 0;
+    int position = 0;
+    
+    for (int i = 0; i < formatted.length; i++) {
+      if (RegExp('[0-9]').hasMatch(formatted[i])) {
+        digitCount++;
+        if (digitCount == digitsBeforeCursor) {
+          position = i + 1;
+          break;
+        }
+      }
+      position = i + 1;
+    }
+    
+    // Ensure position doesn't exceed formatted text length
+    return math.min(position, formatted.length);
   }
   
   String _formatCurrency(double value) {
+    // Ensure value has correct decimal places
     final numberFormatted = _formatter.format(value);
     
-    // Add currency symbol
+    // Build the formatted string with symbol
+    final space = includeSpacing ? ' ' : '';
+    
     if (symbolBeforeAmount) {
-      return '$symbol$numberFormatted';
+      return '$symbol$space$numberFormatted';
     } else {
-      return '$numberFormatted $symbol';
+      return '$numberFormatted$space$symbol';
     }
   }
   
   /// Parse a formatted currency string back to a double value
-  static double? parse(String text) {
+  static double? parse(String text, {String? symbol}) {
     if (text.isEmpty) return null;
     
-    // Remove all non-digit and non-decimal characters
-    final cleaned = text.replaceAll(RegExp('[^0-9.]'), '');
+    // Remove currency symbol if provided
+    String cleaned = text;
+    if (symbol != null) {
+      cleaned = cleaned.replaceAll(symbol, '');
+    }
+    
+    // Remove common currency symbols
+    cleaned = cleaned.replaceAll(RegExp(r'[\$€£¥₹¢]'), '');
+    
+    // Remove thousand separators but keep decimal points
+    cleaned = cleaned.replaceAll(',', '');
+    
+    // Trim whitespace
+    cleaned = cleaned.trim();
+    
+    // Handle different decimal separators (some locales use comma)
+    if (cleaned.contains(',') && !cleaned.contains('.')) {
+      cleaned = cleaned.replaceAll(',', '.');
+    }
+    
     return double.tryParse(cleaned);
   }
+  
+  /// Extract numeric value from a formatted currency string
+  double extractNumericValue(String text) => parse(text, symbol: symbol) ?? 0.0;
 }

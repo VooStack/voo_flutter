@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/domain/entities/form.dart' as domain;
 import 'package:voo_forms/src/domain/entities/form_config.dart';
 import 'package:voo_forms/src/presentation/config/theme/form_theme.dart';
 import 'package:voo_forms/src/presentation/state/voo_form_controller.dart';
@@ -186,13 +185,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
   Widget _buildActions(BuildContext context) {
     if (widget.actionsBuilder != null) {
       // Create a dummy controller if needed for custom actions builder
-      final effectiveController = _controller ??
-          VooFormController(
-            form: domain.VooForm(
-              id: 'temp_form_${DateTime.now().millisecondsSinceEpoch}',
-              fields: const [],
-            ),
-          );
+      final effectiveController = _controller ?? VooFormController();
       return widget.actionsBuilder!(context, effectiveController);
     }
 

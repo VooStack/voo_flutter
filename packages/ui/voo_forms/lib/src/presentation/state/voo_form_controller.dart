@@ -55,7 +55,7 @@ class VooFormController extends ChangeNotifier {
   // Public getters
   Map<String, dynamic> get values => Map.unmodifiable(_fieldValues);
   Map<String, String> get errors => Map.unmodifiable(_fieldErrors);
-  bool get isValid => _fieldErrors.isEmpty && validate(silent: true);
+  bool get isValid => validate(silent: true);
   bool get isDirty => _isDirty;
   bool get isSubmitting => _isSubmitting;
   bool get isSubmitted => _isSubmitted;
@@ -213,29 +213,43 @@ class VooFormController extends ChangeNotifier {
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted);
     
     final value = _fieldValues[fieldName];
-    String? error;
+    String? fieldError;
     
     // Run through validators until we find an error
     for (final validator in validators) {
+      String? error;
+      
       // Handle both function validators and VooValidationRule objects
       if (validator is Function) {
-        error = validator(value) as String?;
+        try {
+          final result = validator(value);
+          if (result is String && result.isNotEmpty) {
+            error = result;
+          }
+        } catch (e) {
+          // Validator threw an exception
+          error = 'Validation error';
+        }
       } else if (validator is VooValidationRule) {
         error = validator.validate(value);
       }
-      if (error != null) break;
+      
+      if (error != null && error.isNotEmpty) {
+        fieldError = error;
+        break;
+      }
     }
     
     if (shouldShowError) {
-      if (error != null) {
-        _fieldErrors[fieldName] = error;
+      if (fieldError != null) {
+        _fieldErrors[fieldName] = fieldError;
       } else {
         _fieldErrors.remove(fieldName);
       }
       notifyListeners();
     }
     
-    return error == null;
+    return fieldError == null;
   }
 
   /// Validate all fields
@@ -246,63 +260,106 @@ class VooFormController extends ChangeNotifier {
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted) ||
         errorDisplayMode == VooFormErrorDisplayMode.none;
     
+    // Clear errors when we're about to re-validate with error display
     if (shouldShowError) {
       _fieldErrors.clear();
     }
     
-    bool isValid = true;
+    bool allFieldsValid = true;
     
-    _validators.forEach((fieldName, validators) {
-      if (validators.isEmpty) return;
+    for (final entry in _validators.entries) {
+      final fieldName = entry.key;
+      final validators = entry.value;
+      
+      if (validators.isEmpty) continue;
       
       final value = _fieldValues[fieldName];
-      String? error;
+      String? fieldError;
       
       // Run through validators until we find an error
       for (final validator in validators) {
+        String? error;
+        
         // Handle both function validators and VooValidationRule objects
         if (validator is Function) {
-          error = validator(value) as String?;
+          try {
+            final result = validator(value);
+            if (result is String && result.isNotEmpty) {
+              error = result;
+            }
+          } catch (e) {
+            // Validator threw an exception
+            error = 'Validation error';
+          }
         } else if (validator is VooValidationRule) {
           error = validator.validate(value);
         }
-        if (error != null) break;
+        
+        if (error != null && error.isNotEmpty) {
+          fieldError = error;
+          break; // Stop checking validators for this field
+        }
       }
       
-      if (error != null) {
+      if (fieldError != null) {
         if (shouldShowError) {
-          _fieldErrors[fieldName] = error;
+          _fieldErrors[fieldName] = fieldError;
         }
-        isValid = false;
+        allFieldsValid = false;
       }
-    });
+    }
     
-    notifyListeners();
-    return isValid;
+    if (shouldShowError) {
+      notifyListeners();
+    }
+    
+    return allFieldsValid;
   }
 
   /// Validate the form (optionally silent)
   bool validate({bool silent = false}) {
     if (silent) {
-      // Silent validation - don't update errors or notify
+      // Silent validation - check all validators without updating UI
+      bool allValid = true;
+      
       for (final entry in _validators.entries) {
         final fieldName = entry.key;
         final validators = entry.value;
+        if (validators.isEmpty) continue;
+        
         final value = _fieldValues[fieldName];
         
         for (final validator in validators) {
           String? error;
+          
           // Handle both function validators and VooValidationRule objects
           if (validator is Function) {
-            error = validator(value) as String?;
+            try {
+              final result = validator(value);
+              if (result is String && result.isNotEmpty) {
+                error = result;
+              }
+            } catch (e) {
+              // Validator threw an exception, treat as invalid
+              error = 'Validation error';
+            }
           } else if (validator is VooValidationRule) {
             error = validator.validate(value);
           }
-          if (error != null) return false;
+          
+          if (error != null && error.isNotEmpty) {
+            allValid = false;
+            break; // No need to check more validators for this field
+          }
         }
+        
+        if (!allValid) break; // Exit early if we found an invalid field
       }
-      return true;
+      
+      return allValid;
     }
+    
+    // Non-silent validation updates the UI
     return validateAll();
   }
 
@@ -481,13 +538,13 @@ VooFormController useVooFormController({
   VooFormErrorDisplayMode errorDisplayMode = VooFormErrorDisplayMode.onTyping,
   FormValidationMode validationMode = FormValidationMode.onSubmit,
   Map<String, FormFieldConfig>? fields,
-}) {
-  return use(_VooFormControllerHook(
-    errorDisplayMode: errorDisplayMode,
-    validationMode: validationMode,
-    fields: fields,
-  ));
-}
+}) => use(
+      _VooFormControllerHook(
+        errorDisplayMode: errorDisplayMode,
+        validationMode: validationMode,
+        fields: fields,
+      ),
+    );
 
 class _VooFormControllerHook extends Hook<VooFormController> {
   final VooFormErrorDisplayMode errorDisplayMode;
