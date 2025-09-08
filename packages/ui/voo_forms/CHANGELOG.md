@@ -1,4 +1,51 @@
-## [0.3.9] - 2025-09-07
+## [0.3.11]
+
+### Fixed
+- **VooFormController Validation Support**: Fixed validation to work with VooValidationRule objects
+  - Controller now supports both function validators and VooValidationRule objects
+  - Validators from `VooValidator.required()`, `VooValidator.email()`, etc. now work correctly
+  - Mixed validators (both functions and VooValidationRule objects) are supported
+  - Silent validation properly handles VooValidationRule objects
+  - All validation modes (onTyping, onSubmit) work with the new validator types
+
+### Added
+- **Enhanced Validator Type Support**: Flexible validator handling
+  - `registerField()` now accepts validators as either functions or VooValidationRule objects
+  - Automatic detection and handling of validator types during validation
+  - Comprehensive test coverage for VooValidationRule validators
+
+## [0.3.10]
+
+### Fixed
+- **VooFormController Architecture Refactor**: Major refactor to comply with clean architecture principles
+  - Removed dependency on VooForm domain entity (violated clean architecture)
+  - Created `FormFieldConfig` for field configuration without domain dependencies
+  - Controller now works directly with field names and configurations
+  - Improved validation logic with proper error display modes
+  - Added comprehensive support for field visibility and enablement
+  - Enhanced focus management for better keyboard navigation
+  - Fixed validation to properly respect `errorDisplayMode` settings
+
+### Added
+- **Comprehensive VooFormController Tests**: Full test coverage for refactored controller
+  - Tests for field registration (single and multiple)
+  - Value management and type-safe value retrieval
+  - Validation modes (onTyping, onSubmit, silent)
+  - Form submission with error handling
+  - Field visibility and enablement controls
+  - Focus management and navigation
+  - Dynamic validator management
+  - JSON serialization
+  - Change notification system
+
+### Changed
+- **VooFormController API**: Simplified and more flexible API
+  - No longer requires VooForm entity for initialization
+  - Direct field registration with `registerField()` and `registerFields()`
+  - Cleaner validation API with `validate()`, `validateField()`, and `validateAll()`
+  - Better separation between UI state and business logic
+
+## [0.3.9]
 
 ### Fixed
 - **VooCurrencyField Cursor Position Bug**: Improved cursor handling in currency formatter
@@ -8,7 +55,7 @@
   - Maintains calculator-style entry when typing at the end of the field
   - Fixes issue where typing "66" could result in "$600.06" instead of "$0.66"
 
-## [0.3.8] - 2025-09-07
+## [0.3.8]
 
 ### Fixed
 - **VooFormPageBuilder Overlay Removal**: Removed opacity overlay and AbsorbPointer when form is not editable
@@ -18,7 +65,7 @@
   - Improves visual clarity and allows field-level interaction control
   - Better UX for displaying forms with mixed editable/read-only fields
 
-## [0.3.7] - 2025-09-07
+## [0.3.7]
 
 ### Fixed
 - **VooCurrencyField Incremental Typing Bug**: Fixed issue where typing multiple digits resulted in incorrect values
@@ -33,7 +80,7 @@
   - Simplified cursor positioning to always place at end for better UX
   - Removed unused cursor calculation method to reduce complexity
 
-## [0.3.6] - 2025-09-07
+## [0.3.6]
 
 ### Fixed
 - **VooCurrencyField Formatting Bug**: Fixed critical issue where typing numbers resulted in incorrect formatting
@@ -42,7 +89,7 @@
   - Now correctly formats "88" as "$0.88" instead of the erroneous "8008,808.00"
   - Added proper handling for direct text input (e.g., from tests or paste operations)
 
-## [0.3.5] - 2025-09-07
+## [0.3.5]
 
 ### Added
 - **Drag and Drop Support for VooFileField**: Enhanced file upload experience
@@ -65,7 +112,7 @@
 - Updated tests to match new UI text and behavior
 - Ensured drag and drop properly integrates with existing file selection
 
-## [0.3.4] - 2025-09-07
+## [0.3.4]
 
 ### Added
 - **Enhanced VooCurrencyField**: Complete rewrite with proper currency formatting
@@ -94,7 +141,7 @@
 - Currency symbols display correctly based on selected currency
 - Read-only currency fields show properly formatted values
 
-## [0.3.3] - 2025-09-07
+## [0.3.3]
 
 ### Added
 - **VooFile Entity**: New domain entity for managing files from URLs or local uploads
@@ -133,7 +180,7 @@
 ### Dependencies
 - Added `url_launcher: ^6.2.0` for opening file URLs
 
-## [0.3.2] - 2025-09-06
+## [0.3.2]
 
 ### Added
 - **VooFormSection**: New container widget for organizing form fields into logical sections
@@ -166,7 +213,7 @@
   - Consistent spacing and padding
   - Professional visual appearance
 
-## [0.3.1] - 2025-09-02
+## [0.3.1]
 
 ### Fixed
 - **Initial Values Display**: Fixed all field types to properly display their initial values
@@ -196,7 +243,7 @@
   - Verifies initial value display for all field variations
   - Integration test simulating real-world form scenarios
 
-## [0.3.0] - 2025-09-02
+## [0.3.0]
 
 ### Added
 - **VooDateFieldButton**: New date field widget that uses a button interface for date selection
@@ -210,7 +257,7 @@
   - Removed extra container wrapping that caused visual inconsistencies
   - Date fields now properly display with the same styling as text fields
 
-## [0.2.3] - 2025-09-02
+## [0.2.3]
 
 ### Breaking Changes
 - **VooListField Refactored to Stateless**: 
@@ -363,7 +410,7 @@
 - Added tests for form toggle between editable and read-only modes
 - All tests passing with proper generic type constraints
 
-## [0.1.19] - 2025-08-31
+## [0.1.19]
 
 ### Maintenance
 - Version bump for package maintenance

@@ -1,434 +1,467 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:voo_forms/src/domain/entities/field_type.dart';
-import 'package:voo_forms/src/domain/entities/form.dart';
+import 'package:voo_forms/src/domain/entities/validation_rule.dart';
 import 'package:voo_forms/src/domain/enums/form_error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/form_validation_mode.dart';
 
+/// Configuration for a form field used by the controller
+class FormFieldConfig {
+  final String name;
+  final dynamic initialValue;
+  final List<dynamic> validators; // Can be functions or VooValidationRule objects
+  final ValueChanged<dynamic>? onChanged;
+  final bool enabled;
+  final bool visible;
+  
+  const FormFieldConfig({
+    required this.name,
+    this.initialValue,
+    this.validators = const [],
+    this.onChanged,
+    this.enabled = true,
+    this.visible = true,
+  });
+}
+
+/// Form controller that manages form state without depending on domain entities
 class VooFormController extends ChangeNotifier {
-  VooForm _form;
   final Map<String, TextEditingController> _textControllers = {};
   final Map<String, FocusNode> _focusNodes = {};
   final Map<String, dynamic> _fieldValues = {};
   final Map<String, String> _fieldErrors = {};
-  final Map<String, GlobalKey> _fieldKeys = {};
+  final Map<String, List<dynamic>> _validators = {}; // Can be functions or VooValidationRule objects
+  final Map<String, ValueChanged<dynamic>?> _onChangedCallbacks = {};
+  final Map<String, bool> _fieldEnabled = {};
+  final Map<String, bool> _fieldVisible = {};
+  
   final VooFormErrorDisplayMode errorDisplayMode;
+  final FormValidationMode validationMode;
+  
   bool _hasSubmitted = false;
+  bool _isDirty = false;
+  bool _isSubmitting = false;
+  bool _isSubmitted = false;
 
   VooFormController({
-    required VooForm form,
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
-  }) : _form = form {
-    _initializeForm();
-  }
-
-  VooForm get form => _form;
-  Map<String, dynamic> get values => Map.unmodifiable(_fieldValues);
-  Map<String, String> get errors => Map.unmodifiable(_fieldErrors);
-  bool get isValid => _fieldErrors.isEmpty && validate(silent: true);
-  bool get isDirty => _form.isDirty;
-  bool get isSubmitting => _form.isSubmitting;
-  bool get isSubmitted => _form.isSubmitted;
-
-  void _initializeForm() {
-    for (final field in _form.fields) {
-      // Initialize values
-      if (field.initialValue != null) {
-        _fieldValues[field.id] = field.initialValue;
-      } else if (_form.values.containsKey(field.id)) {
-        _fieldValues[field.id] = _form.values[field.id];
-      }
-
-      // Create text controllers for text fields
-      if (field.type.isTextInput) {
-        final controller = TextEditingController(
-          text: _fieldValues[field.id]?.toString() ?? '',
-        );
-        controller.addListener(() {
-          _handleFieldChange(field.id, controller.text);
-        });
-        _textControllers[field.id] = controller;
-      }
-
-      // Create focus nodes
-      _focusNodes[field.id] = field.focusNode ?? FocusNode();
-      _focusNodes[field.id]!.addListener(() {
-        if (!_focusNodes[field.id]!.hasFocus && field.validateOnFocusLost) {
-          validateField(field.id);
-        }
-      });
-
-      // Create field keys for form field widgets
-      _fieldKeys[field.id] = GlobalKey();
+    this.validationMode = FormValidationMode.onSubmit,
+    Map<String, FormFieldConfig>? fields,
+  }) {
+    if (fields != null) {
+      registerFields(fields);
     }
   }
 
-  TextEditingController? getTextController(String fieldId) => _textControllers[fieldId];
+  // Public getters
+  Map<String, dynamic> get values => Map.unmodifiable(_fieldValues);
+  Map<String, String> get errors => Map.unmodifiable(_fieldErrors);
+  bool get isValid => _fieldErrors.isEmpty && validate(silent: true);
+  bool get isDirty => _isDirty;
+  bool get isSubmitting => _isSubmitting;
+  bool get isSubmitted => _isSubmitted;
+  bool get hasSubmitted => _hasSubmitted;
 
-  FocusNode? getFocusNode(String fieldId) => _focusNodes[fieldId];
+  /// Register fields with the controller
+  void registerFields(Map<String, FormFieldConfig> fields) {
+    fields.forEach((fieldName, config) {
+      registerField(
+        fieldName,
+        initialValue: config.initialValue,
+        validators: config.validators,
+        onChanged: config.onChanged,
+        enabled: config.enabled,
+        visible: config.visible,
+      );
+    });
+  }
 
-  GlobalKey? getFieldKey(String fieldId) => _fieldKeys[fieldId];
+  /// Register a single field with the controller
+  void registerField(
+    String fieldName, {
+    dynamic initialValue,
+    List<dynamic> validators = const [], // Can be functions or VooValidationRule objects
+    ValueChanged<dynamic>? onChanged,
+    bool enabled = true,
+    bool visible = true,
+  }) {
+    // Store field configuration
+    _validators[fieldName] = validators;
+    _onChangedCallbacks[fieldName] = onChanged;
+    _fieldEnabled[fieldName] = enabled;
+    _fieldVisible[fieldName] = visible;
+    
+    // Initialize value
+    if (initialValue != null) {
+      _fieldValues[fieldName] = initialValue;
+    }
+    
+    // Create focus node if not exists
+    _focusNodes.putIfAbsent(fieldName, () => FocusNode());
+  }
 
-  dynamic getValue(String fieldId) => _fieldValues[fieldId];
+  /// Create and register a text controller for a field
+  TextEditingController registerTextController(String fieldName, {String? initialText}) {
+    if (_textControllers.containsKey(fieldName)) {
+      return _textControllers[fieldName]!;
+    }
+    
+    final controller = TextEditingController(
+      text: initialText ?? _fieldValues[fieldName]?.toString() ?? '',
+    );
+    
+    controller.addListener(() {
+      _handleFieldChange(fieldName, controller.text);
+    });
+    
+    _textControllers[fieldName] = controller;
+    return controller;
+  }
 
-  T? getTypedValue<T>(String fieldId) {
-    final value = _fieldValues[fieldId];
+  /// Get or create a text controller for a field
+  TextEditingController? getTextController(String fieldName) => _textControllers[fieldName];
+
+  /// Get or create a focus node for a field
+  FocusNode getFocusNode(String fieldName) {
+    return _focusNodes.putIfAbsent(fieldName, () => FocusNode());
+  }
+
+  /// Get the current value of a field
+  dynamic getValue(String fieldName) => _fieldValues[fieldName];
+
+  /// Get the current value of a field with type safety
+  T? getTypedValue<T>(String fieldName) {
+    final value = _fieldValues[fieldName];
     if (value is T) return value;
     return null;
   }
 
-  String? getError(String fieldId) => _fieldErrors[fieldId];
+  /// Get the current error for a field
+  String? getError(String fieldName) => _fieldErrors[fieldName];
 
-  void setValue(String fieldId, dynamic value, {bool validate = false}) {
-    // Convert value to appropriate type based on field type
-    final field = _form.fields.firstWhere(
-      (f) => f.id == fieldId,
-      orElse: () => throw StateError('Field with id $fieldId not found'),
-    );
+  /// Check if a field has an error
+  bool hasError(String fieldName) => _fieldErrors.containsKey(fieldName) && _fieldErrors[fieldName]!.isNotEmpty;
 
-    dynamic convertedValue = value;
-
-    // Convert string values to appropriate types for specific field types
-    if (value is String) {
-      if (field.type == VooFieldType.number) {
-        if (value.isEmpty) {
-          // For empty strings on number fields, use null
-          convertedValue = null;
-        } else {
-          // Try to parse as number, use null if parsing fails
-          convertedValue = num.tryParse(value);
-        }
-      }
+  /// Set the value of a field
+  void setValue(String fieldName, dynamic value, {bool validate = false}) {
+    _fieldValues[fieldName] = value;
+    
+    if (!_isDirty) {
+      _isDirty = true;
+      notifyListeners();
     }
-
-    _fieldValues[fieldId] = convertedValue;
-
-    if (!_form.isDirty) {
-      _form = _form.copyWith(isDirty: true);
-    }
-
+    
     // Update text controller if it exists
-    if (_textControllers.containsKey(fieldId)) {
+    if (_textControllers.containsKey(fieldName)) {
       final text = value?.toString() ?? '';
-      if (_textControllers[fieldId]!.text != text) {
-        _textControllers[fieldId]!.text = text;
+      if (_textControllers[fieldName]!.text != text) {
+        _textControllers[fieldName]!.text = text;
       }
     }
-
-    if (validate || (_form.validationMode == FormValidationMode.onChange && errorDisplayMode == VooFormErrorDisplayMode.onTyping)) {
-      validateField(fieldId);
+    
+    // Validate if requested or based on mode
+    if (validate || (validationMode == FormValidationMode.onChange && errorDisplayMode == VooFormErrorDisplayMode.onTyping)) {
+      validateField(fieldName);
     }
-
+    
     notifyListeners();
   }
 
+  /// Set multiple field values at once
   void setValues(Map<String, dynamic> values, {bool validate = false}) {
-    values.forEach((key, value) {
-      if (_form.fields.any((field) => field.id == key)) {
-        _fieldValues[key] = value;
-
-        // Update text controller if it exists
-        if (_textControllers.containsKey(key)) {
-          final text = value?.toString() ?? '';
-          if (_textControllers[key]!.text != text) {
-            _textControllers[key]!.text = text;
-          }
+    values.forEach((fieldName, value) {
+      _fieldValues[fieldName] = value;
+      
+      // Update text controller if it exists
+      if (_textControllers.containsKey(fieldName)) {
+        final text = value?.toString() ?? '';
+        if (_textControllers[fieldName]!.text != text) {
+          _textControllers[fieldName]!.text = text;
         }
       }
     });
-
-    if (!_form.isDirty) {
-      _form = _form.copyWith(isDirty: true);
+    
+    if (!_isDirty) {
+      _isDirty = true;
     }
-
-    if (validate || _form.validationMode == FormValidationMode.onChange) {
+    
+    if (validate || validationMode == FormValidationMode.onChange) {
       validateAll();
     }
-
+    
     notifyListeners();
   }
 
-  void _handleFieldChange(String fieldId, dynamic value) {
-    // Convert value to appropriate type before checking equality
-    final field = _form.fields.firstWhere(
-      (f) => f.id == fieldId,
-      orElse: () => throw StateError('Field with id $fieldId not found'),
-    );
-
-    dynamic convertedValue = value;
-
-    // Convert string values to appropriate types for specific field types
-    if (value is String) {
-      if (field.type == VooFieldType.number) {
-        if (value.isEmpty) {
-          // For empty strings on number fields, use null
-          convertedValue = null;
-        } else {
-          // Try to parse as number, use null if parsing fails
-          convertedValue = num.tryParse(value);
-        }
-      }
-    }
-
-    if (_fieldValues[fieldId] != convertedValue) {
+  void _handleFieldChange(String fieldName, dynamic value) {
+    if (_fieldValues[fieldName] != value) {
       // Only validate onChange if errorDisplayMode is onTyping
       final shouldValidate = errorDisplayMode == VooFormErrorDisplayMode.onTyping;
-      setValue(fieldId, convertedValue, validate: shouldValidate);
-
-      final field = _form.getField(fieldId);
-      field?.onChanged?.call(value);
+      setValue(fieldName, value, validate: shouldValidate);
+      
+      // Call field's onChange callback
+      _onChangedCallbacks[fieldName]?.call(value);
     }
   }
 
-  bool validateField(String fieldId, {bool force = false}) {
-    final field = _form.getField(fieldId);
-    if (field == null) return true;
-
+  /// Validate a single field
+  bool validateField(String fieldName, {bool force = false}) {
+    final validators = _validators[fieldName];
+    if (validators == null || validators.isEmpty) return true;
+    
     // Check if we should show errors based on errorDisplayMode
     final shouldShowError = force || 
         errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted);
-
-    // Create a field with the current value
-    final fieldWithValue = field.copyWith(value: _fieldValues[fieldId]);
-    final error = fieldWithValue.validate();
-
+    
+    final value = _fieldValues[fieldName];
+    String? error;
+    
+    // Run through validators until we find an error
+    for (final validator in validators) {
+      // Handle both function validators and VooValidationRule objects
+      if (validator is Function) {
+        error = validator(value) as String?;
+      } else if (validator is VooValidationRule) {
+        error = validator.validate(value);
+      }
+      if (error != null) break;
+    }
+    
     if (shouldShowError) {
       if (error != null) {
-        _fieldErrors[fieldId] = error;
+        _fieldErrors[fieldName] = error;
       } else {
-        _fieldErrors.remove(fieldId);
+        _fieldErrors.remove(fieldName);
       }
       notifyListeners();
     }
-
+    
     return error == null;
   }
 
+  /// Validate all fields
   bool validateAll({bool force = false}) {
     // Check if we should show errors based on errorDisplayMode
     final shouldShowError = force || 
         errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted) ||
         errorDisplayMode == VooFormErrorDisplayMode.none;
-
+    
     if (shouldShowError) {
       _fieldErrors.clear();
     }
     
     bool isValid = true;
-
-    for (final field in _form.fields) {
-      // Create a field with the current value
-      final fieldWithValue = field.copyWith(value: _fieldValues[field.id]);
-      final error = fieldWithValue.validate();
-
+    
+    _validators.forEach((fieldName, validators) {
+      if (validators.isEmpty) return;
+      
+      final value = _fieldValues[fieldName];
+      String? error;
+      
+      // Run through validators until we find an error
+      for (final validator in validators) {
+        // Handle both function validators and VooValidationRule objects
+        if (validator is Function) {
+          error = validator(value) as String?;
+        } else if (validator is VooValidationRule) {
+          error = validator.validate(value);
+        }
+        if (error != null) break;
+      }
+      
       if (error != null) {
         if (shouldShowError) {
-          _fieldErrors[field.id] = error;
+          _fieldErrors[fieldName] = error;
         }
         isValid = false;
       }
-    }
-
-    _form = _form.copyWith(
-      isValid: isValid,
-      errors: shouldShowError ? _fieldErrors : {},
-    );
-
+    });
+    
     notifyListeners();
     return isValid;
   }
 
+  /// Validate the form (optionally silent)
   bool validate({bool silent = false}) {
     if (silent) {
-      for (final field in _form.fields) {
-        final fieldWithValue = field.copyWith(value: _fieldValues[field.id]);
-        final error = fieldWithValue.validate();
-        if (error != null) return false;
+      // Silent validation - don't update errors or notify
+      for (final entry in _validators.entries) {
+        final fieldName = entry.key;
+        final validators = entry.value;
+        final value = _fieldValues[fieldName];
+        
+        for (final validator in validators) {
+          String? error;
+          // Handle both function validators and VooValidationRule objects
+          if (validator is Function) {
+            error = validator(value) as String?;
+          } else if (validator is VooValidationRule) {
+            error = validator.validate(value);
+          }
+          if (error != null) return false;
+        }
       }
       return true;
     }
     return validateAll();
   }
 
+  /// Clear all errors
   void clearErrors() {
     _fieldErrors.clear();
-    _form = _form.copyWith(errors: {}, isValid: true);
     notifyListeners();
   }
 
-  void clearError(String fieldId) {
-    _fieldErrors.remove(fieldId);
-    _form = _form.copyWith(errors: _fieldErrors);
+  /// Clear error for a specific field
+  void clearError(String fieldName) {
+    _fieldErrors.remove(fieldName);
     notifyListeners();
   }
 
+  /// Reset form to initial values
   void reset() {
     _fieldValues.clear();
     _fieldErrors.clear();
     _hasSubmitted = false;
-
-    // Reset to initial values
-    for (final field in _form.fields) {
-      if (field.initialValue != null) {
-        _fieldValues[field.id] = field.initialValue;
-      }
-
-      // Reset text controllers
-      if (_textControllers.containsKey(field.id)) {
-        _textControllers[field.id]!.text = field.initialValue?.toString() ?? '';
-      }
+    _isDirty = false;
+    _isSubmitting = false;
+    _isSubmitted = false;
+    
+    // Reset text controllers
+    for (final controller in _textControllers.values) {
+      controller.clear();
     }
-
-    _form = _form.copyWith(
-      isDirty: false,
-      isSubmitting: false,
-      isSubmitted: false,
-      errors: {},
-      isValid: true,
-    );
-
+    
     notifyListeners();
   }
 
+  /// Clear all form values
   void clear() {
     _fieldValues.clear();
     _fieldErrors.clear();
     _hasSubmitted = false;
-
+    _isDirty = false;
+    
     // Clear text controllers
     for (final controller in _textControllers.values) {
       controller.clear();
     }
-
-    _form = _form.copyWith(
-      isDirty: false,
-      isSubmitting: false,
-      isSubmitted: false,
-      errors: {},
-      isValid: true,
-    );
-
+    
     notifyListeners();
   }
 
+  /// Submit the form
   Future<bool> submit({
     required Future<void> Function(Map<String, dynamic> values) onSubmit,
     VoidCallback? onSuccess,
     void Function(dynamic error)? onError,
   }) async {
-    if (_form.isSubmitting) return false;
-
+    if (_isSubmitting) return false;
+    
     // Mark as submitted for error display
     _hasSubmitted = true;
-
+    
     // Validate all fields (force display of errors on submit)
     if (!validateAll(force: true)) {
       return false;
     }
-
-    _form = _form.copyWith(isSubmitting: true);
+    
+    _isSubmitting = true;
     notifyListeners();
-
+    
     try {
       await onSubmit(_fieldValues);
-      _form = _form.copyWith(
-        isSubmitting: false,
-        isSubmitted: true,
-        isDirty: false,
-      );
+      _isSubmitting = false;
+      _isSubmitted = true;
+      _isDirty = false;
       onSuccess?.call();
       notifyListeners();
       return true;
     } catch (error) {
-      _form = _form.copyWith(isSubmitting: false);
+      _isSubmitting = false;
       onError?.call(error);
       notifyListeners();
       return false;
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = {};
+  /// Convert form values to JSON
+  Map<String, dynamic> toJson() => Map.from(_fieldValues);
 
-    for (final field in _form.fields) {
-      if (_fieldValues.containsKey(field.id)) {
-        json[field.name] = _fieldValues[field.id];
-      }
-    }
-
-    return json;
+  /// Focus a specific field
+  void focusField(String fieldName) {
+    _focusNodes[fieldName]?.requestFocus();
   }
 
-  void focusField(String fieldId) {
-    _focusNodes[fieldId]?.requestFocus();
-  }
-
-  void focusNextField(String currentFieldId) {
-    final fields = _form.fields.where((f) => f.visible && f.enabled).toList();
-    final currentIndex = fields.indexWhere((f) => f.id == currentFieldId);
-
-    if (currentIndex >= 0 && currentIndex < fields.length - 1) {
-      final nextField = fields[currentIndex + 1];
-      focusField(nextField.id);
+  /// Focus the next field in the tab order
+  void focusNextField(String currentFieldName) {
+    final visibleFields = _fieldVisible.entries
+        .where((e) => e.value && _fieldEnabled[e.key] == true)
+        .map((e) => e.key)
+        .toList();
+    
+    final currentIndex = visibleFields.indexOf(currentFieldName);
+    if (currentIndex >= 0 && currentIndex < visibleFields.length - 1) {
+      focusField(visibleFields[currentIndex + 1]);
     }
   }
 
-  void focusPreviousField(String currentFieldId) {
-    final fields = _form.fields.where((f) => f.visible && f.enabled).toList();
-    final currentIndex = fields.indexWhere((f) => f.id == currentFieldId);
-
+  /// Focus the previous field in the tab order
+  void focusPreviousField(String currentFieldName) {
+    final visibleFields = _fieldVisible.entries
+        .where((e) => e.value && _fieldEnabled[e.key] == true)
+        .map((e) => e.key)
+        .toList();
+    
+    final currentIndex = visibleFields.indexOf(currentFieldName);
     if (currentIndex > 0) {
-      final previousField = fields[currentIndex - 1];
-      focusField(previousField.id);
+      focusField(visibleFields[currentIndex - 1]);
     }
   }
 
-  void updateForm(VooForm form) {
-    _form = form;
-    _initializeForm();
+  /// Enable a field
+  void enableField(String fieldName) {
+    _fieldEnabled[fieldName] = true;
     notifyListeners();
   }
 
-  void enableField(String fieldId) {
-    final field = _form.getField(fieldId);
-    if (field != null) {
-      final updatedField = field.copyWith(enabled: true);
-      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
-      _form = _form.copyWith(fields: updatedFields);
-      notifyListeners();
-    }
+  /// Disable a field
+  void disableField(String fieldName) {
+    _fieldEnabled[fieldName] = false;
+    notifyListeners();
   }
 
-  void disableField(String fieldId) {
-    final field = _form.getField(fieldId);
-    if (field != null) {
-      final updatedField = field.copyWith(enabled: false);
-      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
-      _form = _form.copyWith(fields: updatedFields);
-      notifyListeners();
-    }
+  /// Check if a field is enabled
+  bool isFieldEnabled(String fieldName) => _fieldEnabled[fieldName] ?? true;
+
+  /// Show a field
+  void showField(String fieldName) {
+    _fieldVisible[fieldName] = true;
+    notifyListeners();
   }
 
-  void showField(String fieldId) {
-    final field = _form.getField(fieldId);
-    if (field != null) {
-      final updatedField = field.copyWith(visible: true);
-      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
-      _form = _form.copyWith(fields: updatedFields);
-      notifyListeners();
-    }
+  /// Hide a field
+  void hideField(String fieldName) {
+    _fieldVisible[fieldName] = false;
+    notifyListeners();
   }
 
-  void hideField(String fieldId) {
-    final field = _form.getField(fieldId);
-    if (field != null) {
-      final updatedField = field.copyWith(visible: false);
-      final updatedFields = _form.fields.map((f) => f.id == fieldId ? updatedField : f).toList();
-      _form = _form.copyWith(fields: updatedFields);
-      notifyListeners();
-    }
+  /// Check if a field is visible
+  bool isFieldVisible(String fieldName) => _fieldVisible[fieldName] ?? true;
+
+  /// Add validators to a field
+  void addValidators(String fieldName, List<dynamic> validators) {
+    _validators[fieldName] = [...(_validators[fieldName] ?? []), ...validators];
+  }
+
+  /// Set validators for a field (replaces existing)
+  void setValidators(String fieldName, List<dynamic> validators) {
+    _validators[fieldName] = validators;
+  }
+
+  /// Remove all validators from a field
+  void removeValidators(String fieldName) {
+    _validators.remove(fieldName);
   }
 
   @override
@@ -437,21 +470,35 @@ class VooFormController extends ChangeNotifier {
       controller.dispose();
     }
     for (final focusNode in _focusNodes.values) {
-      if (_form.fields.every((field) => field.focusNode != focusNode)) {
-        focusNode.dispose();
-      }
+      focusNode.dispose();
     }
     super.dispose();
   }
 }
 
-// Hook for easy form controller usage
-VooFormController useVooFormController(VooForm form) => use(_VooFormControllerHook(form: form));
+/// Hook for easy form controller usage
+VooFormController useVooFormController({
+  VooFormErrorDisplayMode errorDisplayMode = VooFormErrorDisplayMode.onTyping,
+  FormValidationMode validationMode = FormValidationMode.onSubmit,
+  Map<String, FormFieldConfig>? fields,
+}) {
+  return use(_VooFormControllerHook(
+    errorDisplayMode: errorDisplayMode,
+    validationMode: validationMode,
+    fields: fields,
+  ));
+}
 
 class _VooFormControllerHook extends Hook<VooFormController> {
-  final VooForm form;
+  final VooFormErrorDisplayMode errorDisplayMode;
+  final FormValidationMode validationMode;
+  final Map<String, FormFieldConfig>? fields;
 
-  const _VooFormControllerHook({required this.form});
+  const _VooFormControllerHook({
+    required this.errorDisplayMode,
+    required this.validationMode,
+    this.fields,
+  });
 
   @override
   _VooFormControllerHookState createState() => _VooFormControllerHookState();
@@ -463,7 +510,11 @@ class _VooFormControllerHookState extends HookState<VooFormController, _VooFormC
   @override
   void initHook() {
     super.initHook();
-    _controller = VooFormController(form: hook.form);
+    _controller = VooFormController(
+      errorDisplayMode: hook.errorDisplayMode,
+      validationMode: hook.validationMode,
+      fields: hook.fields,
+    );
   }
 
   @override
