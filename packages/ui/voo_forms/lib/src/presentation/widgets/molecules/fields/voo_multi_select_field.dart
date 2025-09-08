@@ -219,7 +219,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
-      formController.setValue(widget.field.name, _selectedValues);
+      formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
     
     // Call user's onChanged if provided
@@ -235,7 +235,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
-      formController.setValue(widget.field.name, _selectedValues);
+      formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
     widget.field.onChanged?.call(_selectedValues);
   }
@@ -249,7 +249,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
-      formController.setValue(widget.field.name, _selectedValues);
+      formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
     widget.field.onChanged?.call(_selectedValues);
   }
@@ -750,7 +750,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
-      formController.setValue(widget.field.name, _selectedValues);
+      formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
     
     // Call user's onChanged if provided
@@ -766,7 +766,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
-      formController.setValue(widget.field.name, _selectedValues);
+      formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
     widget.field.onChanged?.call(_selectedValues);
   }

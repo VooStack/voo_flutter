@@ -73,7 +73,8 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     void handleChanged(T? value) {
       // Update form controller if available
       if (formController != null) {
-        formController.setValue(name, value);
+        // Validate on selection to clear any errors
+        formController.setValue(name, value, validate: true);
       }
       // Call user's onChanged if provided
       onChanged?.call(value);
@@ -297,7 +298,8 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
       });
       // Update form controller if available
       if (formController != null) {
-        formController.setValue(widget.field.name, value);
+        // Validate on selection to clear any errors
+        formController.setValue(widget.field.name, value, validate: true);
       }
       // Call user's onChanged if provided
       widget.field.onChanged?.call(value);

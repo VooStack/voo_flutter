@@ -86,6 +86,12 @@ class VooTextField extends VooFieldBase<String> {
     if (effectiveController == null && formController != null) {
       effectiveController = formController.registerTextController(name, initialText: initialValue);
     }
+    
+    // Use provided focus node or get one from form controller if available
+    FocusNode? effectiveFocusNode = focusNode;
+    if (effectiveFocusNode == null && formController != null) {
+      effectiveFocusNode = formController.getFocusNode(name);
+    }
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String? value) {
@@ -99,7 +105,7 @@ class VooTextField extends VooFieldBase<String> {
 
     Widget textInput = VooTextInput(
       controller: effectiveController,
-      focusNode: focusNode,
+      focusNode: effectiveFocusNode,
       initialValue: effectiveController == null ? initialValue : null,
       placeholder: placeholder,
       keyboardType: keyboardType,

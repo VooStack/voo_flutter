@@ -115,6 +115,12 @@ class VooNumberField extends VooFieldBase<num> {
       return buildFieldContainer(context, readOnlyContent);
     }
 
+    // Use provided focus node or get one from form controller if available
+    FocusNode? effectiveFocusNode = focusNode;
+    if (effectiveFocusNode == null && formController != null) {
+      effectiveFocusNode = formController.getFocusNode(name);
+    }
+
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String text) {
       final numValue = num.tryParse(text);
@@ -128,7 +134,7 @@ class VooNumberField extends VooFieldBase<num> {
 
     final numberInput = VooNumberInput(
       controller: controller,
-      focusNode: focusNode,
+      focusNode: effectiveFocusNode,
       initialValue: initialValue,
       placeholder: placeholder,
       inputFormatters: [

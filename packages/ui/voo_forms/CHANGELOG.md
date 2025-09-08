@@ -1,3 +1,23 @@
+## [0.3.20]
+
+### Bug Fixes
+- **Dropdown Validation**: Fixed issue where selecting a value from dropdown fields did not clear validation errors
+  - VooDropdownField now triggers validation when a selection is made
+  - VooAsyncDropdownField properly clears errors on selection
+  - VooMultiSelectField validates on every selection change
+  - VooDateField now validates when a date is selected
+  
+- **Focus Retention**: Fixed keyboard dismissal when typing first character in a field with validation error
+  - Text fields now use form controller's focus node management
+  - Focus nodes are properly preserved across rebuilds when errors clear
+  - VooTextField, VooCurrencyField, VooNumberField, and VooDateField all maintain focus properly
+  - Keyboard no longer dismisses when validation errors are cleared
+  
+### Internal Improvements
+- Enhanced focus node management in VooFormController
+- All field widgets now properly use centralized focus node management
+- Improved validation trigger control with explicit validate parameter
+
 ## [0.3.19]
 
 ### Critical Bug Fixes

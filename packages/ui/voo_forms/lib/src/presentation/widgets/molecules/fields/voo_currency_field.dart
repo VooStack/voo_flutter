@@ -165,10 +165,16 @@ class VooCurrencyField extends VooFieldBase<double> {
     if (controller == null && initialValue != null) {
       effectiveController.text = _formatCurrencyValue(initialValue!);
     }
+    
+    // Use provided focus node or get one from form controller if available
+    FocusNode? effectiveFocusNode = focusNode;
+    if (effectiveFocusNode == null && formController != null) {
+      effectiveFocusNode = formController.getFocusNode(name);
+    }
 
     final currencyInput = TextFormField(
       controller: effectiveController,
-      focusNode: focusNode,
+      focusNode: effectiveFocusNode,
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
       ),
