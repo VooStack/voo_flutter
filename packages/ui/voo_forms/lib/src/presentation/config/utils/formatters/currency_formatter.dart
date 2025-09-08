@@ -80,30 +80,50 @@ class CurrencyFormatter extends TextInputFormatter {
     if (isReplacement) {
       digitsToFormat = newValue.text;
     } else {
-      // For incremental typing, handle appending digits to formatted currency
+      // For incremental typing, we need to be smart about where digits were added
       
       // First, get the actual numeric value from the old formatted text
       final oldNumericValue = _extractNumericValue(oldValue.text);
       
-      // Check if user is appending a digit at the end
-      final isAppending = newValue.text.length > oldValue.text.length &&
-          newValue.selection.baseOffset == newValue.text.length;
+      // Check if a single character was added
+      final isSingleCharAdded = newValue.text.length == oldValue.text.length + 1;
       
-      if (isAppending) {
-        // Find the new digit that was added
-        final lastChar = newValue.text[newValue.text.length - 1];
-        if (RegExp(r'\d').hasMatch(lastChar)) {
-          // User typed a digit at the end
-          // Multiply current value by 10 and add new digit
-          final newDigit = int.parse(lastChar);
-          final newCents = (oldNumericValue * 100).round() * 10 + newDigit;
-          digitsToFormat = newCents.toString();
+      if (isSingleCharAdded) {
+        // Find what character was added and where
+        String addedChar = '';
+        int addedPosition = -1;
+        
+        // Compare old and new text to find the added character
+        for (int i = 0; i < newValue.text.length; i++) {
+          if (i >= oldValue.text.length || 
+              (i < oldValue.text.length && newValue.text[i] != oldValue.text[i])) {
+            addedChar = newValue.text[i];
+            addedPosition = i;
+            break;
+          }
+        }
+        
+        // If a digit was added and we can detect where
+        if (RegExp(r'\d').hasMatch(addedChar)) {
+          // Check if it was added at the end of the formatted text
+          final wasAddedAtEnd = addedPosition >= oldValue.text.length ||
+              addedPosition == oldValue.text.length - 1;
+          
+          if (wasAddedAtEnd || oldValue.selection.baseOffset == oldValue.text.length) {
+            // User is typing at the end - use calculator-style entry
+            final newDigit = int.parse(addedChar);
+            final newCents = (oldNumericValue * 100).round() * 10 + newDigit;
+            digitsToFormat = newCents.toString();
+          } else {
+            // Digit was added somewhere else, just extract all digits
+            digitsToFormat = newValue.text.replaceAll(RegExp('[^0-9]'), '');
+          }
         } else {
-          // Non-digit character added, just extract all digits
+          // Non-digit character added, extract all digits
           digitsToFormat = newValue.text.replaceAll(RegExp('[^0-9]'), '');
         }
       } else {
-        // Not appending at end, extract all digits
+        // Multiple characters changed, extract all digits
         digitsToFormat = newValue.text.replaceAll(RegExp('[^0-9]'), '');
       }
     }
@@ -120,7 +140,7 @@ class CurrencyFormatter extends TextInputFormatter {
     // Format the number
     final formatted = _formatCurrency(value);
     
-    // Calculate cursor position - always at end for simplicity
+    // Always position cursor at the end for consistent behavior
     final cursorPosition = formatted.length;
     
     return TextEditingValue(

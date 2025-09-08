@@ -181,19 +181,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     }
   }
 
-  Widget _buildForm() {
-    // Disable form when submitting or not editable
-    final isEnabled = widget.isEditable && widget.isSubmitting != true && !_isSubmitting;
-
-    return isEnabled
-        ? widget.form
-        : AbsorbPointer(
-            child: Opacity(
-              opacity: 0.6,
-              child: widget.form,
-            ),
-          );
-  }
+  Widget _buildForm() => widget.form;
 
   Widget _buildActions(BuildContext context) {
     if (widget.actionsBuilder != null) {

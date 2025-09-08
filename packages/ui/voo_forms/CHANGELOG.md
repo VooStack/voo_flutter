@@ -1,3 +1,23 @@
+## [0.3.9] - 2025-09-07
+
+### Fixed
+- **VooCurrencyField Cursor Position Bug**: Improved cursor handling in currency formatter
+  - Enhanced detection of where digits are added in the formatted text
+  - Better handling of single character additions vs multiple character changes
+  - Prevents incorrect formatting when cursor position is unexpectedly at the beginning
+  - Maintains calculator-style entry when typing at the end of the field
+  - Fixes issue where typing "66" could result in "$600.06" instead of "$0.66"
+
+## [0.3.8] - 2025-09-07
+
+### Fixed
+- **VooFormPageBuilder Overlay Removal**: Removed opacity overlay and AbsorbPointer when form is not editable
+  - Forms with `isEditable: false` no longer show a semi-transparent overlay
+  - Removed `AbsorbPointer` wrapper - field-level controls now handle editability
+  - Form fields remain fully interactive unless individually disabled
+  - Improves visual clarity and allows field-level interaction control
+  - Better UX for displaying forms with mixed editable/read-only fields
+
 ## [0.3.7] - 2025-09-07
 
 ### Fixed
