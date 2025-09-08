@@ -25,7 +25,6 @@ export 'src/presentation/config/utils/formatters/credit_card_formatter.dart';
 export 'src/presentation/config/utils/formatters/currency_formatter.dart';
 export 'src/presentation/config/utils/formatters/date_formatter.dart';
 export 'src/presentation/config/utils/formatters/formatters.dart';
-export 'src/presentation/config/utils/formatters/improved_currency_formatter.dart';
 export 'src/presentation/config/utils/formatters/international_phone_formatter.dart';
 export 'src/presentation/config/utils/formatters/mask_formatter.dart';
 export 'src/presentation/config/utils/formatters/pattern_formatter.dart';

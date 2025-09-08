@@ -2,7 +2,7 @@
 
 ### Critical Bug Fixes
 - **Currency Field Formatting**: Fixed major issue where typing multiple digits resulted in incorrect values
-  - Created ImprovedCurrencyFormatter that properly handles incremental typing
+  - Updated CurrencyFormatter to properly handle incremental typing
   - Typing "5" twice now correctly shows "$0.55" instead of "$50.05"
   - Formatter now works like a calculator - digits are added from right to left
   - Added support for min/max value constraints
@@ -15,7 +15,7 @@
   - Validation can now be controlled per setValue call to prevent focus disruption
 
 ### Testing
-- Added comprehensive test suite for ImprovedCurrencyFormatter with 20+ test cases
+- Added comprehensive test suite for CurrencyFormatter with 20+ test cases
 - Tests cover incremental typing, deletion, currency variants, constraints, and edge cases
 - Added tests for multiselect dropdown functionality
 - Test coverage ensures currency formatting works correctly across all scenarios

@@ -90,20 +90,20 @@ class VooCurrencyField extends VooFieldBase<double> {
     return formatter.format(value);
   }
   
-  ImprovedCurrencyFormatter _getCurrencyFormatter() {
+  CurrencyFormatter _getCurrencyFormatter() {
     // Use predefined formatters for common currencies
     switch (currencySymbol.toLowerCase()) {
       case '€':
       case 'eur':
-        return ImprovedCurrencyFormatter.eur();
+        return CurrencyFormatter.eur();
       case '£':
       case 'gbp':
-        return ImprovedCurrencyFormatter.gbp();
+        return CurrencyFormatter.gbp();
       case '¥':
       case 'jpy':
-        return ImprovedCurrencyFormatter.jpy();
+        return CurrencyFormatter.jpy();
       default:
-        final formatter = ImprovedCurrencyFormatter(
+        final formatter = CurrencyFormatter(
           symbol: currencySymbol,
           decimalDigits: decimalDigits,
           locale: locale,
@@ -178,7 +178,7 @@ class VooCurrencyField extends VooFieldBase<double> {
       ],
       onChanged: (text) {
         // Parse the formatted currency value back to double
-        final value = ImprovedCurrencyFormatter.parse(text, symbol: currencySymbol);
+        final value = CurrencyFormatter.parse(text, symbol: currencySymbol);
         
         // Update form controller if available - don't validate on typing to prevent focus issues
         if (formController != null) {
