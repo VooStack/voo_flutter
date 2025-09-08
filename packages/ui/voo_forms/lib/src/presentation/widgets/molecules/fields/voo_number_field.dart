@@ -126,7 +126,8 @@ class VooNumberField extends VooFieldBase<num> {
       final numValue = num.tryParse(text);
       // Update form controller if available
       if (formController != null) {
-        formController.setValue(name, numValue);
+        // Don't validate on typing to prevent focus loss
+        formController.setValue(name, numValue, validate: false);
       }
       // Call user's onChanged if provided
       onChanged?.call(numValue);

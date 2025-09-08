@@ -76,7 +76,7 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     return _MultiSelectFieldWidget<T>(field: this);
   }
 
@@ -214,14 +214,14 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
         _selectedValues.add(item);
       }
     });
-    
+
     // Update form controller if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
       formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
-    
+
     // Call user's onChanged if provided
     widget.field.onChanged?.call(_selectedValues);
   }
@@ -230,7 +230,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     setState(() {
       _selectedValues = List<T>.from(widget.field.options);
     });
-    
+
     // Update form controller and call onChanged
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
@@ -244,7 +244,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     setState(() {
       _selectedValues.clear();
     });
-    
+
     // Update form controller and call onChanged
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
@@ -258,19 +258,17 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     if (_searchQuery.isEmpty) {
       return widget.field.options;
     }
-    
+
     if (widget.field.searchFilter != null) {
-      return widget.field.options
-          .where((item) => widget.field.searchFilter!(item, _searchQuery))
-          .toList();
+      return widget.field.options.where((item) => widget.field.searchFilter!(item, _searchQuery)).toList();
     }
-    
+
     // Default search filter using display text
     final displayBuilder = widget.field.displayTextBuilder ?? (item) => item.toString();
     return widget.field.options
-        .where((item) => displayBuilder(item)
-            .toLowerCase()
-            .contains(_searchQuery.toLowerCase()))
+        .where(
+          (item) => displayBuilder(item).toLowerCase().contains(_searchQuery.toLowerCase()),
+        )
         .toList();
   }
 
@@ -284,12 +282,10 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
   Widget _buildSelectedChips() {
     if (_selectedValues.isEmpty) {
       return Text(
-        widget.field.emptySelectionText ?? 
-        widget.field.placeholder ?? 
-        'Select items...',
+        widget.field.emptySelectionText ?? widget.field.placeholder ?? 'Select items...',
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Theme.of(context).hintColor,
-        ),
+              color: Theme.of(context).hintColor,
+            ),
       );
     }
 
@@ -302,18 +298,16 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
       runSpacing: 4.0,
       children: [
         ...displayItems.map((item) => Chip(
-          label: Text(
-            _getDisplayText(item),
-            style: const TextStyle(fontSize: 12),
-          ),
-          deleteIcon: const Icon(Icons.close, size: 16),
-          onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context)
-              ? () => _handleSelectionChange(item)
-              : null,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          labelPadding: const EdgeInsets.only(left: 4),
-        )),
+              label: Text(
+                _getDisplayText(item),
+                style: const TextStyle(fontSize: 12),
+              ),
+              deleteIcon: const Icon(Icons.close, size: 16),
+              onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context) ? () => _handleSelectionChange(item) : null,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              labelPadding: const EdgeInsets.only(left: 4),
+            )),
         if (remaining > 0)
           Chip(
             label: Text(
@@ -332,7 +326,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final theme = Theme.of(context);
-    
+
     return OverlayEntry(
       builder: (context) => Positioned(
         width: size.width,
@@ -454,7 +448,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
     final theme = Theme.of(context);
-    
+
     // Get the error for this field
     final fieldError = widget.field.getFieldError(context);
 
@@ -466,28 +460,28 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
         borderRadius: BorderRadius.circular(12),
         child: InputDecorator(
           decoration: widget.field.getInputDecoration(context).copyWith(
-            errorText: fieldError,
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (_selectedValues.isNotEmpty && widget.field.showClearAll && !effectiveReadOnly)
-                  IconButton(
-                    icon: const Icon(Icons.clear, size: 20),
-                    onPressed: _clearAll,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
+                errorText: fieldError,
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_selectedValues.isNotEmpty && widget.field.showClearAll && !effectiveReadOnly)
+                      IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: _clearAll,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(
+                          minWidth: 32,
+                          minHeight: 32,
+                        ),
+                      ),
+                    AnimatedRotation(
+                      turns: _isOpen ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: widget.field.dropdownIcon ?? const Icon(Icons.arrow_drop_down),
                     ),
-                  ),
-                AnimatedRotation(
-                  turns: _isOpen ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: widget.field.dropdownIcon ?? const Icon(Icons.arrow_drop_down),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
           child: _buildSelectedChips(),
         ),
       ),
@@ -501,6 +495,7 @@ class _MultiSelectFieldWidgetState<T> extends State<_MultiSelectFieldWidget<T>> 
     return widget.field.buildFieldContainer(context, fieldContent);
   }
 }
+
 /// Async multi-select field that loads options asynchronously
 class VooAsyncMultiSelectField<T> extends VooFieldBase<List<T>> {
   /// Async loader for options
@@ -572,7 +567,7 @@ class VooAsyncMultiSelectField<T> extends VooFieldBase<List<T>> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     return _AsyncMultiSelectFieldWidget<T>(field: this);
   }
 
@@ -680,7 +675,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final options = await widget.field.asyncOptionsLoader(query);
       if (mounted) {
@@ -745,14 +740,14 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
         _selectedValues.add(item);
       }
     });
-    
+
     // Update form controller if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     if (formController != null) {
       formController.setValue(widget.field.name, _selectedValues, validate: true);
     }
-    
+
     // Call user's onChanged if provided
     widget.field.onChanged?.call(_selectedValues);
   }
@@ -761,7 +756,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
     setState(() {
       _selectedValues.clear();
     });
-    
+
     // Update form controller and call onChanged
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
@@ -781,12 +776,10 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
   Widget _buildSelectedChips() {
     if (_selectedValues.isEmpty) {
       return Text(
-        widget.field.emptySelectionText ?? 
-        widget.field.placeholder ?? 
-        'Select items...',
+        widget.field.emptySelectionText ?? widget.field.placeholder ?? 'Select items...',
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Theme.of(context).hintColor,
-        ),
+              color: Theme.of(context).hintColor,
+            ),
       );
     }
 
@@ -799,18 +792,16 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
       runSpacing: 4.0,
       children: [
         ...displayItems.map((item) => Chip(
-          label: Text(
-            _getDisplayText(item),
-            style: const TextStyle(fontSize: 12),
-          ),
-          deleteIcon: const Icon(Icons.close, size: 16),
-          onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context)
-              ? () => _handleSelectionChange(item)
-              : null,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          labelPadding: const EdgeInsets.only(left: 4),
-        )),
+              label: Text(
+                _getDisplayText(item),
+                style: const TextStyle(fontSize: 12),
+              ),
+              deleteIcon: const Icon(Icons.close, size: 16),
+              onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context) ? () => _handleSelectionChange(item) : null,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              labelPadding: const EdgeInsets.only(left: 4),
+            )),
         if (remaining > 0)
           Chip(
             label: Text(
@@ -829,7 +820,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final theme = Theme.of(context);
-    
+
     return OverlayEntry(
       builder: (context) => Positioned(
         width: size.width,
@@ -901,8 +892,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
                         ? Center(
                             child: Padding(
                               padding: const EdgeInsets.all(24),
-                              child: widget.field.loadingIndicator ??
-                                  const CircularProgressIndicator(),
+                              child: widget.field.loadingIndicator ?? const CircularProgressIndicator(),
                             ),
                           )
                         : ListView(
@@ -942,7 +932,7 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
   @override
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
-    
+
     // Get the error for this field
     final fieldError = widget.field.getFieldError(context);
 
@@ -954,28 +944,28 @@ class _AsyncMultiSelectFieldWidgetState<T> extends State<_AsyncMultiSelectFieldW
         borderRadius: BorderRadius.circular(12),
         child: InputDecorator(
           decoration: widget.field.getInputDecoration(context).copyWith(
-            errorText: fieldError,
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (_selectedValues.isNotEmpty && widget.field.showClearAll && !effectiveReadOnly)
-                  IconButton(
-                    icon: const Icon(Icons.clear, size: 20),
-                    onPressed: _clearAll,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
+                errorText: fieldError,
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_selectedValues.isNotEmpty && widget.field.showClearAll && !effectiveReadOnly)
+                      IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: _clearAll,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(
+                          minWidth: 32,
+                          minHeight: 32,
+                        ),
+                      ),
+                    AnimatedRotation(
+                      turns: _isOpen ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: widget.field.dropdownIcon ?? const Icon(Icons.arrow_drop_down),
                     ),
-                  ),
-                AnimatedRotation(
-                  turns: _isOpen ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: widget.field.dropdownIcon ?? const Icon(Icons.arrow_drop_down),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
           child: _buildSelectedChips(),
         ),
       ),

@@ -1,3 +1,17 @@
+## [0.3.21]
+
+### Critical Bug Fix
+- **Focus Retention During Validation**: Fixed critical issue where keyboard would dismiss after typing one character in fields with validation errors
+  - Text input fields (VooTextField, VooNumberField, VooCurrencyField, and all derivatives) no longer trigger validation during typing
+  - Prevents the validation→rebuild→focus-loss cycle that was dismissing the keyboard
+  - Selection fields (dropdowns, checkboxes, switches) still validate immediately to clear errors
+  - Users can now type continuously without interruption when clearing validation errors
+  
+### Internal Changes
+- All text-based fields now explicitly pass `validate: false` during onChange to prevent focus disruption
+- Boolean and checkbox fields now properly validate on change to clear errors immediately
+- Improved separation between text input behavior (no immediate validation) and selection behavior (immediate validation)
+
 ## [0.3.20]
 
 ### Bug Fixes

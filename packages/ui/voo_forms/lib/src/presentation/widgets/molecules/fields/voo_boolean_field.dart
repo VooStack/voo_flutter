@@ -49,7 +49,8 @@ class VooBooleanField extends VooFieldBase<bool> {
     void handleChanged(bool? value) {
       // Update form controller if available
       if (formController != null) {
-        formController.setValue(name, value);
+        // Validate on change to clear any errors
+        formController.setValue(name, value, validate: true);
       }
       // Call user's onChanged if provided
       onChanged?.call(value);

@@ -97,7 +97,8 @@ class VooTextField extends VooFieldBase<String> {
     void handleChanged(String? value) {
       // Update form controller if available
       if (formController != null) {
-        formController.setValue(name, value);
+        // Don't validate on typing to prevent focus loss
+        formController.setValue(name, value, validate: false);
       }
       // Call user's onChanged if provided
       onChanged?.call(value);
