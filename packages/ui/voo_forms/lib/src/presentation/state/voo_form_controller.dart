@@ -162,7 +162,8 @@ class VooFormController extends ChangeNotifier {
     }
     
     // Validate if requested or based on mode
-    if (validate || (validationMode == FormValidationMode.onChange && errorDisplayMode == VooFormErrorDisplayMode.onTyping)) {
+    // Don't validate on typing if explicitly told not to (prevents focus issues)
+    if (validate == true || (validate != false && validationMode == FormValidationMode.onChange && errorDisplayMode == VooFormErrorDisplayMode.onTyping)) {
       validateField(fieldName);
     }
     

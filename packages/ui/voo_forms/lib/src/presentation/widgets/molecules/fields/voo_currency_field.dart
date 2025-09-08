@@ -90,24 +90,31 @@ class VooCurrencyField extends VooFieldBase<double> {
     return formatter.format(value);
   }
   
-  CurrencyFormatter _getCurrencyFormatter() {
+  ImprovedCurrencyFormatter _getCurrencyFormatter() {
     // Use predefined formatters for common currencies
     switch (currencySymbol.toLowerCase()) {
       case '€':
       case 'eur':
-        return CurrencyFormatter.eur();
+        return ImprovedCurrencyFormatter.eur();
       case '£':
       case 'gbp':
-        return CurrencyFormatter.gbp();
+        return ImprovedCurrencyFormatter.gbp();
       case '¥':
       case 'jpy':
-        return CurrencyFormatter.jpy();
+        return ImprovedCurrencyFormatter.jpy();
       default:
-        return CurrencyFormatter(
+        final formatter = ImprovedCurrencyFormatter(
           symbol: currencySymbol,
           decimalDigits: decimalDigits,
           locale: locale,
+          minValue: min,
+          maxValue: max,
         );
+        // Set initial value if provided
+        if (initialValue != null) {
+          formatter.setInitialValue(initialValue!);
+        }
+        return formatter;
     }
   }
 
@@ -165,17 +172,17 @@ class VooCurrencyField extends VooFieldBase<double> {
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
       ),
-      textInputAction: TextInputAction.next,
+      textInputAction: TextInputAction.done,
       inputFormatters: [
         _getCurrencyFormatter(),
       ],
       onChanged: (text) {
         // Parse the formatted currency value back to double
-        final value = CurrencyFormatter.parse(text);
+        final value = ImprovedCurrencyFormatter.parse(text, symbol: currencySymbol);
         
-        // Update form controller if available
+        // Update form controller if available - don't validate on typing to prevent focus issues
         if (formController != null) {
-          formController.setValue(name, value);
+          formController.setValue(name, value, validate: false);
         }
         
         // Call user's onChanged if provided

@@ -1,9 +1,48 @@
+## [0.3.19]
+
+### Critical Bug Fixes
+- **Currency Field Formatting**: Fixed major issue where typing multiple digits resulted in incorrect values
+  - Created ImprovedCurrencyFormatter that properly handles incremental typing
+  - Typing "5" twice now correctly shows "$0.55" instead of "$50.05"
+  - Formatter now works like a calculator - digits are added from right to left
+  - Added support for min/max value constraints
+  - Fixed deletion behavior to properly remove digits
+  
+- **Focus Issue with Validation**: Fixed critical issue where fields with validation errors would only accept one character then jump focus to next field
+  - Modified VooFormController to prevent unnecessary validation during typing when explicitly disabled
+  - Changed currency field TextInputAction from "next" to "done" to prevent premature focus changes
+  - Fields now maintain focus properly even when validation errors are present
+  - Validation can now be controlled per setValue call to prevent focus disruption
+
+### Testing
+- Added comprehensive test suite for ImprovedCurrencyFormatter with 20+ test cases
+- Tests cover incremental typing, deletion, currency variants, constraints, and edge cases
+- Added tests for multiselect dropdown functionality
+- Test coverage ensures currency formatting works correctly across all scenarios
+
 ## [0.3.18]
+
+### Added
+- **VooMultiSelectField**: New multi-select dropdown field widget
+  - Allows selecting multiple options from a dropdown list
+  - Displays selections as chips with customizable max display count
+  - Built-in search/filter functionality for options
+  - Select All and Clear All action buttons
+  - Full Material 3 design compliance with animations
+  - Integrates seamlessly with VooFormController
+  
+- **VooAsyncMultiSelectField**: Async variant of multi-select field
+  - Loads options dynamically from APIs or databases
+  - Configurable search debounce for performance
+  - Loading indicators and error handling
+  - Maintains selections across searches
+  - Custom loading widget support
 
 ### Improvements
 - **Test Coverage**: Enhanced form widget test coverage
   - Added comprehensive tests for VooForm widget behavior
   - Added tests for VooFormPageBuilder functionality
+  - Added 40+ tests for VooMultiSelectField and VooAsyncMultiSelectField
   - Improved test organization and documentation
   - Enhanced error handling and validation tests
   
@@ -11,6 +50,7 @@
 - Code cleanup and maintenance improvements
 - Updated development dependencies
 - Enhanced CI/CD pipeline configuration
+- Fixed deprecated withOpacity usage, now using withValues
 
 ## [0.3.17]
 
