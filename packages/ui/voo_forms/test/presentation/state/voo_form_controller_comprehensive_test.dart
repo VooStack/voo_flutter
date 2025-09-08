@@ -165,13 +165,12 @@ void main() {
 
     group('Validation - Display Modes', () {
       test('respects onTyping display mode', () {
-        controller = VooFormController(
-          errorDisplayMode: VooFormErrorDisplayMode.onTyping,
-        );
+        controller = VooFormController();
         
-        controller.registerField('field1', validators: [
-          VooValidator.required(),
-        ],);
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required()],
+        );
         
         // Error should show when validation is triggered
         controller.setValue('field1', '', validate: true);
@@ -191,9 +190,10 @@ void main() {
           errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
         );
         
-        controller.registerField('field1', validators: [
-          VooValidator.required(),
-        ]);
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required()],
+        );
         
         // Error should not show before submit
         controller.setValue('field1', '');
@@ -214,9 +214,10 @@ void main() {
           errorDisplayMode: VooFormErrorDisplayMode.none,
         );
         
-        controller.registerField('field1', validators: [
-          VooValidator.required(),
-        ]);
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required()],
+        );
         
         controller.setValue('field1', '');
         final isValid = controller.validate();
@@ -364,7 +365,6 @@ void main() {
           ),
           'confirmPassword': const FormFieldConfig(
             name: 'confirmPassword',
-            validators: [],
           ),
           'age': FormFieldConfig(
             name: 'age',
@@ -381,7 +381,6 @@ void main() {
             ],
           ),
         });
-
         // Add dynamic validator for password confirmation
         controller.addValidators('confirmPassword', [
           (dynamic value) {
@@ -455,7 +454,7 @@ void main() {
             controller.hideField('companyName');
             controller.hideField('taxId');
           }
-        };
+        }
 
         // Initial setup for personal
         updateValidators();
@@ -562,7 +561,7 @@ void main() {
         // Set all values
         final values = <String, dynamic>{};
         for (int i = 0; i < 1000; i++) {
-          values['field$i'] = 'newvalue$i';
+          values['field$i'] = 'newValue$i';
         }
         controller.setValues(values);
         
@@ -595,27 +594,30 @@ void main() {
 
     group('isValid Getter - Critical Tests', () {
       test('returns false when field has validation errors', () {
-        controller.registerField('field1', validators: [
-          VooValidator.required(),
-        ]);
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required()],
+        );
         
         // Don't set value (field is empty)
         expect(controller.isValid, false);
       });
 
       test('returns true when all fields are valid', () {
-        controller.registerField('field1', validators: [
-          VooValidator.required(),
-        ]);
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required()],
+        );
         
         controller.setValue('field1', 'valid value');
         expect(controller.isValid, true);
       });
 
       test('does not modify errors map during silent validation', () {
-        controller.registerField('field1', validators: [
-          VooValidator.required(),
-        ]);
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required()],
+        );
         
         // Field is invalid but errors shouldn't show
         expect(controller.errors, isEmpty);

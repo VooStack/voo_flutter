@@ -96,7 +96,7 @@ class VooFormController extends ChangeNotifier {
     }
     
     // Create focus node if not exists
-    _focusNodes.putIfAbsent(fieldName, () => FocusNode());
+    _focusNodes.putIfAbsent(fieldName, FocusNode.new);
   }
 
   /// Create and register a text controller for a field
@@ -121,9 +121,8 @@ class VooFormController extends ChangeNotifier {
   TextEditingController? getTextController(String fieldName) => _textControllers[fieldName];
 
   /// Get or create a focus node for a field
-  FocusNode getFocusNode(String fieldName) {
-    return _focusNodes.putIfAbsent(fieldName, () => FocusNode());
-  }
+  FocusNode getFocusNode(String fieldName) =>
+      _focusNodes.putIfAbsent(fieldName, FocusNode.new);
 
   /// Get the current value of a field
   dynamic getValue(String fieldName) => _fieldValues[fieldName];

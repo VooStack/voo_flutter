@@ -1,3 +1,42 @@
+## [0.3.14]
+
+### Fixed
+- **CurrencyFormatter**: Completely rewrote formatter with best practices
+  - Simplified logic by removing buggy incremental typing detection
+  - Added min/max value constraints for better validation
+  - Improved cursor position management for predictable behavior
+  - Enhanced parse method to handle different currency symbols and locales
+  - Added optional spacing between symbol and amount
+  - Fixed regex escaping issues for currency symbols
+
+- **VooFormController Validation**: Fixed critical validation bugs
+  - Fixed `isValid` getter that was always returning true
+  - Improved `validate()` method for proper silent validation
+  - Enhanced error handling for validators that throw exceptions
+  - Fixed `validateAll()` to properly accumulate and return validation state
+  - Fixed `validateField()` to handle null and empty string errors correctly
+  - Validation now properly returns false when fields are invalid
+
+### Added
+- **Comprehensive Test Suite**: Added extensive test coverage for VooFormController
+  - 31 comprehensive tests covering all edge cases
+  - Tests for boundary conditions, error handling, and race conditions
+  - Real-world scenario tests (registration forms, multi-step wizards)
+  - Performance tests for large forms (1000+ fields)
+  - Memory management and lifecycle tests
+
+### Improved
+- **Test Organization**: Restructured test directory following atomic design
+  - Controller tests moved to `test/presentation/state/`
+  - Integration tests in `test/integration/`
+  - Scenario tests in `test/scenarios/`
+  - All tests properly organized and passing
+
+- **Code Quality**: Fixed all lint issues
+  - Removed unnecessary lambdas and redundant arguments
+  - Fixed trailing commas and empty statements
+  - Improved type safety and code clarity
+
 ## [0.3.13]
 
 ### Fixed
