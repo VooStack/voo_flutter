@@ -65,6 +65,9 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
+    
+    // Get the error for this field from the controller
+    final fieldError = formController?.getError(name) ?? error;
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(T? value) {
@@ -94,7 +97,28 @@ class VooDropdownField<T> extends VooFieldBase<T> {
 
     // Apply standard field building pattern
     dropdownContent = buildWithHelper(context, dropdownContent);
-    dropdownContent = buildWithError(context, dropdownContent);
+    
+    // Build the error widget if there's an error
+    if (fieldError != null && fieldError.isNotEmpty) {
+      dropdownContent = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          dropdownContent,
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              fieldError,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    
     dropdownContent = buildWithLabel(context, dropdownContent);
     dropdownContent = buildWithActions(context, dropdownContent);
 
@@ -278,6 +302,9 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
+    
+    // Get the error for this field from the controller
+    final fieldError = formController?.getError(widget.field.name) ?? widget.field.error;
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(T? value) {
@@ -309,7 +336,28 @@ class _AsyncDropdownFieldWidgetState<T> extends State<_AsyncDropdownFieldWidget<
 
     // Apply standard field building pattern
     dropdownContent = widget.field.buildWithHelper(context, dropdownContent);
-    dropdownContent = widget.field.buildWithError(context, dropdownContent);
+    
+    // Build the error widget if there's an error
+    if (fieldError != null && fieldError.isNotEmpty) {
+      dropdownContent = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          dropdownContent,
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              fieldError,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    
     dropdownContent = widget.field.buildWithLabel(context, dropdownContent);
     dropdownContent = widget.field.buildWithActions(context, dropdownContent);
 

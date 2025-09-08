@@ -15,12 +15,14 @@ class VooFormScope extends InheritedWidget {
   final bool isReadOnly;
   final bool isLoading;
   final VooFormController? controller;
+  final int rebuildKey;  // Add a key that changes when controller state changes
 
   const VooFormScope({
     super.key,
     required this.isReadOnly,
     required this.isLoading,
     this.controller,
+    this.rebuildKey = 0,
     required super.child,
   });
 
@@ -31,7 +33,8 @@ class VooFormScope extends InheritedWidget {
   bool updateShouldNotify(VooFormScope oldWidget) => 
       isReadOnly != oldWidget.isReadOnly || 
       isLoading != oldWidget.isLoading ||
-      controller != oldWidget.controller;
+      controller != oldWidget.controller ||
+      rebuildKey != oldWidget.rebuildKey;  // Notify when rebuild key changes
 }
 
 /// Simple, atomic form widget that manages field collection and validation
@@ -100,6 +103,7 @@ class VooForm extends StatefulWidget {
 
 class _VooFormState extends State<VooForm> {
   late VooFormController _controller;
+  int _rebuildKey = 0;
 
   @override
   void initState() {
@@ -134,10 +138,24 @@ class _VooFormState extends State<VooForm> {
   void didUpdateWidget(VooForm oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // Always clear and re-register fields when widget updates
-    // This ensures that new initial values are properly set
-    _controller.clear();
-    _registerFieldsWithController();
+    // Check if fields have actually changed (compare lengths and field names)
+    bool fieldsChanged = oldWidget.fields.length != widget.fields.length;
+    if (!fieldsChanged) {
+      for (int i = 0; i < widget.fields.length; i++) {
+        if (oldWidget.fields[i].name != widget.fields[i].name) {
+          fieldsChanged = true;
+          break;
+        }
+      }
+    }
+    
+    // Only clear and re-register if fields have actually changed
+    if (fieldsChanged) {
+      // Clear and re-register fields when widget updates
+      // This ensures that new initial values are properly set
+      _controller.clear();
+      _registerFieldsWithController();
+    }
   }
 
   @override
@@ -152,8 +170,13 @@ class _VooFormState extends State<VooForm> {
 
   void _handleControllerChange() {
     if (mounted) {
-      setState(() {});
       widget.onChanged?.call(_controller.values);
+      
+      // Increment rebuild key and rebuild when the controller notifies listeners
+      // This ensures that error states are properly reflected in the UI
+      setState(() {
+        _rebuildKey++;
+      });
     }
   }
 
@@ -244,6 +267,7 @@ class _VooFormState extends State<VooForm> {
       isReadOnly: widget.isReadOnly,
       isLoading: widget.isLoading,
       controller: _controller,
+      rebuildKey: _rebuildKey,
       child: _buildFormContent(),
     );
   }

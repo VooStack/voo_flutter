@@ -41,6 +41,9 @@ class VooBooleanField extends VooFieldBase<bool> {
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
+    
+    // Get the error for this field from the controller
+    final fieldError = formController?.getError(name) ?? error;
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(bool? value) {
@@ -105,7 +108,29 @@ class VooBooleanField extends VooFieldBase<bool> {
     // Apply height constraints to the input container
     container = applyInputHeightConstraints(container);
 
-    return buildFieldContainer(context, container);
+    // Build the error widget if there's an error
+    Widget fieldWithError = container;
+    if (fieldError != null && fieldError.isNotEmpty) {
+      fieldWithError = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          container,
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              fieldError,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return buildFieldContainer(context, fieldWithError);
   }
 
   @override

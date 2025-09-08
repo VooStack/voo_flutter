@@ -55,6 +55,13 @@ class VooDateField extends VooFieldBase<DateTime> {
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+    
+    // Get the error for this field from the controller
+    final fieldError = formController?.getError(name) ?? error;
+
     // If read-only, show VooReadOnlyField for better UX
     if (effectiveReadOnly) {
       final format = dateFormat ?? DateFormat.yMMMd();
@@ -65,11 +72,42 @@ class VooDateField extends VooFieldBase<DateTime> {
       
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
+      
+      // Build error widget if there's an error
+      if (fieldError != null && fieldError.isNotEmpty) {
+        readOnlyContent = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            readOnlyContent,
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                fieldError,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+      
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
       
       return buildFieldContainer(context, readOnlyContent);
+    }
+
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(DateTime? value) {
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(name, value);
+      }
+      // Call user's onChanged if provided
+      onChanged?.call(value);
     }
 
     Widget dateInput = VooDateInput(
@@ -80,7 +118,7 @@ class VooDateField extends VooFieldBase<DateTime> {
       firstDate: firstDate,
       lastDate: lastDate,
       dateFormat: dateFormat,
-      onChanged: onChanged,
+      onChanged: handleChanged,
       enabled: enabled,
       readOnly: readOnly,
       decoration: getInputDecoration(context),
@@ -89,16 +127,38 @@ class VooDateField extends VooFieldBase<DateTime> {
     // Apply height constraints to the input widget
     dateInput = applyInputHeightConstraints(dateInput);
 
-    // Compose with label, helper, error and actions using base class methods
-    return buildWithLabel(
+    // Build the error widget if there's an error
+    Widget fieldWithError = dateInput;
+    if (fieldError != null && fieldError.isNotEmpty) {
+      fieldWithError = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          dateInput,
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              fieldError,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Compose with label, helper and actions using base class methods
+    return buildFieldContainer(
       context,
-      buildWithHelper(
+      buildWithLabel(
         context,
-        buildWithError(
+        buildWithHelper(
           context,
           buildWithActions(
             context,
-            dateInput,
+            fieldWithError,
           ),
         ),
       ),

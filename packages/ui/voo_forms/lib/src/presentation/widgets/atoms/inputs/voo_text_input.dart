@@ -61,7 +61,7 @@ class VooTextInput extends StatelessWidget {
   Widget build(BuildContext context) => TextFormField(
       controller: controller,
       focusNode: focusNode,
-      initialValue: controller == null ? initialValue : null,
+      initialValue: controller != null ? null : initialValue,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       inputFormatters: inputFormatters,

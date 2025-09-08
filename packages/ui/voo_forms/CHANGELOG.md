@@ -1,3 +1,32 @@
+## [0.3.17]
+
+### Bug Fixes
+- **Validation Error Display**: Fixed critical issue where validation errors were not displaying on form fields
+  - Fields now properly show validation errors when `controller.validate()` is called
+  - Error messages correctly appear below fields with proper Material Design styling
+  - Errors update dynamically as users type (when configured with `onTyping` mode)
+  
+- **Form Reset**: Fixed bug where errors would persist after calling `controller.reset()`
+  - Form now properly clears all validation errors when reset
+  - Text controllers clear without triggering unwanted validation
+  - Added internal flags to prevent validation during reset operations
+  
+- **Controller State Management**: Fixed setState being called during build
+  - Resolved issue where initializing text controllers would trigger setState during widget build
+  - Added proper initialization tracking to prevent change notifications during setup
+  - Fixed VooFormScope rebuild mechanism for better performance
+  
+- **Error Display Modes**: Fixed validation respecting `errorDisplayMode` settings
+  - `onSubmit` mode now correctly waits until form submission to show errors
+  - `onTyping` mode shows errors immediately as user types
+  - Silent validation (`validate(silent: true)`) no longer updates UI
+
+### Internal Improvements
+- Added `rebuildKey` to VooFormScope for more efficient widget rebuilding
+- Improved error change detection to only rebuild when errors actually change
+- Added `_isResetting` and `_isInitializing` flags for better state management
+- Validation errors now properly propagate through InputDecoration's errorText
+
 ## [0.3.15]
 
 ### Critical Fix  

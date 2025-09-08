@@ -78,6 +78,9 @@ class VooTextField extends VooFieldBase<String> {
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     
+    // Get the error for this field from the controller
+    final fieldError = formController?.getError(name) ?? error;
+    
     // Use provided controller or get one from form controller if available
     TextEditingController? effectiveController = controller;
     if (effectiveController == null && formController != null) {
@@ -94,6 +97,11 @@ class VooTextField extends VooFieldBase<String> {
       onChanged?.call(value);
     }
 
+    // Get the base decoration and add error if present
+    final decoration = getInputDecoration(context).copyWith(
+      errorText: fieldError,
+    );
+    
     Widget textInput = VooTextInput(
       controller: effectiveController,
       focusNode: focusNode,
@@ -116,25 +124,22 @@ class VooTextField extends VooFieldBase<String> {
       enabled: enabled && !effectiveReadOnly,
       readOnly: effectiveReadOnly,
       autofocus: autofocus,
-      decoration: getInputDecoration(context),
+      decoration: decoration,
     );
 
     // Apply height constraints to the input widget
     textInput = applyInputHeightConstraints(textInput);
-
-    // Compose with label, helper, error and actions using base class methods
+    
+    // Compose with label, helper and actions using base class methods
     return buildFieldContainer(
       context,
       buildWithLabel(
         context,
         buildWithHelper(
           context,
-          buildWithError(
+          buildWithActions(
             context,
-            buildWithActions(
-              context,
-              textInput,
-            ),
+            textInput,
           ),
         ),
       ),

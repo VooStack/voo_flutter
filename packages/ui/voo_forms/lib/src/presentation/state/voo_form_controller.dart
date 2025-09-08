@@ -41,6 +41,8 @@ class VooFormController extends ChangeNotifier {
   bool _isDirty = false;
   bool _isSubmitting = false;
   bool _isSubmitted = false;
+  bool _isResetting = false;  // Track when we're resetting to avoid validation
+  bool _isInitializing = false;  // Track when we're initializing to avoid triggering changes
 
   VooFormController({
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
@@ -105,7 +107,9 @@ class VooFormController extends ChangeNotifier {
       final existingController = _textControllers[fieldName]!;
       // Update the text if initialText is provided and different
       if (initialText != null && existingController.text != initialText) {
+        _isInitializing = true;  // Prevent triggering changes during initialization
         existingController.text = initialText;
+        _isInitializing = false;
       }
       return existingController;
     }
@@ -196,6 +200,11 @@ class VooFormController extends ChangeNotifier {
   }
 
   void _handleFieldChange(String fieldName, dynamic value) {
+    // Skip handling changes during initialization or reset
+    if (_isInitializing || _isResetting) {
+      return;
+    }
+    
     if (_fieldValues[fieldName] != value) {
       // Only validate onChange if errorDisplayMode is onTyping
       final shouldValidate = errorDisplayMode == VooFormErrorDisplayMode.onTyping;
@@ -363,8 +372,10 @@ class VooFormController extends ChangeNotifier {
       return allValid;
     }
     
-    // Non-silent validation updates the UI
-    return validateAll();
+    // Non-silent validation updates the UI based on display mode
+    // Only force display if we're in onTyping mode or if the form has been submitted
+    final shouldForce = errorDisplayMode == VooFormErrorDisplayMode.onTyping || _hasSubmitted;
+    return validateAll(force: shouldForce);
   }
 
   /// Clear all errors
@@ -381,6 +392,7 @@ class VooFormController extends ChangeNotifier {
 
   /// Reset form to initial values
   void reset() {
+    _isResetting = true;  // Set flag to prevent validation during reset
     _fieldValues.clear();
     _fieldErrors.clear();
     _hasSubmitted = false;
@@ -393,6 +405,7 @@ class VooFormController extends ChangeNotifier {
       controller.clear();
     }
     
+    _isResetting = false;  // Clear flag after reset
     notifyListeners();
   }
 

@@ -77,6 +77,13 @@ class VooNumberField extends VooFieldBase<num> {
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+    
+    // Get the error for this field from the controller
+    final fieldError = formController?.getError(name) ?? error;
+
     // If read-only, show VooReadOnlyField for better UX
     if (effectiveReadOnly) {
       String displayValue = '';
@@ -96,11 +103,43 @@ class VooNumberField extends VooFieldBase<num> {
       
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
+      
+      // Build error widget if there's an error
+      if (fieldError != null && fieldError.isNotEmpty) {
+        readOnlyContent = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            readOnlyContent,
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                fieldError,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+      
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
       
       return buildFieldContainer(context, readOnlyContent);
+    }
+
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(String text) {
+      final numValue = num.tryParse(text);
+      // Update form controller if available
+      if (formController != null) {
+        formController.setValue(name, numValue);
+      }
+      // Call user's onChanged if provided
+      onChanged?.call(numValue);
     }
 
     final numberInput = VooNumberInput(
@@ -117,32 +156,48 @@ class VooNumberField extends VooFieldBase<num> {
           maxValue: max,
         ),
       ],
-      onChanged: (text) {
-        if (onChanged != null) {
-          final numValue = num.tryParse(text);
-          onChanged!(numValue);
-        }
-      },
+      onChanged: handleChanged,
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,
       enabled: enabled,
-      readOnly: false,
       autofocus: autofocus,
       decoration: getInputDecoration(context),
       signed: allowNegative,
       decimal: allowDecimals,
     );
 
-    // Compose with label, helper, error and actions using base class methods
-    return buildWithLabel(
+    // Build the error widget if there's an error
+    Widget fieldWithError = numberInput;
+    if (fieldError != null && fieldError.isNotEmpty) {
+      fieldWithError = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          numberInput,
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              fieldError,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Compose with label, helper and actions using base class methods
+    return buildFieldContainer(
       context,
-      buildWithHelper(
+      buildWithLabel(
         context,
-        buildWithError(
+        buildWithHelper(
           context,
           buildWithActions(
             context,
-            numberInput,
+            fieldWithError,
           ),
         ),
       ),
