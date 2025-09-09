@@ -127,9 +127,7 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
         widget.config.elevation ??
         1;
     
-    return AnimatedContainer(
-      duration: widget.config.animationDuration,
-      curve: widget.config.animationCurve,
+    return SizedBox(
       width: effectiveWidth,
       child: Material(
         color: effectiveBackgroundColor,

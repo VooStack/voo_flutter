@@ -4,7 +4,8 @@ import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/molecules/voo_navigation_badge.dart';
 
-/// Adaptive bottom navigation bar for mobile layouts
+/// Adaptive bottom navigation bar for mobile layouts with Material 3 design
+/// Features smooth animations, haptic feedback, and beautiful visual transitions
 class VooAdaptiveBottomNavigation extends StatefulWidget {
   /// Navigation configuration
   final VooNavigationConfig config;
@@ -58,6 +59,8 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     with TickerProviderStateMixin {
   late List<AnimationController> _itemAnimations;
   late List<Animation<double>> _scaleAnimations;
+  late List<Animation<double>> _rotationAnimations;
+  late AnimationController _rippleController;
   int? _previousIndex;
   
   @override
@@ -71,7 +74,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     _itemAnimations = List.generate(
       itemCount,
       (index) => AnimationController(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 300),
         vsync: this,
       ),
     );
@@ -79,12 +82,27 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     _scaleAnimations = _itemAnimations.map((controller) => 
       Tween<double>(
         begin: 1.0,
-        end: 1.1,
+        end: 1.15,
       ).animate(CurvedAnimation(
         parent: controller,
-        curve: Curves.easeInOut,
+        curve: Curves.easeOutBack,
       ),),
     ).toList();
+    
+    _rotationAnimations = _itemAnimations.map((controller) => 
+      Tween<double>(
+        begin: 0.0,
+        end: 0.05,
+      ).animate(CurvedAnimation(
+        parent: controller,
+        curve: Curves.elasticOut,
+      ),),
+    ).toList();
+    
+    _rippleController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
     
     // Animate the initially selected item
     final selectedIndex = _getSelectedIndex();
@@ -143,6 +161,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     for (final controller in _itemAnimations) {
       controller.dispose();
     }
+    _rippleController.dispose();
   }
   
   @override
@@ -193,19 +212,19 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
           : NavigationDestinationLabelBehavior.alwaysHide,
       indicatorColor: widget.config.indicatorColor,
       indicatorShape: widget.config.indicatorShape,
-      destinations: items.asMap().entries.map((entry) {
-        final index = entry.key;
-        final item = entry.value;
-        final isSelected = index == selectedIndex;
-        
-        return NavigationDestination(
-          icon: _buildIconWithBadge(item, isSelected, index),
-          selectedIcon: _buildIconWithBadge(item, isSelected, index, useSelected: true),
-          label: item.label,
-          tooltip: item.effectiveTooltip,
-          enabled: item.isEnabled,
-        );
-      }).toList(),
+        destinations: items.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          final isSelected = index == selectedIndex;
+          
+          return NavigationDestination(
+            icon: _buildAnimatedIcon(item, isSelected, index),
+            selectedIcon: _buildAnimatedIcon(item, isSelected, index, useSelected: true),
+            label: item.label,
+            tooltip: item.effectiveTooltip,
+            enabled: item.isEnabled,
+          );
+        }).toList(),
     );
   }
   
@@ -264,16 +283,31 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     return Container(
       height: widget.height ?? 80,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? 
-            widget.config.navigationBackgroundColor ??
-            colorScheme.surface,
-        boxShadow: widget.elevation != null ? [
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            (widget.backgroundColor ?? 
+                widget.config.navigationBackgroundColor ??
+                colorScheme.surface).withAlpha(245),
+            widget.backgroundColor ?? 
+                widget.config.navigationBackgroundColor ??
+                colorScheme.surface,
+          ],
+        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.1 * 255).round()),
-            blurRadius: widget.elevation!,
-            offset: Offset(0, -widget.elevation! / 2),
+            color: colorScheme.shadow.withAlpha(25),
+            blurRadius: 15,
+            offset: const Offset(0, -3),
           ),
-        ] : null,
+          BoxShadow(
+            color: colorScheme.primary.withAlpha(10),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -320,11 +354,16 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Animated icon
+            // Animated icon with rotation and scale
             AnimatedBuilder(
-              animation: _scaleAnimations[index],
+              animation: Listenable.merge([
+                _scaleAnimations[index],
+                _rotationAnimations[index],
+              ]),
               builder: (context, child) => Transform.scale(
-                  scale: _scaleAnimations[index].value,
+                scale: _scaleAnimations[index].value,
+                child: Transform.rotate(
+                  angle: _rotationAnimations[index].value,
                   child: _buildIconWithBadge(
                     item, 
                     isSelected, 
@@ -332,6 +371,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
                     useSelected: isSelected,
                   ),
                 ),
+              ),
             ),
             
             // Animated label
@@ -357,6 +397,19 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     );
   }
   
+  Widget _buildAnimatedIcon(
+    VooNavigationItem item,
+    bool isSelected,
+    int index, {
+    bool useSelected = false,
+  }) => AnimatedBuilder(
+      animation: _scaleAnimations[index],
+      builder: (context, child) => Transform.scale(
+        scale: _scaleAnimations[index].value,
+        child: _buildIconWithBadge(item, isSelected, index, useSelected: useSelected),
+      ),
+    );
+  
   Widget _buildIconWithBadge(
     VooNavigationItem item,
     bool isSelected,
@@ -369,11 +422,23 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     final unselectedColor = widget.config.unselectedItemColor ?? 
         colorScheme.onSurfaceVariant;
     
-    final Widget icon = item.leadingWidget ?? Icon(
-      useSelected ? item.effectiveSelectedIcon : item.icon,
-      color: isSelected 
-          ? (item.selectedIconColor ?? selectedColor)
-          : (item.iconColor ?? unselectedColor),
+    final Widget icon = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: animation,
+          child: child,
+        ),
+      ),
+      child: item.leadingWidget ?? Icon(
+        useSelected ? item.effectiveSelectedIcon : item.icon,
+        key: ValueKey('${item.id}_${useSelected}_$isSelected'),
+        color: isSelected 
+            ? (item.selectedIconColor ?? selectedColor)
+            : (item.iconColor ?? unselectedColor),
+        size: isSelected ? 28 : 24,
+      ),
     );
     
     if (item.hasBadge) {

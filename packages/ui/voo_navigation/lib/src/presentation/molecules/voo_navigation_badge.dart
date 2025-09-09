@@ -125,11 +125,11 @@ class VooNavigationBadge extends StatelessWidget {
       return TweenAnimationBuilder<double>(
         tween: Tween(begin: 0, end: 1),
         duration: config.badgeAnimationDuration,
-        curve: Curves.elasticOut,
+        curve: Curves.easeOutBack,
         builder: (context, value, child) => Transform.scale(
             scale: value,
             child: Opacity(
-              opacity: value,
+              opacity: value.clamp(0.0, 1.0),
               child: child,
             ),
           ),

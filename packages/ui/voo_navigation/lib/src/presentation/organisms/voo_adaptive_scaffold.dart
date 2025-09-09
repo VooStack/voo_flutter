@@ -194,23 +194,46 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
           )
         : widget.body;
     
-    // Build the scaffold based on navigation type
+    // Build the scaffold based on navigation type with animation
+    Widget scaffold;
     switch (navigationType) {
       case VooNavigationType.bottomNavigation:
-        return _buildMobileScaffold(context, body, effectiveBackgroundColor);
+        scaffold = KeyedSubtree(
+          key: const ValueKey('mobile_scaffold'),
+          child: _buildMobileScaffold(context, body, effectiveBackgroundColor),
+        );
+        break;
         
       case VooNavigationType.navigationRail:
       case VooNavigationType.extendedNavigationRail:
-        return _buildTabletScaffold(
-          context, 
-          body, 
-          effectiveBackgroundColor,
-          navigationType == VooNavigationType.extendedNavigationRail,
+        scaffold = KeyedSubtree(
+          key: ValueKey('tablet_scaffold_$navigationType'),
+          child: _buildTabletScaffold(
+            context, 
+            body, 
+            effectiveBackgroundColor,
+            navigationType == VooNavigationType.extendedNavigationRail,
+          ),
         );
+        break;
         
       case VooNavigationType.navigationDrawer:
-        return _buildDesktopScaffold(context, body, effectiveBackgroundColor);
+        scaffold = KeyedSubtree(
+          key: const ValueKey('desktop_scaffold'),
+          child: _buildDesktopScaffold(context, body, effectiveBackgroundColor),
+        );
+        break;
     }
+    
+    // Wrap in AnimatedSwitcher to handle transitions smoothly
+    return AnimatedSwitcher(
+      duration: widget.config.animationDuration,
+      child: scaffold,
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+    );
   }
   
   Widget _buildMobileScaffold(
@@ -269,11 +292,13 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
           : null,
       body: Row(
         children: [
-          VooAdaptiveNavigationRail(
-            config: widget.config,
-            selectedId: _selectedId,
-            onNavigationItemSelected: _onNavigationItemSelected,
-            extended: extended,
+          ClipRect(
+            child: VooAdaptiveNavigationRail(
+              config: widget.config,
+              selectedId: _selectedId,
+              onNavigationItemSelected: _onNavigationItemSelected,
+              extended: extended,
+            ),
           ),
           if (widget.config.showNavigationRailDivider)
             const VerticalDivider(width: 1, thickness: 1),
@@ -314,10 +339,12 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
           : null,
       body: Row(
         children: [
-          VooAdaptiveNavigationDrawer(
-            config: widget.config,
-            selectedId: _selectedId,
-            onNavigationItemSelected: _onNavigationItemSelected,
+          ClipRect(
+            child: VooAdaptiveNavigationDrawer(
+              config: widget.config,
+              selectedId: _selectedId,
+              onNavigationItemSelected: _onNavigationItemSelected,
+            ),
           ),
           Expanded(child: body),
         ],
