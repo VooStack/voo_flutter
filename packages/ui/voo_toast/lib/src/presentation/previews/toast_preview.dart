@@ -404,7 +404,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Info Toast with Actions and button
                 Row(
                   children: [
@@ -453,7 +453,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Progress Toast with button
                 Row(
                   children: [
@@ -491,7 +491,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Custom Toast with button
                 Row(
                   children: [
@@ -574,7 +574,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing * 2),
-                
+
                 // Developer-Friendly Toast Examples
                 const Text(
                   'Common Developer Use Cases',
@@ -584,7 +584,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Network Status Toasts
                 const Text(
                   'Network & Connection',
@@ -632,7 +632,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // File Operations
                 const Text(
                   'File & Data Operations',
@@ -683,7 +683,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Authentication
                 const Text(
                   'Authentication & Security',
@@ -729,7 +729,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // E-commerce & Transactions
                 const Text(
                   'E-commerce & Transactions',
@@ -776,7 +776,7 @@ class ToastPreviewCollection extends StatelessWidget {
                           ToastAction(
                             label: 'NOTIFY ME',
                             onPressed: () => VooToast.showSuccess(
-                              message: 'We\'ll notify you when available',
+                              message: "We'll notify you when available",
                               context: context,
                             ),
                           ),
@@ -788,7 +788,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Social & Notifications
                 const Text(
                   'Social & Notifications',
@@ -847,7 +847,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Permissions
                 const Text(
                   'Permissions & Access',
@@ -890,7 +890,7 @@ class ToastPreviewCollection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: spacing),
-                
+
                 // Achievements & Gamification
                 const Text(
                   'Achievements & Rewards',
@@ -962,7 +962,7 @@ class ToastPreviewCollection extends StatelessWidget {
                               Icon(Icons.stars, color: Colors.yellow),
                               SizedBox(width: 8),
                               Text(
-                                'Level Up! You\'re now Level 5',
+                                "Level Up! You're now Level 5",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],

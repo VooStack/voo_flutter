@@ -29,33 +29,33 @@ class _VooToastOverlayState extends State<VooToastOverlay> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
-        StreamBuilder<List<Toast>>(
-          stream: _controller.toastsStream,
-          initialData: const [],
-          builder: (context, snapshot) {
-            final toasts = snapshot.data ?? [];
-            if (toasts.isEmpty) return const SizedBox.shrink();
+  Widget build(BuildContext context) => Stack(
+        children: [
+          widget.child,
+          StreamBuilder<List<Toast>>(
+            stream: _controller.toastsStream,
+            initialData: const [],
+            builder: (context, snapshot) {
+              final toasts = snapshot.data ?? [];
+              if (toasts.isEmpty) return const SizedBox.shrink();
 
-            final groupedToasts = _groupToastsByPosition(toasts);
+              final groupedToasts = _groupToastsByPosition(toasts);
 
-            return Stack(
-              children: groupedToasts.entries.map((entry) {
-                return _buildToastGroup(
-                  context,
-                  entry.key,
-                  entry.value,
-                );
-              }).toList(),
-            );
-          },
-        ),
-      ],
-    );
-  }
+              return Stack(
+                children: groupedToasts.entries
+                    .map(
+                      (entry) => _buildToastGroup(
+                        context,
+                        entry.key,
+                        entry.value,
+                      ),
+                    )
+                    .toList(),
+              );
+            },
+          ),
+        ],
+      );
 
   Map<ToastPosition, List<Toast>> _groupToastsByPosition(List<Toast> toasts) {
     final grouped = <ToastPosition, List<Toast>>{};
@@ -68,10 +68,10 @@ class _VooToastOverlayState extends State<VooToastOverlay> {
 
   ToastPosition _resolvePosition(BuildContext context, ToastPosition position) {
     if (position != ToastPosition.auto) return position;
-    
+
     final width = MediaQuery.of(context).size.width;
     final config = _controller.config;
-    
+
     if (width < config.breakpointMobile) {
       return config.mobilePosition;
     } else if (width < config.breakpointTablet) {
@@ -85,34 +85,33 @@ class _VooToastOverlayState extends State<VooToastOverlay> {
     BuildContext context,
     ToastPosition position,
     List<Toast> toasts,
-  ) {
-    return Positioned(
-      top: _getTop(position),
-      bottom: _getBottom(position),
-      left: _getLeft(position),
-      right: _getRight(position),
-      child: Align(
-        alignment: _getAlignment(position),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: toasts.map((toast) {
-            return Padding(
-              padding: toast.margin ?? 
-                  _controller.config.defaultMargin ?? 
-                  const EdgeInsets.all(8),
-              child: AnimatedToast(
-                key: ValueKey(toast.id),
-                toast: toast,
-                animation: toast.animation,
-                animationDuration: _controller.config.animationDuration,
-                onDismiss: () => _controller.dismiss(toast.id),
-              ),
-            );
-          }).toList(),
+  ) =>
+      Positioned(
+        top: _getTop(position),
+        bottom: _getBottom(position),
+        left: _getLeft(position),
+        right: _getRight(position),
+        child: Align(
+          alignment: _getAlignment(position),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: toasts
+                .map(
+                  (toast) => Padding(
+                    padding: toast.margin ?? _controller.config.defaultMargin ?? const EdgeInsets.all(8),
+                    child: AnimatedToast(
+                      key: ValueKey(toast.id),
+                      toast: toast,
+                      animation: toast.animation,
+                      animationDuration: _controller.config.animationDuration,
+                      onDismiss: () => _controller.dismiss(toast.id),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   double? _getTop(ToastPosition position) {
     switch (position) {
@@ -241,18 +240,24 @@ class AnimatedToast extends StatefulWidget {
   State<AnimatedToast> createState() => _AnimatedToastState();
 }
 
-class _AnimatedToastState extends State<AnimatedToast> 
-    with SingleTickerProviderStateMixin {
+class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateMixin {
   late AnimationController _animationController;
+  late AnimationController _hoverController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _bounceAnimation;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       duration: widget.animationDuration,
+      vsync: this,
+    );
+
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
@@ -266,68 +271,108 @@ class _AnimatedToastState extends State<AnimatedToast>
       curve: Curves.easeInOut,
     );
 
+    _bounceAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.elasticOut,
+    );
+
     switch (widget.animation) {
       case ToastAnimation.slideInFromTop:
         _slideAnimation = Tween<Offset>(
-          begin: const Offset(0, -1),
+          begin: const Offset(0, -1.5),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.easeOutCubic,
-        ),);
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
         break;
       case ToastAnimation.slideInFromBottom:
         _slideAnimation = Tween<Offset>(
-          begin: const Offset(0, 1),
+          begin: const Offset(0, 1.5),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.easeOutCubic,
-        ),);
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
         break;
       case ToastAnimation.slideInFromLeft:
         _slideAnimation = Tween<Offset>(
-          begin: const Offset(-1, 0),
+          begin: const Offset(-1.5, 0),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.easeOutCubic,
-        ),);
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
         break;
       case ToastAnimation.slideInFromRight:
         _slideAnimation = Tween<Offset>(
-          begin: const Offset(1, 0),
+          begin: const Offset(1.5, 0),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.easeOutCubic,
-        ),);
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutBack,
+          ),
+        );
+        break;
+      case ToastAnimation.slideIn:
+        _slideAnimation = Tween<Offset>(
+          begin: const Offset(0, -0.2),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.fastOutSlowIn,
+          ),
+        );
         break;
       default:
         _slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
     }
 
     _scaleAnimation = widget.animation == ToastAnimation.scale
-        ? Tween<double>(begin: 0.5, end: 1.0).animate(
-            CurvedAnimation(
-              parent: _animationController,
-              curve: Curves.elasticOut,
-            ),
-          )
-        : const AlwaysStoppedAnimation(1.0);
+        ? Tween<double>(begin: 0.3, end: 1.0).animate(_bounceAnimation)
+        : widget.animation == ToastAnimation.bounce
+            ? Tween<double>(begin: 0.5, end: 1.0).animate(_bounceAnimation)
+            : const AlwaysStoppedAnimation(1.0);
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _hoverController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget child = VooToastCard(
-      toast: widget.toast,
-      onDismiss: widget.onDismiss,
+    final Widget child = MouseRegion(
+      onEnter: (_) {
+        _hoverController.forward();
+      },
+      onExit: (_) {
+        _hoverController.reverse();
+      },
+      child: AnimatedBuilder(
+        animation: _hoverController,
+        builder: (context, child) => Transform.scale(
+          scale: 1.0 + (_hoverController.value * 0.02),
+          child: Transform.translate(
+            offset: Offset(0, -_hoverController.value * 2),
+            child: child,
+          ),
+        ),
+        child: VooToastCard(
+          toast: widget.toast,
+          onDismiss: widget.onDismiss,
+        ),
+      ),
     );
 
     if (widget.animation == ToastAnimation.none) {
@@ -351,12 +396,31 @@ class _AnimatedToastState extends State<AnimatedToast>
       );
     }
 
+    if (widget.animation == ToastAnimation.bounce) {
+      return ScaleTransition(
+        scale: _scaleAnimation,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, -0.5),
+            end: Offset.zero,
+          ).animate(_bounceAnimation),
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: child,
+          ),
+        ),
+      );
+    }
+
     if (widget.animation == ToastAnimation.rotate) {
       return RotationTransition(
-        turns: _fadeAnimation,
+        turns: Tween<double>(begin: -0.1, end: 0).animate(_bounceAnimation),
         child: FadeTransition(
           opacity: _fadeAnimation,
-          child: child,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: child,
+          ),
         ),
       );
     }

@@ -55,34 +55,64 @@ class VooToastCard extends StatelessWidget {
     final theme = Theme.of(context);
     final backgroundColor = toast.backgroundColor ?? _getBackgroundColor(theme);
     final textColor = toast.textColor ?? _getTextColor(theme);
+    final gradient = toast.backgroundColor == null ? _getGradient() : null;
     
-    return Material(
-      color: backgroundColor,
-      borderRadius: toast.borderRadius ?? BorderRadius.circular(8),
-      elevation: toast.elevation ?? 4.0,
-      child: InkWell(
-        onTap: toast.onTap,
-        borderRadius: toast.borderRadius ?? BorderRadius.circular(8),
-        child: Container(
-          width: toast.width,
-          constraints: BoxConstraints(
-            maxWidth: toast.maxWidth ?? 400,
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: _getShadowColor().withValues(alpha: 0.25),
+            blurRadius: 30,
+            offset: const Offset(0, 12),
+            spreadRadius: -5,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: toast.padding ?? const EdgeInsets.all(16),
-                child: Row(
+          BoxShadow(
+            color: _getShadowColor().withValues(alpha: 0.15),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+            spreadRadius: -3,
+          ),
+        ],
+      ),
+      child: Material(
+        color: gradient != null ? Colors.transparent : backgroundColor,
+        borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
+        elevation: 0,
+        child: InkWell(
+          onTap: toast.onTap,
+          borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
+          child: Container(
+            width: toast.width,
+            constraints: BoxConstraints(
+              maxWidth: toast.maxWidth ?? 420,
+            ),
+            decoration: BoxDecoration(
+              gradient: gradient,
+              color: gradient == null ? backgroundColor : null,
+              borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: toast.padding ?? const EdgeInsets.all(16),
+                  child: Row(
                   children: [
                     if (toast.icon != null || toast.type != ToastType.custom) ...[
-                      VooToastIcon(
-                        type: toast.type,
-                        icon: toast.icon,
-                        size: iconSize,
-                        color: textColor,
+                      _buildIconContainer(
+                        VooToastIcon(
+                          type: toast.type,
+                          icon: toast.icon,
+                          size: iconSize,
+                          color: textColor,
+                        ),
+                        textColor,
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 14),
                     ],
                     Expanded(
                       child: Column(
@@ -140,28 +170,106 @@ class VooToastCard extends StatelessWidget {
                 ),
               ),
               if (toast.showProgressBar && toast.duration != Duration.zero)
-                VooToastProgressBar(
-                  duration: toast.duration,
-                  height: progressBarHeight,
-                  color: textColor.withValues(alpha: 0.5),
-                ),
+                _buildEnhancedProgressBar(textColor),
             ],
           ),
         ),
       ),
+    ),
+  );
+  }
+
+  Widget _buildIconContainer(Widget icon, Color color) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Center(child: icon),
     );
+  }
+
+  Widget _buildEnhancedProgressBar(Color color) {
+    return Container(
+      height: progressBarHeight,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            color.withValues(alpha: 0.1),
+            color.withValues(alpha: 0.3),
+          ],
+        ),
+      ),
+      child: VooToastProgressBar(
+        duration: toast.duration,
+        height: progressBarHeight,
+        color: color.withValues(alpha: 0.8),
+      ),
+    );
+  }
+
+  LinearGradient? _getGradient() {
+    switch (toast.type) {
+      case ToastType.success:
+        return const LinearGradient(
+          colors: [Color(0xFF10B981), Color(0xFF059669)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case ToastType.error:
+        return const LinearGradient(
+          colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case ToastType.warning:
+        return const LinearGradient(
+          colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case ToastType.info:
+        return const LinearGradient(
+          colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case ToastType.custom:
+        return null;
+    }
+  }
+
+  Color _getShadowColor() {
+    switch (toast.type) {
+      case ToastType.success:
+        return const Color(0xFF10B981);
+      case ToastType.error:
+        return const Color(0xFFEF4444);
+      case ToastType.warning:
+        return const Color(0xFFF59E0B);
+      case ToastType.info:
+        return const Color(0xFF3B82F6);
+      case ToastType.custom:
+        return Colors.black;
+    }
   }
 
   Color _getBackgroundColor(ThemeData theme) {
     switch (toast.type) {
       case ToastType.success:
-        return Colors.green.shade100;
+        return const Color(0xFF10B981);
       case ToastType.error:
-        return Colors.red.shade100;
+        return const Color(0xFFEF4444);
       case ToastType.warning:
-        return Colors.orange.shade100;
+        return const Color(0xFFF59E0B);
       case ToastType.info:
-        return Colors.blue.shade100;
+        return const Color(0xFF3B82F6);
       case ToastType.custom:
         return theme.colorScheme.surfaceContainer;
     }
@@ -170,13 +278,10 @@ class VooToastCard extends StatelessWidget {
   Color _getTextColor(ThemeData theme) {
     switch (toast.type) {
       case ToastType.success:
-        return Colors.green.shade900;
       case ToastType.error:
-        return Colors.red.shade900;
       case ToastType.warning:
-        return Colors.orange.shade900;
       case ToastType.info:
-        return Colors.blue.shade900;
+        return Colors.white;
       case ToastType.custom:
         return theme.colorScheme.onSurface;
     }
