@@ -202,8 +202,11 @@ class VooFormController extends ChangeNotifier {
     }
     
     if (_fieldValues[fieldName] != value) {
-      // Only validate onChange if errorDisplayMode is onTyping
-      final shouldValidate = errorDisplayMode == VooFormErrorDisplayMode.onTyping;
+      // Validate on change if:
+      // 1. validationMode is onChange (explicit validation on change)
+      // 2. OR errorDisplayMode is onTyping (need to clear errors as user types)
+      final shouldValidate = validationMode == FormValidationMode.onChange ||
+                           errorDisplayMode == VooFormErrorDisplayMode.onTyping;
       setValue(fieldName, value, validate: shouldValidate);
       
       // Call field's onChange callback

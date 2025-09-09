@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 void main() {
@@ -141,13 +142,16 @@ void main() {
             body: VooTextField(
               name: 'test',
               readOnly: true,
+              initialValue: 'Read Only Value',
             ),
           ),
         ),
       );
 
-      final textField = tester.widget<TextField>(find.byType(TextField));
-      expect(textField.readOnly, true);
+      // Should show VooReadOnlyField instead of TextField when readOnly is true
+      expect(find.byType(VooReadOnlyField), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+      expect(find.text('Read Only Value'), findsOneWidget);
     });
 
     testWidgets('displays prefix icon', (WidgetTester tester) async {

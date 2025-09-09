@@ -128,9 +128,6 @@ class VooCurrencyField extends VooFieldBase<double> {
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
-    // Get the error for this field using the base class method
-    final fieldError = getFieldError(context);
 
     // If read-only, show formatted currency value
     if (effectiveReadOnly) {
@@ -146,12 +143,7 @@ class VooCurrencyField extends VooFieldBase<double> {
       
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
-      
-      // Build with error if present
-      if (fieldError != null && fieldError.isNotEmpty) {
-        readOnlyContent = buildWithError(context, readOnlyContent);
-      }
-      
+      readOnlyContent = buildWithError(context, readOnlyContent);
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
       
@@ -204,23 +196,20 @@ class VooCurrencyField extends VooFieldBase<double> {
         suffixIcon: suffixIcon,
       ),
     );
-
-    // Build with error if present
-    Widget fieldWithError = currencyInput;
-    if (fieldError != null && fieldError.isNotEmpty) {
-      fieldWithError = buildWithError(context, currencyInput);
-    }
     
-    // Compose with label, helper and actions using base class methods
+    // Compose with label, helper, error and actions using base class methods
     return buildFieldContainer(
       context,
       buildWithLabel(
         context,
-        buildWithHelper(
+        buildWithError(
           context,
-          buildWithActions(
+          buildWithHelper(
             context,
-            fieldWithError,
+            buildWithActions(
+              context,
+              currencyInput,
+            ),
           ),
         ),
       ),

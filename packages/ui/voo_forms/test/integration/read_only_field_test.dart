@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 void main() {
@@ -45,17 +46,11 @@ void main() {
         ),
       );
 
-      // Should show TextFormField with the value but in read-only mode
+      // Should show VooReadOnlyField with the value
       expect(find.text('Test Value'), findsOneWidget);
-      // Should show TextFormField
-      expect(find.byType(TextFormField), findsOneWidget);
-      
-      // Verify it's actually read-only by trying to change it
-      await tester.enterText(find.byType(TextFormField), 'New Value');
-      await tester.pump();
-      // Value should not change
-      expect(find.text('Test Value'), findsOneWidget);
-      expect(find.text('New Value'), findsNothing);
+      // Should show VooReadOnlyField instead of TextFormField
+      expect(find.byType(VooReadOnlyField), findsOneWidget);
+      expect(find.byType(TextFormField), findsNothing);
     });
 
     testWidgets('VooBooleanField respects readOnly property', (WidgetTester tester) async {
@@ -187,9 +182,9 @@ void main() {
       // Both fields should be present but in read-only mode
       expect(find.text('Test'), findsOneWidget);
       expect(find.text('A'), findsOneWidget);
-      // Input fields should be shown
-      expect(find.byType(TextFormField), findsOneWidget);
-      expect(find.byType(InputDecorator), findsNWidgets(2)); // One for text field, one for dropdown
+      // Should show VooReadOnlyField for text field, and dropdown should be disabled
+      expect(find.byType(VooReadOnlyField), findsOneWidget); // Text field becomes VooReadOnlyField
+      expect(find.byType(InputDecorator), findsOneWidget); // One for dropdown
     });
   });
 }

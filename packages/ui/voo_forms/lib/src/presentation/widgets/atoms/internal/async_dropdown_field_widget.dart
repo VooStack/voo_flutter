@@ -43,9 +43,6 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
-    // Get the error for this field using the base class method
-    final fieldError = widget.field.getFieldError(context);
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(T? value) {
@@ -80,12 +77,7 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
 
     // Apply standard field building pattern
     dropdownContent = widget.field.buildWithHelper(context, dropdownContent);
-    
-    // Build with error if present
-    if (fieldError != null && fieldError.isNotEmpty) {
-      dropdownContent = widget.field.buildWithError(context, dropdownContent);
-    }
-    
+    dropdownContent = widget.field.buildWithError(context, dropdownContent);
     dropdownContent = widget.field.buildWithLabel(context, dropdownContent);
     dropdownContent = widget.field.buildWithActions(context, dropdownContent);
 

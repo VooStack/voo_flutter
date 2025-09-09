@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 void main() {
@@ -53,17 +54,15 @@ void main() {
 
       await tester.pump();
 
-      // Field should now be read-only
-      final readOnlyTextField = find.byType(TextFormField);
-      expect(readOnlyTextField, findsOneWidget);
+      // Field should now be read-only and show VooReadOnlyField
+      final readOnlyField = find.byType(VooReadOnlyField);
+      expect(readOnlyField, findsOneWidget);
       
-      // Try to enter text in the read-only field
-      await tester.enterText(readOnlyTextField, 'Should Not Change');
-      await tester.pump();
+      // Should not find a TextFormField since it's read-only
+      expect(find.byType(TextFormField), findsNothing);
       
-      // The field should still display the initial value, not the entered text
+      // The field should display the initial value
       expect(find.text('Initial Value'), findsOneWidget);
-      expect(find.text('Should Not Change'), findsNothing);
     });
 
     testWidgets('field-level readOnly overrides are respected when form is not read-only', (WidgetTester tester) async {
@@ -89,23 +88,16 @@ void main() {
         ),
       );
 
-      final textFields = find.byType(TextFormField);
-      expect(textFields, findsNWidgets(2));
-
-      // First field should be editable
-      await tester.enterText(textFields.at(0), 'Can Edit');
+      // First field should be editable (TextFormField)
+      final editableField = find.byType(TextFormField);
+      expect(editableField, findsOneWidget);
+      
+      await tester.enterText(editableField, 'Can Edit');
       await tester.pump();
       expect(find.text('Can Edit'), findsOneWidget);
 
-      // Second field should be read-only
-      // Try to enter text - it shouldn't change the field value
-      await tester.enterText(textFields.at(1), 'Cannot Edit');
-      await tester.pump();
-      
-      // The text should not appear (field is read-only)
-      // Note: Due to Flutter's TextFormField behavior with readOnly,
-      // the text might appear visually but won't be in the field's value
-      // We can't reliably test this without access to the controller
+      // Second field should be read-only (VooReadOnlyField)
+      expect(find.byType(VooReadOnlyField), findsOneWidget);
     });
 
     testWidgets('form-level readOnly always takes precedence', (WidgetTester tester) async {
@@ -131,19 +123,9 @@ void main() {
         ),
       );
 
-      final textFields = find.byType(TextFormField);
-      expect(textFields, findsNWidgets(2));
-
-      // Both fields should be read-only because form is read-only
-      // Try to edit both fields
-      await tester.enterText(textFields.at(0), 'Should Not Change 1');
-      await tester.pump();
-      await tester.enterText(textFields.at(1), 'Should Not Change 2');
-      await tester.pump();
-      
-      // Neither field should have changed
-      expect(find.text('Should Not Change 1'), findsNothing);
-      expect(find.text('Should Not Change 2'), findsNothing);
+      // Both fields should be VooReadOnlyField because form is read-only
+      expect(find.byType(VooReadOnlyField), findsNWidgets(2));
+      expect(find.byType(TextFormField), findsNothing);
     });
 
     testWidgets('VooBooleanField respects VooFormScope', (WidgetTester tester) async {

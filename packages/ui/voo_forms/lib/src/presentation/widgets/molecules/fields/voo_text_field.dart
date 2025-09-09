@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_text_input.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Text field molecule that composes atoms to create a complete text input field
@@ -78,8 +79,23 @@ class VooTextField extends VooFieldBase<String> {
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
     
-    // Get the error for this field using the base class method
-    final fieldError = getFieldError(context);
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      final String displayValue = initialValue ?? '';
+      
+      Widget readOnlyContent = VooReadOnlyField(
+        value: displayValue,
+        icon: prefixIcon ?? suffixIcon,
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = buildWithHelper(context, readOnlyContent);
+      readOnlyContent = buildWithError(context, readOnlyContent);
+      readOnlyContent = buildWithLabel(context, readOnlyContent);
+      readOnlyContent = buildWithActions(context, readOnlyContent);
+      
+      return buildFieldContainer(context, readOnlyContent);
+    }
     
     // Use provided controller or get one from form controller if available
     TextEditingController? effectiveController = controller;
@@ -96,6 +112,7 @@ class VooTextField extends VooFieldBase<String> {
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String? value) {
       // Update form controller if available (for non-controller based updates)
+      // If there's an effectiveController, it already has a listener that updates the form controller
       if (formController != null && effectiveController == null) {
         formController.setValue(name, value, validate: true);
       }
@@ -131,21 +148,19 @@ class VooTextField extends VooFieldBase<String> {
     // Apply height constraints to the input widget
     textInput = applyInputHeightConstraints(textInput);
     
-    // Build with error if present
-    if (fieldError != null && fieldError.isNotEmpty) {
-      textInput = buildWithError(context, textInput);
-    }
-    
-    // Compose with label, helper and actions using base class methods
+    // Compose with label, helper, error and actions using base class methods
     return buildFieldContainer(
       context,
       buildWithLabel(
         context,
-        buildWithHelper(
+        buildWithError(
           context,
-          buildWithActions(
+          buildWithHelper(
             context,
-            textInput,
+            buildWithActions(
+              context,
+              textInput,
+            ),
           ),
         ),
       ),
