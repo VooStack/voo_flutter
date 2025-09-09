@@ -95,10 +95,9 @@ class VooTextField extends VooFieldBase<String> {
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String? value) {
-      // Update form controller if available
-      if (formController != null) {
-        // Don't validate on typing to prevent focus loss
-        formController.setValue(name, value, validate: false);
+      // Update form controller if available (for non-controller based updates)
+      if (formController != null && effectiveController == null) {
+        formController.setValue(name, value, validate: true);
       }
       // Call user's onChanged if provided
       onChanged?.call(value);

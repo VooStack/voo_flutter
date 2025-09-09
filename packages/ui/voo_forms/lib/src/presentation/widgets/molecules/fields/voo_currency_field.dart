@@ -186,9 +186,9 @@ class VooCurrencyField extends VooFieldBase<double> {
         // Parse the formatted currency value back to double
         final value = CurrencyFormatter.parse(text, symbol: currencySymbol);
         
-        // Update form controller if available - don't validate on typing to prevent focus issues
+        // Update form controller if available
         if (formController != null) {
-          formController.setValue(name, value, validate: false);
+          formController.setValue(name, value, validate: true);
         }
         
         // Call user's onChanged if provided

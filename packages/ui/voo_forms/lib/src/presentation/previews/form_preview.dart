@@ -69,7 +69,6 @@ class _FormPreviewState extends State<FormPreview> {
                     name: 'salary',
                     label: 'Annual Salary (USD)',
                     initialValue: 75000.00,
-                    currencySymbol: '\$',
                   ),
                   VooCurrencyField(
                     name: 'bonus',
@@ -96,6 +95,11 @@ class _FormPreviewState extends State<FormPreview> {
                 name: 'file',
                 label: 'Upload File',
                 initialValue: VooFile(url: 'https://www.cte.iup.edu/cte/Resources/PDF_TestPage.pdf'),
+              ),
+              const VooMultiSelectField(
+                name: 'multi_select',
+                options: ['Option 1', 'Option 2', 'Option 3'],
+                initialValue: ['Option 1', 'Option 3'],
               ),
             ],
           ),

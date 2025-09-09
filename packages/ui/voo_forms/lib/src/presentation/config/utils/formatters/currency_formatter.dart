@@ -100,8 +100,15 @@ class CurrencyFormatter extends TextInputFormatter {
       return TextEditingValue.empty;
     }
     
-    // Check if user is deleting
-    if (newDigits.length < oldDigits.length) {
+    // Check if this is a complete replacement (e.g., from tests or paste)
+    // If the new text doesn't start with the old text pattern, treat it as a complete replacement
+    final isCompleteReplacement = oldValue.text.isNotEmpty && 
+        !newValue.text.contains(oldValue.text.replaceAll(RegExp(r'[\$,\.\s]'), ''));
+    
+    if (isCompleteReplacement) {
+      // For complete replacements, just parse the new digits
+      _rawValue = int.tryParse(newDigits) ?? 0;
+    } else if (newDigits.length < oldDigits.length) {
       // User deleted a digit - remove from the right
       _rawValue = _rawValue ~/ 10;
       if (_rawValue == 0 && newDigits.isEmpty) {
@@ -126,9 +133,11 @@ class CurrencyFormatter extends TextInputFormatter {
       }
       
       if (addedDigit.isNotEmpty) {
-        final digit = int.tryParse(addedDigit[0]) ?? 0;
-        // Add the new digit to the right (multiply by 10 and add)
-        _rawValue = _rawValue * 10 + digit;
+        // Handle multiple digits being added at once
+        for (int i = 0; i < addedDigit.length; i++) {
+          final digit = int.tryParse(addedDigit[i]) ?? 0;
+          _rawValue = _rawValue * 10 + digit;
+        }
       }
     } else {
       // Same length - might be a replacement or the raw value from initial parse
@@ -195,15 +204,26 @@ class CurrencyFormatter extends TextInputFormatter {
     // Remove common currency symbols
     cleaned = cleaned.replaceAll(RegExp(r'[\$€£¥₹¢]'), '');
     
-    // Remove thousand separators but keep decimal points
-    cleaned = cleaned.replaceAll(',', '');
+    // Trim whitespace and non-breaking spaces
+    cleaned = cleaned.replaceAll('\u00A0', ' ').trim();
     
-    // Trim whitespace
-    cleaned = cleaned.trim();
+    // Detect format: if there's a comma after a dot, it's European format (1.234,56)
+    // Otherwise it's US format (1,234.56)
+    bool isEuropeanFormat = false;
+    int lastDotIndex = cleaned.lastIndexOf('.');
+    int lastCommaIndex = cleaned.lastIndexOf(',');
     
-    // Handle different decimal separators (some locales use comma)
-    if (cleaned.contains(',') && !cleaned.contains('.')) {
-      cleaned = cleaned.replaceAll(',', '.');
+    if (lastCommaIndex > lastDotIndex) {
+      // European format: dot is thousand separator, comma is decimal
+      isEuropeanFormat = true;
+    }
+    
+    if (isEuropeanFormat) {
+      // Remove dots (thousand separators) and replace comma with dot (decimal)
+      cleaned = cleaned.replaceAll('.', '').replaceAll(',', '.');
+    } else {
+      // US format: remove commas (thousand separators)
+      cleaned = cleaned.replaceAll(',', '');
     }
     
     return double.tryParse(cleaned);

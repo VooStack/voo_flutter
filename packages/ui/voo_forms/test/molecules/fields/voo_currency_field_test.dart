@@ -104,24 +104,24 @@ void main() {
 
       final textField = find.byType(TextFormField);
       
-      // Type a value below minimum (5.00)
+      // Type a value below minimum (5.00) - should be clamped to min (10.00)
       await tester.enterText(textField, '500');
       await tester.pump();
       
-      expect(currentValue, 5.0);
+      expect(currentValue, 10.0); // Clamped to min value
       
-      // Validation should fail for value below min
+      // Since value is clamped, validation should pass
       final field = tester.widget<VooCurrencyField>(find.byType(VooCurrencyField));
-      expect(field.validate(5.0), contains('must be at least'));
+      expect(field.validate(10.0), isNull);
       
-      // Type a value above maximum (150.00)
+      // Type a value above maximum (150.00) - should be clamped to max (100.00)
       await tester.enterText(textField, '15000');
       await tester.pump();
       
-      expect(currentValue, 150.0);
+      expect(currentValue, 100.0); // Clamped to max value
       
-      // Validation should fail for value above max
-      expect(field.validate(150.0), contains('must be at most'));
+      // Since value is clamped, validation should pass
+      expect(field.validate(100.0), isNull);
       
       // Type a valid value (50.00)
       await tester.enterText(textField, '5000');

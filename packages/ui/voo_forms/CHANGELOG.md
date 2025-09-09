@@ -1,3 +1,48 @@
+## [0.3.25]
+
+### Bug Fixes
+- **Multi-Select Dropdown Click Outside**: Fixed issue where clicking outside the multi-select dropdown didn't close it
+  - Improved overlay barrier implementation using Positioned.fill for better coverage
+  - Added proper GestureDetector on dropdown to prevent it from closing when clicking on the dropdown itself
+  - Ensures consistent behavior with other dropdown components
+
+## [0.3.24]
+
+### UI Improvements
+- **Multi-Select Field UI Fix**: Resolved duplicate clear button issue in VooMultiSelectField
+  - Removed redundant clear button that appeared next to the dropdown arrow
+  - Clear functionality remains available via individual chip delete buttons and "Clear All" menu option
+  - Fixed layout issues with proper suffixIcon implementation
+  - Improved visual consistency with other form fields
+
+## [0.3.23]
+
+### Validation Improvements
+- **Real-time validation for all field types**: Fixed validation not triggering when values change in text-based fields
+  - VooTextField now validates on every character typed to clear errors immediately
+  - VooCurrencyField properly validates when currency values are entered
+  - VooNumberField and all numeric fields validate in real-time
+  - Provides immediate feedback when validation errors are resolved
+  
+### Test Coverage
+- Added comprehensive focus retention tests for all field types
+- Verified that all 10+ field types maintain keyboard focus during validation
+- Added validation clearing tests for text and currency fields
+- Ensured seamless multi-field navigation without keyboard dismissal
+
+## [0.3.22]
+
+### Critical Bug Fix - Focus Retention
+- **Root Cause Fixed**: Resolved the core issue causing keyboard dismissal after typing one character in fields with validation errors
+  - VooFormController now only triggers UI rebuilds when error state actually changes
+  - Previously, validation would always call notifyListeners() even when error state remained the same
+  - This unnecessary rebuild was causing focus loss and keyboard dismissal
+  
+### Internal Improvements  
+- Optimized validateField method to check if error has actually changed before notifying listeners
+- Reduced unnecessary UI rebuilds during validation
+- Improved performance by preventing redundant state notifications
+
 ## [0.3.21]
 
 ### Critical Bug Fix

@@ -250,12 +250,18 @@ class VooFormController extends ChangeNotifier {
     }
     
     if (shouldShowError) {
+      // Only notify listeners if the error state actually changed
+      final previousError = _fieldErrors[fieldName];
       if (fieldError != null) {
-        _fieldErrors[fieldName] = fieldError;
+        if (previousError != fieldError) {
+          _fieldErrors[fieldName] = fieldError;
+          notifyListeners();
+        }
       } else {
-        _fieldErrors.remove(fieldName);
+        if (_fieldErrors.remove(fieldName) != null) {
+          notifyListeners();
+        }
       }
-      notifyListeners();
     }
     
     return fieldError == null;

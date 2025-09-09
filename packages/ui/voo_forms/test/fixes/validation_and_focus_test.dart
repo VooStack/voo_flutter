@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/voo_forms.dart';
+import '../helpers/test_form_wrapper.dart';
 
 void main() {
   group('Dropdown Validation Fix', () {
@@ -15,10 +16,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: TestFormWrapper(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
               child: VooDropdownField<String>(
                 name: 'dropdown',
                 label: 'Jurisdiction',
@@ -31,14 +30,14 @@ void main() {
       );
       
       // Trigger validation to show error
-      controller.validateField('dropdown');
+      controller.validateField('dropdown', force: true);
       await tester.pump();
       
       // Verify error is shown
-      expect(find.text('dropdown is required'), findsOneWidget);
+      expect(find.text('This field is required'), findsOneWidget);
       
       // Open dropdown
-      await tester.tap(find.byType(VooDropdownField));
+      await tester.tap(find.byType(VooDropdownField<String>));
       await tester.pumpAndSettle();
       
       // Select an option
@@ -46,7 +45,7 @@ void main() {
       await tester.pumpAndSettle();
       
       // Verify error is cleared
-      expect(find.text('dropdown is required'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
     
     testWidgets('async dropdown selection clears validation error', (tester) async {
@@ -60,10 +59,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: TestFormWrapper(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
               child: VooAsyncDropdownField<String>(
                 name: 'asyncDropdown',
                 label: 'Async Dropdown',
@@ -79,14 +76,14 @@ void main() {
       );
       
       // Trigger validation to show error
-      controller.validateField('asyncDropdown');
+      controller.validateField('asyncDropdown', force: true);
       await tester.pump();
       
       // Verify error is shown
-      expect(find.text('asyncDropdown is required'), findsOneWidget);
+      expect(find.text('This field is required'), findsOneWidget);
       
       // Open dropdown
-      await tester.tap(find.byType(VooAsyncDropdownField));
+      await tester.tap(find.byType(VooAsyncDropdownField<String>));
       await tester.pumpAndSettle();
       
       // Wait for options to load
@@ -97,7 +94,7 @@ void main() {
       await tester.pumpAndSettle();
       
       // Verify error is cleared
-      expect(find.text('asyncDropdown is required'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
   });
   
@@ -115,10 +112,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: TestFormWrapper(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
               child: const VooTextField(
                 name: 'textField',
                 label: 'Text Field',
@@ -129,11 +124,11 @@ void main() {
       );
       
       // Trigger validation to show error
-      controller.validateField('textField');
+      controller.validateField('textField', force: true);
       await tester.pump();
       
       // Verify error is shown
-      expect(find.text('textField is required'), findsOneWidget);
+      expect(find.text('This field is required'), findsOneWidget);
       
       // Focus the field
       await tester.tap(find.byType(TextFormField));
@@ -152,7 +147,7 @@ void main() {
       expect(find.text('ab'), findsOneWidget);
       
       // Verify error is cleared
-      expect(find.text('textField is required'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
     
     testWidgets('currency field maintains focus when error clears', (tester) async {
@@ -168,10 +163,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: TestFormWrapper(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
               child: const VooCurrencyField(
                 name: 'currencyField',
                 label: 'Amount',
@@ -182,11 +175,11 @@ void main() {
       );
       
       // Trigger validation to show error
-      controller.validateField('currencyField');
+      controller.validateField('currencyField', force: true);
       await tester.pump();
       
       // Verify error is shown
-      expect(find.text('currencyField is required'), findsOneWidget);
+      expect(find.text('This field is required'), findsOneWidget);
       
       // Focus the field
       await tester.tap(find.byType(TextFormField));
@@ -205,7 +198,7 @@ void main() {
       expect(find.text('ab'), findsOneWidget);
       
       // Verify error is cleared
-      expect(find.text('currencyField is required'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
     
     testWidgets('number field maintains focus when error clears', (tester) async {
@@ -221,10 +214,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: TestFormWrapper(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
               child: const VooNumberField(
                 name: 'numberField',
                 label: 'Number',
@@ -235,11 +226,11 @@ void main() {
       );
       
       // Trigger validation to show error
-      controller.validateField('numberField');
+      controller.validateField('numberField', force: true);
       await tester.pump();
       
       // Verify error is shown
-      expect(find.text('numberField is required'), findsOneWidget);
+      expect(find.text('This field is required'), findsOneWidget);
       
       // Focus the field
       await tester.tap(find.byType(TextFormField));
@@ -258,7 +249,7 @@ void main() {
       expect(find.text('ab'), findsOneWidget);
       
       // Verify error is cleared
-      expect(find.text('numberField is required'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
     
     testWidgets('date field selection clears validation error', (tester) async {
@@ -272,10 +263,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: TestFormWrapper(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
               child: const VooDateField(
                 name: 'dateField',
                 label: 'Date',
@@ -286,11 +275,11 @@ void main() {
       );
       
       // Trigger validation to show error
-      controller.validateField('dateField');
+      controller.validateField('dateField', force: true);
       await tester.pump();
       
       // Verify error is shown
-      expect(find.text('dateField is required'), findsOneWidget);
+      expect(find.text('This field is required'), findsOneWidget);
       
       // Tap the date field to open picker
       await tester.tap(find.byType(TextFormField));
@@ -301,7 +290,7 @@ void main() {
       await tester.pumpAndSettle();
       
       // Verify error is cleared
-      expect(find.text('dateField is required'), findsNothing);
+      expect(find.text('This field is required'), findsNothing);
     });
   });
 }

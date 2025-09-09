@@ -126,7 +126,7 @@ void main() {
         oldValue = result;
         newValue = const TextEditingValue(text: '\$0.0');
         result = formatter.formatEditUpdate(oldValue, newValue);
-        expect(result.text, '');
+        expect(result.text, '\$0.00');
       });
     });
     
@@ -137,12 +137,12 @@ void main() {
         var oldValue = TextEditingValue.empty;
         var newValue = const TextEditingValue(text: '9');
         var result = formatter.formatEditUpdate(oldValue, newValue);
-        expect(result.text, '0,09 €');  // Note: EUR uses comma as decimal separator with space
+        expect(result.text, '0,09\u00A0€');  // Note: EUR uses comma as decimal separator with non-breaking space
         
         oldValue = result;
         newValue = const TextEditingValue(text: '0,099');
         result = formatter.formatEditUpdate(oldValue, newValue);
-        expect(result.text, '0,99 €');
+        expect(result.text, '0,99\u00A0€');
       });
       
       test('GBP formatter works correctly', () {

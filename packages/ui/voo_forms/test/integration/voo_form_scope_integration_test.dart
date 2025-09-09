@@ -53,15 +53,15 @@ void main() {
 
       await tester.pump();
 
-      // Field should now be read-only - try entering text
+      // Field should now be read-only
       final readOnlyTextField = find.byType(TextFormField);
       expect(readOnlyTextField, findsOneWidget);
       
-      // Try to change the text - it should not change
+      // Try to enter text in the read-only field
       await tester.enterText(readOnlyTextField, 'Should Not Change');
       await tester.pump();
       
-      // Text should still be the initial value
+      // The field should still display the initial value, not the entered text
       expect(find.text('Initial Value'), findsOneWidget);
       expect(find.text('Should Not Change'), findsNothing);
     });
