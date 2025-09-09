@@ -130,10 +130,6 @@ class VooCurrencyField extends VooFieldBase<double> {
     if (isHidden) return const SizedBox.shrink();
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
-    
-    // Get the form controller from scope if available
-    final formScope = VooFormScope.of(context);
-    final formController = formScope?.controller;
 
     // If read-only, show formatted currency value
     if (effectiveReadOnly) {
@@ -156,69 +152,9 @@ class VooCurrencyField extends VooFieldBase<double> {
       return buildFieldContainer(context, readOnlyContent);
     }
 
-    // Create controller if not provided
-    final TextEditingController effectiveController = controller ?? TextEditingController();
-    
-    // Set initial value if provided
-    if (controller == null && initialValue != null) {
-      effectiveController.text = _formatCurrencyValue(initialValue!);
-    }
-    
-    // Use provided focus node or get one from form controller if available
-    FocusNode? effectiveFocusNode = focusNode;
-    if (effectiveFocusNode == null && formController != null) {
-      effectiveFocusNode = formController.getFocusNode(name);
-    }
-
-    final currencyInput = TextFormField(
-      controller: effectiveController,
-      focusNode: effectiveFocusNode,
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: true,
-      ),
-      textInputAction: TextInputAction.done,
-      inputFormatters: [
-        _getCurrencyFormatter(),
-      ],
-      onChanged: (text) {
-        // Parse the formatted currency value back to double
-        final value = CurrencyFormatter.parse(text, symbol: currencySymbol);
-        
-        // Update form controller if available
-        if (formController != null) {
-          formController.setValue(name, value, validate: true);
-        }
-        
-        // Call user's onChanged if provided
-        onChanged?.call(value);
-      },
-      onEditingComplete: onEditingComplete,
-      onFieldSubmitted: onSubmitted,
-      enabled: enabled,
-      autofocus: autofocus,
-      style: Theme.of(context).textTheme.bodyLarge,
-      decoration: getInputDecoration(context).copyWith(
-        prefixIcon: prefixIcon ?? _getCurrencyIcon(),
-        suffixIcon: suffixIcon,
-      ),
-    );
-    
-    // Compose with label, helper, error and actions using base class methods
-    return buildFieldContainer(
-      context,
-      buildWithLabel(
-        context,
-        buildWithError(
-          context,
-          buildWithHelper(
-            context,
-            buildWithActions(
-              context,
-              currencyInput,
-            ),
-          ),
-        ),
-      ),
+    // Use the stateful widget to manage the currency input and prevent keyboard dismissal
+    return _VooCurrencyFieldStateful(
+      field: this,
     );
   }
   
@@ -309,4 +245,169 @@ class VooCurrencyField extends VooFieldBase<double> {
         decimalDigits: decimalDigits,
         locale: locale,
       );
+}
+
+/// Stateful widget to manage currency field state and prevent keyboard dismissal
+class _VooCurrencyFieldStateful extends StatefulWidget {
+  final VooCurrencyField field;
+
+  const _VooCurrencyFieldStateful({
+    required this.field,
+  });
+
+  @override
+  State<_VooCurrencyFieldStateful> createState() => _VooCurrencyFieldStatefulState();
+}
+
+class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> {
+  TextEditingController? _effectiveController;
+  FocusNode? _effectiveFocusNode;
+  VooFormController? _formController;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    _formController = formScope?.controller;
+    
+    // Initialize or update controllers
+    _initializeControllers();
+  }
+  
+  @override
+  void didUpdateWidget(_VooCurrencyFieldStateful oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Preserve focus state during widget updates
+    final hadFocus = _effectiveFocusNode?.hasFocus ?? false;
+    
+    // If the field name changed, we need to get the correct controller
+    if (oldWidget.field.name != widget.field.name) {
+      _initializeControllers();
+    }
+    
+    // Restore focus if the field had it before the update
+    if (hadFocus && _effectiveFocusNode != null && !_effectiveFocusNode!.hasFocus) {
+      // Schedule focus restoration after the build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _effectiveFocusNode != null) {
+          _effectiveFocusNode!.requestFocus();
+        }
+      });
+    }
+  }
+
+  void _initializeControllers() {
+    // Create controller if not provided
+    _effectiveController = widget.field.controller ?? TextEditingController();
+    
+    // Set initial value if provided
+    if (widget.field.controller == null && widget.field.initialValue != null) {
+      _effectiveController!.text = widget.field._formatCurrencyValue(widget.field.initialValue!);
+    }
+    
+    // Use provided focus node or get one from form controller if available
+    _effectiveFocusNode = widget.field.focusNode;
+    if (_effectiveFocusNode == null && _formController != null) {
+      _effectiveFocusNode = _formController!.getFocusNode(widget.field.name);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Only dispose the controller if we created it
+    if (widget.field.controller == null) {
+      _effectiveController?.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currencyInput = TextFormField(
+      controller: _effectiveController,
+      focusNode: _effectiveFocusNode,
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+      ),
+      textInputAction: TextInputAction.done,
+      inputFormatters: [
+        widget.field._getCurrencyFormatter(),
+      ],
+      onChanged: (text) {
+        // Parse the formatted currency value back to double
+        final value = CurrencyFormatter.parse(text, symbol: widget.field.currencySymbol);
+        
+        // Update form controller if available
+        if (_formController != null) {
+          // Check if we should validate based on error display mode and current error state
+          final hasError = _formController!.hasError(widget.field.name);
+          final shouldValidate = hasError || 
+              _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
+              _formController!.validationMode == FormValidationMode.onChange;
+          
+          _formController!.setValue(widget.field.name, value, validate: shouldValidate);
+        }
+        
+        // Call user's onChanged if provided
+        widget.field.onChanged?.call(value);
+      },
+      onEditingComplete: widget.field.onEditingComplete,
+      onFieldSubmitted: widget.field.onSubmitted,
+      enabled: widget.field.enabled,
+      autofocus: widget.field.autofocus,
+      style: Theme.of(context).textTheme.bodyLarge,
+      decoration: widget.field.getInputDecoration(context).copyWith(
+        prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
+        suffixIcon: widget.field.suffixIcon,
+      ),
+    );
+    
+    // Listen to form controller for error state changes only
+    if (_formController != null) {
+      return AnimatedBuilder(
+        animation: _formController!,
+        builder: (context, child) {
+          // Compose with label, helper, error and actions using base class methods
+          return widget.field.buildFieldContainer(
+            context,
+            widget.field.buildWithLabel(
+              context,
+              widget.field.buildWithError(
+                context,
+                widget.field.buildWithHelper(
+                  context,
+                  widget.field.buildWithActions(
+                    context,
+                    child!, // Use the child (currency input) that doesn't rebuild
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        child: currencyInput, // This child won't rebuild when the animation changes
+      );
+    }
+    
+    // If no form controller, build without AnimatedBuilder
+    return widget.field.buildFieldContainer(
+      context,
+      widget.field.buildWithLabel(
+        context,
+        widget.field.buildWithError(
+          context,
+          widget.field.buildWithHelper(
+            context,
+            widget.field.buildWithActions(
+              context,
+              currencyInput,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

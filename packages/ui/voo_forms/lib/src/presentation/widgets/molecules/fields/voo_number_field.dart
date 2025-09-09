@@ -83,10 +83,6 @@ class VooNumberField extends VooFieldBase<num> {
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
-    // Get the form controller from scope if available
-    final formScope = VooFormScope.of(context);
-    final formController = formScope?.controller;
-
     // If read-only, show VooReadOnlyField for better UX
     if (effectiveReadOnly) {
       String displayValue = '';
@@ -113,63 +109,9 @@ class VooNumberField extends VooFieldBase<num> {
       return buildFieldContainer(context, readOnlyContent);
     }
 
-    // Use provided focus node or get one from form controller if available
-    FocusNode? effectiveFocusNode = focusNode;
-    if (effectiveFocusNode == null && formController != null) {
-      effectiveFocusNode = formController.getFocusNode(name);
-    }
-
-    // Create wrapped onChanged that updates both controller and calls user callback
-    void handleChanged(String text) {
-      final numValue = num.tryParse(text);
-      // Update form controller if available
-      if (formController != null) {
-        formController.setValue(name, numValue, validate: true);
-      }
-      // Call user's onChanged if provided
-      onChanged?.call(numValue);
-    }
-
-    final numberInput = VooNumberInput(
-      controller: controller,
-      focusNode: effectiveFocusNode,
-      initialValue: initialValue,
-      placeholder: placeholder,
-      inputFormatters: [
-        StrictNumberFormatter(
-          allowDecimals: allowDecimals,
-          allowNegative: allowNegative,
-          maxDecimalPlaces: maxDecimalPlaces,
-          minValue: min,
-          maxValue: max,
-        ),
-      ],
-      onChanged: handleChanged,
-      onEditingComplete: onEditingComplete,
-      onSubmitted: onSubmitted,
-      enabled: enabled,
-      autofocus: autofocus,
-      decoration: getInputDecoration(context),
-      signed: allowNegative,
-      decimal: allowDecimals,
-    );
-
-    // Compose with label, helper, error and actions using base class methods
-    return buildFieldContainer(
-      context,
-      buildWithLabel(
-        context,
-        buildWithError(
-          context,
-          buildWithHelper(
-            context,
-            buildWithActions(
-              context,
-              numberInput,
-            ),
-          ),
-        ),
-      ),
+    // Use the stateful widget to manage the number input and prevent keyboard dismissal
+    return _VooNumberFieldStateful(
+      field: this,
     );
   }
 
@@ -212,4 +154,134 @@ class VooNumberField extends VooFieldBase<num> {
         onSubmitted: onSubmitted,
         autofocus: autofocus,
       );
+}
+
+/// Stateful widget to manage number field state and prevent keyboard dismissal
+class _VooNumberFieldStateful extends StatefulWidget {
+  final VooNumberField field;
+
+  const _VooNumberFieldStateful({
+    required this.field,
+  });
+
+  @override
+  State<_VooNumberFieldStateful> createState() => _VooNumberFieldStatefulState();
+}
+
+class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
+  FocusNode? _effectiveFocusNode;
+  VooFormController? _formController;
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    _formController = formScope?.controller;
+    
+    // Initialize controllers only once to prevent recreation
+    if (!_isInitialized) {
+      _initializeControllers();
+      _isInitialized = true;
+    }
+  }
+
+  void _initializeControllers() {
+    // Use provided focus node or get one from form controller if available
+    _effectiveFocusNode = widget.field.focusNode;
+    if (_effectiveFocusNode == null && _formController != null) {
+      _effectiveFocusNode = _formController!.getFocusNode(widget.field.name);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(String text) {
+      final numValue = num.tryParse(text);
+      // Update form controller if available
+      if (_formController != null) {
+        // Check if we should validate based on error display mode and current error state
+        final hasError = _formController!.hasError(widget.field.name);
+        final shouldValidate = hasError || 
+            _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
+            _formController!.validationMode == FormValidationMode.onChange;
+        
+        _formController!.setValue(widget.field.name, numValue, validate: shouldValidate);
+      }
+      // Call user's onChanged if provided
+      widget.field.onChanged?.call(numValue);
+    }
+
+    final numberInput = VooNumberInput(
+      controller: widget.field.controller,
+      focusNode: _effectiveFocusNode,
+      initialValue: widget.field.initialValue,
+      placeholder: widget.field.placeholder,
+      inputFormatters: [
+        StrictNumberFormatter(
+          allowDecimals: widget.field.allowDecimals,
+          allowNegative: widget.field.allowNegative,
+          maxDecimalPlaces: widget.field.maxDecimalPlaces,
+          minValue: widget.field.min,
+          maxValue: widget.field.max,
+        ),
+      ],
+      onChanged: handleChanged,
+      onEditingComplete: widget.field.onEditingComplete,
+      onSubmitted: widget.field.onSubmitted,
+      enabled: widget.field.enabled,
+      autofocus: widget.field.autofocus,
+      decoration: widget.field.getInputDecoration(context),
+      signed: widget.field.allowNegative,
+      decimal: widget.field.allowDecimals,
+    );
+    
+    // Listen to form controller for error state changes only
+    if (_formController != null) {
+      return AnimatedBuilder(
+        animation: _formController!,
+        builder: (context, child) {
+          // Compose with label, helper, error and actions using base class methods
+          return widget.field.buildFieldContainer(
+            context,
+            widget.field.buildWithLabel(
+              context,
+              widget.field.buildWithError(
+                context,
+                widget.field.buildWithHelper(
+                  context,
+                  widget.field.buildWithActions(
+                    context,
+                    child!, // Use the child (number input) that doesn't rebuild
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        child: numberInput, // This child won't rebuild when the animation changes
+      );
+    }
+    
+    // If no form controller, build without AnimatedBuilder
+    return widget.field.buildFieldContainer(
+      context,
+      widget.field.buildWithLabel(
+        context,
+        widget.field.buildWithError(
+          context,
+          widget.field.buildWithHelper(
+            context,
+            widget.field.buildWithActions(
+              context,
+              numberInput,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

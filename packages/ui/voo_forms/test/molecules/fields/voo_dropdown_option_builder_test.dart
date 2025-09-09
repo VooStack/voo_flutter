@@ -184,4 +184,135 @@ void main() {
       expect(find.byIcon(Icons.cloud), findsWidgets);
     });
   });
+
+  group('VooMultiSelectField optionBuilder', () {
+    testWidgets('uses custom option builder for multi-select', (WidgetTester tester) async {
+      final options = ['Option 1', 'Option 2', 'Option 3'];
+      bool optionBuilderCalled = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooMultiSelectField<String>(
+              name: 'test',
+              label: 'Test Multi-Select',
+              options: options,
+              onChanged: (values) {},
+              optionBuilder: (context, item, isSelected, displayText) {
+                optionBuilderCalled = true;
+                return VooOption(
+                  title: displayText,
+                  isSelected: isSelected,
+                  leading: const Icon(Icons.folder),
+                  showCheckbox: true,
+                  subtitle: isSelected ? 'Selected' : 'Not selected',
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      // Tap on the multi-select to open it
+      await tester.tap(find.byType(VooMultiSelectField<String>));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Verify custom option builder was called
+      expect(optionBuilderCalled, true);
+    });
+
+    testWidgets('VooOption widget displays correctly', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooOption(
+              title: 'Test Option',
+              subtitle: 'Test subtitle',
+              isSelected: true,
+              leading: const Icon(Icons.star),
+              showCheckmark: true,
+            ),
+          ),
+        ),
+      );
+
+      // Verify VooOption displays correctly
+      expect(find.text('Test Option'), findsOneWidget);
+      expect(find.text('Test subtitle'), findsOneWidget);
+      expect(find.byIcon(Icons.star), findsOneWidget);
+      expect(find.byIcon(Icons.check), findsOneWidget);
+    });
+
+    testWidgets('VooSimpleOption works correctly', (WidgetTester tester) async {
+      bool tapped = false;
+      
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooSimpleOption(
+              text: 'Simple Option',
+              isSelected: true,
+              onTap: () => tapped = true,
+              showCheckbox: true,
+            ),
+          ),
+        ),
+      );
+
+      // Verify simple option displays
+      expect(find.text('Simple Option'), findsOneWidget);
+      expect(find.byType(Checkbox), findsOneWidget);
+      
+      // Tap the option
+      await tester.tap(find.byType(VooSimpleOption));
+      await tester.pumpAndSettle();
+      
+      expect(tapped, true);
+    });
+  });
+
+  group('VooAsyncMultiSelectField optionBuilder', () {
+    testWidgets('uses custom option builder with async multi-select', (WidgetTester tester) async {
+      bool optionBuilderCalled = false;
+      
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VooAsyncMultiSelectField<String>(
+              name: 'test',
+              label: 'Test Async Multi-Select',
+              asyncOptionsLoader: (query) async {
+                await Future<void>.delayed(const Duration(milliseconds: 100));
+                return ['Item 1', 'Item 2', 'Item 3']
+                    .where((item) => item.toLowerCase().contains(query.toLowerCase()))
+                    .toList();
+              },
+              optionBuilder: (context, item, isSelected, displayText) {
+                optionBuilderCalled = true;
+                return VooOption(
+                  title: displayText,
+                  isSelected: isSelected,
+                  leading: const Icon(Icons.cloud_download),
+                  showCheckbox: true,
+                  dense: true,
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      // Tap on the dropdown to open it
+      await tester.tap(find.byType(VooAsyncMultiSelectField<String>));
+      await tester.pump();
+      
+      // Wait for async loading and dropdown animation
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Verify custom option builder was called
+      expect(optionBuilderCalled, true);
+    });
+  });
 }

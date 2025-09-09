@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:voo_forms/voo_forms.dart';
@@ -15,10 +17,14 @@ class FormPreview extends StatefulWidget {
 
 class _FormPreviewState extends State<FormPreview> {
   bool readOnly = false;
+  VooFormController controller = VooFormController(
+    errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
+  );
 
   @override
   Widget build(BuildContext context) => Scaffold(
         body: VooFormPageBuilder(
+          controller: controller, // Pass the controller to VooFormPageBuilder
           actionsBuilder: (context, controller) => Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -30,76 +36,88 @@ class _FormPreviewState extends State<FormPreview> {
                   });
                 },
               ),
+              const SizedBox(width: 8),
+              VooButton(
+                child: const Text('Validate'),
+                onPressed: () {
+                  // Force validation to show errors
+                  final isValid = controller.validateAll(force: true);
+                  log('Form is ${isValid ? 'valid' : 'invalid'}');
+                },
+              ),
+              const SizedBox(width: 8),
+              VooButton(
+                child: const Text('Submit'),
+                onPressed: () async {
+                  // Submit will also validate and show errors
+                  final success = await controller.submit(
+                    onSubmit: (values) async {
+                      log('Submitting form with values: $values');
+                    },
+                    onSuccess: () {
+                      log('Form submitted successfully');
+                    },
+                    onError: (error) {
+                      log('Form submission error: $error');
+                    },
+                  );
+                  log('Submit ${success ? 'succeeded' : 'failed'}');
+                },
+              ),
+              const SizedBox(width: 8),
+              VooButton(
+                child: const Text('Clear Errors'),
+                onPressed: () {
+                  controller.clearErrors();
+                },
+              ),
             ],
           ),
           form: VooForm(
+            controller: controller,
             isReadOnly: readOnly,
             fields: [
-              const VooFormSection(
-                title: 'Personal Information',
-                description: 'Enter your basic details',
-                isCollapsible: true,
-                children: [
-                  VooTextField(
-                    name: 'first_name',
-                    placeholder: 'First Name',
-                    initialValue: 'John',
-                  ),
-                  VooTextField(
-                    name: 'last_name',
-                    placeholder: 'Last Name',
-                    initialValue: 'Doe',
-                  ),
-                ],
-              ),
-              const VooDropdownField(
+              VooDropdownField(
                 name: 'name',
-                options: ['Option 1', 'Option 2'],
-                initialValue: 'Option 1',
+                label: 'Name',
+                options: const ['Option 1', 'Option 2'],
+                validators: [VooValidator.required()],
               ),
-              const VooTextField(name: 'text', initialValue: 'Initial Value'),
-              const VooCheckboxField(name: 'checkbox', initialValue: true),
-              VooDateField(name: 'date', initialValue: DateTime.now()),
-              const VooFormSection(
-                title: 'Financial Information',
-                description: 'Currency fields with proper formatting',
-                isCollapsible: true,
-                children: [
-                  VooCurrencyField(
-                    name: 'salary',
-                    label: 'Annual Salary (USD)',
-                    initialValue: 75000.00,
-                  ),
-                  VooCurrencyField(
-                    name: 'bonus',
-                    label: 'Bonus (EUR)',
-                    initialValue: 5000.00,
-                    currencySymbol: '€',
-                  ),
-                  VooCurrencyField(
-                    name: 'savings',
-                    label: 'Savings (GBP)',
-                    initialValue: 12500.50,
-                    currencySymbol: '£',
-                  ),
-                  VooCurrencyField(
-                    name: 'investment',
-                    label: 'Investment (JPY)',
-                    initialValue: 1000000,
-                    currencySymbol: '¥',
-                    decimalDigits: 0,
-                  ),
-                ],
+              VooTextField(
+                name: 'text',
+                label: 'Text Field',
+                // No initial value to demonstrate required validation
+                validators: [VooValidator.required()],
+              ),
+              VooCheckboxField(
+                name: 'checkbox',
+                // No initial value to demonstrate required validation
+                label: 'Checkbox Label',
+                validators: [VooValidator.required()],
+              ),
+              VooDateField(
+                name: 'date',
+                label: 'Date Field',
+                // No initial value to demonstrate required validation
+                validators: [VooValidator.required()],
               ),
               const VooFileField(
                 name: 'file',
                 label: 'Upload File',
                 initialValue: VooFile(url: 'https://www.cte.iup.edu/cte/Resources/PDF_TestPage.pdf'),
               ),
-              const VooMultiSelectField(
+              VooMultiSelectField(
                 name: 'multi_select',
-                options: ['Option 1', 'Option 2', 'Option 3'],
-                initialValue: ['Option 1', 'Option 3'],
+                label: 'Multi Select',
+                options: const ['Option 1', 'Option 2', 'Option 3'],
+                validators: [VooValidator.required()],
+                optionBuilder: (context, item, isSelected, displayText) => VooOption(
+                  title: displayText,
+                  isSelected: isSelected,
+                  showCheckbox: true,
+                  showCheckmark: false,
+                  subtitle: 'Subtitle for $displayText',
+                ),
               ),
             ],
           ),

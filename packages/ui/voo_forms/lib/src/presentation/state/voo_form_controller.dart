@@ -161,9 +161,8 @@ class VooFormController extends ChangeNotifier {
       }
     }
     
-    // Validate if requested or based on mode
-    // Don't validate on typing if explicitly told not to (prevents focus issues)
-    if (validate == true || (validate != false && validationMode == FormValidationMode.onChange && errorDisplayMode == VooFormErrorDisplayMode.onTyping)) {
+    // Validate if requested
+    if (validate) {
       validateField(fieldName);
     }
     
@@ -203,9 +202,12 @@ class VooFormController extends ChangeNotifier {
     
     if (_fieldValues[fieldName] != value) {
       // Validate on change if:
-      // 1. validationMode is onChange (explicit validation on change)
-      // 2. OR errorDisplayMode is onTyping (need to clear errors as user types)
-      final shouldValidate = validationMode == FormValidationMode.onChange ||
+      // 1. There's an existing error (always clear/update errors when user types)
+      // 2. OR validationMode is onChange (explicit validation on change)
+      // 3. OR errorDisplayMode is onTyping (need to show errors as user types)
+      final fieldHasError = hasError(fieldName);
+      final shouldValidate = fieldHasError ||
+                           validationMode == FormValidationMode.onChange ||
                            errorDisplayMode == VooFormErrorDisplayMode.onTyping;
       setValue(fieldName, value, validate: shouldValidate);
       

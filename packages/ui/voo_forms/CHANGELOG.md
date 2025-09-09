@@ -1,3 +1,45 @@
+## [0.3.28]
+
+### Bug Fixes
+- **Keyboard Dismissal on Validation**: Fixed critical issue where keyboard would dismiss when validation state changes
+  - Keyboard no longer dismisses when first focusing a field with validation error
+  - Keyboard stays open when typing clears validation errors
+  - Keyboard remains open during all validation state changes
+  - Implemented stateful widget pattern with AnimatedBuilder to isolate TextFormField from rebuilds
+  - Fix applied to VooTextField, VooCurrencyField, and VooNumberField
+
+- **Validation Display in Form Preview**: Fixed validation not showing errors properly
+  - VooFormPageBuilder now correctly passes controller to actionsBuilder
+  - validateAll(force: true) properly displays validation errors
+  - Form preview demo updated to demonstrate validation features
+  - Added Submit and Clear Errors buttons to showcase validation behavior
+
+- **Error Clearing on User Input**: Enhanced validation behavior to clear errors when user types
+  - Errors now clear immediately when user starts typing to fix the issue
+  - Works correctly even with external state management (Cubit/BLoC) causing rebuilds
+  - Improved `_handleFieldChange` to always validate when an error is present
+
+## [0.3.27]
+
+### Features
+- **VooOption Widget**: New design system widget for dropdown options
+  - Standardized option widget with title, subtitle, leading/trailing widgets
+  - Built-in support for checkboxes and radio buttons
+  - Customizable selected state styling
+  - VooSimpleOption for basic use cases
+  - Keeps users within the VooForms design system
+
+- **Extended optionBuilder Support**: Added optionBuilder to all multi-select fields
+  - VooMultiSelectField now supports custom option rendering
+  - VooAsyncMultiSelectField supports custom option rendering
+  - Consistent optionBuilder API across all dropdown and multi-select fields
+  - All builders receive isSelected state for proper styling
+
+### Improvements
+- **Complete optionBuilder Coverage**: All dropdown-type fields now support custom option builders
+  - VooDropdownField, VooAsyncDropdownField, VooMultiSelectField, VooAsyncMultiSelectField
+  - Unified API for customizing option appearance across all selection fields
+
 ## [0.3.26]
 
 ### Features

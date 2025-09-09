@@ -39,6 +39,9 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
   /// Whether to show select all button
   final bool showSelectAll;
 
+  /// Custom option builder for dropdown items
+  final Widget Function(BuildContext context, T item, bool isSelected, String displayText)? optionBuilder;
+
   const VooMultiSelectField({
     super.key,
     required super.name,
@@ -75,6 +78,7 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
     this.maxChipsDisplay = 3,
     this.showClearAll = true,
     this.showSelectAll = true,
+    this.optionBuilder,
   });
 
   @override

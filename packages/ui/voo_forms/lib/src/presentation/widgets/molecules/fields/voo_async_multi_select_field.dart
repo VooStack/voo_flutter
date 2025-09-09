@@ -39,6 +39,9 @@ class VooAsyncMultiSelectField<T> extends VooFieldBase<List<T>> {
   /// Whether to show clear all button
   final bool showClearAll;
 
+  /// Custom option builder for dropdown items
+  final Widget Function(BuildContext context, T item, bool isSelected, String displayText)? optionBuilder;
+
   const VooAsyncMultiSelectField({
     super.key,
     required super.name,
@@ -75,6 +78,7 @@ class VooAsyncMultiSelectField<T> extends VooFieldBase<List<T>> {
     this.emptySelectionText,
     this.maxChipsDisplay = 3,
     this.showClearAll = true,
+    this.optionBuilder,
   });
 
   @override

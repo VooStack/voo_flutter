@@ -75,10 +75,6 @@ class VooTextField extends VooFieldBase<String> {
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
-    // Get the form controller from scope if available
-    final formScope = VooFormScope.of(context);
-    final formController = formScope?.controller;
-    
     // If read-only, show VooReadOnlyField for better UX
     if (effectiveReadOnly) {
       final String displayValue = initialValue ?? '';
@@ -97,73 +93,9 @@ class VooTextField extends VooFieldBase<String> {
       return buildFieldContainer(context, readOnlyContent);
     }
     
-    // Use provided controller or get one from form controller if available
-    TextEditingController? effectiveController = controller;
-    if (effectiveController == null && formController != null) {
-      effectiveController = formController.registerTextController(name, initialText: initialValue);
-    }
-    
-    // Use provided focus node or get one from form controller if available
-    FocusNode? effectiveFocusNode = focusNode;
-    if (effectiveFocusNode == null && formController != null) {
-      effectiveFocusNode = formController.getFocusNode(name);
-    }
-
-    // Create wrapped onChanged that updates both controller and calls user callback
-    void handleChanged(String? value) {
-      // Update form controller if available (for non-controller based updates)
-      // If there's an effectiveController, it already has a listener that updates the form controller
-      if (formController != null && effectiveController == null) {
-        formController.setValue(name, value, validate: true);
-      }
-      // Call user's onChanged if provided
-      onChanged?.call(value);
-    }
-
-    Widget textInput = VooTextInput(
-      controller: effectiveController,
-      focusNode: effectiveFocusNode,
-      initialValue: effectiveController == null ? initialValue : null,
-      placeholder: placeholder,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      inputFormatters: inputFormatters,
-      obscureText: obscureText,
-      enableSuggestions: enableSuggestions,
-      autocorrect: autocorrect,
-      maxLines: expands ? null : maxLines,
-      minLines: expands ? null : minLines,
-      maxLength: maxLength,
-      expands: expands,
-      textCapitalization: textCapitalization,
-      onChanged: handleChanged,
-      onEditingComplete: onEditingComplete,
-      onSubmitted: onSubmitted,
-      enabled: enabled && !effectiveReadOnly,
-      readOnly: effectiveReadOnly,
-      autofocus: autofocus,
-      decoration: getInputDecoration(context),
-    );
-
-    // Apply height constraints to the input widget
-    textInput = applyInputHeightConstraints(textInput);
-    
-    // Compose with label, helper, error and actions using base class methods
-    return buildFieldContainer(
-      context,
-      buildWithLabel(
-        context,
-        buildWithError(
-          context,
-          buildWithHelper(
-            context,
-            buildWithActions(
-              context,
-              textInput,
-            ),
-          ),
-        ),
-      ),
+    // Use the stateful widget to manage the text input and prevent keyboard dismissal
+    return _VooTextFieldStateful(
+      field: this,
     );
   }
 
@@ -217,4 +149,168 @@ class VooTextField extends VooFieldBase<String> {
         minHeight: minHeight,
         maxHeight: maxHeight,
       );
+}
+
+/// Stateful widget to manage text field state and prevent keyboard dismissal
+class _VooTextFieldStateful extends StatefulWidget {
+  final VooTextField field;
+
+  const _VooTextFieldStateful({
+    required this.field,
+  });
+
+  @override
+  State<_VooTextFieldStateful> createState() => _VooTextFieldStatefulState();
+}
+
+class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
+  TextEditingController? _effectiveController;
+  FocusNode? _effectiveFocusNode;
+  VooFormController? _formController;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    _formController = formScope?.controller;
+    
+    // Initialize or update controllers
+    _initializeControllers();
+  }
+
+  @override
+  void didUpdateWidget(_VooTextFieldStateful oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Preserve focus state during widget updates
+    final hadFocus = _effectiveFocusNode?.hasFocus ?? false;
+    
+    // If the field name changed, we need to get the correct controller
+    if (oldWidget.field.name != widget.field.name) {
+      _initializeControllers();
+    }
+    
+    // Restore focus if the field had it before the update
+    if (hadFocus && _effectiveFocusNode != null && !_effectiveFocusNode!.hasFocus) {
+      // Schedule focus restoration after the build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _effectiveFocusNode != null) {
+          _effectiveFocusNode!.requestFocus();
+        }
+      });
+    }
+  }
+
+  void _initializeControllers() {
+    // Use provided controller or get one from form controller if available
+    _effectiveController = widget.field.controller;
+    if (_effectiveController == null && _formController != null) {
+      _effectiveController = _formController!.registerTextController(
+        widget.field.name, 
+        initialText: widget.field.initialValue,
+      );
+    }
+    
+    // Use provided focus node or get one from form controller if available
+    _effectiveFocusNode = widget.field.focusNode;
+    if (_effectiveFocusNode == null && _formController != null) {
+      _effectiveFocusNode = _formController!.getFocusNode(widget.field.name);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(String? value) {
+      // Only update form controller if we don't have a TextEditingController
+      // (TextEditingController has its own listener that handles updates)
+      if (_formController != null && _effectiveController == null) {
+        // Check if we should validate based on error display mode and current error state
+        final hasError = _formController!.hasError(widget.field.name);
+        final shouldValidate = hasError || 
+            _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
+            _formController!.validationMode == FormValidationMode.onChange;
+        
+        _formController!.setValue(widget.field.name, value, validate: shouldValidate);
+      }
+      // Call user's onChanged if provided
+      widget.field.onChanged?.call(value);
+    }
+
+    // Build the text input widget
+    Widget textInput = VooTextInput(
+      controller: _effectiveController,
+      focusNode: _effectiveFocusNode,
+      initialValue: _effectiveController == null ? widget.field.initialValue : null,
+      placeholder: widget.field.placeholder,
+      keyboardType: widget.field.keyboardType,
+      textInputAction: widget.field.textInputAction,
+      inputFormatters: widget.field.inputFormatters,
+      obscureText: widget.field.obscureText,
+      enableSuggestions: widget.field.enableSuggestions,
+      autocorrect: widget.field.autocorrect,
+      maxLines: widget.field.expands ? null : widget.field.maxLines,
+      minLines: widget.field.expands ? null : widget.field.minLines,
+      maxLength: widget.field.maxLength,
+      expands: widget.field.expands,
+      textCapitalization: widget.field.textCapitalization,
+      onChanged: handleChanged,
+      onEditingComplete: widget.field.onEditingComplete,
+      onSubmitted: widget.field.onSubmitted,
+      enabled: widget.field.enabled,
+      readOnly: widget.field.readOnly == true,
+      autofocus: widget.field.autofocus,
+      decoration: widget.field.getInputDecoration(context),
+    );
+
+    // Apply height constraints to the input widget
+    textInput = widget.field.applyInputHeightConstraints(textInput);
+    
+    // Listen to form controller for error state changes only
+    if (_formController != null) {
+      return AnimatedBuilder(
+        animation: _formController!,
+        builder: (context, child) {
+          // Compose with label, helper, error and actions using base class methods
+          return widget.field.buildFieldContainer(
+            context,
+            widget.field.buildWithLabel(
+              context,
+              widget.field.buildWithError(
+                context,
+                widget.field.buildWithHelper(
+                  context,
+                  widget.field.buildWithActions(
+                    context,
+                    child!, // Use the child (text input) that doesn't rebuild
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        child: textInput, // This child won't rebuild when the animation changes
+      );
+    }
+    
+    // If no form controller, build without AnimatedBuilder
+    return widget.field.buildFieldContainer(
+      context,
+      widget.field.buildWithLabel(
+        context,
+        widget.field.buildWithError(
+          context,
+          widget.field.buildWithHelper(
+            context,
+            widget.field.buildWithActions(
+              context,
+              textInput,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

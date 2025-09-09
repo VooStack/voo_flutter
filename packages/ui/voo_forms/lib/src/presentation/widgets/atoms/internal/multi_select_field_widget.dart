@@ -289,6 +289,17 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: filteredOptions.map((item) {
         final isSelected = _selectedValues.contains(item);
+        final displayText = _getDisplayText(item);
+        
+        // Use custom option builder if provided
+        if (widget.field.optionBuilder != null) {
+          return InkWell(
+            onTap: () => _handleSelectionChange(item),
+            child: widget.field.optionBuilder!(context, item, isSelected, displayText),
+          );
+        }
+        
+        // Default option rendering
         return ListTile(
           dense: true,
           leading: Checkbox(
@@ -297,7 +308,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           title: Text(
-            _getDisplayText(item),
+            displayText,
             style: TextStyle(
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
