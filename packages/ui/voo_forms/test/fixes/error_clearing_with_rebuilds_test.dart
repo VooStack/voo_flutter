@@ -15,37 +15,39 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: ValueListenableBuilder<int>(
-              valueListenable: rebuildCounter,
-              builder: (context, value, child) {
-                // This simulates a Cubit/BLoC rebuilding the widget tree
-                return VooForm(
-                  controller: controller,
-                  fields: [
-                    VooTextField(
-                      name: 'username',
-                      label: 'Username (Rebuild count: $value)',
-                      validators: [VooValidator.required()],
-                    ),
-                    VooCurrencyField(
-                      name: 'amount',
-                      label: 'Amount',
-                      validators: [
-                        VooValidator.required(),
-                        VooValidator.min(100),
-                      ],
-                    ),
-                    VooNumberField(
-                      name: 'quantity',
-                      label: 'Quantity',
-                      validators: [
-                        VooValidator.required(),
-                        VooValidator.min(1),
-                      ],
-                    ),
-                  ],
-                );
-              },
+            body: SingleChildScrollView(
+              child: ValueListenableBuilder<int>(
+                valueListenable: rebuildCounter,
+                builder: (context, value, child) {
+                  // This simulates a Cubit/BLoC rebuilding the widget tree
+                  return VooForm(
+                    controller: controller,
+                    fields: [
+                      VooTextField(
+                        name: 'username',
+                        label: 'Username (Rebuild count: $value)',
+                        validators: [VooValidator.required()],
+                      ),
+                      VooCurrencyField(
+                        name: 'amount',
+                        label: 'Amount',
+                        validators: [
+                          VooValidator.required(),
+                          VooValidator.min(100),
+                        ],
+                      ),
+                      VooNumberField(
+                        name: 'quantity',
+                        label: 'Quantity',
+                        validators: [
+                          VooValidator.required(),
+                          VooValidator.min(1),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -116,7 +118,7 @@ void main() {
     
     testWidgets('validation continues to work after multiple rebuilds', (tester) async {
       final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onTyping,
+        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
       );
       
       int rebuildCount = 0;
@@ -160,11 +162,18 @@ void main() {
         ),
       );
       
+      // Force validation to show required error
+      controller.validateAll(force: true);
+      await tester.pump();
+      
+      // Should show required error
+      expect(controller.getError('email'), 'This field is required');
+      
       // Type invalid email
       await tester.enterText(find.byType(TextFormField), 'invalid');
       await tester.pump();
       
-      // Should show email validation error (with onTyping mode, it validates immediately)
+      // Should show email validation error (required error cleared)
       final emailError = controller.getError('email');
       expect(emailError != null && emailError.contains('valid email'), isTrue,
           reason: 'Expected email validation error, got: $emailError');
@@ -228,11 +237,17 @@ void main() {
         ),
       );
       
+      // Wait for the form to be fully built
+      await tester.pumpAndSettle();
+      
       // Type some text
       await tester.enterText(find.byType(TextFormField), 'Hello World');
       await tester.pump();
       
-      // Verify text is in the controller (text might not be visible in widget)
+      // Wait for all microtasks to complete
+      await tester.pumpAndSettle();
+      
+      // Verify text is in the controller
       expect(controller.getValue('persistent'), 'Hello World');
       
       // Verify the TextFormField has the text

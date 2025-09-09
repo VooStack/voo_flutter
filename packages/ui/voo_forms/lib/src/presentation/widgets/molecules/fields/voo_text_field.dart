@@ -207,9 +207,11 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
     // Use provided controller or get one from form controller if available
     _effectiveController = widget.field.controller;
     if (_effectiveController == null && _formController != null) {
+      // Get the current value from the form controller if it exists
+      final currentValue = _formController!.getValue(widget.field.name);
       _effectiveController = _formController!.registerTextController(
         widget.field.name, 
-        initialText: widget.field.initialValue,
+        initialText: currentValue?.toString() ?? widget.field.initialValue,
       );
     }
     
@@ -224,9 +226,8 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
   Widget build(BuildContext context) {
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String? value) {
-      // Only update form controller if we don't have a TextEditingController
-      // (TextEditingController has its own listener that handles updates)
-      if (_formController != null && _effectiveController == null) {
+      // Update form controller if available
+      if (_formController != null) {
         // Check if we should validate based on error display mode and current error state
         final hasError = _formController!.hasError(widget.field.name);
         final shouldValidate = hasError || 

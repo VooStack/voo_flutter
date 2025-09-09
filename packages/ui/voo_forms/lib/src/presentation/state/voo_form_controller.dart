@@ -43,6 +43,7 @@ class VooFormController extends ChangeNotifier {
   bool _isSubmitted = false;
   bool _isResetting = false;  // Track when we're resetting to avoid validation
   bool _isInitializing = false;  // Track when we're initializing to avoid triggering changes
+  bool _errorsForced = false;  // Track when errors have been forced to display
 
   VooFormController({
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
@@ -114,10 +115,19 @@ class VooFormController extends ChangeNotifier {
     );
     
     controller.addListener(() {
-      _handleFieldChange(fieldName, controller.text);
+      // Always update the field value when the controller text changes
+      _fieldValues[fieldName] = controller.text;
+      _isDirty = true;
+      
+      // Handle validation if needed
+      if (!_isInitializing && !_isResetting) {
+        _handleFieldChange(fieldName, controller.text);
+      }
     });
     
     _textControllers[fieldName] = controller;
+    // Store initial value
+    _fieldValues[fieldName] = controller.text;
     return controller;
   }
 
@@ -200,20 +210,49 @@ class VooFormController extends ChangeNotifier {
       return;
     }
     
-    if (_fieldValues[fieldName] != value) {
-      // Validate on change if:
-      // 1. There's an existing error (always clear/update errors when user types)
-      // 2. OR validationMode is onChange (explicit validation on change)
-      // 3. OR errorDisplayMode is onTyping (need to show errors as user types)
-      final fieldHasError = hasError(fieldName);
-      final shouldValidate = fieldHasError ||
-                           validationMode == FormValidationMode.onChange ||
-                           errorDisplayMode == VooFormErrorDisplayMode.onTyping;
-      setValue(fieldName, value, validate: shouldValidate);
-      
-      // Call field's onChange callback
-      _onChangedCallbacks[fieldName]?.call(value);
+    // Note: The value has already been set in the listener, so we just need to handle validation
+    // Validate on change if:
+    // 1. There's an existing error (always clear/update errors when user types)
+    // 2. OR validationMode is onChange (explicit validation on change)
+    // 3. OR errorDisplayMode is onTyping (need to show errors as user types)
+    final fieldHasError = hasError(fieldName);
+    final shouldValidate = fieldHasError ||
+                         validationMode == FormValidationMode.onChange ||
+                         errorDisplayMode == VooFormErrorDisplayMode.onTyping;
+    
+    if (shouldValidate) {
+      // Validate without changing the value (it's already set)
+      _validateField(fieldName, value);
     }
+    
+    // Call field's onChange callback
+    _onChangedCallbacks[fieldName]?.call(value);
+    
+    notifyListeners();
+  }
+
+  /// Internal method to validate a field without changing its value
+  void _validateField(String fieldName, dynamic value) {
+    final validators = _validators[fieldName];
+    if (validators == null || validators.isEmpty) return;
+    
+    for (final validator in validators) {
+      String? error;
+      // Handle both function validators and VooValidationRule objects
+      if (validator is Function) {
+        final result = validator(value);
+        error = result is String? ? result : null;
+      } else if (validator is VooValidationRule) {
+        error = validator.validate(value);
+      }
+      
+      if (error != null) {
+        _fieldErrors[fieldName] = error;
+        return;
+      }
+    }
+    // Clear error if validation passes
+    _fieldErrors.remove(fieldName);
   }
 
   /// Validate a single field
@@ -223,6 +262,7 @@ class VooFormController extends ChangeNotifier {
     
     // Check if we should show errors based on errorDisplayMode
     final shouldShowError = force || 
+        _errorsForced ||  // If errors were forced to display, keep showing them
         errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted);
     
@@ -274,8 +314,14 @@ class VooFormController extends ChangeNotifier {
 
   /// Validate all fields
   bool validateAll({bool force = false}) {
+    // If forcing errors to display, track that state
+    if (force) {
+      _errorsForced = true;
+    }
+    
     // Check if we should show errors based on errorDisplayMode
     final shouldShowError = force || 
+        _errorsForced ||
         errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted) ||
         errorDisplayMode == VooFormErrorDisplayMode.none;
@@ -388,6 +434,7 @@ class VooFormController extends ChangeNotifier {
   /// Clear all errors
   void clearErrors() {
     _fieldErrors.clear();
+    _errorsForced = false;  // Reset forced errors state
     notifyListeners();
   }
 
@@ -406,6 +453,7 @@ class VooFormController extends ChangeNotifier {
     _isDirty = false;
     _isSubmitting = false;
     _isSubmitted = false;
+    _errorsForced = false;
     
     // Reset text controllers
     for (final controller in _textControllers.values) {
@@ -441,6 +489,7 @@ class VooFormController extends ChangeNotifier {
     
     // Mark as submitted for error display
     _hasSubmitted = true;
+    _errorsForced = true;  // Also mark errors as forced for submit
     
     // Validate all fields (force display of errors on submit)
     if (!validateAll(force: true)) {

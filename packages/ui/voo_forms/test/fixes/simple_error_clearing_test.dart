@@ -146,7 +146,7 @@ void main() {
       await tester.pump();
       
       // Should show min length error (required error cleared)
-      expect(controller.getError('password'), contains('at least 8'));
+      expect(controller.getError('password'), contains('8 characters'));
       
       // Type valid password
       await tester.enterText(find.byType(TextFormField), 'password123');

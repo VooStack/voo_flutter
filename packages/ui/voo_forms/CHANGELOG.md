@@ -1,3 +1,25 @@
+## [0.3.29]
+
+### Bug Fixes
+- **Keyboard Dismissal Issue**: Fixed keyboard dismissing when selecting text fields with validation errors
+  - Resolved issue where keyboard would dismiss on first click of a field with required validator
+  - Fixed keyboard dismissing after entering a character that removes validation error
+  - Improved state synchronization between TextEditingController and VooFormController
+  - Enhanced validation handling to properly track and clear errors during user input
+  - Fixed RenderFlex overflow in form labels by adding proper text wrapping
+
+- **Error State Management**: Improved error clearing logic when typing in form fields
+  - Added proper error state tracking with `_errorsForced` flag
+  - Fixed validation logic to maintain error state appropriately during user interaction
+  - Improved `_validateField` method to handle both function validators and VooValidationRule objects
+  - Enhanced handleChanged callback to properly update form controller values
+
+- **Widget Rebuild Handling**: Fixed focus and state preservation during widget rebuilds
+  - Improved stateful widget wrappers to properly maintain focus during rebuilds
+  - Fixed TextEditingController value synchronization across rebuilds
+  - Enhanced didUpdateWidget lifecycle to preserve focus state
+  - Resolved issues with external state management (BLoC/Cubit) causing keyboard dismissal
+
 ## [0.3.28]
 
 ### Bug Fixes
@@ -18,6 +40,12 @@
   - Errors now clear immediately when user starts typing to fix the issue
   - Works correctly even with external state management (Cubit/BLoC) causing rebuilds
   - Improved `_handleFieldChange` to always validate when an error is present
+
+- **Focus Retention with State Management**: Fixed focus loss when using with BLoC/Cubit
+  - Added `didUpdateWidget` lifecycle to properly handle widget updates
+  - Focus is now preserved when parent widgets rebuild due to state changes
+  - TextEditingController and FocusNode references are properly maintained
+  - Fix applied to VooTextField, VooCurrencyField, and VooNumberField
 
 ## [0.3.27]
 

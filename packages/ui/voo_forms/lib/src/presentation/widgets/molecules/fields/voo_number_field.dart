@@ -171,7 +171,6 @@ class _VooNumberFieldStateful extends StatefulWidget {
 class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
   FocusNode? _effectiveFocusNode;
   VooFormController? _formController;
-  bool _isInitialized = false;
 
   @override
   void didChangeDependencies() {
@@ -181,10 +180,30 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
     final formScope = VooFormScope.of(context);
     _formController = formScope?.controller;
     
-    // Initialize controllers only once to prevent recreation
-    if (!_isInitialized) {
+    // Initialize or update controllers
+    _initializeControllers();
+  }
+  
+  @override
+  void didUpdateWidget(_VooNumberFieldStateful oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Preserve focus state during widget updates
+    final hadFocus = _effectiveFocusNode?.hasFocus ?? false;
+    
+    // If the field name changed, we need to get the correct controller
+    if (oldWidget.field.name != widget.field.name) {
       _initializeControllers();
-      _isInitialized = true;
+    }
+    
+    // Restore focus if the field had it before the update
+    if (hadFocus && _effectiveFocusNode != null && !_effectiveFocusNode!.hasFocus) {
+      // Schedule focus restoration after the build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _effectiveFocusNode != null) {
+          _effectiveFocusNode!.requestFocus();
+        }
+      });
     }
   }
 
