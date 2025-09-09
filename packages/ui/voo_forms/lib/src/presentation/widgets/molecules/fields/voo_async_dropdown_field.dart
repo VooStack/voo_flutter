@@ -30,6 +30,9 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
   /// Sort comparison function for options
   final int Function(T a, T b)? sortOptions;
 
+  /// Custom option builder for dropdown items
+  final Widget Function(BuildContext context, T item, bool isSelected, String displayText)? optionBuilder;
+
   const VooAsyncDropdownField({
     super.key,
     required super.name,
@@ -50,6 +53,12 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
     super.gridColumns,
     super.error,
     super.showError,
+    super.layout,
+    super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
     this.displayTextBuilder,
     this.dropdownIcon,
     this.maxDropdownHeight,
@@ -57,6 +66,7 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
     this.loadingIndicator,
     this.searchDebounce = const Duration(milliseconds: 500),
     this.sortOptions,
+    this.optionBuilder,
   });
 
   @override
@@ -102,5 +112,6 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
         loadingIndicator: loadingIndicator,
         searchDebounce: searchDebounce,
         sortOptions: sortOptions,
+        optionBuilder: optionBuilder,
       );
 }

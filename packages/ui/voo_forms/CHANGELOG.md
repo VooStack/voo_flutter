@@ -1,3 +1,24 @@
+## [0.3.26]
+
+### Features
+- **Custom Option Builder for Dropdowns**: Added optionBuilder to customize dropdown option appearance
+  - VooDropdownField now supports custom option rendering with isSelected state
+  - VooAsyncDropdownField supports the same optionBuilder functionality
+  - Provides full control over option styling while maintaining widget architecture
+  - Builder receives context, item, isSelected flag, and display text
+
+### Improvements
+- **Base Field Properties**: Ensured all field widgets properly expose common base properties
+  - All fields now support layout (standard, compact, dense)
+  - All fields now support isHidden for conditional visibility
+  - All fields now support size constraints (minWidth, maxWidth, minHeight, maxHeight)
+  - Improved consistency across 15+ field widget types
+
+### Bug Fixes
+- **Validation Focus Issue**: Fixed focus retention during validation
+  - Correctly distinguishes between validationMode (when to validate) and errorDisplayMode (when to show errors)
+  - Fields now properly maintain focus when validation errors clear during typing
+
 ## [0.3.25]
 
 ### Bug Fixes

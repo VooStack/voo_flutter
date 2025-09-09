@@ -70,6 +70,7 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
       sortComparator: widget.field.sortOptions,
       asyncSearch: widget.field.asyncOptionsLoader,
       searchDebounce: widget.field.searchDebounce,
+      optionBuilder: widget.field.optionBuilder,
       decoration: widget.field.getInputDecoration(context).copyWith(
         suffixIcon: widget.field.dropdownIcon,
       ),

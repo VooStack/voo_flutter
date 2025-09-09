@@ -27,6 +27,9 @@ class VooDropdownField<T> extends VooFieldBase<T> {
   /// Custom search filter function
   final bool Function(T item, String searchTerm)? searchFilter;
 
+  /// Custom option builder for dropdown items
+  final Widget Function(BuildContext context, T item, bool isSelected, String displayText)? optionBuilder;
+
   const VooDropdownField({
     super.key,
     required super.name,
@@ -47,12 +50,19 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     super.gridColumns,
     super.error,
     super.showError,
+    super.layout,
+    super.isHidden,
+    super.minWidth,
+    super.maxWidth,
+    super.minHeight,
+    super.maxHeight,
     this.displayTextBuilder,
     this.dropdownIcon,
     this.maxDropdownHeight,
     this.isExpanded = true,
     this.sortOptions,
     this.searchFilter,
+    this.optionBuilder,
   });
 
   @override
@@ -89,6 +99,7 @@ class VooDropdownField<T> extends VooFieldBase<T> {
       icon: dropdownIcon,
       sortComparator: sortOptions,
       searchFilter: searchFilter,
+      optionBuilder: optionBuilder,
       decoration: getInputDecoration(context).copyWith(
         suffixIcon: dropdownIcon,
       ),
@@ -142,5 +153,6 @@ class VooDropdownField<T> extends VooFieldBase<T> {
         isExpanded: isExpanded,
         sortOptions: sortOptions,
         searchFilter: searchFilter,
+        optionBuilder: optionBuilder,
       );
 }

@@ -17,6 +17,7 @@ class VooDropdownSearchField<T> extends StatefulWidget {
   final Future<List<T>> Function(String searchTerm)? asyncSearch;
   final Duration searchDebounce;
   final InputDecoration? decoration;
+  final Widget Function(BuildContext context, T item, bool isSelected, String displayText)? optionBuilder;
 
   const VooDropdownSearchField({
     super.key,
@@ -32,6 +33,7 @@ class VooDropdownSearchField<T> extends StatefulWidget {
     this.asyncSearch,
     this.searchDebounce = const Duration(milliseconds: 500),
     this.decoration,
+    this.optionBuilder,
   });
 
   @override
@@ -300,6 +302,15 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
                               final isSelected = item == _selectedValue;
                               final displayText = widget.displayTextBuilder?.call(item) ?? item.toString();
 
+                              // Use custom option builder if provided
+                              if (widget.optionBuilder != null) {
+                                return InkWell(
+                                  onTap: () => _selectItem(item),
+                                  child: widget.optionBuilder!(context, item, isSelected, displayText),
+                                );
+                              }
+
+                              // Default option rendering
                               return InkWell(
                                 onTap: () => _selectItem(item),
                                 child: Container(
