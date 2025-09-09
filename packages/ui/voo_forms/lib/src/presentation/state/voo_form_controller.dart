@@ -33,6 +33,7 @@ class VooFormController extends ChangeNotifier {
   final Map<String, ValueChanged<dynamic>?> _onChangedCallbacks = {};
   final Map<String, bool> _fieldEnabled = {};
   final Map<String, bool> _fieldVisible = {};
+  final Set<String> _initializedFields = {}; // Track which fields have been initialized
   
   final VooFormErrorDisplayMode errorDisplayMode;
   final FormValidationMode validationMode;
@@ -93,9 +94,13 @@ class VooFormController extends ChangeNotifier {
     _fieldEnabled[fieldName] = enabled;
     _fieldVisible[fieldName] = visible;
     
-    // Initialize value
-    if (initialValue != null) {
-      _fieldValues[fieldName] = initialValue;
+    // Only use initialValue on first registration
+    // This prevents losing user input when BLoC rebuilds with new initialValue
+    if (!_initializedFields.contains(fieldName)) {
+      _initializedFields.add(fieldName);
+      if (initialValue != null) {
+        _fieldValues[fieldName] = initialValue;
+      }
     }
     
     // Create focus node if not exists
@@ -104,14 +109,17 @@ class VooFormController extends ChangeNotifier {
 
   /// Create and register a text controller for a field
   TextEditingController registerTextController(String fieldName, {String? initialText}) {
+    // Always return existing controller if it exists
+    // This preserves text and cursor position across rebuilds
     if (_textControllers.containsKey(fieldName)) {
-      // Return existing controller without modifying its text
-      // This preserves user input across rebuilds
       return _textControllers[fieldName]!;
     }
     
+    // Only create new controller on first registration
+    // Prefer existing field value over initialText to preserve user input
+    final existingValue = _fieldValues[fieldName]?.toString();
     final controller = TextEditingController(
-      text: initialText ?? _fieldValues[fieldName]?.toString() ?? '',
+      text: existingValue ?? initialText ?? '',
     );
     
     controller.addListener(() {
@@ -126,8 +134,11 @@ class VooFormController extends ChangeNotifier {
     });
     
     _textControllers[fieldName] = controller;
-    // Store initial value
-    _fieldValues[fieldName] = controller.text;
+    // Only store initial value if field doesn't already have a value
+    // This preserves user input across rebuilds
+    if (!_fieldValues.containsKey(fieldName) || _fieldValues[fieldName] == null) {
+      _fieldValues[fieldName] = controller.text;
+    }
     return controller;
   }
 
@@ -449,6 +460,7 @@ class VooFormController extends ChangeNotifier {
     _isResetting = true;  // Set flag to prevent validation during reset
     _fieldValues.clear();
     _fieldErrors.clear();
+    _initializedFields.clear();  // Clear initialized fields to allow new initialValues
     _hasSubmitted = false;
     _isDirty = false;
     _isSubmitting = false;
@@ -468,6 +480,7 @@ class VooFormController extends ChangeNotifier {
   void clear() {
     _fieldValues.clear();
     _fieldErrors.clear();
+    _initializedFields.clear();  // Clear initialized fields to allow new initialValues
     _hasSubmitted = false;
     _isDirty = false;
     

@@ -1,6 +1,6 @@
 name: voo_forms
 description: A comprehensive cross-platform forms package with atomic design, clean architecture, and Material 3 support for Flutter applications.
-version: 0.3.29
+version: 0.3.32
 homepage: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_forms
 repository: https://github.com/VooStack/VooFlutter
 
@@ -26,7 +26,10 @@ dependencies:
   voo_ui_core: ^0.1.0
 
 dev_dependencies:
+  bloc: ^8.1.4
+  bloc_test: ^9.1.7
   build_runner: ^2.4.9
+  flutter_bloc: ^8.1.6
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter

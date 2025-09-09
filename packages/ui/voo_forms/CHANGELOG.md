@@ -1,3 +1,53 @@
+## [0.3.32] - 2025-01-09
+
+### Improvements
+- **All tests passing**: Fixed all remaining test issues ensuring complete test suite passes
+- **Code quality**: Resolved critical analyzer issues for production readiness
+
+## [0.3.31] - 2025-01-09
+
+### Critical Bug Fixes
+- **Fixed VooForm to properly work inside BlocBuilder**: Form values now persist correctly when BLoC state changes
+  - Only use initialValue on first field registration, preventing data loss on rebuilds
+  - Fixed issue where setValue was overwriting preserved user input with new initialValues
+  - Text controllers now properly preserve existing field values over new initialText
+  - Added _initializedFields tracking to distinguish first registration from rebuilds
+
+### Improvements
+- **Better BLoC Integration**: VooForm now works seamlessly inside BlocBuilder
+  - Users can type continuously when clearing validation errors
+  - Form values persist through rapid BLoC state changes
+  - Validation state is maintained across rebuilds
+  - Focus and keyboard behavior improved (within Flutter framework limitations)
+
+### Tests
+- Added comprehensive User Form BLoC integration test suite
+- Tests verify real-world BLoC usage patterns work correctly
+- All existing tests pass with no regressions
+
+## [0.3.30]
+
+### Features
+- **BLoC Integration Tests**: Added comprehensive BLoC/Cubit integration tests for form validation
+  - Tests demonstrate error clearing works correctly with state management
+  - Tests verify form values persist through BLoC rebuilds
+  - Tests confirm validation modes work with rapid state changes
+  - Added bloc and bloc_test to dev dependencies for testing
+
+### Bug Fixes
+- **Enhanced Focus Management**: Improved focus retention during widget rebuilds
+  - Added AutomaticKeepAliveClientMixin to VooTextField for better state preservation
+  - Enhanced didUpdateWidget to better handle focus restoration with microtasks
+  - Improved FocusNode lifecycle management with internal node creation when needed
+  - Better handling of hasPrimaryFocus in addition to hasFocus checks
+
+### Documentation
+- **Known Flutter Limitation**: Documented keyboard dismissal during complete widget rebuilds
+  - Added workaround suggestions for BLoC/Cubit applications
+  - Recommend moving VooForm outside BlocBuilder when possible
+  - Suggest using BlocSelector for targeted rebuilds
+  - Note that error clearing functionality works correctly despite keyboard limitation
+
 ## [0.3.29]
 
 ### Bug Fixes

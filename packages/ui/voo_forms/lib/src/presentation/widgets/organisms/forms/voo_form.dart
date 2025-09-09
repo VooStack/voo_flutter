@@ -128,7 +128,9 @@ class _VooFormState extends State<VooForm> {
         validators: field is VooFieldBase ? (field.validators ?? []) : [],
       );
       
-      if (field.initialValue != null) {
+      // Only set initial value if the field doesn't already have a value
+      // This preserves user input when BLoC rebuilds with new initialValues
+      if (field.initialValue != null && _controller.getValue(field.name) == null) {
         _controller.setValue(field.name, field.initialValue);
       }
     }
@@ -154,6 +156,11 @@ class _VooFormState extends State<VooForm> {
       // Clear and re-register fields when widget updates
       // This ensures that new initial values are properly set
       _controller.clear();
+      _registerFieldsWithController();
+    } else {
+      // Fields haven't changed structurally, just a rebuild (e.g., from BLoC state change)
+      // Re-register fields to update callbacks and validators, but controller will
+      // preserve existing values and not use new initialValues (handled in registerField)
       _registerFieldsWithController();
     }
   }

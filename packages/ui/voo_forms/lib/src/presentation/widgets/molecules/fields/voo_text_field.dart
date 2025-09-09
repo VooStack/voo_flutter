@@ -166,6 +166,7 @@ class _VooTextFieldStateful extends StatefulWidget {
 class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
   TextEditingController? _effectiveController;
   FocusNode? _effectiveFocusNode;
+  FocusNode? _internalFocusNode;
   VooFormController? _formController;
 
   @override
@@ -184,23 +185,12 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
   void didUpdateWidget(_VooTextFieldStateful oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // Preserve focus state during widget updates
-    final hadFocus = _effectiveFocusNode?.hasFocus ?? false;
-    
     // If the field name changed, we need to get the correct controller
     if (oldWidget.field.name != widget.field.name) {
       _initializeControllers();
     }
-    
-    // Restore focus if the field had it before the update
-    if (hadFocus && _effectiveFocusNode != null && !_effectiveFocusNode!.hasFocus) {
-      // Schedule focus restoration after the build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _effectiveFocusNode != null) {
-          _effectiveFocusNode!.requestFocus();
-        }
-      });
-    }
+    // Otherwise, controllers and focus nodes are stable across rebuilds
+    // The form controller handles value preservation
   }
 
   void _initializeControllers() {
@@ -215,11 +205,22 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
       );
     }
     
-    // Use provided focus node or get one from form controller if available
-    _effectiveFocusNode = widget.field.focusNode;
-    if (_effectiveFocusNode == null && _formController != null) {
+    // Use provided focus node, get from form controller, or create internal one
+    if (widget.field.focusNode != null) {
+      _effectiveFocusNode = widget.field.focusNode;
+    } else if (_formController != null) {
       _effectiveFocusNode = _formController!.getFocusNode(widget.field.name);
+    } else {
+      // Create internal focus node if none provided
+      _internalFocusNode ??= FocusNode();
+      _effectiveFocusNode = _internalFocusNode;
     }
+  }
+  
+  @override
+  void dispose() {
+    _internalFocusNode?.dispose();
+    super.dispose();
   }
 
   @override
