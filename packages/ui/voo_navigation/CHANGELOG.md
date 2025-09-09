@@ -5,6 +5,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.2] - 2025-01-09
+
+### Enhanced
+- **Visual Design Improvements**:
+  - Implemented Material 3 glassmorphism effects with subtle blur and surface tints
+  - Added smooth hover states with MouseRegion for desktop platforms
+  - Enhanced ripple effects and splash colors for better touch feedback
+  - Improved border radius and rounded corners throughout components
+  - Added gradient backgrounds for custom navigation bars
+  - Better shadow and elevation handling with proper Material 3 colors
+
+- **Animation Enhancements**:
+  - Added scale animations with easeOutBack curves for delightful interactions
+  - Implemented rotation animations for micro-interactions
+  - Improved fade transitions using AnimatedSwitcher
+  - Enhanced selection animations with individual item controllers
+  - Better transition handling between navigation types with AnimatedSwitcher
+
+- **Navigation Rail Improvements**:
+  - Increased compact width from 80px to 88px for better spacing
+  - Fixed item height to 64px in compact mode for improved touch targets
+  - Improved badge positioning to prevent overlap with selection indicators
+  - Added conditional badge sizing for compact vs extended modes
+  - Better icon sizing (28px in compact mode) for visual hierarchy
+  - Fixed padding and spacing issues in compact layout
+
+- **Badge System Refinements**:
+  - Reduced dot badge size from 8px to 6px for subtlety
+  - Implemented compact badge variant with smaller font size (9px)
+  - Added white border to badges for better visibility
+  - Improved badge positioning with Stack overflow handling
+  - Smart text truncation for badges (99+ for numbers over 99)
+
+### Fixed
+- **Critical Issues**:
+  - Fixed massive overflow (99828 pixels) when transitioning between rail and drawer
+  - Resolved opacity animation error in badge animations (clamped values to 0.0-1.0)
+  - Fixed bottom navigation blur/shadow artifacts appearing above content
+  - Corrected navigation rail border radius not being applied
+  - Fixed test failures related to width expectations and badge detection
+
+- **Layout Issues**:
+  - Fixed cramped spacing in compact navigation rail
+  - Resolved badge overlap issues in selection state
+  - Corrected padding inconsistencies across different navigation types
+  - Fixed ClipRect wrapping to prevent transition overflow
+
+### Improved
+- **Code Quality**:
+  - Removed redundant lint warnings (spreadRadius, MainAxisAlignment defaults)
+  - Better separation of concerns with cleaner widget composition
+  - Improved test coverage with all 65 tests passing
+  - Enhanced documentation and code comments
+
+- **Performance**:
+  - Optimized animation controllers with proper disposal
+  - Reduced unnecessary widget rebuilds
+  - Better memory management for hover state tracking
+  - Improved transition performance with KeyedSubtree
+
 ## [0.0.1] - 2025-01-01
 
 ### Added
