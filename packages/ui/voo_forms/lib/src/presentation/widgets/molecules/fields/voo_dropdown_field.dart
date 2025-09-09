@@ -102,17 +102,12 @@ class VooDropdownField<T> extends VooFieldBase<T> {
       optionBuilder: optionBuilder,
       decoration: getInputDecoration(context).copyWith(
         suffixIcon: dropdownIcon,
+        errorText: showError != false ? fieldError : null,
       ),
     );
 
     // Apply standard field building pattern
     dropdownContent = buildWithHelper(context, dropdownContent);
-    
-    // Build with error if present
-    if (fieldError != null && fieldError.isNotEmpty) {
-      dropdownContent = buildWithError(context, dropdownContent);
-    }
-    
     dropdownContent = buildWithLabel(context, dropdownContent);
     dropdownContent = buildWithActions(context, dropdownContent);
 

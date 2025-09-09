@@ -58,6 +58,9 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
       widget.field.onChanged?.call(value);
     }
 
+    // Get the error for this field using the base class method
+    final fieldError = widget.field.getFieldError(context);
+
     // Build the dropdown with integrated async search
     Widget dropdownContent = VooDropdownSearchField<T>(
       items: const [], // Empty initial items, async search will load them
@@ -73,12 +76,12 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
       optionBuilder: widget.field.optionBuilder,
       decoration: widget.field.getInputDecoration(context).copyWith(
         suffixIcon: widget.field.dropdownIcon,
+        errorText: widget.field.showError != false ? fieldError : null,
       ),
     );
 
     // Apply standard field building pattern
     dropdownContent = widget.field.buildWithHelper(context, dropdownContent);
-    dropdownContent = widget.field.buildWithError(context, dropdownContent);
     dropdownContent = widget.field.buildWithLabel(context, dropdownContent);
     dropdownContent = widget.field.buildWithActions(context, dropdownContent);
 

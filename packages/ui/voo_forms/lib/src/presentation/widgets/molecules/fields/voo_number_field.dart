@@ -109,8 +109,10 @@ class VooNumberField extends VooFieldBase<num> {
       return buildFieldContainer(context, readOnlyContent);
     }
 
-    // Use the stateful widget to manage the number input and prevent keyboard dismissal
+    // Use the stateful widget with a stable key based on field name
+    // This ensures the widget survives parent rebuilds
     return _VooNumberFieldStateful(
+      key: ValueKey('voo_number_field_$name'),
       field: this,
     );
   }
@@ -161,6 +163,7 @@ class _VooNumberFieldStateful extends StatefulWidget {
   final VooNumberField field;
 
   const _VooNumberFieldStateful({
+    super.key,
     required this.field,
   });
 
@@ -168,9 +171,14 @@ class _VooNumberFieldStateful extends StatefulWidget {
   State<_VooNumberFieldStateful> createState() => _VooNumberFieldStatefulState();
 }
 
-class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
+class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> 
+    with AutomaticKeepAliveClientMixin {
   FocusNode? _effectiveFocusNode;
+  FocusNode? _internalFocusNode;
   VooFormController? _formController;
+  
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -188,35 +196,35 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
   void didUpdateWidget(_VooNumberFieldStateful oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // Preserve focus state during widget updates
-    final hadFocus = _effectiveFocusNode?.hasFocus ?? false;
-    
     // If the field name changed, we need to get the correct controller
     if (oldWidget.field.name != widget.field.name) {
       _initializeControllers();
-    }
-    
-    // Restore focus if the field had it before the update
-    if (hadFocus && _effectiveFocusNode != null && !_effectiveFocusNode!.hasFocus) {
-      // Schedule focus restoration after the build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _effectiveFocusNode != null) {
-          _effectiveFocusNode!.requestFocus();
-        }
-      });
     }
   }
 
   void _initializeControllers() {
     // Use provided focus node or get one from form controller if available
-    _effectiveFocusNode = widget.field.focusNode;
-    if (_effectiveFocusNode == null && _formController != null) {
+    if (widget.field.focusNode != null) {
+      _effectiveFocusNode = widget.field.focusNode;
+    } else if (_formController != null) {
       _effectiveFocusNode = _formController!.getFocusNode(widget.field.name);
+    } else {
+      // Create internal focus node if none provided
+      _internalFocusNode ??= FocusNode();
+      _effectiveFocusNode = _internalFocusNode;
     }
+  }
+  
+  @override
+  void dispose() {
+    _internalFocusNode?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+    
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String text) {
       final numValue = num.tryParse(text);
@@ -234,6 +242,66 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
       widget.field.onChanged?.call(numValue);
     }
 
+    // Listen to form controller for error state changes only
+    if (_formController != null) {
+      return AnimatedBuilder(
+        animation: _formController!,
+        builder: (context, child) {
+          // Get the current error from the form controller
+          final error = _formController!.getError(widget.field.name);
+          
+          // Create decoration with error text included
+          final decoration = widget.field.getInputDecoration(context).copyWith(
+            errorText: widget.field.showError != false ? error : null,
+          );
+          
+          // Build the number input widget with the error in the decoration
+          final numberInput = VooNumberInput(
+            controller: widget.field.controller,
+            focusNode: _effectiveFocusNode,
+            initialValue: widget.field.initialValue,
+            placeholder: widget.field.placeholder,
+            inputFormatters: [
+              StrictNumberFormatter(
+                allowDecimals: widget.field.allowDecimals,
+                allowNegative: widget.field.allowNegative,
+                maxDecimalPlaces: widget.field.maxDecimalPlaces,
+                minValue: widget.field.min,
+                maxValue: widget.field.max,
+              ),
+            ],
+            onChanged: handleChanged,
+            onEditingComplete: widget.field.onEditingComplete,
+            onSubmitted: widget.field.onSubmitted,
+            enabled: widget.field.enabled,
+            autofocus: widget.field.autofocus,
+            decoration: decoration, // Use decoration with error
+            signed: widget.field.allowNegative,
+            decimal: widget.field.allowDecimals,
+          );
+          
+          // Apply height constraints to the input widget
+          final constrainedInput = widget.field.applyInputHeightConstraints(numberInput);
+          
+          // Build with label, helper, and actions (but NOT error - it's in the decoration now)
+          return widget.field.buildFieldContainer(
+            context,
+            widget.field.buildWithLabel(
+              context,
+              widget.field.buildWithHelper(
+                context,
+                widget.field.buildWithActions(
+                  context,
+                  constrainedInput,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+    
+    // If no form controller, build without AnimatedBuilder
     final numberInput = VooNumberInput(
       controller: widget.field.controller,
       focusNode: _effectiveFocusNode,
@@ -253,51 +321,25 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> {
       onSubmitted: widget.field.onSubmitted,
       enabled: widget.field.enabled,
       autofocus: widget.field.autofocus,
-      decoration: widget.field.getInputDecoration(context),
+      decoration: widget.field.getInputDecoration(context).copyWith(
+        errorText: widget.field.showError != false ? widget.field.error : null,
+      ),
       signed: widget.field.allowNegative,
       decimal: widget.field.allowDecimals,
     );
     
-    // Listen to form controller for error state changes only
-    if (_formController != null) {
-      return AnimatedBuilder(
-        animation: _formController!,
-        builder: (context, child) {
-          // Compose with label, helper, error and actions using base class methods
-          return widget.field.buildFieldContainer(
-            context,
-            widget.field.buildWithLabel(
-              context,
-              widget.field.buildWithError(
-                context,
-                widget.field.buildWithHelper(
-                  context,
-                  widget.field.buildWithActions(
-                    context,
-                    child!, // Use the child (number input) that doesn't rebuild
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-        child: numberInput, // This child won't rebuild when the animation changes
-      );
-    }
+    // Apply height constraints to the input widget
+    final constrainedInput = widget.field.applyInputHeightConstraints(numberInput);
     
-    // If no form controller, build without AnimatedBuilder
     return widget.field.buildFieldContainer(
       context,
       widget.field.buildWithLabel(
         context,
-        widget.field.buildWithError(
+        widget.field.buildWithHelper(
           context,
-          widget.field.buildWithHelper(
+          widget.field.buildWithActions(
             context,
-            widget.field.buildWithActions(
-              context,
-              numberInput,
-            ),
+            constrainedInput,
           ),
         ),
       ),

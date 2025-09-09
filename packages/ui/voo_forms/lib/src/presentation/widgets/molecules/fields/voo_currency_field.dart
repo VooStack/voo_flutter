@@ -152,8 +152,10 @@ class VooCurrencyField extends VooFieldBase<double> {
       return buildFieldContainer(context, readOnlyContent);
     }
 
-    // Use the stateful widget to manage the currency input and prevent keyboard dismissal
+    // Use the stateful widget with a stable key based on field name
+    // This ensures the widget survives parent rebuilds
     return _VooCurrencyFieldStateful(
+      key: ValueKey('voo_currency_field_$name'),
       field: this,
     );
   }
@@ -252,6 +254,7 @@ class _VooCurrencyFieldStateful extends StatefulWidget {
   final VooCurrencyField field;
 
   const _VooCurrencyFieldStateful({
+    super.key,
     required this.field,
   });
 
@@ -259,10 +262,14 @@ class _VooCurrencyFieldStateful extends StatefulWidget {
   State<_VooCurrencyFieldStateful> createState() => _VooCurrencyFieldStatefulState();
 }
 
-class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> {
+class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> 
+    with AutomaticKeepAliveClientMixin {
   TextEditingController? _effectiveController;
   FocusNode? _effectiveFocusNode;
   VooFormController? _formController;
+  
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -326,6 +333,85 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+    
+    // Create wrapped onChanged that updates both controller and calls user callback
+    void handleChanged(String text) {
+      // Parse the formatted currency value back to double
+      final value = CurrencyFormatter.parse(text, symbol: widget.field.currencySymbol);
+      
+      // Update form controller if available
+      if (_formController != null) {
+        // Check if we should validate based on error display mode and current error state
+        final hasError = _formController!.hasError(widget.field.name);
+        final shouldValidate = hasError || 
+            _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
+            _formController!.validationMode == FormValidationMode.onChange;
+        
+        _formController!.setValue(widget.field.name, value, validate: shouldValidate);
+      }
+      
+      // Call user's onChanged if provided
+      widget.field.onChanged?.call(value);
+    }
+    
+    // Listen to form controller for error state changes only
+    if (_formController != null) {
+      return AnimatedBuilder(
+        animation: _formController!,
+        builder: (context, child) {
+          // Get the current error from the form controller
+          final error = _formController!.getError(widget.field.name);
+          
+          // Create decoration with error text included
+          final decoration = widget.field.getInputDecoration(context).copyWith(
+            prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
+            suffixIcon: widget.field.suffixIcon,
+            errorText: widget.field.showError != false ? error : null,
+          );
+          
+          // Build the currency input widget with the error in the decoration
+          final currencyInput = TextFormField(
+            controller: _effectiveController,
+            focusNode: _effectiveFocusNode,
+            keyboardType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            textInputAction: TextInputAction.done,
+            inputFormatters: [
+              widget.field._getCurrencyFormatter(),
+            ],
+            onChanged: handleChanged,
+            onEditingComplete: widget.field.onEditingComplete,
+            onFieldSubmitted: widget.field.onSubmitted,
+            enabled: widget.field.enabled,
+            autofocus: widget.field.autofocus,
+            style: Theme.of(context).textTheme.bodyLarge,
+            decoration: decoration, // Use decoration with error
+          );
+          
+          // Apply height constraints to the input widget
+          final constrainedInput = widget.field.applyInputHeightConstraints(currencyInput);
+          
+          // Build with label, helper, and actions (but NOT error - it's in the decoration now)
+          return widget.field.buildFieldContainer(
+            context,
+            widget.field.buildWithLabel(
+              context,
+              widget.field.buildWithHelper(
+                context,
+                widget.field.buildWithActions(
+                  context,
+                  constrainedInput,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+    
+    // If no form controller, build without AnimatedBuilder
     final currencyInput = TextFormField(
       controller: _effectiveController,
       focusNode: _effectiveFocusNode,
@@ -336,24 +422,7 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> {
       inputFormatters: [
         widget.field._getCurrencyFormatter(),
       ],
-      onChanged: (text) {
-        // Parse the formatted currency value back to double
-        final value = CurrencyFormatter.parse(text, symbol: widget.field.currencySymbol);
-        
-        // Update form controller if available
-        if (_formController != null) {
-          // Check if we should validate based on error display mode and current error state
-          final hasError = _formController!.hasError(widget.field.name);
-          final shouldValidate = hasError || 
-              _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
-              _formController!.validationMode == FormValidationMode.onChange;
-          
-          _formController!.setValue(widget.field.name, value, validate: shouldValidate);
-        }
-        
-        // Call user's onChanged if provided
-        widget.field.onChanged?.call(value);
-      },
+      onChanged: handleChanged,
       onEditingComplete: widget.field.onEditingComplete,
       onFieldSubmitted: widget.field.onSubmitted,
       enabled: widget.field.enabled,
@@ -362,49 +431,22 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> {
       decoration: widget.field.getInputDecoration(context).copyWith(
         prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
         suffixIcon: widget.field.suffixIcon,
+        errorText: widget.field.showError != false ? widget.field.error : null,
       ),
     );
     
-    // Listen to form controller for error state changes only
-    if (_formController != null) {
-      return AnimatedBuilder(
-        animation: _formController!,
-        builder: (context, child) {
-          // Compose with label, helper, error and actions using base class methods
-          return widget.field.buildFieldContainer(
-            context,
-            widget.field.buildWithLabel(
-              context,
-              widget.field.buildWithError(
-                context,
-                widget.field.buildWithHelper(
-                  context,
-                  widget.field.buildWithActions(
-                    context,
-                    child!, // Use the child (currency input) that doesn't rebuild
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-        child: currencyInput, // This child won't rebuild when the animation changes
-      );
-    }
+    // Apply height constraints to the input widget
+    final constrainedInput = widget.field.applyInputHeightConstraints(currencyInput);
     
-    // If no form controller, build without AnimatedBuilder
     return widget.field.buildFieldContainer(
       context,
       widget.field.buildWithLabel(
         context,
-        widget.field.buildWithError(
+        widget.field.buildWithHelper(
           context,
-          widget.field.buildWithHelper(
+          widget.field.buildWithActions(
             context,
-            widget.field.buildWithActions(
-              context,
-              currencyInput,
-            ),
+            constrainedInput,
           ),
         ),
       ),

@@ -1,3 +1,44 @@
+## [0.3.36] - 2025-01-09
+
+### Critical Focus Fix - KISS Solution
+- **Fixed focus retention using InputDecoration.errorText**: Resolved the root cause of focus loss when clearing validation errors
+  - Moved error display from `buildWithError` widget composition to `InputDecoration.errorText`
+  - Applied fix to VooTextField, VooNumberField, and VooCurrencyField
+  - Prevents unnecessary widget rebuilds that were causing keyboard focus loss
+  - Uses Flutter's built-in error handling mechanism for optimal performance
+  - Follows KISS principle by leveraging Flutter's native capabilities
+
+## [0.3.35] - 2025-01-09
+
+### Simplified Focus Solution
+- **Simplified focus retention based on Flutter best practices**: Implemented cleaner solution following Flutter guidelines
+  - Uses AutomaticKeepAliveClientMixin to preserve widget state
+  - Added stable ValueKey to stateful widgets based on field name
+  - Removed complex workarounds in favor of Flutter's built-in mechanisms
+  - AnimatedBuilder properly isolates TextFormField from parent rebuilds
+  - Ensures TextEditingController and FocusNode remain stable across rebuilds
+
+## [0.3.34] - 2025-01-09
+
+### Enhanced Focus Fix
+- **Improved keyboard focus retention with AutomaticKeepAliveClientMixin**: Further enhanced the focus fix for better reliability
+  - Added AutomaticKeepAliveClientMixin to preserve widget state during parent rebuilds
+  - Wrapped TextFormField in Builder to isolate from unnecessary rebuilds
+  - Changed from addPostFrameCallback to Future.microtask for more reliable focus restoration
+  - Improved focus node listener management to track focus state changes
+  - Applied consistent fixes to both VooTextField and VooNumberField
+
+## [0.3.33] - 2025-01-09
+
+### Critical Bug Fix
+- **Fixed keyboard focus retention during validation**: Resolved issue where users had to re-click into fields to continue typing after clearing validation errors
+  - Enhanced VooTextField and VooNumberField with proper focus management during rebuilds
+  - Added stable keys to input widgets to maintain state across rebuilds
+  - Implemented focus restoration using Focus widget wrapper and post-frame callbacks
+  - Ensures keyboard remains connected when clearing errors by typing
+  - Particularly important for forms inside BlocBuilder where state changes trigger rebuilds
+
+
 ## [0.3.32] - 2025-01-09
 
 ### Improvements

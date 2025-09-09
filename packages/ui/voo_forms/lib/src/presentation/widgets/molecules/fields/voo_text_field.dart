@@ -93,8 +93,10 @@ class VooTextField extends VooFieldBase<String> {
       return buildFieldContainer(context, readOnlyContent);
     }
     
-    // Use the stateful widget to manage the text input and prevent keyboard dismissal
+    // Use the stateful widget with a stable key based on field name
+    // This ensures the widget survives parent rebuilds
     return _VooTextFieldStateful(
+      key: ValueKey('voo_text_field_$name'),
       field: this,
     );
   }
@@ -156,6 +158,7 @@ class _VooTextFieldStateful extends StatefulWidget {
   final VooTextField field;
 
   const _VooTextFieldStateful({
+    super.key,
     required this.field,
   });
 
@@ -163,11 +166,15 @@ class _VooTextFieldStateful extends StatefulWidget {
   State<_VooTextFieldStateful> createState() => _VooTextFieldStatefulState();
 }
 
-class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
+class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> 
+    with AutomaticKeepAliveClientMixin {
   TextEditingController? _effectiveController;
   FocusNode? _effectiveFocusNode;
   FocusNode? _internalFocusNode;
   VooFormController? _formController;
+  
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
@@ -189,8 +196,6 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
     if (oldWidget.field.name != widget.field.name) {
       _initializeControllers();
     }
-    // Otherwise, controllers and focus nodes are stable across rebuilds
-    // The form controller handles value preservation
   }
 
   void _initializeControllers() {
@@ -225,6 +230,8 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+    
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String? value) {
       // Update form controller if available
@@ -241,8 +248,68 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
       widget.field.onChanged?.call(value);
     }
 
-    // Build the text input widget
-    Widget textInput = VooTextInput(
+    // Listen to form controller for error state changes only
+    if (_formController != null) {
+      return AnimatedBuilder(
+        animation: _formController!,
+        builder: (context, child) {
+          // Get the current error from the form controller
+          final error = _formController!.getError(widget.field.name);
+          
+          // Create decoration with error text included
+          final decoration = widget.field.getInputDecoration(context).copyWith(
+            errorText: widget.field.showError != false ? error : null,
+          );
+          
+          // Build the text input widget with the error in the decoration
+          final textInput = VooTextInput(
+            controller: _effectiveController,
+            focusNode: _effectiveFocusNode,
+            initialValue: _effectiveController == null ? widget.field.initialValue : null,
+            placeholder: widget.field.placeholder,
+            keyboardType: widget.field.keyboardType,
+            textInputAction: widget.field.textInputAction,
+            inputFormatters: widget.field.inputFormatters,
+            obscureText: widget.field.obscureText,
+            enableSuggestions: widget.field.enableSuggestions,
+            autocorrect: widget.field.autocorrect,
+            maxLines: widget.field.expands ? null : widget.field.maxLines,
+            minLines: widget.field.expands ? null : widget.field.minLines,
+            maxLength: widget.field.maxLength,
+            expands: widget.field.expands,
+            textCapitalization: widget.field.textCapitalization,
+            onChanged: handleChanged,
+            onEditingComplete: widget.field.onEditingComplete,
+            onSubmitted: widget.field.onSubmitted,
+            enabled: widget.field.enabled,
+            readOnly: widget.field.readOnly == true,
+            autofocus: widget.field.autofocus,
+            decoration: decoration, // Use decoration with error
+          );
+          
+          // Apply height constraints to the input widget
+          final constrainedInput = widget.field.applyInputHeightConstraints(textInput);
+          
+          // Build with label, helper, and actions (but NOT error - it's in the decoration now)
+          return widget.field.buildFieldContainer(
+            context,
+            widget.field.buildWithLabel(
+              context,
+              widget.field.buildWithHelper(
+                context,
+                widget.field.buildWithActions(
+                  context,
+                  constrainedInput,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+    
+    // If no form controller, build without AnimatedBuilder
+    final textInput = VooTextInput(
       controller: _effectiveController,
       focusNode: _effectiveFocusNode,
       initialValue: _effectiveController == null ? widget.field.initialValue : null,
@@ -264,52 +331,23 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful> {
       enabled: widget.field.enabled,
       readOnly: widget.field.readOnly == true,
       autofocus: widget.field.autofocus,
-      decoration: widget.field.getInputDecoration(context),
+      decoration: widget.field.getInputDecoration(context).copyWith(
+        errorText: widget.field.showError != false ? widget.field.error : null,
+      ),
     );
-
+    
     // Apply height constraints to the input widget
-    textInput = widget.field.applyInputHeightConstraints(textInput);
+    final constrainedInput = widget.field.applyInputHeightConstraints(textInput);
     
-    // Listen to form controller for error state changes only
-    if (_formController != null) {
-      return AnimatedBuilder(
-        animation: _formController!,
-        builder: (context, child) {
-          // Compose with label, helper, error and actions using base class methods
-          return widget.field.buildFieldContainer(
-            context,
-            widget.field.buildWithLabel(
-              context,
-              widget.field.buildWithError(
-                context,
-                widget.field.buildWithHelper(
-                  context,
-                  widget.field.buildWithActions(
-                    context,
-                    child!, // Use the child (text input) that doesn't rebuild
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-        child: textInput, // This child won't rebuild when the animation changes
-      );
-    }
-    
-    // If no form controller, build without AnimatedBuilder
     return widget.field.buildFieldContainer(
       context,
       widget.field.buildWithLabel(
         context,
-        widget.field.buildWithError(
+        widget.field.buildWithHelper(
           context,
-          widget.field.buildWithHelper(
+          widget.field.buildWithActions(
             context,
-            widget.field.buildWithActions(
-              context,
-              textInput,
-            ),
+            constrainedInput,
           ),
         ),
       ),
