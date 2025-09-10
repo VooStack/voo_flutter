@@ -34,6 +34,7 @@ class VooFormController extends ChangeNotifier {
   final Map<String, bool> _fieldEnabled = {};
   final Map<String, bool> _fieldVisible = {};
   final Set<String> _initializedFields = {}; // Track which fields have been initialized
+  final Set<String> _touchedFields = {}; // Track which fields have been modified by user
   
   final VooFormErrorDisplayMode errorDisplayMode;
   final FormValidationMode validationMode;
@@ -127,8 +128,9 @@ class VooFormController extends ChangeNotifier {
       _fieldValues[fieldName] = controller.text;
       _isDirty = true;
       
-      // Handle validation if needed
+      // Mark field as touched when user types (unless we're initializing)
       if (!_isInitializing && !_isResetting) {
+        _touchedFields.add(fieldName);
         _handleFieldChange(fieldName, controller.text);
       }
     });
@@ -164,14 +166,38 @@ class VooFormController extends ChangeNotifier {
 
   /// Check if a field has an error
   bool hasError(String fieldName) => _fieldErrors.containsKey(fieldName) && _fieldErrors[fieldName]!.isNotEmpty;
+  
+  /// Check if a field has been touched by the user
+  bool isFieldTouched(String fieldName) => _touchedFields.contains(fieldName);
+  
+  bool hasAnyFieldBeenTouched() => _touchedFields.isNotEmpty;
+
+  /// Begin initialization phase - prevents notifications during setup
+  void beginInitialization() {
+    _isInitializing = true;
+  }
+
+  /// End initialization phase - sends a single notification after setup
+  void endInitialization() {
+    if (_isInitializing) {
+      _isInitializing = false;
+      // Use scheduleMicrotask to ensure we're not in a build phase
+      Future.microtask(notifyListeners);
+    }
+  }
 
   /// Set the value of a field
-  void setValue(String fieldName, dynamic value, {bool validate = false}) {
+  void setValue(String fieldName, dynamic value, {bool validate = false, bool isUserInput = true}) {
     _fieldValues[fieldName] = value;
     
-    if (!_isDirty) {
+    // Mark field as touched if this is user input
+    if (isUserInput) {
+      _touchedFields.add(fieldName);
+    }
+    
+    // Only set dirty flag if this is user input
+    if (isUserInput && !_isDirty) {
       _isDirty = true;
-      notifyListeners();
     }
     
     // Update text controller if it exists
@@ -187,7 +213,11 @@ class VooFormController extends ChangeNotifier {
       validateField(fieldName);
     }
     
-    notifyListeners();
+    // Only notify if not initializing and is user input
+    // During initialization, we'll batch notifications
+    if (!_isInitializing) {
+      notifyListeners();
+    }
   }
 
   /// Set multiple field values at once

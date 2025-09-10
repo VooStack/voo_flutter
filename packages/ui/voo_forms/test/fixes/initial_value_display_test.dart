@@ -126,8 +126,9 @@ void main() {
       expect(find.text('john_doe'), findsOneWidget);
       expect(find.text('Option 1'), findsOneWidget);
       
-      // Should use VooReadOnlyField widgets
-      expect(find.byType(VooReadOnlyField), findsNWidgets(2));
+      // VooTextField uses VooReadOnlyField when readonly
+      // VooDropdownField shows disabled dropdown when readonly
+      expect(find.byType(VooReadOnlyField), findsOneWidget);
     });
 
     testWidgets('Form controller preserves values during rebuilds', (tester) async {

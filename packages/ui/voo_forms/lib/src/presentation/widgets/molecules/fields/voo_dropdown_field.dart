@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_dropdown_search_field.dart';
-import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Dropdown field molecule that provides a searchable dropdown selection widget
@@ -78,33 +77,13 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     
     // If we have an initial value but the controller doesn't have it yet, set it
     if (initialValue != null && currentValue == null && formController != null) {
-      formController.setValue(name, initialValue);
+      formController.setValue(name, initialValue, isUserInput: false);
     }
     
     final effectiveReadOnly = getEffectiveReadOnly(context);
     
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
-
-    // If read-only, show VooReadOnlyField for better UX
-    if (effectiveReadOnly) {
-      final displayValue = effectiveValue != null 
-          ? (displayTextBuilder?.call(effectiveValue) ?? effectiveValue.toString())
-          : '';
-      
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: prefixIcon ?? suffixIcon,
-      );
-      
-      // Apply standard field building pattern
-      readOnlyContent = buildWithHelper(context, readOnlyContent);
-      readOnlyContent = buildWithError(context, readOnlyContent);
-      readOnlyContent = buildWithLabel(context, readOnlyContent);
-      readOnlyContent = buildWithActions(context, readOnlyContent);
-      
-      return buildFieldContainer(context, readOnlyContent);
-    }
 
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(T? value) {

@@ -104,6 +104,7 @@ class VooForm extends StatefulWidget {
 class _VooFormState extends State<VooForm> {
   late VooFormController _controller;
   int _rebuildKey = 0;
+  final Set<String> _fieldsWithLoadedValues = {};
 
   @override
   void initState() {
@@ -121,6 +122,9 @@ class _VooFormState extends State<VooForm> {
   }
   
   void _registerFieldsWithController() {
+    // Begin initialization to batch all field registrations
+    _controller.beginInitialization();
+    
     for (final field in widget.fields) {
       _controller.registerField(
         field.name,
@@ -128,12 +132,44 @@ class _VooFormState extends State<VooForm> {
         validators: field is VooFieldBase ? (field.validators ?? []) : [],
       );
       
-      // Only set initial value if the field doesn't already have a value
-      // This preserves user input when BLoC rebuilds with new initialValues
-      if (field.initialValue != null && _controller.getValue(field.name) == null) {
-        _controller.setValue(field.name, field.initialValue);
+      // Set initial value if provided and field hasn't been touched by user
+      if (field.initialValue != null && !_controller.isFieldTouched(field.name)) {
+        final currentValue = _controller.getValue(field.name);
+        
+        // Check if we should update the value
+        bool shouldUpdate = false;
+        
+        if (currentValue == null) {
+          // No value set yet
+          shouldUpdate = true;
+        } else if (currentValue is String && currentValue.isEmpty) {
+          // Empty string - consider as unset
+          shouldUpdate = true;
+        } else if (currentValue is List && currentValue.isEmpty && field.initialValue is List && (field.initialValue as List).isNotEmpty) {
+          // Empty list being replaced with non-empty list
+          shouldUpdate = true;
+        } else if (currentValue is bool && currentValue == false && field.initialValue == true) {
+          // Special case for checkboxes: false -> true likely means async data arrived
+          // This handles the common pattern where forms start with false and async loads true
+          shouldUpdate = true;
+        }
+        // Note: We generally don't update fields with existing values to preserve form state
+        // Exception: During initial form setup (not a field change scenario)
+        
+        if (shouldUpdate) {
+          _controller.setValue(field.name, field.initialValue, isUserInput: false);
+          // Mark this field as having loaded a value
+          if (field.initialValue != null && 
+              !(field.initialValue is String && (field.initialValue as String).isEmpty) &&
+              !(field.initialValue is List && (field.initialValue as List).isEmpty)) {
+            _fieldsWithLoadedValues.add(field.name);
+          }
+        }
       }
     }
+    
+    // End initialization and send a single notification
+    _controller.endInitialization();
   }
 
   @override
@@ -156,12 +192,67 @@ class _VooFormState extends State<VooForm> {
       // Clear and re-register fields when widget updates
       // This ensures that new initial values are properly set
       _controller.clear();
+      _fieldsWithLoadedValues.clear();
       _registerFieldsWithController();
     } else {
       // Fields haven't changed structurally, just a rebuild (e.g., from BLoC state change)
-      // Re-register fields to update callbacks and validators, but controller will
-      // preserve existing values and not use new initialValues (handled in registerField)
-      _registerFieldsWithController();
+      // Use batching to avoid setState during build
+      _controller.beginInitialization();
+      
+      // Re-register fields to update callbacks and validators
+      for (final field in widget.fields) {
+        _controller.registerField(
+          field.name,
+          initialValue: field.initialValue,
+          validators: field is VooFieldBase ? (field.validators ?? []) : [],
+        );
+        
+        // Update value if:
+        // 1. Field hasn't been touched by the user (preserve user input)
+        // 2. Either no value loaded yet OR form hasn't been touched at all
+        if (field.initialValue != null && !_controller.isFieldTouched(field.name)) {
+          final currentValue = _controller.getValue(field.name);
+          final hasLoadedValue = _fieldsWithLoadedValues.contains(field.name);
+          final formHasBeenTouched = _controller.hasAnyFieldBeenTouched();
+          
+          // If form has been touched and field has loaded value, preserve it
+          if (hasLoadedValue && formHasBeenTouched) {
+            continue;
+          }
+          
+          // Check if we should load/update the value
+          bool shouldUpdate = false;
+          
+          if (currentValue == null) {
+            // No value set yet
+            shouldUpdate = true;
+          } else if (currentValue is String && currentValue.isEmpty && field.initialValue is String && (field.initialValue as String).isNotEmpty) {
+            // Empty string being replaced with non-empty string
+            shouldUpdate = true;
+          } else if (currentValue is List && currentValue.isEmpty && field.initialValue is List && (field.initialValue as List).isNotEmpty) {
+            // Empty list being replaced with non-empty list
+            shouldUpdate = true;
+          } else if (currentValue is bool && currentValue == false && field.initialValue == true) {
+            // Special case for checkboxes: false -> true likely means async data arrived
+            shouldUpdate = true;
+          } else if (!formHasBeenTouched && currentValue != field.initialValue) {
+            // Form hasn't been touched, allow updates (for async data loading)
+            shouldUpdate = true;
+          }
+          
+          if (shouldUpdate) {
+            _controller.setValue(field.name, field.initialValue, isUserInput: false);
+            // Mark this field as having loaded a value (only for non-empty values)
+            if (field.initialValue != null && 
+                !(field.initialValue is String && (field.initialValue as String).isEmpty) &&
+                !(field.initialValue is List && (field.initialValue as List).isEmpty)) {
+              _fieldsWithLoadedValues.add(field.name);
+            }
+          }
+        }
+      }
+      
+      _controller.endInitialization();
     }
   }
 

@@ -14,7 +14,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
     super.label,
     super.labelWidget,
     super.helper,
-    bool? initialValue,
+    super.initialValue,
     super.enabled,
     super.readOnly,
     super.validators,
@@ -30,9 +30,7 @@ class VooCheckboxField extends VooFieldBase<bool> {
     super.minHeight,
     super.maxHeight,
     this.tristate = false,
-  }) : super(
-          initialValue: initialValue ?? false,
-        );
+  });
 
   @override
   String? validate(bool? value) {
@@ -65,12 +63,19 @@ class VooCheckboxField extends VooFieldBase<bool> {
     
     // Get value from form controller if available, otherwise use initial value
     final controllerValue = formController?.getValue(name);
-    final currentValue = controllerValue as bool? ?? initialValue ?? false;
     
     // If we have an initial value but the controller doesn't have it yet, set it
     if (initialValue != null && controllerValue == null && formController != null) {
-      formController.setValue(name, initialValue);
+      // Use a microtask to avoid setState during build
+      Future.microtask(() {
+        if (formController.getValue(name) == null) {
+          formController.setValue(name, initialValue, isUserInput: false);
+        }
+      });
     }
+    
+    // Use controller value if available, otherwise use initial value, defaulting to false for UI
+    final currentValue = (controllerValue as bool?) ?? initialValue ?? false;
     
     final effectiveReadOnly = getEffectiveReadOnly(context);
     

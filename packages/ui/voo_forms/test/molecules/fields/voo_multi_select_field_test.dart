@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 void main() {
@@ -367,18 +368,16 @@ void main() {
         ),
       );
 
-      // Tap should not open dropdown
-      await tester.tap(find.byType(InkWell).first);
-      await tester.pumpAndSettle();
-
-      // Dropdown should not be open
+      // Should show VooReadOnlyField with comma-separated values
+      expect(find.byType(VooReadOnlyField), findsOneWidget);
+      expect(find.text('Option 1'), findsOneWidget);
+      
+      // Should not show chips or InkWell
+      expect(find.byType(Chip), findsNothing);
+      expect(find.byType(InkWell), findsNothing);
+      
+      // Dropdown should not be available
       expect(find.byType(TextField), findsNothing);
-      
-      // Delete button on chip should not be shown when readOnly
-      expect(find.byIcon(Icons.close), findsNothing);
-      
-      // Chip should still be there
-      expect(find.widgetWithText(Chip, 'Option 1'), findsOneWidget);
     });
 
     testWidgets('respects enabled state', (tester) async {

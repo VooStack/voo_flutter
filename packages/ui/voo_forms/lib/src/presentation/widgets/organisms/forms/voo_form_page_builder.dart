@@ -138,7 +138,12 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
 
   void _handleControllerChange() {
     if (mounted) {
-      setState(() {});
+      // Use addPostFrameCallback to avoid setState during build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     }
   }
 

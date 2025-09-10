@@ -14,28 +14,27 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormScope(
+            body: VooForm(
               controller: controller,
-              isReadOnly: false,
-              isLoading: false,
-              child: Column(
-                children: [
-                  VooTextField(
-                    name: 'siteName',
-                    label: 'Site Name',
-                    validators: [VooValidator.required()],
-                  ),
-                  VooTextField(
-                    name: 'description',
-                    label: 'Description',
-                    validators: [VooValidator.required()],
-                  ),
-                ],
-              ),
+              fields: [
+                VooTextField(
+                  name: 'siteName',
+                  label: 'Site Name',
+                  validators: [VooValidator.required()],
+                ),
+                VooTextField(
+                  name: 'description',
+                  label: 'Description',
+                  validators: [VooValidator.required()],
+                ),
+              ],
             ),
           ),
         ),
       );
+      
+      // Allow the widgets to build and register with the controller
+      await tester.pumpAndSettle();
 
       // Find the first text field
       final siteNameField = find.byType(TextFormField).first;

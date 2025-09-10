@@ -223,12 +223,16 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
     final theme = Theme.of(context);
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          label!,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            color: theme.colorScheme.onSurface,
+        Flexible(
+          child: Text(
+            label!,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurface,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         if (isRequired)

@@ -54,8 +54,10 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
         });
       } else if (widget.field.initialValue != null) {
         // If controller doesn't have a value but field has initial value, set it
-        _selectedValues = List<T>.from(widget.field.initialValue!);
-        formController.setValue(widget.field.name, _selectedValues);
+        setState(() {
+          _selectedValues = List<T>.from(widget.field.initialValue!);
+        });
+        formController.setValue(widget.field.name, _selectedValues, isUserInput: false);
       }
     }
   }
@@ -351,7 +353,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
 
-    // If read-only, show VooReadOnlyField for better UX
+    // If read-only, show VooReadOnlyField with comma-separated values
     if (effectiveReadOnly) {
       final displayValue = _selectedValues.isEmpty 
           ? ''
