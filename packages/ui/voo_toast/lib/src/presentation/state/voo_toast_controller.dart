@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:voo_toast/src/data/repositories/toast_repository_impl.dart';
+import 'package:voo_toast/src/domain/entities/future_toast_config.dart';
 import 'package:voo_toast/src/domain/entities/toast.dart';
 import 'package:voo_toast/src/domain/entities/toast_config.dart';
 import 'package:voo_toast/src/domain/enums/toast_position.dart';
@@ -239,6 +240,74 @@ class VooToastController {
 
   void clearQueue() {
     _repository.clearQueue();
+  }
+
+  Future<T> showFuture<T>({
+    required Future<T> future,
+    required FutureToastConfig config,
+    BuildContext? context,
+  }) async {
+    // Show loading toast
+    final loadingToastId = _generateToastId();
+    final loadingToast = Toast(
+      id: loadingToastId,
+      message: config.loadingMessage,
+      title: config.loadingTitle,
+      type: ToastType.info,
+      duration: Duration.zero, // Infinite duration
+      position: context != null 
+          ? (config.position ?? _getPositionForPlatform(context))
+          : (config.position ?? _config.defaultPosition),
+      animation: _config.defaultAnimation,
+      margin: _config.defaultMargin,
+      padding: _config.defaultPadding,
+      borderRadius: _config.defaultBorderRadius,
+      elevation: _config.defaultElevation,
+      maxWidth: _config.defaultMaxWidth,
+      icon: config.loadingIcon,
+      isDismissible: false,
+      showCloseButton: false,
+      showProgressBar: false,
+      isLoading: true,
+    );
+    
+    _showToastUseCase(loadingToast);
+    
+    try {
+      final result = await future;
+      
+      // Dismiss loading toast
+      dismiss(loadingToastId);
+      
+      // Show success toast if configured
+      if (config.showSuccessToast) {
+        showSuccess(
+          message: config.successMessage ?? 'Operation completed successfully',
+          title: config.successTitle,
+          duration: config.successDuration,
+          position: config.position,
+          context: context,
+        );
+      }
+      
+      return result;
+    } catch (error) {
+      // Dismiss loading toast
+      dismiss(loadingToastId);
+      
+      // Show error toast if configured
+      if (config.showErrorToast) {
+        showError(
+          message: config.errorMessage ?? error.toString(),
+          title: config.errorTitle ?? 'Error',
+          duration: config.errorDuration,
+          position: config.position,
+          context: context,
+        );
+      }
+      
+      rethrow;
+    }
   }
 
   void dispose() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_toast/src/domain/entities/toast.dart';
 import 'package:voo_toast/src/domain/enums/toast_type.dart';
+import 'package:voo_toast/src/presentation/widgets/atoms/voo_loading_indicator.dart';
 import 'package:voo_toast/src/presentation/widgets/atoms/voo_toast_close_button.dart';
 import 'package:voo_toast/src/presentation/widgets/atoms/voo_toast_icon.dart';
 import 'package:voo_toast/src/presentation/widgets/atoms/voo_toast_progress_bar.dart';
@@ -102,7 +103,16 @@ class VooToastCard extends StatelessWidget {
                   padding: toast.padding ?? const EdgeInsets.all(16),
                   child: Row(
                   children: [
-                    if (toast.icon != null || toast.type != ToastType.custom) ...[
+                    if (toast.isLoading) ...[
+                      _buildIconContainer(
+                        VooLoadingIndicator(
+                          color: textColor,
+                          size: iconSize,
+                        ),
+                        textColor,
+                      ),
+                      const SizedBox(width: 14),
+                    ] else if (toast.icon != null || toast.type != ToastType.custom) ...[
                       _buildIconContainer(
                         VooToastIcon(
                           type: toast.type,

@@ -32,6 +32,7 @@ class Toast extends Equatable {
     this.priority = 0,
     this.showTimestamp = false,
     this.timestamp,
+    this.isLoading = false,
   });
 
   final String id;
@@ -60,6 +61,7 @@ class Toast extends Equatable {
   final int priority;
   final bool showTimestamp;
   final DateTime? timestamp;
+  final bool isLoading;
 
   Toast copyWith({
     String? id,
@@ -88,6 +90,7 @@ class Toast extends Equatable {
     int? priority,
     bool? showTimestamp,
     DateTime? timestamp,
+    bool? isLoading,
   }) {
     return Toast(
       id: id ?? this.id,
@@ -116,6 +119,7 @@ class Toast extends Equatable {
       priority: priority ?? this.priority,
       showTimestamp: showTimestamp ?? this.showTimestamp,
       timestamp: timestamp ?? this.timestamp,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 
@@ -145,6 +149,7 @@ class Toast extends Equatable {
         priority,
         showTimestamp,
         timestamp,
+        isLoading,
       ];
 }
 

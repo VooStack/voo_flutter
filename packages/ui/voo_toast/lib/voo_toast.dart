@@ -4,6 +4,7 @@ import 'package:voo_toast/src/presentation/state/voo_toast_controller.dart'
     show VooToastController;
 
 // Domain - Entities
+export 'src/domain/entities/future_toast_config.dart';
 export 'src/domain/entities/toast.dart';
 export 'src/domain/entities/toast_config.dart';
 

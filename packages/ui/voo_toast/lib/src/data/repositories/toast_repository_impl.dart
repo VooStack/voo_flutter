@@ -52,13 +52,15 @@ class ToastRepositoryImpl implements ToastRepository {
   void dismiss(String toastId) {
     _cancelTimer(toastId);
     
+    // Find the toast to dismiss (if it exists)
+    final toastIndex = currentToasts.indexWhere((t) => t.id == toastId);
+    
+    // If toast not found, just return (already dismissed)
+    if (toastIndex == -1) return;
+    
+    final dismissedToast = currentToasts[toastIndex];
     final updatedToasts = currentToasts.where((t) => t.id != toastId).toList();
     _toastsSubject.add(updatedToasts);
-    
-    final dismissedToast = currentToasts.firstWhere(
-      (t) => t.id == toastId,
-      orElse: () => throw Exception('Toast not found'),
-    );
     
     dismissedToast.onDismissed?.call();
     

@@ -109,6 +109,92 @@ class ToastExamplePage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             _buildSection(
+              title: 'Future Toasts',
+              children: [
+                _buildButton(
+                  'Success Future (2s)',
+                  Colors.green,
+                  () async {
+                    try {
+                      final result = await VooToast.showFuture<String>(
+                        future: Future.delayed(
+                          const Duration(seconds: 2),
+                          () => 'Data loaded successfully!',
+                        ),
+                        config: const FutureToastConfig(
+                          loadingMessage: 'Loading data...',
+                          loadingTitle: 'Please wait',
+                          successMessage: 'Data loaded successfully!',
+                          successTitle: 'Success',
+                        ),
+                        context: context,
+                      );
+                      print('Future result: $result');
+                    } catch (e) {
+                      print('Future error: $e');
+                    }
+                  },
+                ),
+                _buildButton(
+                  'Error Future (2s)',
+                  Colors.red,
+                  () async {
+                    try {
+                      await VooToast.showFuture<void>(
+                        future: Future.delayed(
+                          const Duration(seconds: 2),
+                          () => throw Exception('Network error occurred'),
+                        ),
+                        config: const FutureToastConfig(
+                          loadingMessage: 'Fetching data from server...',
+                          loadingTitle: 'Loading',
+                          errorMessage: 'Failed to fetch data. Please try again.',
+                          errorTitle: 'Network Error',
+                        ),
+                        context: context,
+                      );
+                    } catch (e) {
+                      print('Expected error: $e');
+                    }
+                  },
+                ),
+                _buildButton(
+                  'Silent Success Future',
+                  Colors.blue,
+                  () async {
+                    await VooToast.showFuture<void>(
+                      future: Future.delayed(
+                        const Duration(seconds: 3),
+                        () => print('Silent operation completed'),
+                      ),
+                      config: const FutureToastConfig(
+                        loadingMessage: 'Processing...',
+                        showSuccessToast: false,
+                      ),
+                      context: context,
+                    );
+                  },
+                ),
+                _buildButton(
+                  'Custom Icons Future',
+                  Colors.purple,
+                  () async {
+                    await VooToast.showFuture<void>(
+                      future: Future.delayed(const Duration(seconds: 2)),
+                      config: const FutureToastConfig(
+                        loadingMessage: 'Uploading file...',
+                        loadingIcon: Icon(Icons.cloud_upload, color: Colors.white),
+                        successMessage: 'File uploaded successfully!',
+                        successIcon: Icon(Icons.cloud_done, color: Colors.white),
+                      ),
+                      context: context,
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildSection(
               title: 'Toasts with Actions',
               children: [
                 _buildButton(

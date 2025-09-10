@@ -82,7 +82,7 @@ void main() {
       expect(toasts.first, toast2);
     });
 
-    test('dismiss with non-existent id throws exception', () async {
+    test('dismiss with non-existent id returns silently', () async {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
@@ -91,11 +91,13 @@ void main() {
       );
 
       repository.show(toast);
-
-      expect(
-        () => repository.dismiss('non-existent'),
-        throwsException,
-      );
+      
+      // Should not throw
+      repository.dismiss('non-existent');
+      
+      // Original toast should still be there
+      expect(repository.currentToasts.length, 1);
+      expect(repository.currentToasts.first.id, 'test-1');
     });
 
     test('dismissAll removes all toasts', () async {
