@@ -1,6 +1,6 @@
 name: voo_toast
 description: A super developer-friendly toast notification package for Flutter with global access, extensive customizations, and responsive platform-specific defaults.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/VooStack/VooFlutter
 repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_toast
 topics:

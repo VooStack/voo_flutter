@@ -116,17 +116,15 @@ class ToastExamplePage extends StatelessWidget {
                   Colors.green,
                   () async {
                     try {
-                      final result = await VooToast.showFuture<String>(
+                      final result = await VooToast.showFutureToast<String>(
                         future: Future.delayed(
                           const Duration(seconds: 2),
                           () => 'Data loaded successfully!',
                         ),
-                        config: const FutureToastConfig(
-                          loadingMessage: 'Loading data...',
-                          loadingTitle: 'Please wait',
-                          successMessage: 'Data loaded successfully!',
-                          successTitle: 'Success',
-                        ),
+                        loadingMessage: 'Loading data...',
+                        loadingTitle: 'Please wait',
+                        successMessage: (result) => 'Loaded: $result',
+                        successTitle: 'Success',
                         context: context,
                       );
                       print('Future result: $result');
@@ -140,17 +138,15 @@ class ToastExamplePage extends StatelessWidget {
                   Colors.red,
                   () async {
                     try {
-                      await VooToast.showFuture<void>(
+                      await VooToast.showFutureToast<void>(
                         future: Future.delayed(
                           const Duration(seconds: 2),
                           () => throw Exception('Network error occurred'),
                         ),
-                        config: const FutureToastConfig(
-                          loadingMessage: 'Fetching data from server...',
-                          loadingTitle: 'Loading',
-                          errorMessage: 'Failed to fetch data. Please try again.',
-                          errorTitle: 'Network Error',
-                        ),
+                        loadingMessage: 'Fetching data from server...',
+                        loadingTitle: 'Loading',
+                        errorMessage: (error) => 'Failed: ${error.toString().replaceAll('Exception: ', '')}',
+                        errorTitle: 'Network Error',
                         context: context,
                       );
                     } catch (e) {
@@ -162,33 +158,44 @@ class ToastExamplePage extends StatelessWidget {
                   'Silent Success Future',
                   Colors.blue,
                   () async {
-                    await VooToast.showFuture<void>(
+                    await VooToast.showFutureToast<void>(
                       future: Future.delayed(
                         const Duration(seconds: 3),
                         () => print('Silent operation completed'),
                       ),
-                      config: const FutureToastConfig(
-                        loadingMessage: 'Processing...',
-                        showSuccessToast: false,
-                      ),
+                      loadingMessage: 'Processing...',
+                      showSuccessToast: false,
                       context: context,
                     );
                   },
                 ),
                 _buildButton(
-                  'Custom Icons Future',
+                  'Custom Loading Icon',
                   Colors.purple,
                   () async {
-                    await VooToast.showFuture<void>(
+                    await VooToast.showFutureToast<void>(
                       future: Future.delayed(const Duration(seconds: 2)),
-                      config: const FutureToastConfig(
-                        loadingMessage: 'Uploading file...',
-                        loadingIcon: Icon(Icons.cloud_upload, color: Colors.white),
-                        successMessage: 'File uploaded successfully!',
-                        successIcon: Icon(Icons.cloud_done, color: Colors.white),
-                      ),
+                      loadingMessage: 'Uploading file...',
+                      loadingIcon: const Icon(Icons.cloud_upload, color: Colors.white),
+                      successMessage: (_) => 'File uploaded successfully!',
                       context: context,
                     );
+                  },
+                ),
+                _buildButton(
+                  'With Result Data',
+                  Colors.indigo,
+                  () async {
+                    final data = await VooToast.showFutureToast<Map<String, dynamic>>(
+                      future: Future.delayed(
+                        const Duration(seconds: 2),
+                        () => {'items': 42, 'status': 'active'},
+                      ),
+                      loadingMessage: 'Fetching statistics...',
+                      successMessage: (result) => 'Found ${result['items']} items (${result['status']})',
+                      context: context,
+                    );
+                    print('Data received: $data');
                   },
                 ),
               ],

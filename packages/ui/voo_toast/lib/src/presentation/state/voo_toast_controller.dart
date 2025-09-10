@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:voo_toast/src/data/repositories/toast_repository_impl.dart';
-import 'package:voo_toast/src/domain/entities/future_toast_config.dart';
 import 'package:voo_toast/src/domain/entities/toast.dart';
 import 'package:voo_toast/src/domain/entities/toast_config.dart';
 import 'package:voo_toast/src/domain/enums/toast_position.dart';
@@ -242,32 +241,41 @@ class VooToastController {
     _repository.clearQueue();
   }
 
-  Future<T> showFuture<T>({
+  Future<T> showFutureToast<T>({
     required Future<T> future,
-    required FutureToastConfig config,
+    String loadingMessage = 'Loading...',
+    String? loadingTitle,
+    String Function(T result)? successMessage,
+    String? successTitle,
+    String Function(Object error)? errorMessage,  
+    String? errorTitle,
+    bool showSuccessToast = true,
+    bool showErrorToast = true,
+    Widget? loadingIcon,
+    Duration? successDuration,
+    Duration? errorDuration,
+    ToastPosition? position,
     BuildContext? context,
   }) async {
     // Show loading toast
     final loadingToastId = _generateToastId();
     final loadingToast = Toast(
       id: loadingToastId,
-      message: config.loadingMessage,
-      title: config.loadingTitle,
-      type: ToastType.info,
+      message: loadingMessage,
+      title: loadingTitle,
       duration: Duration.zero, // Infinite duration
       position: context != null 
-          ? (config.position ?? _getPositionForPlatform(context))
-          : (config.position ?? _config.defaultPosition),
+          ? (position ?? _getPositionForPlatform(context))
+          : (position ?? _config.defaultPosition),
       animation: _config.defaultAnimation,
       margin: _config.defaultMargin,
       padding: _config.defaultPadding,
       borderRadius: _config.defaultBorderRadius,
       elevation: _config.defaultElevation,
       maxWidth: _config.defaultMaxWidth,
-      icon: config.loadingIcon,
+      icon: loadingIcon,
       isDismissible: false,
       showCloseButton: false,
-      showProgressBar: false,
       isLoading: true,
     );
     
@@ -280,12 +288,13 @@ class VooToastController {
       dismiss(loadingToastId);
       
       // Show success toast if configured
-      if (config.showSuccessToast) {
+      if (showSuccessToast) {
+        final message = successMessage?.call(result) ?? 'Operation completed successfully';
         showSuccess(
-          message: config.successMessage ?? 'Operation completed successfully',
-          title: config.successTitle,
-          duration: config.successDuration,
-          position: config.position,
+          message: message,
+          title: successTitle,
+          duration: successDuration,
+          position: position,
           context: context,
         );
       }
@@ -296,12 +305,13 @@ class VooToastController {
       dismiss(loadingToastId);
       
       // Show error toast if configured
-      if (config.showErrorToast) {
+      if (showErrorToast) {
+        final message = errorMessage?.call(error) ?? error.toString();
         showError(
-          message: config.errorMessage ?? error.toString(),
-          title: config.errorTitle ?? 'Error',
-          duration: config.errorDuration,
-          position: config.position,
+          message: message,
+          title: errorTitle ?? 'Error',
+          duration: errorDuration,
+          position: position,
           context: context,
         );
       }

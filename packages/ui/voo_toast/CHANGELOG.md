@@ -1,15 +1,16 @@
-## [0.0.2] - 2024-01-10
+## [0.0.3] - 2024-01-10
 
 ### Added
-- **FutureToast feature**: New `showFuture` method that accepts a Future and displays loading/success/error toasts
+- **FutureToast feature**: New `showFutureToast` method that accepts a Future and displays loading/success/error toasts
   - Shows loading toast while Future is executing
-  - Optionally shows success toast on completion
-  - Shows error toast on failure
+  - Optionally shows success toast on completion with access to result data
+  - Shows error toast on failure with access to error object
   - Returns the Future's result
-- `FutureToastConfig` entity for configuring Future toast behavior
+  - Success/error message callbacks receive the actual result/error for dynamic messages
+  - All parameters are optional with sensible defaults (follows KISS principle)
 - Loading indicator support in toast cards with new `isLoading` property
 - `VooLoadingIndicator` atom component for displaying loading state
-- Example implementations showing Future toast with success and error cases
+- Multiple example implementations showing Future toast with success and error cases
 
 ### Fixed
 - Fixed production error where dismissing non-existent toasts would throw an exception
@@ -20,6 +21,15 @@
 - Updated `Toast` entity to support loading state
 - Enhanced `VooToastCard` to display loading indicators
 - Updated repository implementation for more robust toast dismissal
+
+## [0.0.2] - 2024-01-09
+
+### Added
+- Initial published version with complete toast functionality
+- Platform-aware positioning system
+- Rich customization options
+- Queue management
+- Multiple animation types
 
 ## [0.0.1] - 2024-01-09
 
