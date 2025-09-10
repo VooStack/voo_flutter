@@ -1,3 +1,19 @@
+## [0.3.38] - 2025-01-10
+
+### Critical Fixes
+- **Fixed setState during build errors**: Resolved "setState() or markNeedsBuild() called during build" errors on initial page load
+  - Added initialization batching in form controller to prevent notifications during field registration
+  - Introduced `beginInitialization()` and `endInitialization()` methods for batched updates
+  - Fixed timing issues with `Future.microtask` for deferred notifications
+- **Enhanced async data loading**: Improved initial value loading from async sources like BLoC state
+  - Fixed checkbox fields not updating when async data provides true value
+  - Removed default false value from VooCheckboxField to allow proper null handling
+  - Improved "unset" value detection logic for better async updates
+- **Preserved user input during rebuilds**: Ensured user-entered data is not overwritten by BLoC state changes
+  - Added touched field tracking to distinguish between user input and programmatic updates
+  - Only updates fields with initial values if they haven't been touched by the user
+  - Maintains proper data flow while respecting user interactions
+
 ## [0.3.37] - 2025-01-10
 
 ### Critical Bug Fixes
