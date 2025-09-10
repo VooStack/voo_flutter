@@ -100,13 +100,13 @@ class CurrencyFormatter extends TextInputFormatter {
       return TextEditingValue.empty;
     }
     
-    // Check if this is a complete replacement (e.g., from tests or paste)
-    // If the new text doesn't start with the old text pattern, treat it as a complete replacement
-    final isCompleteReplacement = oldValue.text.isNotEmpty && 
-        !newValue.text.contains(oldValue.text.replaceAll(RegExp(r'[\$,\.\s]'), ''));
+    // Check if we should treat this as incremental typing or complete replacement
+    // If the new digits don't start with the old digits, it's likely a replacement
+    // (e.g., user selected all text and typed new value, or test called enterText)
+    final bool isIncrementalTyping = oldDigits.isEmpty || newDigits.startsWith(oldDigits);
     
-    if (isCompleteReplacement) {
-      // For complete replacements, just parse the new digits
+    if (!isIncrementalTyping && newDigits.isNotEmpty) {
+      // Complete replacement - reset and parse all digits
       _rawValue = int.tryParse(newDigits) ?? 0;
     } else if (newDigits.length < oldDigits.length) {
       // User deleted a digit - remove from the right
@@ -115,27 +115,16 @@ class CurrencyFormatter extends TextInputFormatter {
         return TextEditingValue.empty;
       }
     } else if (newDigits.length > oldDigits.length) {
-      // User added a digit - add to the right
-      // Find the new digit that was added
-      String addedDigit = '';
+      // User added digit(s) - calculator style (right to left)
+      // Get the difference in digits
+      final digitDiff = newDigits.length - oldDigits.length;
       
-      // Simple case: digit added at the end
-      if (newDigits.startsWith(oldDigits)) {
-        addedDigit = newDigits.substring(oldDigits.length);
-      } else {
-        // Find the position where the digit was inserted
-        for (int i = 0; i < newDigits.length; i++) {
-          if (i >= oldDigits.length || newDigits[i] != oldDigits[i]) {
-            addedDigit = newDigits[i];
-            break;
-          }
-        }
-      }
-      
-      if (addedDigit.isNotEmpty) {
-        // Handle multiple digits being added at once
-        for (int i = 0; i < addedDigit.length; i++) {
-          final digit = int.tryParse(addedDigit[i]) ?? 0;
+      // For each new digit, shift left and add
+      for (int i = 0; i < digitDiff; i++) {
+        // Get the new digit at the appropriate position
+        final newDigitIndex = oldDigits.length + i;
+        if (newDigitIndex < newDigits.length) {
+          final digit = int.tryParse(newDigits[newDigitIndex]) ?? 0;
           _rawValue = _rawValue * 10 + digit;
         }
       }
@@ -210,8 +199,8 @@ class CurrencyFormatter extends TextInputFormatter {
     // Detect format: if there's a comma after a dot, it's European format (1.234,56)
     // Otherwise it's US format (1,234.56)
     bool isEuropeanFormat = false;
-    int lastDotIndex = cleaned.lastIndexOf('.');
-    int lastCommaIndex = cleaned.lastIndexOf(',');
+    final int lastDotIndex = cleaned.lastIndexOf('.');
+    final int lastCommaIndex = cleaned.lastIndexOf(',');
     
     if (lastCommaIndex > lastDotIndex) {
       // European format: dot is thousand separator, comma is decimal

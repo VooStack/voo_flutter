@@ -1,3 +1,33 @@
+## [0.3.41] - 2025-01-10
+
+### New Features
+- **Enhanced VooPhoneField with country code selection**: Complete overhaul of phone field with international support
+  - Added country code dropdown selector with 70+ countries
+  - Automatic phone number formatting based on selected country
+  - Beautiful flag emoji display for each country
+  - Country-specific phone number patterns and validation
+  - Optional default country code parameter
+  - Callback for country selection changes
+  - Proper Material 3 design with modal bottom sheet for country picker
+  - Smart formatting that adapts to each country's phone number format
+  - Support for showing/hiding dial codes in the field
+
+### Improvements
+- **Country phone formatter**: New formatter that handles country-specific phone formats
+  - Supports formats like US (XXX) XXX-XXXX, UK XXXX XXXXXX, etc.
+  - Automatic cursor positioning during typing
+  - Length limiting based on country requirements
+  - Real-time formatting as user types
+
+## [0.3.40] - 2025-01-10
+
+### Bug Fixes
+- **Fixed VooCurrencyField formatter state persistence**: Resolved issue where typing sequential digits would produce incorrect currency values
+  - Currency formatter now maintains state across keystrokes by being stored as instance variable
+  - Fixed issue where typing "33" would show "$30.03" instead of "$0.33"
+  - Improved detection of incremental typing vs complete text replacement
+  - Ensures calculator-style right-to-left digit entry works correctly
+
 ## [0.3.39] - 2025-01-10
 
 ### Bug Fixes

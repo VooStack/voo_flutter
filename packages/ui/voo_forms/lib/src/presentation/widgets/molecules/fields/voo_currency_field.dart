@@ -267,6 +267,7 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
   TextEditingController? _effectiveController;
   FocusNode? _effectiveFocusNode;
   VooFormController? _formController;
+  CurrencyFormatter? _currencyFormatter;
   
   @override
   bool get wantKeepAlive => true;
@@ -307,6 +308,9 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
   }
 
   void _initializeControllers() {
+    // Initialize currency formatter once (persistent across keystrokes)
+    _currencyFormatter ??= widget.field._getCurrencyFormatter();
+    
     // Create controller if not provided
     _effectiveController = widget.field.controller ?? TextEditingController();
     
@@ -379,7 +383,7 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
             ),
             textInputAction: TextInputAction.done,
             inputFormatters: [
-              widget.field._getCurrencyFormatter(),
+              _currencyFormatter!,
             ],
             onChanged: handleChanged,
             onEditingComplete: widget.field.onEditingComplete,
@@ -420,7 +424,7 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
       ),
       textInputAction: TextInputAction.done,
       inputFormatters: [
-        widget.field._getCurrencyFormatter(),
+        _currencyFormatter!,
       ],
       onChanged: handleChanged,
       onEditingComplete: widget.field.onEditingComplete,
