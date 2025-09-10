@@ -1,3 +1,26 @@
+## [0.0.2] - 2024-01-10
+
+### Added
+- **FutureToast feature**: New `showFuture` method that accepts a Future and displays loading/success/error toasts
+  - Shows loading toast while Future is executing
+  - Optionally shows success toast on completion
+  - Shows error toast on failure
+  - Returns the Future's result
+- `FutureToastConfig` entity for configuring Future toast behavior
+- Loading indicator support in toast cards with new `isLoading` property
+- `VooLoadingIndicator` atom component for displaying loading state
+- Example implementations showing Future toast with success and error cases
+
+### Fixed
+- Fixed production error where dismissing non-existent toasts would throw an exception
+  - `dismiss` method now fails silently when toast ID not found
+  - Prevents race conditions when timers try to dismiss already-dismissed toasts
+
+### Changed
+- Updated `Toast` entity to support loading state
+- Enhanced `VooToastCard` to display loading indicators
+- Updated repository implementation for more robust toast dismissal
+
 ## [0.0.1] - 2024-01-09
 
 ### Added
