@@ -33,6 +33,8 @@ class Toast extends Equatable {
     this.showTimestamp = false,
     this.timestamp,
     this.isLoading = false,
+    this.textStyle,
+    this.titleStyle,
   });
 
   final String id;
@@ -62,6 +64,8 @@ class Toast extends Equatable {
   final bool showTimestamp;
   final DateTime? timestamp;
   final bool isLoading;
+  final TextStyle? textStyle;
+  final TextStyle? titleStyle;
 
   Toast copyWith({
     String? id,
@@ -91,6 +95,8 @@ class Toast extends Equatable {
     bool? showTimestamp,
     DateTime? timestamp,
     bool? isLoading,
+    TextStyle? textStyle,
+    TextStyle? titleStyle,
   }) {
     return Toast(
       id: id ?? this.id,
@@ -120,6 +126,8 @@ class Toast extends Equatable {
       showTimestamp: showTimestamp ?? this.showTimestamp,
       timestamp: timestamp ?? this.timestamp,
       isLoading: isLoading ?? this.isLoading,
+      textStyle: textStyle ?? this.textStyle,
+      titleStyle: titleStyle ?? this.titleStyle,
     );
   }
 
@@ -150,6 +158,8 @@ class Toast extends Equatable {
         showTimestamp,
         timestamp,
         isLoading,
+        textStyle,
+        titleStyle,
       ];
 }
 

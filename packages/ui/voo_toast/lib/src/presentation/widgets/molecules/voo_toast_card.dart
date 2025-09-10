@@ -62,13 +62,13 @@ class VooToastCard extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: _getShadowColor().withValues(alpha: 0.25),
+            color: _getShadowColor(theme).withValues(alpha: 0.25),
             blurRadius: 30,
             offset: const Offset(0, 12),
             spreadRadius: -5,
           ),
           BoxShadow(
-            color: _getShadowColor().withValues(alpha: 0.15),
+            color: _getShadowColor(theme).withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(0, 6),
             spreadRadius: -3,
@@ -132,7 +132,7 @@ class VooToastCard extends StatelessWidget {
                           if (toast.title != null) ...[
                             Text(
                               toast.title!,
-                              style: theme.textTheme.titleSmall?.copyWith(
+                              style: toast.titleStyle ?? theme.textTheme.titleSmall?.copyWith(
                                 color: textColor,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -141,7 +141,7 @@ class VooToastCard extends StatelessWidget {
                           ],
                           Text(
                             toast.message,
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                            style: toast.textStyle ?? theme.textTheme.bodyMedium?.copyWith(
                               color: textColor,
                             ),
                           ),
@@ -225,75 +225,58 @@ class VooToastCard extends StatelessWidget {
   }
 
   LinearGradient? _getGradient() {
-    switch (toast.type) {
-      case ToastType.success:
-        return const LinearGradient(
-          colors: [Color(0xFF10B981), Color(0xFF059669)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-      case ToastType.error:
-        return const LinearGradient(
-          colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-      case ToastType.warning:
-        return const LinearGradient(
-          colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-      case ToastType.info:
-        return const LinearGradient(
-          colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
-      case ToastType.custom:
-        return null;
-    }
+    // Disable gradient when using theme colors to maintain consistency
+    return null;
   }
 
-  Color _getShadowColor() {
+  Color _getShadowColor(ThemeData theme) {
+    final colorScheme = theme.colorScheme;
+    
     switch (toast.type) {
       case ToastType.success:
-        return const Color(0xFF10B981);
+        return colorScheme.primary;
       case ToastType.error:
-        return const Color(0xFFEF4444);
+        return colorScheme.error;
       case ToastType.warning:
-        return const Color(0xFFF59E0B);
+        return colorScheme.tertiary;
       case ToastType.info:
-        return const Color(0xFF3B82F6);
+        return colorScheme.secondary;
       case ToastType.custom:
-        return Colors.black;
+        return colorScheme.shadow;
     }
   }
 
   Color _getBackgroundColor(ThemeData theme) {
+    final colorScheme = theme.colorScheme;
+    
     switch (toast.type) {
       case ToastType.success:
-        return const Color(0xFF10B981);
+        return colorScheme.primary;
       case ToastType.error:
-        return const Color(0xFFEF4444);
+        return colorScheme.error;
       case ToastType.warning:
-        return const Color(0xFFF59E0B);
+        return colorScheme.tertiary;
       case ToastType.info:
-        return const Color(0xFF3B82F6);
+        return colorScheme.secondary;
       case ToastType.custom:
-        return theme.colorScheme.surfaceContainer;
+        return colorScheme.surfaceContainer;
     }
   }
 
   Color _getTextColor(ThemeData theme) {
+    final colorScheme = theme.colorScheme;
+    
     switch (toast.type) {
       case ToastType.success:
+        return colorScheme.onPrimary;
       case ToastType.error:
+        return colorScheme.onError;
       case ToastType.warning:
+        return colorScheme.onTertiary;
       case ToastType.info:
-        return Colors.white;
+        return colorScheme.onSecondary;
       case ToastType.custom:
-        return theme.colorScheme.onSurface;
+        return colorScheme.onSurface;
     }
   }
 }

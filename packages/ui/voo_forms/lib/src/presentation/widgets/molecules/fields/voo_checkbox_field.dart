@@ -58,12 +58,21 @@ class VooCheckboxField extends VooFieldBase<bool> {
     if (isHidden) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final currentValue = initialValue ?? false;
-    final effectiveReadOnly = getEffectiveReadOnly(context);
-
+    
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
+    
+    // Get value from form controller if available, otherwise use initial value
+    final controllerValue = formController?.getValue(name);
+    final currentValue = controllerValue as bool? ?? initialValue ?? false;
+    
+    // If we have an initial value but the controller doesn't have it yet, set it
+    if (initialValue != null && controllerValue == null && formController != null) {
+      formController.setValue(name, initialValue);
+    }
+    
+    final effectiveReadOnly = getEffectiveReadOnly(context);
     
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);

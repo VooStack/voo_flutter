@@ -35,6 +35,44 @@ class ToastConfig extends Equatable {
     this.breakpointTablet = 900,
   });
 
+  factory ToastConfig.fromTheme(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return ToastConfig(
+      defaultDuration: const Duration(seconds: 3),
+      defaultPosition: ToastPosition.auto,
+      defaultAnimation: ToastAnimation.slideIn,
+      animationDuration: const Duration(milliseconds: 300),
+      maxToasts: 3,
+      queueMode: true,
+      dismissOnTap: true,
+      dismissDirection: DismissDirection.horizontal,
+      preventDuplicates: false,
+      defaultMargin: const EdgeInsets.all(16),
+      defaultPadding: const EdgeInsets.all(16),
+      defaultBorderRadius: BorderRadius.circular(12),
+      defaultElevation: theme.cardTheme.elevation ?? 4.0,
+      defaultMaxWidth: 400.0,
+      textStyle: theme.textTheme.bodyMedium,
+      titleStyle: theme.textTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.bold,
+      ),
+      iconSize: 24.0,
+      closeButtonSize: 20.0,
+      progressBarHeight: 3.0,
+      successColor: colorScheme.primary,
+      errorColor: colorScheme.error,
+      warningColor: colorScheme.tertiary,
+      infoColor: colorScheme.secondary,
+      mobilePosition: ToastPosition.bottom,
+      webPosition: ToastPosition.topRight,
+      tabletPosition: ToastPosition.topRight,
+      breakpointMobile: 600,
+      breakpointTablet: 900,
+    );
+  }
+
   final Duration defaultDuration;
   final ToastPosition defaultPosition;
   final ToastAnimation defaultAnimation;

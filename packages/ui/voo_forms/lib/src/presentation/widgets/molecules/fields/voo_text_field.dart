@@ -203,11 +203,19 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful>
     _effectiveController = widget.field.controller;
     if (_effectiveController == null && _formController != null) {
       // Get the current value from the form controller if it exists
+      // If no value in controller yet, use the field's initial value
       final currentValue = _formController!.getValue(widget.field.name);
+      final effectiveInitialValue = currentValue?.toString() ?? widget.field.initialValue;
+      
       _effectiveController = _formController!.registerTextController(
         widget.field.name, 
-        initialText: currentValue?.toString() ?? widget.field.initialValue,
+        initialText: effectiveInitialValue,
       );
+      
+      // If we have an initial value but the controller doesn't have it yet, set it
+      if (effectiveInitialValue != null && currentValue == null) {
+        _formController!.setValue(widget.field.name, effectiveInitialValue);
+      }
     }
     
     // Use provided focus node, get from form controller, or create internal one

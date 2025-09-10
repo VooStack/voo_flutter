@@ -1,3 +1,21 @@
+## [0.3.37] - 2025-01-10
+
+### Critical Bug Fixes
+- **Fixed initial value display issue**: Resolved form fields not displaying initial values until toggling to readonly mode
+  - Fields now properly sync with form controller on initialization
+  - VooTextField, VooDropdownField, VooCheckboxField, and VooMultiSelectField now correctly display initial values immediately
+  - Controller values are set during field initialization if not already present
+  - Preserves user input over new initial values during rebuilds
+- **Enhanced readonly mode display**: Improved field layout consistency in readonly mode
+  - All field types now use VooReadOnlyField for consistent readonly display
+  - Dropdown fields show selected value text instead of disabled dropdown
+  - Multi-select fields display comma-separated values in readonly mode
+  - Maintains proper label and spacing alignment across all field states
+- **Fixed controller synchronization**: Resolved timing issues between form controller and field widgets
+  - Added proper didChangeDependencies lifecycle handling for controller sync
+  - Ensures fields get values from controller before falling back to initial values
+  - Prevents double controller registration issues
+
 ## [0.3.36] - 2025-01-09
 
 ### Critical Focus Fix - KISS Solution

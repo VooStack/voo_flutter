@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/overlays/voo_dropdown_overlay.dart';
+import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 /// Internal stateful widget for multi-select field
@@ -32,6 +33,31 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
       context: context,
       layerLink: _layerLink,
     );
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Get the form controller from scope if available
+    final formScope = VooFormScope.of(context);
+    final formController = formScope?.controller;
+    
+    if (formController != null) {
+      // Get value from form controller if available
+      final currentValue = formController.getValue(widget.field.name);
+      
+      if (currentValue != null) {
+        // Use the value from the controller
+        setState(() {
+          _selectedValues = List<T>.from(currentValue as List<T>? ?? []);
+        });
+      } else if (widget.field.initialValue != null) {
+        // If controller doesn't have a value but field has initial value, set it
+        _selectedValues = List<T>.from(widget.field.initialValue!);
+        formController.setValue(widget.field.name, _selectedValues);
+      }
+    }
   }
 
   @override
@@ -324,6 +350,26 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
   @override
   Widget build(BuildContext context) {
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
+
+    // If read-only, show VooReadOnlyField for better UX
+    if (effectiveReadOnly) {
+      final displayValue = _selectedValues.isEmpty 
+          ? ''
+          : _selectedValues.map(_getDisplayText).join(', ');
+      
+      Widget readOnlyContent = VooReadOnlyField(
+        value: displayValue,
+        icon: widget.field.prefixIcon ?? widget.field.suffixIcon,
+      );
+      
+      // Apply standard field building pattern
+      readOnlyContent = widget.field.buildWithHelper(context, readOnlyContent);
+      readOnlyContent = widget.field.buildWithError(context, readOnlyContent);
+      readOnlyContent = widget.field.buildWithLabel(context, readOnlyContent);
+      readOnlyContent = widget.field.buildWithActions(context, readOnlyContent);
+      
+      return widget.field.buildFieldContainer(context, readOnlyContent);
+    }
 
     // Get the error for this field
     final fieldError = widget.field.getFieldError(context);

@@ -1,3 +1,30 @@
+## [0.0.4] - 2024-01-10
+
+### Added
+- **Theme Integration**: Toast now automatically uses `Theme.of(context)` colors by default
+  - New `ToastConfig.fromTheme(context)` factory constructor for theme-aware configuration
+  - Toast colors automatically adapt to Material 3 color scheme (primary, error, tertiary, secondary)
+  - Text colors properly contrast with backgrounds using theme's onPrimary, onError, etc.
+  - Text styles default to theme's textTheme.bodyMedium and titleSmall
+  - Card elevation follows theme's cardTheme.elevation
+
+### Changed
+- **Improved Singleton Pattern**: VooToastController now implements proper singleton pattern
+  - Factory constructor ensures single instance
+  - New `reset()` method for testing and cleanup
+  - Better initialization with theme-aware defaults
+- **Enhanced Theme Support**: Removed hardcoded colors in favor of theme consistency
+  - Success toasts use colorScheme.primary
+  - Error toasts use colorScheme.error  
+  - Warning toasts use colorScheme.tertiary
+  - Info toasts use colorScheme.secondary
+  - Custom toasts use colorScheme.surfaceContainer
+- Toast entity now supports textStyle and titleStyle properties
+
+### Fixed
+- Fixed singleton initialization issues with proper factory constructor
+- Improved memory management with proper disposal
+
 ## [0.0.3] - 2024-01-10
 
 ### Added
