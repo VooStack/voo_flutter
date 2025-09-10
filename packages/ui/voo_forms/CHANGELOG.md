@@ -1,3 +1,11 @@
+## [0.3.39] - 2025-01-10
+
+### Bug Fixes
+- **Fixed setState during build with VooListField**: Resolved "setState() or markNeedsBuild() called during build" error when using VooListField with dynamically created VooTextField items
+  - Deferred initial value setting in VooTextField using `addPostFrameCallback` to prevent setState during build phase
+  - Ensures proper initialization of form fields created dynamically within itemBuilder callbacks
+  - Allows VooListField to create form fields without triggering build-time setState errors
+
 ## [0.3.38] - 2025-01-10
 
 ### Critical Fixes

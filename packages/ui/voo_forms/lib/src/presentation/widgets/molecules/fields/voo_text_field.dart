@@ -212,9 +212,14 @@ class _VooTextFieldStatefulState extends State<_VooTextFieldStateful>
         initialText: effectiveInitialValue,
       );
       
-      // If we have an initial value but the controller doesn't have it yet, set it
+      // If we have an initial value but the controller doesn't have it yet, defer setting it
+      // to avoid setState during build
       if (effectiveInitialValue != null && currentValue == null) {
-        _formController!.setValue(widget.field.name, effectiveInitialValue, isUserInput: false);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _formController != null) {
+            _formController!.setValue(widget.field.name, effectiveInitialValue, isUserInput: false);
+          }
+        });
       }
     }
     
