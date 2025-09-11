@@ -115,22 +115,17 @@ class ToastExamplePage extends StatelessWidget {
                   'Success Future (2s)',
                   Colors.green,
                   () async {
-                    try {
-                      final result = await VooToast.showFutureToast<String>(
-                        future: Future.delayed(
-                          const Duration(seconds: 2),
-                          () => 'Data loaded successfully!',
-                        ),
-                        loadingMessage: 'Loading data...',
-                        loadingTitle: 'Please wait',
-                        successMessage: (result) => 'Loaded: $result',
-                        successTitle: 'Success',
-                        context: context,
-                      );
-                      print('Future result: $result');
-                    } catch (e) {
-                      print('Future error: $e');
-                    }
+                    await VooToast.showFutureToast<String>(
+                      future: Future.delayed(
+                        const Duration(seconds: 2),
+                        () => 'Data loaded successfully!',
+                      ),
+                      loadingMessage: 'Loading data...',
+                      loadingTitle: 'Please wait',
+                      successMessage: (result) => 'Loaded: $result',
+                      successTitle: 'Success',
+                      context: context,
+                    );
                   },
                 ),
                 _buildButton(
@@ -150,7 +145,7 @@ class ToastExamplePage extends StatelessWidget {
                         context: context,
                       );
                     } catch (e) {
-                      print('Expected error: $e');
+                      // Expected error: $e
                     }
                   },
                 ),
@@ -161,7 +156,7 @@ class ToastExamplePage extends StatelessWidget {
                     await VooToast.showFutureToast<void>(
                       future: Future.delayed(
                         const Duration(seconds: 3),
-                        () => print('Silent operation completed'),
+                        () {/* Silent operation completed */},
                       ),
                       loadingMessage: 'Processing...',
                       showSuccessToast: false,
@@ -186,7 +181,7 @@ class ToastExamplePage extends StatelessWidget {
                   'With Result Data',
                   Colors.indigo,
                   () async {
-                    final data = await VooToast.showFutureToast<Map<String, dynamic>>(
+                    await VooToast.showFutureToast<Map<String, dynamic>>(
                       future: Future.delayed(
                         const Duration(seconds: 2),
                         () => {'items': 42, 'status': 'active'},
@@ -195,7 +190,6 @@ class ToastExamplePage extends StatelessWidget {
                       successMessage: (result) => 'Found ${result['items']} items (${result['status']})',
                       context: context,
                     );
-                    print('Data received: $data');
                   },
                 ),
               ],
@@ -266,14 +260,14 @@ class ToastExamplePage extends StatelessWidget {
                     context: context,
                     content: Container(
                       padding: const EdgeInsets.all(16),
-                      child: Row(
+                      child: const Row(
                         children: [
-                          const CircularProgressIndicator(
+                          CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation(Colors.white),
                           ),
-                          const SizedBox(width: 16),
-                          const Text(
+                          SizedBox(width: 16),
+                          Text(
                             'Loading...',
                             style: TextStyle(color: Colors.white),
                           ),
@@ -292,8 +286,8 @@ class ToastExamplePage extends StatelessWidget {
                     content: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: const [Colors.purple, Colors.pink],
+                        gradient: const LinearGradient(
+                          colors: [Colors.purple, Colors.pink],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -356,13 +350,11 @@ class ToastExamplePage extends StatelessWidget {
                     Future.delayed(const Duration(milliseconds: 500), () {
                       VooToast.showInfo(
                         message: 'Second toast',
-                        context: context,
                       );
                     });
                     Future.delayed(const Duration(seconds: 1), () {
                       VooToast.showWarning(
                         message: 'Third toast',
-                        context: context,
                       );
                     });
                   },

@@ -1,3 +1,14 @@
+## [0.3.44] - 2025-01-10
+
+### Improvements
+- **Enhanced dropdown fields with native subtitle support**: Improved option display with subtitle functionality
+  - Added `subtitleBuilder` parameter to VooDropdownField, VooAsyncDropdownField, and VooMultiSelectField
+  - VooDropdownSearchField now renders subtitles as proper secondary text below the title
+  - VooMultiSelectField displays subtitles in ListTile format for better visual hierarchy
+  - VooOption widget subtitle now works as an actual subtitle instead of being concatenated with title
+  - Follows Material Design guidelines for two-line list items with primary and secondary text
+  - All dropdown variants support custom subtitle text for enhanced user context
+
 ## [0.3.43] - 2025-01-10
 
 ### Bug Fixes

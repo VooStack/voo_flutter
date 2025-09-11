@@ -67,21 +67,19 @@ void main() {
             ),
             home: VooToastOverlay(
               child: Builder(
-                builder: (context) {
-                  return Scaffold(
-                    body: Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          VooToast.showSuccess(
-                            message: 'Success message',
-                            context: context,
-                          );
-                        },
-                        child: const Text('Show Toast'),
+                builder: (context) => Scaffold(
+                      body: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            VooToast.showSuccess(
+                              message: 'Success message',
+                              context: context,
+                            );
+                          },
+                          child: const Text('Show Toast'),
+                        ),
                       ),
                     ),
-                  );
-                },
               ),
             ),
           ),
@@ -167,51 +165,49 @@ void main() {
             ),
             home: VooToastOverlay(
               child: Builder(
-                builder: (context) {
-                  return Scaffold(
-                    body: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            VooToast.showSuccess(
-                              message: 'Theme success',
-                              context: context,
-                            );
-                          },
-                          child: const Text('Success'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            VooToast.showError(
-                              message: 'Theme error',
-                              context: context,
-                            );
-                          },
-                          child: const Text('Error'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            VooToast.showWarning(
-                              message: 'Theme warning',
-                              context: context,
-                            );
-                          },
-                          child: const Text('Warning'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            VooToast.showInfo(
-                              message: 'Theme info',
-                              context: context,
-                            );
-                          },
-                          child: const Text('Info'),
-                        ),
-                      ],
+                builder: (context) => Scaffold(
+                      body: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              VooToast.showSuccess(
+                                message: 'Theme success',
+                                context: context,
+                              );
+                            },
+                            child: const Text('Success'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              VooToast.showError(
+                                message: 'Theme error',
+                                context: context,
+                              );
+                            },
+                            child: const Text('Error'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              VooToast.showWarning(
+                                message: 'Theme warning',
+                                context: context,
+                              );
+                            },
+                            child: const Text('Warning'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              VooToast.showInfo(
+                                message: 'Theme info',
+                                context: context,
+                              );
+                            },
+                            child: const Text('Info'),
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                },
               ),
             ),
           ),
@@ -267,21 +263,19 @@ void main() {
             theme: ThemeData.dark(),
             home: VooToastOverlay(
               child: Builder(
-                builder: (context) {
-                  return Scaffold(
-                    body: Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          VooToast.showInfo(
-                            message: 'Dark theme toast',
-                            context: context,
-                          );
-                        },
-                        child: const Text('Show Dark Toast'),
+                builder: (context) => Scaffold(
+                      body: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            VooToast.showInfo(
+                              message: 'Dark theme toast',
+                              context: context,
+                            );
+                          },
+                          child: const Text('Show Dark Toast'),
+                        ),
                       ),
                     ),
-                  );
-                },
               ),
             ),
           ),

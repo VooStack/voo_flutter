@@ -323,13 +323,23 @@ class VooToastController {
       // Show success toast if configured
       if (showSuccessToast) {
         final message = successMessage?.call(result) ?? 'Operation completed successfully';
-        showSuccess(
-          message: message,
-          title: successTitle,
-          duration: successDuration,
-          position: position,
-          context: context,
-        );
+        // Check if context is still valid before using it
+        if (context != null && context.mounted) {
+          showSuccess(
+            message: message,
+            title: successTitle,
+            duration: successDuration,
+            position: position,
+            context: context,
+          );
+        } else {
+          showSuccess(
+            message: message,
+            title: successTitle,
+            duration: successDuration,
+            position: position,
+          );
+        }
       }
 
       return result;
@@ -340,13 +350,23 @@ class VooToastController {
       // Show error toast if configured
       if (showErrorToast) {
         final message = errorMessage?.call(error) ?? error.toString();
-        showError(
-          message: message,
-          title: errorTitle ?? 'Error',
-          duration: errorDuration,
-          position: position,
-          context: context,
-        );
+        // Check if context is still valid before using it
+        if (context != null && context.mounted) {
+          showError(
+            message: message,
+            title: errorTitle ?? 'Error',
+            duration: errorDuration,
+            position: position,
+            context: context,
+          );
+        } else {
+          showError(
+            message: message,
+            title: errorTitle ?? 'Error',
+            duration: errorDuration,
+            position: position,
+          );
+        }
       }
 
       rethrow;

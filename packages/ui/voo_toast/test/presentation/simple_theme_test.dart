@@ -70,20 +70,18 @@ void main() {
           home: VooToastOverlay(
             child: Scaffold(
               body: Builder(
-                builder: (context) {
-                  return Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Show toast with context - should use theme colors
-                        VooToast.showSuccess(
-                          message: 'Test message',
-                          context: context,
-                        );
-                      },
-                      child: const Text('Show Toast'),
+                builder: (context) => Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Show toast with context - should use theme colors
+                          VooToast.showSuccess(
+                            message: 'Test message',
+                            context: context,
+                          );
+                        },
+                        child: const Text('Show Toast'),
+                      ),
                     ),
-                  );
-                },
               ),
             ),
           ),

@@ -213,88 +213,90 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('queue mode integration', (WidgetTester tester) async {
-      // TODO: Queue mode needs further investigation - skipping for now
-      return;
-      // Reset and initialize with queue mode enabled
-      VooToastController.reset();
-      VooToastController.init(
-        config: const ToastConfig(
-          maxToasts: 1,
-          queueMode: true,  // Ensure queue mode is enabled
-        ),
-      );
+    testWidgets(
+      'queue mode integration',
+      (WidgetTester tester) async {
+        // Reset and initialize with queue mode enabled
+        VooToastController.reset();
+        VooToastController.init(
+          config: const ToastConfig(
+            maxToasts: 1,
+            // queueMode is true by default
+          ),
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: VooToastOverlay(
-            child: Builder(
-              builder: (context) => Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          VooToast.showInfo(
-                            message: 'First toast',
-                            duration: const Duration(milliseconds: 500),
-                            context: context,
-                          );
-                          VooToast.showInfo(
-                            message: 'Second toast',
-                            duration: const Duration(milliseconds: 500),
-                            context: context,
-                          );
-                          VooToast.showInfo(
-                            message: 'Third toast',
-                            duration: const Duration(milliseconds: 500),
-                            context: context,
-                          );
-                        },
-                        child: const Text('Queue Toasts'),
-                      ),
-                    ],
+        await tester.pumpWidget(
+          MaterialApp(
+            home: VooToastOverlay(
+              child: Builder(
+                builder: (context) => Scaffold(
+                  body: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            VooToast.showInfo(
+                              message: 'First toast',
+                              duration: const Duration(milliseconds: 500),
+                              context: context,
+                            );
+                            VooToast.showInfo(
+                              message: 'Second toast',
+                              duration: const Duration(milliseconds: 500),
+                              context: context,
+                            );
+                            VooToast.showInfo(
+                              message: 'Third toast',
+                              duration: const Duration(milliseconds: 500),
+                              context: context,
+                            );
+                          },
+                          child: const Text('Queue Toasts'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      // Queue multiple toasts
-      await tester.tap(find.text('Queue Toasts'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 350));
+        // Queue multiple toasts
+        await tester.tap(find.text('Queue Toasts'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 350));
 
-      // Only first toast should be visible
-      expect(find.text('First toast'), findsOneWidget);
-      expect(find.text('Second toast'), findsNothing);
-      expect(find.text('Third toast'), findsNothing);
+        // Only first toast should be visible
+        expect(find.text('First toast'), findsOneWidget);
+        expect(find.text('Second toast'), findsNothing);
+        expect(find.text('Third toast'), findsNothing);
 
-      // Wait for first toast to auto-dismiss
-      await tester.pump(const Duration(milliseconds: 500)); // Toast duration
-      await tester.pumpAndSettle(); // Let animations complete
+        // Wait for first toast to auto-dismiss
+        await tester.pump(const Duration(milliseconds: 500)); // Toast duration
+        await tester.pumpAndSettle(); // Let animations complete
 
-      // Second toast should now be visible
-      expect(find.text('First toast'), findsNothing);
-      expect(find.text('Second toast'), findsOneWidget);
-      expect(find.text('Third toast'), findsNothing);
+        // Second toast should now be visible
+        expect(find.text('First toast'), findsNothing);
+        expect(find.text('Second toast'), findsOneWidget);
+        expect(find.text('Third toast'), findsNothing);
 
-      // Wait for second toast to auto-dismiss
-      await tester.pump(const Duration(milliseconds: 500)); // Toast duration
-      await tester.pumpAndSettle(); // Let animations complete
+        // Wait for second toast to auto-dismiss
+        await tester.pump(const Duration(milliseconds: 500)); // Toast duration
+        await tester.pumpAndSettle(); // Let animations complete
 
-      // Third toast should now be visible
-      expect(find.text('First toast'), findsNothing);
-      expect(find.text('Second toast'), findsNothing);
-      expect(find.text('Third toast'), findsOneWidget);
-      
-      // Clean up
-      VooToast.dismissAll();
-      await tester.pumpAndSettle();
-    });
+        // Third toast should now be visible
+        expect(find.text('First toast'), findsNothing);
+        expect(find.text('Second toast'), findsNothing);
+        expect(find.text('Third toast'), findsOneWidget);
+        
+        // Clean up
+        VooToast.dismissAll();
+        await tester.pumpAndSettle();
+      },
+      skip: true, // Queue mode needs further investigation
+    );
 
     testWidgets('responsive positioning integration', (WidgetTester tester) async {
       // Set up different screen sizes
