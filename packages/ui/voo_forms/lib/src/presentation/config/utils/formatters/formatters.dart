@@ -8,6 +8,7 @@ export 'mask_formatter.dart';
 export 'pattern_formatter.dart';
 export 'percentage_formatter.dart';
 export 'phone_number_formatter.dart';
+export 'simple_currency_formatter.dart';
 export 'ssn_formatter.dart';
 export 'strict_number_formatter.dart';
 export 'voo_formatters.dart';

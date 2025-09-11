@@ -8,6 +8,7 @@ class VooDropdownSearchField<T> extends StatefulWidget {
   final List<T> items;
   final T? value;
   final String Function(T)? displayTextBuilder;
+  final String Function(T)? subtitleBuilder;
   final ValueChanged<T?>? onChanged;
   final String? hint;
   final bool enabled;
@@ -24,6 +25,7 @@ class VooDropdownSearchField<T> extends StatefulWidget {
     required this.items,
     this.value,
     this.displayTextBuilder,
+    this.subtitleBuilder,
     this.onChanged,
     this.hint,
     this.enabled = true,
@@ -310,7 +312,9 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
                                 );
                               }
 
-                              // Default option rendering
+                              // Default option rendering with subtitle support
+                              final subtitle = widget.subtitleBuilder?.call(item);
+                              
                               return InkWell(
                                 onTap: () => _selectItem(item),
                                 child: Container(
@@ -319,12 +323,37 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
                                   child: Row(
                                     children: [
                                       Expanded(
-                                        child: Text(
-                                          displayText,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            color: isSelected ? theme.colorScheme.primary : null,
-                                          ),
-                                        ),
+                                        child: subtitle != null
+                                            ? Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    displayText,
+                                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                                      color: isSelected ? theme.colorScheme.primary : null,
+                                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  const SizedBox(height: 2),
+                                                  Text(
+                                                    subtitle,
+                                                    style: theme.textTheme.bodySmall?.copyWith(
+                                                      color: theme.colorScheme.onSurfaceVariant,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              )
+                                            : Text(
+                                                displayText,
+                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                  color: isSelected ? theme.colorScheme.primary : null,
+                                                ),
+                                              ),
                                       ),
                                       if (isSelected)
                                         Icon(

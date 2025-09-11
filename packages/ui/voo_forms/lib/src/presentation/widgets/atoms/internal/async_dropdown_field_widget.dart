@@ -66,6 +66,7 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
       items: const [], // Empty initial items, async search will load them
       value: _selectedValue,
       displayTextBuilder: widget.field.displayTextBuilder,
+      subtitleBuilder: widget.field.subtitleBuilder,
       onChanged: widget.field.enabled && !effectiveReadOnly ? handleChanged : null,
       hint: widget.field.placeholder ?? widget.field.hint,
       enabled: widget.field.enabled && !effectiveReadOnly,

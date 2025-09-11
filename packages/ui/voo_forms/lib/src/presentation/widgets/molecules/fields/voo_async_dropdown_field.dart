@@ -12,6 +12,9 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
   /// Display text converter for options
   final String Function(T)? displayTextBuilder;
 
+  /// Subtitle text converter for options
+  final String Function(T)? subtitleBuilder;
+
   /// Icon for the dropdown arrow
   final Widget? dropdownIcon;
 
@@ -60,6 +63,7 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
     super.minHeight,
     super.maxHeight,
     this.displayTextBuilder,
+    this.subtitleBuilder,
     this.dropdownIcon,
     this.maxDropdownHeight,
     this.isExpanded = true,
@@ -106,6 +110,7 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
         error: error,
         showError: showError,
         displayTextBuilder: displayTextBuilder,
+        subtitleBuilder: subtitleBuilder,
         dropdownIcon: dropdownIcon,
         maxDropdownHeight: maxDropdownHeight,
         isExpanded: isExpanded,

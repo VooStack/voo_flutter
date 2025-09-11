@@ -94,18 +94,18 @@ class VooNumberField extends VooFieldBase<num> {
           displayValue = initialValue.toString();
         }
       }
-      
+
       Widget readOnlyContent = VooReadOnlyField(
         value: displayValue,
         icon: prefixIcon ?? suffixIcon,
       );
-      
+
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
       readOnlyContent = buildWithError(context, readOnlyContent);
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
-      
+
       return buildFieldContainer(context, readOnlyContent);
     }
 
@@ -171,31 +171,30 @@ class _VooNumberFieldStateful extends StatefulWidget {
   State<_VooNumberFieldStateful> createState() => _VooNumberFieldStatefulState();
 }
 
-class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> 
-    with AutomaticKeepAliveClientMixin {
+class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> with AutomaticKeepAliveClientMixin {
   FocusNode? _effectiveFocusNode;
   FocusNode? _internalFocusNode;
   VooFormController? _formController;
-  
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     _formController = formScope?.controller;
-    
+
     // Initialize or update controllers
     _initializeControllers();
   }
-  
+
   @override
   void didUpdateWidget(_VooNumberFieldStateful oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // If the field name changed, we need to get the correct controller
     if (oldWidget.field.name != widget.field.name) {
       _initializeControllers();
@@ -214,7 +213,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
       _effectiveFocusNode = _internalFocusNode;
     }
   }
-  
+
   @override
   void dispose() {
     _internalFocusNode?.dispose();
@@ -224,7 +223,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
-    
+
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String text) {
       final numValue = num.tryParse(text);
@@ -232,10 +231,9 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
       if (_formController != null) {
         // Check if we should validate based on error display mode and current error state
         final hasError = _formController!.hasError(widget.field.name);
-        final shouldValidate = hasError || 
-            _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
-            _formController!.validationMode == FormValidationMode.onChange;
-        
+        final shouldValidate =
+            hasError || _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping || _formController!.validationMode == FormValidationMode.onChange;
+
         _formController!.setValue(widget.field.name, numValue, validate: shouldValidate);
       }
       // Call user's onChanged if provided
@@ -249,12 +247,12 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
         builder: (context, child) {
           // Get the current error from the form controller
           final error = _formController!.getError(widget.field.name);
-          
+
           // Create decoration with error text included
           final decoration = widget.field.getInputDecoration(context).copyWith(
-            errorText: widget.field.showError != false ? error : null,
-          );
-          
+                errorText: widget.field.showError != false ? error : null,
+              );
+
           // Build the number input widget with the error in the decoration
           final numberInput = VooNumberInput(
             controller: widget.field.controller,
@@ -279,10 +277,10 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
             signed: widget.field.allowNegative,
             decimal: widget.field.allowDecimals,
           );
-          
+
           // Apply height constraints to the input widget
           final constrainedInput = widget.field.applyInputHeightConstraints(numberInput);
-          
+
           // Build with label, helper, and actions (but NOT error - it's in the decoration now)
           return widget.field.buildFieldContainer(
             context,
@@ -300,7 +298,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
         },
       );
     }
-    
+
     // If no form controller, build without AnimatedBuilder
     final numberInput = VooNumberInput(
       controller: widget.field.controller,
@@ -322,15 +320,15 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful>
       enabled: widget.field.enabled,
       autofocus: widget.field.autofocus,
       decoration: widget.field.getInputDecoration(context).copyWith(
-        errorText: widget.field.showError != false ? widget.field.error : null,
-      ),
+            errorText: widget.field.showError != false ? widget.field.error : null,
+          ),
       signed: widget.field.allowNegative,
       decimal: widget.field.allowDecimals,
     );
-    
+
     // Apply height constraints to the input widget
     final constrainedInput = widget.field.applyInputHeightConstraints(numberInput);
-    
+
     return widget.field.buildFieldContainer(
       context,
       widget.field.buildWithLabel(

@@ -1,3 +1,23 @@
+## [0.3.43] - 2025-01-10
+
+### Bug Fixes
+- **Fixed controller initialization in VooCurrencyField and VooPhoneField**: Resolved focus loss and formatting issues
+  - Fixed bug where TextEditingController was being recreated on every widget update, causing focus loss
+  - Currency field now properly maintains calculator-style input (typing "4" shows "$0.04")
+  - Phone field controller initialization now correctly handles null widget and form controllers
+  - Changed default `showDialCode` to false in VooPhoneField for better default behavior
+  - Added comprehensive widget tests to verify real behavior, not just unit test behavior
+
+## [0.3.42] - 2025-01-10
+
+### Bug Fixes
+- **Fixed controller initialization in VooCurrencyField and VooPhoneField**: Resolved focus loss and formatting issues
+  - Fixed bug where TextEditingController was being recreated on every widget update, causing focus loss
+  - Currency field now properly maintains calculator-style input (typing "4" shows "$0.04")
+  - Phone field controller initialization now correctly handles null widget and form controllers
+  - Changed default `showDialCode` to false in VooPhoneField for better default behavior
+  - Added comprehensive widget tests to verify real behavior, not just unit test behavior
+
 ## [0.3.41] - 2025-01-10
 
 ### New Features

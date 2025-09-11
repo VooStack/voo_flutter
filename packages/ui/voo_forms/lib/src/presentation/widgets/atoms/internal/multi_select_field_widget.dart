@@ -327,7 +327,9 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
           );
         }
         
-        // Default option rendering
+        // Default option rendering with subtitle support
+        final subtitle = widget.field.subtitleBuilder?.call(item);
+        
         return ListTile(
           dense: true,
           leading: Checkbox(
@@ -341,6 +343,14 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
+          subtitle: subtitle != null ? Text(
+            subtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ) : null,
           onTap: () => _handleSelectionChange(item),
           selected: isSelected,
           selectedTileColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),

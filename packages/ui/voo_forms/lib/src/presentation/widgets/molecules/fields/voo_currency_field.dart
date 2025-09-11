@@ -311,12 +311,15 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
     // Initialize currency formatter once (persistent across keystrokes)
     _currencyFormatter ??= widget.field._getCurrencyFormatter();
     
-    // Create controller if not provided
-    _effectiveController = widget.field.controller ?? TextEditingController();
-    
-    // Set initial value if provided
-    if (widget.field.controller == null && widget.field.initialValue != null) {
-      _effectiveController!.text = widget.field._formatCurrencyValue(widget.field.initialValue!);
+    // Create controller if not provided (only create if we don't already have one)
+    if (widget.field.controller != null) {
+      _effectiveController = widget.field.controller;
+    } else if (_effectiveController == null) {
+      _effectiveController = TextEditingController();
+      // Set initial value if provided
+      if (widget.field.initialValue != null) {
+        _effectiveController!.text = widget.field._formatCurrencyValue(widget.field.initialValue!);
+      }
     }
     
     // Use provided focus node or get one from form controller if available

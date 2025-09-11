@@ -65,7 +65,7 @@ class VooPhoneField extends VooFieldBase<String> {
     this.onSubmitted,
     this.autofocus = false,
     this.defaultCountryCode,
-    this.showDialCode = true,
+    this.showDialCode = false,
     this.allowCountrySelection = true,
     this.onCountryChanged,
   });
@@ -198,8 +198,9 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful>
   
   void _initializeControllers() {
     // Use provided controller or get one from form controller if available
-    _effectiveController = widget.field.controller;
-    if (_effectiveController == null && _formController != null) {
+    if (widget.field.controller != null) {
+      _effectiveController = widget.field.controller;
+    } else if (_formController != null) {
       // Get the current value from the form controller if it exists
       final currentValue = _formController!.getValue(widget.field.name);
       final effectiveInitialValue = currentValue?.toString() ?? widget.field.initialValue;
@@ -217,6 +218,9 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful>
           }
         });
       }
+    } else if (_effectiveController == null) {
+      // Create our own controller if we don't have one yet
+      _effectiveController = TextEditingController(text: widget.field.initialValue);
     }
     
     // Use provided focus node, get from form controller, or create internal one

@@ -12,6 +12,9 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
   /// Display text converter for options
   final String Function(T)? displayTextBuilder;
 
+  /// Subtitle text converter for options
+  final String Function(T)? subtitleBuilder;
+
   /// Icon for the dropdown arrow
   final Widget? dropdownIcon;
 
@@ -69,6 +72,7 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
     super.minHeight,
     super.maxHeight,
     this.displayTextBuilder,
+    this.subtitleBuilder,
     this.dropdownIcon,
     this.maxDropdownHeight,
     this.isExpanded = true,
@@ -118,6 +122,7 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
         error: error,
         showError: showError,
         displayTextBuilder: displayTextBuilder,
+        subtitleBuilder: subtitleBuilder,
         dropdownIcon: dropdownIcon,
         maxDropdownHeight: maxDropdownHeight,
         isExpanded: isExpanded,
@@ -127,5 +132,6 @@ class VooMultiSelectField<T> extends VooFieldBase<List<T>> {
         maxChipsDisplay: maxChipsDisplay,
         showClearAll: showClearAll,
         showSelectAll: showSelectAll,
+        optionBuilder: optionBuilder,
       );
 }
