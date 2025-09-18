@@ -3,9 +3,10 @@ import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/operator_selector.dart';
+import 'package:voo_data_grid/src/utils/debouncer.dart';
 
 /// A molecule component for text filter input with operator selector support
-class TextFilter<T> extends StatelessWidget {
+class TextFilter<T> extends StatefulWidget {
   /// The column configuration
   final VooDataColumn<T> column;
 
@@ -31,46 +32,72 @@ class TextFilter<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final controller = textControllers.putIfAbsent(
-      column.field,
-      () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
+  State<TextFilter<T>> createState() => _TextFilterState<T>();
+}
+
+class _TextFilterState<T> extends State<TextFilter<T>> {
+  late Debouncer _debouncer;
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _debouncer = Debouncer();
+    _controller = widget.textControllers.putIfAbsent(
+      widget.column.field,
+      () => TextEditingController(text: widget.currentFilter?.value?.toString() ?? ''),
     );
+  }
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
+  }
+
+  void _handleChange(String value) {
+    _debouncer.run(() {
+      widget.onFilterChanged(value.isEmpty ? null : value);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Row(
       children: [
-        if (column.showFilterOperator)
+        if (widget.column.showFilterOperator)
           OperatorSelector<T>(
-            column: column,
-            currentFilter: currentFilter,
+            column: widget.column,
+            currentFilter: widget.currentFilter,
             onOperatorChanged: (operator) {
               // Apply filter with new operator but keep current value
-              onFilterChanged({
+              widget.onFilterChanged({
                 'operator': operator,
-                'value': currentFilter?.value,
-                'valueTo': currentFilter?.valueTo,
+                'value': widget.currentFilter?.value,
+                'valueTo': widget.currentFilter?.valueTo,
               });
             },
           ),
         Expanded(
           child: TextField(
-            controller: controller,
+            controller: _controller,
             decoration: FilterInputDecoration.standard(
               context: context,
-              hintText: column.filterHint ?? 'Filter...',
-              suffixIcon: currentFilter != null
+              hintText: widget.column.filterHint ?? 'Filter...',
+              suffixIcon: widget.currentFilter != null
                   ? InkWell(
                       onTap: () {
-                        controller.clear();
-                        onFilterCleared();
+                        _controller.clear();
+                        widget.onFilterCleared();
                       },
                       child: Icon(Icons.clear, size: 16, color: theme.iconTheme.color),
                     )
                   : null,
             ),
             style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-            onChanged: (value) => onFilterChanged(value.isEmpty ? null : value),
+            onChanged: _handleChange,
           ),
         ),
       ],

@@ -3,9 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/filter_input_decoration.dart';
+import 'package:voo_data_grid/src/utils/debouncer.dart';
 
 /// A molecule component for number filter input
-class NumberFilter<T> extends StatelessWidget {
+class NumberFilter<T> extends StatefulWidget {
   /// The column configuration
   final VooDataColumn<T> column;
   
@@ -31,23 +32,54 @@ class NumberFilter<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final controller = textControllers.putIfAbsent(
-      column.field,
-      () => TextEditingController(text: currentFilter?.value?.toString() ?? ''),
+  State<NumberFilter<T>> createState() => _NumberFilterState<T>();
+}
+
+class _NumberFilterState<T> extends State<NumberFilter<T>> {
+  late Debouncer _debouncer;
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _debouncer = Debouncer();
+    _controller = widget.textControllers.putIfAbsent(
+      widget.column.field,
+      () => TextEditingController(text: widget.currentFilter?.value?.toString() ?? ''),
     );
+  }
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
+  }
+
+  void _handleChange(String value) {
+    _debouncer.run(() {
+      if (value.isEmpty) {
+        widget.onFilterChanged(null);
+      } else {
+        final number = num.tryParse(value);
+        widget.onFilterChanged(number);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return TextField(
-      controller: controller,
+      controller: _controller,
       decoration: FilterInputDecoration.standard(
         context: context,
-        hintText: column.filterHint ?? 'Number...',
-        suffixIcon: currentFilter != null
+        hintText: widget.column.filterHint ?? 'Number...',
+        suffixIcon: widget.currentFilter != null
             ? InkWell(
                 onTap: () {
-                  controller.clear();
-                  onFilterCleared();
+                  _controller.clear();
+                  widget.onFilterCleared();
                 },
                 child: Icon(Icons.clear, size: 16, color: theme.iconTheme.color),
               )
@@ -58,10 +90,7 @@ class NumberFilter<T> extends StatelessWidget {
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
       ],
-      onChanged: (value) {
-        final number = num.tryParse(value);
-        onFilterChanged(number);
-      },
+      onChanged: _handleChange,
     );
   }
 }

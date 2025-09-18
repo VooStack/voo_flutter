@@ -82,6 +82,9 @@ class VooDataGrid<T> extends StatelessWidget {
   /// When false, primary filters are tracked separately
   final bool combineFiltersAndPrimaryFilters;
 
+  /// Callback for refresh action
+  final VoidCallback? onRefresh;
+
   const VooDataGrid({
     super.key,
     required this.controller,
@@ -107,6 +110,7 @@ class VooDataGrid<T> extends StatelessWidget {
     this.onPrimaryFilterChanged,
     this.showPrimaryFilters = false,
     this.combineFiltersAndPrimaryFilters = true,
+    this.onRefresh,
   });
 
   @override
@@ -134,5 +138,6 @@ class VooDataGrid<T> extends StatelessWidget {
         onPrimaryFilterChanged: onPrimaryFilterChanged,
         showPrimaryFilters: showPrimaryFilters,
         combineFiltersAndPrimaryFilters: combineFiltersAndPrimaryFilters,
+        onRefresh: onRefresh,
       );
 }

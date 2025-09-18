@@ -203,6 +203,7 @@ class VooDataGridStateless<T> extends StatelessWidget {
       onPrimaryFilterChanged: onPrimaryFilterChanged,
       showPrimaryFilters: showPrimaryFilters,
       combineFiltersAndPrimaryFilters: combineFiltersAndPrimaryFilters,
+      onRefresh: onRefresh,
     );
   }
 }

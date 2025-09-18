@@ -81,6 +81,9 @@ class DataGridCore<T> extends StatefulWidget {
   /// When false, primary filters are tracked separately
   final bool combineFiltersAndPrimaryFilters;
 
+  /// Callback for refresh action
+  final VoidCallback? onRefresh;
+
   const DataGridCore({
     super.key,
     required this.controller,
@@ -106,6 +109,7 @@ class DataGridCore<T> extends StatefulWidget {
     this.onPrimaryFilterChanged,
     this.showPrimaryFilters = false,
     this.combineFiltersAndPrimaryFilters = true,
+    this.onRefresh,
   });
 
   @override
@@ -180,7 +184,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                   Column(
                     children: [
                       DataGridToolbar(
-                        onRefresh: widget.controller.dataSource.refresh,
+                        onRefresh: widget.onRefresh ?? widget.controller.dataSource.refresh,
                         onFilterToggle: _isMobile(constraints.maxWidth) ? null : widget.controller.toggleFilters,
                         filtersVisible: widget.controller.showFilters,
                         activeFilterCount: widget.controller.dataSource.filters.length,

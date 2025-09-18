@@ -1,3 +1,29 @@
+## 0.7.5 - 2025-09-18
+
+* **Filter Field Styling Fix**
+  * Fixed regression where filter fields had inconsistent styling after debouncing implementation
+  * Reverted TextFilter and NumberFilter to use standard TextField with FilterInputDecoration
+  * Implemented debouncing directly in filter components using stateful widgets
+  * Maintains uniform appearance across all filter field types (text, number, dropdown)
+  * Preserves the original consistent styling while keeping debouncing functionality
+
+## 0.7.4 - 2025-09-18
+
+* **Filter Field Debouncing with Consistent Styling**
+  * Added debouncing to TextFilter and NumberFilter with 500ms delay by default
+  * Implemented using Debouncer utility class directly in filter components
+  * Maintains original FilterInputDecoration.standard styling for consistency
+  * All filter fields (text, number, dropdown) now have uniform appearance
+  * Prevents excessive API calls when users type in filter fields
+  * Added integration tests to verify debouncing works correctly in the data grid context
+
+* **onRefresh Callback Support**
+  * Added `onRefresh` callback parameter to VooDataGrid widget
+  * Allows custom refresh logic to be provided to the data grid
+  * When not provided, falls back to default `dataSource.refresh()` behavior
+  * Works in both desktop and mobile views
+  * Added comprehensive tests for onRefresh functionality
+
 ## 0.7.3 - 2025-09-18
 
 * **Filter Field Debouncing**
