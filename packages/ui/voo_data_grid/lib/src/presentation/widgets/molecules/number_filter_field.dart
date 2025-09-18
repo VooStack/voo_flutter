@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voo_data_grid/src/utils/debouncer.dart';
 
 /// A molecule component for number filter input
-class NumberFilterField extends StatelessWidget {
+class NumberFilterField extends StatefulWidget {
   /// The current value
   final num? value;
   
@@ -24,6 +25,12 @@ class NumberFilterField extends StatelessWidget {
   /// Text controller (optional, for external control)
   final TextEditingController? controller;
   
+  /// Whether to use debouncing for input changes
+  final bool useDebouncing;
+  
+  /// Debounce duration in milliseconds
+  final Duration debounceDuration;
+  
   const NumberFilterField({
     super.key,
     this.value,
@@ -33,12 +40,66 @@ class NumberFilterField extends StatelessWidget {
     this.showClearButton = true,
     this.allowDecimals = true,
     this.controller,
+    this.useDebouncing = true,
+    this.debounceDuration = const Duration(milliseconds: 500),
   });
 
   @override
+  State<NumberFilterField> createState() => _NumberFilterFieldState();
+}
+
+class _NumberFilterFieldState extends State<NumberFilterField> {
+  late TextEditingController _effectiveController;
+  late Debouncer _debouncer;
+  bool _isControllerInternal = false;
+  
+  @override
+  void initState() {
+    super.initState();
+    _debouncer = Debouncer(duration: widget.debounceDuration);
+    if (widget.controller == null) {
+      _effectiveController = TextEditingController(text: widget.value?.toString() ?? '');
+      _isControllerInternal = true;
+    } else {
+      _effectiveController = widget.controller!;
+    }
+  }
+  
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    if (_isControllerInternal) {
+      _effectiveController.dispose();
+    }
+    super.dispose();
+  }
+  
+  void _handleChange(String value) {
+    if (value.isEmpty) {
+      if (widget.useDebouncing) {
+        _debouncer.run(() {
+          widget.onChanged(null);
+        });
+      } else {
+        widget.onChanged(null);
+      }
+    } else {
+      final parsed = widget.allowDecimals 
+          ? double.tryParse(value)
+          : int.tryParse(value);
+      
+      if (widget.useDebouncing) {
+        _debouncer.run(() {
+          widget.onChanged(parsed);
+        });
+      } else {
+        widget.onChanged(parsed);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final effectiveController = controller ?? 
-        TextEditingController(text: value?.toString() ?? '');
     final theme = Theme.of(context);
     
     return Container(
@@ -49,18 +110,18 @@ class NumberFilterField extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: TextField(
-        controller: effectiveController,
+        controller: _effectiveController,
         decoration: InputDecoration(
-          hintText: hintText ?? 'Enter number...',
+          hintText: widget.hintText ?? 'Enter number...',
           hintStyle: TextStyle(fontSize: 12, color: theme.hintColor),
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           border: InputBorder.none,
-          suffixIcon: showClearButton && effectiveController.text.isNotEmpty
+          suffixIcon: widget.showClearButton && _effectiveController.text.isNotEmpty
               ? InkWell(
                   onTap: () {
-                    effectiveController.clear();
-                    onChanged(null);
+                    _effectiveController.clear();
+                    widget.onChanged(null);
                   },
                   child: const Icon(Icons.clear, size: 16),
                 )
@@ -69,25 +130,16 @@ class NumberFilterField extends StatelessWidget {
         ),
         style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
         keyboardType: TextInputType.numberWithOptions(
-          decimal: allowDecimals,
+          decimal: widget.allowDecimals,
         ),
         inputFormatters: [
           FilteringTextInputFormatter.allow(
-            allowDecimals 
+            widget.allowDecimals 
                 ? RegExp(r'^\d*\.?\d*')
                 : RegExp(r'^\d*'),
           ),
         ],
-        onChanged: (value) {
-          if (value.isEmpty) {
-            onChanged(null);
-          } else {
-            final parsed = allowDecimals 
-                ? double.tryParse(value)
-                : int.tryParse(value);
-            onChanged(parsed);
-          }
-        },
+        onChanged: _handleChange,
       ),
     );
   }

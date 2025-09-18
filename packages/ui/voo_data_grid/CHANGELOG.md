@@ -1,3 +1,14 @@
+## 0.7.3 - 2025-09-18
+
+* **Filter Field Debouncing**
+  * Added debouncing support to text and number filter fields to reduce excessive API calls
+  * Debouncing is enabled by default with a 500ms delay (configurable)
+  * New `useDebouncing` parameter to enable/disable debouncing (defaults to `true`)
+  * New `debounceDuration` parameter to customize debounce delay
+  * Created reusable `Debouncer` utility class for consistent debouncing logic
+  * Added comprehensive test coverage for all debouncing scenarios
+  * Improved performance and reduced server load when users are typing in filters
+
 ## 0.7.2 - 2025-09-02
 
 * **Maintenance Release**
