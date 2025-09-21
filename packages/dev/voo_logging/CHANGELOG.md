@@ -1,5 +1,12 @@
+## 0.4.2
+
+* Fixed VooToast notification behavior:
+  - Verbose and debug logs no longer show toast notifications (too low-level for user notifications)
+  - Added proper log level checking to respect minimum configured log level
+  - Toast notifications now only appear for info, warning, error, and fatal logs when `shouldNotify` is enabled
+
 ## 0.4.1
-  
+
   fixed error causing repeated error in console ```DebugService: Error serving requestsError: Unsupported operation: Cannot send Null```
   
 ## 0.4.0

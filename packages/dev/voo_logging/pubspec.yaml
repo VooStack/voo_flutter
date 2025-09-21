@@ -1,6 +1,6 @@
 name: voo_logging
 description: 'Comprehensive local logging package for Flutter applications with persistent storage and DevTools integration.'
-version: 0.4.1
+version: 0.4.2
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_logging
 topics:
@@ -18,6 +18,7 @@ dependencies:
   flutter:
     sdk: flutter
   voo_core:
+  voo_toast: ^0.0.4
   json_annotation: ^4.9.0
   equatable: ^2.0.5
   sembast: ^3.8.5+1

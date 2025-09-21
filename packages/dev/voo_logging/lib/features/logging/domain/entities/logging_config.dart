@@ -13,6 +13,7 @@ class LoggingConfig {
   final LogLevel minimumLevel;
   final bool enabled;
   final bool enableDevToolsJson;
+  final bool shouldNotify;
 
   const LoggingConfig({
     this.enablePrettyLogs = true,
@@ -24,6 +25,7 @@ class LoggingConfig {
     this.minimumLevel = LogLevel.verbose,
     this.enabled = true,
     this.enableDevToolsJson = false,
+    this.shouldNotify = false,
   });
 
   PrettyLogFormatter get formatter => PrettyLogFormatter(
@@ -45,6 +47,7 @@ class LoggingConfig {
     LogLevel? minimumLevel,
     bool? enabled,
     bool? enableDevToolsJson,
+    bool? shouldNotify,
   }) => LoggingConfig(
     enablePrettyLogs: enablePrettyLogs ?? this.enablePrettyLogs,
     showEmojis: showEmojis ?? this.showEmojis,
@@ -55,6 +58,7 @@ class LoggingConfig {
     minimumLevel: minimumLevel ?? this.minimumLevel,
     enabled: enabled ?? this.enabled,
     enableDevToolsJson: enableDevToolsJson ?? this.enableDevToolsJson,
+    shouldNotify: shouldNotify ?? this.shouldNotify,
   );
 
   @override
@@ -69,9 +73,10 @@ class LoggingConfig {
         other.lineLength == lineLength &&
         other.minimumLevel == minimumLevel &&
         other.enabled == enabled &&
-        other.enableDevToolsJson == enableDevToolsJson;
+        other.enableDevToolsJson == enableDevToolsJson &&
+        other.shouldNotify == shouldNotify;
   }
 
   @override
-  int get hashCode => Object.hash(enablePrettyLogs, showEmojis, showTimestamp, showColors, showBorders, lineLength, minimumLevel, enabled, enableDevToolsJson);
+  int get hashCode => Object.hash(enablePrettyLogs, showEmojis, showTimestamp, showColors, showBorders, lineLength, minimumLevel, enabled, enableDevToolsJson, shouldNotify);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:dio/dio.dart';
 import 'package:voo_core/voo_core.dart';
+import 'package:voo_toast/voo_toast.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +15,7 @@ void main() async {
     ),
   );
   
-  // Initialize VooLogging
+  // Initialize VooLogging with toast notifications
   await VooLogger.initialize(
     appName: 'VooLoggingExample',
     minimumLevel: LogLevel.verbose,
@@ -24,8 +25,19 @@ void main() async {
       showTimestamp: true,
       showColors: true,
       enabled: true,
+      shouldNotify: true, // Enable toast notifications
     ),
   );
+
+  // Initialize VooToast only if not already initialized
+  // This ensures we don't override an existing instance
+  try {
+    // Try to access the instance - if it doesn't exist, it will create one
+    VooToastController.instance;
+  } catch (_) {
+    // If there's an issue, explicitly initialize
+    VooToastController.init();
+  }
   
   runApp(const MyApp());
 }
@@ -41,7 +53,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const LoggingDemoScreen(),
+      home: const VooToastOverlay(
+        child: LoggingDemoScreen(),
+      ),
     );
   }
 }
@@ -56,6 +70,7 @@ class LoggingDemoScreen extends StatefulWidget {
 class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
   late final Dio dio;
   List<LogEntry> recentLogs = [];
+  bool toastEnabled = true;
   
   @override
   void initState() {
@@ -156,6 +171,30 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
         title: const Text('VooLogging Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          IconButton(
+            icon: Icon(toastEnabled ? Icons.notifications_active : Icons.notifications_off),
+            onPressed: () {
+              setState(() {
+                toastEnabled = !toastEnabled;
+              });
+              // Update config without reinitializing
+              VooLogger.config = LoggingConfig(
+                enablePrettyLogs: true,
+                showEmojis: true,
+                showTimestamp: true,
+                showColors: true,
+                enabled: true,
+                shouldNotify: toastEnabled,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Toast notifications ${toastEnabled ? 'enabled' : 'disabled'}'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            tooltip: toastEnabled ? 'Disable toast' : 'Enable toast',
+          ),
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: _clearLogs,

@@ -1,4 +1,8 @@
-# melos_managed_dependency_overrides: voo_core
+# melos_managed_dependency_overrides: voo_core,voo_toast,voo_ui_core
 dependency_overrides:
   voo_core:
     path: ../voo_core
+  voo_toast:
+    path: ../../ui/voo_toast
+  voo_ui_core:
+    path: ../../ui/voo_ui_core
