@@ -47,8 +47,7 @@ class _ListPreviewState extends State<ListPreview> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('Simple List Preview'),
         actions: [
@@ -74,15 +73,13 @@ class _ListPreviewState extends State<ListPreview> {
 
           return VooSimpleList<String>(
             items: controller.items,
-            config: ListConfig(
+            config: const ListConfig(
               enableSelection: true,
               enableMultiSelection: true,
-              showDividers: true,
               enablePullToRefresh: true,
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8),
               itemSpacing: 4,
-              animationType: ListAnimationType.fadeIn,
-              emptyStateWidget: const VooListEmptyState(
+              emptyStateWidget: VooListEmptyState(
                 icon: Icon(Icons.inbox, size: 64, color: Colors.grey),
                 title: 'No Items',
                 message: 'There are no items to display',
@@ -124,7 +121,6 @@ class _ListPreviewState extends State<ListPreview> {
         child: const Icon(Icons.add),
       ),
     );
-  }
 
   @override
   void dispose() {
@@ -146,7 +142,6 @@ class _GroupedListPreviewState extends State<GroupedListPreview> {
       id: 'favorites',
       title: 'Favorites',
       subtitle: 'Your favorite items',
-      isExpanded: true,
       items: List.generate(
         5,
         (index) => ListItem<String>(
@@ -162,7 +157,6 @@ class _GroupedListPreviewState extends State<GroupedListPreview> {
       id: 'recent',
       title: 'Recent',
       subtitle: 'Recently accessed items',
-      isExpanded: true,
       items: List.generate(
         8,
         (index) => ListItem<String>(
@@ -193,8 +187,7 @@ class _GroupedListPreviewState extends State<GroupedListPreview> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('Grouped List Preview'),
       ),
@@ -220,13 +213,13 @@ class _GroupedListPreviewState extends State<GroupedListPreview> {
                     SnackBar(content: Text('Tapped: ${item.title}')),
                   );
                 },
-              )),
+              ),
+            ),
             ],
           );
         },
       ),
     );
-  }
 }
 
 class ReorderableListPreview extends StatefulWidget {
@@ -251,8 +244,7 @@ class _ReorderableListPreviewState extends State<ReorderableListPreview> {
   );
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('Reorderable List Preview'),
         actions: [
@@ -279,5 +271,4 @@ class _ReorderableListPreviewState extends State<ReorderableListPreview> {
         },
       ),
     );
-  }
 }

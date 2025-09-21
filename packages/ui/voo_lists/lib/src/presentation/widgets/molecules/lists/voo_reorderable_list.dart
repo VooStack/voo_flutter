@@ -21,7 +21,7 @@ class _VooReorderableListState<T> extends State<VooReorderableList<T>> {
         final item = widget.items[index];
         return ListTile(
           key: ValueKey(item.id),
-          title: Text(item.title ?? 'Item ${index + 1}'),
+          title: Text(item.title),
           subtitle: item.subtitle != null ? Text(item.subtitle!) : null,
         );
       },

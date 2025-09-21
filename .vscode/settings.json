@@ -23,6 +23,7 @@
     "startswith",
     "Traceparent",
     "Tracestate",
+    "Wireframes",
     "xlarge"
   ],
   "editor.formatOnSave": true,

@@ -64,7 +64,7 @@ class _VooSimpleListState<T> extends State<VooSimpleList<T>> {
       key: ValueKey(item.id),
       leading: item.leading,
       trailing: item.trailing,
-      title: item.title != null ? Text(item.title!) : null,
+      title: Text(item.title),
       subtitle: item.subtitle != null ? Text(item.subtitle!) : null,
       selected: isSelected,
       onTap: () => _handleItemTap(item),
