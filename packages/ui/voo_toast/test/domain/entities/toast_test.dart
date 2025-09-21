@@ -8,11 +8,9 @@ import 'package:voo_toast/src/domain/enums/toast_type.dart';
 void main() {
   group('Toast Entity', () {
     test('creates toast with required parameters', () {
-      final toast = Toast(
+      const toast = Toast(
         id: 'test-id',
         message: 'Test message',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -40,7 +38,6 @@ void main() {
         animation: ToastAnimation.slideInFromTop,
         title: 'Test Title',
         icon: const Icon(Icons.check),
-        showCloseButton: true,
         showProgressBar: true,
         isDismissible: false,
         onTap: () {},
@@ -75,11 +72,9 @@ void main() {
     });
 
     test('copyWith creates new instance with updated values', () {
-      final original = Toast(
+      const original = Toast(
         id: 'original-id',
         message: 'Original message',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -100,11 +95,11 @@ void main() {
     });
 
     test('copyWith preserves original values when not specified', () {
-      final original = Toast(
+      const original = Toast(
         id: 'test-id',
         message: 'Test message',
         type: ToastType.error,
-        duration: const Duration(seconds: 5),
+        duration: Duration(seconds: 5),
         position: ToastPosition.topCenter,
         animation: ToastAnimation.bounce,
         title: 'Original Title',
@@ -126,29 +121,23 @@ void main() {
     });
 
     test('equals and hashCode work correctly', () {
-      final toast1 = Toast(
+      const toast1 = Toast(
         id: 'same-id',
         message: 'Same message',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
 
-      final toast2 = Toast(
+      const toast2 = Toast(
         id: 'same-id',
         message: 'Same message',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
 
-      final toast3 = Toast(
+      const toast3 = Toast(
         id: 'different-id',
         message: 'Same message',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -171,7 +160,7 @@ void main() {
 
       expect(action.label, 'Test Action');
       expect(action.onPressed, isNotNull);
-      
+
       action.onPressed();
       expect(pressed, true);
     });
@@ -204,8 +193,8 @@ void main() {
     });
 
     test('equals and hashCode work correctly', () {
-      final callback = () {};
-      
+      void callback() {}
+
       final action1 = ToastAction(
         label: 'Same',
         onPressed: callback,

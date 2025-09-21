@@ -5,19 +5,17 @@ import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooCurrencyField', () {
-    Widget buildTestWidget(Widget child) {
-      return MaterialApp(
-        home: Scaffold(
-          body: child,
-        ),
-      );
-    }
+    Widget buildTestWidget(Widget child) => MaterialApp(
+          home: Scaffold(
+            body: child,
+          ),
+        );
 
     testWidgets('formats currency correctly when typing 88', (tester) async {
       // Build the widget
       await tester.pumpWidget(
         buildTestWidget(
-          VooCurrencyField(
+          const VooCurrencyField(
             name: 'amount',
             label: 'Amount',
           ),
@@ -31,14 +29,14 @@ void main() {
       // Type "8"
       await tester.enterText(textField, '8');
       await tester.pump();
-      
+
       // Should show $0.08
       expect(find.text('\$0.08'), findsOneWidget);
 
       // Type "88" (replacing the text)
       await tester.enterText(textField, '88');
       await tester.pump();
-      
+
       // Should show $0.88
       expect(find.text('\$0.88'), findsOneWidget);
     });
@@ -46,7 +44,7 @@ void main() {
     testWidgets('formats large amounts with thousand separators', (tester) async {
       await tester.pumpWidget(
         buildTestWidget(
-          VooCurrencyField(
+          const VooCurrencyField(
             name: 'amount',
             label: 'Amount',
           ),
@@ -54,11 +52,11 @@ void main() {
       );
 
       final textField = find.byType(TextFormField);
-      
+
       // Type "123456"
       await tester.enterText(textField, '123456');
       await tester.pump();
-      
+
       // Should show $1,234.56
       expect(find.text('\$1,234.56'), findsOneWidget);
     });
@@ -76,11 +74,11 @@ void main() {
       );
 
       final textField = find.byType(TextFormField);
-      
+
       // Type "99"
       await tester.enterText(textField, '99');
       await tester.pump();
-      
+
       // Should show formatted with Euro symbol
       // Note: EUR formatter puts symbol after amount
       expect(find.textContaining('0,99'), findsOneWidget);
@@ -89,7 +87,7 @@ void main() {
 
     testWidgets('validates min and max values', (tester) async {
       double? currentValue;
-      
+
       await tester.pumpWidget(
         buildTestWidget(
           VooCurrencyField(
@@ -103,37 +101,37 @@ void main() {
       );
 
       final textField = find.byType(TextFormField);
-      
+
       // Type a value below minimum (5.00) - should be clamped to min (10.00)
       await tester.enterText(textField, '500');
       await tester.pump();
-      
+
       expect(currentValue, 10.0); // Clamped to min value
-      
+
       // Since value is clamped, validation should pass
       final field = tester.widget<VooCurrencyField>(find.byType(VooCurrencyField));
       expect(field.validate(10.0), isNull);
-      
+
       // Type a value above maximum (150.00) - should be clamped to max (100.00)
       await tester.enterText(textField, '15000');
       await tester.pump();
-      
+
       expect(currentValue, 100.0); // Clamped to max value
-      
+
       // Since value is clamped, validation should pass
       expect(field.validate(100.0), isNull);
-      
+
       // Type a valid value (50.00)
       await tester.enterText(textField, '5000');
       await tester.pump();
-      
+
       expect(currentValue, 50.0);
       expect(field.validate(50.0), isNull);
     });
 
     testWidgets('handles onChanged callback', (tester) async {
       double? lastValue;
-      
+
       await tester.pumpWidget(
         buildTestWidget(
           VooCurrencyField(
@@ -145,11 +143,11 @@ void main() {
       );
 
       final textField = find.byType(TextFormField);
-      
+
       // Type "123"
       await tester.enterText(textField, '123');
       await tester.pump();
-      
+
       // Should receive 1.23 as the value
       expect(lastValue, 1.23);
     });
@@ -184,7 +182,7 @@ void main() {
       // Should show read-only field with formatted value
       expect(find.byType(VooReadOnlyField), findsOneWidget);
       expect(find.text('\$99.99'), findsOneWidget);
-      
+
       // Should not have an editable text field
       expect(find.byType(TextFormField), findsNothing);
     });
@@ -203,11 +201,11 @@ void main() {
       );
 
       final textField = find.byType(TextFormField);
-      
+
       // Type "1234"
       await tester.enterText(textField, '1234');
       await tester.pump();
-      
+
       // Should show ¥1,234 (no decimal places)
       expect(find.textContaining('1,234'), findsOneWidget);
       expect(find.textContaining('¥'), findsOneWidget);

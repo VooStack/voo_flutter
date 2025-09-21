@@ -13,14 +13,14 @@ void main() {
     testWidgets('dismisses dropdown when clicking outside', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          Column(
+          const Column(
             children: [
               VooDropdownSearchField<String>(
-                items: const ['Option 1', 'Option 2', 'Option 3'],
+                items: ['Option 1', 'Option 2', 'Option 3'],
                 value: 'Option 1',
               ),
-              const SizedBox(height: 100),
-              const Text('Outside Area'),
+              SizedBox(height: 100),
+              Text('Outside Area'),
             ],
           ),
         ),
@@ -82,8 +82,8 @@ void main() {
 
       await tester.pumpWidget(
         wrapInApp(
-          VooDropdownSearchField<String>(
-            items: const ['Option 1', 'Option 2', 'Option 3'],
+          const VooDropdownSearchField<String>(
+            items: ['Option 1', 'Option 2', 'Option 3'],
             value: initialValue,
           ),
         ),
@@ -143,8 +143,8 @@ void main() {
     testWidgets('filters items based on search term', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooDropdownSearchField<String>(
-            items: const ['Apple', 'Banana', 'Cherry', 'Date'],
+          const VooDropdownSearchField<String>(
+            items: ['Apple', 'Banana', 'Cherry', 'Date'],
             value: 'Apple',
           ),
         ),
@@ -203,8 +203,8 @@ void main() {
     testWidgets('shows check icon for selected item', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooDropdownSearchField<String>(
-            items: const ['Option 1', 'Option 2', 'Option 3'],
+          const VooDropdownSearchField<String>(
+            items: ['Option 1', 'Option 2', 'Option 3'],
             value: 'Option 2',
           ),
         ),
@@ -221,8 +221,8 @@ void main() {
     testWidgets('respects enabled property', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooDropdownSearchField<String>(
-            items: const ['Option 1', 'Option 2'],
+          const VooDropdownSearchField<String>(
+            items: ['Option 1', 'Option 2'],
             value: 'Option 1',
             enabled: false,
           ),

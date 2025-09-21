@@ -17,42 +17,42 @@ void main() {
               options: options,
               onChanged: (value) => selectedValue = value,
               optionBuilder: (context, item, isSelected, displayText) => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isSelected ? Colors.blue.withValues(alpha: 0.2) : null,
-                    border: Border(
-                      left: BorderSide(
-                        color: isSelected ? Colors.blue : Colors.transparent,
-                        width: 4,
-                      ),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isSelected ? Colors.blue.withValues(alpha: 0.2) : null,
+                  border: Border(
+                    left: BorderSide(
+                      color: isSelected ? Colors.blue : Colors.transparent,
+                      width: 4,
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: isSelected ? Colors.blue : Colors.grey,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.star,
+                      color: isSelected ? Colors.blue : Colors.grey,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        displayText,
+                        style: TextStyle(
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: isSelected ? Colors.blue : null,
+                        ),
+                      ),
+                    ),
+                    if (isSelected)
+                      const Icon(
+                        Icons.check_circle,
+                        color: Colors.blue,
                         size: 20,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          displayText,
-                          style: TextStyle(
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? Colors.blue : null,
-                          ),
-                        ),
-                      ),
-                      if (isSelected)
-                        const Icon(
-                          Icons.check_circle,
-                          color: Colors.blue,
-                          size: 20,
-                        ),
-                    ],
-                  ),
+                  ],
                 ),
+              ),
             ),
           ),
         ),
@@ -64,7 +64,7 @@ void main() {
 
       // Verify custom option builder is used - look for star icons
       expect(find.byIcon(Icons.star), findsWidgets);
-      
+
       // Tap on the second option
       await tester.tap(find.text('Option 2'));
       await tester.pumpAndSettle();
@@ -149,24 +149,22 @@ void main() {
               asyncOptionsLoader: (query) async {
                 // Simulate async loading
                 await Future<void>.delayed(const Duration(milliseconds: 100));
-                return ['Async 1', 'Async 2', 'Async 3']
-                    .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-                    .toList();
+                return ['Async 1', 'Async 2', 'Async 3'].where((item) => item.toLowerCase().contains(query.toLowerCase())).toList();
               },
               optionBuilder: (context, item, isSelected, displayText) => Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.cloud, size: 20),
-                      const SizedBox(width: 8),
-                      Text(displayText),
-                      if (isSelected) ...[
-                        const Spacer(),
-                        const Icon(Icons.check, color: Colors.green),
-                      ],
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.cloud, size: 20),
+                    const SizedBox(width: 8),
+                    Text(displayText),
+                    if (isSelected) ...[
+                      const Spacer(),
+                      const Icon(Icons.check, color: Colors.green),
                     ],
-                  ),
+                  ],
                 ),
+              ),
             ),
           ),
         ),
@@ -224,14 +222,13 @@ void main() {
 
     testWidgets('VooOption widget displays correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooOption(
               title: 'Test Option',
               subtitle: 'Test subtitle',
               isSelected: true,
-              leading: const Icon(Icons.star),
-              showCheckmark: true,
+              leading: Icon(Icons.star),
             ),
           ),
         ),
@@ -246,7 +243,7 @@ void main() {
 
     testWidgets('VooSimpleOption works correctly', (WidgetTester tester) async {
       bool tapped = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -263,11 +260,11 @@ void main() {
       // Verify simple option displays
       expect(find.text('Simple Option'), findsOneWidget);
       expect(find.byType(Checkbox), findsOneWidget);
-      
+
       // Tap the option
       await tester.tap(find.byType(VooSimpleOption));
       await tester.pumpAndSettle();
-      
+
       expect(tapped, true);
     });
   });
@@ -275,7 +272,7 @@ void main() {
   group('VooAsyncMultiSelectField optionBuilder', () {
     testWidgets('uses custom option builder with async multi-select', (WidgetTester tester) async {
       bool optionBuilderCalled = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -284,9 +281,7 @@ void main() {
               label: 'Test Async Multi-Select',
               asyncOptionsLoader: (query) async {
                 await Future<void>.delayed(const Duration(milliseconds: 100));
-                return ['Item 1', 'Item 2', 'Item 3']
-                    .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-                    .toList();
+                return ['Item 1', 'Item 2', 'Item 3'].where((item) => item.toLowerCase().contains(query.toLowerCase())).toList();
               },
               optionBuilder: (context, item, isSelected, displayText) {
                 optionBuilderCalled = true;
@@ -306,7 +301,7 @@ void main() {
       // Tap on the dropdown to open it
       await tester.tap(find.byType(VooAsyncMultiSelectField<String>));
       await tester.pump();
-      
+
       // Wait for async loading and dropdown animation
       await tester.pump(const Duration(milliseconds: 200));
       await tester.pump(const Duration(milliseconds: 200));

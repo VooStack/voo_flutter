@@ -280,7 +280,7 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
           ],
         );
 
@@ -298,8 +298,8 @@ void main() {
         controller.registerField(
           'password',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Password is required' : null,
-            (value) => value != null && value.toString().length < 8 ? 'Password must be at least 8 characters' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Password is required' : null,
+            (dynamic value) => value != null && value.toString().length < 8 ? 'Password must be at least 8 characters' : null,
           ],
         );
 
@@ -322,13 +322,13 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
           ],
         );
         controller.registerField(
           'email',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Email is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Email is required' : null,
           ],
         );
 
@@ -346,7 +346,7 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
           ],
         );
 
@@ -355,19 +355,17 @@ void main() {
         expect(controller.errors.isEmpty, true);
 
         // Non-silent validation updates errors
-        expect(controller.validate(silent: false), false);
+        expect(controller.validate(), false);
         expect(controller.errors.isNotEmpty, true);
       });
 
       test('should respect error display mode onTyping', () {
-        controller = VooFormController(
-          errorDisplayMode: VooFormErrorDisplayMode.onTyping,
-        );
+        controller = VooFormController();
 
         controller.registerField(
           'username',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
           ],
         );
 
@@ -384,7 +382,7 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
           ],
         );
 
@@ -431,7 +429,7 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => 'Always error',
+            (dynamic value) => 'Always error',
           ],
         );
 
@@ -445,11 +443,11 @@ void main() {
       test('should clear specific field error', () {
         controller.registerField(
           'username',
-          validators: [(value) => 'Username error'],
+          validators: [(dynamic value) => 'Username error'],
         );
         controller.registerField(
           'email',
-          validators: [(value) => 'Email error'],
+          validators: [(dynamic value) => 'Email error'],
         );
 
         controller.validateAll();
@@ -490,7 +488,7 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
+            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
           ],
         );
 
@@ -535,7 +533,7 @@ void main() {
         final future1 = controller.submit(
           onSubmit: (values) async {
             submitCount++;
-            await Future.delayed(const Duration(milliseconds: 100));
+            await Future<void>.delayed(const Duration(milliseconds: 100));
           },
         );
 
@@ -554,7 +552,7 @@ void main() {
 
     group('Field Visibility and Enablement', () {
       test('should enable and disable fields', () {
-        controller.registerField('username', enabled: true);
+        controller.registerField('username');
 
         expect(controller.isFieldEnabled('username'), true);
 
@@ -566,7 +564,7 @@ void main() {
       });
 
       test('should show and hide fields', () {
-        controller.registerField('username', visible: true);
+        controller.registerField('username');
 
         expect(controller.isFieldVisible('username'), true);
 
@@ -580,9 +578,9 @@ void main() {
 
     group('Focus Management', () {
       test('should focus next field', () {
-        controller.registerField('field1', visible: true, enabled: true);
-        controller.registerField('field2', visible: true, enabled: true);
-        controller.registerField('field3', visible: true, enabled: true);
+        controller.registerField('field1');
+        controller.registerField('field2');
+        controller.registerField('field3');
 
         // Note: Can't test actual focus without a widget tree
         // Just ensure the method doesn't throw
@@ -590,9 +588,9 @@ void main() {
       });
 
       test('should focus previous field', () {
-        controller.registerField('field1', visible: true, enabled: true);
-        controller.registerField('field2', visible: true, enabled: true);
-        controller.registerField('field3', visible: true, enabled: true);
+        controller.registerField('field1');
+        controller.registerField('field2');
+        controller.registerField('field3');
 
         // Note: Can't test actual focus without a widget tree
         // Just ensure the method doesn't throw
@@ -600,9 +598,9 @@ void main() {
       });
 
       test('should skip disabled fields in focus navigation', () {
-        controller.registerField('field1', visible: true, enabled: true);
-        controller.registerField('field2', visible: true, enabled: false);
-        controller.registerField('field3', visible: true, enabled: true);
+        controller.registerField('field1');
+        controller.registerField('field2', enabled: false);
+        controller.registerField('field3');
 
         // Should skip field2 since it's disabled
         controller.focusNextField('field1');
@@ -614,7 +612,7 @@ void main() {
         controller.registerField('username');
 
         controller.addValidators('username', [
-          (value) => value == null ? 'Required' : null,
+          (dynamic value) => value == null ? 'Required' : null,
         ]);
 
         expect(controller.validateField('username'), false);
@@ -625,12 +623,12 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => 'Old validator',
+            (dynamic value) => 'Old validator',
           ],
         );
 
         controller.setValidators('username', [
-          (value) => 'New validator',
+          (dynamic value) => 'New validator',
         ]);
 
         controller.validateField('username');
@@ -641,7 +639,7 @@ void main() {
         controller.registerField(
           'username',
           validators: [
-            (value) => 'Error',
+            (dynamic value) => 'Error',
           ],
         );
 
@@ -682,7 +680,7 @@ void main() {
       test('should notify listeners on validation', () {
         controller.registerField(
           'username',
-          validators: [(value) => 'Error'],
+          validators: [(dynamic value) => 'Error'],
         );
 
         int notificationCount = 0;

@@ -23,7 +23,6 @@ void main() {
           VooDataColumn<Map<String, dynamic>>(
             field: 'name',
             label: 'Name',
-            dataType: VooDataColumnType.text,
             valueGetter: (row) => row['name'],
           ),
           VooDataColumn<Map<String, dynamic>>(
@@ -103,7 +102,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooDataGridStateless<Map<String, dynamic>>(
-              state: VooDataGridState<Map<String, dynamic>>(
+              state: const VooDataGridState<Map<String, dynamic>>(
                 rows: [
                   {'name': 'John', 'age': 25},
                   {'name': 'Jane', 'age': 30},
@@ -111,16 +110,12 @@ void main() {
                 totalRows: 2,
                 currentPage: 1,
                 pageSize: 10,
-                isLoading: false,
-                filters: {},
-                sorts: const [],
-                selectedRows: const {},
+                selectedRows: {},
               ),
               columns: [
                 VooDataColumn<Map<String, dynamic>>(
                   field: 'name',
                   label: 'Name',
-                  dataType: VooDataColumnType.text,
                   valueGetter: (row) => row['name'],
                 ),
                 VooDataColumn<Map<String, dynamic>>(

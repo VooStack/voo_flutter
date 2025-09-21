@@ -12,8 +12,6 @@ void main() {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -38,7 +36,6 @@ void main() {
         message: 'Test message',
         title: 'Test Title',
         type: ToastType.success,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -62,9 +59,6 @@ void main() {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
-        showCloseButton: true,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -87,9 +81,7 @@ void main() {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
         showCloseButton: false,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -110,13 +102,10 @@ void main() {
 
     testWidgets('calls onDismiss when close button tapped', (WidgetTester tester) async {
       var dismissed = false;
-      
+
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
-        showCloseButton: true,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -142,12 +131,10 @@ void main() {
 
     testWidgets('displays action buttons', (WidgetTester tester) async {
       var actionPressed = false;
-      
+
       final toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
         actions: [
@@ -173,21 +160,20 @@ void main() {
 
       expect(find.text('Action'), findsOneWidget);
       expect(find.byType(TextButton), findsOneWidget);
-      
+
       await tester.tap(find.text('Action'));
       await tester.pump();
-      
+
       expect(actionPressed, true);
     });
 
     testWidgets('displays custom content when provided', (WidgetTester tester) async {
       const customWidget = Text('Custom Widget Content');
-      
+
       const toast = Toast(
         id: 'test-1',
         message: '',
         type: ToastType.custom,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
         customContent: customWidget,
@@ -211,9 +197,7 @@ void main() {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
         showProgressBar: true,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -236,7 +220,6 @@ void main() {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
         showProgressBar: true,
         duration: Duration.zero,
         position: ToastPosition.bottom,
@@ -271,7 +254,6 @@ void main() {
           id: 'test-${testCase.$1}',
           message: testCase.$2,
           type: testCase.$1,
-          duration: const Duration(seconds: 3),
           position: ToastPosition.bottom,
           animation: ToastAnimation.fade,
         );
@@ -288,7 +270,7 @@ void main() {
         );
 
         expect(find.text(testCase.$2), findsOneWidget);
-        
+
         // Clean up for next iteration
         await tester.pumpWidget(Container());
       }
@@ -296,12 +278,10 @@ void main() {
 
     testWidgets('handles onTap callback', (WidgetTester tester) async {
       var tapped = false;
-      
+
       final toast = Toast(
         id: 'test-1',
         message: 'Tap me',
-        type: ToastType.info,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
         onTap: () {
@@ -331,7 +311,6 @@ void main() {
         id: 'test-1',
         message: 'Styled toast',
         type: ToastType.custom,
-        duration: const Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
         backgroundColor: Colors.purple,
@@ -354,14 +333,16 @@ void main() {
       );
 
       expect(find.text('Styled toast'), findsOneWidget);
-      
+
       final material = tester.widget<Material>(
-        find.descendant(
-          of: find.byType(VooToastCard),
-          matching: find.byType(Material),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(VooToastCard),
+              matching: find.byType(Material),
+            )
+            .first,
       );
-      
+
       expect(material.borderRadius, BorderRadius.circular(20));
     });
 
@@ -370,7 +351,6 @@ void main() {
         id: 'test-1',
         message: 'Test with icon',
         type: ToastType.success,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -394,8 +374,6 @@ void main() {
       const toast = Toast(
         id: 'test-1',
         message: 'Test message',
-        type: ToastType.info,
-        duration: Duration(seconds: 3),
         position: ToastPosition.bottom,
         animation: ToastAnimation.fade,
       );
@@ -415,7 +393,7 @@ void main() {
       final icon = tester.widget<Icon>(
         find.byType(Icon).first,
       );
-      
+
       expect(icon.size, 32.0);
     });
   });

@@ -7,7 +7,7 @@ void main() {
   group('Initial Value Display Tests', () {
     testWidgets('Text field displays initial value immediately', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               fields: [
@@ -28,7 +28,7 @@ void main() {
 
     testWidgets('Dropdown field displays initial value immediately', (tester) async {
       final options = ['Option 1', 'Option 2', 'Option 3'];
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -52,7 +52,7 @@ void main() {
 
     testWidgets('Checkbox field displays initial value immediately', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               fields: [
@@ -75,7 +75,7 @@ void main() {
     testWidgets('Multi-select field displays initial values immediately', (tester) async {
       final options = ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4'];
       final initialValues = ['Tag 1', 'Tag 3'];
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -100,7 +100,7 @@ void main() {
 
     testWidgets('Fields display correctly in readonly mode', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               isReadOnly: true,
@@ -125,7 +125,7 @@ void main() {
       // Values should be displayed in readonly fields
       expect(find.text('john_doe'), findsOneWidget);
       expect(find.text('Option 1'), findsOneWidget);
-      
+
       // VooTextField uses VooReadOnlyField when readonly
       // VooDropdownField shows disabled dropdown when readonly
       expect(find.byType(VooReadOnlyField), findsOneWidget);
@@ -133,23 +133,21 @@ void main() {
 
     testWidgets('Form controller preserves values during rebuilds', (tester) async {
       final controller = VooFormController();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: StatefulBuilder(
-              builder: (context, setState) {
-                return VooForm(
-                  controller: controller,
-                  fields: [
-                    VooTextField(
-                      name: 'username',
-                      label: 'Username',
-                      initialValue: 'initial_value',
-                    ),
-                  ],
-                );
-              },
+              builder: (context, setState) => VooForm(
+                controller: controller,
+                fields: const [
+                  VooTextField(
+                    name: 'username',
+                    label: 'Username',
+                    initialValue: 'initial_value',
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -157,36 +155,34 @@ void main() {
 
       // Initial value should be displayed
       expect(find.text('initial_value'), findsOneWidget);
-      
+
       // Change the value
       await tester.enterText(find.byType(TextFormField), 'new_value');
       await tester.pump();
-      
+
       // New value should be displayed
       expect(find.text('new_value'), findsOneWidget);
-      
+
       // Trigger a rebuild
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: StatefulBuilder(
-              builder: (context, setState) {
-                return VooForm(
-                  controller: controller,
-                  fields: [
-                    VooTextField(
-                      name: 'username',
-                      label: 'Username',
-                      initialValue: 'different_initial', // Different initial value
-                    ),
-                  ],
-                );
-              },
+              builder: (context, setState) => VooForm(
+                controller: controller,
+                fields: const [
+                  VooTextField(
+                    name: 'username',
+                    label: 'Username',
+                    initialValue: 'different_initial', // Different initial value
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       );
-      
+
       // Value should be preserved (not reset to new initial value)
       expect(find.text('new_value'), findsOneWidget);
       expect(find.text('different_initial'), findsNothing);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
-import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 import 'package:voo_forms/voo_forms.dart';
 
 // Test implementation of VooFieldBase
@@ -72,7 +71,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Builder(
-              builder: (context) => field.buildLabel(context),
+              builder: field.buildLabel,
             ),
           ),
         ),

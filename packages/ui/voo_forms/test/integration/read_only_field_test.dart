@@ -7,14 +7,14 @@ void main() {
   group('Read-only field tests', () {
     testWidgets('VooDropdownField respects readOnly property', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               fields: [
                 VooDropdownField(
                   readOnly: true,
                   name: 'name',
-                  options: const ['Option 1', 'Option 2'],
+                  options: ['Option 1', 'Option 2'],
                   initialValue: 'Option 1',
                 ),
               ],
@@ -31,10 +31,10 @@ void main() {
 
     testWidgets('VooTextField respects readOnly property', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: const [
+              fields: [
                 VooTextField(
                   readOnly: true,
                   name: 'text',
@@ -55,10 +55,10 @@ void main() {
 
     testWidgets('VooBooleanField respects readOnly property', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: const [
+              fields: [
                 VooBooleanField(
                   readOnly: true,
                   name: 'bool',
@@ -72,7 +72,7 @@ void main() {
 
       // Should show Switch widget but disabled
       expect(find.byType(Switch), findsOneWidget);
-      
+
       // Verify the switch is in the correct state
       final switchWidget = tester.widget<Switch>(find.byType(Switch));
       expect(switchWidget.value, true);
@@ -82,10 +82,10 @@ void main() {
 
     testWidgets('VooCheckboxField respects readOnly property', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: const [
+              fields: [
                 VooCheckboxField(
                   readOnly: true,
                   name: 'check',
@@ -99,7 +99,7 @@ void main() {
 
       // Should show Checkbox widget but disabled
       expect(find.byType(Checkbox), findsOneWidget);
-      
+
       // Verify the checkbox is in the correct state
       final checkboxWidget = tester.widget<Checkbox>(find.byType(Checkbox));
       expect(checkboxWidget.value, true);
@@ -109,7 +109,7 @@ void main() {
 
     testWidgets('VooDateField respects readOnly property', (WidgetTester tester) async {
       final testDate = DateTime(2024, 1, 15);
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -134,10 +134,10 @@ void main() {
 
     testWidgets('VooNumberField respects readOnly property', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: const [
+              fields: [
                 VooNumberField(
                   readOnly: true,
                   name: 'number',
@@ -157,20 +157,18 @@ void main() {
 
     testWidgets('Form-level isReadOnly overrides field-level readOnly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               isReadOnly: true,
               fields: [
                 VooTextField(
-                  readOnly: false, // This should be overridden by form-level
                   name: 'text',
                   initialValue: 'Test',
                 ),
                 VooDropdownField(
-                  readOnly: false, // This should be overridden by form-level
                   name: 'dropdown',
-                  options: const ['A', 'B'],
+                  options: ['A', 'B'],
                   initialValue: 'A',
                 ),
               ],

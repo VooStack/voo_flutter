@@ -177,7 +177,7 @@ void main() {
       // Try tapping it to verify it doesn't open
       await tester.tap(find.byType(InputDecorator));
       await tester.pumpAndSettle();
-      
+
       // Dropdown should not open when disabled
       expect(find.text('Canada'), findsNothing);
     });
@@ -279,7 +279,7 @@ void main() {
       );
 
       // Wait for async operation to complete with timeout
-      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       // Should not show loading indicator after error
       expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -453,7 +453,7 @@ void main() {
       expect(find.text('First Value'), findsOneWidget);
 
       // Wait for async load to complete
-      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       // Value should still be displayed
       expect(find.text('First Value'), findsOneWidget);

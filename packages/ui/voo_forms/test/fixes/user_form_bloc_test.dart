@@ -99,42 +99,42 @@ class _UserFormViewState extends State<UserFormView> {
   Widget build(BuildContext context) => Scaffold(
         body: BlocBuilder<UserFormCubit, UserFormState>(
           builder: (context, state) {
-          if (state is UserFormLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+            if (state is UserFormLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is UserFormLoaded) {
-            // This is exactly how the user's code works - VooForm inside BlocBuilder
-            // with new initialValues on each state change
-            return VooForm(
-              controller: controller,
-              fields: [
-                VooTextField(
-                  name: 'firstName',
-                  label: 'First Name',
-                  initialValue: state.user.firstName,
-                  validators: [const RequiredValidation(errorMessage: 'First name is required')],
-                ),
-                VooTextField(
-                  name: 'lastName',
-                  label: 'Last Name',
-                  initialValue: state.user.lastName,
-                  validators: [const RequiredValidation(errorMessage: 'Last name is required')],
-                ),
-                VooEmailField(
-                  name: 'email',
-                  label: 'Email',
-                  initialValue: state.user.email,
-                  validators: [const RequiredValidation(errorMessage: 'Email is required')],
-                ),
-              ],
-            );
-          }
+            if (state is UserFormLoaded) {
+              // This is exactly how the user's code works - VooForm inside BlocBuilder
+              // with new initialValues on each state change
+              return VooForm(
+                controller: controller,
+                fields: [
+                  VooTextField(
+                    name: 'firstName',
+                    label: 'First Name',
+                    initialValue: state.user.firstName,
+                    validators: const [RequiredValidation(errorMessage: 'First name is required')],
+                  ),
+                  VooTextField(
+                    name: 'lastName',
+                    label: 'Last Name',
+                    initialValue: state.user.lastName,
+                    validators: const [RequiredValidation(errorMessage: 'Last name is required')],
+                  ),
+                  VooEmailField(
+                    name: 'email',
+                    label: 'Email',
+                    initialValue: state.user.email,
+                    validators: const [RequiredValidation(errorMessage: 'Email is required')],
+                  ),
+                ],
+              );
+            }
 
-          return const SizedBox.shrink();
-        },
-      ),
-    );
+            return const SizedBox.shrink();
+          },
+        ),
+      );
 }
 
 void main() {
@@ -183,17 +183,17 @@ void main() {
       // Update with different initial values
       cubit.updateUser(
         User(
-        firstName: 'Updated',
-        lastName: 'User',
-        email: 'updated@example.com',
-      ),
-    );
+          firstName: 'Updated',
+          lastName: 'User',
+          email: 'updated@example.com',
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Critical test: User's typed value should persist, not be replaced by new initialValue
       expect(find.text('Jane'), findsOneWidget);
       expect(find.text('Updated'), findsNothing); // Should NOT appear
-      
+
       // Other fields that weren't edited should keep their original values too
       expect(find.text('Doe'), findsOneWidget);
       expect(find.text('john@example.com'), findsOneWidget);
@@ -219,22 +219,22 @@ void main() {
       // Type multiple characters in sequence - user reported only one char works
       await tester.enterText(emailField, 'n');
       await tester.pumpAndSettle();
-      
+
       await tester.enterText(emailField, 'ne');
       await tester.pumpAndSettle();
-      
+
       await tester.enterText(emailField, 'new');
       await tester.pumpAndSettle();
-      
+
       await tester.enterText(emailField, 'new@');
       await tester.pumpAndSettle();
-      
+
       await tester.enterText(emailField, 'new@test.com');
       await tester.pumpAndSettle();
 
       // Verify the complete value was entered
       expect(find.text('new@test.com'), findsOneWidget);
-      
+
       // Error should be cleared
       expect(find.text('Email is required'), findsNothing);
     });
@@ -249,14 +249,14 @@ void main() {
       await tester.pumpAndSettle();
 
       final firstNameField = find.byType(TextFormField).first;
-      
+
       // Focus the field
       await tester.tap(firstNameField);
       await tester.pumpAndSettle();
 
       // The field should be focused (we can verify by typing into it)
       // If it loses focus, entering text would fail
-      
+
       // Clear to trigger error
       await tester.enterText(firstNameField, '');
       await tester.pumpAndSettle();
@@ -270,11 +270,11 @@ void main() {
 
       // Error should be cleared
       expect(find.text('First name is required'), findsNothing);
-      
+
       // Continue typing - this verifies focus is maintained
       await tester.enterText(firstNameField, 'John');
       await tester.pumpAndSettle();
-      
+
       expect(find.text('John'), findsOneWidget);
     });
 
@@ -299,11 +299,11 @@ void main() {
       for (int i = 0; i < 5; i++) {
         cubit.updateUser(
           User(
-          firstName: 'Server$i',
-          lastName: 'Update$i',
-          email: 'server$i@example.com',
-        ),
-      );
+            firstName: 'Server$i',
+            lastName: 'Update$i',
+            email: 'server$i@example.com',
+          ),
+        );
         await tester.pump(const Duration(milliseconds: 100));
       }
 
@@ -311,7 +311,7 @@ void main() {
 
       // User's input should still be preserved
       expect(find.text('Smith'), findsOneWidget);
-      
+
       // Server updates should not have overwritten user input
       expect(find.text('Update4'), findsNothing);
     });
@@ -328,7 +328,7 @@ void main() {
       // Create multiple validation errors
       final firstNameField = find.byType(TextFormField).first;
       final lastNameField = find.byType(TextFormField).at(1);
-      
+
       await tester.enterText(firstNameField, '');
       await tester.enterText(lastNameField, '');
       await tester.pumpAndSettle();
@@ -343,11 +343,11 @@ void main() {
 
       cubit.updateUser(
         User(
-        firstName: 'NewFirst',
-        lastName: 'NewLast',
-        email: 'new@example.com',
-      ),
-    );
+          firstName: 'NewFirst',
+          lastName: 'NewLast',
+          email: 'new@example.com',
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Errors should still be visible (validation state preserved)

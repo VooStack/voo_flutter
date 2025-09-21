@@ -147,7 +147,7 @@ void main() {
       // First enter a valid value with 2 decimal places
       await tester.enterText(find.byType(TextField), '10.99');
       expect(find.text('10.99'), findsOneWidget);
-      
+
       // Try to enter a third decimal place - should be prevented
       await tester.enterText(find.byType(TextField), '10.999');
       // Value should remain at 10.99 (formatter prevents third decimal)
@@ -158,7 +158,7 @@ void main() {
   group('VooCurrencyField', () {
     testWidgets('shows currency icon', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooCurrencyField(
               name: 'price',
@@ -173,7 +173,7 @@ void main() {
 
     testWidgets('formats as currency with 2 decimal places', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooCurrencyField(
               name: 'price',
@@ -188,7 +188,7 @@ void main() {
     });
 
     testWidgets('does not allow negative values', (WidgetTester tester) async {
-      final field = VooCurrencyField(
+      const field = VooCurrencyField(
         name: 'price',
         label: 'Price',
       );
@@ -200,7 +200,7 @@ void main() {
 
     testWidgets('shows Euro symbol when configured', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooCurrencyField(
               name: 'price',
@@ -256,7 +256,7 @@ void main() {
       // First enter a valid integer value
       await tester.enterText(find.byType(TextField), '15');
       expect(find.text('15'), findsOneWidget);
-      
+
       // Try to enter a decimal - should be prevented
       await tester.enterText(find.byType(TextField), '15.5');
       // Value should remain at 15 (formatter prevents decimal when disabled)

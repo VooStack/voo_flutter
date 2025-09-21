@@ -31,15 +31,12 @@ void main() {
           VooDataColumn<Map<String, dynamic>>(
             field: 'name',
             label: 'Name',
-            dataType: VooDataColumnType.text,
-            filterable: true,
             valueGetter: (row) => row['name'],
           ),
           VooDataColumn<Map<String, dynamic>>(
             field: 'age',
             label: 'Age',
             dataType: VooDataColumnType.number,
-            filterable: true,
             valueGetter: (row) => row['age'],
           ),
         ],

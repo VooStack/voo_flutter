@@ -92,10 +92,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final effectiveWidth = widget.width ?? 
-        (widget.extended 
-            ? (widget.config.extendedNavigationRailWidth ?? 256) 
-            : (widget.config.navigationRailWidth ?? 88));
+    final effectiveWidth = widget.width ?? (widget.extended ? (widget.config.extendedNavigationRailWidth ?? 256) : (widget.config.navigationRailWidth ?? 88));
 
     final effectiveBackgroundColor =
         widget.backgroundColor ?? widget.config.navigationBackgroundColor ?? theme.navigationRailTheme.backgroundColor ?? colorScheme.surface;
@@ -340,7 +337,6 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
           shape: BoxShape.circle,
           border: Border.all(
             color: theme.colorScheme.surface,
-            width: 1,
           ),
         ),
       );
@@ -359,7 +355,6 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: theme.colorScheme.surface,
-            width: 1,
           ),
         ),
         constraints: const BoxConstraints(minWidth: 14, minHeight: 14),

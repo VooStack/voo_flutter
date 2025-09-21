@@ -5,49 +5,49 @@ import 'package:flutter/material.dart';
 class VooOption extends StatelessWidget {
   /// The main text to display
   final String title;
-  
+
   /// Optional subtitle text
   final String? subtitle;
-  
+
   /// Whether this option is currently selected
   final bool isSelected;
-  
+
   /// Leading widget (icon, image, etc.)
   final Widget? leading;
-  
+
   /// Trailing widget (icon, badge, etc.)
   final Widget? trailing;
-  
+
   /// Whether to show a checkbox for multi-select scenarios
   final bool showCheckbox;
-  
+
   /// Whether to show a radio button for single-select scenarios
   final bool showRadio;
-  
+
   /// Whether to show a checkmark icon when selected
   final bool showCheckmark;
-  
+
   /// Custom background color when selected
   final Color? selectedColor;
-  
+
   /// Custom text style for the title
   final TextStyle? titleStyle;
-  
+
   /// Custom text style for the subtitle
   final TextStyle? subtitleStyle;
-  
+
   /// Padding for the option content
   final EdgeInsetsGeometry? padding;
-  
+
   /// Whether this option is enabled
   final bool enabled;
-  
+
   /// Callback when the option is tapped
   final VoidCallback? onTap;
-  
+
   /// Custom height for the option
   final double? height;
-  
+
   /// Whether to use dense layout
   final bool dense;
 
@@ -75,19 +75,16 @@ class VooOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     // Determine effective colors
-    final effectiveSelectedColor = selectedColor ?? 
-        colorScheme.primaryContainer.withValues(alpha: 0.3);
-    final effectiveTitleColor = !enabled 
+    final effectiveSelectedColor = selectedColor ?? colorScheme.primaryContainer.withValues(alpha: 0.3);
+    final effectiveTitleColor = !enabled
         ? colorScheme.onSurface.withValues(alpha: 0.38)
-        : isSelected 
-            ? colorScheme.primary 
+        : isSelected
+            ? colorScheme.primary
             : colorScheme.onSurface;
-    final effectiveSubtitleColor = !enabled
-        ? colorScheme.onSurface.withValues(alpha: 0.38)
-        : colorScheme.onSurfaceVariant;
-    
+    final effectiveSubtitleColor = !enabled ? colorScheme.onSurface.withValues(alpha: 0.38) : colorScheme.onSurfaceVariant;
+
     // Build title widget
     final Widget titleWidget = Text(
       title,
@@ -98,7 +95,7 @@ class VooOption extends StatelessWidget {
       maxLines: subtitle != null ? 1 : 2,
       overflow: TextOverflow.ellipsis,
     );
-    
+
     // Build subtitle widget if provided
     Widget? subtitleWidget;
     if (subtitle != null) {
@@ -111,7 +108,7 @@ class VooOption extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       );
     }
-    
+
     // Build leading widget
     Widget? effectiveLeading = leading;
     if (showCheckbox) {
@@ -128,7 +125,7 @@ class VooOption extends StatelessWidget {
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       );
     }
-    
+
     // Build trailing widget
     Widget? effectiveTrailing = trailing;
     if (effectiveTrailing == null && showCheckmark && isSelected) {
@@ -138,7 +135,7 @@ class VooOption extends StatelessWidget {
         color: colorScheme.primary,
       );
     }
-    
+
     // Build content
     Widget content = Row(
       children: [
@@ -165,19 +162,19 @@ class VooOption extends StatelessWidget {
         ],
       ],
     );
-    
+
     // Apply padding
-    final effectivePadding = padding ?? 
+    final effectivePadding = padding ??
         EdgeInsets.symmetric(
           horizontal: dense ? 12 : 16,
           vertical: dense ? 8 : 12,
         );
-    
+
     content = Padding(
       padding: effectivePadding,
       child: content,
     );
-    
+
     // Apply height constraint if provided
     if (height != null) {
       content = SizedBox(
@@ -185,7 +182,7 @@ class VooOption extends StatelessWidget {
         child: content,
       );
     }
-    
+
     // Wrap in container with background color
     return Container(
       color: isSelected ? effectiveSelectedColor : null,
@@ -213,13 +210,11 @@ class VooSimpleOption extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return VooOption(
-      title: text,
-      isSelected: isSelected,
-      onTap: onTap,
-      showCheckbox: showCheckbox,
-      dense: true,
-    );
-  }
+  Widget build(BuildContext context) => VooOption(
+        title: text,
+        isSelected: isSelected,
+        onTap: onTap,
+        showCheckbox: showCheckbox,
+        dense: true,
+      );
 }

@@ -32,7 +32,7 @@ void main() {
           ),
         ),
       );
-      
+
       // Allow the widgets to build and register with the controller
       await tester.pumpAndSettle();
 
@@ -130,9 +130,7 @@ void main() {
     });
 
     testWidgets('should handle rapid typing without losing focus', (tester) async {
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onTyping,
-      );
+      final controller = VooFormController();
 
       await tester.pumpWidget(
         MaterialApp(

@@ -4,14 +4,11 @@ import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   testWidgets('User scenario: VooDropdownField with readOnly works', (WidgetTester tester) async {
-    const bool readOnly = false; // Can be toggled
-    
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: VooForm(
-            isReadOnly: readOnly,
-            fields: const [
+            fields: [
               VooDropdownField(
                 readOnly: true, // Field-level readOnly should work
                 name: 'name',
@@ -26,20 +23,20 @@ void main() {
 
     // The field should be read-only and show "Option 1"
     expect(find.text('Option 1'), findsOneWidget);
-    
+
     // Should not show dropdown since it's read-only
     expect(find.byType(DropdownButtonFormField), findsNothing);
   });
 
   testWidgets('Form-level readOnly works with dropdown', (WidgetTester tester) async {
     const bool readOnly = true; // Form is read-only
-    
+
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: VooForm(
             isReadOnly: readOnly,
-            fields: const [
+            fields: [
               VooDropdownField(
                 name: 'name',
                 options: ['Option 1', 'Option 2'],
@@ -53,7 +50,7 @@ void main() {
 
     // The field should be read-only and show "Option 1"
     expect(find.text('Option 1'), findsOneWidget);
-    
+
     // Should not show dropdown since form is read-only
     expect(find.byType(DropdownButtonFormField), findsNothing);
   });

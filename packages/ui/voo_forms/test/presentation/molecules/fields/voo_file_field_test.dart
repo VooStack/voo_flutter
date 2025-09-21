@@ -120,7 +120,7 @@ void main() {
     testWidgets('displays placeholder when no initial file', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooFileField(
+          const VooFileField(
             name: 'file',
             buttonText: 'Upload Document',
           ),
@@ -144,7 +144,6 @@ void main() {
           VooFileField(
             name: 'file',
             initialValue: file,
-            readOnly: false,
           ),
         ),
       );
@@ -160,9 +159,9 @@ void main() {
     testWidgets('shows allowed extensions when specified', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooFileField(
+          const VooFileField(
             name: 'file',
-            allowedExtensions: const ['pdf', 'doc', 'docx'],
+            allowedExtensions: ['pdf', 'doc', 'docx'],
           ),
         ),
       );
@@ -173,9 +172,9 @@ void main() {
     testWidgets('shows custom button icon when provided', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooFileField(
+          const VooFileField(
             name: 'file',
-            buttonIcon: const Icon(Icons.attach_file),
+            buttonIcon: Icon(Icons.attach_file),
           ),
         ),
       );
@@ -186,7 +185,7 @@ void main() {
     testWidgets('applies label when provided', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooFileField(
+          const VooFileField(
             name: 'file',
             label: 'Upload Resume',
           ),
@@ -199,7 +198,7 @@ void main() {
     testWidgets('shows helper text when provided', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooFileField(
+          const VooFileField(
             name: 'file',
             helper: 'PDF files only, max 5MB',
           ),
@@ -212,7 +211,7 @@ void main() {
     testWidgets('shows error text when provided', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
-          VooFileField(
+          const VooFileField(
             name: 'file',
             error: 'File is required',
           ),
@@ -244,6 +243,5 @@ void main() {
       // Should not trigger file selection
       expect(tapped, isFalse);
     });
-
   });
 }

@@ -38,7 +38,6 @@ void main() {
       config = VooNavigationConfig(
         items: navigationItems,
         selectedId: 'dashboard',
-        enableAnimations: true,
         onNavigationItemSelected: (id) {},
       );
     });
@@ -147,7 +146,8 @@ void main() {
       // Check for dot indicator on settings
       expect(
         find.byWidgetPredicate(
-          (widget) => widget is Container &&
+          (widget) =>
+              widget is Container &&
               widget.decoration is BoxDecoration &&
               ((widget.decoration as BoxDecoration?)?.shape == BoxShape.circle) &&
               widget.constraints?.maxWidth == 6,
@@ -219,10 +219,12 @@ void main() {
       );
 
       final material = tester.widget<Material>(
-        find.descendant(
-          of: find.byType(VooAdaptiveNavigationRail),
-          matching: find.byType(Material),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(VooAdaptiveNavigationRail),
+              matching: find.byType(Material),
+            )
+            .first,
       );
 
       expect(material.color, Colors.blue.shade50);
@@ -247,10 +249,12 @@ void main() {
       );
 
       final material = tester.widget<Material>(
-        find.descendant(
-          of: find.byType(VooAdaptiveNavigationRail),
-          matching: find.byType(Material),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(VooAdaptiveNavigationRail),
+              matching: find.byType(Material),
+            )
+            .first,
       );
 
       expect(material.borderRadius, const BorderRadius.horizontal(right: Radius.circular(16)));

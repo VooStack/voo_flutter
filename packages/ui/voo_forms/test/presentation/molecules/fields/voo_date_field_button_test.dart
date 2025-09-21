@@ -8,10 +8,9 @@ import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart
 
 void main() {
   group('VooDateFieldButton', () {
-    testWidgets('should display button with placeholder text when no date selected',
-        (WidgetTester tester) async {
+    testWidgets('should display button with placeholder text when no date selected', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -25,10 +24,9 @@ void main() {
       expect(find.byType(VooFormButton), findsOneWidget);
     });
 
-    testWidgets('should display custom button text when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display custom button text when provided', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -41,10 +39,9 @@ void main() {
       expect(find.text('Pick Date'), findsOneWidget);
     });
 
-    testWidgets('should display formatted date when value is provided',
-        (WidgetTester tester) async {
+    testWidgets('should display formatted date when value is provided', (WidgetTester tester) async {
       final testDate = DateTime(2024, 3, 15);
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -59,11 +56,10 @@ void main() {
       expect(find.text('2024-03-15'), findsOneWidget);
     });
 
-    testWidgets('should use custom date format when provided',
-        (WidgetTester tester) async {
+    testWidgets('should use custom date format when provided', (WidgetTester tester) async {
       final testDate = DateTime(2024, 3, 15);
       final dateFormat = DateFormat('MMM dd, yyyy');
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -79,10 +75,9 @@ void main() {
       expect(find.text('Mar 15, 2024'), findsOneWidget);
     });
 
-    testWidgets('should display label when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display label when provided', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -95,10 +90,9 @@ void main() {
       expect(find.text('Birth Date'), findsOneWidget);
     });
 
-    testWidgets('should display helper text when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display helper text when provided', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -111,15 +105,13 @@ void main() {
       expect(find.text('Select your date of birth'), findsOneWidget);
     });
 
-    testWidgets('should display error text when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display error text when provided', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
               error: 'Date is required',
-              showError: true,
             ),
           ),
         ),
@@ -128,10 +120,9 @@ void main() {
       expect(find.text('Date is required'), findsOneWidget);
     });
 
-    testWidgets('should open date picker when button is pressed',
-        (WidgetTester tester) async {
+    testWidgets('should open date picker when button is pressed', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -148,10 +139,9 @@ void main() {
       expect(find.byType(Dialog), findsOneWidget);
     });
 
-    testWidgets('should not open date picker when disabled',
-        (WidgetTester tester) async {
+    testWidgets('should not open date picker when disabled', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -169,10 +159,9 @@ void main() {
       expect(find.byType(Dialog), findsNothing);
     });
 
-    testWidgets('should not open date picker when readOnly',
-        (WidgetTester tester) async {
+    testWidgets('should not open date picker when readOnly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -190,10 +179,9 @@ void main() {
       expect(find.byType(Dialog), findsNothing);
     });
 
-    testWidgets('should call onChanged when date is selected',
-        (WidgetTester tester) async {
+    testWidgets('should call onChanged when date is selected', (WidgetTester tester) async {
       DateTime? selectedDate;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -222,10 +210,9 @@ void main() {
       expect(selectedDate?.day, 15);
     });
 
-    testWidgets('should hide field when isHidden is true',
-        (WidgetTester tester) async {
+    testWidgets('should hide field when isHidden is true', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -241,15 +228,14 @@ void main() {
       expect(find.byType(VooFormButton), findsNothing);
     });
 
-    testWidgets('should display prefix icon when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display prefix icon when provided', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
               placeholder: 'Select Date',
-              prefixIcon: const Icon(Icons.calendar_today),
+              prefixIcon: Icon(Icons.calendar_today),
             ),
           ),
         ),
@@ -258,15 +244,14 @@ void main() {
       expect(find.byIcon(Icons.calendar_today), findsOneWidget);
     });
 
-    testWidgets('should display suffix icon when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display suffix icon when provided', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
               placeholder: 'Select Date',
-              suffixIcon: const Icon(Icons.event),
+              suffixIcon: Icon(Icons.event),
             ),
           ),
         ),
@@ -275,10 +260,9 @@ void main() {
       expect(find.byIcon(Icons.event), findsOneWidget);
     });
 
-    testWidgets('should respect button type setting',
-        (WidgetTester tester) async {
+    testWidgets('should respect button type setting', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'test_date',
@@ -293,11 +277,10 @@ void main() {
       expect(button.type, ButtonType.filled);
     });
 
-    testWidgets('should respect firstDate and lastDate constraints',
-        (WidgetTester tester) async {
-      final firstDate = DateTime(2020, 1, 1);
+    testWidgets('should respect firstDate and lastDate constraints', (WidgetTester tester) async {
+      final firstDate = DateTime(2020);
       final lastDate = DateTime(2025, 12, 31);
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -319,10 +302,9 @@ void main() {
       expect(find.byType(Dialog), findsOneWidget);
     });
 
-    testWidgets('should display value when provided',
-        (WidgetTester tester) async {
+    testWidgets('should display value when provided', (WidgetTester tester) async {
       final dateValue = DateTime(2024, 6, 15);
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -412,7 +394,7 @@ void main() {
 
     testWidgets('displays placeholder when no initial value', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooDateFieldButton(
               name: 'dateButton',
@@ -432,7 +414,7 @@ void main() {
             body: VooDateFieldButton(
               name: 'date',
               readOnly: true,
-              initialValue: DateTime(2024, 1, 1),
+              initialValue: DateTime(2024),
             ),
           ),
         ),

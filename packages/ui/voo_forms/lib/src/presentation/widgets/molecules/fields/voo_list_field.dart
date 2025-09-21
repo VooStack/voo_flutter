@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
- 
+
 /// List field molecule that displays a list of items
 /// IMPORTANT: This widget does NOT manage state internally
 /// The developer is responsible for managing items via callbacks
@@ -111,7 +111,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
 
     final theme = Theme.of(context);
     final effectiveReadOnly = getEffectiveReadOnly(context);
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -124,13 +124,14 @@ class VooListField<T> extends VooFieldBase<List<T>> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (label != null || labelWidget != null) ...[
-              labelWidget ?? Text(
-                label!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              labelWidget ??
+                  Text(
+                    label!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
               const SizedBox(height: 8),
             ],
             if (items.isEmpty)
@@ -166,7 +167,6 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                       ],
                       Expanded(
                         child: AbsorbPointer(
-                          absorbing: true,
                           child: itemBuilder(context, item, index),
                         ),
                       ),
@@ -316,12 +316,12 @@ class VooListField<T> extends VooFieldBase<List<T>> {
 
     // Apply standard field building pattern
     result = buildWithHelper(context, result);
-    
+
     // Build with error if present
     if (fieldError != null && fieldError.isNotEmpty) {
       result = buildWithError(context, result);
     }
-    
+
     result = buildWithLabel(context, result);
     result = buildWithActions(context, result);
 

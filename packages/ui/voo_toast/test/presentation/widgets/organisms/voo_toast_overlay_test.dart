@@ -9,7 +9,7 @@ void main() {
       VooToast.dismissAll();
       VooToastController.reset();
     });
-    
+
     testWidgets('renders child widget', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
@@ -48,7 +48,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.text('Test Toast'), findsOneWidget);
-      
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -79,7 +79,7 @@ void main() {
       expect(find.text('Toast 1'), findsOneWidget);
       expect(find.text('Toast 2'), findsOneWidget);
       expect(find.text('Toast 3'), findsOneWidget);
-      
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -116,7 +116,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.text('Dismissable Toast'), findsNothing);
-      
+
       // Ensure cleanup
       await tester.pumpAndSettle();
     });
@@ -150,7 +150,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 600));
 
       expect(find.text('Auto Dismiss'), findsNothing);
-      
+
       // Ensure cleanup
       await tester.pumpAndSettle();
     });
@@ -186,7 +186,7 @@ void main() {
 
       expect(find.text('Top Toast'), findsOneWidget);
       expect(find.text('Bottom Toast'), findsOneWidget);
-      
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -220,7 +220,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.text('Custom Controller Toast'), findsOneWidget);
-      
+
       // Clean up
       customController.dismissAll();
       await tester.pumpAndSettle();
@@ -255,7 +255,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.text('Animated Toast'), findsOneWidget);
-      
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -266,11 +266,10 @@ void main() {
       VooToastController.reset();
       VooToastController.init(
         config: const ToastConfig(
-          maxToasts: 3,  // Allow 3 toasts to test the limit
           queueMode: false,
         ),
       );
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: VooToastOverlay(
@@ -294,8 +293,8 @@ void main() {
 
       expect(find.text('Toast 1'), findsOneWidget);
       expect(find.text('Toast 2'), findsOneWidget);
-      expect(find.text('Toast 3'), findsOneWidget);  // All 3 toasts should show with maxToasts: 3
-      
+      expect(find.text('Toast 3'), findsOneWidget); // All 3 toasts should show with maxToasts: 3
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -378,7 +377,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('Center', skipOffstage: false), findsNWidgets(2));
-      
+
       // Clean up all toasts
       VooToast.dismissAll();
       await tester.pumpAndSettle();

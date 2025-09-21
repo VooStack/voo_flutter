@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_forms/src/presentation/config/utils/formatters/phone_number_formatter.dart';
 import 'package:voo_forms/src/presentation/config/utils/formatters/simple_currency_formatter.dart';
@@ -41,7 +40,7 @@ void main() {
           const TextEditingValue(text: '4567'),
         );
         expect(result.text, contains('4,567'));
-        
+
         // Type decimal "4567.89" -> "$4,567.89"
         result = formatter.formatEditUpdate(
           result,
@@ -75,8 +74,8 @@ void main() {
 
       test('EUR formatter works with European locale', () {
         final eurFormatter = SimpleCurrencyFormatter.eur();
-        
-        var result = eurFormatter.formatEditUpdate(
+
+        final result = eurFormatter.formatEditUpdate(
           TextEditingValue.empty,
           const TextEditingValue(text: '1234'),
         );

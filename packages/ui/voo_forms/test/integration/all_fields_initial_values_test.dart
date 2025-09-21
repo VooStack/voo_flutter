@@ -16,10 +16,10 @@ void main() {
 
     testWidgets('VooTextField displays initial value', (tester) async {
       const initialValue = 'John Doe';
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooTextField(
+          const VooTextField(
             name: 'text',
             label: 'Name',
             initialValue: initialValue,
@@ -33,10 +33,10 @@ void main() {
 
     testWidgets('VooEmailField displays initial value', (tester) async {
       const initialValue = 'test@example.com';
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooEmailField(
+          const VooEmailField(
             name: 'email',
             label: 'Email',
             initialValue: initialValue,
@@ -50,10 +50,10 @@ void main() {
 
     testWidgets('VooPasswordField displays initial value (obscured)', (tester) async {
       const initialValue = 'secret123';
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooPasswordField(
+          const VooPasswordField(
             name: 'password',
             label: 'Password',
             initialValue: initialValue,
@@ -65,20 +65,20 @@ void main() {
       // Try to clear it and verify it had content
       final textFormField = find.byType(TextFormField);
       expect(textFormField, findsOneWidget);
-      
+
       // Enter new text to verify field is working
       await tester.enterText(textFormField, 'newpassword');
       await tester.pump();
-      
+
       // The initial value was set, field is functional
     });
 
     testWidgets('VooPhoneField displays initial value', (tester) async {
       const initialValue = '5551234567';
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooPhoneField(
+          const VooPhoneField(
             name: 'phone',
             label: 'Phone',
             initialValue: initialValue,
@@ -94,10 +94,10 @@ void main() {
 
     testWidgets('VooNumberField displays initial value', (tester) async {
       const initialValue = 42.5;
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooNumberField(
+          const VooNumberField(
             name: 'number',
             label: 'Number',
             initialValue: initialValue,
@@ -111,7 +111,7 @@ void main() {
 
     testWidgets('VooIntegerField displays initial value', (tester) async {
       const initialValue = 100;
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooIntegerField(
@@ -128,7 +128,7 @@ void main() {
 
     testWidgets('VooDecimalField displays initial value', (tester) async {
       const initialValue = 3.14159;
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooDecimalField(
@@ -145,13 +145,12 @@ void main() {
 
     testWidgets('VooCurrencyField displays initial value', (tester) async {
       const initialValue = 1234.56;
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooCurrencyField(
+          const VooCurrencyField(
             name: 'currency',
             label: 'Price',
-            currencySymbol: r'$',
             initialValue: initialValue,
           ),
         ),
@@ -163,7 +162,7 @@ void main() {
 
     testWidgets('VooPercentageField displays initial value', (tester) async {
       const initialValue = 75.5;
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooPercentageField(
@@ -180,10 +179,10 @@ void main() {
 
     testWidgets('VooMultilineField displays initial value', (tester) async {
       const initialValue = 'Line 1\nLine 2\nLine 3';
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooMultilineField(
+          const VooMultilineField(
             name: 'multiline',
             label: 'Description',
             initialValue: initialValue,
@@ -197,10 +196,10 @@ void main() {
 
     testWidgets('VooBooleanField displays initial value true', (tester) async {
       const initialValue = true;
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooBooleanField(
+          const VooBooleanField(
             name: 'boolean',
             label: 'Enabled',
             initialValue: initialValue,
@@ -214,10 +213,10 @@ void main() {
 
     testWidgets('VooBooleanField displays initial value false', (tester) async {
       const initialValue = false;
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooBooleanField(
+          const VooBooleanField(
             name: 'boolean',
             label: 'Enabled',
             initialValue: initialValue,
@@ -231,10 +230,10 @@ void main() {
 
     testWidgets('VooCheckboxField displays initial value checked', (tester) async {
       const initialValue = true;
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooCheckboxField(
+          const VooCheckboxField(
             name: 'checkbox',
             label: 'Accept Terms',
             initialValue: initialValue,
@@ -248,10 +247,10 @@ void main() {
 
     testWidgets('VooCheckboxField displays initial value unchecked', (tester) async {
       const initialValue = false;
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooCheckboxField(
+          const VooCheckboxField(
             name: 'checkbox',
             label: 'Accept Terms',
             initialValue: initialValue,
@@ -265,13 +264,13 @@ void main() {
 
     testWidgets('VooDropdownField displays initial value', (tester) async {
       const initialValue = 'Option 2';
-      
+
       await tester.pumpWidget(
         wrapInApp(
-          VooDropdownField<String>(
+          const VooDropdownField<String>(
             name: 'dropdown',
             label: 'Select Option',
-            options: const ['Option 1', 'Option 2', 'Option 3'],
+            options: ['Option 1', 'Option 2', 'Option 3'],
             initialValue: initialValue,
           ),
         ),
@@ -283,7 +282,7 @@ void main() {
 
     testWidgets('VooDropdownField with displayTextBuilder displays initial value', (tester) async {
       const initialValue = 2;
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooDropdownField<int>(
@@ -302,7 +301,7 @@ void main() {
 
     testWidgets('VooAsyncDropdownField displays initial value', (tester) async {
       const initialValue = 'Async Option 2';
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooAsyncDropdownField<String>(
@@ -319,17 +318,17 @@ void main() {
 
       // The async dropdown should display the initial value immediately
       expect(find.text(initialValue), findsOneWidget);
-      
+
       // Wait for async load to complete
       await tester.pumpAndSettle();
-      
+
       // Value should still be displayed
       expect(find.text(initialValue), findsOneWidget);
     });
 
     testWidgets('VooAsyncDropdownField with displayTextBuilder displays initial value', (tester) async {
       const initialValue = 42;
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooAsyncDropdownField<int>(
@@ -347,17 +346,17 @@ void main() {
 
       // The async dropdown should display the formatted initial value immediately
       expect(find.text('ID: 42'), findsOneWidget);
-      
+
       // Wait for async load to complete
       await tester.pumpAndSettle();
-      
+
       // Value should still be displayed
       expect(find.text('ID: 42'), findsOneWidget);
     });
 
     testWidgets('VooDateField displays initial value', (tester) async {
       final initialValue = DateTime(2024, 3, 15);
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooDateField(
@@ -375,7 +374,7 @@ void main() {
     testWidgets('VooDateField with custom format displays initial value', (tester) async {
       final initialValue = DateTime(2024, 3, 15);
       final dateFormat = DateFormat('MM/dd/yyyy');
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooDateField(
@@ -393,7 +392,7 @@ void main() {
 
     testWidgets('VooDateFieldButton displays initial value', (tester) async {
       final initialValue = DateTime(2024, 6, 20);
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooDateFieldButton(
@@ -411,7 +410,7 @@ void main() {
     testWidgets('VooDateFieldButton with custom format displays initial value', (tester) async {
       final initialValue = DateTime(2024, 6, 20);
       final dateFormat = DateFormat('dd/MM/yyyy');
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooDateFieldButton(
@@ -435,7 +434,7 @@ void main() {
           path: '/path/to/document.pdf',
         ),
       );
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooFileField(
@@ -452,7 +451,7 @@ void main() {
 
     testWidgets('VooListField displays initial items', (tester) async {
       const initialItems = ['Item 1', 'Item 2', 'Item 3'];
-      
+
       await tester.pumpWidget(
         wrapInApp(
           VooListField<String>(
@@ -473,7 +472,7 @@ void main() {
 
     testWidgets('Integration: Multiple fields with initial values', (tester) async {
       final dateValue = DateTime(2025, 8, 26);
-      
+
       await tester.pumpWidget(
         wrapInApp(
           Column(
@@ -488,10 +487,10 @@ void main() {
                 label: 'Site City',
                 initialValue: 'Salem',
               ),
-              VooDropdownField<String>(
+              const VooDropdownField<String>(
                 name: 'siteState',
                 label: 'Site State',
-                options: const ['Massachusetts', 'New York', 'California'],
+                options: ['Massachusetts', 'New York', 'California'],
                 initialValue: 'Massachusetts',
               ),
               const VooTextField(
@@ -510,10 +509,10 @@ void main() {
                 label: 'Project Number',
                 initialValue: 'EBI Consulting Project#: 05188',
               ),
-              VooDropdownField<String>(
+              const VooDropdownField<String>(
                 name: 'orderStatus',
                 label: 'Order Status',
-                options: const ['Pending', 'Working', 'Completed'],
+                options: ['Pending', 'Working', 'Completed'],
                 initialValue: 'Working',
               ),
               VooAsyncDropdownField<String>(
@@ -528,10 +527,9 @@ void main() {
                 asyncOptionsLoader: (query) async => ['Bob Johnson', 'Alice Brown'],
                 initialValue: 'Bob Johnson',
               ),
-              VooCurrencyField(
+              const VooCurrencyField(
                 name: 'orderCost',
                 label: 'Order Cost',
-                currencySymbol: r'$',
                 initialValue: 500.00,
               ),
             ],
@@ -549,14 +547,14 @@ void main() {
       expect(find.text('Working'), findsOneWidget);
       expect(find.text('John Doe'), findsOneWidget);
       expect(find.text('Bob Johnson'), findsOneWidget);
-      
+
       // Currency field might format differently
       // Just verify we have enough text fields
       expect(find.byType(TextFormField).evaluate().length, greaterThanOrEqualTo(6));
-      
+
       // Wait for async dropdowns to load
       await tester.pumpAndSettle();
-      
+
       // Values should still be displayed
       expect(find.text('John Doe'), findsOneWidget);
       expect(find.text('Bob Johnson'), findsOneWidget);

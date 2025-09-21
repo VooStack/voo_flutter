@@ -49,7 +49,7 @@ void main() {
 
       // The form should render both text fields
       expect(find.byType(VooTextField), findsNWidgets(2));
-      
+
       // Form widget should exist
       expect(find.byType(VooForm), findsOneWidget);
     });
@@ -358,7 +358,7 @@ void main() {
 
       // Should show loading indicator
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       // Should NOT show form fields
       expect(find.text('Name'), findsNothing);
       expect(find.text('Email'), findsNothing);
@@ -391,7 +391,7 @@ void main() {
       // Should show custom loading widget
       expect(find.text('Loading form data...'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       // Should NOT show form fields
       expect(find.text('Name'), findsNothing);
     });
@@ -401,7 +401,6 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              isLoading: false,
               fields: [
                 VooTextField(name: 'name', label: 'Name'),
                 VooEmailField(name: 'email', label: 'Email'),
@@ -413,7 +412,7 @@ void main() {
 
       // Should NOT show loading indicator
       expect(find.byType(CircularProgressIndicator), findsNothing);
-      
+
       // Should show form fields
       expect(find.text('Name'), findsOneWidget);
       expect(find.text('Email'), findsOneWidget);
@@ -452,11 +451,11 @@ void main() {
       // Initially should show loading
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.text('Name'), findsNothing);
-      
+
       // Trigger state change
       await tester.tap(find.text('Load Complete'));
       await tester.pumpAndSettle();
-      
+
       // Should now show form
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.text('Name'), findsOneWidget);

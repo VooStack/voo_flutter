@@ -8,12 +8,11 @@ void main() {
     testWidgets('fields respect form-level isReadOnly setting', (WidgetTester tester) async {
       // Test with form not read-only (field should be editable)
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              isReadOnly: false,
               fields: [
-                const VooTextField(
+                VooTextField(
                   name: 'testField',
                   label: 'Test Field',
                   initialValue: 'Initial Value',
@@ -27,21 +26,21 @@ void main() {
       // Field should be editable - try entering text
       final textField = find.byType(TextFormField);
       expect(textField, findsOneWidget);
-      
+
       await tester.enterText(textField, 'New Value');
       await tester.pump();
-      
+
       // Text should have changed
       expect(find.text('New Value'), findsOneWidget);
 
       // Now test with form read-only (field should not be editable)
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               isReadOnly: true,
               fields: [
-                const VooTextField(
+                VooTextField(
                   name: 'testField',
                   label: 'Test Field',
                   initialValue: 'Initial Value',
@@ -57,27 +56,25 @@ void main() {
       // Field should now be read-only and show VooReadOnlyField
       final readOnlyField = find.byType(VooReadOnlyField);
       expect(readOnlyField, findsOneWidget);
-      
+
       // Should not find a TextFormField since it's read-only
       expect(find.byType(TextFormField), findsNothing);
-      
+
       // The field should display the initial value
       expect(find.text('Initial Value'), findsOneWidget);
     });
 
     testWidgets('field-level readOnly overrides are respected when form is not read-only', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              isReadOnly: false,
               fields: [
-                const VooTextField(
+                VooTextField(
                   name: 'editableField',
                   label: 'Editable Field',
-                  readOnly: false,
                 ),
-                const VooTextField(
+                VooTextField(
                   name: 'readOnlyField',
                   label: 'Read Only Field',
                   readOnly: true,
@@ -91,7 +88,7 @@ void main() {
       // First field should be editable (TextFormField)
       final editableField = find.byType(TextFormField);
       expect(editableField, findsOneWidget);
-      
+
       await tester.enterText(editableField, 'Can Edit');
       await tester.pump();
       expect(find.text('Can Edit'), findsOneWidget);
@@ -102,17 +99,16 @@ void main() {
 
     testWidgets('form-level readOnly always takes precedence', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: VooForm(
               isReadOnly: true, // Form is read-only
               fields: [
-                const VooTextField(
+                VooTextField(
                   name: 'field1',
                   label: 'Field 1',
-                  readOnly: false, // Even though field says not read-only
                 ),
-                const VooTextField(
+                VooTextField(
                   name: 'field2',
                   label: 'Field 2',
                   readOnly: true,
@@ -135,7 +131,6 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              isReadOnly: false,
               fields: [
                 VooBooleanField(
                   name: 'boolField',
@@ -152,16 +147,16 @@ void main() {
       // Find and tap the switch
       final switchFinder = find.byType(Switch);
       expect(switchFinder, findsOneWidget);
-      
+
       await tester.tap(switchFinder);
       await tester.pump();
-      
+
       // Value should have changed
       expect(changedValue, true);
 
       // Now test with read-only form
       changedValue = null;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -185,10 +180,10 @@ void main() {
       // Try to tap the switch
       final readOnlySwitchFinder = find.byType(Switch);
       expect(readOnlySwitchFinder, findsOneWidget);
-      
+
       await tester.tap(readOnlySwitchFinder);
       await tester.pump();
-      
+
       // Value should NOT have changed because form is read-only
       expect(changedValue, null);
     });
@@ -200,7 +195,6 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              isReadOnly: false,
               fields: [
                 VooCheckboxField(
                   name: 'checkField',
@@ -217,16 +211,16 @@ void main() {
       // Find and tap the checkbox
       final checkboxFinder = find.byType(Checkbox);
       expect(checkboxFinder, findsOneWidget);
-      
+
       await tester.tap(checkboxFinder);
       await tester.pump();
-      
+
       // Value should have changed
       expect(changedValue, true);
 
       // Now test with read-only form
       changedValue = null;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -250,10 +244,10 @@ void main() {
       // Try to tap the checkbox
       final readOnlyCheckboxFinder = find.byType(Checkbox);
       expect(readOnlyCheckboxFinder, findsOneWidget);
-      
+
       await tester.tap(readOnlyCheckboxFinder);
       await tester.pump();
-      
+
       // Value should NOT have changed because form is read-only
       expect(changedValue, null);
     });
@@ -298,8 +292,6 @@ void main() {
         helper: 'Test Helper',
         placeholder: 'Test Placeholder',
         initialValue: 'Initial',
-        enabled: true,
-        readOnly: false,
       );
 
       final copiedField = originalField.copyWith(

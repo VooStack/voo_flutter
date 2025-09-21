@@ -6,7 +6,7 @@ void main() {
   group('VooDropdownField Subtitle Support', () {
     testWidgets('displays subtitles when subtitleBuilder is provided', (tester) async {
       final options = ['Option 1', 'Option 2', 'Option 3'];
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -38,7 +38,7 @@ void main() {
         Product('Phone', 'Mobile communication device'),
         Product('Tablet', 'Portable touch screen device'),
       ];
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -62,7 +62,7 @@ void main() {
       expect(find.text('Laptop'), findsOneWidget);
       expect(find.text('Phone'), findsOneWidget);
       expect(find.text('Tablet'), findsOneWidget);
-      
+
       // Verify product descriptions are displayed as subtitles
       expect(find.text('High-performance computing device'), findsOneWidget);
       expect(find.text('Mobile communication device'), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
       // Tap on the dropdown to open it
       await tester.tap(find.byType(VooAsyncDropdownField<String>));
       await tester.pump();
-      
+
       // Wait for async loading
       await tester.pump(const Duration(milliseconds: 150));
       await tester.pump(const Duration(milliseconds: 300));
@@ -107,7 +107,7 @@ void main() {
   group('VooMultiSelectField Subtitle Support', () {
     testWidgets('displays subtitles in multi-select', (tester) async {
       final categories = ['Electronics', 'Clothing', 'Food'];
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -116,7 +116,7 @@ void main() {
               label: 'Select Categories',
               options: categories,
               displayTextBuilder: (value) => value,
-              subtitleBuilder: (value) => getCategoryDescription(value),
+              subtitleBuilder: getCategoryDescription,
             ),
           ),
         ),
@@ -153,6 +153,6 @@ String getCategoryDescription(String category) {
 class Product {
   final String name;
   final String description;
-  
+
   Product(this.name, this.description);
 }

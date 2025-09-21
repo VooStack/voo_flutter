@@ -32,7 +32,7 @@ class VooToastCard extends StatelessWidget {
 
   Widget _buildCustomToast(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Material(
       color: toast.backgroundColor ?? theme.colorScheme.surfaceContainer,
       borderRadius: toast.borderRadius ?? BorderRadius.circular(8),
@@ -57,8 +57,8 @@ class VooToastCard extends StatelessWidget {
     final backgroundColor = toast.backgroundColor ?? _getBackgroundColor(theme);
     final textColor = toast.textColor ?? _getTextColor(theme);
     final gradient = toast.backgroundColor == null ? _getGradient() : null;
-    
-    return Container(
+
+    return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -78,7 +78,6 @@ class VooToastCard extends StatelessWidget {
       child: Material(
         color: gradient != null ? Colors.transparent : backgroundColor,
         borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
-        elevation: 0,
         child: InkWell(
           onTap: toast.onTap,
           borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
@@ -102,136 +101,132 @@ class VooToastCard extends StatelessWidget {
                 Padding(
                   padding: toast.padding ?? const EdgeInsets.all(16),
                   child: Row(
-                  children: [
-                    if (toast.isLoading) ...[
-                      _buildIconContainer(
-                        VooLoadingIndicator(
-                          color: textColor,
-                          size: iconSize,
-                        ),
-                        textColor,
-                      ),
-                      const SizedBox(width: 14),
-                    ] else if (toast.icon != null || toast.type != ToastType.custom) ...[
-                      _buildIconContainer(
-                        VooToastIcon(
-                          type: toast.type,
-                          icon: toast.icon,
-                          size: iconSize,
-                          color: textColor,
-                        ),
-                        textColor,
-                      ),
-                      const SizedBox(width: 14),
-                    ],
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (toast.title != null) ...[
-                            Text(
-                              toast.title!,
-                              style: toast.titleStyle ?? theme.textTheme.titleSmall?.copyWith(
-                                color: textColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                          ],
-                          Text(
-                            toast.message,
-                            style: toast.textStyle ?? theme.textTheme.bodyMedium?.copyWith(
-                              color: textColor,
-                            ),
+                    children: [
+                      if (toast.isLoading) ...[
+                        _buildIconContainer(
+                          VooLoadingIndicator(
+                            color: textColor,
+                            size: iconSize,
                           ),
-                          if (toast.actions != null && toast.actions!.isNotEmpty) ...[
-                            const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 8,
-                              children: toast.actions!.map((action) {
-                                return TextButton(
-                                  onPressed: action.onPressed,
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: action.textColor ?? textColor,
-                                    backgroundColor: action.backgroundColor,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 4,
+                          textColor,
+                        ),
+                        const SizedBox(width: 14),
+                      ] else if (toast.icon != null || toast.type != ToastType.custom) ...[
+                        _buildIconContainer(
+                          VooToastIcon(
+                            type: toast.type,
+                            icon: toast.icon,
+                            size: iconSize,
+                            color: textColor,
+                          ),
+                          textColor,
+                        ),
+                        const SizedBox(width: 14),
+                      ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (toast.title != null) ...[
+                              Text(
+                                toast.title!,
+                                style: toast.titleStyle ??
+                                    theme.textTheme.titleSmall?.copyWith(
+                                      color: textColor,
+                                      fontWeight: FontWeight.bold,
                                     ),
+                              ),
+                              const SizedBox(height: 4),
+                            ],
+                            Text(
+                              toast.message,
+                              style: toast.textStyle ??
+                                  theme.textTheme.bodyMedium?.copyWith(
+                                    color: textColor,
                                   ),
-                                  child: Text(action.label),
-                                );
-                              }).toList(),
                             ),
+                            if (toast.actions != null && toast.actions!.isNotEmpty) ...[
+                              const SizedBox(height: 12),
+                              Wrap(
+                                spacing: 8,
+                                children: toast.actions!
+                                    .map(
+                                      (action) => TextButton(
+                                        onPressed: action.onPressed,
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: action.textColor ?? textColor,
+                                          backgroundColor: action.backgroundColor,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 4,
+                                          ),
+                                        ),
+                                        child: Text(action.label),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                    if (toast.showCloseButton) ...[
-                      const SizedBox(width: 8),
-                      VooToastCloseButton(
-                        onPressed: onDismiss,
-                        size: closeButtonSize,
-                        color: textColor,
-                      ),
+                      if (toast.showCloseButton) ...[
+                        const SizedBox(width: 8),
+                        VooToastCloseButton(
+                          onPressed: onDismiss,
+                          size: closeButtonSize,
+                          color: textColor,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-              if (toast.showProgressBar && toast.duration != Duration.zero)
-                _buildEnhancedProgressBar(textColor),
-            ],
+                if (toast.showProgressBar && toast.duration != Duration.zero) _buildEnhancedProgressBar(textColor),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-  }
-
-  Widget _buildIconContainer(Widget icon, Color color) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Center(child: icon),
     );
   }
 
-  Widget _buildEnhancedProgressBar(Color color) {
-    return Container(
-      height: progressBarHeight,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.1),
-            color.withValues(alpha: 0.3),
-          ],
+  Widget _buildIconContainer(Widget icon, Color color) => Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: color.withValues(alpha: 0.3),
+          ),
         ),
-      ),
-      child: VooToastProgressBar(
-        duration: toast.duration,
+        child: Center(child: icon),
+      );
+
+  Widget _buildEnhancedProgressBar(Color color) => Container(
         height: progressBarHeight,
-        color: color.withValues(alpha: 0.8),
-      ),
-    );
-  }
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              color.withValues(alpha: 0.1),
+              color.withValues(alpha: 0.3),
+            ],
+          ),
+        ),
+        child: VooToastProgressBar(
+          duration: toast.duration,
+          height: progressBarHeight,
+          color: color.withValues(alpha: 0.8),
+        ),
+      );
 
-  LinearGradient? _getGradient() {
-    // Disable gradient when using theme colors to maintain consistency
-    return null;
-  }
+  // Disable gradient when using theme colors to maintain consistency
+  LinearGradient? _getGradient() => null;
 
   Color _getShadowColor(ThemeData theme) {
     final colorScheme = theme.colorScheme;
-    
+
     switch (toast.type) {
       case ToastType.success:
         return colorScheme.primary;
@@ -248,7 +243,7 @@ class VooToastCard extends StatelessWidget {
 
   Color _getBackgroundColor(ThemeData theme) {
     final colorScheme = theme.colorScheme;
-    
+
     switch (toast.type) {
       case ToastType.success:
         return colorScheme.primary;
@@ -265,7 +260,7 @@ class VooToastCard extends StatelessWidget {
 
   Color _getTextColor(ThemeData theme) {
     final colorScheme = theme.colorScheme;
-    
+
     switch (toast.type) {
       case ToastType.success:
         return colorScheme.onPrimary;

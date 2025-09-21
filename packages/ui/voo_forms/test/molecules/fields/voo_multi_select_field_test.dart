@@ -7,27 +7,26 @@ void main() {
   group('VooMultiSelectField', () {
     // Sample test data
     final testOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
-    
+
     Widget buildTestApp({
       required Widget child,
       VooFormController? controller,
-    }) {
-      return MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: controller != null
-                  ? VooForm(
-                      controller: controller,
-                      fields: [child as VooFormFieldWidget],
-                    )
-                  : child,
+    }) =>
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: controller != null
+                    ? VooForm(
+                        controller: controller,
+                        fields: [child as VooFormFieldWidget],
+                      )
+                    : child,
+              ),
             ),
           ),
-        ),
-      );
-    }
+        );
 
     testWidgets('displays empty selection text when no items selected', (tester) async {
       await tester.pumpWidget(
@@ -64,7 +63,7 @@ void main() {
           child: VooMultiSelectField<String>(
             name: 'multiselect',
             options: testOptions,
-            initialValue: ['Option 1', 'Option 3'],
+            initialValue: const ['Option 1', 'Option 3'],
           ),
         ),
       );
@@ -132,7 +131,7 @@ void main() {
       for (final option in testOptions) {
         expect(find.text(option), findsWidgets); // At least one (might be in both list and input)
       }
-      
+
       // Should have checkboxes for each option
       expect(find.byType(Checkbox), findsNWidgets(testOptions.length));
     });
@@ -193,7 +192,7 @@ void main() {
           child: VooMultiSelectField<String>(
             name: 'multiselect',
             options: testOptions,
-            initialValue: ['Option 1'],
+            initialValue: const ['Option 1'],
           ),
         ),
       );
@@ -216,7 +215,6 @@ void main() {
           child: VooMultiSelectField<String>(
             name: 'multiselect',
             options: testOptions,
-            showSelectAll: true,
           ),
         ),
       );
@@ -235,7 +233,6 @@ void main() {
           child: VooMultiSelectField<String>(
             name: 'multiselect',
             options: testOptions,
-            showSelectAll: true,
           ),
         ),
       );
@@ -262,8 +259,7 @@ void main() {
           child: VooMultiSelectField<String>(
             name: 'multiselect',
             options: testOptions,
-            initialValue: ['Option 1', 'Option 2'],
-            showClearAll: true,
+            initialValue: const ['Option 1', 'Option 2'],
           ),
         ),
       );
@@ -271,7 +267,7 @@ void main() {
       // Open dropdown
       await tester.tap(find.byType(InkWell).first);
       await tester.pumpAndSettle();
-      
+
       // Clear All button should be visible in dropdown
       expect(find.text('Clear All'), findsOneWidget);
     });
@@ -283,7 +279,6 @@ void main() {
             name: 'multiselect',
             options: testOptions,
             initialValue: testOptions,
-            showClearAll: true,
           ),
         ),
       );
@@ -294,7 +289,7 @@ void main() {
       // Open dropdown
       await tester.tap(find.byType(InkWell).first);
       await tester.pumpAndSettle();
-      
+
       // Tap clear all button in dropdown
       await tester.tap(find.text('Clear All'));
       await tester.pumpAndSettle();
@@ -306,7 +301,7 @@ void main() {
 
     testWidgets('calls onChanged when selection changes', (tester) async {
       List<String>? changedValue;
-      
+
       await tester.pumpWidget(
         buildTestApp(
           child: VooMultiSelectField<String>(
@@ -330,7 +325,7 @@ void main() {
 
     testWidgets('integrates with VooFormController', (tester) async {
       final controller = VooFormController();
-      
+
       await tester.pumpWidget(
         buildTestApp(
           controller: controller,
@@ -362,7 +357,7 @@ void main() {
           child: VooMultiSelectField<String>(
             name: 'multiselect',
             options: testOptions,
-            initialValue: ['Option 1'],
+            initialValue: const ['Option 1'],
             readOnly: true,
           ),
         ),
@@ -371,11 +366,11 @@ void main() {
       // Should show VooReadOnlyField with comma-separated values
       expect(find.byType(VooReadOnlyField), findsOneWidget);
       expect(find.text('Option 1'), findsOneWidget);
-      
+
       // Should not show chips or InkWell
       expect(find.byType(Chip), findsNothing);
       expect(find.byType(InkWell), findsNothing);
-      
+
       // Dropdown should not be available
       expect(find.byType(TextField), findsNothing);
     });
@@ -404,8 +399,8 @@ void main() {
         buildTestApp(
           child: VooMultiSelectField<int>(
             name: 'multiselect',
-            options: [1, 2, 3, 4],
-            initialValue: [1, 3],
+            options: const [1, 2, 3, 4],
+            initialValue: const [1, 3],
             displayTextBuilder: (value) => 'Item #$value',
           ),
         ),
@@ -469,7 +464,7 @@ void main() {
 
     testWidgets('displays validation error', (tester) async {
       final controller = VooFormController();
-      
+
       await tester.pumpWidget(
         buildTestApp(
           controller: controller,
@@ -512,23 +507,22 @@ void main() {
     Widget buildTestApp({
       required Widget child,
       VooFormController? controller,
-    }) {
-      return MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: controller != null
-                  ? VooForm(
-                      controller: controller,
-                      fields: [child as VooFormFieldWidget],
-                    )
-                  : child,
+    }) =>
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: controller != null
+                    ? VooForm(
+                        controller: controller,
+                        fields: [child as VooFormFieldWidget],
+                      )
+                    : child,
+              ),
             ),
           ),
-        ),
-      );
-    }
+        );
 
     testWidgets('loads initial options on mount', (tester) async {
       await tester.pumpWidget(
@@ -543,10 +537,10 @@ void main() {
       // Open dropdown
       await tester.tap(find.byType(InkWell).first);
       await tester.pump(); // Start loading
-      
+
       // Should show loading indicator
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       // Wait for loading to complete
       await tester.pumpAndSettle();
 
@@ -574,10 +568,10 @@ void main() {
 
       // Type search query
       await tester.enterText(find.byType(TextField), '2');
-      
+
       // Should still show all options (debounce not triggered yet)
       expect(find.widgetWithText(ListTile, 'Async 1'), findsOneWidget);
-      
+
       // Wait for debounce and loading
       await tester.pump(const Duration(milliseconds: 300));
       await tester.pumpAndSettle();
@@ -632,10 +626,10 @@ void main() {
       // Open dropdown
       await tester.tap(find.byType(InkWell).first);
       await tester.pump(); // Start loading
-      
+
       // Should show loading initially
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       // Wait for error (avoid pumpAndSettle as it may timeout with error state)
       await tester.pump(const Duration(milliseconds: 200));
       await tester.pump(); // Allow one more frame for error handling
@@ -659,10 +653,10 @@ void main() {
       // Open dropdown
       await tester.tap(find.byType(InkWell).first);
       await tester.pump(); // Start loading
-      
+
       // Should show custom loading indicator
       expect(find.text('Loading options...'), findsOneWidget);
-      
+
       await tester.pumpAndSettle();
     });
   });

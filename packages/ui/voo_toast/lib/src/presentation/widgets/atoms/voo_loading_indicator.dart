@@ -13,16 +13,14 @@ class VooLoadingIndicator extends StatelessWidget {
   final double strokeWidth;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CircularProgressIndicator(
-        strokeWidth: strokeWidth,
-        valueColor: AlwaysStoppedAnimation<Color>(
-          color ?? Theme.of(context).colorScheme.primary,
+  Widget build(BuildContext context) => SizedBox(
+        width: size,
+        height: size,
+        child: CircularProgressIndicator(
+          strokeWidth: strokeWidth,
+          valueColor: AlwaysStoppedAnimation<Color>(
+            color ?? Theme.of(context).colorScheme.primary,
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

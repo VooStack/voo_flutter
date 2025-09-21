@@ -92,10 +92,10 @@ void main() {
       );
 
       repository.show(toast);
-      
+
       // Should not throw
       repository.dismiss('non-existent');
-      
+
       // Original toast should still be there
       expect(repository.currentToasts.length, 1);
       expect(repository.currentToasts.first.id, 'test-1');
@@ -159,16 +159,16 @@ void main() {
 
       // Initial state
       await Future<void>.delayed(const Duration(milliseconds: 10));
-      
+
       repository.show(toast1);
       await Future<void>.delayed(const Duration(milliseconds: 10));
-      
+
       repository.show(toast2);
       await Future<void>.delayed(const Duration(milliseconds: 10));
-      
+
       repository.dismiss('test-1');
       await Future<void>.delayed(const Duration(milliseconds: 10));
-      
+
       repository.dismissAll();
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
@@ -178,15 +178,15 @@ void main() {
       expect(states[2], [toast1, toast2]);
       expect(states[3], [toast2]);
       expect(states[4], isEmpty);
-      
+
       await subscription.cancel();
     });
 
     test('maintains order of toasts', () async {
       // Create repository with higher maxToasts limit
-      final testConfig = const ToastConfig(maxToasts: 5);
+      const testConfig = ToastConfig(maxToasts: 5);
       final testRepository = ToastRepositoryImpl(config: testConfig);
-      
+
       final toasts = List.generate(
         5,
         (index) => Toast(
@@ -207,7 +207,7 @@ void main() {
       for (int i = 0; i < toasts.length; i++) {
         expect(activeToasts[i].id, 'test-$i');
       }
-      
+
       testRepository.dispose();
     });
 
@@ -289,16 +289,16 @@ void main() {
     test('dispose cleans up resources', () async {
       // Subscribe to the stream first
       final subscription = repository.toastsStream.listen((_) {});
-      
+
       // Dispose the repository
       repository.dispose();
-      
+
       // The subscription should complete/close
       await expectLater(
         subscription.asFuture(),
         completes,
       );
-      
+
       await subscription.cancel();
     });
   });
