@@ -13,7 +13,7 @@ class VooAdaptiveScaffold extends StatefulWidget {
   /// Configuration for the navigation system
   final VooNavigationConfig config;
   
-  /// Main content body
+  /// Main content body (can be a StatefulNavigationShell from go_router)
   final Widget body;
   
   /// Optional custom app bar (overrides config.appBarTitle)

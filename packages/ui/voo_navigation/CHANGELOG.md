@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4] - 2025-01-22
+
+### Added
+- **go_router Integration**:
+  - Full integration with go_router's `StatefulNavigationShell` for native navigation
+  - `VooNavigationRoute` entity with multiple transition types (fade, slide, scale, material)
+  - Support for nested routes and children routes with proper state preservation
+  - `VooNavigationBuilder` for fluent API configuration
+  - `VooGoRouter` provider with shell route support (optional utility)
+  - `VooNavigationShell` wrapper for automatic route synchronization
+
+- **Material You Support**:
+  - `VooNavigationBuilder.materialYou()` factory for instant Material You theming
+  - Dynamic color theming with seed colors
+  - Enhanced default animations (350ms with easeInOutCubicEmphasized curve)
+  - Rounded indicators with 24px border radius by default
+
+- **Developer Experience**:
+  - Direct integration with go_router's native patterns
+  - Works seamlessly with `StatefulShellRoute.indexedStack`
+  - Support for `goBranch()` navigation with state preservation
+  - Comprehensive examples for StatefulNavigationShell usage
+  - Type-safe navigation with go_router
+
+- **Testing**:
+  - Comprehensive test coverage for navigation routes
+  - Tests for nested and children routes
+  - Integration tests for StatefulNavigationShell
+  - Builder pattern tests
+  - All tests following voo_forms architecture pattern
+
+### Changed
+- VooAdaptiveScaffold now directly accepts StatefulNavigationShell as body
+- Navigation is handled through go_router's native navigation methods
+- Improved documentation with go_router integration examples
+
+### Fixed
+- Navigation state synchronization with go_router
+- Proper handling of nested route navigation
+- Badge display in navigation items
+
 ## [0.0.3] - 2025-01-10
 
 ### Changed

@@ -205,7 +205,10 @@ class VooNavigationItem extends Equatable {
   
   /// Gets the effective selected icon
   IconData get effectiveSelectedIcon => selectedIcon ?? icon;
-  
+
+  /// Whether this item is a divider
+  bool get isDivider => label.isEmpty && icon == Icons.remove;
+
   /// Convenience factory for creating a divider item
   factory VooNavigationItem.divider({String? id}) => VooNavigationItem(
       id: id ?? 'divider_${DateTime.now().millisecondsSinceEpoch}',

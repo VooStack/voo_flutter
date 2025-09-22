@@ -29,48 +29,96 @@ dependencies:
 
 ## 🚀 Quick Start
 
+### With go_router (Recommended)
+
 ```dart
+import 'package:go_router/go_router.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
-// Define navigation items
-final navigationItems = [
-  VooNavigationItem(
-    id: 'home',
-    label: 'Home',
-    icon: Icons.home_outlined,
-    selectedIcon: Icons.home,
-    route: '/home',
-    badgeCount: 3,  // Shows badge with count
-  ),
-  VooNavigationItem(
-    id: 'search',
-    label: 'Search',
-    icon: Icons.search,
-    route: '/search',
-    showDot: true,  // Shows notification dot
-    badgeColor: Colors.red,
-  ),
-];
-
-// Create configuration
-final config = VooNavigationConfig(
-  items: navigationItems,
-  selectedId: 'home',
-  enableAnimations: true,
-  enableHapticFeedback: true,
-  onNavigationItemSelected: (itemId) {
-    // Handle navigation
-  },
+// 1. Define your router with StatefulShellRoute
+final router = GoRouter(
+  initialLocation: '/home',
+  routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        // Pass the navigation shell to your scaffold
+        return ScaffoldWithNavigation(
+          navigationShell: navigationShell,
+        );
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => HomePage(),
+              routes: [
+                // Nested routes
+                GoRoute(
+                  path: 'details',
+                  builder: (context, state) => HomeDetailsPage(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => ProfilePage(),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ],
 );
 
-// Build adaptive scaffold
-@override
-Widget build(BuildContext context) {
-  return VooAdaptiveScaffold(
-    config: config,
-    body: YourContentWidget(),
-  );
+// 2. Create your navigation scaffold
+class ScaffoldWithNavigation extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
+
+  const ScaffoldWithNavigation({required this.navigationShell});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      VooNavigationItem(
+        id: 'home',
+        label: 'Home',
+        icon: Icons.home_outlined,
+        selectedIcon: Icons.home,
+        badgeCount: 3,
+      ),
+      VooNavigationItem(
+        id: 'profile',
+        label: 'Profile',
+        icon: Icons.person_outline,
+        selectedIcon: Icons.person,
+      ),
+    ];
+
+    return VooAdaptiveScaffold(
+      config: VooNavigationConfig(
+        items: items,
+        selectedId: items[navigationShell.currentIndex].id,
+        onNavigationItemSelected: (itemId) {
+          final index = items.indexWhere((item) => item.id == itemId);
+          if (index != -1) {
+            navigationShell.goBranch(index);
+          }
+        },
+      ),
+      body: navigationShell,  // Pass the shell as body
+    );
+  }
 }
+
+// 3. Use with MaterialApp.router
+MaterialApp.router(
+  routerConfig: router,
+)
 ```
 
 ## 🎯 Navigation Types
