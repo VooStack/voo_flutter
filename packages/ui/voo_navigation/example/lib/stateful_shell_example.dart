@@ -231,8 +231,6 @@ class _ScaffoldWithNavigationState extends State<ScaffoldWithNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return VooAdaptiveScaffold(
       config: VooNavigationConfig(
         items: _navigationItems,

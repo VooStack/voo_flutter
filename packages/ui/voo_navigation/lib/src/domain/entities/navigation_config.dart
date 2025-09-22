@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/breakpoint.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
+import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_navigation.dart';
 
 /// Configuration for the adaptive navigation system
 class VooNavigationConfig {
@@ -136,7 +137,10 @@ class VooNavigationConfig {
   
   /// Custom loading widget
   final Widget? loadingWidget;
-  
+
+  /// Type of bottom navigation bar to use
+  final NavigationBarType bottomNavigationType;
+
   const VooNavigationConfig({
     required this.items,
     this.selectedId,
@@ -182,6 +186,7 @@ class VooNavigationConfig {
     this.emptyStateWidget,
     this.errorBuilder,
     this.loadingWidget,
+    this.bottomNavigationType = NavigationBarType.custom,
   });
   
   /// Creates a copy of this configuration with the given fields replaced
@@ -230,6 +235,7 @@ class VooNavigationConfig {
     Widget? emptyStateWidget,
     Widget Function(Object error)? errorBuilder,
     Widget? loadingWidget,
+    NavigationBarType? bottomNavigationType,
   }) => VooNavigationConfig(
       items: items ?? this.items,
       selectedId: selectedId ?? this.selectedId,
@@ -275,6 +281,7 @@ class VooNavigationConfig {
       emptyStateWidget: emptyStateWidget ?? this.emptyStateWidget,
       errorBuilder: errorBuilder ?? this.errorBuilder,
       loadingWidget: loadingWidget ?? this.loadingWidget,
+      bottomNavigationType: bottomNavigationType ?? this.bottomNavigationType,
     );
   
   /// Gets the current navigation type based on screen width

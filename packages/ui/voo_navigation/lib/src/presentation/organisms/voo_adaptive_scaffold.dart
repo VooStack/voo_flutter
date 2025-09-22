@@ -6,6 +6,7 @@ import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_app_bar.d
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_navigation.dart';
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_navigation_drawer.dart';
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_navigation_rail.dart';
+import 'package:voo_navigation/src/presentation/utils/voo_navigation_inherited.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 /// Adaptive scaffold that automatically adjusts navigation based on screen size
@@ -57,7 +58,22 @@ class VooAdaptiveScaffold extends StatefulWidget {
   
   /// Restoration ID for state restoration
   final String? restorationId;
-  
+
+  /// Padding to apply to the body content
+  final EdgeInsetsGeometry? bodyPadding;
+
+  /// Whether to wrap body in a card with elevation
+  final bool useBodyCard;
+
+  /// Elevation for body card (if useBodyCard is true)
+  final double bodyCardElevation;
+
+  /// Border radius for body card (if useBodyCard is true)
+  final BorderRadius? bodyCardBorderRadius;
+
+  /// Color for body card (if useBodyCard is true)
+  final Color? bodyCardColor;
+
   const VooAdaptiveScaffold({
     super.key,
     required this.config,
@@ -76,6 +92,11 @@ class VooAdaptiveScaffold extends StatefulWidget {
     this.bottomSheet,
     this.persistentFooterButtons,
     this.restorationId,
+    this.bodyPadding,
+    this.useBodyCard = false,
+    this.bodyCardElevation = 0,
+    this.bodyCardBorderRadius,
+    this.bodyCardColor,
   });
 
   @override
@@ -152,24 +173,29 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
   }
   
   @override
-  Widget build(BuildContext context) => VooResponsiveBuilder(
-      child: Builder(
-        builder: (context) {
-          final responsive = VooResponsive.of(context);
-          final screenWidth = responsive.screenDimensions.width;
-          final navigationType = widget.config.getNavigationType(screenWidth);
-          
-          // Animate navigation type changes
-          if (_previousNavigationType != null && 
-              _previousNavigationType != navigationType &&
-              widget.config.enableAnimations) {
-            _animationController.forward(from: 0);
-          }
-          _previousNavigationType = navigationType;
-          
-          // Build appropriate scaffold based on navigation type
-          return _buildScaffold(context, navigationType, responsive);
-        },
+  Widget build(BuildContext context) => VooNavigationInherited(
+      config: widget.config,
+      selectedId: _selectedId,
+      onNavigationItemSelected: _onNavigationItemSelected,
+      child: VooResponsiveBuilder(
+        child: Builder(
+          builder: (context) {
+            final responsive = VooResponsive.of(context);
+            final screenWidth = responsive.screenDimensions.width;
+            final navigationType = widget.config.getNavigationType(screenWidth);
+
+            // Animate navigation type changes
+            if (_previousNavigationType != null &&
+                _previousNavigationType != navigationType &&
+                widget.config.enableAnimations) {
+              _animationController.forward(from: 0);
+            }
+            _previousNavigationType = navigationType;
+
+            // Build appropriate scaffold based on navigation type
+            return _buildScaffold(context, navigationType, responsive);
+          },
+        ),
       ),
     );
   
@@ -179,20 +205,54 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
     VooResponsive responsive,
   ) {
     final theme = Theme.of(context);
-    final effectiveBackgroundColor = widget.backgroundColor ?? 
-        widget.config.backgroundColor ?? 
+    final effectiveBackgroundColor = widget.backgroundColor ??
+        widget.config.backgroundColor ??
         theme.scaffoldBackgroundColor;
-    
-    // Prepare the body with animations
-    final Widget body = widget.config.enableAnimations
-        ? FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: widget.body,
-            ),
-          )
-        : widget.body;
+
+    // Apply body padding based on navigation type and screen size
+    final defaultPadding = _getDefaultBodyPadding(navigationType, responsive);
+    final effectiveBodyPadding = widget.bodyPadding ?? defaultPadding;
+
+    // Prepare the body with optional card wrapper
+    Widget body = widget.body;
+
+    // Wrap in card if requested
+    if (widget.useBodyCard && navigationType != VooNavigationType.bottomNavigation) {
+      final cardColor = widget.bodyCardColor ??
+          (theme.brightness == Brightness.light
+              ? Colors.white
+              : theme.colorScheme.surface);
+      final borderRadius = widget.bodyCardBorderRadius ??
+          BorderRadius.circular(responsive.screenDimensions.width < 600 ? 12 : 16);
+
+      body = Material(
+        elevation: widget.bodyCardElevation,
+        borderRadius: borderRadius,
+        color: cardColor,
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: body,
+        ),
+      );
+    }
+
+    // Apply padding
+    if (effectiveBodyPadding != EdgeInsets.zero) {
+      body = Padding(
+        padding: effectiveBodyPadding,
+        child: body,
+      );
+    }
+
+    if (widget.config.enableAnimations) {
+      body = FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: body,
+        ),
+      );
+    }
     
     // Build the scaffold based on navigation type with animation
     Widget scaffold;
@@ -243,18 +303,15 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
   ) => Scaffold(
       key: widget.scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: widget.showAppBar 
-          ? (widget.appBar ?? VooAdaptiveAppBar(
-              config: widget.config,
-              selectedId: _selectedId,
-              onNavigationItemSelected: _onNavigationItemSelected,
-            ))
+      appBar: widget.showAppBar
+          ? (widget.appBar ?? const VooAdaptiveAppBar())
           : null,
       body: body,
       bottomNavigationBar: VooAdaptiveBottomNavigation(
         config: widget.config,
         selectedId: _selectedId,
         onNavigationItemSelected: _onNavigationItemSelected,
+        type: widget.config.bottomNavigationType,
       ),
       floatingActionButton: widget.config.showFloatingActionButton
           ? widget.config.floatingActionButton
@@ -282,11 +339,8 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
   ) => Scaffold(
       key: widget.scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: widget.showAppBar 
-          ? (widget.appBar ?? VooAdaptiveAppBar(
-              config: widget.config,
-              selectedId: _selectedId,
-              onNavigationItemSelected: _onNavigationItemSelected,
+      appBar: widget.showAppBar
+          ? (widget.appBar ?? const VooAdaptiveAppBar(
               showMenuButton: false,
             ))
           : null,
@@ -329,11 +383,8 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
   ) => Scaffold(
       key: widget.scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: widget.showAppBar 
-          ? (widget.appBar ?? VooAdaptiveAppBar(
-              config: widget.config,
-              selectedId: _selectedId,
-              onNavigationItemSelected: _onNavigationItemSelected,
+      appBar: widget.showAppBar
+          ? (widget.appBar ?? const VooAdaptiveAppBar(
               showMenuButton: false,
             ))
           : null,
@@ -365,4 +416,50 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
       persistentFooterButtons: widget.persistentFooterButtons,
       restorationId: widget.restorationId,
     );
+
+  /// Get default body padding based on navigation type and screen size
+  EdgeInsetsGeometry _getDefaultBodyPadding(
+    VooNavigationType navigationType,
+    VooResponsive responsive,
+  ) {
+    final screenWidth = responsive.screenDimensions.width;
+
+    // Responsive padding based on screen size
+    double horizontalPadding;
+    double verticalPadding;
+
+    if (screenWidth < 600) {
+      // Mobile: smaller padding
+      horizontalPadding = 16;
+      verticalPadding = 16;
+    } else if (screenWidth < 1240) {
+      // Tablet: medium padding
+      horizontalPadding = 24;
+      verticalPadding = 20;
+    } else {
+      // Desktop: larger padding for spacious feel
+      horizontalPadding = 32;
+      verticalPadding = 24;
+    }
+
+    // Adjust for navigation type
+    switch (navigationType) {
+      case VooNavigationType.bottomNavigation:
+        // Mobile: padding on all sides
+        return EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: verticalPadding,
+        );
+      case VooNavigationType.navigationRail:
+      case VooNavigationType.extendedNavigationRail:
+      case VooNavigationType.navigationDrawer:
+        // Desktop/Tablet: no left padding since navigation is there
+        return EdgeInsets.only(
+          right: horizontalPadding,
+          top: verticalPadding,
+          bottom: verticalPadding,
+          left: 8, // Small left padding for visual separation
+        );
+    }
+  }
 }

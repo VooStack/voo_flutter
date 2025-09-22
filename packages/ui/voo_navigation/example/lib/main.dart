@@ -15,14 +15,14 @@ class VooNavigationExampleApp extends StatelessWidget {
       title: 'VooNavigation Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: const Color(0xFF4F75FF),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: const Color(0xFF4F75FF),
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
@@ -159,6 +159,8 @@ class _NavigationExampleState extends State<NavigationExample> {
       useExtendedRail: true,
       showNavigationRailDivider: true,
       centerAppBarTitle: false,
+      selectedItemColor: const Color(0xFF4F75FF),
+      bottomNavigationType: NavigationBarType.custom,
       indicatorShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),

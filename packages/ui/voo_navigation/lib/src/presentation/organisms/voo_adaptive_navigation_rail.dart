@@ -90,56 +90,97 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     final effectiveWidth = widget.width ?? (widget.extended ? (widget.config.extendedNavigationRailWidth ?? 256) : (widget.config.navigationRailWidth ?? 88));
 
-    final effectiveBackgroundColor =
-        widget.backgroundColor ?? widget.config.navigationBackgroundColor ?? theme.navigationRailTheme.backgroundColor ?? colorScheme.surface;
-
-    final effectiveElevation = widget.elevation ?? widget.config.elevation ?? theme.navigationRailTheme.elevation ?? 0;
+    // Use theme colors for seamless integration
+    final isDark = theme.brightness == Brightness.dark;
+    final effectiveBackgroundColor = widget.backgroundColor ??
+        widget.config.backgroundColor ??
+        (isDark
+            ? theme.colorScheme.surfaceContainer
+            : theme.colorScheme.surfaceContainerHighest);
 
     return AnimatedContainer(
       duration: widget.config.animationDuration,
       curve: widget.config.animationCurve,
       width: effectiveWidth,
-      child: Material(
-        color: effectiveBackgroundColor,
-        elevation: effectiveElevation,
-        shadowColor: theme.colorScheme.shadow.withAlpha(25),
-        surfaceTintColor: theme.colorScheme.surfaceTint,
-        borderRadius: const BorderRadius.horizontal(
-          right: Radius.circular(16),
-        ),
-        child: Column(
-          children: [
-            // Custom header if provided
-            if (widget.config.drawerHeader != null) widget.config.drawerHeader!,
-
-            // Navigation items
-            Expanded(
-              child: ListView(
-                controller: widget.config.drawerScrollController,
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: widget.extended ? 0 : 8,
-                ),
-                physics: const ClampingScrollPhysics(),
-                children: _buildNavigationItems(context),
-              ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: effectiveBackgroundColor,
+          border: Border(
+            right: BorderSide(
+              color: theme.dividerColor.withValues(alpha: 0.1),
+              width: 1,
             ),
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            children: [
+              // Custom header or default header
+              if (widget.extended) widget.config.drawerHeader ?? _buildDefaultHeader(context),
 
-            // Leading widget for FAB or other actions
-            if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: widget.config.floatingActionButton,
+              // Navigation items
+              Expanded(
+                child: ListView(
+                  controller: widget.config.drawerScrollController,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: widget.extended ? 12 : 8,
+                  ),
+                  physics: const ClampingScrollPhysics(),
+                  children: _buildNavigationItems(context),
+                ),
               ),
 
-            // Custom footer if provided
-            if (widget.config.drawerFooter != null) widget.config.drawerFooter!,
-          ],
+              // Leading widget for FAB or other actions
+              if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: widget.config.floatingActionButton,
+                ),
+
+              // Custom footer if provided
+              if (widget.config.drawerFooter != null) widget.config.drawerFooter!,
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.dashboard,
+              color: theme.colorScheme.primary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            widget.config.appBarTitle is Text ? (widget.config.appBarTitle as Text).data ?? 'Navigation' : 'Navigation',
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -173,23 +214,37 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
     return widgets;
   }
 
-  Widget _buildSectionHeader(VooNavigationItem item, ThemeData theme) => ExpansionTile(
-        title: AnimatedDefaultTextStyle(
-          duration: widget.config.animationDuration,
-          style: widget.extended ? (item.labelStyle ?? theme.textTheme.titleSmall!) : const TextStyle(fontSize: 0),
-          child: Text(item.label),
+  Widget _buildSectionHeader(VooNavigationItem item, ThemeData theme) => Theme(
+        data: theme.copyWith(
+          dividerColor: Colors.transparent,
+          expansionTileTheme: ExpansionTileThemeData(
+            iconColor: theme.colorScheme.onSurfaceVariant,
+            collapsedIconColor: theme.colorScheme.onSurfaceVariant,
+            textColor: theme.colorScheme.onSurface,
+            collapsedTextColor: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
-        leading: Icon(
-          item.isExpanded ? item.selectedIcon ?? item.icon : item.icon,
-          color: item.iconColor ?? theme.colorScheme.onSurfaceVariant,
+        child: ExpansionTile(
+          title: Text(
+            item.label,
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          leading: Icon(
+            item.isExpanded ? item.selectedIcon ?? item.icon : item.icon,
+            color: theme.colorScheme.onSurfaceVariant,
+            size: 20,
+          ),
+          initiallyExpanded: item.isExpanded,
+          children: item.children
+                  ?.map(
+                    (child) => _buildNavigationItem(child, theme, indent: true),
+                  )
+                  .toList() ??
+              [],
         ),
-        initiallyExpanded: item.isExpanded,
-        children: item.children
-                ?.map(
-                  (child) => _buildNavigationItem(child, theme, indent: true),
-                )
-                .toList() ??
-            [],
       );
 
   Widget _buildNavigationItem(
@@ -198,12 +253,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
     bool indent = false,
   }) {
     final isSelected = item.id == widget.selectedId;
-    final colorScheme = theme.colorScheme;
     final isHovered = _hoveredItems[item.id] ?? false;
-
-    final selectedColor = widget.config.selectedItemColor ?? theme.navigationRailTheme.selectedIconTheme?.color ?? colorScheme.primary;
-
-    final unselectedColor = widget.config.unselectedItemColor ?? theme.navigationRailTheme.unselectedIconTheme?.color ?? colorScheme.onSurfaceVariant;
 
     _itemAnimationControllers[item.id] ??= AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -218,8 +268,8 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: widget.extended ? 12 : 4,
-        vertical: 4,
+        horizontal: widget.extended ? 0 : 4,
+        vertical: 2,
       ),
       child: MouseRegion(
         onEnter: (_) => setState(() => _hoveredItems[item.id] = true),
@@ -227,97 +277,84 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
         cursor: item.isEnabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
         child: InkWell(
           onTap: item.isEnabled ? () => widget.onNavigationItemSelected(item.id) : null,
-          borderRadius: BorderRadius.circular(widget.extended ? 16 : 28),
-          splashColor: selectedColor.withAlpha(25),
-          highlightColor: selectedColor.withAlpha(15),
-          hoverColor: selectedColor.withAlpha(8),
+          borderRadius: BorderRadius.circular(widget.extended ? 12 : 28),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: widget.extended ? 56 : 64,
+            height: widget.extended ? 48 : 56,
             padding: EdgeInsets.symmetric(
               horizontal: widget.extended ? 16 : 4,
               vertical: widget.extended ? 8 : 4,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(widget.extended ? 16 : 28),
+              borderRadius: BorderRadius.circular(widget.extended ? 10 : 24),
               color: isSelected
-                  ? selectedColor.withAlpha(25)
+                  ? theme.colorScheme.primary.withValues(alpha: 0.08)
                   : isHovered
-                      ? colorScheme.surfaceContainerHighest.withAlpha(51)
-                      : null,
+                      ? theme.colorScheme.onSurface.withValues(alpha: 0.04)
+                      : Colors.transparent,
+              border: isSelected
+                  ? Border.all(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                      width: 1,
+                    )
+                  : null,
             ),
             child: widget.extended
                 ? Row(
                     children: [
                       // Icon with badge
-                      SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          clipBehavior: Clip.none,
-                          children: [
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: item.leadingWidget ??
-                                  Icon(
-                                    isSelected ? item.effectiveSelectedIcon : item.icon,
-                                    key: ValueKey('${item.id}_icon_$isSelected'),
-                                    color: isSelected ? (item.selectedIconColor ?? selectedColor) : (item.iconColor ?? unselectedColor),
-                                    size: 24,
-                                  ),
-                            ),
-                            if (item.hasBadge || item.trailingWidget != null)
-                              Positioned(
-                                top: -2,
-                                right: -2,
-                                child: item.trailingWidget ?? _buildBadge(item, theme),
-                              ),
-                          ],
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          isSelected ? item.effectiveSelectedIcon : item.icon,
+                          key: ValueKey(isSelected),
+                          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                          size: 20,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: AnimatedDefaultTextStyle(
-                          duration: widget.config.animationDuration,
-                          style: isSelected
-                              ? (item.selectedLabelStyle ??
-                                  theme.textTheme.bodyMedium!.copyWith(
-                                    color: selectedColor,
-                                    fontWeight: FontWeight.w600,
-                                  ))
-                              : (item.labelStyle ??
-                                  theme.textTheme.bodyMedium!.copyWith(
-                                    color: unselectedColor,
-                                  )),
-                          child: Text(
-                            item.label,
-                            overflow: TextOverflow.ellipsis,
+                        child: Text(
+                          item.label,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                            fontSize: 14,
                           ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      // Badge
+                      if (item.hasBadge) ...[
+                        const SizedBox(width: 8),
+                        _buildModernBadge(item, isSelected),
+                      ],
                     ],
                   )
                 : Center(
-                    child: Stack(
-                      clipBehavior: Clip.none,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 200),
-                          child: item.leadingWidget ??
-                              Icon(
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Icon(
                                 isSelected ? item.effectiveSelectedIcon : item.icon,
-                                key: ValueKey('${item.id}_icon_$isSelected'),
-                                color: isSelected ? (item.selectedIconColor ?? selectedColor) : (item.iconColor ?? unselectedColor),
-                                size: 28,
+                                key: ValueKey(isSelected),
+                                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                                size: 24,
                               ),
+                            ),
+                            if (item.hasBadge)
+                              Positioned(
+                                top: -4,
+                                right: -8,
+                                child: _buildModernBadge(item, isSelected),
+                              ),
+                          ],
                         ),
-                        if (item.hasBadge || item.trailingWidget != null)
-                          Positioned(
-                            top: -4,
-                            right: -8,
-                            child: item.trailingWidget ?? _buildBadge(item, theme),
-                          ),
                       ],
                     ),
                   ),
@@ -327,69 +364,42 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
     );
   }
 
-  Widget _buildBadge(VooNavigationItem item, ThemeData theme) {
-    if (item.showDot) {
+  Widget _buildModernBadge(VooNavigationItem item, bool isSelected) {
+    final theme = Theme.of(context);
+
+    String badgeText;
+    if (item.badgeCount != null) {
+      badgeText = item.badgeCount! > 99 ? '99+' : item.badgeCount.toString();
+    } else if (item.badgeText != null) {
+      badgeText = item.badgeText!;
+    } else if (item.showDot) {
       return Container(
-        width: 6,
-        height: 6,
+        width: 8,
+        height: 8,
         decoration: BoxDecoration(
-          color: item.badgeColor ?? theme.colorScheme.error,
+          color: item.badgeColor ?? Colors.red,
           shape: BoxShape.circle,
-          border: Border.all(
-            color: theme.colorScheme.surface,
-          ),
         ),
       );
+    } else {
+      return const SizedBox.shrink();
     }
 
-    final badgeText = item.badgeText ?? (item.badgeCount != null ? item.badgeCount.toString() : '');
-
-    if (badgeText.isEmpty) return const SizedBox.shrink();
-
-    // Compact badge for navigation rail
-    if (!widget.extended) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-        decoration: BoxDecoration(
-          color: item.badgeColor ?? theme.colorScheme.error,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: theme.colorScheme.surface,
-          ),
-        ),
-        constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
-        child: Center(
-          child: Text(
-            badgeText.length > 2 ? '99+' : badgeText,
-            style: theme.textTheme.labelSmall!.copyWith(
-              color: theme.colorScheme.onError,
-              fontSize: 9,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-
-    // Regular badge for extended rail
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      padding: EdgeInsets.symmetric(
+        horizontal: widget.extended ? 8 : 6,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: item.badgeColor ?? theme.colorScheme.error,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: theme.colorScheme.surface,
-          width: 1.5,
-        ),
+        borderRadius: BorderRadius.circular(12),
       ),
-      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-      child: Center(
-        child: Text(
-          badgeText,
-          style: theme.textTheme.labelSmall!.copyWith(
-            color: theme.colorScheme.onError,
-            fontWeight: FontWeight.bold,
-          ),
+      child: Text(
+        badgeText,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: widget.extended ? 11 : 10,
         ),
       ),
     );

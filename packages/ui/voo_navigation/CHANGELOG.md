@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2025-01-22
+
+### Changed
+- **Dependencies**:
+  - Updated go_router from ^14.0.0 to ^16.2.2 for latest features and bug fixes
+  - Ensures compatibility with latest Flutter SDK and routing improvements
+
+## [0.0.5] - 2025-01-22
+
+### Changed
+- **Visual Design Overhaul**:
+  - Replaced gradient backgrounds with sophisticated solid colors (#1F2937 light, #1A1D23 dark)
+  - Professional dark sidebar design matching modern SaaS applications (Notion, Linear, Figma)
+  - Improved selection states with primary color at 12% opacity and subtle borders
+  - Reduced hover effects to 5% white overlay for cleaner interactions
+  - Refined shadows and elevation for better depth perception
+
+- **UX Improvements**:
+  - Added AnimatedSwitcher for smooth icon transitions (200ms duration)
+  - Better visual hierarchy with theme-aware colors
+  - Optimized typography with proper font weights (600 selected, 400 unselected)
+  - Improved spacing and padding for better touch targets
+  - Enhanced micro-animations for state changes
+
+### Fixed
+- **Critical Issues**:
+  - Fixed RenderFlex overflow by 3 pixels in bottom navigation
+  - Resolved window.dart assertion errors in web platform
+  - Fixed padding and margin calculations for compact layouts
+  - Corrected icon sizes to prevent content overflow (20-22px range)
+  - Fixed DecoratedBox vs Container usage for better performance
+
+- **Layout Issues**:
+  - Reduced bottom navigation height from 70px to 65px to prevent overflow
+  - Adjusted padding from 6px to 4px vertical in navigation items
+  - Fixed font sizes (11px for labels) to fit within constraints
+  - Improved responsive behavior when scaling down width
+
+### Improved
+- **Code Quality**:
+  - Removed unused variable warnings (primaryColor, isDark)
+  - Fixed deprecated withOpacity() usage with withValues()
+  - Consistent use of theme colors instead of hardcoded values
+  - Better separation of concerns in color management
+
 ## [0.0.4] - 2025-01-22
 
 ### Added

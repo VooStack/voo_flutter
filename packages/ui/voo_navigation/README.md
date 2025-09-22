@@ -1,6 +1,10 @@
 # VooNavigation 🧭
 
-A comprehensive, adaptive navigation package for Flutter that automatically adjusts to different screen sizes and platforms with Material 3 design.
+[![Version](https://img.shields.io/badge/version-0.0.6-blue)](pubspec.yaml)
+[![Flutter](https://img.shields.io/badge/Flutter-%E2%89%A53.0.0-blue)](https://flutter.dev)
+[![Material 3](https://img.shields.io/badge/Material%203-compliant-green)](https://m3.material.io)
+
+A comprehensive, adaptive navigation package for Flutter that automatically adjusts to different screen sizes and platforms with Material 3 design. Features a modern, production-ready UI inspired by leading SaaS applications like Notion, Linear, and Figma.
 
 ## ✨ Features
 
@@ -10,9 +14,11 @@ A comprehensive, adaptive navigation package for Flutter that automatically adju
   - Extended Navigation Rail (840-1240px)
   - Navigation Drawer (> 1240px)
 
-- **🎨 Material 3 Design**: Full compliance with latest Material Design guidelines
+- **🎨 Modern Dark Theme**: Professional dark sidebar design with sophisticated color palette
+- **🚀 go_router Integration**: Native integration with StatefulNavigationShell
 - **🔔 Rich Navigation Items**: Badges, dropdowns, custom icons, tooltips
-- **✨ Beautiful Animations**: Smooth transitions with customizable duration and curves
+- **✨ Smooth Animations**: AnimatedSwitcher for icon transitions, micro-interactions
+- **💎 Production Ready**: Battle-tested UI matching modern SaaS applications
 - **🛠️ Extensive Customization**: Colors, shapes, elevations, headers, footers
 - **♿ Accessibility**: Full semantic labels and focus management
 - **📱 Platform Agnostic**: Works seamlessly across all platforms
@@ -23,8 +29,10 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  voo_navigation:
-    path: packages/ui/voo_navigation  # For local development
+  voo_navigation: ^0.0.6
+  # Or for local development:
+  # voo_navigation:
+  #   path: packages/ui/voo_navigation
 ```
 
 ## 🚀 Quick Start
@@ -195,12 +203,12 @@ VooNavigationConfig(
   showNavigationRailDivider: true,
   centerAppBarTitle: false,
   
-  // Colors
+  // Colors (v0.0.5 defaults to modern dark theme)
   backgroundColor: Colors.white,
-  navigationBackgroundColor: Colors.grey[50],
-  selectedItemColor: Colors.blue,
-  unselectedItemColor: Colors.grey,
-  indicatorColor: Colors.blue.withOpacity(0.1),
+  navigationBackgroundColor: Color(0xFF1F2937), // Professional dark gray
+  selectedItemColor: Theme.of(context).colorScheme.primary,
+  unselectedItemColor: Colors.white.withValues(alpha: 0.8),
+  indicatorColor: Colors.primary.withValues(alpha: 0.12),
   
   // Custom Widgets
   drawerHeader: CustomHeader(),
@@ -300,13 +308,15 @@ VooNavigationItem.section(
 
 ## 🎭 Animations
 
-All transitions are animated by default:
+All transitions are animated by default (enhanced in v0.0.5):
 
-- Navigation type changes
-- Item selection
-- Badge updates
-- Drawer/rail expansion
-- FAB position changes
+- Navigation type changes with smooth transitions
+- Item selection with AnimatedSwitcher (200ms)
+- Badge updates with scale animations
+- Drawer/rail expansion with easing curves
+- FAB position changes with Material 3 motion
+- Icon transitions between selected/unselected states
+- Hover effects with subtle opacity changes (5% overlay)
 
 Control animations:
 
@@ -320,29 +330,42 @@ VooNavigationConfig(
 
 ## 📱 Example App
 
-Check out the example app for a complete demonstration:
+Check out the example apps for complete demonstrations:
 
 ```bash
 cd packages/ui/voo_navigation/example
+
+# Run the main example
 flutter run
+
+# Run the modern dashboard example (v0.0.5)
+flutter run lib/modern_dashboard_example.dart
+
+# Run the go_router integration example
+flutter run lib/go_router_example.dart
 ```
 
 ## 🏗️ Architecture
 
-The package follows clean architecture principles:
+The package follows clean architecture with Atomic Design Pattern:
 
 ```
 lib/
 ├── src/
 │   ├── domain/
 │   │   └── entities/        # Core business entities
-│   ├── data/
-│   │   └── models/          # Data models
+│   │       ├── navigation_config.dart
+│   │       ├── navigation_item.dart
+│   │       ├── navigation_route.dart  # go_router integration (v0.0.4+)
+│   │       └── navigation_type.dart
 │   └── presentation/
 │       ├── organisms/        # Complex components
+│       │   ├── voo_adaptive_scaffold.dart
+│       │   ├── voo_adaptive_navigation_rail.dart
+│       │   └── voo_adaptive_navigation_drawer.dart
 │       ├── molecules/        # Composite components
 │       ├── atoms/           # Basic components
-│       └── utils/           # Utilities
+│       └── utils/           # Animation utilities
 ```
 
 ## 🧪 Testing
@@ -357,9 +380,40 @@ flutter test
 
 This package is part of the VooFlutter ecosystem.
 
+## 📊 Version History
+
+- **0.0.6** - Updated go_router dependency to ^16.2.2
+- **0.0.5** - Visual design overhaul, UX improvements, bug fixes
+- **0.0.4** - go_router integration, Material You support
+- **0.0.3** - Package maintenance
+- **0.0.2** - Animation enhancements, badge system refinements
+- **0.0.1** - Initial release
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our contributing guidelines and follow the code style defined in `rules.md`.
+
+## 🆕 What's New in v0.0.5
+
+### Visual Design Overhaul
+- Professional dark sidebar design (#1F2937 light, #1A1D23 dark)
+- Selection states with primary color at 12% opacity
+- Subtle borders and improved shadows
+- Reduced hover effects to 5% white overlay
+
+### UX Improvements
+- AnimatedSwitcher for smooth icon transitions (200ms)
+- Better visual hierarchy with theme-aware colors
+- Optimized typography (600 weight selected, 400 unselected)
+- Enhanced micro-animations for state changes
+
+### Bug Fixes
+- Fixed RenderFlex overflow in bottom navigation
+- Resolved window.dart assertion errors in web platform
+- Corrected padding and margin calculations
+- Fixed icon sizes to prevent overflow (20-22px range)
 
 ## 🐛 Issues
 

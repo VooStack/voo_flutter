@@ -52,7 +52,6 @@ void main() {
         path: '/slide',
         builder: (context, state) => const Text('Slide'),
         beginOffset: const Offset(0, 1),
-        endOffset: Offset.zero,
         curve: Curves.easeOut,
       );
 
@@ -66,7 +65,6 @@ void main() {
         path: '/scale',
         builder: (context, state) => const Text('Scale'),
         beginScale: 0.5,
-        endScale: 1.0,
         alignment: Alignment.topCenter,
       );
 
@@ -143,7 +141,7 @@ void main() {
         builder: (context, state) => const Text('Guarded'),
         guard: (context, state) async {
           // Simulate async check
-          await Future.delayed(const Duration(milliseconds: 10));
+          await Future<void>.delayed(const Duration(milliseconds: 10));
           return true;
         },
       );

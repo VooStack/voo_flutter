@@ -278,34 +278,23 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     List<VooNavigationItem> items,
   ) {
     final selectedIndex = _getSelectedIndex() ?? 0;
-    final colorScheme = theme.colorScheme;
-    
+
+    // Sophisticated bottom bar design
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bottomBarColor = isDark
+        ? const Color(0xFF1A1D23)  // Dark mode: very dark blue-gray
+        : const Color(0xFF1F2937); // Light mode: professional dark gray
+
     return Container(
-      height: widget.height ?? 80,
+      height: widget.height ?? 65,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            (widget.backgroundColor ?? 
-                widget.config.navigationBackgroundColor ??
-                colorScheme.surface).withAlpha(245),
-            widget.backgroundColor ?? 
-                widget.config.navigationBackgroundColor ??
-                colorScheme.surface,
-          ],
-        ),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        color: bottomBarColor,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withAlpha(25),
-            blurRadius: 15,
-            offset: const Offset(0, -3),
-          ),
-          BoxShadow(
-            color: colorScheme.primary.withAlpha(10),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, -1),
           ),
         ],
       ),
@@ -335,11 +324,8 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     required int index,
     required ThemeData theme,
   }) {
-    final colorScheme = theme.colorScheme;
-    final selectedColor = widget.config.selectedItemColor ?? colorScheme.primary;
-    final unselectedColor = widget.config.unselectedItemColor ?? 
-        colorScheme.onSurfaceVariant;
-    
+    final primaryColor = widget.config.selectedItemColor ?? theme.colorScheme.primary;
+
     return InkWell(
       onTap: item.isEnabled ? () {
         if (widget.enableFeedback) {
@@ -347,14 +333,28 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
         }
         widget.onNavigationItemSelected(item.id);
       } : null,
+      borderRadius: BorderRadius.circular(12),
       child: AnimatedContainer(
         duration: widget.config.animationDuration,
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: isSelected
+              ? theme.colorScheme.primary.withValues(alpha: 0.12)
+              : Colors.transparent,
+          border: isSelected
+              ? Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                  width: 1,
+                )
+              : null,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Animated icon with rotation and scale
+            // Animated icon
             AnimatedBuilder(
               animation: Listenable.merge([
                 _scaleAnimations[index],
@@ -364,26 +364,29 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
                 scale: _scaleAnimations[index].value,
                 child: Transform.rotate(
                   angle: _rotationAnimations[index].value,
-                  child: _buildIconWithBadge(
-                    item, 
-                    isSelected, 
+                  child: _buildModernIcon(
+                    item,
+                    isSelected,
                     index,
-                    useSelected: isSelected,
+                    primaryColor,
                   ),
                 ),
               ),
             ),
-            
+
             // Animated label
             if (widget.showLabels && (!widget.showSelectedLabels || isSelected))
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 200),
                 style: theme.textTheme.labelSmall!.copyWith(
-                  color: isSelected ? selectedColor : unselectedColor,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected
+                      ? theme.colorScheme.primary
+                      : Colors.white.withValues(alpha: 0.85),
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontSize: 11,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: 2),
                   child: Text(
                     item.label,
                     overflow: TextOverflow.ellipsis,
@@ -397,6 +400,86 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     );
   }
   
+  Widget _buildModernIcon(
+    VooNavigationItem item,
+    bool isSelected,
+    int index,
+    Color primaryColor,
+  ) {
+    final theme = Theme.of(context);
+    final icon = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: Icon(
+        isSelected ? item.effectiveSelectedIcon : item.icon,
+        key: ValueKey(isSelected),
+        color: isSelected
+            ? theme.colorScheme.primary
+            : Colors.white.withValues(alpha: 0.8),
+        size: isSelected ? 22 : 20,
+      ),
+    );
+
+    if (item.hasBadge) {
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          icon,
+          Positioned(
+            top: -4,
+            right: -4,
+            child: _buildModernBadge(item, isSelected, primaryColor),
+          ),
+        ],
+      );
+    }
+
+    return icon;
+  }
+
+  Widget _buildModernBadge(VooNavigationItem item, bool isSelected, Color primaryColor) {
+    final theme = Theme.of(context);
+
+    String badgeText;
+    if (item.badgeCount != null) {
+      badgeText = item.badgeCount! > 99 ? '99+' : item.badgeCount.toString();
+    } else if (item.badgeText != null) {
+      badgeText = item.badgeText!;
+    } else if (item.showDot) {
+      return Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(
+          color: item.badgeColor ?? Colors.red,
+          shape: BoxShape.circle,
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? (item.badgeColor ?? primaryColor)
+            : Colors.white.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      constraints: const BoxConstraints(minWidth: 18),
+      child: Text(
+        badgeText,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: isSelected
+              ? Colors.white
+              : Colors.white.withValues(alpha: 0.9),
+          fontWeight: FontWeight.w600,
+          fontSize: 10,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   Widget _buildAnimatedIcon(
     VooNavigationItem item,
     bool isSelected,
