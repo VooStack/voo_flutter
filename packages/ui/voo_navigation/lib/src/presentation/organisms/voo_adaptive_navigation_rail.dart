@@ -93,13 +93,10 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
 
     final effectiveWidth = widget.width ?? (widget.extended ? (widget.config.extendedNavigationRailWidth ?? 256) : (widget.config.navigationRailWidth ?? 88));
 
-    // Use theme colors for seamless integration
-    final isDark = theme.brightness == Brightness.dark;
+    // Use seamless background that matches the scaffold
     final effectiveBackgroundColor = widget.backgroundColor ??
         widget.config.backgroundColor ??
-        (isDark
-            ? theme.colorScheme.surfaceContainer
-            : theme.colorScheme.surfaceContainerHighest);
+        theme.scaffoldBackgroundColor;
 
     return AnimatedContainer(
       duration: widget.config.animationDuration,
@@ -108,12 +105,6 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: effectiveBackgroundColor,
-          border: Border(
-            right: BorderSide(
-              color: theme.dividerColor.withValues(alpha: 0.1),
-              width: 1,
-            ),
-          ),
         ),
         child: Material(
           color: Colors.transparent,
@@ -254,6 +245,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
   }) {
     final isSelected = item.id == widget.selectedId;
     final isHovered = _hoveredItems[item.id] ?? false;
+    final isDark = theme.brightness == Brightness.dark;
 
     _itemAnimationControllers[item.id] ??= AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -288,16 +280,10 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.extended ? 10 : 24),
               color: isSelected
-                  ? theme.colorScheme.primary.withValues(alpha: 0.08)
+                  ? theme.colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.08)
                   : isHovered
-                      ? theme.colorScheme.onSurface.withValues(alpha: 0.04)
+                      ? theme.colorScheme.onSurface.withValues(alpha: isDark ? 0.08 : 0.04)
                       : Colors.transparent,
-              border: isSelected
-                  ? Border.all(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                      width: 1,
-                    )
-                  : null,
             ),
             child: widget.extended
                 ? Row(

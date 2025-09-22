@@ -354,8 +354,6 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
               extended: extended,
             ),
           ),
-          if (widget.config.showNavigationRailDivider)
-            const VerticalDivider(width: 1, thickness: 1),
           Expanded(child: body),
         ],
       ),
@@ -458,7 +456,7 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
           right: horizontalPadding,
           top: verticalPadding,
           bottom: verticalPadding,
-          left: 8, // Small left padding for visual separation
+          left: 0, // No left padding for seamless integration
         );
     }
   }
