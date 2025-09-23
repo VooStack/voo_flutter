@@ -261,13 +261,16 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
 
       case VooNavigationType.navigationRail:
       case VooNavigationType.extendedNavigationRail:
+        // Only show extended rail if config allows it AND we're in the right width range
+        final shouldExtend = widget.config.useExtendedRail &&
+            navigationType == VooNavigationType.extendedNavigationRail;
         scaffold = KeyedSubtree(
           key: ValueKey('tablet_scaffold_$navigationType'),
           child: _buildTabletScaffold(
             context,
             body,
             effectiveBackgroundColor,
-            navigationType == VooNavigationType.extendedNavigationRail,
+            shouldExtend,
           ),
         );
         break;
@@ -330,80 +333,206 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
     Widget body,
     Color backgroundColor,
     bool extended,
-  ) => Scaffold(
-    key: widget.scaffoldKey,
-    backgroundColor: backgroundColor,
-    appBar: widget.showAppBar
-        ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
-        : null,
-    body: Row(
-      children: [
-        ClipRect(
-          child: VooAdaptiveNavigationRail(
-            config: widget.config,
-            selectedId: _selectedId,
-            onNavigationItemSelected: _onNavigationItemSelected,
-            extended: extended,
-          ),
+  ) {
+    final navigationRail = ClipRect(
+      child: VooAdaptiveNavigationRail(
+        config: widget.config,
+        selectedId: _selectedId,
+        onNavigationItemSelected: _onNavigationItemSelected,
+        extended: extended,
+      ),
+    );
+
+    // When app bar is alongside rail, wrap the content area with its own scaffold
+    if (widget.config.appBarAlongsideRail && widget.showAppBar) {
+      return Scaffold(
+        key: widget.scaffoldKey,
+        backgroundColor: backgroundColor,
+        body: Row(
+          children: [
+            navigationRail,
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                  top: widget.config.navigationRailMargin,
+                  right: widget.config.navigationRailMargin,
+                  bottom: widget.config.navigationRailMargin,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(context.vooRadius.lg),
+                    bottomRight: Radius.circular(context.vooRadius.lg),
+                  ),
+                  child: Scaffold(
+                    backgroundColor: backgroundColor,
+                    appBar: PreferredSize(
+                      preferredSize: Size.fromHeight(kToolbarHeight),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(context.vooRadius.lg),
+                          ),
+                        ),
+                        child: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
+                      ),
+                    ),
+                    body: body,
+                    floatingActionButton: widget.config.showFloatingActionButton
+                        ? widget.config.floatingActionButton
+                        : null,
+                    floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
+                    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        Expanded(child: body),
-      ],
-    ),
-    floatingActionButton: widget.config.showFloatingActionButton
-        ? widget.config.floatingActionButton
-        : null,
-    floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
-    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-    endDrawer: widget.endDrawer,
-    drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-    drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-    endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-    resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-    extendBody: widget.extendBody,
-    extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-    bottomSheet: widget.bottomSheet,
-    persistentFooterButtons: widget.persistentFooterButtons,
-    restorationId: widget.restorationId,
-  );
+        endDrawer: widget.endDrawer,
+        drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+        drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+        endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+        extendBody: widget.extendBody,
+        extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+        bottomSheet: widget.bottomSheet,
+        persistentFooterButtons: widget.persistentFooterButtons,
+        restorationId: widget.restorationId,
+      );
+    }
+
+    // Original behavior: app bar spans full width
+    return Scaffold(
+      key: widget.scaffoldKey,
+      backgroundColor: backgroundColor,
+      appBar: widget.showAppBar
+          ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
+          : null,
+      body: Row(
+        children: [
+          navigationRail,
+          Expanded(child: body),
+        ],
+      ),
+      floatingActionButton: widget.config.showFloatingActionButton
+          ? widget.config.floatingActionButton
+          : null,
+      floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
+      floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
+      endDrawer: widget.endDrawer,
+      drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+      drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+      endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+      extendBody: widget.extendBody,
+      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+      bottomSheet: widget.bottomSheet,
+      persistentFooterButtons: widget.persistentFooterButtons,
+      restorationId: widget.restorationId,
+    );
+  }
 
   Widget _buildDesktopScaffold(
     BuildContext context,
     Widget body,
     Color backgroundColor,
-  ) => Scaffold(
-    key: widget.scaffoldKey,
-    backgroundColor: backgroundColor,
-    appBar: widget.showAppBar
-        ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
-        : null,
-    body: Row(
-      children: [
-        ClipRect(
-          child: VooAdaptiveNavigationDrawer(
-            config: widget.config,
-            selectedId: _selectedId,
-            onNavigationItemSelected: _onNavigationItemSelected,
-          ),
+  ) {
+    final navigationDrawer = ClipRect(
+      child: VooAdaptiveNavigationDrawer(
+        config: widget.config,
+        selectedId: _selectedId,
+        onNavigationItemSelected: _onNavigationItemSelected,
+      ),
+    );
+
+    // When app bar is alongside drawer, wrap the content area with its own scaffold
+    if (widget.config.appBarAlongsideRail && widget.showAppBar) {
+      return Scaffold(
+        key: widget.scaffoldKey,
+        backgroundColor: backgroundColor,
+        body: Row(
+          children: [
+            navigationDrawer,
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                  top: widget.config.navigationRailMargin,
+                  right: widget.config.navigationRailMargin,
+                  bottom: widget.config.navigationRailMargin,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(context.vooRadius.lg),
+                    bottomRight: Radius.circular(context.vooRadius.lg),
+                  ),
+                  child: Scaffold(
+                    backgroundColor: backgroundColor,
+                    appBar: PreferredSize(
+                      preferredSize: Size.fromHeight(kToolbarHeight),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(context.vooRadius.lg),
+                          ),
+                        ),
+                        child: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
+                      ),
+                    ),
+                    body: body,
+                    floatingActionButton: widget.config.showFloatingActionButton
+                        ? widget.config.floatingActionButton
+                        : null,
+                    floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
+                    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        Expanded(child: body),
-      ],
-    ),
-    floatingActionButton: widget.config.showFloatingActionButton
-        ? widget.config.floatingActionButton
-        : null,
-    floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
-    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-    endDrawer: widget.endDrawer,
-    drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-    drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-    endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-    resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-    extendBody: widget.extendBody,
-    extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-    bottomSheet: widget.bottomSheet,
-    persistentFooterButtons: widget.persistentFooterButtons,
-    restorationId: widget.restorationId,
-  );
+        endDrawer: widget.endDrawer,
+        drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+        drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+        endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+        extendBody: widget.extendBody,
+        extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+        bottomSheet: widget.bottomSheet,
+        persistentFooterButtons: widget.persistentFooterButtons,
+        restorationId: widget.restorationId,
+      );
+    }
+
+    // Original behavior: app bar spans full width
+    return Scaffold(
+      key: widget.scaffoldKey,
+      backgroundColor: backgroundColor,
+      appBar: widget.showAppBar
+          ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
+          : null,
+      body: Row(
+        children: [
+          navigationDrawer,
+          Expanded(child: body),
+        ],
+      ),
+      floatingActionButton: widget.config.showFloatingActionButton
+          ? widget.config.floatingActionButton
+          : null,
+      floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
+      floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
+      endDrawer: widget.endDrawer,
+      drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+      drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+      endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+      extendBody: widget.extendBody,
+      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+      bottomSheet: widget.bottomSheet,
+      persistentFooterButtons: widget.persistentFooterButtons,
+      restorationId: widget.restorationId,
+    );
+  }
 
   /// Get default body padding based on navigation type and screen size
   EdgeInsetsGeometry _getDefaultBodyPadding(

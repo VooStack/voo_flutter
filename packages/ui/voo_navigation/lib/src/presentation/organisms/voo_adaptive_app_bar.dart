@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/utils/voo_navigation_inherited.dart';
@@ -98,10 +99,12 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions ?? _buildActions(context, theme, effectiveConfig);
     final effectiveCenterTitle =
         centerTitle ?? effectiveConfig?.centerAppBarTitle ?? false;
-    final effectiveBackgroundColor =
-        backgroundColor ??
-        effectiveConfig?.backgroundColor ??
-        theme.scaffoldBackgroundColor;
+    // Use same subtle surface color variation as navigation components
+    final effectiveBackgroundColor = backgroundColor ??
+        effectiveConfig?.navigationBackgroundColor ??
+        (theme.brightness == Brightness.light
+            ? theme.colorScheme.surface.withValues(alpha: 0.95)
+            : theme.colorScheme.surfaceContainerLow);
     final effectiveForegroundColor = foregroundColor ?? colorScheme.onSurface;
     final effectiveElevation = elevation ?? (showBottomBorder ? 0 : 0);
 
@@ -114,6 +117,11 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: effectiveForegroundColor,
       elevation: effectiveElevation,
       toolbarHeight: toolbarHeight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(context.vooRadius.lg),
+        ),
+      ),
       bottom: showBottomBorder
           ? PreferredSize(
               preferredSize: const Size.fromHeight(1),

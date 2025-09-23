@@ -39,12 +39,10 @@ class VooAdaptiveNavigationRail extends StatefulWidget {
   });
 
   @override
-  State<VooAdaptiveNavigationRail> createState() =>
-      _VooAdaptiveNavigationRailState();
+  State<VooAdaptiveNavigationRail> createState() => _VooAdaptiveNavigationRailState();
 }
 
-class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
-    with TickerProviderStateMixin {
+class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _hoverController;
   final Map<String, bool> _hoveredItems = {};
@@ -53,15 +51,9 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: widget.config.animationDuration,
-      vsync: this,
-    );
+    _animationController = AnimationController(duration: widget.config.animationDuration, vsync: this);
 
-    _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
+    _hoverController = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
 
     if (widget.extended) {
       _animationController.forward();
@@ -94,59 +86,55 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final effectiveWidth =
-        widget.width ??
-        (widget.extended
-            ? (widget.config.extendedNavigationRailWidth ?? 256)
-            : (widget.config.navigationRailWidth ?? 88));
+    final effectiveWidth = widget.width ?? (widget.extended ? (widget.config.extendedNavigationRailWidth ?? 256) : (widget.config.navigationRailWidth ?? 88));
 
-    // Use seamless background that matches the scaffold
+    // Use a subtle surface color variation for better visual distinction
     final effectiveBackgroundColor =
         widget.backgroundColor ??
-        widget.config.backgroundColor ??
-        theme.scaffoldBackgroundColor;
+        widget.config.navigationBackgroundColor ??
+        (theme.brightness == Brightness.light ? theme.colorScheme.surface.withValues(alpha: 0.95) : theme.colorScheme.surfaceContainerLow);
 
     return AnimatedContainer(
       duration: widget.config.animationDuration,
       curve: widget.config.animationCurve,
       width: effectiveWidth,
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: effectiveBackgroundColor),
-        child: Material(
-          color: Colors.transparent,
-          child: Column(
-            children: [
-              // Custom header or default header
-              if (widget.extended)
-                widget.config.drawerHeader ?? _buildDefaultHeader(context),
+      margin: EdgeInsets.all(widget.config.navigationRailMargin),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(context.vooRadius.lg),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: effectiveBackgroundColor,
+            borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
+            border: Border(right: BorderSide(color: theme.dividerColor.withValues(alpha: 0.1), width: 1)),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              children: [
+                // Custom header or default header
+                if (widget.extended) widget.config.drawerHeader ?? _buildDefaultHeader(context),
 
-              // Navigation items
-              Expanded(
-                child: ListView(
-                  controller: widget.config.drawerScrollController,
-                  padding: EdgeInsets.symmetric(
-                    vertical: context.vooSpacing.sm,
-                    horizontal: widget.extended
-                        ? context.vooSpacing.sm + context.vooSpacing.xs
-                        : context.vooSpacing.sm,
+                // Navigation items
+                Expanded(
+                  child: ListView(
+                    controller: widget.config.drawerScrollController,
+                    padding: EdgeInsets.symmetric(
+                      vertical: context.vooSpacing.sm,
+                      horizontal: widget.extended ? context.vooSpacing.sm + context.vooSpacing.xs : context.vooSpacing.sm,
+                    ),
+                    physics: const ClampingScrollPhysics(),
+                    children: _buildNavigationItems(context),
                   ),
-                  physics: const ClampingScrollPhysics(),
-                  children: _buildNavigationItems(context),
-                ),
-              ),
-
-              // Leading widget for FAB or other actions
-              if (widget.config.floatingActionButton != null &&
-                  widget.config.showFloatingActionButton)
-                Padding(
-                  padding: EdgeInsets.all(context.vooSpacing.md),
-                  child: widget.config.floatingActionButton,
                 ),
 
-              // Custom footer if provided
-              if (widget.config.drawerFooter != null)
-                widget.config.drawerFooter!,
-            ],
+                // Leading widget for FAB or other actions
+                if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
+                  Padding(padding: EdgeInsets.all(context.vooSpacing.md), child: widget.config.floatingActionButton),
+
+                // Custom footer if provided
+                if (widget.config.drawerFooter != null) widget.config.drawerFooter!,
+              ],
+            ),
           ),
         ),
       ),
@@ -160,38 +148,20 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
     final radius = context.vooRadius;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        spacing.md,
-        spacing.lg,
-        spacing.md,
-        spacing.md,
-      ),
+      padding: EdgeInsets.fromLTRB(spacing.md, spacing.lg, spacing.md, spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 32,
             height: 32,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(radius.md),
-            ),
-            child: Icon(
-              Icons.dashboard,
-              color: theme.colorScheme.primary,
-              size: 20,
-            ),
+            decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(radius.md)),
+            child: Icon(Icons.dashboard, color: theme.colorScheme.primary, size: 20),
           ),
           SizedBox(height: spacing.sm),
           Text(
-            (widget.config.appBarTitle != null &&
-                    widget.config.appBarTitle is Text)
-                ? ((widget.config.appBarTitle! as Text).data ?? 'Navigation')
-                : 'Navigation',
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
+            (widget.config.appBarTitle != null && widget.config.appBarTitle is Text) ? ((widget.config.appBarTitle! as Text).data ?? 'Navigation') : 'Navigation',
+            style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -240,38 +210,20 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
     child: ExpansionTile(
       title: Text(
         item.label,
-        style: theme.textTheme.titleSmall?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.w500,
-        ),
+        style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w500),
       ),
-      leading: Icon(
-        item.isExpanded ? item.selectedIcon ?? item.icon : item.icon,
-        color: theme.colorScheme.onSurfaceVariant,
-        size: 20,
-      ),
+      leading: Icon(item.isExpanded ? item.selectedIcon ?? item.icon : item.icon, color: theme.colorScheme.onSurfaceVariant, size: 20),
       initiallyExpanded: item.isExpanded,
-      children:
-          item.children
-              ?.map((child) => _buildNavigationItem(child, theme, indent: true))
-              .toList() ??
-          [],
+      children: item.children?.map((child) => _buildNavigationItem(child, theme, indent: true)).toList() ?? [],
     ),
   );
 
-  Widget _buildNavigationItem(
-    VooNavigationItem item,
-    ThemeData theme, {
-    bool indent = false,
-  }) {
+  Widget _buildNavigationItem(VooNavigationItem item, ThemeData theme, {bool indent = false}) {
     final isSelected = item.id == widget.selectedId;
     final isHovered = _hoveredItems[item.id] ?? false;
     final isDark = theme.brightness == Brightness.dark;
 
-    _itemAnimationControllers[item.id] ??= AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
+    _itemAnimationControllers[item.id] ??= AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
 
     if (isSelected) {
       _itemAnimationControllers[item.id]!.forward();
@@ -283,42 +235,24 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
     final radius = context.vooRadius;
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: widget.extended ? 0 : spacing.xs,
-        vertical: spacing.xxs,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: widget.extended ? 0 : spacing.xs, vertical: spacing.xxs),
       child: MouseRegion(
         onEnter: (_) => setState(() => _hoveredItems[item.id] = true),
         onExit: (_) => setState(() => _hoveredItems[item.id] = false),
-        cursor: item.isEnabled
-            ? SystemMouseCursors.click
-            : SystemMouseCursors.basic,
+        cursor: item.isEnabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
         child: InkWell(
-          onTap: item.isEnabled
-              ? () => widget.onNavigationItemSelected(item.id)
-              : null,
-          borderRadius: BorderRadius.circular(
-            widget.extended ? radius.lg : radius.full,
-          ),
+          onTap: item.isEnabled ? () => widget.onNavigationItemSelected(item.id) : null,
+          borderRadius: BorderRadius.circular(widget.extended ? radius.lg : radius.full),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             height: widget.extended ? 48 : 56,
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.extended ? spacing.md : spacing.xs,
-              vertical: widget.extended ? spacing.sm : spacing.xs,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: widget.extended ? spacing.md : spacing.xs, vertical: widget.extended ? spacing.sm : spacing.xs),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                widget.extended ? radius.md + spacing.xxs : radius.full,
-              ),
+              borderRadius: BorderRadius.circular(widget.extended ? radius.md + spacing.xxs : radius.full),
               color: isSelected
-                  ? theme.colorScheme.primary.withValues(
-                      alpha: isDark ? 0.15 : 0.08,
-                    )
+                  ? theme.colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.08)
                   : isHovered
-                  ? theme.colorScheme.onSurface.withValues(
-                      alpha: isDark ? 0.08 : 0.04,
-                    )
+                  ? theme.colorScheme.onSurface.withValues(alpha: isDark ? 0.08 : 0.04)
                   : Colors.transparent,
             ),
             child: widget.extended
@@ -330,9 +264,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
                         child: Icon(
                           isSelected ? item.effectiveSelectedIcon : item.icon,
                           key: ValueKey(isSelected),
-                          color: isSelected
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurfaceVariant,
+                          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
                           size: 20,
                         ),
                       ),
@@ -341,22 +273,15 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
                         child: Text(
                           item.label,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
+                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                             fontSize: 14,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       // Badge
-                      if (item.hasBadge) ...[
-                        SizedBox(width: spacing.sm),
-                        _buildModernBadge(item, isSelected),
-                      ],
+                      if (item.hasBadge) ...[SizedBox(width: spacing.sm), _buildModernBadge(item, isSelected)],
                     ],
                   )
                 : Center(
@@ -369,22 +294,13 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
                             AnimatedSwitcher(
                               duration: const Duration(milliseconds: 200),
                               child: Icon(
-                                isSelected
-                                    ? item.effectiveSelectedIcon
-                                    : item.icon,
+                                isSelected ? item.effectiveSelectedIcon : item.icon,
                                 key: ValueKey(isSelected),
-                                color: isSelected
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurfaceVariant,
+                                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
                                 size: 24,
                               ),
                             ),
-                            if (item.hasBadge)
-                              Positioned(
-                                top: -4,
-                                right: -8,
-                                child: _buildModernBadge(item, isSelected),
-                              ),
+                            if (item.hasBadge) Positioned(top: -4, right: -8, child: _buildModernBadge(item, isSelected)),
                           ],
                         ),
                       ],
@@ -408,33 +324,18 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
       return Container(
         width: 8,
         height: 8,
-        decoration: BoxDecoration(
-          color: item.badgeColor ?? Colors.red,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: item.badgeColor ?? Colors.red, shape: BoxShape.circle),
       );
     } else {
       return const SizedBox.shrink();
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: widget.extended
-            ? context.vooSpacing.sm
-            : context.vooSpacing.sm - context.vooSpacing.xxs,
-        vertical: context.vooSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: item.badgeColor ?? theme.colorScheme.error,
-        borderRadius: BorderRadius.circular(context.vooRadius.lg),
-      ),
+      padding: EdgeInsets.symmetric(horizontal: widget.extended ? context.vooSpacing.sm : context.vooSpacing.sm - context.vooSpacing.xxs, vertical: context.vooSpacing.xxs),
+      decoration: BoxDecoration(color: item.badgeColor ?? theme.colorScheme.error, borderRadius: BorderRadius.circular(context.vooRadius.lg)),
       child: Text(
         badgeText,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: widget.extended ? 11 : 10,
-        ),
+        style: theme.textTheme.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: widget.extended ? 11 : 10),
       ),
     );
   }

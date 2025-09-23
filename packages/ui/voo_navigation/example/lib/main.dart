@@ -156,9 +156,13 @@ class _NavigationExampleState extends State<NavigationExample> {
       animationDuration: const Duration(milliseconds: 300),
       animationCurve: Curves.easeInOutCubic,
       railLabelType: NavigationRailLabelType.selected,
-      useExtendedRail: true,
+      // Only extend rail when width > 840px, respecting responsive breakpoints
+      useExtendedRail: true, // This allows extended rail, but width determines actual state
       showNavigationRailDivider: true,
-      centerAppBarTitle: false,
+      centerAppBarTitle: true,
+      // App bar positioned alongside navigation rail (default behavior)
+      // Set to false to make app bar span full width above the rail
+      appBarAlongsideRail: true,
       selectedItemColor: const Color(0xFF4F75FF),
       bottomNavigationType: NavigationBarType.custom,
       indicatorShape: RoundedRectangleBorder(
@@ -197,66 +201,110 @@ class _NavigationExampleState extends State<NavigationExample> {
               Text(
                 'Adaptive Navigation System',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimary
-                      .withAlpha((0.8 * 255).round()),
+                  color: theme.colorScheme.onPrimary.withAlpha((0.8 * 255).round()),
                 ),
               ),
             ],
           ),
         ),
       ),
-      drawerFooter: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: theme.dividerColor.withAlpha((0.2 * 255).round()),
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: theme.colorScheme.primaryContainer,
-              child: Text(
-                'JD',
-                style: TextStyle(
-                  color: theme.colorScheme.onPrimaryContainer,
+      drawerFooter: LayoutBuilder(
+        builder: (context, constraints) {
+          // Only show footer content when there's enough width (extended rail or drawer)
+          final isCompact = constraints.maxWidth < 200;
+
+          if (isCompact) {
+            // Compact footer for icon-only rail
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: theme.dividerColor.withAlpha((0.2 * 255).round()),
+                  ),
+                ),
+              ),
+              child: Center(
+                child: IconButton(
+                  icon: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: theme.colorScheme.primaryContainer,
+                    child: Text(
+                      'JD',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Profile tapped')),
+                    );
+                  },
+                  tooltip: 'John Doe',
+                ),
+              ),
+            );
+          }
+
+          // Full footer for extended rail and drawer
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: theme.dividerColor.withAlpha((0.2 * 255).round()),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'John Doe',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: theme.colorScheme.primaryContainer,
+                  child: Text(
+                    'JD',
+                    style: TextStyle(
+                      color: theme.colorScheme.onPrimaryContainer,
                     ),
                   ),
-                  Text(
-                    'john.doe@example.com',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'John Doe',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        'john.doe@example.com',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Logout pressed')),
+                    );
+                  },
+                  tooltip: 'Logout',
+                ),
+              ],
             ),
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Logout pressed')),
-                );
-              },
-              tooltip: 'Logout',
-            ),
-          ],
-        ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

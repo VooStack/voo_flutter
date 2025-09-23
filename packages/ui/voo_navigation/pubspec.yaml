@@ -20,7 +20,7 @@ dependencies:
 
   # UI Core & Design System
   voo_ui_core: ^0.1.1
-  voo_tokens: ^0.0.5
+  voo_tokens: ^0.0.6
   voo_responsive: ^0.1.2
 
   # Animations
