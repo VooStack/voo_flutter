@@ -1,5 +1,24 @@
 name: voo_flutter
+publish_to: none
+workspace:
+  - packages/dev/voo_analytics
+  - packages/ui/voo_calendar
+  - packages/dev/voo_core
+  - packages/ui/voo_data_grid
+  - packages/ui/voo_forms
+  - packages/ui/voo_lists
+  - packages/dev/voo_logging
+  - packages/ui/voo_motion
+  - packages/ui/voo_navigation
+  - packages/dev/voo_performance
+  - packages/ui/voo_responsive
+  - packages/dev/voo_telemetry
+  - packages/ui/voo_toast
+  - packages/ui/voo_tokens
+  - packages/ui/voo_ui_core
+
 environment:
-  sdk: '>=3.8.1 <4.0.0'
+  sdk: '>=3.9.2 <4.0.0'
 dev_dependencies:
-  melos: ^7.1.1
+  melos: ^7.1.0
+melos:

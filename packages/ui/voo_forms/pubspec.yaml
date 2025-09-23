@@ -3,6 +3,7 @@ description: A comprehensive cross-platform forms package with atomic design, cl
 version: 0.3.45
 homepage: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_forms
 repository: https://github.com/VooStack/VooFlutter
+resolution: workspace
 
 topics:
   - flutter
@@ -30,7 +31,7 @@ dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.4.0
   flutter_bloc: ^9.1.1
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   mockito: ^5.4.4

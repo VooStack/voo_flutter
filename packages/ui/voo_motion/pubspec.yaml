@@ -3,6 +3,7 @@ description: 'Simple and powerful animation package with extension methods for F
 version: 0.0.1
 homepage: https://github.com/VooStack/VooFlutter
 repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_motion
+resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
@@ -17,7 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   mocktail: ^1.0.1
 
 flutter:

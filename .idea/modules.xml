@@ -2,6 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<module fileurl="file://$PROJECT_DIR$/packages/dev/voo_analytics/melos_voo_analytics.iml" filepath="$PROJECT_DIR$/packages/dev/voo_analytics/melos_voo_analytics.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_calendar/melos_voo_calendar.iml" filepath="$PROJECT_DIR$/packages/ui/voo_calendar/melos_voo_calendar.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/dev/voo_core/melos_voo_core.iml" filepath="$PROJECT_DIR$/packages/dev/voo_core/melos_voo_core.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_data_grid/melos_voo_data_grid.iml" filepath="$PROJECT_DIR$/packages/ui/voo_data_grid/melos_voo_data_grid.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_forms/melos_voo_forms.iml" filepath="$PROJECT_DIR$/packages/ui/voo_forms/melos_voo_forms.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_lists/melos_voo_lists.iml" filepath="$PROJECT_DIR$/packages/ui/voo_lists/melos_voo_lists.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/dev/voo_logging/melos_voo_logging.iml" filepath="$PROJECT_DIR$/packages/dev/voo_logging/melos_voo_logging.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_motion/melos_voo_motion.iml" filepath="$PROJECT_DIR$/packages/ui/voo_motion/melos_voo_motion.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_navigation/melos_voo_navigation.iml" filepath="$PROJECT_DIR$/packages/ui/voo_navigation/melos_voo_navigation.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/dev/voo_performance/melos_voo_performance.iml" filepath="$PROJECT_DIR$/packages/dev/voo_performance/melos_voo_performance.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_responsive/melos_voo_responsive.iml" filepath="$PROJECT_DIR$/packages/ui/voo_responsive/melos_voo_responsive.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/dev/voo_telemetry/melos_voo_telemetry.iml" filepath="$PROJECT_DIR$/packages/dev/voo_telemetry/melos_voo_telemetry.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_toast/melos_voo_toast.iml" filepath="$PROJECT_DIR$/packages/ui/voo_toast/melos_voo_toast.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_tokens/melos_voo_tokens.iml" filepath="$PROJECT_DIR$/packages/ui/voo_tokens/melos_voo_tokens.iml" />
+<module fileurl="file://$PROJECT_DIR$/packages/ui/voo_ui_core/melos_voo_ui_core.iml" filepath="$PROJECT_DIR$/packages/ui/voo_ui_core/melos_voo_ui_core.iml" />
 <module fileurl="file://$PROJECT_DIR$/melos_voo_flutter.iml" filepath="$PROJECT_DIR$/melos_voo_flutter.iml" />
     </modules>
   </component>

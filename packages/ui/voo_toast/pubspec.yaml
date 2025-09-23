@@ -7,6 +7,7 @@ topics:
   - flutter
   - toast
   - notifications
+resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
@@ -24,7 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   mockito: ^5.4.4
   build_runner: ^2.4.0
 

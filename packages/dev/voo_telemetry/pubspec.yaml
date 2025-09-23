@@ -9,10 +9,11 @@ topics:
   - observability
   - tracing
   - otlp
+resolution: workspace
 
 environment:
-  sdk: ">=3.8.1 <4.0.0"
-  flutter: ">=3.0.0 <4.0.0"
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -33,7 +34,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   mockito: ^5.4.0
   build_runner: ^2.4.0
 
