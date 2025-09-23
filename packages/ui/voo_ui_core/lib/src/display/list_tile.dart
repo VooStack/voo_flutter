@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooListTile extends StatefulWidget {
   final Widget? leading;
@@ -59,13 +58,13 @@ class _VooListTileState extends State<VooListTile> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         margin: const EdgeInsets.symmetric(
-          horizontal: VooSpacing.sm,
+          horizontal: 8,
           vertical: 2,
         ),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius:
-              widget.borderRadius ?? BorderRadius.circular(VooSpacing.radiusMd),
+              widget.borderRadius ?? BorderRadius.circular(8),
           border: Border.all(
             color: borderColor,
             width: widget.isSelected ? 1.5 : 1,
@@ -86,20 +85,20 @@ class _VooListTileState extends State<VooListTile> {
             onTap: widget.onTap,
             onLongPress: widget.onLongPress,
             borderRadius: widget.borderRadius ??
-                BorderRadius.circular(VooSpacing.radiusMd),
+                BorderRadius.circular(8),
             highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
             splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
             child: Padding(
               padding: widget.padding ??
                   const EdgeInsets.symmetric(
-                    horizontal: VooSpacing.md,
+                    horizontal: 12,
                     vertical: 10,
                   ),
               child: Row(
                 children: [
                   if (widget.leading != null) ...[
                     widget.leading!,
-                    const SizedBox(width: VooSpacing.md),
+                    const SizedBox(width: 12),
                   ],
                   Expanded(
                     child: Column(
@@ -126,7 +125,7 @@ class _VooListTileState extends State<VooListTile> {
                     ),
                   ),
                   if (widget.trailing != null) ...[
-                    const SizedBox(width: VooSpacing.md),
+                    const SizedBox(width: 12),
                     widget.trailing!,
                   ],
                 ],

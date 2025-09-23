@@ -1,0 +1,25 @@
+name: voo_tokens
+description: Design token system for VooFlutter with responsive adaptations
+version: 0.0.1
+
+environment:
+  sdk: ">=3.8.1 <4.0.0"
+  flutter: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Equatable for value equality
+  equatable: ^2.0.5
+
+  # Meta annotations
+  meta: ^1.11.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooTheme {
   static BoxDecoration getCardDecoration(
@@ -11,7 +10,7 @@ class VooTheme {
       color: isSelected
           ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
           : theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(VooSpacing.radiusMd),
+      borderRadius: BorderRadius.circular(8),
       border: Border.all(
         color: isSelected
             ? theme.colorScheme.primary.withValues(alpha: 0.5)
@@ -25,7 +24,7 @@ class VooTheme {
     final theme = Theme.of(context);
     return BoxDecoration(
       color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-      borderRadius: BorderRadius.circular(VooSpacing.radiusMd),
+      borderRadius: BorderRadius.circular(8),
       border: Border.all(
         color: theme.colorScheme.outline.withValues(alpha: 0.3),
       ),
@@ -47,7 +46,7 @@ class VooTheme {
     final theme = Theme.of(context);
     return BoxDecoration(
       color: color ?? theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(radius ?? VooSpacing.radiusMd),
+      borderRadius: BorderRadius.circular(radius ?? 8),
       border: Border.all(
         color: theme.colorScheme.outline.withValues(alpha: 0.1),
       ),

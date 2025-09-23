@@ -12,8 +12,6 @@ dependencies:
     sdk: flutter
   voo_forms:
     path: ../
-  voo_ui_core:
-    path: ../../voo_ui_core
   intl: ^0.20.1
 
 dev_dependencies:

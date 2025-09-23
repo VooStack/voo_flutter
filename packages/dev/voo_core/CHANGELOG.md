@@ -1,3 +1,9 @@
+## 0.4.1
+
+- **CHORE**: Update package dependencies to use version constraints
+- **FIX**: Corrected version dependencies for better melos monorepo compatibility
+- **CHORE**: Minor dependency adjustments for voo_responsive and voo_ui_core integration
+
 ## 0.4.0
 
 > Note: This release has breaking changes.

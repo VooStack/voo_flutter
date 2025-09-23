@@ -11,14 +11,14 @@ topics:
   - devtools
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
-  flutter: '>=3.0.0'
+  sdk: ">=3.8.1 <4.0.0"
+  flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  voo_core:
-  voo_toast: ^0.0.4
+  voo_core: ^0.4.1
+  voo_toast: ^0.0.3
   json_annotation: ^4.9.0
   equatable: ^2.0.5
   sembast: ^3.8.5+1
@@ -34,7 +34,7 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^10.0.0
   mockito: ^5.4.7
-  build_runner: ^2.4.14
+  build_runner: ^2.4.0
   dio: ^5.0.0
 
 flutter:

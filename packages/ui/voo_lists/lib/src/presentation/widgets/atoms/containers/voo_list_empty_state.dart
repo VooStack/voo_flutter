@@ -15,8 +15,7 @@ class VooListEmptyState extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -47,5 +46,4 @@ class VooListEmptyState extends StatelessWidget {
         ),
       ),
     );
-  }
 }

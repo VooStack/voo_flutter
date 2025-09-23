@@ -9,8 +9,9 @@ void main() {
       expect(VooDesignSystemData, isNotNull);
       expect(VooDesignSystem, isNotNull);
       expect(VooColors, isNotNull);
-      expect(VooSpacing, isNotNull);
-      expect(VooTypography, isNotNull);
+      // Token classes from voo_tokens package
+      expect(VooSpacingTokens, isNotNull);
+      expect(VooTypographyTokens, isNotNull);
     });
 
     test('VooDesignSystemData has expected properties', () {

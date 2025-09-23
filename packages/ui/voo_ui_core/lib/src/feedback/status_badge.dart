@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:voo_ui_core/src/foundations/colors.dart';
-import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooStatusBadge extends StatelessWidget {
   final int statusCode;
@@ -24,7 +23,7 @@ class VooStatusBadge extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(VooSpacing.radiusSm),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
           statusCode.toString(),
@@ -38,8 +37,8 @@ class VooStatusBadge extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: VooSpacing.sm,
-        vertical: VooSpacing.xs,
+        horizontal: 8,
+        vertical: 4,
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
@@ -50,7 +49,7 @@ class VooStatusBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(_getStatusIcon(statusCode), size: 14, color: color),
-          const SizedBox(width: VooSpacing.xs),
+          const SizedBox(width: 4),
           Text(
             statusCode.toString(),
             style: theme.textTheme.labelMedium?.copyWith(

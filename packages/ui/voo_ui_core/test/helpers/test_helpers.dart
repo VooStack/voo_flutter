@@ -13,7 +13,7 @@ Widget createTestApp({
         ? MediaQuery(
             data: MediaQueryData(size: screenSize),
             child: VooResponsiveBuilder(
-              child: VooDesignSystem(
+              builder: (context, screenInfo) => VooDesignSystem(
                 data: VooDesignSystemData.defaultSystem,
                 child: Scaffold(body: child),
               ),
@@ -35,7 +35,7 @@ Widget createResponsiveTestApp({
     home: MediaQuery(
       data: MediaQueryData(size: screenSize),
       child: VooResponsiveBuilder(
-        child: VooDesignSystem(
+        builder: (context, screenInfo) => VooDesignSystem(
           data: VooDesignSystemData.defaultSystem,
           child: Scaffold(body: child),
         ),

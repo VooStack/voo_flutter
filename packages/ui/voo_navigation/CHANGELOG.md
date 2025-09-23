@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.7] - 2025-01-23
+
+### Fixed
+- **Breaking**: Removed duplicate breakpoint system - now properly uses Material 3 standard breakpoint values
+- Fixed undefined VooBreakpoints references by using hardcoded Material 3 compliant values (600px, 840px, 1240px, 1440px)
+- Fixed VooResponsiveBuilder usage in VooAdaptiveScaffold to use correct builder pattern
+- Added proper voo_responsive integration through voo_ui_core re-exports
+- Removed unused voo_ui_core import from breakpoint.dart
+
+### Changed
+- Updated breakpoint values to match Material 3 specifications:
+  - Compact: 0-600px (phones)
+  - Medium: 600-840px (tablets)
+  - Expanded: 840-1240px (small laptops)
+  - Large: 1240-1440px (desktops)
+  - Extra Large: 1440px+ (large desktops)
+
 ## [0.0.6] - 2025-01-22
 
 ### Changed

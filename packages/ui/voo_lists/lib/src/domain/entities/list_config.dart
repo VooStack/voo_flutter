@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:voo_lists/src/domain/enums/list_layout.dart';
-import 'package:voo_lists/src/domain/enums/list_behavior.dart';
 import 'package:voo_lists/src/domain/enums/list_animation_type.dart';
+import 'package:voo_lists/src/domain/enums/list_behavior.dart';
+import 'package:voo_lists/src/domain/enums/list_layout.dart';
 
 class ListConfig extends Equatable {
   final ListLayout layout;
@@ -82,8 +82,7 @@ class ListConfig extends Equatable {
     Widget? errorWidget,
     Duration? animationDuration,
     Curve? animationCurve,
-  }) {
-    return ListConfig(
+  }) => ListConfig(
       layout: layout ?? this.layout,
       behavior: behavior ?? this.behavior,
       animationType: animationType ?? this.animationType,
@@ -109,7 +108,6 @@ class ListConfig extends Equatable {
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
     );
-  }
 
   @override
   List<Object?> get props => [

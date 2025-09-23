@@ -19,9 +19,8 @@ class VooListSectionHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: backgroundColor ?? Theme.of(context).colorScheme.surfaceVariant,
+  Widget build(BuildContext context) => Container(
+      color: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
       padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
@@ -52,5 +51,4 @@ class VooListSectionHeader extends StatelessWidget {
         ],
       ),
     );
-  }
 }

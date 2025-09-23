@@ -250,6 +250,21 @@
 - Implement efficient data filtering
 - Provide export capabilities
 
+### Package Reuse & Dependencies
+- **Use existing packages**: Always use existing VooFlutter packages instead of duplicating functionality
+  - Use `voo_tokens` for design tokens (spacing, typography, elevation, radius)
+  - Use `voo_responsive` for responsive utilities and breakpoints
+  - Use `voo_core` for shared utilities and base classes
+  - Use `voo_ui_core` for common UI components
+  - Use `voo_forms` for form-related widgets and validation
+  - Use `voo_navigation` for adaptive navigation components
+- **No duplicate implementations**: Never create duplicate token systems or utilities that already exist in other packages
+- **Check before creating**: Before creating a new widget or utility, check if it exists in:
+  1. The current package
+  2. Related VooFlutter packages
+  3. Standard Flutter/Material widgets
+- **Extend, don't duplicate**: If existing functionality needs enhancement, extend the original package rather than duplicating
+
 ## Melos & Monorepo Rules
 - Run `melos bootstrap` after dependency changes
 - Use melos scripts for common tasks

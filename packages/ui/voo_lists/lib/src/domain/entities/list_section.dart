@@ -38,8 +38,7 @@ class ListSection<T> extends Equatable {
     Color? backgroundColor,
     bool? isSticky,
     Map<String, dynamic>? metadata,
-  }) {
-    return ListSection<T>(
+  }) => ListSection<T>(
       id: id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
@@ -51,7 +50,6 @@ class ListSection<T> extends Equatable {
       isSticky: isSticky ?? this.isSticky,
       metadata: metadata ?? this.metadata,
     );
-  }
 
   @override
   List<Object?> get props => [

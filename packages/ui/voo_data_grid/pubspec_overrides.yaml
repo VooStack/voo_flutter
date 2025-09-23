@@ -1,4 +1,10 @@
-# melos_managed_dependency_overrides: voo_ui_core
+# melos_managed_dependency_overrides: voo_core,voo_responsive,voo_tokens,voo_ui_core
 dependency_overrides:
+  voo_core:
+    path: ../../dev/voo_core
+  voo_responsive:
+    path: ../voo_responsive
+  voo_tokens:
+    path: ../voo_tokens
   voo_ui_core:
     path: ../voo_ui_core

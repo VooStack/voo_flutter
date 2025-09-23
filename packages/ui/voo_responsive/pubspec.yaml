@@ -1,21 +1,20 @@
 name: voo_responsive
 description: A comprehensive responsive design system for Flutter applications, providing breakpoints, responsive builders, and adaptive layouts.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/voostack/voo_flutter
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/ui/voo_responsive
-publish_to: none
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: '>=3.0.0'
+  sdk: ">=3.8.1 <4.0.0"
+  flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  voo_core:
-    path: ../../dev/voo_core
+  voo_core: ^0.4.1
+  voo_tokens: ^0.0.1
   equatable: ^2.0.5
-  flutter_bloc: ^8.1.0
+  flutter_bloc: ^9.1.1
   collection: ^1.17.0
 
 dev_dependencies:

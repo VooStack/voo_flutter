@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return VooDesignSystem(
       data: VooDesignSystemData.defaultSystem,
       child: VooResponsiveBuilder(
-        child: MaterialApp(
+        builder: (context, screenInfo) => MaterialApp(
           title: 'VooMotion Demo',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

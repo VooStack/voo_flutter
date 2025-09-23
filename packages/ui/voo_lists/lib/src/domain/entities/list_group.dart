@@ -47,8 +47,7 @@ class ListGroup<T> extends Equatable {
     TextStyle? subtitleStyle,
     EdgeInsets? padding,
     Map<String, dynamic>? metadata,
-  }) {
-    return ListGroup<T>(
+  }) => ListGroup<T>(
       id: id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
@@ -63,7 +62,6 @@ class ListGroup<T> extends Equatable {
       padding: padding ?? this.padding,
       metadata: metadata ?? this.metadata,
     );
-  }
 
   @override
   List<Object?> get props => [

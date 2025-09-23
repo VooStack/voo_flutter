@@ -9,10 +9,8 @@ class VooListItemHandle extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return child ?? const Icon(
+  Widget build(BuildContext context) => child ?? const Icon(
       Icons.drag_handle,
       color: Colors.grey,
     );
-  }
 }

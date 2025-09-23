@@ -1,11 +1,11 @@
 name: voo_navigation
 description: A comprehensive, adaptive navigation package for Flutter that automatically adjusts to different screen sizes and platforms with Material 3 design.
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/VooFlutter/voo_navigation
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: '>=3.0.0'
+  sdk: ">=3.8.1 <4.0.0"
+  flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -18,14 +18,14 @@ dependencies:
   go_router: ^16.2.2
 
   # UI Core
-  voo_ui_core:
+  voo_ui_core: ^0.1.1
 
   # Animations
-  voo_motion:
+  voo_motion: ^0.0.1
 
   # State Management
   flutter_bloc: ^9.1.1
-  equatable: ^2.0.7
+  equatable: ^2.0.5
 
   # Utilities
   collection: ^1.19.1
@@ -37,7 +37,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   mockito: ^5.4.4
   bloc_test: ^10.0.0
-  build_runner: ^2.4.9
+  build_runner: ^2.4.0
 
 flutter:
   uses-material-design: true

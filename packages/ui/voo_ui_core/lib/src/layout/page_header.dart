@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooPageHeader extends StatelessWidget {
   final IconData icon;
@@ -23,10 +22,10 @@ class VooPageHeader extends StatelessWidget {
     final effectiveIconColor = iconColor ?? theme.colorScheme.primary;
 
     return Container(
-      height: VooSpacing.headerHeight,
+      height: 80,
       padding: const EdgeInsets.symmetric(
-        horizontal: VooSpacing.lg,
-        vertical: VooSpacing.md,
+        horizontal: 16,
+        vertical: 12,
       ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -49,14 +48,14 @@ class VooPageHeader extends StatelessWidget {
                   effectiveIconColor.withValues(alpha: 0.05),
                 ],
               ),
-              borderRadius: BorderRadius.circular(VooSpacing.radiusMd),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: effectiveIconColor.withValues(alpha: 0.2),
               ),
             ),
             child: Icon(icon, size: 24, color: effectiveIconColor),
           ),
-          const SizedBox(width: VooSpacing.lg),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +79,7 @@ class VooPageHeader extends StatelessWidget {
           ),
           ...actions.map(
             (action) => Padding(
-              padding: const EdgeInsets.only(left: VooSpacing.sm),
+              padding: const EdgeInsets.only(left: 8),
               child: action,
             ),
           ),

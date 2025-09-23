@@ -12,10 +12,7 @@ import 'package:voo_toast/src/domain/use_cases/dismiss_toast_use_case.dart';
 import 'package:voo_toast/src/domain/use_cases/show_toast_use_case.dart';
 
 class VooToastController {
-  factory VooToastController({
-    BuildContext? context,
-    ToastConfig? config,
-  }) {
+  factory VooToastController({BuildContext? context, ToastConfig? config}) {
     if (_instance != null) {
       return _instance!;
     }
@@ -23,15 +20,11 @@ class VooToastController {
     // Create config with theme-aware defaults if context is provided
     final effectiveConfig = config ?? (context != null ? ToastConfig.fromTheme(context) : const ToastConfig());
 
-    _instance = VooToastController._internal(
-      config: effectiveConfig,
-    );
+    _instance = VooToastController._internal(config: effectiveConfig);
     return _instance!;
   }
 
-  VooToastController._internal({
-    required ToastConfig config,
-  }) : _config = config {
+  VooToastController._internal({required ToastConfig config}) : _config = config {
     _repository = ToastRepositoryImpl(config: _config);
     _showToastUseCase = ShowToastUseCase(_repository);
     _dismissToastUseCase = DismissToastUseCase(_repository);
@@ -40,25 +33,18 @@ class VooToastController {
   static VooToastController? _instance;
 
   static VooToastController get instance {
-    _instance ??= VooToastController._internal(
-      config: const ToastConfig(),
-    );
+    _instance ??= VooToastController._internal(config: const ToastConfig());
     return _instance!;
   }
 
-  static void init({
-    BuildContext? context,
-    ToastConfig? config,
-  }) {
+  static void init({BuildContext? context, ToastConfig? config}) {
     if (_instance != null) {
       _instance!.dispose();
     }
 
     final effectiveConfig = config ?? (context != null ? ToastConfig.fromTheme(context) : const ToastConfig());
 
-    _instance = VooToastController._internal(
-      config: effectiveConfig,
-    );
+    _instance = VooToastController._internal(config: effectiveConfig);
   }
 
   static void reset() {
@@ -325,20 +311,9 @@ class VooToastController {
         final message = successMessage?.call(result) ?? 'Operation completed successfully';
         // Check if context is still valid before using it
         if (context != null && context.mounted) {
-          showSuccess(
-            message: message,
-            title: successTitle,
-            duration: successDuration,
-            position: position,
-            context: context,
-          );
+          showSuccess(message: message, title: successTitle, duration: successDuration, position: position, context: context);
         } else {
-          showSuccess(
-            message: message,
-            title: successTitle,
-            duration: successDuration,
-            position: position,
-          );
+          showSuccess(message: message, title: successTitle, duration: successDuration, position: position);
         }
       }
 
@@ -352,20 +327,9 @@ class VooToastController {
         final message = errorMessage?.call(error) ?? error.toString();
         // Check if context is still valid before using it
         if (context != null && context.mounted) {
-          showError(
-            message: message,
-            title: errorTitle ?? 'Error',
-            duration: errorDuration,
-            position: position,
-            context: context,
-          );
+          showError(message: message, title: errorTitle ?? 'Error', duration: errorDuration, position: position, context: context);
         } else {
-          showError(
-            message: message,
-            title: errorTitle ?? 'Error',
-            duration: errorDuration,
-            position: position,
-          );
+          showError(message: message, title: errorTitle ?? 'Error', duration: errorDuration, position: position);
         }
       }
 
@@ -375,7 +339,7 @@ class VooToastController {
 
   void dispose() {
     if (_repository is ToastRepositoryImpl) {
-      (_repository as ToastRepositoryImpl).dispose();
+      _repository.dispose();
     }
   }
 }

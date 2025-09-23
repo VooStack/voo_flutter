@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:voo_ui_core/src/foundations/spacing.dart';
 
 class VooEmptyState extends StatelessWidget {
   final IconData icon;
@@ -22,13 +21,13 @@ class VooEmptyState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(VooSpacing.xxl),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(VooSpacing.xl),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHighest.withValues(
                   alpha: 0.3,
@@ -41,7 +40,7 @@ class VooEmptyState extends StatelessWidget {
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: VooSpacing.xl),
+            const SizedBox(height: 24),
             Text(
               title,
               style: theme.textTheme.headlineSmall?.copyWith(
@@ -50,7 +49,7 @@ class VooEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: VooSpacing.sm),
+            const SizedBox(height: 8),
             Text(
               message,
               style: theme.textTheme.bodyLarge?.copyWith(
@@ -59,7 +58,7 @@ class VooEmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (action != null) ...[
-              const SizedBox(height: VooSpacing.xl),
+              const SizedBox(height: 24),
               action!,
             ],
           ],

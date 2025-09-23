@@ -4,35 +4,28 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.0
+  sdk: ">=3.8.1 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  voo_core:
-    path: ../../packages/dev/voo_core
-  voo_logging:
-    path: ../../packages/dev/voo_logging
-  voo_analytics:
-    path: ../../packages/dev/voo_analytics
-  voo_performance:
-    path: ../../packages/dev/voo_performance
-  voo_telemetry:
-    path: ../../packages/dev/voo_telemetry
-  voo_ui_core:
-    path: ../../packages/ui/voo_ui_core
-  voo_data_grid:
-    path: ../../packages/ui/voo_data_grid
+  voo_core: ^0.4.1
+  voo_logging: ^0.4.2
+  voo_analytics: ^0.3.0
+  voo_performance: ^0.3.0
+  voo_telemetry: ^0.1.0
+  voo_ui_core: ^0.1.1
+  voo_data_grid: ^0.7.5
   voo_calendar:
     path: ../../packages/ui/voo_calendar
 
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.1.0
 
-  dio: ^5.7.0
+  dio: ^5.2.0
 
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
   equatable: ^2.0.5
 
   intl: ^0.20.1
