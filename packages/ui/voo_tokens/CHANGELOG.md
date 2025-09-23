@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2] - 2025-01-23
+
+### Changed
+- Package is now properly integrated with voo_ui_core as the primary design token source
+- Removed duplicate token definitions from voo_ui_core in favor of this package
+- Improved integration with the VooFlutter ecosystem
+
+### Fixed
+- Fixed duplicate token system issues across packages
+- Ensured consistent token usage throughout the monorepo
+
 ## [0.0.1] - 2025-09-22
 
 ### Added
