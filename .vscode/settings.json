@@ -16,6 +16,7 @@
     "lcov",
     "melos",
     "pubspec",
+    "reorderable",
     "Riverpod",
     "rxdart",
     "sembast",

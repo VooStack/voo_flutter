@@ -5,8 +5,8 @@ homepage: https://github.com/voostack/voo_flutter
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/ui/voo_responsive
 
 environment:
-  sdk: ">=3.8.1 <4.0.0"
-  flutter: ">=3.0.0 <4.0.0"
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:

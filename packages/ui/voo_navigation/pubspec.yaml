@@ -4,8 +4,8 @@ version: 0.0.8
 homepage: https://github.com/VooFlutter/voo_navigation
 
 environment:
-  sdk: ">=3.8.1 <4.0.0"
-  flutter: ">=3.0.0 <4.0.0"
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -18,11 +18,7 @@ dependencies:
   go_router: ^16.2.2
 
   # UI Core
-  voo_ui_core: ^0.1.2
-
-  # Design System
-  voo_tokens: ^0.0.3
-  voo_responsive: ^0.1.2
+  voo_ui_core: ^0.1.1
 
   # Animations
   voo_motion: ^0.0.1

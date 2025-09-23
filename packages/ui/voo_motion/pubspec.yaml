@@ -3,11 +3,10 @@ description: 'Simple and powerful animation package with extension methods for F
 version: 0.0.1
 homepage: https://github.com/VooStack/VooFlutter
 repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_motion
-publish_to: none
 
 environment:
-  sdk: ">=3.8.1 <4.0.0"
-  flutter: ">=3.0.0 <4.0.0"
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:

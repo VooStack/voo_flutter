@@ -7,14 +7,14 @@ issue_tracker: https://github.com/YourOrg/VooFlutter/issues
 documentation: https://github.com/YourOrg/VooFlutter/tree/main/packages/ui/voo_ui_core
 
 environment:
-  sdk: ">=3.8.1 <4.0.0"
-  flutter: ">=3.0.0 <4.0.0"
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   intl: ^0.20.1
-  voo_tokens: ^0.0.3
+  voo_tokens: ^0.0.5
   voo_responsive: ^0.1.2
 
 dev_dependencies:
