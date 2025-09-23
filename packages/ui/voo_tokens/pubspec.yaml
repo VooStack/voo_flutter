@@ -1,6 +1,6 @@
 name: voo_tokens
 description: Design token system for VooFlutter with responsive adaptations
-version: 0.0.5
+version: 0.0.6
 resolution: workspace
 
 environment:

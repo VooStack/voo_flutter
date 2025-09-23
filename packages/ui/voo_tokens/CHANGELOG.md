@@ -1,3 +1,30 @@
+## 0.0.6
+
+### Added
+- **FEAT**: Added specific token types for better use-case coverage:
+  - `VooMarginTokens` - Specific margins for pages, cards, dialogs, and sections
+  - `VooPaddingTokens` - Component-specific padding presets for buttons, cards, inputs, chips, tabs
+  - `VooGapTokens` - Spacing tokens for flex containers, grids, form fields, and component groups
+  - `VooComponentRadiusTokens` - Border radius for specific UI components (buttons, cards, dialogs, inputs, chips, avatars)
+  - `VooSizeTokens` - Standardized sizes for icons, avatars, buttons, inputs, and UI elements
+
+### Fixed
+- **FIX**: Theme extension now provides default tokens automatically when not registered (no more "VooTokensTheme not found" error)
+- **FIX**: Scale factor now properly applies to all token types in `VooTokensTheme.standard()`
+
+### Changed
+- **BREAKING**: Extended `ResponsiveTokens` and `VooTokensTheme` with new token types
+- **IMPROVEMENT**: Enhanced example app to demonstrate all new token types
+- **IMPROVEMENT**: Updated README with comprehensive usage examples for all token types
+
+## 0.0.5
+
+- Version bump for package updates
+
+## 0.0.4
+
+- Internal improvements
+
 ## 0.0.3
 
  - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
