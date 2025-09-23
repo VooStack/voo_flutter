@@ -13,9 +13,11 @@ class MyApp extends StatelessWidget {
         title: 'VooTokens Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          extensions: [
-            VooTokensTheme.standard(),
-          ],
+          // VooTokensTheme is optional - will use defaults if not provided
+          // Uncomment to use custom scaling:
+          // extensions: [
+          //   VooTokensTheme.standard(scaleFactor: 1.2),
+          // ],
         ),
         home: const TokensDemoPage(),
       );
@@ -43,18 +45,22 @@ class TokensDemoPage extends StatelessWidget {
             ),
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.all(context.vooSpacing.md),
+            padding: context.vooMargin.page,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSpacingSection(context),
-                SizedBox(height: context.vooSpacing.xl),
+                SizedBox(height: context.vooMargin.betweenSections),
+                _buildMarginPaddingSection(context),
+                SizedBox(height: context.vooMargin.betweenSections),
+                _buildComponentSection(context),
+                SizedBox(height: context.vooMargin.betweenSections),
                 _buildTypographySection(context),
-                SizedBox(height: context.vooSpacing.xl),
+                SizedBox(height: context.vooMargin.betweenSections),
                 _buildRadiusSection(context),
-                SizedBox(height: context.vooSpacing.xl),
+                SizedBox(height: context.vooMargin.betweenSections),
                 _buildElevationSection(context),
-                SizedBox(height: context.vooSpacing.xl),
+                SizedBox(height: context.vooMargin.betweenSections),
                 _buildAnimationSection(context),
               ],
             ),
@@ -262,4 +268,118 @@ class TokensDemoPage extends StatelessWidget {
           ],
         ),
       );
+
+  Widget _buildMarginPaddingSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Margin & Padding Tokens',
+          style: context.vooTypography.headlineSmall,
+        ),
+        SizedBox(height: context.vooGap.stackedElements),
+        Card(
+          child: Padding(
+            padding: context.vooPadding.card,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Card with Card Padding', style: context.vooTypography.labelLarge),
+                SizedBox(height: context.vooGap.inlineElements),
+                Text(
+                  'This card uses context.vooPadding.card for consistent padding.',
+                  style: context.vooTypography.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: context.vooGap.stackedElements),
+        Container(
+          padding: context.vooPadding.button,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: context.vooComponentRadius.buttonRadius,
+          ),
+          child: Text(
+            'Button Padding Example',
+            style: context.vooTypography.button.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildComponentSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Component-Specific Tokens',
+          style: context.vooTypography.headlineSmall,
+        ),
+        SizedBox(height: context.vooGap.stackedElements),
+        Wrap(
+          spacing: context.vooGap.chipGroup,
+          runSpacing: context.vooGap.chipGroup,
+          children: [
+            Container(
+              height: context.vooSize.chipHeight,
+              padding: context.vooPadding.chip,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: context.vooComponentRadius.chipRadius,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.star,
+                    size: context.vooSize.iconSmall,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                  SizedBox(width: context.vooGap.iconText),
+                  Text(
+                    'Chip Example',
+                    style: context.vooTypography.labelMedium,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: context.vooSize.avatarMedium,
+              height: context.vooSize.avatarMedium,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: context.vooComponentRadius.avatarRadius,
+              ),
+              child: Icon(
+                Icons.person,
+                color: Theme.of(context).colorScheme.onSecondary,
+                size: context.vooSize.iconMedium,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: context.vooGap.stackedElements),
+        Container(
+          height: context.vooSize.inputHeight,
+          padding: context.vooPadding.input,
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
+            borderRadius: context.vooComponentRadius.inputRadius,
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Input Field Example',
+              style: context.vooTypography.bodyMedium,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

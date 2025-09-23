@@ -6,17 +6,22 @@ A design token system for VooFlutter that provides responsive spacing, typograph
 
 - **Responsive Scaling**: Tokens automatically adapt based on screen width
 - **Typography Tokens**: Consistent text styles with scale factors
-- **Spacing Tokens**: Standardized spacing values (xxs to xxxl)
-- **Radius Tokens**: Consistent border radius values
+- **Spacing Tokens**: Generic spacing values (xxs to xxxl)
+- **Margin Tokens**: Specific margins for pages, cards, dialogs, sections
+- **Padding Tokens**: Padding presets for buttons, cards, inputs, chips, etc.
+- **Gap Tokens**: Spacing for flex containers, grids, and component groups
+- **Size Tokens**: Standardized sizes for icons, avatars, buttons, inputs
+- **Component Radius**: Specific border radius for UI components
+- **Radius Tokens**: Generic border radius values
 - **Elevation Tokens**: Standardized shadow definitions
 - **Animation Tokens**: Consistent animation durations and curves
-- **ThemeExtension Integration**: Access tokens via BuildContext
+- **ThemeExtension Integration**: Access all tokens via BuildContext
 
 ## Usage
 
 ### Setup
 
-Add VooTokensTheme to your app's theme extensions:
+VooTokens works out of the box with default values. You can optionally customize the theme:
 
 ```dart
 import 'package:voo_tokens/voo_tokens.dart';
@@ -25,12 +30,15 @@ MaterialApp(
   theme: ThemeData(
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
     useMaterial3: true,
+    // Optional: Customize token scaling (defaults to 1.0 if not specified)
     extensions: [
-      VooTokensTheme.standard(),
+      VooTokensTheme.standard(scaleFactor: 1.2), // Optional
     ],
   ),
 );
 ```
+
+**Note:** VooTokensTheme is optional. If not provided, default tokens will be used automatically.
 
 ### Responsive Setup
 
@@ -59,18 +67,70 @@ LayoutBuilder(
 
 ### Accessing Tokens
 
-Use the BuildContext extensions to access tokens:
+Use the BuildContext extensions to access all token types:
 
 ```dart
-// Spacing
-Padding(
-  padding: EdgeInsets.all(context.vooSpacing.md),
-  child: Container(
-    margin: EdgeInsets.symmetric(
-      horizontal: context.vooSpacing.lg,
-      vertical: context.vooSpacing.sm,
-    ),
+// Generic Spacing
+SizedBox(height: context.vooSpacing.md);
+Gap(context.vooSpacing.lg); // If using the gap package
+
+// Specific Margins
+Container(
+  margin: context.vooMargin.page, // Page-level margins
+  child: Card(
+    margin: EdgeInsets.only(bottom: context.vooMargin.sectionBottom),
   ),
+);
+
+// Component-Specific Padding
+ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    padding: context.vooPadding.button, // Button-specific padding
+  ),
+  onPressed: () {},
+  child: Text('Click Me'),
+);
+
+// Input field with proper padding
+TextField(
+  decoration: InputDecoration(
+    contentPadding: context.vooPadding.input,
+  ),
+);
+
+// Gap tokens for flex containers
+Column(
+  children: [
+    Widget1(),
+    SizedBox(height: context.vooGap.formFields), // Gap between form fields
+    Widget2(),
+    SizedBox(height: context.vooGap.stackedElements), // Gap between stacked elements
+  ],
+);
+
+// Component-specific radius
+Container(
+  decoration: BoxDecoration(
+    borderRadius: context.vooComponentRadius.cardRadius, // Card-specific radius
+  ),
+  child: ...,
+);
+
+// Dialog with proper radius
+Dialog(
+  shape: RoundedRectangleBorder(
+    borderRadius: context.vooComponentRadius.dialogRadius,
+  ),
+);
+
+// Size tokens
+Icon(
+  Icons.star,
+  size: context.vooSize.iconMedium, // Standardized icon size
+);
+
+CircleAvatar(
+  radius: context.vooSize.avatarLarge / 2, // Avatar size
 );
 
 // Typography
@@ -79,7 +139,7 @@ Text(
   style: context.vooTypography.headlineLarge,
 );
 
-// Radius
+// Generic Radius (for custom components)
 Container(
   decoration: BoxDecoration(
     borderRadius: context.vooRadius.card,
