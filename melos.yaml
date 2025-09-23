@@ -1,4 +1,4 @@
-name: VooFlutter
+name: voo_flutter
 packages:
   - apps/*
   - packages/dev/*
@@ -98,3 +98,9 @@ scripts:
       scope: voo_ui
     description: Run widget previews for selected packages.
     run: flutter widget-preview start
+
+  nuke_stale_state:
+    description: Nuke stale state from all packages.
+    # find . -name "pubspec.lock" -delete
+    # find . -name ".dart_tool" -type d -prune -exec rm -rf {} +
+    run: melos exec -- bash -c 'rm -rf pubspec.lock .dart_tool build'

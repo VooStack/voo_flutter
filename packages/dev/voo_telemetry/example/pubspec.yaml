@@ -2,6 +2,7 @@ name: voo_telemetry_example
 description: Example app demonstrating VooTelemetry OpenTelemetry integration
 version: 2.0.0
 publish_to: 'none'
+resolution: workspace
 
 environment:
   sdk: '>=3.8.0 <4.0.0'

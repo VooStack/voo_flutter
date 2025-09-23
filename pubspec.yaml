@@ -1,24 +1,34 @@
 name: voo_flutter
-publish_to: none
-workspace:
-  - packages/dev/voo_analytics
-  - packages/ui/voo_calendar
-  - packages/dev/voo_core
-  - packages/ui/voo_data_grid
-  - packages/ui/voo_forms
-  - packages/ui/voo_lists
-  - packages/dev/voo_logging
-  - packages/ui/voo_motion
-  - packages/ui/voo_navigation
-  - packages/dev/voo_performance
-  - packages/ui/voo_responsive
-  - packages/dev/voo_telemetry
-  - packages/ui/voo_toast
-  - packages/ui/voo_tokens
-  - packages/ui/voo_ui_core
-
 environment:
   sdk: '>=3.9.2 <4.0.0'
 dev_dependencies:
-  melos: ^7.1.0
+  melos: ^7.1.1
+workspace:
+  - packages/ui/voo_forms/example
+  - packages/dev/voo_analytics
+  - packages/dev/voo_analytics/example
+  - packages/ui/voo_calendar
+  - packages/ui/voo_calendar/example
+  - packages/dev/voo_core
+  - packages/dev/voo_core/example
+  - packages/ui/voo_data_grid
+  - packages/ui/voo_data_grid/example
+  - packages/ui/voo_forms
+  - packages/ui/voo_lists
+  - packages/dev/voo_logging
+  - packages/dev/voo_logging/example
+  - packages/ui/voo_motion
+  - packages/ui/voo_motion/example
+  - packages/ui/voo_navigation
+  - packages/ui/voo_navigation/example
+  - packages/dev/voo_performance
+  - packages/dev/voo_performance/example
+  - packages/ui/voo_responsive
+  - packages/dev/voo_telemetry
+  - packages/dev/voo_telemetry/example
+  - packages/ui/voo_toast
+  - packages/ui/voo_toast/example
+  - packages/ui/voo_tokens
+  - packages/ui/voo_tokens/example
+  - packages/ui/voo_ui_core
 melos:

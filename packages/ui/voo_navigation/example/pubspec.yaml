@@ -2,9 +2,11 @@ name: voo_navigation_example
 description: Example app for VooNavigation package
 publish_to: 'none'
 version: 1.0.0+1
+resolution: workspace
 
 environment:
-  sdk: '>=3.0.0'
+  sdk: ^3.6.0
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:

@@ -6,7 +6,7 @@ resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:
@@ -18,8 +18,10 @@ dependencies:
   # Routing
   go_router: ^16.2.2
 
-  # UI Core
+  # UI Core & Design System
   voo_ui_core: ^0.1.1
+  voo_tokens: ^0.0.5
+  voo_responsive: ^0.1.2
 
   # Animations
   voo_motion: ^0.0.1

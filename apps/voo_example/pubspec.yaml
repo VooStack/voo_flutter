@@ -2,6 +2,7 @@ name: voo_example
 description: 'An example app demonstrating all VooFlutter packages working together'
 publish_to: 'none'
 version: 1.0.0+1
+resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
