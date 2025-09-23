@@ -152,12 +152,10 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
         _effectiveDisplayMode = _getEffectiveDisplayMode(constraints.maxWidth);
 
         return AnimatedBuilder(
-          animation: Listenable.merge([
-            widget.controller,
-            widget.controller.dataSource,
-          ]),
+          animation: Listenable.merge([widget.controller, widget.controller.dataSource]),
           builder: (context, _) => DecoratedBox(
-            decoration: widget.decoration ??
+            decoration:
+                widget.decoration ??
                 BoxDecoration(
                   border: Border.all(color: _theme.borderColor),
                   borderRadius: BorderRadius.circular(design.radiusMd),
@@ -172,7 +170,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                     onFilterChanged: (field, filter) {
                       // Call primary filter callback
                       widget.onPrimaryFilterChanged?.call(field, filter);
-                      
+
                       // Also add to regular filters if combining
                       if (widget.combineFiltersAndPrimaryFilters) {
                         widget.onFilterChanged?.call(field, filter);
@@ -197,12 +195,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                         isMobile: _isMobile(constraints.maxWidth),
                         onShowMobileFilters: _isMobile(constraints.maxWidth) ? () => _showMobileFilterSheet(context) : null,
                       ),
-                      if (widget.controller.dataSource.filters.isNotEmpty) ...[
-                        DataGridFilterChipsSection<T>(
-                          controller: widget.controller,
-                          theme: _theme,
-                        ),
-                      ],
+                      if (widget.controller.dataSource.filters.isNotEmpty) ...[DataGridFilterChipsSection<T>(controller: widget.controller, theme: _theme)],
                     ],
                   ),
                 ],
@@ -240,15 +233,12 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
     );
   }
 
-
   void _showMobileFilterSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) => MobileFilterSheet(
         controller: widget.controller,
         theme: _theme,

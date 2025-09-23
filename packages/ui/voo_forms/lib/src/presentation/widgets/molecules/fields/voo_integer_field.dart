@@ -37,9 +37,5 @@ class VooIntegerField extends VooNumberField {
     super.onEditingComplete,
     super.onSubmitted,
     super.autofocus,
-  }) : super(
-          placeholder: placeholder ?? '0',
-          allowDecimals: false,
-          onChanged: onChanged != null ? (num? value) => onChanged(value?.toInt()) : null,
-        );
+  }) : super(placeholder: placeholder ?? '0', allowDecimals: false, onChanged: onChanged != null ? (num? value) => onChanged(value?.toInt()) : null);
 }

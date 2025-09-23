@@ -7,18 +7,12 @@ abstract class BaseFilter {
   final String operator;
   final SecondaryFilter? secondaryFilter;
 
-  const BaseFilter({
-    required this.fieldName,
-    required this.value,
-    required this.operator,
-    this.secondaryFilter,
-  });
+  const BaseFilter({required this.fieldName, required this.value, required this.operator, this.secondaryFilter});
 
   Map<String, dynamic> toJson() => {
-        'fieldName': fieldName,
-        'value': value,
-        'operator': operator,
-        if (secondaryFilter != null)
-          'secondaryFilter': secondaryFilter!.toJson(),
-      };
+    'fieldName': fieldName,
+    'value': value,
+    'operator': operator,
+    if (secondaryFilter != null) 'secondaryFilter': secondaryFilter!.toJson(),
+  };
 }

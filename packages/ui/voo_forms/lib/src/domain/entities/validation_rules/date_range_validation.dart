@@ -5,11 +5,7 @@ class DateRangeValidation extends VooValidationRule<DateTime> {
   final DateTime? minDate;
   final DateTime? maxDate;
 
-  const DateRangeValidation({
-    this.minDate,
-    this.maxDate,
-    String? errorMessage,
-  }) : super(errorMessage: errorMessage ?? 'Date is out of range');
+  const DateRangeValidation({this.minDate, this.maxDate, String? errorMessage}) : super(errorMessage: errorMessage ?? 'Date is out of range');
 
   @override
   String? validate(DateTime? value) {

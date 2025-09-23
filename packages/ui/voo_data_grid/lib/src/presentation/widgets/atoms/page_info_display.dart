@@ -6,21 +6,13 @@ class PageInfoDisplay extends StatelessWidget {
   final int pageSize;
   final int totalRows;
 
-  const PageInfoDisplay({
-    super.key,
-    required this.currentPage,
-    required this.pageSize,
-    required this.totalRows,
-  });
+  const PageInfoDisplay({super.key, required this.currentPage, required this.pageSize, required this.totalRows});
 
   @override
   Widget build(BuildContext context) {
     final startRow = currentPage * pageSize + 1;
     final endRow = ((currentPage + 1) * pageSize).clamp(0, totalRows);
-    
-    return Text(
-      '$startRow-$endRow of $totalRows',
-      style: Theme.of(context).textTheme.bodySmall,
-    );
+
+    return Text('$startRow-$endRow of $totalRows', style: Theme.of(context).textTheme.bodySmall);
   }
 }

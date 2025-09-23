@@ -39,26 +39,18 @@ class ListSection<T> extends Equatable {
     bool? isSticky,
     Map<String, dynamic>? metadata,
   }) => ListSection<T>(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
-      items: items ?? this.items,
-      header: header ?? this.header,
-      footer: footer ?? this.footer,
-      padding: padding ?? this.padding,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      isSticky: isSticky ?? this.isSticky,
-      metadata: metadata ?? this.metadata,
-    );
+    id: id ?? this.id,
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    items: items ?? this.items,
+    header: header ?? this.header,
+    footer: footer ?? this.footer,
+    padding: padding ?? this.padding,
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    isSticky: isSticky ?? this.isSticky,
+    metadata: metadata ?? this.metadata,
+  );
 
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        subtitle,
-        items,
-        isSticky,
-        backgroundColor,
-        metadata,
-      ];
+  List<Object?> get props => [id, title, subtitle, items, isSticky, backgroundColor, metadata];
 }

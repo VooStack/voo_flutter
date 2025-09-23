@@ -18,11 +18,7 @@ class VooDataGridFilterRow<T> extends StatefulWidget {
   final VooDataGridController<T> controller;
   final VooDataGridTheme theme;
 
-  const VooDataGridFilterRow({
-    super.key,
-    required this.controller,
-    required this.theme,
-  });
+  const VooDataGridFilterRow({super.key, required this.controller, required this.theme});
 
   @override
   State<VooDataGridFilterRow<T>> createState() => _VooDataGridFilterRowState<T>();
@@ -77,10 +73,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
       decoration: BoxDecoration(
         color: widget.theme.headerBackgroundColor.withValues(alpha: 0.5),
         border: Border(
-          bottom: BorderSide(
-            color: widget.theme.borderColor,
-            width: widget.theme.borderWidth,
-          ),
+          bottom: BorderSide(color: widget.theme.borderColor, width: widget.theme.borderWidth),
         ),
       ),
       child: Row(
@@ -89,7 +82,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
           if (widget.controller.dataSource.selectionMode != VooSelectionMode.none) Container(width: 48),
 
           // Frozen column filters
-          for (final column in widget.controller.frozenColumns) 
+          for (final column in widget.controller.frozenColumns)
             FilterCell<T>(
               column: column,
               width: widget.controller.getColumnWidth(column),
@@ -142,17 +135,6 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     );
   }
 
-
-
-
-
-
-
-
-
-
-
-
   List<VooFilterOption> _getFilterOptions(VooDataColumn<T> column) {
     if (column.filterOptions != null) {
       return column.filterOptions!;
@@ -160,10 +142,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
 
     // For boolean columns, provide default options
     if (column.dataType == VooDataColumnType.boolean) {
-      return const [
-        VooFilterOption(value: true, label: 'Yes'),
-        VooFilterOption(value: false, label: 'No'),
-      ];
+      return const [VooFilterOption(value: true, label: 'Yes'), VooFilterOption(value: false, label: 'No')];
     }
 
     // Try to extract unique values from current data
@@ -184,14 +163,7 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
       }
     }
 
-    return uniqueValues
-        .map(
-          (value) => VooFilterOption(
-            value: value,
-            label: column.valueFormatter?.call(value) ?? value.toString(),
-          ),
-        )
-        .toList()
+    return uniqueValues.map((value) => VooFilterOption(value: value, label: column.valueFormatter?.call(value) ?? value.toString())).toList()
       ..sort((a, b) => a.label.compareTo(b.label));
   }
 
@@ -204,30 +176,16 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     // Handle complex filter objects from molecular components
     if (value is Map && value.containsKey('operator')) {
       final operator = value['operator'] as VooFilterOperator? ?? column.effectiveDefaultFilterOperator;
-      widget.controller.dataSource.applyFilter(
-        column.field,
-        VooDataFilter(
-          operator: operator,
-          value: value['value'],
-          valueTo: value['valueTo'],
-        ),
-      );
+      widget.controller.dataSource.applyFilter(column.field, VooDataFilter(operator: operator, value: value['value'], valueTo: value['valueTo']));
       return;
     }
 
     final operator = widget.controller.dataSource.filters[column.field]?.operator ?? column.effectiveDefaultFilterOperator;
 
-    widget.controller.dataSource.applyFilter(
-      column.field,
-      VooDataFilter(
-        operator: operator,
-        value: value,
-      ),
-    );
+    widget.controller.dataSource.applyFilter(column.field, VooDataFilter(operator: operator, value: value));
   }
 
   void _clearFilter(VooDataColumn column) {
     widget.controller.dataSource.applyFilter(column.field, null);
   }
-
 }

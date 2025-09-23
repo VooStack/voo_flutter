@@ -17,12 +17,7 @@ void main() {
 
     test('adds navigation items', () {
       final builder = VooNavigationBuilder()
-        ..addItem(
-          id: 'home',
-          label: 'Home',
-          icon: Icons.home,
-          route: '/home',
-        )
+        ..addItem(id: 'home', label: 'Home', icon: Icons.home, route: '/home')
         ..addItem(
           id: 'settings',
           label: 'Settings',
@@ -175,7 +170,9 @@ void main() {
         ..drawerFooter(drawerFooter)
         ..appBarTitle(appBarTitle)
         ..floatingActionButton(fab)
-        ..floatingActionButtonLocation(FloatingActionButtonLocation.centerFloat);
+        ..floatingActionButtonLocation(
+          FloatingActionButtonLocation.centerFloat,
+        );
 
       final config = builder.buildConfig();
 
@@ -183,7 +180,10 @@ void main() {
       expect(config.drawerFooter, drawerFooter);
       expect(config.appBarTitle, appBarTitle);
       expect(config.floatingActionButton, fab);
-      expect(config.floatingActionButtonLocation, FloatingActionButtonLocation.centerFloat);
+      expect(
+        config.floatingActionButtonLocation,
+        FloatingActionButtonLocation.centerFloat,
+      );
     });
 
     test('sets navigation callback', () {
@@ -265,16 +265,8 @@ void main() {
 
     test('adds pages', () {
       final builder = VooNavigationBuilder()
-        ..addPage(
-          id: 'home',
-          page: const Text('Home'),
-          path: '/home',
-        )
-        ..addPage(
-          id: 'profile',
-          page: const Text('Profile'),
-          path: '/profile',
-        );
+        ..addPage(id: 'home', page: const Text('Home'), path: '/home')
+        ..addPage(id: 'profile', page: const Text('Profile'), path: '/profile');
 
       // Pages are stored internally
       final config = builder.buildConfig();

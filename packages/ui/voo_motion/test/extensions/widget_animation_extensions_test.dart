@@ -9,11 +9,7 @@ void main() {
     testWidgets('dropIn extension should apply drop animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Drop In Test').dropIn(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Drop In Test').dropIn(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -24,11 +20,7 @@ void main() {
     testWidgets('fadeIn extension should apply fade animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Fade Test').fadeIn(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Fade Test').fadeIn(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -36,15 +28,10 @@ void main() {
       expect(find.text('Fade Test'), findsOneWidget);
     });
 
-    testWidgets('slideInLeft extension should apply slide animation',
-        (tester) async {
+    testWidgets('slideInLeft extension should apply slide animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Slide Test').slideInLeft(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Slide Test').slideInLeft(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -52,15 +39,10 @@ void main() {
       expect(find.text('Slide Test'), findsOneWidget);
     });
 
-    testWidgets('scaleIn extension should apply scale animation',
-        (tester) async {
+    testWidgets('scaleIn extension should apply scale animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Scale Test').scaleIn(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Scale Test').scaleIn(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -68,15 +50,10 @@ void main() {
       expect(find.text('Scale Test'), findsOneWidget);
     });
 
-    testWidgets('rotate extension should apply rotation animation',
-        (tester) async {
+    testWidgets('rotate extension should apply rotation animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Icon(Icons.refresh).rotate(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Icon(Icons.refresh).rotate(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -84,15 +61,10 @@ void main() {
       expect(find.byIcon(Icons.refresh), findsOneWidget);
     });
 
-    testWidgets('bounce extension should apply bounce animation',
-        (tester) async {
+    testWidgets('bounce extension should apply bounce animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Bounce Test').bounce(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Bounce Test').bounce(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -103,11 +75,7 @@ void main() {
     testWidgets('shake extension should apply shake animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Shake Test').shake(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Shake Test').shake(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -115,56 +83,38 @@ void main() {
       expect(find.text('Shake Test'), findsOneWidget);
     });
 
-    testWidgets('flipX extension should apply horizontal flip animation',
-        (tester) async {
+    testWidgets('flipX extension should apply horizontal flip animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: const Card(
-              child: Text('Flip X'),
-            ).flipX(
-              duration: const Duration(milliseconds: 200),
-            ),
+            body: const Card(child: Text('Flip X')).flipX(duration: const Duration(milliseconds: 200)),
           ),
         ),
       );
 
       expect(find.byType(VooFlipAnimation), findsOneWidget);
-      final flipAnimation = tester.widget<VooFlipAnimation>(
-        find.byType(VooFlipAnimation),
-      );
+      final flipAnimation = tester.widget<VooFlipAnimation>(find.byType(VooFlipAnimation));
       expect(flipAnimation.direction, FlipDirection.horizontal);
     });
 
-    testWidgets('flipY extension should apply vertical flip animation',
-        (tester) async {
+    testWidgets('flipY extension should apply vertical flip animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: const Card(
-              child: Text('Flip Y'),
-            ).flipY(
-              duration: const Duration(milliseconds: 200),
-            ),
+            body: const Card(child: Text('Flip Y')).flipY(duration: const Duration(milliseconds: 200)),
           ),
         ),
       );
 
       expect(find.byType(VooFlipAnimation), findsOneWidget);
-      final flipAnimation = tester.widget<VooFlipAnimation>(
-        find.byType(VooFlipAnimation),
-      );
+      final flipAnimation = tester.widget<VooFlipAnimation>(find.byType(VooFlipAnimation));
       expect(flipAnimation.direction, FlipDirection.vertical);
     });
 
     testWidgets('blur extension should apply blur animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Blur Test').blur(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Blur Test').blur(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -175,11 +125,7 @@ void main() {
     testWidgets('glow extension should apply glow animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Glow Test').glow(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Glow Test').glow(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -190,11 +136,7 @@ void main() {
     testWidgets('pulse extension should apply pulse animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Pulse Test').pulse(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Pulse Test').pulse(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -202,15 +144,10 @@ void main() {
       expect(find.text('Pulse Test'), findsOneWidget);
     });
 
-    testWidgets('shimmer extension should apply shimmer animation',
-        (tester) async {
+    testWidgets('shimmer extension should apply shimmer animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Shimmer Test').shimmer(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Shimmer Test').shimmer(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -221,11 +158,7 @@ void main() {
     testWidgets('wave extension should apply wave animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Wave Test').wave(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Wave Test').wave(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -233,15 +166,10 @@ void main() {
       expect(find.text('Wave Test'), findsOneWidget);
     });
 
-    testWidgets('ripple extension should apply ripple animation',
-        (tester) async {
+    testWidgets('ripple extension should apply ripple animation', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const Text('Ripple Test').ripple(
-              duration: const Duration(milliseconds: 200),
-            ),
-          ),
+          home: Scaffold(body: const Text('Ripple Test').ripple(duration: const Duration(milliseconds: 200))),
         ),
       );
 
@@ -253,9 +181,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: const Text('Chain Test')
-                .fadeIn(duration: const Duration(milliseconds: 100))
-                .scaleIn(duration: const Duration(milliseconds: 100)),
+            body: const Text('Chain Test').fadeIn(duration: const Duration(milliseconds: 100)).scaleIn(duration: const Duration(milliseconds: 100)),
           ),
         ),
       );
@@ -286,9 +212,7 @@ void main() {
         ),
       );
 
-      final fadeAnimation = tester.widget<VooFadeAnimation>(
-        find.byType(VooFadeAnimation),
-      );
+      final fadeAnimation = tester.widget<VooFadeAnimation>(find.byType(VooFadeAnimation));
 
       expect(fadeAnimation.config.duration, const Duration(seconds: 1));
       expect(fadeAnimation.config.delay, const Duration(milliseconds: 500));

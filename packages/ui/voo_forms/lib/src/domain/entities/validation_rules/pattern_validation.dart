@@ -3,11 +3,8 @@ import 'package:voo_forms/src/domain/entities/validation_rules/voo_validation_ru
 /// Validation rule for custom pattern matching
 class PatternValidation extends VooValidationRule<String> {
   final RegExp pattern;
-  
-  PatternValidation({
-    required String pattern,
-    required super.errorMessage,
-  }) : pattern = RegExp(pattern);
+
+  PatternValidation({required String pattern, required super.errorMessage}) : pattern = RegExp(pattern);
 
   @override
   String? validate(String? value) {

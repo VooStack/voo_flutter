@@ -100,21 +100,21 @@ class VooSpacingTokens extends Equatable {
 
   @override
   List<Object?> get props => [
-        xxs,
-        xs,
-        sm,
-        md,
-        lg,
-        xl,
-        xxl,
-        xxxl,
-        buttonPadding,
-        cardPadding,
-        listItemPadding,
-        inputPadding,
-        dialogPadding,
-        gapSmall,
-        gapMedium,
-        gapLarge,
-      ];
+    xxs,
+    xs,
+    sm,
+    md,
+    lg,
+    xl,
+    xxl,
+    xxxl,
+    buttonPadding,
+    cardPadding,
+    listItemPadding,
+    inputPadding,
+    dialogPadding,
+    gapSmall,
+    gapMedium,
+    gapLarge,
+  ];
 }

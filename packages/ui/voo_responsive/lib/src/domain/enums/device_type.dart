@@ -1,9 +1,1 @@
-enum DeviceType {
-  mobile,
-  tablet,
-  desktop,
-  widescreen,
-  watch,
-  tv,
-  custom,
-}
+enum DeviceType { mobile, tablet, desktop, widescreen, watch, tv, custom }

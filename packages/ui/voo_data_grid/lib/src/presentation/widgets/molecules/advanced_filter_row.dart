@@ -72,10 +72,7 @@ class AdvancedFilterRow extends StatelessWidget {
                     alignedDropdown: true,
                     child: DropdownButton<FilterFieldConfig>(
                       value: filter.field,
-                      hint: Text(
-                        'Select field',
-                        style: TextStyle(fontSize: 12, color: theme.hintColor),
-                      ),
+                      hint: Text('Select field', style: TextStyle(fontSize: 12, color: theme.hintColor)),
                       icon: Icon(filter.field != null ? filter.field!.type.icon : Icons.arrow_drop_down, size: 16),
                       isExpanded: true,
                       isDense: true,
@@ -112,10 +109,7 @@ class AdvancedFilterRow extends StatelessWidget {
                       alignedDropdown: true,
                       child: DropdownButton<String>(
                         value: filter.operator,
-                        hint: Text(
-                          'Operator',
-                          style: TextStyle(fontSize: 12, color: theme.hintColor),
-                        ),
+                        hint: Text('Operator', style: TextStyle(fontSize: 12, color: theme.hintColor)),
                         icon: const Icon(Icons.arrow_drop_down, size: 16),
                         isExpanded: true,
                         isDense: true,
@@ -141,11 +135,9 @@ class AdvancedFilterRow extends StatelessWidget {
             if (filter.field != null && filter.operator != null) ...[
               Expanded(
                 flex: 3,
-                child: valueInputBuilder?.call(filter) ??
-                    DefaultFilterValueInput(
-                      filter: filter,
-                      onChanged: onValueChanged != null ? (value) => onValueChanged!(value) : null,
-                    ),
+                child:
+                    valueInputBuilder?.call(filter) ??
+                    DefaultFilterValueInput(filter: filter, onChanged: onValueChanged != null ? (value) => onValueChanged!(value) : null),
               ),
               SizedBox(width: design.spacingSm),
             ],
@@ -154,21 +146,15 @@ class AdvancedFilterRow extends StatelessWidget {
             if (filter.operator?.requiresSecondaryValue == true) ...[
               Expanded(
                 flex: 3,
-                child: secondaryValueInputBuilder?.call(filter) ??
-                    DefaultFilterSecondaryInput(
-                      filter: filter,
-                      onChanged: onSecondaryValueChanged != null ? (value) => onSecondaryValueChanged!(value) : null,
-                    ),
+                child:
+                    secondaryValueInputBuilder?.call(filter) ??
+                    DefaultFilterSecondaryInput(filter: filter, onChanged: onSecondaryValueChanged != null ? (value) => onSecondaryValueChanged!(value) : null),
               ),
               SizedBox(width: design.spacingSm),
             ],
 
             // Remove button
-            IconButton(
-              icon: const Icon(Icons.remove_circle_outline),
-              color: theme.colorScheme.error,
-              onPressed: onRemove,
-            ),
+            IconButton(icon: const Icon(Icons.remove_circle_outline), color: theme.colorScheme.error, onPressed: onRemove),
           ],
         ),
       ),
@@ -182,11 +168,7 @@ class FilterFieldType {
   final List<String> operators;
   final String defaultOperator;
 
-  const FilterFieldType({
-    required this.icon,
-    required this.operators,
-    required this.defaultOperator,
-  });
+  const FilterFieldType({required this.icon, required this.operators, required this.defaultOperator});
 
   static const text = FilterFieldType(
     icon: Icons.text_fields,
@@ -206,9 +188,5 @@ class FilterFieldType {
     defaultOperator: 'equals',
   );
 
-  static const boolean = FilterFieldType(
-    icon: Icons.check_box,
-    operators: ['equals'],
-    defaultOperator: 'equals',
-  );
+  static const boolean = FilterFieldType(icon: Icons.check_box, operators: ['equals'], defaultOperator: 'equals');
 }

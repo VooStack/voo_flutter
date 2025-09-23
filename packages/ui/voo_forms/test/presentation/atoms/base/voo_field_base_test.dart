@@ -5,38 +5,14 @@ import 'package:voo_forms/voo_forms.dart';
 
 // Test implementation of VooFieldBase
 class TestField extends VooFieldBase<String> {
-  const TestField({
-    super.key,
-    required super.name,
-    super.label,
-    super.initialValue,
-    super.error,
-    super.helper,
-    super.validators,
-  });
+  const TestField({super.key, required super.name, super.label, super.initialValue, super.error, super.helper, super.validators});
 
   @override
-  Widget build(BuildContext context) => Container(
-        key: Key('test-field-$name'),
-        child: Text(label ?? name),
-      );
+  Widget build(BuildContext context) => Container(key: Key('test-field-$name'), child: Text(label ?? name));
 
   @override
-  TestField copyWith({
-    String? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      TestField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        initialValue: initialValue ?? this.initialValue,
-        error: error,
-        helper: helper,
-      );
+  TestField copyWith({String? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) =>
+      TestField(key: key, name: name ?? this.name, label: label ?? this.label, initialValue: initialValue ?? this.initialValue, error: error, helper: helper);
 }
 
 void main() {
@@ -47,12 +23,7 @@ void main() {
     });
 
     test('has required properties', () {
-      final field = TestField(
-        name: 'testField',
-        label: 'Test Label',
-        initialValue: 'initial',
-        validators: [VooValidator.required()],
-      );
+      final field = TestField(name: 'testField', label: 'Test Label', initialValue: 'initial', validators: [VooValidator.required()]);
 
       expect(field.name, 'testField');
       expect(field.label, 'Test Label');
@@ -61,19 +32,11 @@ void main() {
     });
 
     testWidgets('builds label correctly', (WidgetTester tester) async {
-      final field = TestField(
-        name: 'test',
-        label: 'Test Field',
-        validators: [VooValidator.required()],
-      );
+      final field = TestField(name: 'test', label: 'Test Field', validators: [VooValidator.required()]);
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: field.buildLabel,
-            ),
-          ),
+          home: Scaffold(body: Builder(builder: field.buildLabel)),
         ),
       );
 
@@ -82,18 +45,11 @@ void main() {
     });
 
     testWidgets('builds error message correctly', (WidgetTester tester) async {
-      const field = TestField(
-        name: 'test',
-        error: 'This field has an error',
-      );
+      const field = TestField(name: 'test', error: 'This field has an error');
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) => field.buildError(context),
-            ),
-          ),
+          home: Scaffold(body: Builder(builder: (context) => field.buildError(context))),
         ),
       );
 
@@ -101,18 +57,11 @@ void main() {
     });
 
     testWidgets('builds helper text correctly', (WidgetTester tester) async {
-      const field = TestField(
-        name: 'test',
-        helper: 'This is helper text',
-      );
+      const field = TestField(name: 'test', helper: 'This is helper text');
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) => field.buildHelper(context),
-            ),
-          ),
+          home: Scaffold(body: Builder(builder: (context) => field.buildHelper(context))),
         ),
       );
 
@@ -120,11 +69,7 @@ void main() {
     });
 
     test('validates required field', () {
-      final field = TestField(
-        name: 'test',
-        label: 'Test Field',
-        validators: [VooValidator.required()],
-      );
+      final field = TestField(name: 'test', label: 'Test Field', validators: [VooValidator.required()]);
 
       expect(field.validate(null), 'This field is required');
       expect(field.validate(''), 'This field is required');

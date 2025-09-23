@@ -6,11 +6,7 @@ import 'package:voo_toast/src/presentation/state/voo_toast_controller.dart';
 import 'package:voo_toast/src/presentation/widgets/molecules/voo_toast_card.dart';
 
 class VooToastOverlay extends StatefulWidget {
-  const VooToastOverlay({
-    super.key,
-    required this.child,
-    this.controller,
-  });
+  const VooToastOverlay({super.key, required this.child, this.controller});
 
   final Widget child;
   final VooToastController? controller;
@@ -30,32 +26,22 @@ class _VooToastOverlayState extends State<VooToastOverlay> {
 
   @override
   Widget build(BuildContext context) => Stack(
-        children: [
-          widget.child,
-          StreamBuilder<List<Toast>>(
-            stream: _controller.toastsStream,
-            initialData: const [],
-            builder: (context, snapshot) {
-              final toasts = snapshot.data ?? [];
-              if (toasts.isEmpty) return const SizedBox.shrink();
+    children: [
+      widget.child,
+      StreamBuilder<List<Toast>>(
+        stream: _controller.toastsStream,
+        initialData: const [],
+        builder: (context, snapshot) {
+          final toasts = snapshot.data ?? [];
+          if (toasts.isEmpty) return const SizedBox.shrink();
 
-              final groupedToasts = _groupToastsByPosition(toasts);
+          final groupedToasts = _groupToastsByPosition(toasts);
 
-              return Stack(
-                children: groupedToasts.entries
-                    .map(
-                      (entry) => _buildToastGroup(
-                        context,
-                        entry.key,
-                        entry.value,
-                      ),
-                    )
-                    .toList(),
-              );
-            },
-          ),
-        ],
-      );
+          return Stack(children: groupedToasts.entries.map((entry) => _buildToastGroup(context, entry.key, entry.value)).toList());
+        },
+      ),
+    ],
+  );
 
   Map<ToastPosition, List<Toast>> _groupToastsByPosition(List<Toast> toasts) {
     final grouped = <ToastPosition, List<Toast>>{};
@@ -81,37 +67,32 @@ class _VooToastOverlayState extends State<VooToastOverlay> {
     }
   }
 
-  Widget _buildToastGroup(
-    BuildContext context,
-    ToastPosition position,
-    List<Toast> toasts,
-  ) =>
-      Positioned(
-        top: _getTop(position),
-        bottom: _getBottom(position),
-        left: _getLeft(position),
-        right: _getRight(position),
-        child: Align(
-          alignment: _getAlignment(position),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: toasts
-                .map(
-                  (toast) => Padding(
-                    padding: toast.margin ?? _controller.config.defaultMargin ?? const EdgeInsets.all(8),
-                    child: AnimatedToast(
-                      key: ValueKey(toast.id),
-                      toast: toast,
-                      animation: toast.animation,
-                      animationDuration: _controller.config.animationDuration,
-                      onDismiss: () => _controller.dismiss(toast.id),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-      );
+  Widget _buildToastGroup(BuildContext context, ToastPosition position, List<Toast> toasts) => Positioned(
+    top: _getTop(position),
+    bottom: _getBottom(position),
+    left: _getLeft(position),
+    right: _getRight(position),
+    child: Align(
+      alignment: _getAlignment(position),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: toasts
+            .map(
+              (toast) => Padding(
+                padding: toast.margin ?? _controller.config.defaultMargin ?? const EdgeInsets.all(8),
+                child: AnimatedToast(
+                  key: ValueKey(toast.id),
+                  toast: toast,
+                  animation: toast.animation,
+                  animationDuration: _controller.config.animationDuration,
+                  onDismiss: () => _controller.dismiss(toast.id),
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    ),
+  );
 
   double? _getTop(ToastPosition position) {
     switch (position) {
@@ -223,13 +204,7 @@ class _VooToastOverlayState extends State<VooToastOverlay> {
 }
 
 class AnimatedToast extends StatefulWidget {
-  const AnimatedToast({
-    super.key,
-    required this.toast,
-    required this.animation,
-    required this.animationDuration,
-    required this.onDismiss,
-  });
+  const AnimatedToast({super.key, required this.toast, required this.animation, required this.animationDuration, required this.onDismiss});
 
   final Toast toast;
   final ToastAnimation animation;
@@ -251,86 +226,49 @@ class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: widget.animationDuration,
-      vsync: this,
-    );
+    _animationController = AnimationController(duration: widget.animationDuration, vsync: this);
 
-    _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
+    _hoverController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
 
     _setupAnimations();
     _animationController.forward();
   }
 
   void _setupAnimations() {
-    _fadeAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
+    _fadeAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
 
-    _bounceAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    );
+    _bounceAnimation = CurvedAnimation(parent: _animationController, curve: Curves.elasticOut);
 
     switch (widget.animation) {
       case ToastAnimation.slideInFromTop:
         _slideAnimation = Tween<Offset>(
           begin: const Offset(0, -1.5),
           end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeOutBack,
-          ),
-        );
+        ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
         break;
       case ToastAnimation.slideInFromBottom:
         _slideAnimation = Tween<Offset>(
           begin: const Offset(0, 1.5),
           end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeOutBack,
-          ),
-        );
+        ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
         break;
       case ToastAnimation.slideInFromLeft:
         _slideAnimation = Tween<Offset>(
           begin: const Offset(-1.5, 0),
           end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeOutBack,
-          ),
-        );
+        ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
         break;
       case ToastAnimation.slideInFromRight:
         _slideAnimation = Tween<Offset>(
           begin: const Offset(1.5, 0),
           end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeOutBack,
-          ),
-        );
+        ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
         break;
       case ToastAnimation.slideIn:
         _slideAnimation = Tween<Offset>(
           begin: const Offset(0, -0.2),
           end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.fastOutSlowIn,
-          ),
-        );
+        ).animate(CurvedAnimation(parent: _animationController, curve: Curves.fastOutSlowIn));
         break;
       default:
         _slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
@@ -339,8 +277,8 @@ class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateM
     _scaleAnimation = widget.animation == ToastAnimation.scale
         ? Tween<double>(begin: 0.3, end: 1.0).animate(_bounceAnimation)
         : widget.animation == ToastAnimation.bounce
-            ? Tween<double>(begin: 0.5, end: 1.0).animate(_bounceAnimation)
-            : const AlwaysStoppedAnimation(1.0);
+        ? Tween<double>(begin: 0.5, end: 1.0).animate(_bounceAnimation)
+        : const AlwaysStoppedAnimation(1.0);
   }
 
   @override
@@ -363,15 +301,9 @@ class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateM
         animation: _hoverController,
         builder: (context, child) => Transform.scale(
           scale: 1.0 + (_hoverController.value * 0.02),
-          child: Transform.translate(
-            offset: Offset(0, -_hoverController.value * 2),
-            child: child,
-          ),
+          child: Transform.translate(offset: Offset(0, -_hoverController.value * 2), child: child),
         ),
-        child: VooToastCard(
-          toast: widget.toast,
-          onDismiss: widget.onDismiss,
-        ),
+        child: VooToastCard(toast: widget.toast, onDismiss: widget.onDismiss),
       ),
     );
 
@@ -380,19 +312,13 @@ class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateM
     }
 
     if (widget.animation == ToastAnimation.fade) {
-      return FadeTransition(
-        opacity: _fadeAnimation,
-        child: child,
-      );
+      return FadeTransition(opacity: _fadeAnimation, child: child);
     }
 
     if (widget.animation == ToastAnimation.scale) {
       return ScaleTransition(
         scale: _scaleAnimation,
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: child,
-        ),
+        child: FadeTransition(opacity: _fadeAnimation, child: child),
       );
     }
 
@@ -400,14 +326,8 @@ class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateM
       return ScaleTransition(
         scale: _scaleAnimation,
         child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -0.5),
-            end: Offset.zero,
-          ).animate(_bounceAnimation),
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: child,
-          ),
+          position: Tween<Offset>(begin: const Offset(0, -0.5), end: Offset.zero).animate(_bounceAnimation),
+          child: FadeTransition(opacity: _fadeAnimation, child: child),
         ),
       );
     }
@@ -417,20 +337,14 @@ class _AnimatedToastState extends State<AnimatedToast> with TickerProviderStateM
         turns: Tween<double>(begin: -0.1, end: 0).animate(_bounceAnimation),
         child: FadeTransition(
           opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: child,
-          ),
+          child: ScaleTransition(scale: _scaleAnimation, child: child),
         ),
       );
     }
 
     return SlideTransition(
       position: _slideAnimation,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: child,
-      ),
+      child: FadeTransition(opacity: _fadeAnimation, child: child),
     );
   }
 }

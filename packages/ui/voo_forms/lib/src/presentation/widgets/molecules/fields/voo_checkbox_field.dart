@@ -56,14 +56,14 @@ class VooCheckboxField extends VooFieldBase<bool> {
     if (isHidden) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    
+
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
+
     // Get value from form controller if available, otherwise use initial value
     final controllerValue = formController?.getValue(name);
-    
+
     // If we have an initial value but the controller doesn't have it yet, set it
     if (initialValue != null && controllerValue == null && formController != null) {
       // Use a microtask to avoid setState during build
@@ -73,12 +73,12 @@ class VooCheckboxField extends VooFieldBase<bool> {
         }
       });
     }
-    
+
     // Use controller value if available, otherwise use initial value, defaulting to false for UI
     final currentValue = (controllerValue as bool?) ?? initialValue ?? false;
-    
+
     final effectiveReadOnly = getEffectiveReadOnly(context);
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -116,21 +116,13 @@ class VooCheckboxField extends VooFieldBase<bool> {
                     if (labelWidget != null) labelWidget! else if (label != null) buildLabel(context),
                     if (helper != null) ...[
                       if (labelWidget != null || label != null) const SizedBox(height: 4),
-                      Text(
-                        helper!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
+                      Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                     ],
                   ],
                 ),
               ),
             ],
-            if (actions != null && actions!.isNotEmpty) ...[
-              const SizedBox(width: 8),
-              ...actions!,
-            ],
+            if (actions != null && actions!.isNotEmpty) ...[const SizedBox(width: 8), ...actions!],
           ],
         ),
       ),
@@ -149,32 +141,25 @@ class VooCheckboxField extends VooFieldBase<bool> {
   }
 
   @override
-  VooCheckboxField copyWith({
-    String? name,
-    String? label,
-    bool? initialValue,
-    VooFieldLayout? layout,
-    bool? readOnly,
-  }) =>
-      VooCheckboxField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        helper: helper,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        gridColumns: gridColumns,
-        layout: layout ?? this.layout,
-        isHidden: isHidden,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-        tristate: tristate,
-      );
+  VooCheckboxField copyWith({String? name, String? label, bool? initialValue, VooFieldLayout? layout, bool? readOnly}) => VooCheckboxField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    helper: helper,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    gridColumns: gridColumns,
+    layout: layout ?? this.layout,
+    isHidden: isHidden,
+    minWidth: minWidth,
+    maxWidth: maxWidth,
+    minHeight: minHeight,
+    maxHeight: maxHeight,
+    tristate: tristate,
+  );
 }

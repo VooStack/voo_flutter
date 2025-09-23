@@ -13,9 +13,7 @@ class MaterialDesignTokens extends DesignSystem {
   DesignSystemType get type => DesignSystemType.material;
 
   @override
-  DesignColorTokens get colors => MaterialColorTokens(
-        colorScheme: colorScheme ?? (isDarkMode ? const ColorScheme.dark() : const ColorScheme.light()),
-      );
+  DesignColorTokens get colors => MaterialColorTokens(colorScheme: colorScheme ?? (isDarkMode ? const ColorScheme.dark() : const ColorScheme.light()));
 
   @override
   DesignTypographyTokens get typography => MaterialTypography();
@@ -40,10 +38,8 @@ class MaterialDesignTokens extends DesignSystem {
 
   @override
   // Use standard Material Theme generation
-  ThemeData toThemeData({bool isDark = false}) => ThemeData(
-        useMaterial3: true,
-        colorScheme: colorScheme ?? (isDark ? const ColorScheme.dark() : const ColorScheme.light()),
-      );
+  ThemeData toThemeData({bool isDark = false}) =>
+      ThemeData(useMaterial3: true, colorScheme: colorScheme ?? (isDark ? const ColorScheme.dark() : const ColorScheme.light()));
 }
 
 /// Material Color Tokens
@@ -159,142 +155,55 @@ class MaterialTypography extends DesignTypographyTokens {
 
   // Material 3 Typography Scale
   @override
-  TextStyle get displayLarge => const TextStyle(
-        fontSize: 57,
-        fontWeight: FontWeight.w400,
-        letterSpacing: -0.25,
-        height: 1.12,
-      );
+  TextStyle get displayLarge => const TextStyle(fontSize: 57, fontWeight: FontWeight.w400, letterSpacing: -0.25, height: 1.12);
 
   @override
-  TextStyle get displayMedium => const TextStyle(
-        fontSize: 45,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.16,
-      );
+  TextStyle get displayMedium => const TextStyle(fontSize: 45, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.16);
 
   @override
-  TextStyle get displaySmall => const TextStyle(
-        fontSize: 36,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.22,
-      );
+  TextStyle get displaySmall => const TextStyle(fontSize: 36, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.22);
 
   @override
-  TextStyle get headlineLarge => const TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.25,
-      );
+  TextStyle get headlineLarge => const TextStyle(fontSize: 32, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.25);
 
   @override
-  TextStyle get headlineMedium => const TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.29,
-      );
+  TextStyle get headlineMedium => const TextStyle(fontSize: 28, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.29);
 
   @override
-  TextStyle get headlineSmall => const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.33,
-      );
+  TextStyle get headlineSmall => const TextStyle(fontSize: 24, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.33);
 
   @override
-  TextStyle get titleLarge => const TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.27,
-      );
+  TextStyle get titleLarge => const TextStyle(fontSize: 22, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.27);
 
   @override
-  TextStyle get titleMedium => const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.15,
-        height: 1.5,
-      );
+  TextStyle get titleMedium => const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: 0.15, height: 1.5);
 
   @override
-  TextStyle get titleSmall => const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
-        height: 1.43,
-      );
+  TextStyle get titleSmall => const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1, height: 1.43);
 
   @override
-  TextStyle get bodyLarge => const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.5,
-        height: 1.5,
-      );
+  TextStyle get bodyLarge => const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5, height: 1.5);
 
   @override
-  TextStyle get bodyMedium => const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.25,
-        height: 1.43,
-      );
+  TextStyle get bodyMedium => const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25, height: 1.43);
 
   @override
-  TextStyle get bodySmall => const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.4,
-        height: 1.33,
-      );
+  TextStyle get bodySmall => const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4, height: 1.33);
 
   @override
-  TextStyle get labelLarge => const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
-        height: 1.43,
-      );
+  TextStyle get labelLarge => const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1, height: 1.43);
 
   @override
-  TextStyle get labelMedium => const TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-        height: 1.33,
-      );
+  TextStyle get labelMedium => const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.5, height: 1.33);
 
   @override
-  TextStyle get labelSmall => const TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-        height: 1.45,
-      );
+  TextStyle get labelSmall => const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, letterSpacing: 0.5, height: 1.45);
 
   @override
-  TextStyle get code => const TextStyle(
-        fontFamily: 'Roboto Mono',
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.43,
-      );
+  TextStyle get code => const TextStyle(fontFamily: 'Roboto Mono', fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.43);
 
   @override
-  TextStyle get codeBlock => const TextStyle(
-        fontFamily: 'Roboto Mono',
-        fontSize: 13,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.5,
-      );
+  TextStyle get codeBlock => const TextStyle(fontFamily: 'Roboto Mono', fontSize: 13, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.5);
 
   @override
   TextStyle get caption => bodySmall;
@@ -395,49 +304,19 @@ class MaterialElevation extends DesignElevationTokens {
   List<BoxShadow> shadow0() => const [];
 
   @override
-  List<BoxShadow> shadow1() => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 3,
-          offset: const Offset(0, 1),
-        ),
-      ];
+  List<BoxShadow> shadow1() => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 3, offset: const Offset(0, 1))];
 
   @override
-  List<BoxShadow> shadow2() => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 6,
-          offset: const Offset(0, 3),
-        ),
-      ];
+  List<BoxShadow> shadow2() => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 6, offset: const Offset(0, 3))];
 
   @override
-  List<BoxShadow> shadow3() => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 12,
-          offset: const Offset(0, 6),
-        ),
-      ];
+  List<BoxShadow> shadow3() => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 12, offset: const Offset(0, 6))];
 
   @override
-  List<BoxShadow> shadow4() => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 16,
-          offset: const Offset(0, 8),
-        ),
-      ];
+  List<BoxShadow> shadow4() => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 16, offset: const Offset(0, 8))];
 
   @override
-  List<BoxShadow> shadow5() => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 24,
-          offset: const Offset(0, 12),
-        ),
-      ];
+  List<BoxShadow> shadow5() => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 24, offset: const Offset(0, 12))];
 
   @override
   double get card => level1;
@@ -506,9 +385,7 @@ class MaterialIcons extends DesignIconTokens {
   double get strokeWidth => 2;
 
   @override
-  IconThemeData get defaultTheme => const IconThemeData(
-        size: 24,
-      );
+  IconThemeData get defaultTheme => const IconThemeData(size: 24);
 }
 
 /// Material Component Styles
@@ -531,10 +408,7 @@ class MaterialComponentStyles extends ComponentStyles {
   ButtonStyle get ghostButton => TextButton.styleFrom();
 
   @override
-  ButtonStyle get dangerButton => ElevatedButton.styleFrom(
-        backgroundColor: design.colors.error,
-        foregroundColor: design.colors.onError,
-      );
+  ButtonStyle get dangerButton => ElevatedButton.styleFrom(backgroundColor: design.colors.error, foregroundColor: design.colors.onError);
 
   @override
   InputDecorationTheme get inputDecoration => const InputDecorationTheme();

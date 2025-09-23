@@ -36,12 +36,12 @@ class VooPercentageField extends VooNumberField {
     super.onSubmitted,
     super.autofocus,
   }) : super(
-          placeholder: placeholder ?? (allowDecimals ? '0.00' : '0'),
-          min: 0,
-          max: 100,
-          maxDecimalPlaces: allowDecimals ? 2 : 0,
-          allowNegative: false,
-          suffixIcon: suffixIcon ?? const Icon(Icons.percent),
-          onChanged: onChanged != null ? (num? value) => onChanged(value?.toDouble()) : null,
-        );
+         placeholder: placeholder ?? (allowDecimals ? '0.00' : '0'),
+         min: 0,
+         max: 100,
+         maxDecimalPlaces: allowDecimals ? 2 : 0,
+         allowNegative: false,
+         suffixIcon: suffixIcon ?? const Icon(Icons.percent),
+         onChanged: onChanged != null ? (num? value) => onChanged(value?.toDouble()) : null,
+       );
 }

@@ -93,36 +93,23 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               label ?? title ?? '',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface,
-              ),
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface),
             ),
           ),
 
         // Fields with spacing
-        for (int i = 0; i < fields.length; i++) ...[
-          fields[i],
-          if (i < fields.length - 1) SizedBox(height: spacing),
-        ],
+        for (int i = 0; i < fields.length; i++) ...[fields[i], if (i < fields.length - 1) SizedBox(height: spacing)],
       ],
     );
 
     // Apply decoration if provided
     if (decoration != null || padding != null) {
-      column = Container(
-        padding: padding,
-        decoration: decoration,
-        child: column,
-      );
+      column = Container(padding: padding, decoration: decoration, child: column);
     }
 
     // Apply expansion if needed
     if (expanded) {
-      return Expanded(
-        flex: flex,
-        child: column,
-      );
+      return Expanded(flex: flex, child: column);
     }
 
     return column;
@@ -130,20 +117,20 @@ class VooFieldColumn extends StatelessWidget implements VooFormFieldWidget {
 
   @override
   VooFormFieldWidget copyWith() => VooFieldColumn(
-        key: key,
-        name: name,
-        fields: fields.map((field) => field.copyWith()).toList(),
-        label: label,
-        title: title,
-        headerWidget: headerWidget,
-        spacing: spacing,
-        padding: padding,
-        decoration: decoration,
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
-        mainAxisSize: mainAxisSize,
-        expanded: expanded,
-        flex: flex,
-        layout: layout,
-      );
+    key: key,
+    name: name,
+    fields: fields.map((field) => field.copyWith()).toList(),
+    label: label,
+    title: title,
+    headerWidget: headerWidget,
+    spacing: spacing,
+    padding: padding,
+    decoration: decoration,
+    crossAxisAlignment: crossAxisAlignment,
+    mainAxisAlignment: mainAxisAlignment,
+    mainAxisSize: mainAxisSize,
+    expanded: expanded,
+    flex: flex,
+    layout: layout,
+  );
 }

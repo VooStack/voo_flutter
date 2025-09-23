@@ -58,18 +58,20 @@ class VooNavigationBuilder {
         : theme.colorScheme;
 
     return VooNavigationBuilder()
-      ..theme(ThemeData(
-        colorScheme: colorScheme,
-        useMaterial3: true,
-        fontFamily: theme.textTheme.bodyLarge?.fontFamily,
-      ))
+      ..theme(
+        ThemeData(
+          colorScheme: colorScheme,
+          useMaterial3: true,
+          fontFamily: theme.textTheme.bodyLarge?.fontFamily,
+        ),
+      )
       ..selectedItemColor(colorScheme.primary)
       ..unselectedItemColor(colorScheme.onSurfaceVariant)
       ..indicatorColor(colorScheme.primaryContainer)
       ..navigationBackgroundColor(colorScheme.surface)
-      ..indicatorShape(RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ));
+      ..indicatorShape(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      );
   }
 
   /// Adds a navigation item
@@ -91,24 +93,26 @@ class VooNavigationBuilder {
     bool isEnabled = true,
     bool isVisible = true,
   }) {
-    _items.add(VooNavigationItem(
-      id: id,
-      label: label,
-      icon: icon,
-      selectedIcon: selectedIcon,
-      route: route ?? '/$id',
-      destination: destination,
-      badgeCount: badgeCount,
-      badgeText: badgeText,
-      badgeColor: badgeColor,
-      showDot: showDot,
-      tooltip: tooltip,
-      onTap: onTap,
-      iconColor: iconColor,
-      selectedIconColor: selectedIconColor,
-      isEnabled: isEnabled,
-      isVisible: isVisible,
-    ));
+    _items.add(
+      VooNavigationItem(
+        id: id,
+        label: label,
+        icon: icon,
+        selectedIcon: selectedIcon,
+        route: route ?? '/$id',
+        destination: destination,
+        badgeCount: badgeCount,
+        badgeText: badgeText,
+        badgeColor: badgeColor,
+        showDot: showDot,
+        tooltip: tooltip,
+        onTap: onTap,
+        iconColor: iconColor,
+        selectedIconColor: selectedIconColor,
+        isEnabled: isEnabled,
+        isVisible: isVisible,
+      ),
+    );
     return this;
   }
 
@@ -131,12 +135,14 @@ class VooNavigationBuilder {
     required List<VooNavigationItem> children,
     bool isExpanded = true,
   }) {
-    _items.add(VooNavigationItem.section(
-      label: label,
-      id: id,
-      children: children,
-      isExpanded: isExpanded,
-    ));
+    _items.add(
+      VooNavigationItem.section(
+        label: label,
+        id: id,
+        children: children,
+        isExpanded: isExpanded,
+      ),
+    );
     return this;
   }
 
@@ -154,11 +160,13 @@ class VooNavigationBuilder {
   }) {
     _pages[id] = page;
     if (path != null) {
-      _routes.add(VooNavigationRoute.fade(
-        id: id,
-        path: path,
-        builder: (context, state) => page,
-      ));
+      _routes.add(
+        VooNavigationRoute.fade(
+          id: id,
+          path: path,
+          builder: (context, state) => page,
+        ),
+      );
     }
     return this;
   }
@@ -218,7 +226,9 @@ class VooNavigationBuilder {
   }
 
   /// Sets the floating action button location
-  VooNavigationBuilder floatingActionButtonLocation(FloatingActionButtonLocation? location) {
+  VooNavigationBuilder floatingActionButtonLocation(
+    FloatingActionButtonLocation? location,
+  ) {
     _floatingActionButtonLocation = location;
     return this;
   }
@@ -320,7 +330,9 @@ class VooNavigationBuilder {
   }
 
   /// Sets the navigation item selected callback
-  VooNavigationBuilder onNavigationItemSelected(void Function(String itemId)? callback) {
+  VooNavigationBuilder onNavigationItemSelected(
+    void Function(String itemId)? callback,
+  ) {
     _onNavigationItemSelected = callback;
     return this;
   }

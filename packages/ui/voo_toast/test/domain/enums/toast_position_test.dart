@@ -53,12 +53,7 @@ void main() {
     });
 
     test('can identify top positions', () {
-      final topPositions = [
-        ToastPosition.top,
-        ToastPosition.topLeft,
-        ToastPosition.topCenter,
-        ToastPosition.topRight,
-      ];
+      final topPositions = [ToastPosition.top, ToastPosition.topLeft, ToastPosition.topCenter, ToastPosition.topRight];
 
       for (final position in ToastPosition.values) {
         if (position.name.startsWith('top')) {
@@ -70,12 +65,7 @@ void main() {
     });
 
     test('can identify bottom positions', () {
-      final bottomPositions = [
-        ToastPosition.bottom,
-        ToastPosition.bottomLeft,
-        ToastPosition.bottomCenter,
-        ToastPosition.bottomRight,
-      ];
+      final bottomPositions = [ToastPosition.bottom, ToastPosition.bottomLeft, ToastPosition.bottomCenter, ToastPosition.bottomRight];
 
       for (final position in ToastPosition.values) {
         if (position.name.startsWith('bottom')) {
@@ -87,11 +77,7 @@ void main() {
     });
 
     test('can identify center positions', () {
-      final centerPositions = [
-        ToastPosition.center,
-        ToastPosition.centerLeft,
-        ToastPosition.centerRight,
-      ];
+      final centerPositions = [ToastPosition.center, ToastPosition.centerLeft, ToastPosition.centerRight];
 
       for (final position in ToastPosition.values) {
         if (position.name.startsWith('center')) {
@@ -136,11 +122,7 @@ void main() {
     });
 
     test('can be used as map keys', () {
-      final map = <ToastPosition, double>{
-        ToastPosition.top: 0,
-        ToastPosition.center: 50,
-        ToastPosition.bottom: 100,
-      };
+      final map = <ToastPosition, double>{ToastPosition.top: 0, ToastPosition.center: 50, ToastPosition.bottom: 100};
 
       expect(map[ToastPosition.top], 0);
       expect(map[ToastPosition.center], 50);

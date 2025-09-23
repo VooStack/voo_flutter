@@ -81,21 +81,13 @@ class VooGridFormLayout extends StatelessWidget {
 
       // Add empty slots if row is not full
       if (columnsUsed < columns && rowChildren.isNotEmpty) {
-        rowChildren.add(
-          Expanded(
-            flex: columns - columnsUsed,
-            child: const SizedBox.shrink(),
-          ),
-        );
+        rowChildren.add(Expanded(flex: columns - columnsUsed, child: const SizedBox.shrink()));
       }
 
       if (rowChildren.isNotEmpty) {
         rows.add(
           IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: rowChildren,
-            ),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: rowChildren),
           ),
         );
 
@@ -105,11 +97,6 @@ class VooGridFormLayout extends StatelessWidget {
       }
     }
 
-    return Column(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      mainAxisSize: mainAxisSize,
-      children: rows,
-    );
+    return Column(crossAxisAlignment: crossAxisAlignment, mainAxisAlignment: mainAxisAlignment, mainAxisSize: mainAxisSize, children: rows);
   }
 }

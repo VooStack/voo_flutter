@@ -10,12 +10,7 @@ class AdvancedFilterWidget extends StatefulWidget {
   final void Function(AdvancedFilterRequest)? onFilterApplied;
   final List<FilterFieldConfig> fields;
 
-  const AdvancedFilterWidget({
-    super.key,
-    required this.dataSource,
-    required this.fields,
-    this.onFilterApplied,
-  });
+  const AdvancedFilterWidget({super.key, required this.dataSource, required this.fields, this.onFilterApplied});
 
   @override
   State<AdvancedFilterWidget> createState() => _AdvancedFilterWidgetState();
@@ -103,12 +98,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                   label: const Text('Add Filter'),
                   onPressed: () {
                     setState(() {
-                      _filters.add(
-                        FilterEntry(
-                          field: widget.fields.first,
-                          operator: widget.fields.first.defaultOperator ?? 'equals',
-                        ),
-                      );
+                      _filters.add(FilterEntry(field: widget.fields.first, operator: widget.fields.first.defaultOperator ?? 'equals'));
                     });
                   },
                 ),
@@ -128,10 +118,7 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
                 child: const Text('Clear All'),
               ),
               SizedBox(width: design.spacingSm),
-              FilledButton(
-                onPressed: _applyFilters,
-                child: const Text('Apply Filters'),
-              ),
+              FilledButton(onPressed: _applyFilters, child: const Text('Apply Filters')),
             ],
           ),
         ],
@@ -155,67 +142,35 @@ class _AdvancedFilterWidgetState extends State<AdvancedFilterWidget> {
       SecondaryFilter? secondaryFilter;
 
       if (filter.operator!.requiresSecondaryValue && filter.secondaryValue != null) {
-        secondaryFilter = SecondaryFilter(
-          logic: FilterLogic.and,
-          value: filter.secondaryValue,
-          operator: 'LessThanOrEqual',
-        );
+        secondaryFilter = SecondaryFilter(logic: FilterLogic.and, value: filter.secondaryValue, operator: 'LessThanOrEqual');
       }
 
       switch (field.type) {
         case FilterType.string:
           stringFilters.add(
-            StringFilter(
-              fieldName: field.fieldName,
-              value: filter.value.toString(),
-              operator: filter.operator!,
-              secondaryFilter: secondaryFilter,
-            ),
+            StringFilter(fieldName: field.fieldName, value: filter.value.toString(), operator: filter.operator!, secondaryFilter: secondaryFilter),
           );
           break;
 
         case FilterType.int:
-          intFilters.add(
-            IntFilter(
-              fieldName: field.fieldName,
-              value: filter.value as int,
-              operator: filter.operator!,
-              secondaryFilter: secondaryFilter,
-            ),
-          );
+          intFilters.add(IntFilter(fieldName: field.fieldName, value: filter.value as int, operator: filter.operator!, secondaryFilter: secondaryFilter));
           break;
 
         case FilterType.decimal:
           decimalFilters.add(
-            DecimalFilter(
-              fieldName: field.fieldName,
-              value: (filter.value as num).toDouble(),
-              operator: filter.operator!,
-              secondaryFilter: secondaryFilter,
-            ),
+            DecimalFilter(fieldName: field.fieldName, value: (filter.value as num).toDouble(), operator: filter.operator!, secondaryFilter: secondaryFilter),
           );
           break;
 
         case FilterType.date:
         case FilterType.dateTime:
           dateFilters.add(
-            DateFilter(
-              fieldName: field.fieldName,
-              value: filter.value as DateTime,
-              operator: filter.operator!,
-              secondaryFilter: secondaryFilter,
-            ),
+            DateFilter(fieldName: field.fieldName, value: filter.value as DateTime, operator: filter.operator!, secondaryFilter: secondaryFilter),
           );
           break;
 
         case FilterType.bool:
-          boolFilters.add(
-            BoolFilter(
-              fieldName: field.fieldName,
-              value: filter.value as bool,
-              operator: filter.operator!,
-            ),
-          );
+          boolFilters.add(BoolFilter(fieldName: field.fieldName, value: filter.value as bool, operator: filter.operator!));
           break;
       }
     }

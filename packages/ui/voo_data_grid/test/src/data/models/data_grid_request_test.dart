@@ -5,41 +5,20 @@ void main() {
   group('DataGridRequestBuilder', () {
     group('buildRequestBody', () {
       test('should build basic request with pagination', () {
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 2,
-          pageSize: 25,
-          filters: {},
-          sorts: [],
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 2, pageSize: 25, filters: {}, sorts: []);
 
         expect(result, {
-          'pagination': {
-            'page': 2,
-            'pageSize': 25,
-            'offset': 50,
-            'limit': 25,
-          },
+          'pagination': {'page': 2, 'pageSize': 25, 'offset': 50, 'limit': 25},
         });
       });
 
       test('should include filters when provided', () {
         final filters = {
-          'name': const VooDataFilter(
-            operator: VooFilterOperator.contains,
-            value: 'John',
-          ),
-          'age': const VooDataFilter(
-            operator: VooFilterOperator.greaterThan,
-            value: 18,
-          ),
+          'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'John'),
+          'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 18),
         };
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         expect(result['filters'], isNotNull);
         expect(result['filters'], isList);
@@ -56,60 +35,29 @@ void main() {
           const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ];
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: {},
-          sorts: sorts,
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: {}, sorts: sorts);
 
         expect(result['sorts'], isNotNull);
         expect(result['sorts'], isList);
         expect((result['sorts'] as List).length, 2);
 
         final sortsList = result['sorts'] as List;
-        expect(sortsList[0], {
-          'field': 'name',
-          'direction': 'asc',
-        });
-        expect(sortsList[1], {
-          'field': 'date',
-          'direction': 'desc',
-        });
+        expect(sortsList[0], {'field': 'name', 'direction': 'asc'});
+        expect(sortsList[1], {'field': 'date', 'direction': 'desc'});
       });
 
       test('should include additional params as metadata', () {
-        final additionalParams = {
-          'userId': '123',
-          'context': 'admin',
-        };
+        final additionalParams = {'userId': '123', 'context': 'admin'};
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: {},
-          sorts: [],
-          additionalParams: additionalParams,
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: {}, sorts: [], additionalParams: additionalParams);
 
         expect(result['metadata'], additionalParams);
       });
 
       test('should handle between operator with valueTo', () {
-        final filters = {
-          'price': const VooDataFilter(
-            operator: VooFilterOperator.between,
-            value: 100,
-            valueTo: 500,
-          ),
-        };
+        final filters = {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)};
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         final filtersList = result['filters'] as List;
         expect(filtersList[0]['field'], 'price');
@@ -120,22 +68,11 @@ void main() {
 
       test('should handle null operators without values', () {
         final filters = {
-          'deletedAt': const VooDataFilter(
-            operator: VooFilterOperator.isNull,
-            value: null,
-          ),
-          'createdAt': const VooDataFilter(
-            operator: VooFilterOperator.isNotNull,
-            value: null,
-          ),
+          'deletedAt': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
+          'createdAt': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
         };
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         final filtersList = result['filters'] as List;
         for (final filter in filtersList) {
@@ -146,22 +83,11 @@ void main() {
 
       test('should handle list operators', () {
         final filters = {
-          'status': const VooDataFilter(
-            operator: VooFilterOperator.inList,
-            value: ['active', 'pending', 'draft'],
-          ),
-          'type': const VooDataFilter(
-            operator: VooFilterOperator.notInList,
-            value: 'archived',
-          ),
+          'status': const VooDataFilter(operator: VooFilterOperator.inList, value: ['active', 'pending', 'draft']),
+          'type': const VooDataFilter(operator: VooFilterOperator.notInList, value: 'archived'),
         };
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         final filtersList = result['filters'] as List;
         final statusFilter = filtersList.firstWhere((f) => f['field'] == 'status');
@@ -178,12 +104,7 @@ void main() {
           const VooColumnSort(field: 'price', direction: VooSortDirection.descending),
         ];
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: {},
-          sorts: sorts,
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: {}, sorts: sorts);
 
         final sortsList = result['sorts'] as List;
         expect(sortsList.length, 2);
@@ -193,12 +114,7 @@ void main() {
 
     group('buildQueryParams', () {
       test('should build basic query params', () {
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 1,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 1, pageSize: 20, filters: {}, sorts: []);
 
         expect(params['page'], '1');
         expect(params['pageSize'], '20');
@@ -207,22 +123,11 @@ void main() {
 
       test('should build filter query params with indexed format', () {
         final filters = {
-          'name': const VooDataFilter(
-            operator: VooFilterOperator.contains,
-            value: 'John',
-          ),
-          'status': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 'active',
-          ),
+          'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'John'),
+          'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
         };
 
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         expect(params['filters[0].field'], isNotNull);
         expect(params['filters[0].operator'], isNotNull);
@@ -238,12 +143,7 @@ void main() {
           const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ];
 
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 0,
-          pageSize: 10,
-          filters: {},
-          sorts: sorts,
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 0, pageSize: 10, filters: {}, sorts: sorts);
 
         expect(params['sorts[0].field'], 'name');
         expect(params['sorts[0].direction'], 'asc');
@@ -253,36 +153,18 @@ void main() {
 
       test('should handle list values as comma-separated string', () {
         final filters = {
-          'status': const VooDataFilter(
-            operator: VooFilterOperator.inList,
-            value: ['active', 'pending', 'draft'],
-          ),
+          'status': const VooDataFilter(operator: VooFilterOperator.inList, value: ['active', 'pending', 'draft']),
         };
 
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         expect(params['filters[0].values'], 'active,pending,draft');
       });
 
       test('should skip value for null operators', () {
-        final filters = {
-          'deletedAt': const VooDataFilter(
-            operator: VooFilterOperator.isNull,
-            value: null,
-          ),
-        };
+        final filters = {'deletedAt': const VooDataFilter(operator: VooFilterOperator.isNull, value: null)};
 
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         expect(params['filters[0].field'], 'deletedAt');
         expect(params['filters[0].operator'], 'is_null');
@@ -290,20 +172,9 @@ void main() {
       });
 
       test('should include valueTo for between operator', () {
-        final filters = {
-          'price': const VooDataFilter(
-            operator: VooFilterOperator.between,
-            value: 100,
-            valueTo: 500,
-          ),
-        };
+        final filters = {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)};
 
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         expect(params['filters[0].value'], '100');
         expect(params['filters[0].valueTo'], '500');
@@ -316,12 +187,7 @@ void main() {
           const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ];
 
-        final params = DataGridRequestBuilder.buildQueryParams(
-          page: 0,
-          pageSize: 10,
-          filters: {},
-          sorts: sorts,
-        );
+        final params = DataGridRequestBuilder.buildQueryParams(page: 0, pageSize: 10, filters: {}, sorts: sorts);
 
         // All sort fields should be included with their original indexes
         expect(params['sorts[0].field'], 'name');
@@ -397,11 +263,7 @@ void main() {
           'total': 10,
         };
 
-        final response = DataGridRequestBuilder.parseResponse(
-          json: json,
-          pageKey: null,
-          pageSizeKey: null,
-        );
+        final response = DataGridRequestBuilder.parseResponse(json: json, pageKey: null, pageSizeKey: null);
 
         expect(response.page, 0);
         expect(response.pageSize, 20);
@@ -437,12 +299,7 @@ void main() {
             ),
           };
 
-          final result = DataGridRequestBuilder.buildRequestBody(
-            page: 0,
-            pageSize: 10,
-            filters: filters,
-            sorts: [],
-          );
+          final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: filters, sorts: []);
 
           final filtersList = result['filters'] as List;
           expect(filtersList[0]['operator'], expected);
@@ -457,12 +314,7 @@ void main() {
           const VooColumnSort(field: 'desc_field', direction: VooSortDirection.descending),
         ];
 
-        final result = DataGridRequestBuilder.buildRequestBody(
-          page: 0,
-          pageSize: 10,
-          filters: {},
-          sorts: sorts,
-        );
+        final result = DataGridRequestBuilder.buildRequestBody(page: 0, pageSize: 10, filters: {}, sorts: sorts);
 
         final sortsList = result['sorts'] as List;
         expect(sortsList[0]['direction'], 'asc');
@@ -472,133 +324,62 @@ void main() {
 
     group('field prefix', () {
       test('should apply field prefix to filters in Voo API standard', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.voo,
-          fieldPrefix: 'Site',
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo, fieldPrefix: 'Site');
 
         final filters = {
-          'SiteNumber': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 100,
-          ),
-          'Name': const VooDataFilter(
-            operator: VooFilterOperator.contains,
-            value: 'Tech',
-          ),
+          'SiteNumber': const VooDataFilter(operator: VooFilterOperator.equals, value: 100),
+          'Name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'Tech'),
         };
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         expect(result['intFilters'], [
-          {
-            'fieldName': 'Site.SiteNumber',
-            'value': 100,
-            'operator': 'Equals',
-          }
+          {'fieldName': 'Site.SiteNumber', 'value': 100, 'operator': 'Equals'},
         ]);
 
         expect(result['stringFilters'], [
-          {
-            'fieldName': 'Site.Name',
-            'value': 'Tech',
-            'operator': 'Contains',
-          }
+          {'fieldName': 'Site.Name', 'value': 'Tech', 'operator': 'Contains'},
         ]);
       });
 
       test('should apply field prefix to sorting in Voo API standard', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.voo,
-          fieldPrefix: 'Client',
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo, fieldPrefix: 'Client');
 
-        final sorts = [
-          const VooColumnSort(field: 'CompanyName', direction: VooSortDirection.ascending),
-        ];
+        final sorts = [const VooColumnSort(field: 'CompanyName', direction: VooSortDirection.ascending)];
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: sorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: sorts);
 
         expect(result['sortBy'], 'Client.CompanyName');
         expect(result['sortDescending'], false);
       });
 
       test('should not apply prefix when fieldPrefix is null', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.voo,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo);
 
-        final filters = {
-          'OrderStatus': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 1,
-          ),
-        };
+        final filters = {'OrderStatus': const VooDataFilter(operator: VooFilterOperator.equals, value: 1)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         expect(result['intFilters'], [
-          {
-            'fieldName': 'OrderStatus',
-            'value': 1,
-            'operator': 'Equals',
-          }
+          {'fieldName': 'OrderStatus', 'value': 1, 'operator': 'Equals'},
         ]);
       });
 
       test('should handle mixed types with field prefix', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.voo,
-          fieldPrefix: 'Order',
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo, fieldPrefix: 'Order');
 
         final filters = {
-          'Status': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 1,
-          ),
-          'Date': VooDataFilter(
-            operator: VooFilterOperator.greaterThanOrEqual,
-            value: DateTime(2024),
-          ),
-          'Cost': const VooDataFilter(
-            operator: VooFilterOperator.greaterThan,
-            value: 1000.50,
-          ),
+          'Status': const VooDataFilter(operator: VooFilterOperator.equals, value: 1),
+          'Date': VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: DateTime(2024)),
+          'Cost': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 1000.50),
         };
 
-        final sorts = [
-          const VooColumnSort(field: 'Date', direction: VooSortDirection.descending),
-        ];
+        final sorts = [const VooColumnSort(field: 'Date', direction: VooSortDirection.descending)];
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: sorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: sorts);
 
         expect(result['intFilters'], [
-          {
-            'fieldName': 'Order.Status',
-            'value': 1,
-            'operator': 'Equals',
-          }
+          {'fieldName': 'Order.Status', 'value': 1, 'operator': 'Equals'},
         ]);
 
         expect((result['dateFilters'] as List).first['fieldName'], 'Order.Date');
@@ -607,23 +388,11 @@ void main() {
       });
 
       test('should apply field prefix to custom format', () {
-        const builder = DataGridRequestBuilder(
-          fieldPrefix: 'User',
-        );
+        const builder = DataGridRequestBuilder(fieldPrefix: 'User');
 
-        final filters = {
-          'Name': const VooDataFilter(
-            operator: VooFilterOperator.contains,
-            value: 'John',
-          ),
-        };
+        final filters = {'Name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'John')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 10,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 10, filters: filters, sorts: []);
 
         final filtersList = result['filters'] as List;
         expect(filtersList.first['field'], 'User.Name');

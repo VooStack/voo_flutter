@@ -4,10 +4,7 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 
 /// Test implementation of VooDataGridSource for testing
 class TestDataGridSource extends VooDataGridSource {
-  TestDataGridSource({
-    super.mode = VooDataGridMode.local,
-    List<dynamic>? data,
-  }) {
+  TestDataGridSource({super.mode = VooDataGridMode.local, List<dynamic>? data}) {
     if (data != null) {
       setLocalData(data);
     }
@@ -22,12 +19,7 @@ class TestDataGridSource extends VooDataGridSource {
   }) async {
     // Simulate network delay
     await Future<void>.delayed(const Duration(milliseconds: 100));
-    return VooDataGridResponse(
-      rows: [],
-      totalRows: 0,
-      page: page,
-      pageSize: pageSize,
-    );
+    return VooDataGridResponse(rows: [], totalRows: 0, page: page, pageSize: pageSize);
   }
 }
 
@@ -61,55 +53,37 @@ Widget createTestDataGrid<T>({
   void Function(T row)? onRowTap,
   void Function(T row)? onRowDoubleTap,
   void Function(T)? onRowHover,
-}) =>
-    MaterialApp(
-      home: Scaffold(
-        body: VooDataGrid<T>(
-          controller: controller,
-          showPagination: showPagination,
-          showToolbar: showToolbar,
-          emptyStateWidget: emptyStateWidget,
-          loadingWidget: loadingWidget,
-          errorBuilder: errorBuilder,
-          onRowTap: onRowTap,
-          onRowDoubleTap: onRowDoubleTap,
-          onRowHover: onRowHover,
-        ),
-      ),
-    );
+}) => MaterialApp(
+  home: Scaffold(
+    body: VooDataGrid<T>(
+      controller: controller,
+      showPagination: showPagination,
+      showToolbar: showToolbar,
+      emptyStateWidget: emptyStateWidget,
+      loadingWidget: loadingWidget,
+      errorBuilder: errorBuilder,
+      onRowTap: onRowTap,
+      onRowDoubleTap: onRowDoubleTap,
+      onRowHover: onRowHover,
+    ),
+  ),
+);
 
 /// Helper to tap a widget and wait for animations
-Future<void> tapAndSettle(
-  WidgetTester tester,
-  Finder finder, {
-  Duration? duration,
-}) async {
+Future<void> tapAndSettle(WidgetTester tester, Finder finder, {Duration? duration}) async {
   await tester.tap(finder);
   await tester.pumpAndSettle(duration ?? const Duration(milliseconds: 100));
 }
 
 /// Helper to enter text and wait for animations
-Future<void> enterTextAndSettle(
-  WidgetTester tester,
-  Finder finder,
-  String text, {
-  Duration? duration,
-}) async {
+Future<void> enterTextAndSettle(WidgetTester tester, Finder finder, String text, {Duration? duration}) async {
   await tester.enterText(finder, text);
   await tester.pumpAndSettle(duration ?? const Duration(milliseconds: 100));
 }
 
 /// Helper to scroll to a widget
-Future<void> scrollToWidget(
-  WidgetTester tester,
-  Finder finder, {
-  double delta = 300,
-}) async {
-  await tester.dragUntilVisible(
-    finder,
-    find.byType(SingleChildScrollView),
-    Offset(0, delta),
-  );
+Future<void> scrollToWidget(WidgetTester tester, Finder finder, {double delta = 300}) async {
+  await tester.dragUntilVisible(finder, find.byType(SingleChildScrollView), Offset(0, delta));
 }
 
 /// Verify column headers exist

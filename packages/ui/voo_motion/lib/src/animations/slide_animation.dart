@@ -7,7 +7,7 @@ class VooSlideAnimation extends StatefulWidget {
   final VooAnimationConfig config;
   final Offset fromOffset;
   final Offset toOffset;
-  
+
   const VooSlideAnimation({
     super.key,
     required this.child,
@@ -15,33 +15,23 @@ class VooSlideAnimation extends StatefulWidget {
     this.fromOffset = const Offset(-1, 0),
     this.toOffset = Offset.zero,
   });
-  
+
   @override
   State<VooSlideAnimation> createState() => _VooSlideAnimationState();
 }
 
-class _VooSlideAnimationState extends State<VooSlideAnimation>
-    with SingleTickerProviderStateMixin {
+class _VooSlideAnimationState extends State<VooSlideAnimation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _animation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.config.duration,
-      vsync: this,
-    );
-    
-    _animation = Tween<Offset>(
-      begin: widget.fromOffset,
-      end: widget.toOffset,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.config.curve,
-    ),);
-    
+
+    _controller = AnimationController(duration: widget.config.duration, vsync: this);
+
+    _animation = Tween<Offset>(begin: widget.fromOffset, end: widget.toOffset).animate(CurvedAnimation(parent: _controller, curve: widget.config.curve));
+
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
         if (mounted) {
@@ -56,26 +46,23 @@ class _VooSlideAnimationState extends State<VooSlideAnimation>
       });
     }
   }
-  
+
   void _handleRepeat() {
     if (!mounted) return;
-    
+
     if (widget.config.reverse) {
       _controller.repeat(reverse: true);
     } else {
       _controller.repeat();
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
-  Widget build(BuildContext context) => SlideTransition(
-      position: _animation,
-      child: widget.child,
-    );
+  Widget build(BuildContext context) => SlideTransition(position: _animation, child: widget.child);
 }

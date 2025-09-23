@@ -9,10 +9,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'username',
-              label: 'Username',
-            ),
+            body: VooTextField(name: 'username', label: 'Username'),
           ),
         ),
       );
@@ -25,11 +22,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'email',
-              label: 'Email',
-              validators: [VooValidator.required()],
-            ),
+            body: VooTextField(name: 'email', label: 'Email', validators: [VooValidator.required()]),
           ),
         ),
       );
@@ -42,10 +35,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'username',
-              placeholder: 'Enter username',
-            ),
+            body: VooTextField(name: 'username', placeholder: 'Enter username'),
           ),
         ),
       );
@@ -78,10 +68,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              initialValue: 'Initial text',
-            ),
+            body: VooTextField(name: 'test', initialValue: 'Initial text'),
           ),
         ),
       );
@@ -93,10 +80,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              error: 'This field has an error',
-            ),
+            body: VooTextField(name: 'test', error: 'This field has an error'),
           ),
         ),
       );
@@ -108,10 +92,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              helper: 'This is helper text',
-            ),
+            body: VooTextField(name: 'test', helper: 'This is helper text'),
           ),
         ),
       );
@@ -122,12 +103,7 @@ void main() {
     testWidgets('is disabled when enabled is false', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              enabled: false,
-            ),
-          ),
+          home: Scaffold(body: VooTextField(name: 'test', enabled: false)),
         ),
       );
 
@@ -139,11 +115,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              readOnly: true,
-              initialValue: 'Read Only Value',
-            ),
+            body: VooTextField(name: 'test', readOnly: true, initialValue: 'Read Only Value'),
           ),
         ),
       );
@@ -158,10 +130,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              prefixIcon: Icon(Icons.person),
-            ),
+            body: VooTextField(name: 'test', prefixIcon: Icon(Icons.person)),
           ),
         ),
       );
@@ -173,10 +142,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooTextField(
-              name: 'test',
-              suffixIcon: Icon(Icons.clear),
-            ),
+            body: VooTextField(name: 'test', suffixIcon: Icon(Icons.clear)),
           ),
         ),
       );
@@ -190,12 +156,7 @@ void main() {
           home: Scaffold(
             body: VooTextField(
               name: 'test',
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {},
-                ),
-              ],
+              actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
             ),
           ),
         ),
@@ -205,11 +166,7 @@ void main() {
     });
 
     testWidgets('validates required field', (WidgetTester tester) async {
-      final field = VooTextField(
-        name: 'test',
-        label: 'Test Field',
-        validators: [VooValidator.required()],
-      );
+      final field = VooTextField(name: 'test', label: 'Test Field', validators: [VooValidator.required()]);
 
       expect(field.validate(null), 'This field is required');
       expect(field.validate(''), 'This field is required');

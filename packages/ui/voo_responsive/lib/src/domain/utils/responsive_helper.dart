@@ -51,13 +51,7 @@ class ResponsiveHelper {
     return null;
   }
 
-  static double getResponsiveValue<T extends num>(
-    BuildContext context, {
-    required T mobile,
-    T? tablet,
-    T? desktop,
-    T? widescreen,
-  }) {
+  static double getResponsiveValue<T extends num>(BuildContext context, {required T mobile, T? tablet, T? desktop, T? widescreen}) {
     if (isWidescreen(context) && widescreen != null) {
       return widescreen.toDouble();
     }
@@ -70,12 +64,7 @@ class ResponsiveHelper {
     return mobile.toDouble();
   }
 
-  static int getResponsiveColumns(BuildContext context, {
-    int mobileColumns = 1,
-    int tabletColumns = 2,
-    int desktopColumns = 3,
-    int widescreenColumns = 4,
-  }) {
+  static int getResponsiveColumns(BuildContext context, {int mobileColumns = 1, int tabletColumns = 2, int desktopColumns = 3, int widescreenColumns = 4}) {
     if (isMobile(context)) return mobileColumns;
     if (isTablet(context)) return tabletColumns;
     if (isDesktop(context)) return desktopColumns;

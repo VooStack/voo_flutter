@@ -6,7 +6,7 @@ import 'package:voo_toast/voo_toast.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Voo Core first
   await Voo.initializeApp(
     options: const VooOptions(
@@ -14,7 +14,7 @@ void main() async {
       autoRegisterPlugins: true,
     ),
   );
-  
+
   // Initialize VooLogging with toast notifications
   await VooLogger.initialize(
     appName: 'VooLoggingExample',
@@ -38,7 +38,7 @@ void main() async {
     // If there's an issue, explicitly initialize
     VooToastController.init();
   }
-  
+
   runApp(const MyApp());
 }
 
@@ -53,9 +53,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const VooToastOverlay(
-        child: LoggingDemoScreen(),
-      ),
+      home: const VooToastOverlay(child: LoggingDemoScreen()),
     );
   }
 }
@@ -71,15 +69,15 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
   late final Dio dio;
   List<LogEntry> recentLogs = [];
   bool toastEnabled = true;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Set up Dio with VooLogging interceptor
     dio = Dio();
     // Note: Add dio interceptor if available in VooLogging
-    
+
     // Listen to log stream
     VooLogger.instance.stream.listen((log) {
       setState(() {
@@ -90,30 +88,31 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
       });
     });
   }
-  
+
   void _logVerbose() {
     VooLogger.verbose('This is a verbose message');
   }
-  
+
   void _logDebug() {
     VooLogger.debug('This is a debug message');
   }
-  
+
   void _logInfo() {
     VooLogger.info('This is an info message');
   }
-  
+
   void _logWarning() {
     VooLogger.warning('This is a warning message');
   }
-  
+
   void _logError() {
-    VooLogger.error('This is an error message', 
+    VooLogger.error(
+      'This is an error message',
       error: Exception('Sample exception'),
       stackTrace: StackTrace.current,
     );
   }
-  
+
   Future<void> _makeNetworkRequest() async {
     try {
       await dio.get('https://jsonplaceholder.typicode.com/posts/1');
@@ -122,14 +121,14 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
       VooLogger.error('Network request failed', error: e);
     }
   }
-  
+
   Future<void> _clearLogs() async {
     await VooLogger.instance.clearLogs();
     setState(() {
       recentLogs.clear();
     });
   }
-  
+
   String _getLogLevelIcon(LogLevel level) {
     switch (level) {
       case LogLevel.verbose:
@@ -146,7 +145,7 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
         return '💀';
     }
   }
-  
+
   Color _getLogLevelColor(LogLevel level) {
     switch (level) {
       case LogLevel.verbose:
@@ -163,7 +162,7 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
         return Colors.red.shade900;
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,7 +171,11 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            icon: Icon(toastEnabled ? Icons.notifications_active : Icons.notifications_off),
+            icon: Icon(
+              toastEnabled
+                  ? Icons.notifications_active
+                  : Icons.notifications_off,
+            ),
             onPressed: () {
               setState(() {
                 toastEnabled = !toastEnabled;
@@ -188,7 +191,9 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
               );
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Toast notifications ${toastEnabled ? 'enabled' : 'disabled'}'),
+                  content: Text(
+                    'Toast notifications ${toastEnabled ? 'enabled' : 'disabled'}',
+                  ),
                   duration: const Duration(seconds: 2),
                 ),
               );
@@ -229,9 +234,7 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
                 ),
                 ElevatedButton(
                   onPressed: _logError,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                  ),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   child: const Text('Log Error'),
                 ),
                 ElevatedButton(
@@ -260,7 +263,7 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
                       final log = recentLogs[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(
-                          horizontal: 8, 
+                          horizontal: 8,
                           vertical: 4,
                         ),
                         child: ListTile(

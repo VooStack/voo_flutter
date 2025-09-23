@@ -6,10 +6,10 @@ import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_widget_type.dart';
 
 /// A typed version of VooDataColumn that provides type safety for column values
-/// 
+///
 /// Generic type parameter T represents the row data type.
 /// Generic type parameter V represents the column value type.
-/// 
+///
 /// Example usage:
 /// ```dart
 /// TypedVooDataColumn<User, String>(
@@ -59,34 +59,34 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     super.showFilterOperator,
     super.excludeFromApi,
   }) : super(
-          // Convert typed functions to dynamic versions
-          valueGetter: typedValueGetter,
-          valueFormatter: typedValueFormatter != null
-              ? (dynamic value) {
-                  if (value is V) {
-                    return typedValueFormatter(value);
-                  }
-                  // Fallback for unexpected types
-                  return value?.toString() ?? '';
-                }
-              : null,
-          cellBuilder: typedCellBuilder != null
-              ? (context, dynamic value, row) {
-                  if (value is V) {
-                    return typedCellBuilder(context, value, row);
-                  }
-                  // Fallback widget for unexpected types
-                  return Text(value?.toString() ?? '');
-                }
-              : null,
-          onCellTap: typedOnCellTap != null
-              ? (context, row, dynamic value) {
-                  if (value is V) {
-                    typedOnCellTap(context, row, value);
-                  }
-                }
-              : null,
-        );
+         // Convert typed functions to dynamic versions
+         valueGetter: typedValueGetter,
+         valueFormatter: typedValueFormatter != null
+             ? (dynamic value) {
+                 if (value is V) {
+                   return typedValueFormatter(value);
+                 }
+                 // Fallback for unexpected types
+                 return value?.toString() ?? '';
+               }
+             : null,
+         cellBuilder: typedCellBuilder != null
+             ? (context, dynamic value, row) {
+                 if (value is V) {
+                   return typedCellBuilder(context, value, row);
+                 }
+                 // Fallback widget for unexpected types
+                 return Text(value?.toString() ?? '');
+               }
+             : null,
+         onCellTap: typedOnCellTap != null
+             ? (context, row, dynamic value) {
+                 if (value is V) {
+                   typedOnCellTap(context, row, value);
+                 }
+               }
+             : null,
+       );
 
   /// Creates a typed copy with optional overrides
   @override
@@ -107,12 +107,7 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     bool? frozen,
     VooDataColumnType? dataType,
     VooFilterWidgetType? filterWidgetType,
-    Widget Function(
-      BuildContext context,
-      VooDataColumn<T> column,
-      dynamic currentValue,
-      void Function(dynamic value) onChanged,
-    )? filterBuilder,
+    Widget Function(BuildContext context, VooDataColumn<T> column, dynamic currentValue, void Function(dynamic value) onChanged)? filterBuilder,
     List<VooFilterOption>? filterOptions,
     String? filterHint,
     VooFilterOperator? defaultFilterOperator,
@@ -127,30 +122,30 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     Widget Function(BuildContext context, V value, T row)? typedCellBuilder,
     void Function(BuildContext context, T row, V value)? typedOnCellTap,
   }) => TypedVooDataColumn<T, V>(
-      field: field ?? this.field,
-      label: label ?? this.label,
-      width: width ?? this.width,
-      minWidth: minWidth ?? this.minWidth,
-      maxWidth: maxWidth ?? this.maxWidth,
-      sortable: sortable ?? this.sortable,
-      filterable: filterable ?? this.filterable,
-      textAlign: textAlign ?? this.textAlign,
-      headerBuilder: headerBuilder ?? this.headerBuilder,
-      typedValueGetter: typedValueGetter ?? this.typedValueGetter,
-      typedValueFormatter: typedValueFormatter ?? this.typedValueFormatter,
-      typedCellBuilder: typedCellBuilder ?? this.typedCellBuilder,
-      typedOnCellTap: typedOnCellTap ?? this.typedOnCellTap,
-      visible: visible ?? this.visible,
-      frozen: frozen ?? this.frozen,
-      dataType: dataType ?? this.dataType,
-      filterWidgetType: filterWidgetType ?? this.filterWidgetType,
-      filterBuilder: filterBuilder ?? this.filterBuilder,
-      filterOptions: filterOptions ?? this.filterOptions,
-      filterHint: filterHint ?? this.filterHint,
-      defaultFilterOperator: defaultFilterOperator ?? this.defaultFilterOperator,
-      allowedFilterOperators: allowedFilterOperators ?? this.allowedFilterOperators,
-      flex: flex ?? this.flex,
-      showFilterOperator: showFilterOperator ?? this.showFilterOperator,
-      excludeFromApi: excludeFromApi ?? this.excludeFromApi,
-    );
+    field: field ?? this.field,
+    label: label ?? this.label,
+    width: width ?? this.width,
+    minWidth: minWidth ?? this.minWidth,
+    maxWidth: maxWidth ?? this.maxWidth,
+    sortable: sortable ?? this.sortable,
+    filterable: filterable ?? this.filterable,
+    textAlign: textAlign ?? this.textAlign,
+    headerBuilder: headerBuilder ?? this.headerBuilder,
+    typedValueGetter: typedValueGetter ?? this.typedValueGetter,
+    typedValueFormatter: typedValueFormatter ?? this.typedValueFormatter,
+    typedCellBuilder: typedCellBuilder ?? this.typedCellBuilder,
+    typedOnCellTap: typedOnCellTap ?? this.typedOnCellTap,
+    visible: visible ?? this.visible,
+    frozen: frozen ?? this.frozen,
+    dataType: dataType ?? this.dataType,
+    filterWidgetType: filterWidgetType ?? this.filterWidgetType,
+    filterBuilder: filterBuilder ?? this.filterBuilder,
+    filterOptions: filterOptions ?? this.filterOptions,
+    filterHint: filterHint ?? this.filterHint,
+    defaultFilterOperator: defaultFilterOperator ?? this.defaultFilterOperator,
+    allowedFilterOperators: allowedFilterOperators ?? this.allowedFilterOperators,
+    flex: flex ?? this.flex,
+    showFilterOperator: showFilterOperator ?? this.showFilterOperator,
+    excludeFromApi: excludeFromApi ?? this.excludeFromApi,
+  );
 }

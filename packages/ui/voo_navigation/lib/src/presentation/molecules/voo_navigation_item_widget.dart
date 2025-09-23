@@ -6,7 +6,7 @@ class VooNavigationItemWidget extends StatelessWidget {
   final VooNavigationItem item;
   final bool isSelected;
   final VoidCallback? onTap;
-  
+
   const VooNavigationItemWidget({
     super.key,
     required this.item,
@@ -16,11 +16,9 @@ class VooNavigationItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-      leading: Icon(
-        isSelected ? item.effectiveSelectedIcon : item.icon,
-      ),
-      title: Text(item.label),
-      selected: isSelected,
-      onTap: item.isEnabled ? onTap : null,
-    );
+    leading: Icon(isSelected ? item.effectiveSelectedIcon : item.icon),
+    title: Text(item.label),
+    selected: isSelected,
+    onTap: item.isEnabled ? onTap : null,
+  );
 }

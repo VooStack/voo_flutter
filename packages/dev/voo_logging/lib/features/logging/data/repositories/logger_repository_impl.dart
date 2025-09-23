@@ -217,13 +217,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
   void _sendStructuredLogToDevTools(LogEntry entry) {
     try {
       // Create entry data, filtering out null values for web compatibility
-      final entryData = <String, dynamic>{
-        'id': entry.id,
-        'timestamp': entry.timestamp.toIso8601String(),
-        'message': entry.message,
-        'level': entry.level.name,
-      };
-      
+      final entryData = <String, dynamic>{'id': entry.id, 'timestamp': entry.timestamp.toIso8601String(), 'message': entry.message, 'level': entry.level.name};
+
       // Add non-null fields
       if (entry.category != null) entryData['category'] = entry.category;
       if (entry.tag != null) entryData['tag'] = entry.tag;
@@ -240,10 +235,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
       if (entry.userId != null) entryData['userId'] = entry.userId;
       if (entry.sessionId != null) entryData['sessionId'] = entry.sessionId;
 
-      final structuredData = {
-        '__voo_logger__': true,
-        'entry': entryData,
-      };
+      final structuredData = {'__voo_logger__': true, 'entry': entryData};
 
       // Only send JSON to console if explicitly enabled
       if (_config.enableDevToolsJson) {

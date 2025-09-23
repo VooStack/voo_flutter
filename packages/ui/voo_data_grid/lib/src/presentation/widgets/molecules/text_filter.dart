@@ -43,10 +43,7 @@ class _TextFilterState<T> extends State<TextFilter<T>> {
   void initState() {
     super.initState();
     _debouncer = Debouncer();
-    _controller = widget.textControllers.putIfAbsent(
-      widget.column.field,
-      () => TextEditingController(text: widget.currentFilter?.value?.toString() ?? ''),
-    );
+    _controller = widget.textControllers.putIfAbsent(widget.column.field, () => TextEditingController(text: widget.currentFilter?.value?.toString() ?? ''));
   }
 
   @override
@@ -73,11 +70,7 @@ class _TextFilterState<T> extends State<TextFilter<T>> {
             currentFilter: widget.currentFilter,
             onOperatorChanged: (operator) {
               // Apply filter with new operator but keep current value
-              widget.onFilterChanged({
-                'operator': operator,
-                'value': widget.currentFilter?.value,
-                'valueTo': widget.currentFilter?.valueTo,
-              });
+              widget.onFilterChanged({'operator': operator, 'value': widget.currentFilter?.value, 'valueTo': widget.currentFilter?.valueTo});
             },
           ),
         Expanded(

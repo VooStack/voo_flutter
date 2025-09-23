@@ -5,28 +5,28 @@ import 'package:voo_data_grid/src/utils/debouncer.dart';
 class TextFilterField extends StatefulWidget {
   /// The current value
   final String? value;
-  
+
   /// Callback when value changes
   final void Function(String?) onChanged;
-  
+
   /// Hint text for the field
   final String? hintText;
-  
+
   /// Label for the field
   final String? label;
-  
+
   /// Whether to show clear button
   final bool showClearButton;
-  
+
   /// Text controller (optional, for external control)
   final TextEditingController? controller;
-  
+
   /// Whether to use debouncing for input changes
   final bool useDebouncing;
-  
+
   /// Debounce duration in milliseconds
   final Duration debounceDuration;
-  
+
   const TextFilterField({
     super.key,
     this.value,
@@ -47,7 +47,7 @@ class _TextFilterFieldState extends State<TextFilterField> {
   late TextEditingController _effectiveController;
   late Debouncer _debouncer;
   bool _isControllerInternal = false;
-  
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +59,7 @@ class _TextFilterFieldState extends State<TextFilterField> {
       _effectiveController = widget.controller!;
     }
   }
-  
+
   @override
   void dispose() {
     _debouncer.dispose();
@@ -68,10 +68,10 @@ class _TextFilterFieldState extends State<TextFilterField> {
     }
     super.dispose();
   }
-  
+
   void _handleChange(String value) {
     final valueToEmit = value.isEmpty ? null : value;
-    
+
     if (widget.useDebouncing) {
       _debouncer.run(() {
         widget.onChanged(valueToEmit);
@@ -84,7 +84,7 @@ class _TextFilterFieldState extends State<TextFilterField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       height: 32,
       decoration: BoxDecoration(

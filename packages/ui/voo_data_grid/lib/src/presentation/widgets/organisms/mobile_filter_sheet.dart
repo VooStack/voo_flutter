@@ -9,12 +9,7 @@ class MobileFilterSheet extends StatefulWidget {
   final VooDataGridTheme theme;
   final VoidCallback onApply;
 
-  const MobileFilterSheet({
-    super.key,
-    required this.controller,
-    required this.theme,
-    required this.onApply,
-  });
+  const MobileFilterSheet({super.key, required this.controller, required this.theme, required this.onApply});
 
   @override
   State<MobileFilterSheet> createState() => _MobileFilterSheetState();
@@ -60,10 +55,7 @@ class _MobileFilterSheetState extends State<MobileFilterSheet> {
             margin: EdgeInsets.only(top: design.spacingMd),
             width: 40,
             height: 4,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.outline.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(2),
-            ),
+            decoration: BoxDecoration(color: theme.colorScheme.outline.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2)),
           ),
 
           // Header
@@ -71,27 +63,13 @@ class _MobileFilterSheetState extends State<MobileFilterSheet> {
             padding: EdgeInsets.all(design.spacingLg),
             child: Row(
               children: [
-                Text(
-                  'Filters',
-                  style: theme.textTheme.headlineSmall,
-                ),
+                Text('Filters', style: theme.textTheme.headlineSmall),
                 if (activeFilterCount > 0) ...[
                   SizedBox(width: design.spacingSm),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacingSm,
-                      vertical: design.spacingXs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(design.radiusSm),
-                    ),
-                    child: Text(
-                      '$activeFilterCount active',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingXs),
+                    decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(design.radiusSm)),
+                    child: Text('$activeFilterCount active', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
                   ),
                 ],
                 const Spacer(),
@@ -141,11 +119,7 @@ class _MobileFilterSheetState extends State<MobileFilterSheet> {
             padding: EdgeInsets.all(design.spacingLg),
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
-              border: Border(
-                top: BorderSide(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                ),
-              ),
+              border: Border(top: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
             ),
             child: Row(
               children: [
@@ -155,13 +129,7 @@ class _MobileFilterSheetState extends State<MobileFilterSheet> {
                       // Apply filters
                       for (final entry in _tempFilters.entries) {
                         if (entry.value != null) {
-                          widget.controller.dataSource.applyFilter(
-                            entry.key,
-                            VooDataFilter(
-                              value: entry.value,
-                              operator: VooFilterOperator.equals,
-                            ),
-                          );
+                          widget.controller.dataSource.applyFilter(entry.key, VooDataFilter(value: entry.value, operator: VooFilterOperator.equals));
                         } else {
                           widget.controller.dataSource.applyFilter(entry.key, null);
                         }

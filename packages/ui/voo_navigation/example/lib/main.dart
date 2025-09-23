@@ -41,7 +41,7 @@ class NavigationExample extends StatefulWidget {
 
 class _NavigationExampleState extends State<NavigationExample> {
   String _selectedId = 'dashboard';
-  
+
   // Create navigation items with various features
   final List<VooNavigationItem> _navigationItems = [
     VooNavigationItem(
@@ -139,11 +139,11 @@ class _NavigationExampleState extends State<NavigationExample> {
       isEnabled: true,
     ),
   ];
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // Create navigation configuration
     final config = VooNavigationConfig(
       items: _navigationItems,
@@ -197,7 +197,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               Text(
                 'Adaptive Navigation System',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimary.withAlpha((0.8 * 255).round()),
+                  color: theme.colorScheme.onPrimary
+                      .withAlpha((0.8 * 255).round()),
                 ),
               ),
             ],
@@ -270,7 +271,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         setState(() {
           _selectedId = itemId;
         });
-        
+
         // Show snackbar for demonstration
         final item = _navigationItems.firstWhere((item) => item.id == itemId);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -281,21 +282,21 @@ class _NavigationExampleState extends State<NavigationExample> {
         );
       },
     );
-    
+
     // Build adaptive scaffold
     return VooAdaptiveScaffold(
       config: config,
       body: _buildContent(context),
     );
   }
-  
+
   Widget _buildContent(BuildContext context) {
     final theme = Theme.of(context);
     final selectedItem = _navigationItems.firstWhere(
       (item) => item.id == _selectedId,
       orElse: () => _navigationItems.first,
     );
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -344,17 +345,17 @@ class _NavigationExampleState extends State<NavigationExample> {
       ),
     );
   }
-  
+
   Widget _buildFeatureCards(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     final features = [
       ('Adaptive', Icons.devices, 'Automatically adjusts to screen size'),
       ('Material 3', Icons.palette, 'Follows latest Material Design'),
       ('Customizable', Icons.tune, 'Extensive customization options'),
       ('Animated', Icons.animation, 'Beautiful transitions'),
     ];
-    
+
     return Wrap(
       spacing: 16,
       runSpacing: 16,
@@ -395,18 +396,18 @@ class _NavigationExampleState extends State<NavigationExample> {
       }).toList(),
     );
   }
-  
+
   Widget _buildScreenSizeInfo(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    
+
     String getNavigationType() {
       if (size.width < 600) return 'Bottom Navigation';
       if (size.width < 840) return 'Navigation Rail';
       if (size.width < 1240) return 'Extended Navigation Rail';
       return 'Navigation Drawer';
     }
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),

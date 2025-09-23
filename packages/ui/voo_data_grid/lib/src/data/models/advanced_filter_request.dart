@@ -38,27 +38,16 @@ class AdvancedFilterRequest {
   Map<String, dynamic> toJson() {
     // If we have legacy filters, use the simple format
     if (legacyFilters != null && legacyFilters!.isNotEmpty) {
-      return {
-        ...legacyFilters!,
-        'pageNumber': pageNumber,
-        'pageSize': pageSize,
-        if (sortBy != null) 'sortBy': sortBy,
-        'sortDescending': sortDescending,
-      };
+      return {...legacyFilters!, 'pageNumber': pageNumber, 'pageSize': pageSize, if (sortBy != null) 'sortBy': sortBy, 'sortDescending': sortDescending};
     }
 
     // Otherwise use the advanced format
     return {
-      if (stringFilters.isNotEmpty)
-        'stringFilters': stringFilters.map((f) => f.toJson()).toList(),
-      if (intFilters.isNotEmpty)
-        'intFilters': intFilters.map((f) => f.toJson()).toList(),
-      if (dateFilters.isNotEmpty)
-        'dateFilters': dateFilters.map((f) => f.toJson()).toList(),
-      if (decimalFilters.isNotEmpty)
-        'decimalFilters': decimalFilters.map((f) => f.toJson()).toList(),
-      if (boolFilters.isNotEmpty)
-        'boolFilters': boolFilters.map((f) => f.toJson()).toList(),
+      if (stringFilters.isNotEmpty) 'stringFilters': stringFilters.map((f) => f.toJson()).toList(),
+      if (intFilters.isNotEmpty) 'intFilters': intFilters.map((f) => f.toJson()).toList(),
+      if (dateFilters.isNotEmpty) 'dateFilters': dateFilters.map((f) => f.toJson()).toList(),
+      if (decimalFilters.isNotEmpty) 'decimalFilters': decimalFilters.map((f) => f.toJson()).toList(),
+      if (boolFilters.isNotEmpty) 'boolFilters': boolFilters.map((f) => f.toJson()).toList(),
       'logic': logic == FilterLogic.and ? 'And' : 'Or',
       'pageNumber': pageNumber,
       'pageSize': pageSize,
@@ -69,7 +58,8 @@ class AdvancedFilterRequest {
 
   factory AdvancedFilterRequest.fromJson(Map<String, dynamic> json) {
     // Check if it's an advanced format or legacy format
-    final bool isAdvancedFormat = json.containsKey('stringFilters') ||
+    final bool isAdvancedFormat =
+        json.containsKey('stringFilters') ||
         json.containsKey('intFilters') ||
         json.containsKey('dateFilters') ||
         json.containsKey('decimalFilters') ||
@@ -79,8 +69,7 @@ class AdvancedFilterRequest {
       // Legacy format - extract known fields and put the rest in legacyFilters
       final legacyFields = <String, dynamic>{};
       json.forEach((key, value) {
-        if (!['pageNumber', 'pageSize', 'sortBy', 'sortDescending']
-            .contains(key)) {
+        if (!['pageNumber', 'pageSize', 'sortBy', 'sortDescending'].contains(key)) {
           legacyFields[key] = value;
         }
       });
@@ -96,26 +85,11 @@ class AdvancedFilterRequest {
 
     // Advanced format
     return AdvancedFilterRequest(
-      stringFilters: (json['stringFilters'] as List<dynamic>?)
-              ?.map((f) => StringFilter.fromJson(f as Map<String, dynamic>))
-              .toList() ??
-          [],
-      intFilters: (json['intFilters'] as List<dynamic>?)
-              ?.map((f) => IntFilter.fromJson(f as Map<String, dynamic>))
-              .toList() ??
-          [],
-      dateFilters: (json['dateFilters'] as List<dynamic>?)
-              ?.map((f) => DateFilter.fromJson(f as Map<String, dynamic>))
-              .toList() ??
-          [],
-      decimalFilters: (json['decimalFilters'] as List<dynamic>?)
-              ?.map((f) => DecimalFilter.fromJson(f as Map<String, dynamic>))
-              .toList() ??
-          [],
-      boolFilters: (json['boolFilters'] as List<dynamic>?)
-              ?.map((f) => BoolFilter.fromJson(f as Map<String, dynamic>))
-              .toList() ??
-          [],
+      stringFilters: (json['stringFilters'] as List<dynamic>?)?.map((f) => StringFilter.fromJson(f as Map<String, dynamic>)).toList() ?? [],
+      intFilters: (json['intFilters'] as List<dynamic>?)?.map((f) => IntFilter.fromJson(f as Map<String, dynamic>)).toList() ?? [],
+      dateFilters: (json['dateFilters'] as List<dynamic>?)?.map((f) => DateFilter.fromJson(f as Map<String, dynamic>)).toList() ?? [],
+      decimalFilters: (json['decimalFilters'] as List<dynamic>?)?.map((f) => DecimalFilter.fromJson(f as Map<String, dynamic>)).toList() ?? [],
+      boolFilters: (json['boolFilters'] as List<dynamic>?)?.map((f) => BoolFilter.fromJson(f as Map<String, dynamic>)).toList() ?? [],
       logic: json['logic'] == 'Or' ? FilterLogic.or : FilterLogic.and,
       pageNumber: (json['pageNumber'] as int?) ?? 1,
       pageSize: (json['pageSize'] as int?) ?? 20,
@@ -140,11 +114,5 @@ class AdvancedFilterRequest {
     required int pageSize,
     String? sortBy,
     bool sortDescending = false,
-  }) => AdvancedFilterRequest(
-      legacyFilters: filters,
-      pageNumber: pageNumber,
-      pageSize: pageSize,
-      sortBy: sortBy,
-      sortDescending: sortDescending,
-    );
+  }) => AdvancedFilterRequest(legacyFilters: filters, pageNumber: pageNumber, pageSize: pageSize, sortBy: sortBy, sortDescending: sortDescending);
 }

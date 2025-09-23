@@ -5,11 +5,7 @@ import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooFileField', () {
-    Widget wrapInApp(Widget child) => MaterialApp(
-          home: Scaffold(
-            body: child,
-          ),
-        );
+    Widget wrapInApp(Widget child) => MaterialApp(home: Scaffold(body: child));
 
     testWidgets('respects readOnly property', (tester) async {
       var tapped = false;
@@ -69,23 +65,9 @@ void main() {
     });
 
     testWidgets('action buttons hidden when readOnly', (tester) async {
-      final file = VooFile.fromPlatformFile(
-        PlatformFile(
-          name: 'test.pdf',
-          size: 1024,
-          path: '/test.pdf',
-        ),
-      );
+      final file = VooFile.fromPlatformFile(PlatformFile(name: 'test.pdf', size: 1024, path: '/test.pdf'));
 
-      await tester.pumpWidget(
-        wrapInApp(
-          VooFileField(
-            name: 'file',
-            initialValue: file,
-            readOnly: true,
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(VooFileField(name: 'file', initialValue: file, readOnly: true)));
 
       // File should be displayed
       expect(find.text('test.pdf'), findsOneWidget);
@@ -96,57 +78,24 @@ void main() {
     });
 
     testWidgets('displays initial file', (tester) async {
-      final file = VooFile.fromPlatformFile(
-        PlatformFile(
-          name: 'document.docx',
-          size: 2048,
-          path: '/path/to/document.docx',
-        ),
-      );
+      final file = VooFile.fromPlatformFile(PlatformFile(name: 'document.docx', size: 2048, path: '/path/to/document.docx'));
 
-      await tester.pumpWidget(
-        wrapInApp(
-          VooFileField(
-            name: 'file',
-            initialValue: file,
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(VooFileField(name: 'file', initialValue: file)));
 
       // File name should be displayed
       expect(find.text('document.docx'), findsOneWidget);
     });
 
     testWidgets('displays placeholder when no initial file', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooFileField(
-            name: 'file',
-            buttonText: 'Upload Document',
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooFileField(name: 'file', buttonText: 'Upload Document')));
 
       expect(find.text('Upload Document'), findsOneWidget);
     });
 
     testWidgets('shows action buttons when file is selected and not readonly', (tester) async {
-      final file = VooFile.fromPlatformFile(
-        PlatformFile(
-          name: 'image.png',
-          size: 5120,
-          path: '/path/to/image.png',
-        ),
-      );
+      final file = VooFile.fromPlatformFile(PlatformFile(name: 'image.png', size: 5120, path: '/path/to/image.png'));
 
-      await tester.pumpWidget(
-        wrapInApp(
-          VooFileField(
-            name: 'file',
-            initialValue: file,
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(VooFileField(name: 'file', initialValue: file)));
 
       // File should be displayed
       expect(find.text('image.png'), findsOneWidget);
@@ -157,66 +106,31 @@ void main() {
     });
 
     testWidgets('shows allowed extensions when specified', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooFileField(
-            name: 'file',
-            allowedExtensions: ['pdf', 'doc', 'docx'],
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooFileField(name: 'file', allowedExtensions: ['pdf', 'doc', 'docx'])));
 
       expect(find.text('Allowed: pdf, doc, docx'), findsOneWidget);
     });
 
     testWidgets('shows custom button icon when provided', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooFileField(
-            name: 'file',
-            buttonIcon: Icon(Icons.attach_file),
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooFileField(name: 'file', buttonIcon: Icon(Icons.attach_file))));
 
       expect(find.byIcon(Icons.attach_file), findsOneWidget);
     });
 
     testWidgets('applies label when provided', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooFileField(
-            name: 'file',
-            label: 'Upload Resume',
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooFileField(name: 'file', label: 'Upload Resume')));
 
       expect(find.text('Upload Resume'), findsOneWidget);
     });
 
     testWidgets('shows helper text when provided', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooFileField(
-            name: 'file',
-            helper: 'PDF files only, max 5MB',
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooFileField(name: 'file', helper: 'PDF files only, max 5MB')));
 
       expect(find.text('PDF files only, max 5MB'), findsOneWidget);
     });
 
     testWidgets('shows error text when provided', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooFileField(
-            name: 'file',
-            error: 'File is required',
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooFileField(name: 'file', error: 'File is required')));
 
       expect(find.text('File is required'), findsOneWidget);
     });

@@ -5,11 +5,7 @@ import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart
 class VooFieldOptionsProvider extends InheritedWidget {
   final VooFieldOptions options;
 
-  const VooFieldOptionsProvider({
-    super.key,
-    required this.options,
-    required super.child,
-  });
+  const VooFieldOptionsProvider({super.key, required this.options, required super.child});
 
   static VooFieldOptions? of(BuildContext context) {
     final provider = context.dependOnInheritedWidgetOfExactType<VooFieldOptionsProvider>();

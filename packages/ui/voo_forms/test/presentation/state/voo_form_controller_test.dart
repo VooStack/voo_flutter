@@ -18,24 +18,15 @@ void main() {
 
     group('Field Registration', () {
       test('should register a single field', () {
-        controller.registerField(
-          'username',
-          initialValue: 'john_doe',
-        );
+        controller.registerField('username', initialValue: 'john_doe');
 
         expect(controller.getValue('username'), 'john_doe');
       });
 
       test('should register multiple fields', () {
         controller.registerFields({
-          'username': const FormFieldConfig(
-            name: 'username',
-            initialValue: 'john_doe',
-          ),
-          'email': const FormFieldConfig(
-            name: 'email',
-            initialValue: 'john@example.com',
-          ),
+          'username': const FormFieldConfig(name: 'username', initialValue: 'john_doe'),
+          'email': const FormFieldConfig(name: 'email', initialValue: 'john@example.com'),
         });
 
         expect(controller.getValue('username'), 'john_doe');
@@ -78,10 +69,7 @@ void main() {
         controller.registerField('username');
         controller.registerField('email');
 
-        controller.setValues({
-          'username': 'john_doe',
-          'email': 'john@example.com',
-        });
+        controller.setValues({'username': 'john_doe', 'email': 'john@example.com'});
 
         expect(controller.getValue('username'), 'john_doe');
         expect(controller.getValue('email'), 'john@example.com');
@@ -106,10 +94,7 @@ void main() {
 
     group('Validation', () {
       test('should validate required field with VooValidator', () {
-        controller.registerField(
-          'username',
-          validators: [VooValidator.required()],
-        );
+        controller.registerField('username', validators: [VooValidator.required()]);
 
         // Field is empty, should be invalid
         expect(controller.validate(), false);
@@ -122,13 +107,7 @@ void main() {
       });
 
       test('should validate email field with VooValidator', () {
-        controller.registerField(
-          'email',
-          validators: [
-            VooValidator.required(),
-            VooValidator.email(),
-          ],
-        );
+        controller.registerField('email', validators: [VooValidator.required(), VooValidator.email()]);
 
         // Field is empty, should be invalid
         expect(controller.validate(), false);
@@ -183,45 +162,15 @@ void main() {
 
       test('should validate complex form with multiple field types', () {
         // Register different types of fields with various validators
-        controller.registerField(
-          'username',
-          validators: [
-            VooValidator.required(),
-            VooValidator.minLength(3),
-          ],
-        );
+        controller.registerField('username', validators: [VooValidator.required(), VooValidator.minLength(3)]);
 
-        controller.registerField(
-          'email',
-          validators: [
-            VooValidator.required(),
-            VooValidator.email(),
-          ],
-        );
+        controller.registerField('email', validators: [VooValidator.required(), VooValidator.email()]);
 
-        controller.registerField(
-          'age',
-          validators: [
-            VooValidator.required(),
-            VooValidator.min(18),
-            VooValidator.max(100),
-          ],
-        );
+        controller.registerField('age', validators: [VooValidator.required(), VooValidator.min(18), VooValidator.max(100)]);
 
-        controller.registerField(
-          'phone',
-          validators: [
-            VooValidator.required(),
-            VooValidator.phone(),
-          ],
-        );
+        controller.registerField('phone', validators: [VooValidator.required(), VooValidator.phone()]);
 
-        controller.registerField(
-          'website',
-          validators: [
-            VooValidator.url(),
-          ],
-        );
+        controller.registerField('website', validators: [VooValidator.url()]);
 
         // All required fields empty, should be invalid
         expect(controller.validate(), false);
@@ -277,12 +226,7 @@ void main() {
       });
 
       test('should validate required field', () {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null]);
 
         // Field is empty, should be invalid
         expect(controller.validate(), false);
@@ -319,18 +263,8 @@ void main() {
       });
 
       test('should validate all fields', () {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
-          ],
-        );
-        controller.registerField(
-          'email',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Email is required' : null,
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null]);
+        controller.registerField('email', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Email is required' : null]);
 
         expect(controller.validateAll(), false);
         expect(controller.errors.length, 2);
@@ -343,12 +277,7 @@ void main() {
       });
 
       test('should support silent validation', () {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null]);
 
         // Silent validation doesn't update errors
         expect(controller.validate(silent: true), false);
@@ -362,12 +291,7 @@ void main() {
       test('should respect error display mode onTyping', () {
         controller = VooFormController();
 
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null]);
 
         // Should show error immediately on validation
         controller.setValue('username', '', validate: true);
@@ -375,27 +299,16 @@ void main() {
       });
 
       test('should respect error display mode onSubmit', () {
-        controller = VooFormController(
-          errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-        );
+        controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
 
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null]);
 
         // Should not show error before submit
         controller.validateField('username');
         expect(controller.getError('username'), isNull);
 
         // Should show error after submit attempt
-        controller
-            .submit(
-          onSubmit: (_) async {},
-        )
-            .then((success) {
+        controller.submit(onSubmit: (_) async {}).then((success) {
           expect(success, false);
           expect(controller.getError('username'), 'Username is required');
         });
@@ -426,12 +339,7 @@ void main() {
       });
 
       test('should clear errors', () {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => 'Always error',
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => 'Always error']);
 
         controller.validateAll();
         expect(controller.errors.isNotEmpty, true);
@@ -441,14 +349,8 @@ void main() {
       });
 
       test('should clear specific field error', () {
-        controller.registerField(
-          'username',
-          validators: [(dynamic value) => 'Username error'],
-        );
-        controller.registerField(
-          'email',
-          validators: [(dynamic value) => 'Email error'],
-        );
+        controller.registerField('username', validators: [(dynamic value) => 'Username error']);
+        controller.registerField('email', validators: [(dynamic value) => 'Email error']);
 
         controller.validateAll();
         expect(controller.errors.length, 2);
@@ -476,21 +378,13 @@ void main() {
 
         expect(result, true);
         expect(submitted, true);
-        expect(submittedValues, {
-          'username': 'john',
-          'email': 'john@example.com',
-        });
+        expect(submittedValues, {'username': 'john', 'email': 'john@example.com'});
         expect(controller.isSubmitted, true);
         expect(controller.isDirty, false);
       });
 
       test('should not submit invalid form', () async {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null,
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Username is required' : null]);
 
         bool submitted = false;
 
@@ -611,37 +505,23 @@ void main() {
       test('should add validators to existing field', () {
         controller.registerField('username');
 
-        controller.addValidators('username', [
-          (dynamic value) => value == null ? 'Required' : null,
-        ]);
+        controller.addValidators('username', [(dynamic value) => value == null ? 'Required' : null]);
 
         expect(controller.validateField('username'), false);
         expect(controller.getError('username'), 'Required');
       });
 
       test('should replace validators', () {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => 'Old validator',
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => 'Old validator']);
 
-        controller.setValidators('username', [
-          (dynamic value) => 'New validator',
-        ]);
+        controller.setValidators('username', [(dynamic value) => 'New validator']);
 
         controller.validateField('username');
         expect(controller.getError('username'), 'New validator');
       });
 
       test('should remove validators', () {
-        controller.registerField(
-          'username',
-          validators: [
-            (dynamic value) => 'Error',
-          ],
-        );
+        controller.registerField('username', validators: [(dynamic value) => 'Error']);
 
         controller.removeValidators('username');
         expect(controller.validateField('username'), true);
@@ -656,11 +536,7 @@ void main() {
 
         final json = controller.toJson();
 
-        expect(json, {
-          'username': 'john',
-          'age': 25,
-          'active': true,
-        });
+        expect(json, {'username': 'john', 'age': 25, 'active': true});
       });
     });
 
@@ -678,10 +554,7 @@ void main() {
       });
 
       test('should notify listeners on validation', () {
-        controller.registerField(
-          'username',
-          validators: [(dynamic value) => 'Error'],
-        );
+        controller.registerField('username', validators: [(dynamic value) => 'Error']);
 
         int notificationCount = 0;
         controller.addListener(() {

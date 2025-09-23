@@ -8,27 +8,18 @@ class SelectionHeaderCell<T> extends StatelessWidget {
   final VooDataGridTheme theme;
   final VooDesignSystemData design;
 
-  const SelectionHeaderCell({
-    super.key,
-    required this.controller,
-    required this.theme,
-    required this.design,
-  });
+  const SelectionHeaderCell({super.key, required this.controller, required this.theme, required this.design});
 
   @override
   Widget build(BuildContext context) {
-    final isAllSelected = controller.dataSource.selectedRows.length == controller.dataSource.rows.length && 
-                         controller.dataSource.rows.isNotEmpty;
+    final isAllSelected = controller.dataSource.selectedRows.length == controller.dataSource.rows.length && controller.dataSource.rows.isNotEmpty;
 
     return Container(
       width: 48,
       padding: EdgeInsets.symmetric(horizontal: design.spacingSm),
       decoration: BoxDecoration(
         border: Border(
-          right: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
-          ),
+          right: BorderSide(color: theme.gridLineColor, width: controller.showGridLines ? 1 : 0),
         ),
       ),
       child: controller.dataSource.selectionMode == VooSelectionMode.multiple

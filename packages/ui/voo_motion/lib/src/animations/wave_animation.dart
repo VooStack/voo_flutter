@@ -10,7 +10,7 @@ class VooWaveAnimation extends StatefulWidget {
   final double waveCount;
   final WaveType waveType;
   final Axis direction;
-  
+
   const VooWaveAnimation({
     super.key,
     required this.child,
@@ -20,41 +20,25 @@ class VooWaveAnimation extends StatefulWidget {
     this.waveType = WaveType.sin,
     this.direction = Axis.vertical,
   });
-  
+
   @override
   State<VooWaveAnimation> createState() => _VooWaveAnimationState();
 }
 
-enum WaveType {
-  sin,
-  cos,
-  sawtooth,
-  square,
-  triangle,
-}
+enum WaveType { sin, cos, sawtooth, square, triangle }
 
-class _VooWaveAnimationState extends State<VooWaveAnimation>
-    with SingleTickerProviderStateMixin {
+class _VooWaveAnimationState extends State<VooWaveAnimation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.config.duration,
-      vsync: this,
-    );
-    
-    _animation = Tween<double>(
-      begin: 0.0,
-      end: 2 * math.pi * widget.waveCount,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.config.curve,
-    ),);
-    
+
+    _controller = AnimationController(duration: widget.config.duration, vsync: this);
+
+    _animation = Tween<double>(begin: 0.0, end: 2 * math.pi * widget.waveCount).animate(CurvedAnimation(parent: _controller, curve: widget.config.curve));
+
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
         if (mounted) {
@@ -70,13 +54,13 @@ class _VooWaveAnimationState extends State<VooWaveAnimation>
       });
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   double _calculateWaveValue(double t) {
     switch (widget.waveType) {
       case WaveType.sin:
@@ -90,25 +74,18 @@ class _VooWaveAnimationState extends State<VooWaveAnimation>
         return (math.sin(t) >= 0 ? 1 : -1) * widget.waveHeight;
       case WaveType.triangle:
         final normalized = (t % (2 * math.pi)) / (2 * math.pi);
-        return (normalized < 0.5 
-          ? 4 * normalized - 1 
-          : 3 - 4 * normalized) * widget.waveHeight;
+        return (normalized < 0.5 ? 4 * normalized - 1 : 3 - 4 * normalized) * widget.waveHeight;
     }
   }
-  
+
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        final waveValue = _calculateWaveValue(_animation.value);
-        final offset = widget.direction == Axis.vertical
-            ? Offset(waveValue, 0)
-            : Offset(0, waveValue);
-        
-        return Transform.translate(
-          offset: offset,
-          child: widget.child,
-        );
-      },
-    );
+    animation: _animation,
+    builder: (context, child) {
+      final waveValue = _calculateWaveValue(_animation.value);
+      final offset = widget.direction == Axis.vertical ? Offset(waveValue, 0) : Offset(0, waveValue);
+
+      return Transform.translate(offset: offset, child: widget.child);
+    },
+  );
 }

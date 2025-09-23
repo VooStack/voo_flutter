@@ -21,7 +21,14 @@ class VooBreakpoint {
   /// The gutter spacing between items
   final double gutter;
 
-  const VooBreakpoint({required this.minWidth, this.maxWidth, required this.navigationType, required this.columns, required this.margin, required this.gutter});
+  const VooBreakpoint({
+    required this.minWidth,
+    this.maxWidth,
+    required this.navigationType,
+    required this.columns,
+    required this.margin,
+    required this.gutter,
+  });
 
   /// Checks if a given width falls within this breakpoint
   bool contains(double width) {
@@ -81,10 +88,19 @@ class VooBreakpoint {
   );
 
   /// Default Material 3 breakpoints
-  static const List<VooBreakpoint> material3Breakpoints = [compact, medium, expanded, large, extraLarge];
+  static const List<VooBreakpoint> material3Breakpoints = [
+    compact,
+    medium,
+    expanded,
+    large,
+    extraLarge,
+  ];
 
   /// Gets the current breakpoint based on screen width
-  static VooBreakpoint fromWidth(double width, [List<VooBreakpoint>? breakpoints]) {
+  static VooBreakpoint fromWidth(
+    double width, [
+    List<VooBreakpoint>? breakpoints,
+  ]) {
     final points = breakpoints ?? material3Breakpoints;
     for (final breakpoint in points) {
       if (breakpoint.contains(width)) {

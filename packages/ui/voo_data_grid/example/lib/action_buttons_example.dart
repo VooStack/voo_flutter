@@ -156,7 +156,10 @@ class _ActionButtonsExampleState extends State<ActionButtonsExample> {
               child: ElevatedButton(
                 onPressed: () => _processOrder(context, order),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
                 child: const Text('Process', style: TextStyle(fontSize: 12)),
               ),
@@ -206,10 +209,7 @@ class _ActionButtonsExampleState extends State<ActionButtonsExample> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Edit order #${order.id}'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {},
-        ),
+        action: SnackBarAction(label: 'Undo', onPressed: () {}),
       ),
     );
   }
@@ -263,7 +263,9 @@ class _ActionButtonsExampleState extends State<ActionButtonsExample> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Order #${order.id} cannot be processed (status: ${order.status})'),
+          content: Text(
+            'Order #${order.id} cannot be processed (status: ${order.status})',
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -297,9 +299,7 @@ class _ActionButtonsExampleState extends State<ActionButtonsExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Action Buttons Example'),
-      ),
+      appBar: AppBar(title: const Text('Action Buttons Example')),
       body: Column(
         children: [
           Container(
@@ -317,10 +317,16 @@ class _ActionButtonsExampleState extends State<ActionButtonsExample> {
                   'This example demonstrates:',
                   style: TextStyle(fontSize: 14),
                 ),
-                const Text('• Action columns that are excluded from API requests'),
-                const Text('• Custom cell builders for buttons and status badges'),
+                const Text(
+                  '• Action columns that are excluded from API requests',
+                ),
+                const Text(
+                  '• Custom cell builders for buttons and status badges',
+                ),
                 const Text('• onCellTap callback for clickable cells'),
-                const Text('• Interactive operations like view, edit, and delete'),
+                const Text(
+                  '• Interactive operations like view, edit, and delete',
+                ),
               ],
             ),
           ),

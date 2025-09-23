@@ -54,7 +54,8 @@ void main() {
                     routes: [
                       GoRoute(
                         path: 'details',
-                        builder: (context, state) => const _TestPage('Home Details'),
+                        builder: (context, state) =>
+                            const _TestPage('Home Details'),
                       ),
                     ],
                   ),
@@ -68,7 +69,8 @@ void main() {
                     routes: [
                       GoRoute(
                         path: 'edit',
-                        builder: (context, state) => const _TestPage('Edit Profile'),
+                        builder: (context, state) =>
+                            const _TestPage('Edit Profile'),
                       ),
                     ],
                   ),
@@ -82,7 +84,8 @@ void main() {
                     routes: [
                       GoRoute(
                         path: 'privacy',
-                        builder: (context, state) => const _TestPage('Privacy Settings'),
+                        builder: (context, state) =>
+                            const _TestPage('Privacy Settings'),
                       ),
                     ],
                   ),
@@ -94,12 +97,10 @@ void main() {
       );
     });
 
-    testWidgets('renders VooAdaptiveScaffold with StatefulNavigationShell', (tester) async {
-      await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: router,
-        ),
-      );
+    testWidgets('renders VooAdaptiveScaffold with StatefulNavigationShell', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestRouterApp(routerConfig: router));
 
       // Verify scaffold is rendered
       expect(find.byType(VooAdaptiveScaffold), findsOneWidget);
@@ -110,11 +111,7 @@ void main() {
     });
 
     testWidgets('navigation between branches works correctly', (tester) async {
-      await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: router,
-        ),
-      );
+      await tester.pumpWidget(createTestRouterApp(routerConfig: router));
 
       // Initial state - Home is selected
       expect(find.text('Home Page'), findsOneWidget);
@@ -142,11 +139,7 @@ void main() {
     });
 
     testWidgets('maintains state when switching branches', (tester) async {
-      await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: router,
-        ),
-      );
+      await tester.pumpWidget(createTestRouterApp(routerConfig: router));
 
       // Navigate to Profile
       await tester.tap(find.byIcon(Icons.person_outline));
@@ -170,11 +163,7 @@ void main() {
     });
 
     testWidgets('navigates to nested routes within branches', (tester) async {
-      await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: router,
-        ),
-      );
+      await tester.pumpWidget(createTestRouterApp(routerConfig: router));
 
       // Navigate to nested route
       router.go('/home/details');
@@ -222,11 +211,7 @@ void main() {
       // Create a fresh router to avoid conflicts
       final testRouter = _createTestRouter(itemsWithBadges);
 
-      await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: testRouter,
-        ),
-      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: testRouter));
 
       // Verify badges are displayed
       expect(find.byType(VooNavigationBadge), findsWidgets);
@@ -234,7 +219,9 @@ void main() {
       expect(find.text('NEW'), findsOneWidget); // Badge text
     });
 
-    testWidgets('handles navigation with sections and children', (tester) async {
+    testWidgets('handles navigation with sections and children', (
+      tester,
+    ) async {
       // Create items with a section containing children
       final itemsWithSections = [
         const VooNavigationItem(
@@ -283,10 +270,15 @@ void main() {
       expect(find.byType(VooAdaptiveScaffold), findsOneWidget);
 
       // Verify the navigation items exist in the configuration
-      final scaffold = tester.widget<VooAdaptiveScaffold>(find.byType(VooAdaptiveScaffold));
+      final scaffold = tester.widget<VooAdaptiveScaffold>(
+        find.byType(VooAdaptiveScaffold),
+      );
       expect(scaffold.config.items.length, 2); // home + section
       expect(scaffold.config.items[1].hasChildren, true);
-      expect(scaffold.config.items[1].children?.length, 2); // profile + settings
+      expect(
+        scaffold.config.items[1].children?.length,
+        2,
+      ); // profile + settings
     });
 
     testWidgets('adapts to different screen sizes', (tester) async {
@@ -294,9 +286,7 @@ void main() {
 
       // Test mobile layout (bottom navigation)
       await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: _createTestRouter(navigationItems),
-        ),
+        createTestRouterApp(routerConfig: _createTestRouter(navigationItems)),
       );
       await tester.pumpAndSettle();
 
@@ -309,9 +299,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: _createTestRouter(navigationItems),
-        ),
+        createTestRouterApp(routerConfig: _createTestRouter(navigationItems)),
       );
       await tester.pumpAndSettle();
 
@@ -324,9 +312,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.pumpWidget(
-        createTestRouterApp(
-          routerConfig: _createTestRouter(navigationItems),
-        ),
+        createTestRouterApp(routerConfig: _createTestRouter(navigationItems)),
       );
       await tester.pumpAndSettle();
 
@@ -358,7 +344,8 @@ GoRouter _createTestRouter(List<VooNavigationItem> items) {
                 routes: [
                   GoRoute(
                     path: 'details',
-                    builder: (context, state) => const _TestPage('Home Details'),
+                    builder: (context, state) =>
+                        const _TestPage('Home Details'),
                   ),
                 ],
               ),
@@ -372,7 +359,8 @@ GoRouter _createTestRouter(List<VooNavigationItem> items) {
                 routes: [
                   GoRoute(
                     path: 'edit',
-                    builder: (context, state) => const _TestPage('Edit Profile'),
+                    builder: (context, state) =>
+                        const _TestPage('Edit Profile'),
                   ),
                 ],
               ),
@@ -386,7 +374,8 @@ GoRouter _createTestRouter(List<VooNavigationItem> items) {
                 routes: [
                   GoRoute(
                     path: 'privacy',
-                    builder: (context, state) => const _TestPage('Privacy Settings'),
+                    builder: (context, state) =>
+                        const _TestPage('Privacy Settings'),
                   ),
                 ],
               ),

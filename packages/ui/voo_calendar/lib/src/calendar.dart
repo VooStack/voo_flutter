@@ -65,10 +65,16 @@ class VooCalendarEvent {
 
   bool isOnDate(DateTime date) {
     final dateOnly = DateTime(date.year, date.month, date.day);
-    final startDateOnly = DateTime(startTime.year, startTime.month, startTime.day);
+    final startDateOnly = DateTime(
+      startTime.year,
+      startTime.month,
+      startTime.day,
+    );
     final endDateOnly = DateTime(endTime.year, endTime.month, endTime.day);
 
-    return (dateOnly.isAtSameMomentAs(startDateOnly) || dateOnly.isAtSameMomentAs(endDateOnly) || (dateOnly.isAfter(startDateOnly) && dateOnly.isBefore(endDateOnly)));
+    return (dateOnly.isAtSameMomentAs(startDateOnly) ||
+        dateOnly.isAtSameMomentAs(endDateOnly) ||
+        (dateOnly.isAfter(startDateOnly) && dateOnly.isBefore(endDateOnly)));
   }
 }
 
@@ -102,12 +108,7 @@ class VooCalendarGestureConfig {
   });
 }
 
-enum SelectionFeedback {
-  none,
-  haptic,
-  visual,
-  both,
-}
+enum SelectionFeedback { none, haptic, visual, both }
 
 /// Calendar controller
 class VooCalendarController extends ChangeNotifier {
@@ -130,10 +131,10 @@ class VooCalendarController extends ChangeNotifier {
     DateTime? initialDate,
     VooCalendarView initialView = VooCalendarView.month,
     VooCalendarSelectionMode selectionMode = VooCalendarSelectionMode.single,
-  })  : _selectedDate = initialDate ?? DateTime.now(),
-        _focusedDate = initialDate ?? DateTime.now(),
-        _currentView = initialView,
-        _selectionMode = selectionMode {
+  }) : _selectedDate = initialDate ?? DateTime.now(),
+       _focusedDate = initialDate ?? DateTime.now(),
+       _currentView = initialView,
+       _selectionMode = selectionMode {
     if (selectionMode == VooCalendarSelectionMode.single) {
       _selectedDates.add(_selectedDate);
     }
@@ -229,7 +230,11 @@ class VooCalendarController extends ChangeNotifier {
       final start = date.isBefore(_dragStartDate!) ? date : _dragStartDate!;
       final end = date.isBefore(_dragStartDate!) ? _dragStartDate! : date;
 
-      for (var d = start; d.isBefore(end) || d.isAtSameMomentAs(end); d = d.add(const Duration(days: 1))) {
+      for (
+        var d = start;
+        d.isBefore(end) || d.isAtSameMomentAs(end);
+        d = d.add(const Duration(days: 1))
+      ) {
         _tempSelectedDates.add(d);
       }
     }
@@ -256,10 +261,18 @@ class VooCalendarController extends ChangeNotifier {
 
     if (_selectionMode == VooCalendarSelectionMode.multiple) {
       return _tempSelectedDates.contains(date);
-    } else if (_selectionMode == VooCalendarSelectionMode.range && _dragStartDate != null && _dragEndDate != null) {
-      final start = _dragStartDate!.isBefore(_dragEndDate!) ? _dragStartDate! : _dragEndDate!;
-      final end = _dragStartDate!.isBefore(_dragEndDate!) ? _dragEndDate! : _dragStartDate!;
-      return date.isAtSameMomentAs(start) || date.isAtSameMomentAs(end) || (date.isAfter(start) && date.isBefore(end));
+    } else if (_selectionMode == VooCalendarSelectionMode.range &&
+        _dragStartDate != null &&
+        _dragEndDate != null) {
+      final start = _dragStartDate!.isBefore(_dragEndDate!)
+          ? _dragStartDate!
+          : _dragEndDate!;
+      final end = _dragStartDate!.isBefore(_dragEndDate!)
+          ? _dragEndDate!
+          : _dragStartDate!;
+      return date.isAtSameMomentAs(start) ||
+          date.isAtSameMomentAs(end) ||
+          (date.isAfter(start) && date.isBefore(end));
     }
 
     return false;
@@ -291,27 +304,45 @@ class VooCalendarController extends ChangeNotifier {
   }
 
   bool isDateSelected(DateTime date) {
-    if (_selectionMode == VooCalendarSelectionMode.single || _selectionMode == VooCalendarSelectionMode.multiple) {
-      return _selectedDates.any((selected) => selected.year == date.year && selected.month == date.month && selected.day == date.day);
-    } else if (_selectionMode == VooCalendarSelectionMode.range && _rangeStart != null && _rangeEnd != null) {
-      return date.isAtSameMomentAs(_rangeStart!) || date.isAtSameMomentAs(_rangeEnd!) || (date.isAfter(_rangeStart!) && date.isBefore(_rangeEnd!));
+    if (_selectionMode == VooCalendarSelectionMode.single ||
+        _selectionMode == VooCalendarSelectionMode.multiple) {
+      return _selectedDates.any(
+        (selected) =>
+            selected.year == date.year &&
+            selected.month == date.month &&
+            selected.day == date.day,
+      );
+    } else if (_selectionMode == VooCalendarSelectionMode.range &&
+        _rangeStart != null &&
+        _rangeEnd != null) {
+      return date.isAtSameMomentAs(_rangeStart!) ||
+          date.isAtSameMomentAs(_rangeEnd!) ||
+          (date.isAfter(_rangeStart!) && date.isBefore(_rangeEnd!));
     }
     return false;
   }
 
   bool isDateInRange(DateTime date) {
-    if (_selectionMode == VooCalendarSelectionMode.range && _rangeStart != null && _rangeEnd != null) {
+    if (_selectionMode == VooCalendarSelectionMode.range &&
+        _rangeStart != null &&
+        _rangeEnd != null) {
       return date.isAfter(_rangeStart!) && date.isBefore(_rangeEnd!);
     }
     return false;
   }
 
   bool isRangeStart(DateTime date) {
-    return _rangeStart != null && date.year == _rangeStart!.year && date.month == _rangeStart!.month && date.day == _rangeStart!.day;
+    return _rangeStart != null &&
+        date.year == _rangeStart!.year &&
+        date.month == _rangeStart!.month &&
+        date.day == _rangeStart!.day;
   }
 
   bool isRangeEnd(DateTime date) {
-    return _rangeEnd != null && date.year == _rangeEnd!.year && date.month == _rangeEnd!.month && date.day == _rangeEnd!.day;
+    return _rangeEnd != null &&
+        date.year == _rangeEnd!.year &&
+        date.month == _rangeEnd!.month &&
+        date.day == _rangeEnd!.day;
   }
 
   void _clearSelection() {
@@ -404,7 +435,8 @@ class VooCalendar extends StatefulWidget {
   final int firstDayOfWeek;
 
   /// Custom header builder
-  final Widget Function(BuildContext context, DateTime focusedDate)? headerBuilder;
+  final Widget Function(BuildContext context, DateTime focusedDate)?
+  headerBuilder;
 
   /// Date selected callback
   final void Function(DateTime date)? onDateSelected;
@@ -426,10 +458,12 @@ class VooCalendar extends StatefulWidget {
     bool isToday,
     bool isOutsideMonth,
     List<VooCalendarEvent> events,
-  )? dayBuilder;
+  )?
+  dayBuilder;
 
   /// Custom event builder
-  final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
+  final Widget Function(BuildContext context, VooCalendarEvent event)?
+  eventBuilder;
 
   /// Calendar decoration
   final BoxDecoration? decoration;
@@ -488,7 +522,8 @@ class _VooCalendarState extends State<VooCalendar> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ??
+    _controller =
+        widget.controller ??
         VooCalendarController(
           initialDate: widget.initialDate,
           initialView: widget.initialView,
@@ -530,19 +565,22 @@ class _VooCalendarState extends State<VooCalendar> {
     List<VooCalendarView> effectiveViews = widget.availableViews;
     if (isPhone && effectiveViews.contains(VooCalendarView.week)) {
       // On phone, prefer day view over week view
-      effectiveViews = effectiveViews.map((v) => v == VooCalendarView.week ? VooCalendarView.day : v).toList();
+      effectiveViews = effectiveViews
+          .map((v) => v == VooCalendarView.week ? VooCalendarView.day : v)
+          .toList();
     }
 
     // Determine padding based on screen size
     final contentPadding = isDesktop
         ? EdgeInsets.all(design.spacingLg)
         : isTablet
-            ? EdgeInsets.all(design.spacingMd)
-            : EdgeInsets.all(design.spacingSm);
+        ? EdgeInsets.all(design.spacingMd)
+        : EdgeInsets.all(design.spacingSm);
 
     return Container(
       padding: contentPadding,
-      decoration: widget.decoration ??
+      decoration:
+          widget.decoration ??
           BoxDecoration(
             color: _theme.backgroundColor,
             borderRadius: BorderRadius.circular(design.radiusMd),
@@ -552,9 +590,13 @@ class _VooCalendarState extends State<VooCalendar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.showHeader) _buildHeader(design),
-          if (widget.showViewSwitcher && effectiveViews.length > 1) _buildViewSwitcher(design),
+          if (widget.showViewSwitcher && effectiveViews.length > 1)
+            _buildViewSwitcher(design),
           Expanded(
-            child: _buildCalendarView(design, effectiveCompact: effectiveCompact),
+            child: _buildCalendarView(
+              design,
+              effectiveCompact: effectiveCompact,
+            ),
           ),
         ],
       ),
@@ -574,7 +616,9 @@ class _VooCalendarState extends State<VooCalendar> {
       VooCalendarView.schedule => 'MMMM yyyy',
     };
 
-    String headerText = DateFormat(formatString).format(_controller.focusedDate);
+    String headerText = DateFormat(
+      formatString,
+    ).format(_controller.focusedDate);
 
     if (_controller.currentView == VooCalendarView.week) {
       final weekEnd = _controller.focusedDate.add(const Duration(days: 6));
@@ -630,7 +674,9 @@ class _VooCalendarState extends State<VooCalendar> {
       ),
       decoration: BoxDecoration(
         color: _theme.headerBackgroundColor.withValues(alpha: 0.5),
-        border: Border(bottom: BorderSide(color: _theme.borderColor, width: 0.5)),
+        border: Border(
+          bottom: BorderSide(color: _theme.borderColor, width: 0.5),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -678,69 +724,74 @@ class _VooCalendarState extends State<VooCalendar> {
     );
   }
 
-  Widget _buildCalendarView(VooDesignSystemData design, {bool? effectiveCompact}) {
+  Widget _buildCalendarView(
+    VooDesignSystemData design, {
+    bool? effectiveCompact,
+  }) {
     final compact = effectiveCompact ?? widget.compact;
     final content = switch (_controller.currentView) {
       VooCalendarView.month => VooCalendarMonthView(
-          controller: _controller,
-          theme: _theme,
-          firstDayOfWeek: widget.firstDayOfWeek,
-          showWeekNumbers: widget.showWeekNumbers,
-          dayBuilder: widget.dayBuilder,
-          eventBuilder: widget.eventBuilder,
-          onDateSelected: (date) {
-            _controller.selectDate(date);
-            widget.onDateSelected?.call(date);
-            if (_controller.selectionMode == VooCalendarSelectionMode.range) {
-              widget.onRangeSelected?.call(
-                _controller.rangeStart,
-                _controller.rangeEnd,
-              );
-            }
-          },
-          onEventTap: widget.onEventTap,
-          compact: compact,
-          gestureConfig: widget.gestureConfig,
-        ),
+        controller: _controller,
+        theme: _theme,
+        firstDayOfWeek: widget.firstDayOfWeek,
+        showWeekNumbers: widget.showWeekNumbers,
+        dayBuilder: widget.dayBuilder,
+        eventBuilder: widget.eventBuilder,
+        onDateSelected: (date) {
+          _controller.selectDate(date);
+          widget.onDateSelected?.call(date);
+          if (_controller.selectionMode == VooCalendarSelectionMode.range) {
+            widget.onRangeSelected?.call(
+              _controller.rangeStart,
+              _controller.rangeEnd,
+            );
+          }
+        },
+        onEventTap: widget.onEventTap,
+        compact: compact,
+        gestureConfig: widget.gestureConfig,
+      ),
       VooCalendarView.week => VooCalendarWeekView(
-          controller: _controller,
-          theme: _theme,
-          firstDayOfWeek: widget.firstDayOfWeek,
-          eventBuilder: widget.eventBuilder,
-          onDateSelected: (date) {
-            _controller.selectDate(date);
-            widget.onDateSelected?.call(date);
-          },
-          onEventTap: widget.onEventTap,
-          compact: compact,
-        ),
+        controller: _controller,
+        theme: _theme,
+        firstDayOfWeek: widget.firstDayOfWeek,
+        eventBuilder: widget.eventBuilder,
+        onDateSelected: (date) {
+          _controller.selectDate(date);
+          widget.onDateSelected?.call(date);
+        },
+        onEventTap: widget.onEventTap,
+        compact: compact,
+      ),
       VooCalendarView.day => VooCalendarDayView(
-          controller: _controller,
-          theme: _theme,
-          eventBuilder: widget.eventBuilder,
-          onEventTap: widget.onEventTap,
-          compact: compact,
-        ),
+        controller: _controller,
+        theme: _theme,
+        eventBuilder: widget.eventBuilder,
+        onEventTap: widget.onEventTap,
+        compact: compact,
+      ),
       VooCalendarView.year => VooCalendarYearView(
-          controller: _controller,
-          theme: _theme,
-          onMonthSelected: (month) {
-            _controller.setFocusedDate(DateTime(_controller.focusedDate.year, month));
-            _controller.setView(VooCalendarView.month);
-          },
-          compact: compact,
-        ),
+        controller: _controller,
+        theme: _theme,
+        onMonthSelected: (month) {
+          _controller.setFocusedDate(
+            DateTime(_controller.focusedDate.year, month),
+          );
+          _controller.setView(VooCalendarView.month);
+        },
+        compact: compact,
+      ),
       VooCalendarView.schedule => VooCalendarScheduleView(
-          controller: _controller,
-          theme: _theme,
-          eventBuilder: widget.eventBuilder,
-          onEventTap: widget.onEventTap,
-          onDateSelected: (date) {
-            _controller.selectDate(date);
-            widget.onDateSelected?.call(date);
-          },
-          compact: compact,
-        ),
+        controller: _controller,
+        theme: _theme,
+        eventBuilder: widget.eventBuilder,
+        onEventTap: widget.onEventTap,
+        onDateSelected: (date) {
+          _controller.selectDate(date);
+          widget.onDateSelected?.call(date);
+        },
+        compact: compact,
+      ),
     };
 
     if (widget.enableSwipeNavigation) {

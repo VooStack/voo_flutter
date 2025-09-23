@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 enum VooNavigationType {
   /// Bottom navigation bar for mobile devices
   bottomNavigation,
-  
+
   /// Navigation rail for tablets and medium screens
   navigationRail,
-  
+
   /// Navigation drawer for larger screens or as a menu
   navigationDrawer,
-  
+
   /// Extended navigation rail with labels
   extendedNavigationRail,
 }
@@ -18,16 +18,16 @@ enum VooNavigationType {
 /// Extension methods for VooNavigationType
 extension VooNavigationTypeExtension on VooNavigationType {
   /// Returns true if this is a rail type navigation
-  bool get isRail => 
-      this == VooNavigationType.navigationRail || 
+  bool get isRail =>
+      this == VooNavigationType.navigationRail ||
       this == VooNavigationType.extendedNavigationRail;
-  
+
   /// Returns true if this is a drawer type navigation
   bool get isDrawer => this == VooNavigationType.navigationDrawer;
-  
+
   /// Returns true if this is a bottom navigation
   bool get isBottom => this == VooNavigationType.bottomNavigation;
-  
+
   /// Returns the minimum width required for this navigation type
   double get minWidth {
     switch (this) {
@@ -41,7 +41,7 @@ extension VooNavigationTypeExtension on VooNavigationType {
         return 1240;
     }
   }
-  
+
   /// Returns a descriptive name for the navigation type
   String get displayName {
     switch (this) {
@@ -71,12 +71,13 @@ class VooNavigationTypeHelper {
       return VooNavigationType.navigationDrawer;
     }
   }
-  
+
   /// Determines if a floating action button should be shown
-  static bool shouldShowFab(VooNavigationType type) => type == VooNavigationType.bottomNavigation || 
-           type == VooNavigationType.navigationRail ||
-           type == VooNavigationType.extendedNavigationRail;
-  
+  static bool shouldShowFab(VooNavigationType type) =>
+      type == VooNavigationType.bottomNavigation ||
+      type == VooNavigationType.navigationRail ||
+      type == VooNavigationType.extendedNavigationRail;
+
   /// Determines the position of the floating action button
   static FloatingActionButtonLocation getFabLocation(VooNavigationType type) {
     if (type == VooNavigationType.bottomNavigation) {

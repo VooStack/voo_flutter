@@ -13,7 +13,7 @@ class VooDateTimePicker extends StatefulWidget {
   final String? hintText;
   final bool enabled;
   final bool showTime;
-  
+
   const VooDateTimePicker({
     super.key,
     this.value,
@@ -35,20 +35,12 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
-    final dateFormat = widget.showTime 
-        ? DateFormat('MMM dd, yyyy HH:mm')
-        : DateFormat('MMM dd, yyyy');
-    
+    final dateFormat = widget.showTime ? DateFormat('MMM dd, yyyy HH:mm') : DateFormat('MMM dd, yyyy');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.label != null) ...[
-          Text(
-            widget.label!,
-            style: theme.textTheme.labelMedium,
-          ),
-          SizedBox(height: design.spacingSm),
-        ],
+        if (widget.label != null) ...[Text(widget.label!, style: theme.textTheme.labelMedium), SizedBox(height: design.spacingSm)],
         InkWell(
           onTap: widget.enabled ? () => _selectDateTime(context) : null,
           borderRadius: BorderRadius.circular(design.radiusMd),
@@ -57,14 +49,9 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
               hintText: widget.hintText ?? 'Select date${widget.showTime ? ' and time' : ''}',
               enabled: widget.enabled,
               suffixIcon: const Icon(Icons.calendar_today),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(design.radiusMd),
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(design.radiusMd)),
             ),
-            child: Text(
-              widget.value != null ? dateFormat.format(widget.value!) : '',
-              style: theme.textTheme.bodyLarge,
-            ),
+            child: Text(widget.value != null ? dateFormat.format(widget.value!) : '', style: theme.textTheme.bodyLarge),
           ),
         ),
       ],
@@ -78,27 +65,18 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
       firstDate: widget.firstDate ?? DateTime(1900),
       lastDate: widget.lastDate ?? DateTime(2100),
     );
-    
+
     if (!mounted) return;
-    
+
     if (pickedDate != null) {
       if (widget.showTime) {
         if (!context.mounted) return;
-        final TimeOfDay? pickedTime = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.fromDateTime(widget.value ?? DateTime.now()),
-        );
-        
+        final TimeOfDay? pickedTime = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(widget.value ?? DateTime.now()));
+
         if (!mounted) return;
-        
+
         if (pickedTime != null) {
-          final combined = DateTime(
-            pickedDate.year,
-            pickedDate.month,
-            pickedDate.day,
-            pickedTime.hour,
-            pickedTime.minute,
-          );
+          final combined = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
           widget.onChanged?.call(combined);
         }
       } else {
@@ -117,34 +95,19 @@ class VooDateRangePicker extends StatelessWidget {
   final String? label;
   final String? hintText;
   final bool enabled;
-  
-  const VooDateRangePicker({
-    super.key,
-    this.value,
-    this.onChanged,
-    this.firstDate,
-    this.lastDate,
-    this.label,
-    this.hintText,
-    this.enabled = true,
-  });
+
+  const VooDateRangePicker({super.key, this.value, this.onChanged, this.firstDate, this.lastDate, this.label, this.hintText, this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = Theme.of(context);
     final dateFormat = DateFormat('MMM dd, yyyy');
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
-          Text(
-            label!,
-            style: theme.textTheme.labelMedium,
-          ),
-          SizedBox(height: design.spacingSm),
-        ],
+        if (label != null) ...[Text(label!, style: theme.textTheme.labelMedium), SizedBox(height: design.spacingSm)],
         InkWell(
           onTap: enabled ? () => _selectDateRange(context) : null,
           borderRadius: BorderRadius.circular(design.radiusMd),
@@ -153,16 +116,9 @@ class VooDateRangePicker extends StatelessWidget {
               hintText: hintText ?? 'Select date range',
               enabled: enabled,
               suffixIcon: const Icon(Icons.date_range),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(design.radiusMd),
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(design.radiusMd)),
             ),
-            child: Text(
-              value != null 
-                  ? '${dateFormat.format(value!.start)} - ${dateFormat.format(value!.end)}'
-                  : '',
-              style: theme.textTheme.bodyLarge,
-            ),
+            child: Text(value != null ? '${dateFormat.format(value!.start)} - ${dateFormat.format(value!.end)}' : '', style: theme.textTheme.bodyLarge),
           ),
         ),
       ],
@@ -176,7 +132,7 @@ class VooDateRangePicker extends StatelessWidget {
       firstDate: firstDate ?? DateTime(1900),
       lastDate: lastDate ?? DateTime(2100),
     );
-    
+
     if (picked != null) {
       onChanged?.call(picked);
     }

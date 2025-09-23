@@ -7,30 +7,22 @@ import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
 class MultiSelectFilter<T> extends StatelessWidget {
   /// The column configuration
   final VooDataColumn<T> column;
-  
+
   /// The current filter value
   final VooDataFilter? currentFilter;
-  
+
   /// Callback when filter value changes
   final void Function(dynamic) onFilterChanged;
-  
+
   /// Function to get filter options for the column
   final List<VooFilterOption> Function(VooDataColumn<T>) getFilterOptions;
 
-  const MultiSelectFilter({
-    super.key,
-    required this.column,
-    this.currentFilter,
-    required this.onFilterChanged,
-    required this.getFilterOptions,
-  });
+  const MultiSelectFilter({super.key, required this.column, this.currentFilter, required this.onFilterChanged, required this.getFilterOptions});
 
   @override
   Widget build(BuildContext context) {
     final options = getFilterOptions(column);
-    final selectedValues = currentFilter?.value is List 
-        ? List<dynamic>.from(currentFilter!.value as List) 
-        : <dynamic>[];
+    final selectedValues = currentFilter?.value is List ? List<dynamic>.from(currentFilter!.value as List) : <dynamic>[];
     final theme = Theme.of(context);
 
     return Container(
@@ -47,15 +39,8 @@ class MultiSelectFilter<T> extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  selectedValues.isEmpty 
-                      ? column.filterHint ?? 'Select...' 
-                      : '${selectedValues.length} selected',
-                  style: TextStyle(
-                    fontSize: 12, 
-                    color: selectedValues.isEmpty 
-                        ? theme.hintColor 
-                        : theme.textTheme.bodyMedium?.color,
-                  ),
+                  selectedValues.isEmpty ? column.filterHint ?? 'Select...' : '${selectedValues.length} selected',
+                  style: TextStyle(fontSize: 12, color: selectedValues.isEmpty ? theme.hintColor : theme.textTheme.bodyMedium?.color),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

@@ -18,7 +18,7 @@ class VooRadio<T> extends StatelessWidget {
   final bool toggleable;
   final MouseCursor? mouseCursor;
   final bool isError;
-  
+
   const VooRadio({
     super.key,
     required this.value,
@@ -37,11 +37,11 @@ class VooRadio<T> extends StatelessWidget {
     this.mouseCursor,
     this.isError = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Radio<T>(
       value: value,
       // ignore: deprecated_member_use
@@ -53,9 +53,7 @@ class VooRadio<T> extends StatelessWidget {
       visualDensity: visualDensity,
       focusColor: focusColor,
       hoverColor: hoverColor,
-      overlayColor: overlayColor != null 
-        ? WidgetStateProperty.all(overlayColor) 
-        : null,
+      overlayColor: overlayColor != null ? WidgetStateProperty.all(overlayColor) : null,
       splashRadius: splashRadius,
       focusNode: focusNode,
       autofocus: autofocus,
@@ -91,7 +89,7 @@ class VooRadioListTile<T> extends StatelessWidget {
   final Color? hoverColor;
   final MouseCursor? mouseCursor;
   final bool isError;
-  
+
   const VooRadioListTile({
     super.key,
     required this.value,
@@ -119,12 +117,12 @@ class VooRadioListTile<T> extends StatelessWidget {
     this.mouseCursor,
     this.isError = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return RadioListTile<T>(
       value: value,
       // ignore: deprecated_member_use
@@ -141,12 +139,8 @@ class VooRadioListTile<T> extends StatelessWidget {
       enabled: enabled,
       controlAffinity: controlAffinity,
       autofocus: autofocus,
-      contentPadding: contentPadding ?? EdgeInsets.symmetric(
-        horizontal: design.spacingMd,
-      ),
-      shape: shape ?? RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(design.radiusMd),
-      ),
+      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: design.spacingMd),
+      shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusMd)),
       tileColor: tileColor,
       selectedTileColor: selectedTileColor,
       visualDensity: visualDensity,
@@ -178,7 +172,7 @@ class VooRadioGroup<T> extends StatelessWidget {
   final double runSpacing;
   final bool enabled;
   final bool toggleable;
-  
+
   const VooRadioGroup({
     super.key,
     required this.items,
@@ -199,20 +193,17 @@ class VooRadioGroup<T> extends StatelessWidget {
     this.enabled = true,
     this.toggleable = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final hasError = errorText != null;
-    
+
     Widget content;
-    
+
     if (direction == Axis.vertical) {
-      content = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: items.map((item) => _buildRadioTile(item, context)).toList(),
-      );
+      content = Column(crossAxisAlignment: CrossAxisAlignment.start, children: items.map((item) => _buildRadioTile(item, context)).toList());
     } else {
       content = Wrap(
         direction: direction,
@@ -222,85 +213,73 @@ class VooRadioGroup<T> extends StatelessWidget {
         children: items.map((item) => _buildRadioChip(item, context)).toList(),
       );
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(
-            label!,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
-          ),
+          Text(label!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant)),
           SizedBox(height: design.spacingSm),
         ],
         Container(
           padding: contentPadding,
-          decoration: hasError ? BoxDecoration(
-            border: Border.all(color: colorScheme.error),
-            borderRadius: BorderRadius.circular(design.radiusMd),
-          ) : null,
+          decoration: hasError
+              ? BoxDecoration(
+                  border: Border.all(color: colorScheme.error),
+                  borderRadius: BorderRadius.circular(design.radiusMd),
+                )
+              : null,
           child: content,
         ),
         if (helperText != null || errorText != null) ...[
           SizedBox(height: design.spacingXs),
           Text(
             errorText ?? helperText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant),
           ),
         ],
       ],
     );
   }
-  
+
   Widget _buildRadioTile(T item, BuildContext context) {
     final isItemDisabled = isDisabled?.call(item) ?? false;
-    
+
     return VooRadioListTile<T>(
       value: item,
       groupValue: value,
       onChanged: enabled && !isItemDisabled ? onChanged : null,
       toggleable: toggleable,
       title: Text(labelBuilder(item)),
-      subtitle: subtitleBuilder != null 
-        ? (subtitleBuilder!(item) != null ? Text(subtitleBuilder!(item)!) : null)
-        : null,
+      subtitle: subtitleBuilder != null ? (subtitleBuilder!(item) != null ? Text(subtitleBuilder!(item)!) : null) : null,
       secondary: leadingBuilder?.call(item),
       enabled: enabled && !isItemDisabled,
       isError: errorText != null,
     );
   }
-  
+
   Widget _buildRadioChip(T item, BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final isSelected = value == item;
     final isItemDisabled = isDisabled?.call(item) ?? false;
-    
+
     return ChoiceChip(
       label: Text(labelBuilder(item)),
       selected: isSelected,
-      onSelected: enabled && !isItemDisabled ? (selected) {
-        if (selected) {
-          onChanged?.call(item);
-        } else if (toggleable) {
-          onChanged?.call(null);
-        }
-      } : null,
+      onSelected: enabled && !isItemDisabled
+          ? (selected) {
+              if (selected) {
+                onChanged?.call(item);
+              } else if (toggleable) {
+                onChanged?.call(null);
+              }
+            }
+          : null,
       avatar: leadingBuilder?.call(item),
-      backgroundColor: errorText != null 
-        ? colorScheme.errorContainer 
-        : null,
-      selectedColor: errorText != null
-        ? colorScheme.error.withValues(alpha: 0.2)
-        : null,
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacingSm,
-        vertical: design.spacingXs,
-      ),
+      backgroundColor: errorText != null ? colorScheme.errorContainer : null,
+      selectedColor: errorText != null ? colorScheme.error.withValues(alpha: 0.2) : null,
+      padding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingXs),
     );
   }
 }
@@ -317,7 +296,7 @@ class VooLabeledRadio<T> extends StatelessWidget {
   final bool toggleable;
   final bool isError;
   final EdgeInsetsGeometry? padding;
-  
+
   const VooLabeledRadio({
     super.key,
     required this.value,
@@ -331,55 +310,41 @@ class VooLabeledRadio<T> extends StatelessWidget {
     this.isError = false,
     this.padding,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return InkWell(
-      onTap: enabled ? () {
-        if (value == groupValue && toggleable) {
-          onChanged?.call(null);
-        } else {
-          onChanged?.call(value);
-        }
-      } : null,
+      onTap: enabled
+          ? () {
+              if (value == groupValue && toggleable) {
+                onChanged?.call(null);
+              } else {
+                onChanged?.call(value);
+              }
+            }
+          : null,
       borderRadius: BorderRadius.circular(design.radiusMd),
       child: Padding(
         padding: padding ?? EdgeInsets.all(design.spacingSm),
         child: Row(
           children: [
-            if (leading != null) ...[
-              leading!,
-              SizedBox(width: design.spacingMd),
-            ],
-            VooRadio<T>(
-              value: value,
-              groupValue: groupValue,
-              onChanged: enabled ? onChanged : null,
-              toggleable: toggleable,
-              isError: isError,
-            ),
+            if (leading != null) ...[leading!, SizedBox(width: design.spacingMd)],
+            VooRadio<T>(value: value, groupValue: groupValue, onChanged: enabled ? onChanged : null, toggleable: toggleable, isError: isError),
             SizedBox(width: design.spacingMd),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: enabled ? null : Theme.of(context).disabledColor,
-                    ),
-                  ),
+                  Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: enabled ? null : Theme.of(context).disabledColor)),
                   if (subtitle != null) ...[
                     SizedBox(height: design.spacingXs),
                     Text(
                       subtitle!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: enabled 
-                          ? Theme.of(context).colorScheme.onSurfaceVariant
-                          : Theme.of(context).disabledColor,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: enabled ? Theme.of(context).colorScheme.onSurfaceVariant : Theme.of(context).disabledColor),
                     ),
                   ],
                 ],
@@ -406,7 +371,7 @@ class VooRadioCard<T> extends StatelessWidget {
   final Color? unselectedColor;
   final double? elevation;
   final EdgeInsetsGeometry? padding;
-  
+
   const VooRadioCard({
     super.key,
     required this.value,
@@ -422,18 +387,16 @@ class VooRadioCard<T> extends StatelessWidget {
     this.elevation,
     this.padding,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final isSelected = value == groupValue;
-    
+
     return Card(
       elevation: elevation ?? (isSelected ? 4 : 1),
-      color: isSelected 
-        ? (selectedColor ?? colorScheme.primaryContainer)
-        : unselectedColor,
+      color: isSelected ? (selectedColor ?? colorScheme.primaryContainer) : unselectedColor,
       child: InkWell(
         onTap: enabled ? () => onChanged?.call(value) : null,
         borderRadius: BorderRadius.circular(design.radiusMd),
@@ -441,35 +404,22 @@ class VooRadioCard<T> extends StatelessWidget {
           padding: padding ?? EdgeInsets.all(design.spacingMd),
           child: Row(
             children: [
-              VooRadio<T>(
-                value: value,
-                groupValue: groupValue,
-                onChanged: enabled ? onChanged : null,
-              ),
+              VooRadio<T>(value: value, groupValue: groupValue, onChanged: enabled ? onChanged : null),
               SizedBox(width: design.spacingMd),
-              if (leading != null) ...[
-                leading!,
-                SizedBox(width: design.spacingMd),
-              ],
+              if (leading != null) ...[leading!, SizedBox(width: design.spacingMd)],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DefaultTextStyle(
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: isSelected 
-                          ? colorScheme.onPrimaryContainer
-                          : colorScheme.onSurface,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurface),
                       child: title,
                     ),
                     if (subtitle != null) ...[
                       SizedBox(height: design.spacingXs),
                       DefaultTextStyle(
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: isSelected
-                            ? colorScheme.onPrimaryContainer.withValues(alpha: 0.8)
-                            : colorScheme.onSurfaceVariant,
+                          color: isSelected ? colorScheme.onPrimaryContainer.withValues(alpha: 0.8) : colorScheme.onSurfaceVariant,
                         ),
                         child: subtitle!,
                       ),
@@ -477,10 +427,7 @@ class VooRadioCard<T> extends StatelessWidget {
                   ],
                 ),
               ),
-              if (trailing != null) ...[
-                SizedBox(width: design.spacingMd),
-                trailing!,
-              ],
+              if (trailing != null) ...[SizedBox(width: design.spacingMd), trailing!],
             ],
           ),
         ),

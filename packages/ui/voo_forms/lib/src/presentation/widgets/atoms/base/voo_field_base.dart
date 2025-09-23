@@ -92,7 +92,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     final formScope = VooFormScope.of(context);
     return formScope?.isLoading ?? false;
   }
-  
+
   /// Get the current error for this field from the controller or use the field's error
   String? getFieldError(BuildContext context) {
     final formScope = VooFormScope.of(context);
@@ -127,19 +127,13 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     // Apply width constraints at container level (affects entire field)
     if (minWidth != null || maxWidth != null) {
       fieldWidget = ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: minWidth ?? 0.0,
-          maxWidth: maxWidth ?? double.infinity,
-        ),
+        constraints: BoxConstraints(minWidth: minWidth ?? 0.0, maxWidth: maxWidth ?? double.infinity),
         child: fieldWidget,
       );
     }
 
     // Apply padding
-    return Padding(
-      padding: getFieldPadding(context),
-      child: fieldWidget,
-    );
+    return Padding(padding: getFieldPadding(context), child: fieldWidget);
   }
 
   /// Helper method to apply height constraints to input widgets
@@ -147,10 +141,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   Widget applyInputHeightConstraints(Widget input) {
     if (minHeight != null || maxHeight != null) {
       return ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: minHeight ?? 0.0,
-          maxHeight: maxHeight ?? double.infinity,
-        ),
+        constraints: BoxConstraints(minHeight: minHeight ?? 0.0, maxHeight: maxHeight ?? double.infinity),
         child: input,
       );
     }
@@ -189,29 +180,19 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
                 Flexible(
                   child: Text(
                     label!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.onSurface,
-                    ),
+                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (isRequired)
                   Text(
                     ' *',
-                    style: TextStyle(
-                      color: theme.colorScheme.error,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: TextStyle(color: theme.colorScheme.error, fontWeight: FontWeight.w500),
                   ),
               ],
             ),
           ),
-        if (actions != null && actions!.isNotEmpty)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: actions!,
-          ),
+        if (actions != null && actions!.isNotEmpty) Row(mainAxisSize: MainAxisSize.min, children: actions!),
       ],
     );
   }
@@ -228,20 +209,14 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
         Flexible(
           child: Text(
             label!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: theme.colorScheme.onSurface,
-            ),
+            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface),
             overflow: TextOverflow.ellipsis,
           ),
         ),
         if (isRequired)
           Text(
             ' *',
-            style: TextStyle(
-              color: theme.colorScheme.error,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(color: theme.colorScheme.error, fontWeight: FontWeight.w500),
           ),
       ],
     );
@@ -255,11 +230,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
-        child,
-        const SizedBox(height: 4),
-        buildError(context),
-      ],
+      children: [child, const SizedBox(height: 4), buildError(context)],
     );
   }
 
@@ -271,12 +242,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 12),
-      child: Text(
-        fieldError,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.error,
-        ),
-      ),
+      child: Text(fieldError, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
     );
   }
 
@@ -287,11 +253,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
-        child,
-        const SizedBox(height: 4),
-        buildHelper(context),
-      ],
+      children: [child, const SizedBox(height: 4), buildHelper(context)],
     );
   }
 
@@ -302,12 +264,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 12),
-      child: Text(
-        helper!,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
+      child: Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
     );
   }
 
@@ -330,34 +287,23 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
       fillColor: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: theme.colorScheme.outline.withValues(alpha: 0.3),
-        ),
+        borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: theme.colorScheme.outline.withValues(alpha: 0.3),
-        ),
+        borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: theme.colorScheme.primary,
-          width: 2,
-        ),
+        borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: theme.colorScheme.error,
-        ),
+        borderSide: BorderSide(color: theme.colorScheme.error),
       ),
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: theme.colorScheme.outline.withValues(alpha: 0.2),
-        ),
+        borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
     );
   }

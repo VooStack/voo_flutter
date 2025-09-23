@@ -164,11 +164,7 @@ class _VooTextFieldState extends State<VooTextField> {
     if (widget.prefix != null) {
       prefixWidget = widget.prefix;
     } else if (widget.prefixIcon != null) {
-      prefixWidget = Icon(
-        widget.prefixIcon,
-        size: design.iconSizeMd,
-        color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-      );
+      prefixWidget = Icon(widget.prefixIcon, size: design.iconSizeMd, color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant);
     }
 
     // Build suffix widget
@@ -178,11 +174,7 @@ class _VooTextFieldState extends State<VooTextField> {
     } else if (widget.suffixIcon != null) {
       suffixWidget = GestureDetector(
         onTap: widget.onSuffixTap,
-        child: Icon(
-          widget.suffixIcon,
-          size: design.iconSizeMd,
-          color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-        ),
+        child: Icon(widget.suffixIcon, size: design.iconSizeMd, color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant),
       );
     }
 
@@ -200,41 +192,27 @@ class _VooTextFieldState extends State<VooTextField> {
         suffixIcon: suffixWidget,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(design.radiusMd),
-          borderSide: BorderSide(
-            color: theme.colorScheme.outline,
-          ),
+          borderSide: BorderSide(color: theme.colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(design.radiusMd),
-          borderSide: BorderSide(
-            color: theme.colorScheme.outline,
-          ),
+          borderSide: BorderSide(color: theme.colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(design.radiusMd),
-          borderSide: BorderSide(
-            color: theme.colorScheme.primary,
-            width: 2,
-          ),
+          borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(design.radiusMd),
-          borderSide: BorderSide(
-            color: theme.colorScheme.error,
-          ),
+          borderSide: BorderSide(color: theme.colorScheme.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(design.radiusMd),
-          borderSide: BorderSide(
-            color: theme.colorScheme.error,
-            width: 2,
-          ),
+          borderSide: BorderSide(color: theme.colorScheme.error, width: 2),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(design.radiusMd),
-          borderSide: BorderSide(
-            color: theme.colorScheme.outline.withValues(alpha: 0.3),
-          ),
+          borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
         ),
         filled: true,
         fillColor: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
@@ -246,15 +224,13 @@ class _VooTextFieldState extends State<VooTextField> {
         counterText: '',
         alignLabelWithHint: widget.maxLines != null && widget.maxLines! > 1,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelStyle: theme.textTheme.bodyMedium?.copyWith(
-          color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-        ),
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant),
         floatingLabelStyle: theme.textTheme.bodySmall?.copyWith(
           color: widget.error != null
               ? theme.colorScheme.error
               : _isFocused
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant,
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurfaceVariant,
         ),
       ),
       obscureText: widget.obscureText,

@@ -11,13 +11,7 @@ void main() {
 
     group('OData v4 Query Options', () {
       test(r'should support $count parameter', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-          additionalParams: {'includeCount': true},
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: [], additionalParams: {'includeCount': true});
         final params = result['params'] as Map<String, String>;
 
         expect(params[r'$count'], 'true');
@@ -54,45 +48,21 @@ void main() {
       });
 
       test(r'should support $search for full-text search', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-          additionalParams: {
-            'search': 'laptop computer',
-          },
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: [], additionalParams: {'search': 'laptop computer'});
         final params = result['params'] as Map<String, String>;
 
         expect(params[r'$search'], '"laptop computer"');
       });
 
       test(r'should support $format parameter', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-          additionalParams: {
-            'format': 'json',
-          },
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: [], additionalParams: {'format': 'json'});
         final params = result['params'] as Map<String, String>;
 
         expect(params[r'$format'], 'json');
       });
 
       test(r'should support $compute for calculated properties', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-          additionalParams: {
-            'compute': 'Price * Quantity as Total',
-          },
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: [], additionalParams: {'compute': 'Price * Quantity as Total'});
         final params = result['params'] as Map<String, String>;
 
         expect(params[r'$compute'], 'Price * Quantity as Total');
@@ -104,16 +74,11 @@ void main() {
           pageSize: 20,
           filters: {},
           sorts: [],
-          additionalParams: {
-            'apply': 'groupby((Category), aggregate(Price with sum as TotalPrice))',
-          },
+          additionalParams: {'apply': 'groupby((Category), aggregate(Price with sum as TotalPrice))'},
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(
-          params[r'$apply'],
-          'groupby((Category), aggregate(Price with sum as TotalPrice))',
-        );
+        expect(params[r'$apply'], 'groupby((Category), aggregate(Price with sum as TotalPrice))');
       });
     });
 
@@ -122,12 +87,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: "O'Reilly's Books",
-            ),
-          },
+          filters: {'name': const VooDataFilter(operator: VooFilterOperator.equals, value: "O'Reilly's Books")},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -140,20 +100,12 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: testDate,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.greaterThan, value: testDate)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(
-          params[r'$filter'],
-          contains(testDate.toUtc().toIso8601String()),
-        );
+        expect(params[r'$filter'], contains(testDate.toUtc().toIso8601String()));
       });
 
       test('should not quote numeric values', () {
@@ -161,14 +113,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 25,
-            ),
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 99.99,
-            ),
+            'age': const VooDataFilter(operator: VooFilterOperator.equals, value: 25),
+            'price': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 99.99),
           },
           sorts: [],
         );
@@ -182,14 +128,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'isActive': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: true,
-            ),
-            'isDeleted': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: false,
-            ),
+            'isActive': const VooDataFilter(operator: VooFilterOperator.equals, value: true),
+            'isDeleted': const VooDataFilter(operator: VooFilterOperator.equals, value: false),
           },
           sorts: [],
         );
@@ -203,23 +143,14 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedDate': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
-            'updatedDate': const VooDataFilter(
-              operator: VooFilterOperator.isNotNull,
-              value: null,
-            ),
+            'deletedDate': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
+            'updatedDate': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
           },
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(
-          params[r'$filter'],
-          'deletedDate eq null and updatedDate ne null',
-        );
+        expect(params[r'$filter'], 'deletedDate eq null and updatedDate ne null');
       });
     });
 
@@ -229,19 +160,13 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.inList,
-              value: ['active', 'pending', 'processing'],
-            ),
+            'status': const VooDataFilter(operator: VooFilterOperator.inList, value: ['active', 'pending', 'processing']),
           },
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(
-          params[r'$filter'],
-          "status in ('active','pending','processing')",
-        );
+        expect(params[r'$filter'], "status in ('active','pending','processing')");
       });
 
       test('should support not in operator with proper negation', () {
@@ -249,52 +174,32 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.notInList,
-              value: ['deleted', 'archived'],
-            ),
+            'status': const VooDataFilter(operator: VooFilterOperator.notInList, value: ['deleted', 'archived']),
           },
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(
-          params[r'$filter'],
-          "not (status in ('deleted','archived'))",
-        );
+        expect(params[r'$filter'], "not (status in ('deleted','archived'))");
       });
 
       test('should support not contains operator', () {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'description': const VooDataFilter(
-              operator: VooFilterOperator.notContains,
-              value: 'discontinued',
-            ),
-          },
+          filters: {'description': const VooDataFilter(operator: VooFilterOperator.notContains, value: 'discontinued')},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
 
-        expect(
-          params[r'$filter'],
-          "not contains(description, 'discontinued')",
-        );
+        expect(params[r'$filter'], "not contains(description, 'discontinued')");
       });
 
       test('should properly group between operator expressions', () {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 10.0,
-              valueTo: 100.0,
-            ),
-          },
+          filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 10.0, valueTo: 100.0)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -306,12 +211,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'quantity': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 5,
-            ),
-          },
+          filters: {'quantity': const VooDataFilter(operator: VooFilterOperator.between, value: 5)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -323,13 +223,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'quantity': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: null,
-              valueTo: 100,
-            ),
-          },
+          filters: {'quantity': const VooDataFilter(operator: VooFilterOperator.between, value: null, valueTo: 100)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -341,12 +235,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'quantity': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: null,
-            ),
-          },
+          filters: {'quantity': const VooDataFilter(operator: VooFilterOperator.between, value: null)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -361,14 +250,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-            'priority': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'high',
-            ),
+            'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+            'priority': const VooDataFilter(operator: VooFilterOperator.equals, value: 'high'),
           },
           sorts: [],
           additionalParams: {'logicalOperator': 'or'},
@@ -383,14 +266,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-            'priority': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'high',
-            ),
+            'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+            'priority': const VooDataFilter(operator: VooFilterOperator.equals, value: 'high'),
           },
           sorts: [],
         );
@@ -412,9 +289,7 @@ void main() {
           '@odata.nextLink': r'Products?$skip=20&$top=20',
         };
 
-        final response = DataGridRequestBuilder.parseODataResponse(
-          json: odataResponse,
-        );
+        final response = DataGridRequestBuilder.parseODataResponse(json: odataResponse);
 
         expect(response.rows.length, 2);
         expect(response.totalRows, 100);
@@ -431,9 +306,7 @@ void main() {
           ],
         };
 
-        final response = DataGridRequestBuilder.parseODataResponse(
-          json: odataResponse,
-        );
+        final response = DataGridRequestBuilder.parseODataResponse(json: odataResponse);
 
         expect(response.rows.length, 2);
         expect(response.totalRows, 2); // Falls back to array length
@@ -448,9 +321,7 @@ void main() {
           'value': <Map<String, dynamic>>[],
         };
 
-        final metadata = DataGridRequestBuilder.extractODataMetadata(
-          odataResponse,
-        );
+        final metadata = DataGridRequestBuilder.extractODataMetadata(odataResponse);
 
         expect(metadata['@odata.context'], r'$metadata#Products');
         expect(metadata['@odata.count'], 100);
@@ -466,10 +337,7 @@ void main() {
             'code': 'BadRequest',
             'message': 'The request is invalid.',
             'details': [
-              {
-                'code': 'ValidationError',
-                'message': 'The field Price must be greater than 0.',
-              },
+              {'code': 'ValidationError', 'message': 'The field Price must be greater than 0.'},
             ],
           },
         };
@@ -484,10 +352,7 @@ void main() {
       });
 
       test('should return null for non-error responses', () {
-        final normalResponse = {
-          'value': <Map<String, dynamic>>[],
-          '@odata.context': r'$metadata#Products',
-        };
+        final normalResponse = {'value': <Map<String, dynamic>>[], '@odata.context': r'$metadata#Products'};
 
         final error = DataGridRequestBuilder.parseODataError(normalResponse);
 
@@ -497,20 +362,12 @@ void main() {
 
     group('OData v4 with Field Prefix', () {
       test('should apply field prefix to filter fields', () {
-        const builderWithPrefix = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          fieldPrefix: 'data',
-        );
+        const builderWithPrefix = DataGridRequestBuilder(standard: ApiFilterStandard.odata, fieldPrefix: 'data');
 
         final result = builderWithPrefix.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'test',
-            ),
-          },
+          filters: {'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'test')},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -519,21 +376,13 @@ void main() {
       });
 
       test('should apply field prefix to sort fields', () {
-        const builderWithPrefix = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          fieldPrefix: 'data',
-        );
+        const builderWithPrefix = DataGridRequestBuilder(standard: ApiFilterStandard.odata, fieldPrefix: 'data');
 
         final result = builderWithPrefix.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {},
-          sorts: [
-            const VooColumnSort(
-              field: 'price',
-              direction: VooSortDirection.descending,
-            ),
-          ],
+          sorts: [const VooColumnSort(field: 'price', direction: VooSortDirection.descending)],
         );
         final params = result['params'] as Map<String, String>;
 
@@ -548,27 +397,11 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.startsWith,
-              value: 'Pro',
-            ),
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 10.0,
-              valueTo: 100.0,
-            ),
-            'category': const VooDataFilter(
-              operator: VooFilterOperator.inList,
-              value: ['electronics', 'computers'],
-            ),
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: testDate,
-            ),
-            'deletedDate': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
+            'name': const VooDataFilter(operator: VooFilterOperator.startsWith, value: 'Pro'),
+            'price': const VooDataFilter(operator: VooFilterOperator.between, value: 10.0, valueTo: 100.0),
+            'category': const VooDataFilter(operator: VooFilterOperator.inList, value: ['electronics', 'computers']),
+            'createdDate': VooDataFilter(operator: VooFilterOperator.greaterThan, value: testDate),
+            'deletedDate': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
           },
           sorts: [
             const VooColumnSort(field: 'price', direction: VooSortDirection.ascending),
@@ -589,18 +422,8 @@ void main() {
         final result = builder.buildRequest(
           page: 2,
           pageSize: 50,
-          filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-          },
-          sorts: [
-            const VooColumnSort(
-              field: 'createdDate',
-              direction: VooSortDirection.descending,
-            ),
-          ],
+          filters: {'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active')},
+          sorts: [const VooColumnSort(field: 'createdDate', direction: VooSortDirection.descending)],
           additionalParams: {
             'includeCount': true,
             'select': ['id', 'name', 'status', 'createdDate'],

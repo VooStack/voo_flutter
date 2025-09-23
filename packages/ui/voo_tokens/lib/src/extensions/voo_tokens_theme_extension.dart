@@ -10,24 +10,12 @@ import 'package:voo_tokens/src/tokens/voo_typography_tokens.dart';
 class VooTokensTheme extends ThemeExtension<VooTokensTheme> {
   final ResponsiveTokens tokens;
 
-  const VooTokensTheme({
-    required this.tokens,
-  });
+  const VooTokensTheme({required this.tokens});
 
-  factory VooTokensTheme.standard({double scaleFactor = 1.0}) => VooTokensTheme(
-        tokens: ResponsiveTokens(scaleFactor: scaleFactor),
-      );
+  factory VooTokensTheme.standard({double scaleFactor = 1.0}) => VooTokensTheme(tokens: ResponsiveTokens(scaleFactor: scaleFactor));
 
-  factory VooTokensTheme.responsive({
-    required double screenWidth,
-    bool isDark = false,
-  }) =>
-      VooTokensTheme(
-        tokens: ResponsiveTokens.forScreenWidth(
-          screenWidth,
-          isDark: isDark,
-        ),
-      );
+  factory VooTokensTheme.responsive({required double screenWidth, bool isDark = false}) =>
+      VooTokensTheme(tokens: ResponsiveTokens.forScreenWidth(screenWidth, isDark: isDark));
 
   VooSpacingTokens get spacing => tokens.spacing;
   VooTypographyTokens get typography => tokens.typography;
@@ -36,9 +24,7 @@ class VooTokensTheme extends ThemeExtension<VooTokensTheme> {
   VooAnimationTokens get animation => tokens.animation;
 
   @override
-  VooTokensTheme copyWith({ResponsiveTokens? tokens}) => VooTokensTheme(
-        tokens: tokens ?? this.tokens,
-      );
+  VooTokensTheme copyWith({ResponsiveTokens? tokens}) => VooTokensTheme(tokens: tokens ?? this.tokens);
 
   @override
   VooTokensTheme lerp(ThemeExtension<VooTokensTheme>? other, double t) {

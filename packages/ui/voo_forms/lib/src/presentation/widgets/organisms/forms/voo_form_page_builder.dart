@@ -214,17 +214,14 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     final effectiveConfig = widget.defaultConfig ?? const VooFormConfig();
 
     // Generate form theme
-    final formTheme = VooFormTheme.generateFormTheme(
-      colorScheme: theme.colorScheme,
-      textTheme: theme.textTheme,
-    );
+    final formTheme = VooFormTheme.generateFormTheme(colorScheme: theme.colorScheme, textTheme: theme.textTheme);
 
     // Build page content with footer layout
     Widget content = LayoutBuilder(
       builder: (context, constraints) {
         // Check if height is bounded
         final hasBoundedHeight = constraints.maxHeight != double.infinity;
-        
+
         // Build the scrollable form content
         final Widget formContent = SingleChildScrollView(
           controller: _scrollController,
@@ -234,17 +231,11 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Header
-              if (widget.header != null) ...[
-                widget.header!,
-                SizedBox(height: widget.spacing * 1.5),
-              ],
+              if (widget.header != null) ...[widget.header!, SizedBox(height: widget.spacing * 1.5)],
 
               // Progress indicator
               if (widget.showProgress) ...[
-                VooFormProgress(
-                  isIndeterminate: widget.isSubmitting ?? _isSubmitting,
-                  value: (widget.isSubmitting ?? _isSubmitting) ? null : 0.0,
-                ),
+                VooFormProgress(isIndeterminate: widget.isSubmitting ?? _isSubmitting, value: (widget.isSubmitting ?? _isSubmitting) ? null : 0.0),
                 SizedBox(height: widget.spacing),
               ],
 
@@ -263,16 +254,9 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
           actionsContainer = Container(
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
-              border: Border(
-                top: BorderSide(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                ),
-              ),
+              border: Border(top: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.spacing,
-              vertical: widget.spacing,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: widget.spacing, vertical: widget.spacing),
             child: _buildActions(context),
           );
         }
@@ -292,9 +276,7 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: formContent,
-              ),
+              Flexible(child: formContent),
               if (actionsContainer != null) actionsContainer,
               if (widget.footer != null) widget.footer!,
             ],
@@ -304,59 +286,36 @@ class _VooFormPageBuilderState extends State<VooFormPageBuilder> {
     );
 
     // Apply theme
-    content = Theme(
-      data: formTheme,
-      child: content,
-    );
+    content = Theme(data: formTheme, child: content);
 
     // Wrap in card if requested
     if (widget.wrapInCard) {
       content = Card(
         elevation: widget.cardElevation ?? 2.0,
         margin: widget.cardMargin ?? const EdgeInsets.all(16.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Padding(
-          padding: widget.padding ?? const EdgeInsets.all(24.0),
-          child: content,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        child: Padding(padding: widget.padding ?? const EdgeInsets.all(24.0), child: content),
       );
     } else if (widget.padding != null) {
-      content = Padding(
-        padding: widget.padding!,
-        child: content,
-      );
+      content = Padding(padding: widget.padding!, child: content);
     } else {
       // Default padding if not wrapped in card and no padding specified
-      content = Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: content,
-      );
+      content = Padding(padding: const EdgeInsets.all(16.0), child: content);
     }
 
     // Apply config decoration
     if (effectiveConfig.decoration != null) {
-      content = DecoratedBox(
-        decoration: effectiveConfig.decoration!,
-        child: content,
-      );
+      content = DecoratedBox(decoration: effectiveConfig.decoration!, child: content);
     }
 
     // Apply background color
     if (effectiveConfig.backgroundColor != null) {
-      content = ColoredBox(
-        color: effectiveConfig.backgroundColor!,
-        child: content,
-      );
+      content = ColoredBox(color: effectiveConfig.backgroundColor!, child: content);
     }
 
     // Provide controller to form via InheritedWidget pattern if available
     if (_controller != null) {
-      return _FormControllerProvider(
-        controller: _controller!,
-        child: content,
-      );
+      return _FormControllerProvider(controller: _controller!, child: content);
     }
     return content;
   }

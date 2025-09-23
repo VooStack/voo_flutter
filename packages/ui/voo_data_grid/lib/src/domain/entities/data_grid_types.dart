@@ -11,8 +11,4 @@ enum VooDataGridMode {
 }
 
 /// Selection mode for data grid
-enum VooSelectionMode {
-  none,
-  single,
-  multiple,
-}
+enum VooSelectionMode { none, single, multiple }

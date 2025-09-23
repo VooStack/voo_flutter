@@ -15,7 +15,7 @@ class CardView<T> extends StatelessWidget {
   final List<String>? mobilePriorityColumns;
   final void Function(T)? onRowTap;
   final void Function(T)? onRowDoubleTap;
-  
+
   const CardView({
     super.key,
     required this.state,
@@ -46,7 +46,7 @@ class CardView<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     if (state.isLoading && loadingWidget != null) {
       return Center(child: loadingWidget);
     }
@@ -57,23 +57,14 @@ class CardView<T> extends StatelessWidget {
 
     if (state.rows.isEmpty) {
       return Center(
-        child: emptyStateWidget ??
+        child:
+            emptyStateWidget ??
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.inbox,
-                  size: 64,
-                  color: theme.headerTextColor.withValues(alpha: 0.3),
-                ),
+                Icon(Icons.inbox, size: 64, color: theme.headerTextColor.withValues(alpha: 0.3)),
                 const SizedBox(height: 16),
-                Text(
-                  'No data available',
-                  style: theme.cellTextStyle.copyWith(
-                    fontSize: 16,
-                    color: theme.headerTextColor.withValues(alpha: 0.5),
-                  ),
-                ),
+                Text('No data available', style: theme.cellTextStyle.copyWith(fontSize: 16, color: theme.headerTextColor.withValues(alpha: 0.5))),
               ],
             ),
       );
@@ -91,9 +82,7 @@ class CardView<T> extends StatelessWidget {
         }
 
         // Default card layout
-        final priorityColumns = mobilePriorityColumns != null
-            ? columns.where((c) => mobilePriorityColumns!.contains(c.field))
-            : columns.take(3);
+        final priorityColumns = mobilePriorityColumns != null ? columns.where((c) => mobilePriorityColumns!.contains(c.field)) : columns.take(3);
 
         return Card(
           margin: EdgeInsets.only(bottom: design.spacingMd),
@@ -113,21 +102,8 @@ class CardView<T> extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${column.label}: ',
-                          style: theme.headerTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            column.valueFormatter?.call(value) ?? value?.toString() ?? '',
-                            style: theme.cellTextStyle.copyWith(
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
+                        Text('${column.label}: ', style: theme.headerTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12)),
+                        Expanded(child: Text(column.valueFormatter?.call(value) ?? value?.toString() ?? '', style: theme.cellTextStyle.copyWith(fontSize: 12))),
                       ],
                     ),
                   );

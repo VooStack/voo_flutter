@@ -10,12 +10,7 @@ class VooDataGridHeader<T> extends StatelessWidget {
   final VooDataGridTheme theme;
   final void Function(String field) onSort;
 
-  const VooDataGridHeader({
-    super.key,
-    required this.controller,
-    required this.theme,
-    required this.onSort,
-  });
+  const VooDataGridHeader({super.key, required this.controller, required this.theme, required this.onSort});
 
   @override
   Widget build(BuildContext context) {
@@ -26,31 +21,16 @@ class VooDataGridHeader<T> extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.headerBackgroundColor,
         border: Border(
-          bottom: BorderSide(
-            color: theme.borderColor,
-            width: theme.borderWidth,
-          ),
+          bottom: BorderSide(color: theme.borderColor, width: theme.borderWidth),
         ),
       ),
       child: Row(
         children: [
           // Selection checkbox column
-          if (controller.dataSource.selectionMode != VooSelectionMode.none)
-            SelectionHeaderCell<T>(
-              controller: controller,
-              theme: theme,
-              design: design,
-            ),
+          if (controller.dataSource.selectionMode != VooSelectionMode.none) SelectionHeaderCell<T>(controller: controller, theme: theme, design: design),
 
           // Frozen columns
-          for (final column in controller.frozenColumns)
-            HeaderCell<T>(
-              column: column,
-              controller: controller,
-              theme: theme,
-              design: design,
-              onSort: onSort,
-            ),
+          for (final column in controller.frozenColumns) HeaderCell<T>(column: column, controller: controller, theme: theme, design: design, onSort: onSort),
 
           // Scrollable columns - no scrollbar here, just synchronized scrolling
           Expanded(
@@ -60,13 +40,7 @@ class VooDataGridHeader<T> extends StatelessWidget {
               child: Row(
                 children: [
                   for (final column in controller.scrollableColumns)
-                    HeaderCell<T>(
-                      column: column,
-                      controller: controller,
-                      theme: theme,
-                      design: design,
-                      onSort: onSort,
-                    ),
+                    HeaderCell<T>(column: column, controller: controller, theme: theme, design: design, onSort: onSort),
                 ],
               ),
             ),

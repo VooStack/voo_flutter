@@ -81,17 +81,14 @@ class VooOption extends StatelessWidget {
     final effectiveTitleColor = !enabled
         ? colorScheme.onSurface.withValues(alpha: 0.38)
         : isSelected
-            ? colorScheme.primary
-            : colorScheme.onSurface;
+        ? colorScheme.primary
+        : colorScheme.onSurface;
     final effectiveSubtitleColor = !enabled ? colorScheme.onSurface.withValues(alpha: 0.38) : colorScheme.onSurfaceVariant;
 
     // Build title widget
     final Widget titleWidget = Text(
       title,
-      style: (titleStyle ?? theme.textTheme.bodyMedium)?.copyWith(
-        color: effectiveTitleColor,
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-      ),
+      style: (titleStyle ?? theme.textTheme.bodyMedium)?.copyWith(color: effectiveTitleColor, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal),
       maxLines: subtitle != null ? 1 : 2,
       overflow: TextOverflow.ellipsis,
     );
@@ -101,9 +98,7 @@ class VooOption extends StatelessWidget {
     if (subtitle != null) {
       subtitleWidget = Text(
         subtitle!,
-        style: (subtitleStyle ?? theme.textTheme.bodySmall)?.copyWith(
-          color: effectiveSubtitleColor,
-        ),
+        style: (subtitleStyle ?? theme.textTheme.bodySmall)?.copyWith(color: effectiveSubtitleColor),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -112,11 +107,7 @@ class VooOption extends StatelessWidget {
     // Build leading widget
     Widget? effectiveLeading = leading;
     if (showCheckbox) {
-      effectiveLeading = Checkbox(
-        value: isSelected,
-        onChanged: enabled ? (_) => onTap?.call() : null,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      );
+      effectiveLeading = Checkbox(value: isSelected, onChanged: enabled ? (_) => onTap?.call() : null, materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);
     } else if (showRadio) {
       effectiveLeading = Radio<bool>(
         value: true,
@@ -129,67 +120,40 @@ class VooOption extends StatelessWidget {
     // Build trailing widget
     Widget? effectiveTrailing = trailing;
     if (effectiveTrailing == null && showCheckmark && isSelected) {
-      effectiveTrailing = Icon(
-        Icons.check,
-        size: 20,
-        color: colorScheme.primary,
-      );
+      effectiveTrailing = Icon(Icons.check, size: 20, color: colorScheme.primary);
     }
 
     // Build content
     Widget content = Row(
       children: [
-        if (effectiveLeading != null) ...[
-          effectiveLeading,
-          SizedBox(width: dense ? 8 : 12),
-        ],
+        if (effectiveLeading != null) ...[effectiveLeading, SizedBox(width: dense ? 8 : 12)],
         Expanded(
           child: subtitle != null
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    titleWidget,
-                    const SizedBox(height: 2),
-                    subtitleWidget!,
-                  ],
+                  children: [titleWidget, const SizedBox(height: 2), subtitleWidget!],
                 )
               : titleWidget,
         ),
-        if (effectiveTrailing != null) ...[
-          SizedBox(width: dense ? 8 : 12),
-          effectiveTrailing,
-        ],
+        if (effectiveTrailing != null) ...[SizedBox(width: dense ? 8 : 12), effectiveTrailing],
       ],
     );
 
     // Apply padding
-    final effectivePadding = padding ??
-        EdgeInsets.symmetric(
-          horizontal: dense ? 12 : 16,
-          vertical: dense ? 8 : 12,
-        );
+    final effectivePadding = padding ?? EdgeInsets.symmetric(horizontal: dense ? 12 : 16, vertical: dense ? 8 : 12);
 
-    content = Padding(
-      padding: effectivePadding,
-      child: content,
-    );
+    content = Padding(padding: effectivePadding, child: content);
 
     // Apply height constraint if provided
     if (height != null) {
-      content = SizedBox(
-        height: height,
-        child: content,
-      );
+      content = SizedBox(height: height, child: content);
     }
 
     // Wrap in container with background color
     return Container(
       color: isSelected ? effectiveSelectedColor : null,
-      child: InkWell(
-        onTap: enabled ? onTap : null,
-        child: content,
-      ),
+      child: InkWell(onTap: enabled ? onTap : null, child: content),
     );
   }
 }
@@ -201,20 +165,8 @@ class VooSimpleOption extends StatelessWidget {
   final VoidCallback? onTap;
   final bool showCheckbox;
 
-  const VooSimpleOption({
-    super.key,
-    required this.text,
-    this.isSelected = false,
-    this.onTap,
-    this.showCheckbox = false,
-  });
+  const VooSimpleOption({super.key, required this.text, this.isSelected = false, this.onTap, this.showCheckbox = false});
 
   @override
-  Widget build(BuildContext context) => VooOption(
-        title: text,
-        isSelected: isSelected,
-        onTap: onTap,
-        showCheckbox: showCheckbox,
-        dense: true,
-      );
+  Widget build(BuildContext context) => VooOption(title: text, isSelected: isSelected, onTap: onTap, showCheckbox: showCheckbox, dense: true);
 }

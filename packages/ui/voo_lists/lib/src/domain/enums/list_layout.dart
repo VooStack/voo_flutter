@@ -1,11 +1,1 @@
-enum ListLayout {
-  vertical,
-  horizontal,
-  grid,
-  staggeredGrid,
-  carousel,
-  wrap,
-  sliver,
-  expandable,
-  tree,
-}
+enum ListLayout { vertical, horizontal, grid, staggeredGrid, carousel, wrap, sliver, expandable, tree }

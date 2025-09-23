@@ -19,9 +19,6 @@ class VooResponsiveController extends ChangeNotifier {
     final mediaQuery = MediaQuery.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    _responsiveTokens = ResponsiveTokens.forScreenWidth(
-      mediaQuery.size.width,
-      isDark: isDark,
-    );
+    _responsiveTokens = ResponsiveTokens.forScreenWidth(mediaQuery.size.width, isDark: isDark);
   }
 }

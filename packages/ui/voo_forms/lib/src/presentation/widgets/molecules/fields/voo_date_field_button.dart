@@ -92,7 +92,7 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
     if (isHidden) return const SizedBox.shrink();
 
     final effectiveReadOnly = getEffectiveReadOnly(context);
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -131,7 +131,7 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
 
     // Apply height constraints to the button widget
     button = applyInputHeightConstraints(button);
-    
+
     // Build with error if present
     Widget fieldWithError = button;
     if (fieldError != null && fieldError.isNotEmpty) {
@@ -139,59 +139,40 @@ class VooDateFieldButton extends VooFieldBase<DateTime> {
     }
 
     // Compose with label, helper and actions using base class methods
-    return buildFieldContainer(
-      context,
-      buildWithLabel(
-        context,
-        buildWithHelper(
-          context,
-          buildWithActions(
-            context,
-            fieldWithError,
-          ),
-        ),
-      ),
-    );
+    return buildFieldContainer(context, buildWithLabel(context, buildWithHelper(context, buildWithActions(context, fieldWithError))));
   }
 
   @override
-  VooDateFieldButton copyWith({
-    String? name,
-    String? label,
-    DateTime? initialValue,
-    VooFieldLayout? layout,
-    bool? readOnly,
-  }) =>
-      VooDateFieldButton(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        layout: layout ?? this.layout,
-        isHidden: isHidden,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-        initialValue: initialValue ?? this.initialValue,
-        firstDate: firstDate,
-        lastDate: lastDate,
-        dateFormat: dateFormat,
-        buttonType: buttonType,
-        expandButton: expandButton,
-        buttonText: buttonText,
-      );
+  VooDateFieldButton copyWith({String? name, String? label, DateTime? initialValue, VooFieldLayout? layout, bool? readOnly}) => VooDateFieldButton(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    layout: layout ?? this.layout,
+    isHidden: isHidden,
+    minWidth: minWidth,
+    maxWidth: maxWidth,
+    minHeight: minHeight,
+    maxHeight: maxHeight,
+    initialValue: initialValue ?? this.initialValue,
+    firstDate: firstDate,
+    lastDate: lastDate,
+    dateFormat: dateFormat,
+    buttonType: buttonType,
+    expandButton: expandButton,
+    buttonText: buttonText,
+  );
 }

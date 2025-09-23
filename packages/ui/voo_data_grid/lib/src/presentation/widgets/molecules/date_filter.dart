@@ -36,9 +36,7 @@ class DateFilter<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = textControllers.putIfAbsent(
       column.field,
-      () => TextEditingController(
-        text: currentFilter?.value != null ? _formatDate(currentFilter!.value as DateTime) : '',
-      ),
+      () => TextEditingController(text: currentFilter?.value != null ? _formatDate(currentFilter!.value as DateTime) : ''),
     );
     final theme = Theme.of(context);
 

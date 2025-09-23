@@ -8,10 +8,13 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 enum VooDateTimePickerMode {
   /// Date only picker
   date,
+
   /// Time only picker
   time,
+
   /// Date and time picker
   dateTime,
+
   /// Date range picker
   dateRange,
 }
@@ -20,70 +23,70 @@ enum VooDateTimePickerMode {
 class VooDateTimePicker extends StatefulWidget {
   /// Mode of the picker
   final VooDateTimePickerMode mode;
-  
+
   /// Initial date/time
   final DateTime? initialDateTime;
-  
+
   /// Initial date range
   final DateTimeRange? initialDateRange;
-  
+
   /// First selectable date
   final DateTime? firstDate;
-  
+
   /// Last selectable date
   final DateTime? lastDate;
-  
+
   /// Value changed callback for single date/time
   final void Function(DateTime? dateTime)? onDateTimeChanged;
-  
+
   /// Value changed callback for date range
   final void Function(DateTimeRange? range)? onDateRangeChanged;
-  
+
   /// Whether to show as a field with dropdown or inline
   final bool isInline;
-  
+
   /// Field decoration
   final InputDecoration? decoration;
-  
+
   /// Calendar theme
   final VooCalendarTheme? calendarTheme;
-  
+
   /// Time picker interval in minutes
   final int minuteInterval;
-  
+
   /// Use 24 hour format
   final bool use24HourFormat;
-  
+
   /// Custom date format
   final String? dateFormat;
-  
+
   /// Custom time format
   final String? timeFormat;
-  
+
   /// Enable field
   final bool enabled;
-  
+
   /// Field hint text
   final String? hintText;
-  
+
   /// Field label text
   final String? labelText;
-  
+
   /// Field helper text
   final String? helperText;
-  
+
   /// Field error text
   final String? errorText;
-  
+
   /// Clear button icon
   final Widget? clearIcon;
-  
+
   /// Calendar icon
   final Widget? calendarIcon;
-  
+
   /// Clock icon
   final Widget? clockIcon;
-  
+
   const VooDateTimePicker({
     super.key,
     this.mode = VooDateTimePickerMode.date,
@@ -125,18 +128,18 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    
+
     if (widget.mode == VooDateTimePickerMode.dateRange) {
       _selectedDateRange = widget.initialDateRange;
       _updateControllerText();
     } else {
       _selectedDateTime = widget.initialDateTime;
-      _selectedTime = widget.initialDateTime != null 
+      _selectedTime = widget.initialDateTime != null
           ? TimeOfDay.fromDateTime(widget.initialDateTime!)
           : null;
       _updateControllerText();
     }
-    
+
     _calendarController = VooCalendarController(
       initialDate: widget.initialDateTime,
       selectionMode: widget.mode == VooDateTimePickerMode.dateRange
@@ -154,7 +157,7 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
 
   void _updateControllerText() {
     String text = '';
-    
+
     switch (widget.mode) {
       case VooDateTimePickerMode.date:
         if (_selectedDateTime != null) {
@@ -164,26 +167,38 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
         break;
       case VooDateTimePickerMode.time:
         if (_selectedTime != null) {
-          final format = widget.timeFormat ?? (widget.use24HourFormat ? 'HH:mm' : 'h:mm a');
-          final dateTime = DateTime(2024, 1, 1, _selectedTime!.hour, _selectedTime!.minute);
+          final format =
+              widget.timeFormat ??
+              (widget.use24HourFormat ? 'HH:mm' : 'h:mm a');
+          final dateTime = DateTime(
+            2024,
+            1,
+            1,
+            _selectedTime!.hour,
+            _selectedTime!.minute,
+          );
           text = DateFormat(format).format(dateTime);
         }
         break;
       case VooDateTimePickerMode.dateTime:
         if (_selectedDateTime != null) {
           final dateFormat = widget.dateFormat ?? 'MMM d, yyyy';
-          final timeFormat = widget.timeFormat ?? (widget.use24HourFormat ? 'HH:mm' : 'h:mm a');
-          text = '${DateFormat(dateFormat).format(_selectedDateTime!)} ${DateFormat(timeFormat).format(_selectedDateTime!)}';
+          final timeFormat =
+              widget.timeFormat ??
+              (widget.use24HourFormat ? 'HH:mm' : 'h:mm a');
+          text =
+              '${DateFormat(dateFormat).format(_selectedDateTime!)} ${DateFormat(timeFormat).format(_selectedDateTime!)}';
         }
         break;
       case VooDateTimePickerMode.dateRange:
         if (_selectedDateRange != null) {
           final format = widget.dateFormat ?? 'MMM d, yyyy';
-          text = '${DateFormat(format).format(_selectedDateRange!.start)} - ${DateFormat(format).format(_selectedDateRange!.end)}';
+          text =
+              '${DateFormat(format).format(_selectedDateRange!.start)} - ${DateFormat(format).format(_selectedDateRange!.end)}';
         }
         break;
     }
-    
+
     _controller.text = text;
   }
 
@@ -214,7 +229,7 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
         calendarTheme: widget.calendarTheme,
       ),
     );
-    
+
     if (result != null) {
       setState(() {
         _selectedDateTime = result;
@@ -241,7 +256,7 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
         );
       },
     );
-    
+
     if (result != null) {
       setState(() {
         _selectedTime = result;
@@ -269,14 +284,14 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
         calendarTheme: widget.calendarTheme,
       ),
     );
-    
+
     if (dateResult != null && mounted) {
       // Then show time picker
       final timeResult = await showTimePicker(
         context: context,
         initialTime: _selectedTime ?? TimeOfDay.now(),
       );
-      
+
       if (timeResult != null) {
         setState(() {
           _selectedDateTime = DateTime(
@@ -304,7 +319,7 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
         calendarTheme: widget.calendarTheme,
       ),
     );
-    
+
     if (result != null) {
       setState(() {
         _selectedDateRange = result;
@@ -321,7 +336,7 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
       _selectedTime = null;
       _controller.clear();
     });
-    
+
     if (widget.mode == VooDateTimePickerMode.dateRange) {
       widget.onDateRangeChanged?.call(null);
     } else {
@@ -334,36 +349,38 @@ class _VooDateTimePickerState extends State<VooDateTimePicker> {
     if (widget.isInline) {
       return _buildInlineCalendar();
     }
-    
+
     final hasValue = _controller.text.isNotEmpty;
-    
+
     return TextField(
       controller: _controller,
       readOnly: true,
       enabled: widget.enabled,
       onTap: widget.enabled ? _showPicker : null,
-      decoration: widget.decoration ?? InputDecoration(
-        hintText: widget.hintText ?? _getDefaultHintText(),
-        labelText: widget.labelText,
-        helperText: widget.helperText,
-        errorText: widget.errorText,
-        border: const OutlineInputBorder(),
-        suffixIcon: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (hasValue && widget.enabled)
-              IconButton(
-                icon: widget.clearIcon ?? const Icon(Icons.clear),
-                onPressed: _clear,
-                tooltip: 'Clear',
-              ),
-            IconButton(
-              icon: _getIcon(),
-              onPressed: widget.enabled ? _showPicker : null,
+      decoration:
+          widget.decoration ??
+          InputDecoration(
+            hintText: widget.hintText ?? _getDefaultHintText(),
+            labelText: widget.labelText,
+            helperText: widget.helperText,
+            errorText: widget.errorText,
+            border: const OutlineInputBorder(),
+            suffixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (hasValue && widget.enabled)
+                  IconButton(
+                    icon: widget.clearIcon ?? const Icon(Icons.clear),
+                    onPressed: _clear,
+                    tooltip: 'Clear',
+                  ),
+                IconButton(
+                  icon: _getIcon(),
+                  onPressed: widget.enabled ? _showPicker : null,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -466,13 +483,10 @@ class _DatePickerDialogState extends State<_DatePickerDialog> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -574,13 +588,10 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -592,7 +603,8 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                     'Select Date Range',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  if (_controller.rangeStart != null || _controller.rangeEnd != null) ...[
+                  if (_controller.rangeStart != null ||
+                      _controller.rangeEnd != null) ...[
                     SizedBox(height: design.spacingMd),
                     Text(
                       _getRangeText(),
@@ -633,8 +645,8 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                   FilledButton(
                     onPressed: _startDate != null && _endDate != null
                         ? () => Navigator.of(context).pop(
-                              DateTimeRange(start: _startDate!, end: _endDate!),
-                            )
+                            DateTimeRange(start: _startDate!, end: _endDate!),
+                          )
                         : null,
                     child: const Text('OK'),
                   ),

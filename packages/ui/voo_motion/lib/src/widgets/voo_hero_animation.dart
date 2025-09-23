@@ -8,7 +8,7 @@ class VooHeroAnimation extends StatelessWidget {
   final HeroFlightShuttleBuilder? flightShuttleBuilder;
   final HeroPlaceholderBuilder? placeholderBuilder;
   final bool transitionOnUserGestures;
-  
+
   const VooHeroAnimation({
     super.key,
     required this.tag,
@@ -18,40 +18,28 @@ class VooHeroAnimation extends StatelessWidget {
     this.placeholderBuilder,
     this.transitionOnUserGestures = false,
   });
-  
+
   @override
   Widget build(BuildContext context) => Hero(
-      tag: tag,
-      createRectTween: createRectTween,
-      flightShuttleBuilder: flightShuttleBuilder,
-      placeholderBuilder: placeholderBuilder,
-      transitionOnUserGestures: transitionOnUserGestures,
-      child: child,
-    );
-  
+    tag: tag,
+    createRectTween: createRectTween,
+    flightShuttleBuilder: flightShuttleBuilder,
+    placeholderBuilder: placeholderBuilder,
+    transitionOnUserGestures: transitionOnUserGestures,
+    child: child,
+  );
+
   /// Create a material-style hero animation
-  static Widget material({
-    required String tag,
-    required Widget child,
-  }) => Hero(
-      tag: tag,
-      createRectTween: (begin, end) => MaterialRectArcTween(begin: begin, end: end),
-      child: Material(
-        type: MaterialType.transparency,
-        child: child,
-      ),
-    );
-  
+  static Widget material({required String tag, required Widget child}) => Hero(
+    tag: tag,
+    createRectTween: (begin, end) => MaterialRectArcTween(begin: begin, end: end),
+    child: Material(type: MaterialType.transparency, child: child),
+  );
+
   /// Create a radial hero animation
-  static Widget radial({
-    required String tag,
-    required Widget child,
-    double maxRadius = 200,
-  }) => Hero(
-      tag: tag,
-      createRectTween: (begin, end) => MaterialRectCenterArcTween(begin: begin, end: end),
-      child: ClipOval(
-        child: child,
-      ),
-    );
+  static Widget radial({required String tag, required Widget child, double maxRadius = 200}) => Hero(
+    tag: tag,
+    createRectTween: (begin, end) => MaterialRectCenterArcTween(begin: begin, end: end),
+    child: ClipOval(child: child),
+  );
 }

@@ -41,36 +41,21 @@ class DesktopToolbar extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: borderColor ?? theme.dividerColor,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: borderColor ?? theme.dividerColor)),
       ),
       child: Row(
         children: [
+          ToolbarButton(icon: Icons.refresh, onPressed: onRefresh, tooltip: 'Refresh'),
           ToolbarButton(
-            icon: Icons.refresh,
-            onPressed: onRefresh,
-            tooltip: 'Refresh',
-          ),
-          ToolbarButton(
-            icon: filtersVisible 
-                ? Icons.filter_alt 
-                : Icons.filter_alt_outlined,
+            icon: filtersVisible ? Icons.filter_alt : Icons.filter_alt_outlined,
             onPressed: onFilterToggle,
             tooltip: 'Toggle Filters',
             isActive: filtersVisible,
             badgeCount: activeFilterCount > 0 ? activeFilterCount : null,
           ),
-          if (showViewModeToggle && displayMode != null)
-            ViewModeToggle(
-              currentMode: displayMode!,
-              onModeChanged: onDisplayModeChanged,
-            ),
+          if (showViewModeToggle && displayMode != null) ViewModeToggle(currentMode: displayMode!, onModeChanged: onDisplayModeChanged),
           const Spacer(),
-          if (additionalActions != null)
-            ...additionalActions!,
+          if (additionalActions != null) ...additionalActions!,
         ],
       ),
     );

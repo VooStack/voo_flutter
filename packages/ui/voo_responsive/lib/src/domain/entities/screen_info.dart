@@ -39,9 +39,7 @@ class ScreenInfo extends Equatable {
   factory ScreenInfo.fromContext(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final size = mediaQuery.size;
-    final orientation = mediaQuery.orientation == Orientation.portrait
-        ? OrientationType.portrait
-        : OrientationType.landscape;
+    final orientation = mediaQuery.orientation == Orientation.portrait ? OrientationType.portrait : OrientationType.landscape;
 
     final deviceType = _getDeviceType(size.width);
     final screenSize = _getScreenSize(size.width);
@@ -58,8 +56,7 @@ class ScreenInfo extends Equatable {
       brightness: mediaQuery.platformBrightness,
       isTabletLayout: deviceType == DeviceType.tablet,
       isMobileLayout: deviceType == DeviceType.mobile,
-      isDesktopLayout: deviceType == DeviceType.desktop ||
-                       deviceType == DeviceType.widescreen,
+      isDesktopLayout: deviceType == DeviceType.desktop || deviceType == DeviceType.widescreen,
     );
   }
 
@@ -84,18 +81,18 @@ class ScreenInfo extends Equatable {
 
   @override
   List<Object?> get props => [
-        width,
-        height,
-        pixelRatio,
-        orientation,
-        deviceType,
-        screenSize,
-        currentBreakpoint,
-        safeAreaPadding,
-        textScaler,
-        brightness,
-        isTabletLayout,
-        isMobileLayout,
-        isDesktopLayout,
-      ];
+    width,
+    height,
+    pixelRatio,
+    orientation,
+    deviceType,
+    screenSize,
+    currentBreakpoint,
+    safeAreaPadding,
+    textScaler,
+    brightness,
+    isTabletLayout,
+    isMobileLayout,
+    isDesktopLayout,
+  ];
 }

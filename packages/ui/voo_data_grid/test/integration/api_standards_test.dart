@@ -8,19 +8,9 @@ void main() {
 
     setUp(() {
       testFilters = {
-        'status': const VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'active',
-        ),
-        'age': const VooDataFilter(
-          operator: VooFilterOperator.greaterThan,
-          value: 25,
-        ),
-        'price': const VooDataFilter(
-          operator: VooFilterOperator.between,
-          value: 100,
-          valueTo: 500,
-        ),
+        'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+        'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
+        'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500),
       };
 
       testSorts = [
@@ -38,12 +28,7 @@ void main() {
       });
 
       test('should build simple request with basic pagination', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: []);
         final params = result['params'] as Map<String, String>;
 
         expect(params['page'], '0');
@@ -54,12 +39,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-          },
+          filters: {'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active')},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -72,14 +52,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 25,
-            ),
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.lessThanOrEqual,
-              value: 100,
-            ),
+            'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
+            'price': const VooDataFilter(operator: VooFilterOperator.lessThanOrEqual, value: 100),
           },
           sorts: [],
         );
@@ -93,13 +67,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 100,
-              valueTo: 500,
-            ),
-          },
+          filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -112,12 +80,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'john',
-            ),
-          },
+          filters: {'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'john')},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -126,12 +89,7 @@ void main() {
       });
 
       test('should handle sorts with comma separation', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: testSorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: testSorts);
         final params = result['params'] as Map<String, String>;
 
         expect(params['sort'], 'name,-date,price');
@@ -146,12 +104,7 @@ void main() {
       });
 
       test('should use 1-based pagination', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: []);
         final params = result['params'] as Map<String, String>;
 
         expect(params['page[number]'], '1');
@@ -162,12 +115,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-          },
+          filters: {'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active')},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -179,12 +127,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 25,
-            ),
-          },
+          filters: {'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -196,13 +139,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 100,
-              valueTo: 500,
-            ),
-          },
+          filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -212,12 +149,7 @@ void main() {
       });
 
       test('should handle sorts with comma separation', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: testSorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: testSorts);
         final params = result['params'] as Map<String, String>;
 
         expect(params['sort'], 'name,-date,price');
@@ -232,12 +164,7 @@ void main() {
       });
 
       test('should build OData query string', () {
-        final result = builder.buildRequest(
-          page: 1,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 1, pageSize: 20, filters: {}, sorts: []);
         final params = result['params'] as Map<String, String>;
 
         expect(params['\$top'], '20');
@@ -249,14 +176,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 25,
-            ),
+            'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+            'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
           },
           sorts: [],
         );
@@ -269,13 +190,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 100,
-              valueTo: 500,
-            ),
-          },
+          filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -287,12 +202,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'john',
-            ),
-          },
+          filters: {'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'john')},
           sorts: [],
         );
         final params = result['params'] as Map<String, String>;
@@ -305,14 +215,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedAt': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
-            'createdAt': const VooDataFilter(
-              operator: VooFilterOperator.isNotNull,
-              value: null,
-            ),
+            'deletedAt': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
+            'createdAt': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
           },
           sorts: [],
         );
@@ -322,12 +226,7 @@ void main() {
       });
 
       test('should handle sorts with OData syntax', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: testSorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: testSorts);
         final params = result['params'] as Map<String, String>;
 
         expect(params['\$orderby'], 'name asc,date desc,price asc');
@@ -342,12 +241,7 @@ void main() {
       });
 
       test('should build MongoDB request body', () {
-        final result = builder.buildRequest(
-          page: 1,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 1, pageSize: 20, filters: {}, sorts: []);
         final body = result['body'] as Map<String, dynamic>;
 
         expect(body['skip'], 20);
@@ -358,12 +252,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-          },
+          filters: {'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active')},
           sorts: [],
         );
         final body = result['body'] as Map<String, dynamic>;
@@ -377,14 +266,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 25,
-            ),
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.lessThanOrEqual,
-              value: 100,
-            ),
+            'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
+            'price': const VooDataFilter(operator: VooFilterOperator.lessThanOrEqual, value: 100),
           },
           sorts: [],
         );
@@ -399,13 +282,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 100,
-              valueTo: 500,
-            ),
-          },
+          filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)},
           sorts: [],
         );
         final body = result['body'] as Map<String, dynamic>;
@@ -418,12 +295,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'john',
-            ),
-          },
+          filters: {'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'john')},
           sorts: [],
         );
         final body = result['body'] as Map<String, dynamic>;
@@ -437,14 +309,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedAt': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
-            'createdAt': const VooDataFilter(
-              operator: VooFilterOperator.isNotNull,
-              value: null,
-            ),
+            'deletedAt': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
+            'createdAt': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
           },
           sorts: [],
         );
@@ -456,12 +322,7 @@ void main() {
       });
 
       test('should handle sorts with MongoDB syntax', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: testSorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: testSorts);
         final body = result['body'] as Map<String, dynamic>;
 
         expect(body['sort'], isA<Map>());
@@ -480,12 +341,7 @@ void main() {
       });
 
       test('should build GraphQL variables with pagination', () {
-        final result = builder.buildRequest(
-          page: 1,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 1, pageSize: 20, filters: {}, sorts: []);
         final variables = result['variables'] as Map<String, dynamic>;
 
         expect(variables['page'], 1);
@@ -498,14 +354,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 25,
-            ),
+            'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+            'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
           },
           sorts: [],
         );
@@ -521,18 +371,9 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'john',
-            ),
-            'email': const VooDataFilter(
-              operator: VooFilterOperator.startsWith,
-              value: 'admin',
-            ),
-            'role': const VooDataFilter(
-              operator: VooFilterOperator.endsWith,
-              value: 'manager',
-            ),
+            'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'john'),
+            'email': const VooDataFilter(operator: VooFilterOperator.startsWith, value: 'admin'),
+            'role': const VooDataFilter(operator: VooFilterOperator.endsWith, value: 'manager'),
           },
           sorts: [],
         );
@@ -547,13 +388,7 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 100,
-              valueTo: 500,
-            ),
-          },
+          filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)},
           sorts: [],
         );
         final variables = result['variables'] as Map<String, dynamic>;
@@ -568,14 +403,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'category': const VooDataFilter(
-              operator: VooFilterOperator.inList,
-              value: ['electronics', 'books', 'toys'],
-            ),
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.notInList,
-              value: ['deleted', 'archived'],
-            ),
+            'category': const VooDataFilter(operator: VooFilterOperator.inList, value: ['electronics', 'books', 'toys']),
+            'status': const VooDataFilter(operator: VooFilterOperator.notInList, value: ['deleted', 'archived']),
           },
           sorts: [],
         );
@@ -594,14 +423,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'deletedAt': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
-            'createdAt': const VooDataFilter(
-              operator: VooFilterOperator.isNotNull,
-              value: null,
-            ),
+            'deletedAt': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
+            'createdAt': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
           },
           sorts: [],
         );
@@ -612,12 +435,7 @@ void main() {
       });
 
       test('should handle sorts with GraphQL orderBy', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: testSorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: testSorts);
         final variables = result['variables'] as Map<String, dynamic>;
 
         expect(variables['orderBy'], isA<List>());
@@ -637,62 +455,27 @@ void main() {
       });
 
       test('should build custom request body', () {
-        final result = builder.buildRequest(
-          page: 1,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 1, pageSize: 20, filters: {}, sorts: []);
 
-        expect(result['pagination'], {
-          'page': 1,
-          'pageSize': 20,
-          'offset': 20,
-          'limit': 20,
-        });
+        expect(result['pagination'], {'page': 1, 'pageSize': 20, 'offset': 20, 'limit': 20});
       });
 
       test('should handle filters in custom format', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: testFilters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: testFilters, sorts: []);
 
         expect(result['filters'], isA<List>());
         final filters = result['filters'] as List;
         expect(filters.length, 3);
 
-        expect(
-          filters.any(
-            (f) => f['field'] == 'status' && f['operator'] == 'eq' && f['value'] == 'active',
-          ),
-          isTrue,
-        );
+        expect(filters.any((f) => f['field'] == 'status' && f['operator'] == 'eq' && f['value'] == 'active'), isTrue);
 
-        expect(
-          filters.any(
-            (f) => f['field'] == 'age' && f['operator'] == 'gt' && f['value'] == 25,
-          ),
-          isTrue,
-        );
+        expect(filters.any((f) => f['field'] == 'age' && f['operator'] == 'gt' && f['value'] == 25), isTrue);
 
-        expect(
-          filters.any(
-            (f) => f['field'] == 'price' && f['operator'] == 'between' && f['value'] == 100 && f['valueTo'] == 500,
-          ),
-          isTrue,
-        );
+        expect(filters.any((f) => f['field'] == 'price' && f['operator'] == 'between' && f['value'] == 100 && f['valueTo'] == 500), isTrue);
       });
 
       test('should handle sorts in custom format', () {
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: testSorts,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: testSorts);
 
         expect(result['sorts'], isA<List>());
         final sorts = result['sorts'] as List;
@@ -703,18 +486,9 @@ void main() {
       });
 
       test('should include additional params as metadata', () {
-        final additionalParams = {
-          'userId': '123',
-          'context': 'admin',
-        };
+        final additionalParams = {'userId': '123', 'context': 'admin'};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: {},
-          sorts: [],
-          additionalParams: additionalParams,
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: [], additionalParams: additionalParams);
 
         expect(result['metadata'], additionalParams);
       });
@@ -727,14 +501,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'search': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'hello world & special chars',
-            ),
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'John & Jane',
-            ),
+            'search': const VooDataFilter(operator: VooFilterOperator.contains, value: 'hello world & special chars'),
+            'name': const VooDataFilter(operator: VooFilterOperator.equals, value: 'John & Jane'),
           },
           sorts: [],
         );
@@ -750,14 +518,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'search': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'hello world & special chars',
-            ),
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'John & Jane',
-            ),
+            'search': const VooDataFilter(operator: VooFilterOperator.contains, value: 'hello world & special chars'),
+            'name': const VooDataFilter(operator: VooFilterOperator.equals, value: 'John & Jane'),
           },
           sorts: [],
         );
@@ -773,14 +535,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: "O'Reilly's",
-            ),
-            'description': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: "It's a 'special' value",
-            ),
+            'name': const VooDataFilter(operator: VooFilterOperator.equals, value: "O'Reilly's"),
+            'description': const VooDataFilter(operator: VooFilterOperator.contains, value: "It's a 'special' value"),
           },
           sorts: [],
         );
@@ -798,14 +554,8 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'age': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 25,
-            ),
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 100.50,
-            ),
+            'age': const VooDataFilter(operator: VooFilterOperator.equals, value: 25),
+            'price': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 100.50),
           },
           sorts: [],
         );
@@ -850,14 +600,8 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'age': const VooDataFilter(
-                operator: VooFilterOperator.greaterThan,
-                value: 25,
-              ),
-              'price': const VooDataFilter(
-                operator: VooFilterOperator.lessThanOrEqual,
-                value: '100.50',
-              ),
+              'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
+              'price': const VooDataFilter(operator: VooFilterOperator.lessThanOrEqual, value: '100.50'),
             },
             sorts: [],
           ),
@@ -871,12 +615,7 @@ void main() {
           () => builder.buildRequest(
             page: 0,
             pageSize: 20,
-            filters: {
-              'categories': const VooDataFilter(
-                operator: VooFilterOperator.inList,
-                value: 'not a list',
-              ),
-            },
+            filters: {'categories': const VooDataFilter(operator: VooFilterOperator.inList, value: 'not a list')},
             sorts: [],
           ),
           returnsNormally,
@@ -889,14 +628,8 @@ void main() {
             page: 0,
             pageSize: 20,
             filters: {
-              'categories': const VooDataFilter(
-                operator: VooFilterOperator.inList,
-                value: ['electronics', 'books'],
-              ),
-              'tags': const VooDataFilter(
-                operator: VooFilterOperator.notInList,
-                value: ['archived', 'deleted'],
-              ),
+              'categories': const VooDataFilter(operator: VooFilterOperator.inList, value: ['electronics', 'books']),
+              'tags': const VooDataFilter(operator: VooFilterOperator.notInList, value: ['archived', 'deleted']),
             },
             sorts: [],
           ),
@@ -910,12 +643,7 @@ void main() {
           () => builder.buildRequest(
             page: 0,
             pageSize: 20,
-            filters: {
-              'price': const VooDataFilter(
-                operator: VooFilterOperator.between,
-                value: 100,
-              ),
-            },
+            filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100)},
             sorts: [],
           ),
           returnsNormally,
@@ -928,13 +656,7 @@ void main() {
           () => builder.buildRequest(
             page: 0,
             pageSize: 20,
-            filters: {
-              'price': const VooDataFilter(
-                operator: VooFilterOperator.between,
-                value: 100,
-                valueTo: 'not a number',
-              ),
-            },
+            filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 'not a number')},
             sorts: [],
           ),
           returnsNormally,
@@ -946,13 +668,7 @@ void main() {
           () => builder.buildRequest(
             page: 0,
             pageSize: 20,
-            filters: {
-              'price': const VooDataFilter(
-                operator: VooFilterOperator.between,
-                value: 100,
-                valueTo: 500,
-              ),
-            },
+            filters: {'price': const VooDataFilter(operator: VooFilterOperator.between, value: 100, valueTo: 500)},
             sorts: [],
           ),
           returnsNormally,
@@ -969,14 +685,8 @@ void main() {
               page: 0,
               pageSize: 20,
               filters: {
-                'status': const VooDataFilter(
-                  operator: VooFilterOperator.equals,
-                  value: 'active',
-                ),
-                'age': const VooDataFilter(
-                  operator: VooFilterOperator.greaterThan,
-                  value: 25,
-                ),
+                'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+                'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
               },
               sorts: [],
             ),
@@ -1025,23 +735,12 @@ void main() {
             value = 'test'; // String value for string operators
           }
 
-          final filters = {
-            'field': VooDataFilter(
-              operator: operator,
-              value: value,
-              valueTo: operator == VooFilterOperator.between ? 10 : null,
-            ),
-          };
+          final filters = {'field': VooDataFilter(operator: operator, value: value, valueTo: operator == VooFilterOperator.between ? 10 : null)};
 
           // Test with each standard
           for (final standard in ApiFilterStandard.values) {
             final builder = DataGridRequestBuilder(standard: standard);
-            final result = builder.buildRequest(
-              page: 0,
-              pageSize: 20,
-              filters: filters,
-              sorts: [],
-            );
+            final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
             // Just ensure no exceptions are thrown
             expect(result, isNotNull);

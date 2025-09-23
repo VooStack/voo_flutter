@@ -98,10 +98,7 @@ class VooMaterialApp extends StatelessWidget {
       navigatorObservers: navigatorObservers,
       builder: (context, child) {
         // Wrap with VooDesignSystem
-        Widget result = VooDesignSystem(
-          data: designSystem ?? VooDesignSystemData.defaultSystem,
-          child: child!,
-        );
+        Widget result = VooDesignSystem(data: designSystem ?? VooDesignSystemData.defaultSystem, child: child!);
 
         // Apply any additional builder transformations
         if (builder != null) {
@@ -230,10 +227,7 @@ class VooMaterialAppRouter extends StatelessWidget {
       routerConfig: routerConfig,
       builder: (context, child) {
         // Wrap with VooDesignSystem
-        Widget result = VooDesignSystem(
-          data: designSystem ?? VooDesignSystemData.defaultSystem,
-          child: child!,
-        );
+        Widget result = VooDesignSystem(data: designSystem ?? VooDesignSystemData.defaultSystem, child: child!);
 
         // Apply any additional builder transformations
         if (builder != null) {

@@ -49,35 +49,23 @@ class ListItem<T> extends Equatable {
     VoidCallback? onTap,
     VoidCallback? onLongPress,
     Map<String, dynamic>? metadata,
-  }) =>
-      ListItem<T>(
-        id: id ?? this.id,
-        data: data ?? this.data,
-        leading: leading ?? this.leading,
-        trailing: trailing ?? this.trailing,
-        title: title ?? this.title,
-        subtitle: subtitle ?? this.subtitle,
-        isSelectable: isSelectable ?? this.isSelectable,
-        isDismissible: isDismissible ?? this.isDismissible,
-        isReorderable: isReorderable ?? this.isReorderable,
-        isExpandable: isExpandable ?? this.isExpandable,
-        children: children ?? this.children,
-        onTap: onTap ?? this.onTap,
-        onLongPress: onLongPress ?? this.onLongPress,
-        metadata: metadata ?? this.metadata,
-      );
+  }) => ListItem<T>(
+    id: id ?? this.id,
+    data: data ?? this.data,
+    leading: leading ?? this.leading,
+    trailing: trailing ?? this.trailing,
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    isSelectable: isSelectable ?? this.isSelectable,
+    isDismissible: isDismissible ?? this.isDismissible,
+    isReorderable: isReorderable ?? this.isReorderable,
+    isExpandable: isExpandable ?? this.isExpandable,
+    children: children ?? this.children,
+    onTap: onTap ?? this.onTap,
+    onLongPress: onLongPress ?? this.onLongPress,
+    metadata: metadata ?? this.metadata,
+  );
 
   @override
-  List<Object?> get props => [
-        id,
-        data,
-        title,
-        subtitle,
-        isSelectable,
-        isDismissible,
-        isReorderable,
-        isExpandable,
-        children,
-        metadata,
-      ];
+  List<Object?> get props => [id, data, title, subtitle, isSelectable, isDismissible, isReorderable, isExpandable, children, metadata];
 }

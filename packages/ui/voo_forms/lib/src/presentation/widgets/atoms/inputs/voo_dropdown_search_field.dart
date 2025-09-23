@@ -58,7 +58,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
     super.initState();
     _selectedValue = widget.value;
     _filteredItems = _getSortedItems(widget.items);
-    
+
     // Update search controller text if there's an initial value
     if (_selectedValue != null && widget.displayTextBuilder != null) {
       _searchController.text = widget.displayTextBuilder!(_selectedValue as T);
@@ -110,7 +110,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
         setState(() {
           _filteredItems = _getSortedItems(items);
           _isLoading = false;
-          
+
           // Ensure the selected value is preserved after async load
           // This helps maintain the initial value
           if (_selectedValue == null && widget.value != null) {
@@ -179,7 +179,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
       _filteredItems = _getSortedItems(widget.items);
     });
     _removeOverlay();
-    
+
     // Unfocus to close keyboard if it was open
     _searchFocus.unfocus();
   }
@@ -219,9 +219,7 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
             child: GestureDetector(
               onTap: _closeDropdown,
               behavior: HitTestBehavior.opaque,
-              child: Container(
-                color: Colors.transparent,
-              ),
+              child: Container(color: Colors.transparent),
             ),
           ),
           // Dropdown overlay
@@ -231,152 +229,126 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
               link: _layerLink,
               offset: Offset(0, size.height + 4),
               child: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(12),
-            color: theme.colorScheme.surface,
-            child: Container(
-              constraints: const BoxConstraints(
-                maxHeight: 300,
-              ),
-              decoration: BoxDecoration(
+                elevation: 8,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Search field
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _searchController,
-                      focusNode: _searchFocus,
-                      decoration: InputDecoration(
-                        hintText: 'Search...',
-                        prefixIcon: const Icon(Icons.search),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                color: theme.colorScheme.surface,
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 300),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Search field
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: _searchController,
+                          focusNode: _searchFocus,
+                          decoration: InputDecoration(
+                            hintText: 'Search...',
+                            prefixIcon: const Icon(Icons.search),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+                            ),
                           ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.primary,
-                            width: 2,
-                          ),
+                          onChanged: _filterItems,
+                          autofocus: true,
                         ),
                       ),
-                      onChanged: _filterItems,
-                      autofocus: true,
-                    ),
-                  ),
-                  // Linear progress indicator when loading
-                  if (_isLoading)
-                    LinearProgressIndicator(
-                      backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                      valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
-                      minHeight: 2,
-                    ),
-                  if (!_isLoading) const Divider(height: 1),
-                  // Options list
-                  Flexible(
-                    child: _filteredItems.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              'No items found',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            itemCount: _filteredItems.length,
-                            itemBuilder: (context, index) {
-                              final item = _filteredItems[index];
-                              final isSelected = item == _selectedValue;
-                              final displayText = widget.displayTextBuilder?.call(item) ?? item.toString();
+                      // Linear progress indicator when loading
+                      if (_isLoading)
+                        LinearProgressIndicator(
+                          backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                          valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+                          minHeight: 2,
+                        ),
+                      if (!_isLoading) const Divider(height: 1),
+                      // Options list
+                      Flexible(
+                        child: _filteredItems.isEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text('No items found', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                itemCount: _filteredItems.length,
+                                itemBuilder: (context, index) {
+                                  final item = _filteredItems[index];
+                                  final isSelected = item == _selectedValue;
+                                  final displayText = widget.displayTextBuilder?.call(item) ?? item.toString();
 
-                              // Use custom option builder if provided
-                              if (widget.optionBuilder != null) {
-                                return InkWell(
-                                  onTap: () => _selectItem(item),
-                                  child: widget.optionBuilder!(context, item, isSelected, displayText),
-                                );
-                              }
+                                  // Use custom option builder if provided
+                                  if (widget.optionBuilder != null) {
+                                    return InkWell(onTap: () => _selectItem(item), child: widget.optionBuilder!(context, item, isSelected, displayText));
+                                  }
 
-                              // Default option rendering with subtitle support
-                              final subtitle = widget.subtitleBuilder?.call(item);
-                              
-                              return InkWell(
-                                onTap: () => _selectItem(item),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                  color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: subtitle != null
-                                            ? Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
+                                  // Default option rendering with subtitle support
+                                  final subtitle = widget.subtitleBuilder?.call(item);
+
+                                  return InkWell(
+                                    onTap: () => _selectItem(item),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: subtitle != null
+                                                ? Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        displayText,
+                                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                                          color: isSelected ? theme.colorScheme.primary : null,
+                                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      const SizedBox(height: 2),
+                                                      Text(
+                                                        subtitle,
+                                                        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Text(
                                                     displayText,
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: isSelected ? theme.colorScheme.primary : null,
-                                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    style: theme.textTheme.bodyMedium?.copyWith(color: isSelected ? theme.colorScheme.primary : null),
                                                   ),
-                                                  const SizedBox(height: 2),
-                                                  Text(
-                                                    subtitle,
-                                                    style: theme.textTheme.bodySmall?.copyWith(
-                                                      color: theme.colorScheme.onSurfaceVariant,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              )
-                                            : Text(
-                                                displayText,
-                                                style: theme.textTheme.bodyMedium?.copyWith(
-                                                  color: isSelected ? theme.colorScheme.primary : null,
-                                                ),
-                                              ),
+                                          ),
+                                          if (isSelected) Icon(Icons.check, size: 20, color: theme.colorScheme.primary),
+                                        ],
                                       ),
-                                      if (isSelected)
-                                        Icon(
-                                          Icons.check,
-                                          size: 20,
-                                          color: theme.colorScheme.primary,
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
-    ],
-  ),
-);
+    );
   }
 
   @override
@@ -390,53 +362,37 @@ class _VooDropdownSearchFieldState<T> extends State<VooDropdownSearchField<T>> {
         onTap: widget.enabled ? _toggleDropdown : null,
         borderRadius: BorderRadius.circular(12),
         child: InputDecorator(
-          decoration: widget.decoration?.copyWith(
-            suffixIcon: widget.icon ??
-                Icon(
-                  _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: widget.enabled ? null : theme.colorScheme.onSurfaceVariant,
+          decoration:
+              widget.decoration?.copyWith(
+                suffixIcon:
+                    widget.icon ??
+                    Icon(_isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down, color: widget.enabled ? null : theme.colorScheme.onSurfaceVariant),
+              ) ??
+              InputDecoration(
+                hintText: widget.hint,
+                filled: true,
+                fillColor: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
                 ),
-          ) ?? InputDecoration(
-            hintText: widget.hint,
-            filled: true,
-            fillColor: widget.enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: theme.colorScheme.primary,
-                width: 2,
-              ),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: theme.colorScheme.outline.withValues(alpha: 0.2),
-              ),
-            ),
-            suffixIcon: widget.icon ??
-                Icon(
-                  _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: widget.enabled ? null : theme.colorScheme.onSurfaceVariant,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
                 ),
-          ),
-          child: displayText != null
-              ? Text(
-                  displayText,
-                  style: theme.textTheme.bodyLarge,
-                )
-              : null,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
+                ),
+                suffixIcon:
+                    widget.icon ??
+                    Icon(_isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down, color: widget.enabled ? null : theme.colorScheme.onSurfaceVariant),
+              ),
+          child: displayText != null ? Text(displayText, style: theme.textTheme.bodyLarge) : null,
         ),
       ),
     );

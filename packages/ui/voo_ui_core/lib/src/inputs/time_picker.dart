@@ -101,40 +101,27 @@ class _VooTimePickerState extends State<VooTimePicker> {
         if (widget.labelText != null)
           Padding(
             padding: EdgeInsets.only(bottom: design.spacingSm),
-            child: Text(
-              widget.labelText!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-            ),
+            child: Text(widget.labelText!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
           ),
         InkWell(
           onTap: widget.enabled ? _selectTime : null,
           borderRadius: BorderRadius.circular(8),
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: design.spacingMd,
-              vertical: design.spacingMd,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: design.spacingMd, vertical: design.spacingMd),
             decoration: BoxDecoration(
-              border: Border.all(
-                color: widget.errorText != null ? colorScheme.error : colorScheme.outline,
-              ),
+              border: Border.all(color: widget.errorText != null ? colorScheme.error : colorScheme.outline),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.access_time,
-                  color: widget.enabled ? colorScheme.onSurfaceVariant : colorScheme.onSurface.withValues(alpha: 0.38),
-                ),
+                Icon(Icons.access_time, color: widget.enabled ? colorScheme.onSurfaceVariant : colorScheme.onSurface.withValues(alpha: 0.38)),
                 SizedBox(width: design.spacingMd),
                 Expanded(
                   child: Text(
                     _formatTime(),
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: widget.enabled ? colorScheme.onSurface : colorScheme.onSurface.withValues(alpha: 0.38),
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: widget.enabled ? colorScheme.onSurface : colorScheme.onSurface.withValues(alpha: 0.38)),
                   ),
                 ),
               ],
@@ -146,9 +133,7 @@ class _VooTimePickerState extends State<VooTimePicker> {
             padding: EdgeInsets.only(top: design.spacingXs),
             child: Text(
               widget.errorText ?? widget.helperText!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: widget.errorText != null ? colorScheme.error : colorScheme.onSurfaceVariant,
-                  ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: widget.errorText != null ? colorScheme.error : colorScheme.onSurfaceVariant),
             ),
           ),
       ],
@@ -196,15 +181,9 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
     _selectedSecond = widget.initialSeconds;
     _selectedPeriod = widget.initialTime.period;
 
-    _hourController = TextEditingController(
-      text: _formatHourForInput(),
-    );
-    _minuteController = TextEditingController(
-      text: _selectedMinute.toString().padLeft(2, '0'),
-    );
-    _secondController = TextEditingController(
-      text: _selectedSecond.toString().padLeft(2, '0'),
-    );
+    _hourController = TextEditingController(text: _formatHourForInput());
+    _minuteController = TextEditingController(text: _selectedMinute.toString().padLeft(2, '0'));
+    _secondController = TextEditingController(text: _selectedSecond.toString().padLeft(2, '0'));
   }
 
   @override
@@ -279,10 +258,7 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
 
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 360,
-          maxHeight: 400,
-        ),
+        constraints: const BoxConstraints(maxWidth: 360, maxHeight: 400),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -296,12 +272,7 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Select time',
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                      ),
+                      Text('Select time', style: Theme.of(context).textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
                       IconButton(
                         icon: Icon(_isInputMode ? Icons.schedule : Icons.keyboard),
                         onPressed: () {
@@ -319,26 +290,18 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
               ),
             ),
             // Content
-            Expanded(
-              child: _isInputMode ? _buildInputMode(design, colorScheme) : _buildClockMode(design, colorScheme),
-            ),
+            Expanded(child: _isInputMode ? _buildInputMode(design, colorScheme) : _buildClockMode(design, colorScheme)),
             // Actions
             Padding(
               padding: EdgeInsets.all(design.spacingMd),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Cancel'),
-                  ),
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
                   SizedBox(width: design.spacingMd),
                   FilledButton(
                     onPressed: () {
-                      final time = TimeOfDay(
-                        hour: _selectedHour,
-                        minute: _selectedMinute,
-                      );
+                      final time = TimeOfDay(hour: _selectedHour, minute: _selectedMinute);
                       Navigator.of(context).pop(time);
                     },
                     child: const Text('OK'),
@@ -360,37 +323,12 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          hourText,
-          style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: colorScheme.onSurface,
-              ),
-        ),
-        Text(
-          ':',
-          style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: colorScheme.onSurface,
-              ),
-        ),
-        Text(
-          minuteText,
-          style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: colorScheme.onSurface,
-              ),
-        ),
+        Text(hourText, style: Theme.of(context).textTheme.displaySmall?.copyWith(color: colorScheme.onSurface)),
+        Text(':', style: Theme.of(context).textTheme.displaySmall?.copyWith(color: colorScheme.onSurface)),
+        Text(minuteText, style: Theme.of(context).textTheme.displaySmall?.copyWith(color: colorScheme.onSurface)),
         if (widget.showSeconds) ...[
-          Text(
-            ':',
-            style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  color: colorScheme.onSurface,
-                ),
-          ),
-          Text(
-            secondText,
-            style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  color: colorScheme.onSurface,
-                ),
-          ),
+          Text(':', style: Theme.of(context).textTheme.displaySmall?.copyWith(color: colorScheme.onSurface)),
+          Text(secondText, style: Theme.of(context).textTheme.displaySmall?.copyWith(color: colorScheme.onSurface)),
         ],
         if (!widget.use24HourFormat) ...[
           const SizedBox(width: 16),
@@ -407,9 +345,9 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
                   child: Text(
                     'AM',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: _selectedPeriod == DayPeriod.am ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
-                          fontWeight: _selectedPeriod == DayPeriod.am ? FontWeight.bold : FontWeight.normal,
-                        ),
+                      color: _selectedPeriod == DayPeriod.am ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
+                      fontWeight: _selectedPeriod == DayPeriod.am ? FontWeight.bold : FontWeight.normal,
+                    ),
                   ),
                 ),
               ),
@@ -425,9 +363,9 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
                   child: Text(
                     'PM',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: _selectedPeriod == DayPeriod.pm ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
-                          fontWeight: _selectedPeriod == DayPeriod.pm ? FontWeight.bold : FontWeight.normal,
-                        ),
+                      color: _selectedPeriod == DayPeriod.pm ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
+                      fontWeight: _selectedPeriod == DayPeriod.pm ? FontWeight.bold : FontWeight.normal,
+                    ),
                   ),
                 ),
               ),
@@ -439,56 +377,50 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
   }
 
   Widget _buildInputMode(VooDesignSystemData design, ColorScheme colorScheme) => Padding(
-        padding: EdgeInsets.all(design.spacingLg),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTimeInput(
-              controller: _hourController,
-              label: 'Hour',
-              maxValue: widget.use24HourFormat ? 23 : 12,
-              minValue: widget.use24HourFormat ? 0 : 1,
-              onChanged: _updateHour,
-              design: design,
-              colorScheme: colorScheme,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-              child: Text(
-                ':',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-            _buildTimeInput(
-              controller: _minuteController,
-              label: 'Minute',
-              maxValue: 59,
-              minValue: 0,
-              onChanged: _updateMinute,
-              design: design,
-              colorScheme: colorScheme,
-            ),
-            if (widget.showSeconds) ...[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-                child: Text(
-                  ':',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ),
-              _buildTimeInput(
-                controller: _secondController,
-                label: 'Second',
-                maxValue: 59,
-                minValue: 0,
-                onChanged: _updateSecond,
-                design: design,
-                colorScheme: colorScheme,
-              ),
-            ],
-          ],
+    padding: EdgeInsets.all(design.spacingLg),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildTimeInput(
+          controller: _hourController,
+          label: 'Hour',
+          maxValue: widget.use24HourFormat ? 23 : 12,
+          minValue: widget.use24HourFormat ? 0 : 1,
+          onChanged: _updateHour,
+          design: design,
+          colorScheme: colorScheme,
         ),
-      );
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
+          child: Text(':', style: Theme.of(context).textTheme.headlineMedium),
+        ),
+        _buildTimeInput(
+          controller: _minuteController,
+          label: 'Minute',
+          maxValue: 59,
+          minValue: 0,
+          onChanged: _updateMinute,
+          design: design,
+          colorScheme: colorScheme,
+        ),
+        if (widget.showSeconds) ...[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
+            child: Text(':', style: Theme.of(context).textTheme.headlineMedium),
+          ),
+          _buildTimeInput(
+            controller: _secondController,
+            label: 'Second',
+            maxValue: 59,
+            minValue: 0,
+            onChanged: _updateSecond,
+            design: design,
+            colorScheme: colorScheme,
+          ),
+        ],
+      ],
+    ),
+  );
 
   Widget _buildTimeInput({
     required TextEditingController controller,
@@ -498,62 +430,44 @@ class _VooTimePickerDialogState extends State<VooTimePickerDialog> {
     required void Function(String) onChanged,
     required VooDesignSystemData design,
     required ColorScheme colorScheme,
-  }) =>
-      SizedBox(
-        width: 80,
-        child: TextField(
-          controller: controller,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(2),
-          ],
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            labelText: label,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: design.spacingSm,
-              vertical: design.spacingMd,
-            ),
-          ),
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-      );
+  }) => SizedBox(
+    width: 80,
+    child: TextField(
+      controller: controller,
+      textAlign: TextAlign.center,
+      keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        contentPadding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingMd),
+      ),
+      style: Theme.of(context).textTheme.headlineSmall,
+    ),
+  );
 
   // Simplified clock mode - in a real implementation, this would be an
   // interactive clock face
   Widget _buildClockMode(VooDesignSystemData design, ColorScheme colorScheme) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.access_time,
-              size: 100,
-              color: colorScheme.primary,
-            ),
-            SizedBox(height: design.spacingLg),
-            Text(
-              'Clock mode coming soon',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-            ),
-            SizedBox(height: design.spacingMd),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _isInputMode = true;
-                });
-              },
-              child: const Text('Switch to input mode'),
-            ),
-          ],
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.access_time, size: 100, color: colorScheme.primary),
+        SizedBox(height: design.spacingLg),
+        Text('Clock mode coming soon', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
+        SizedBox(height: design.spacingMd),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _isInputMode = true;
+            });
+          },
+          child: const Text('Switch to input mode'),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 /// Material 3 time selection chip
@@ -563,13 +477,7 @@ class VooTimeChip extends StatelessWidget {
   final VoidCallback? onTap;
   final bool use24HourFormat;
 
-  const VooTimeChip({
-    super.key,
-    required this.time,
-    this.selected = false,
-    this.onTap,
-    this.use24HourFormat = false,
-  });
+  const VooTimeChip({super.key, required this.time, this.selected = false, this.onTap, this.use24HourFormat = false});
 
   String _formatTime() {
     if (use24HourFormat) {
@@ -606,26 +514,20 @@ class VooQuickTimeSelector extends StatelessWidget {
   final List<TimeOfDay>? quickTimes;
   final bool use24HourFormat;
 
-  const VooQuickTimeSelector({
-    super.key,
-    this.selectedTime,
-    this.onTimeSelected,
-    this.quickTimes,
-    this.use24HourFormat = false,
-  });
+  const VooQuickTimeSelector({super.key, this.selectedTime, this.onTimeSelected, this.quickTimes, this.use24HourFormat = false});
 
   List<TimeOfDay> get _defaultQuickTimes => [
-        const TimeOfDay(hour: 9, minute: 0), // 9:00 AM
-        const TimeOfDay(hour: 10, minute: 0), // 10:00 AM
-        const TimeOfDay(hour: 11, minute: 0), // 11:00 AM
-        const TimeOfDay(hour: 12, minute: 0), // 12:00 PM
-        const TimeOfDay(hour: 13, minute: 0), // 1:00 PM
-        const TimeOfDay(hour: 14, minute: 0), // 2:00 PM
-        const TimeOfDay(hour: 15, minute: 0), // 3:00 PM
-        const TimeOfDay(hour: 16, minute: 0), // 4:00 PM
-        const TimeOfDay(hour: 17, minute: 0), // 5:00 PM
-        const TimeOfDay(hour: 18, minute: 0), // 6:00 PM
-      ];
+    const TimeOfDay(hour: 9, minute: 0), // 9:00 AM
+    const TimeOfDay(hour: 10, minute: 0), // 10:00 AM
+    const TimeOfDay(hour: 11, minute: 0), // 11:00 AM
+    const TimeOfDay(hour: 12, minute: 0), // 12:00 PM
+    const TimeOfDay(hour: 13, minute: 0), // 1:00 PM
+    const TimeOfDay(hour: 14, minute: 0), // 2:00 PM
+    const TimeOfDay(hour: 15, minute: 0), // 3:00 PM
+    const TimeOfDay(hour: 16, minute: 0), // 4:00 PM
+    const TimeOfDay(hour: 17, minute: 0), // 5:00 PM
+    const TimeOfDay(hour: 18, minute: 0), // 6:00 PM
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -638,12 +540,7 @@ class VooQuickTimeSelector extends StatelessWidget {
       children: times.map((time) {
         final isSelected = selectedTime?.hour == time.hour && selectedTime?.minute == time.minute;
 
-        return VooTimeChip(
-          time: time,
-          selected: isSelected,
-          onTap: () => onTimeSelected?.call(time),
-          use24HourFormat: use24HourFormat,
-        );
+        return VooTimeChip(time: time, selected: isSelected, onTap: () => onTimeSelected?.call(time), use24HourFormat: use24HourFormat);
       }).toList(),
     );
   }

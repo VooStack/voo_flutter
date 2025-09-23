@@ -26,19 +26,8 @@ void main() {
 
     // Test columns configuration
     final testColumns = <VooDataColumn<Map<String, dynamic>>>[
-      const VooDataColumn(
-        field: 'site_number',
-        label: 'Site Number',
-        width: 150,
-        frozen: true,
-        filterWidgetType: VooFilterWidgetType.textField,
-      ),
-      const VooDataColumn(
-        field: 'site_name',
-        label: 'Site Name',
-        width: 200,
-        filterWidgetType: VooFilterWidgetType.textField,
-      ),
+      const VooDataColumn(field: 'site_number', label: 'Site Number', width: 150, frozen: true, filterWidgetType: VooFilterWidgetType.textField),
+      const VooDataColumn(field: 'site_name', label: 'Site Name', width: 200, filterWidgetType: VooFilterWidgetType.textField),
       const VooDataColumn(
         field: 'jurisdiction',
         label: 'Jurisdiction',
@@ -70,81 +59,60 @@ void main() {
         label: 'ZL',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'Active', label: 'Active'),
-        ],
+        filterOptions: [VooFilterOption(value: 'Active', label: 'Active')],
       ),
       const VooDataColumn(
         field: 'ZV',
         label: 'ZV',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'Pending', label: 'Pending'),
-        ],
+        filterOptions: [VooFilterOption(value: 'Pending', label: 'Pending')],
       ),
       const VooDataColumn(
         field: 'BV',
         label: 'BV',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'Approved', label: 'Approved'),
-        ],
+        filterOptions: [VooFilterOption(value: 'Approved', label: 'Approved')],
       ),
       const VooDataColumn(
         field: 'FV',
         label: 'FV',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'In Review', label: 'In Review'),
-        ],
+        filterOptions: [VooFilterOption(value: 'In Review', label: 'In Review')],
       ),
       const VooDataColumn(
         field: 'CO',
         label: 'CO',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'Complete', label: 'Complete'),
-        ],
+        filterOptions: [VooFilterOption(value: 'Complete', label: 'Complete')],
       ),
       const VooDataColumn(
         field: 'ON',
         label: 'ON',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'On Hold', label: 'On Hold'),
-        ],
+        filterOptions: [VooFilterOption(value: 'On Hold', label: 'On Hold')],
       ),
       const VooDataColumn(
         field: 'SD',
         label: 'SD',
         width: 100,
         filterWidgetType: VooFilterWidgetType.dropdown,
-        filterOptions: [
-          VooFilterOption(value: 'Scheduled', label: 'Scheduled'),
-        ],
+        filterOptions: [VooFilterOption(value: 'Scheduled', label: 'Scheduled')],
       ),
     ];
 
     group('VooDataGridStateless Tests', () {
       testWidgets('renders with initial state', (WidgetTester tester) async {
-        final state = VooDataGridState<Map<String, dynamic>>(
-          rows: testData.take(10).toList(),
-          totalRows: testData.length,
-          pageSize: 10,
-        );
+        final state = VooDataGridState<Map<String, dynamic>>(rows: testData.take(10).toList(), totalRows: testData.length, pageSize: 10);
 
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: VooDataGridStateless<Map<String, dynamic>>(
-                state: state,
-                columns: testColumns,
-              ),
+              body: VooDataGridStateless<Map<String, dynamic>>(state: state, columns: testColumns),
             ),
           ),
         );
@@ -161,11 +129,7 @@ void main() {
         String? sortedField;
         VooSortDirection? sortDirection;
 
-        final state = VooDataGridState<Map<String, dynamic>>(
-          rows: testData.take(10).toList(),
-          totalRows: testData.length,
-          pageSize: 10,
-        );
+        final state = VooDataGridState<Map<String, dynamic>>(rows: testData.take(10).toList(), totalRows: testData.length, pageSize: 10);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -196,12 +160,7 @@ void main() {
         String? filteredField;
         VooDataFilter? filterValue;
 
-        final state = VooDataGridState<Map<String, dynamic>>(
-          rows: testData.take(10).toList(),
-          totalRows: testData.length,
-          pageSize: 10,
-          filtersVisible: true,
-        );
+        final state = VooDataGridState<Map<String, dynamic>>(rows: testData.take(10).toList(), totalRows: testData.length, pageSize: 10, filtersVisible: true);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -242,11 +201,7 @@ void main() {
       testWidgets('onPageChanged callback is triggered', (WidgetTester tester) async {
         int? newPage;
 
-        final state = VooDataGridState<Map<String, dynamic>>(
-          rows: testData.take(10).toList(),
-          totalRows: testData.length,
-          pageSize: 10,
-        );
+        final state = VooDataGridState<Map<String, dynamic>>(rows: testData.take(10).toList(), totalRows: testData.length, pageSize: 10);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -304,13 +259,11 @@ void main() {
 
         // Test that the callback can be triggered programmatically
         // This simulates what would happen when a checkbox is tapped
-        final widget = tester.widget<VooDataGridStateless<Map<String, dynamic>>>(
-          find.byType(VooDataGridStateless<Map<String, dynamic>>),
-        );
-        
+        final widget = tester.widget<VooDataGridStateless<Map<String, dynamic>>>(find.byType(VooDataGridStateless<Map<String, dynamic>>));
+
         // Call the callback directly with test data
         widget.onRowSelected?.call(testData[0]);
-        
+
         // Verify the callback was triggered
         expect(callbackTriggered, isTrue);
         expect(selectedRow, isNotNull);
@@ -320,22 +273,13 @@ void main() {
 
     group('VooDataGrid with Controller Tests', () {
       testWidgets('renders with local data source', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: VooDataGrid<Map<String, dynamic>>(
-                controller: controller,
-              ),
-            ),
+            home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
           ),
         );
 
@@ -347,22 +291,13 @@ void main() {
       });
 
       testWidgets('sorting works correctly', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: VooDataGrid<Map<String, dynamic>>(
-                controller: controller,
-              ),
-            ),
+            home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
           ),
         );
 
@@ -379,25 +314,14 @@ void main() {
       });
 
       testWidgets('filtering works correctly', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: SizedBox(
-                width: 1200,
-                height: 600,
-                child: VooDataGrid<Map<String, dynamic>>(
-                  controller: controller,
-                ),
-              ),
+              body: SizedBox(width: 1200, height: 600, child: VooDataGrid<Map<String, dynamic>>(controller: controller)),
             ),
           ),
         );
@@ -409,13 +333,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Apply filter
-        dataSource.applyFilter(
-          'jurisdiction',
-          const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 'City A',
-          ),
-        );
+        dataSource.applyFilter('jurisdiction', const VooDataFilter(operator: VooFilterOperator.equals, value: 'City A'));
         await tester.pumpAndSettle();
 
         // Verify filter was applied
@@ -424,22 +342,13 @@ void main() {
       });
 
       testWidgets('pagination works correctly', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: VooDataGrid<Map<String, dynamic>>(
-                controller: controller,
-              ),
-            ),
+            home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
           ),
         );
 
@@ -456,30 +365,21 @@ void main() {
       });
 
       testWidgets('selection works correctly', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
-        
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
+
         // Set selection mode to enable selection
         dataSource.setSelectionMode(VooSelectionMode.multiple);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: VooDataGrid<Map<String, dynamic>>(
-                controller: controller,
-              ),
-            ),
+            home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
           ),
         );
 
         await tester.pumpAndSettle();
-        
+
         // Ensure data is loaded
         expect(dataSource.rows, isNotEmpty);
 
@@ -507,25 +407,14 @@ void main() {
 
     group('UI Layout Tests', () {
       testWidgets('filter row layout is correct', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: SizedBox(
-                width: 1200,
-                height: 600,
-                child: VooDataGrid<Map<String, dynamic>>(
-                  controller: controller,
-                ),
-              ),
+              body: SizedBox(width: 1200, height: 600, child: VooDataGrid<Map<String, dynamic>>(controller: controller)),
             ),
           ),
         );
@@ -538,15 +427,15 @@ void main() {
 
         // Find filter row - after toggling, it should exist
         final filterRow = find.byType(VooDataGridFilterRow<Map<String, dynamic>>);
-        
+
         // In desktop layout, filters should be inline
         if (filterRow.evaluate().isNotEmpty) {
           expect(filterRow, findsOneWidget);
-          
+
           // Verify filter widgets are rendered (either text fields or dropdowns)
           final textFields = find.byType(TextField);
           final dropdowns = find.byType(DropdownButton);
-          
+
           // At least some filter widgets should exist
           expect(
             textFields.evaluate().isNotEmpty || dropdowns.evaluate().isNotEmpty,
@@ -556,23 +445,14 @@ void main() {
         } else {
           // Filter row might not be visible in this layout
           // This is acceptable as long as the toggle was called
-          expect(
-            filterRow.evaluate().isEmpty,
-            isTrue,
-            reason: 'Filter row not visible in current layout',
-          );
+          expect(filterRow.evaluate().isEmpty, isTrue, reason: 'Filter row not visible in current layout');
         }
       });
 
       testWidgets('responsive layout works correctly', (WidgetTester tester) async {
-        final dataSource = VooLocalDataSource<Map<String, dynamic>>(
-          data: testData,
-        );
+        final dataSource = VooLocalDataSource<Map<String, dynamic>>(data: testData);
 
-        final controller = VooDataGridController<Map<String, dynamic>>(
-          dataSource: dataSource,
-          columns: testColumns,
-        );
+        final controller = VooDataGridController<Map<String, dynamic>>(dataSource: dataSource, columns: testColumns);
 
         // Test desktop layout
         await tester.pumpWidget(
@@ -581,10 +461,7 @@ void main() {
               body: SizedBox(
                 width: 1200,
                 height: 600,
-                child: VooDataGrid<Map<String, dynamic>>(
-                  controller: controller,
-                  displayMode: VooDataGridDisplayMode.table,
-                ),
+                child: VooDataGrid<Map<String, dynamic>>(controller: controller, displayMode: VooDataGridDisplayMode.table),
               ),
             ),
           ),
@@ -600,10 +477,7 @@ void main() {
               body: SizedBox(
                 width: 400,
                 height: 600,
-                child: VooDataGrid<Map<String, dynamic>>(
-                  controller: controller,
-                  displayMode: VooDataGridDisplayMode.cards,
-                ),
+                child: VooDataGrid<Map<String, dynamic>>(controller: controller, displayMode: VooDataGridDisplayMode.cards),
               ),
             ),
           ),

@@ -4,13 +4,7 @@ import 'package:voo_toast/src/domain/enums/toast_type.dart';
 void main() {
   group('ToastType Enum', () {
     test('has all expected values', () {
-      const expectedValues = [
-        ToastType.success,
-        ToastType.error,
-        ToastType.warning,
-        ToastType.info,
-        ToastType.custom,
-      ];
+      const expectedValues = [ToastType.success, ToastType.error, ToastType.warning, ToastType.info, ToastType.custom];
 
       expect(ToastType.values, expectedValues);
     });
@@ -82,10 +76,7 @@ void main() {
     });
 
     test('can be stored in collections', () {
-      final set = <ToastType>{
-        ToastType.success,
-        ToastType.error,
-      };
+      final set = <ToastType>{ToastType.success, ToastType.error};
 
       expect(set.length, 2);
       expect(set.contains(ToastType.success), true);

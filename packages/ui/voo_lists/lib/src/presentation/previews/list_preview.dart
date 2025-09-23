@@ -48,79 +48,77 @@ class _ListPreviewState extends State<ListPreview> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Simple List Preview'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              controller.setItems([]);
-              controller.setLoading(true);
-              Future.delayed(const Duration(seconds: 1), () {
-                _initializeData();
-                controller.setLoading(false);
-              });
-            },
-          ),
-        ],
-      ),
-      body: AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) {
-          if (controller.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return VooSimpleList<String>(
-            items: controller.items,
-            config: const ListConfig(
-              enableSelection: true,
-              enableMultiSelection: true,
-              enablePullToRefresh: true,
-              padding: EdgeInsets.all(8),
-              itemSpacing: 4,
-              emptyStateWidget: VooListEmptyState(
-                icon: Icon(Icons.inbox, size: 64, color: Colors.grey),
-                title: 'No Items',
-                message: 'There are no items to display',
-              ),
-            ),
-            onItemTap: (item) {
-              log('Tapped: ${item.title}');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Tapped: ${item.title}')),
-              );
-            },
-            onItemLongPress: (item) {
-              log('Long pressed: ${item.title}');
-            },
-            onSelectionChanged: (selectedItems) {
-              log('Selected ${selectedItems.length} items');
-            },
-            onRefresh: () async {
-              await Future<void>.delayed(const Duration(seconds: 1));
+    appBar: AppBar(
+      title: const Text('Simple List Preview'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () {
+            controller.setItems([]);
+            controller.setLoading(true);
+            Future.delayed(const Duration(seconds: 1), () {
               _initializeData();
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final newId = DateTime.now().millisecondsSinceEpoch.toString();
-          controller.addItem(
-            ListItem<String>(
-              id: newId,
-              data: 'New Data',
-              title: 'New Item',
-              subtitle: 'Added at ${DateTime.now()}',
-              isSelectable: true,
-              leading: const Icon(Icons.add_circle),
+              controller.setLoading(false);
+            });
+          },
+        ),
+      ],
+    ),
+    body: AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        if (controller.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return VooSimpleList<String>(
+          items: controller.items,
+          config: const ListConfig(
+            enableSelection: true,
+            enableMultiSelection: true,
+            enablePullToRefresh: true,
+            padding: EdgeInsets.all(8),
+            itemSpacing: 4,
+            emptyStateWidget: VooListEmptyState(
+              icon: Icon(Icons.inbox, size: 64, color: Colors.grey),
+              title: 'No Items',
+              message: 'There are no items to display',
             ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+          ),
+          onItemTap: (item) {
+            log('Tapped: ${item.title}');
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tapped: ${item.title}')));
+          },
+          onItemLongPress: (item) {
+            log('Long pressed: ${item.title}');
+          },
+          onSelectionChanged: (selectedItems) {
+            log('Selected ${selectedItems.length} items');
+          },
+          onRefresh: () async {
+            await Future<void>.delayed(const Duration(seconds: 1));
+            _initializeData();
+          },
+        );
+      },
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        final newId = DateTime.now().millisecondsSinceEpoch.toString();
+        controller.addItem(
+          ListItem<String>(
+            id: newId,
+            data: 'New Data',
+            title: 'New Item',
+            subtitle: 'Added at ${DateTime.now()}',
+            isSelectable: true,
+            leading: const Icon(Icons.add_circle),
+          ),
+        );
+      },
+      child: const Icon(Icons.add),
+    ),
+  );
 
   @override
   void dispose() {
@@ -188,38 +186,35 @@ class _GroupedListPreviewState extends State<GroupedListPreview> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Grouped List Preview'),
-      ),
-      body: ListView.builder(
-        itemCount: groups.length,
-        itemBuilder: (context, groupIndex) {
-          final group = groups[groupIndex];
-          return ExpansionTile(
-            key: ValueKey(group.id),
-            title: Text(group.title),
-            subtitle: group.subtitle != null ? Text(group.subtitle!) : null,
-            initiallyExpanded: group.isExpanded,
-            children: [
-              VooListSectionHeader(
-                title: group.title,
-                subtitle: '${group.items.length} items',
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-              ),
-              ...group.items.map((item) => VooListTile(
+    appBar: AppBar(title: const Text('Grouped List Preview')),
+    body: ListView.builder(
+      itemCount: groups.length,
+      itemBuilder: (context, groupIndex) {
+        final group = groups[groupIndex];
+        return ExpansionTile(
+          key: ValueKey(group.id),
+          title: Text(group.title),
+          subtitle: group.subtitle != null ? Text(group.subtitle!) : null,
+          initiallyExpanded: group.isExpanded,
+          children: [
+            VooListSectionHeader(
+              title: group.title,
+              subtitle: '${group.items.length} items',
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            ),
+            ...group.items.map(
+              (item) => VooListTile(
                 item: item,
                 onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Tapped: ${item.title}')),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tapped: ${item.title}')));
                 },
               ),
             ),
-            ],
-          );
-        },
-      ),
-    );
+          ],
+        );
+      },
+    ),
+  );
 }
 
 class ReorderableListPreview extends StatefulWidget {
@@ -245,30 +240,25 @@ class _ReorderableListPreviewState extends State<ReorderableListPreview> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Reorderable List Preview'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shuffle),
-            onPressed: () {
-              setState(() {
-                items.shuffle();
-              });
-            },
-          ),
-        ],
-      ),
-      body: VooReorderableList<String>(
-        items: items,
-        config: const ListConfig(
-          enableReordering: true,
-          showDividers: false,
-          padding: EdgeInsets.all(8),
-          animationType: ListAnimationType.slideIn,
+    appBar: AppBar(
+      title: const Text('Reorderable List Preview'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.shuffle),
+          onPressed: () {
+            setState(() {
+              items.shuffle();
+            });
+          },
         ),
-        onReorder: (newIndex) {
-          log('Item moved to position: $newIndex');
-        },
-      ),
-    );
+      ],
+    ),
+    body: VooReorderableList<String>(
+      items: items,
+      config: const ListConfig(enableReordering: true, showDividers: false, padding: EdgeInsets.all(8), animationType: ListAnimationType.slideIn),
+      onReorder: (newIndex) {
+        log('Item moved to position: $newIndex');
+      },
+    ),
+  );
 }

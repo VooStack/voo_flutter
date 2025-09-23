@@ -6,9 +6,7 @@ void main() {
   group('Focus retention issue when clearing validation errors', () {
     testWidgets('should maintain focus when clearing error by typing', (tester) async {
       // Create a controller with onSubmit error display mode
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
 
       // Build the form with multiple fields to test focus behavior
       await tester.pumpWidget(
@@ -17,16 +15,8 @@ void main() {
             body: VooForm(
               controller: controller,
               fields: [
-                VooTextField(
-                  name: 'siteName',
-                  label: 'Site Name',
-                  validators: [VooValidator.required()],
-                ),
-                VooTextField(
-                  name: 'description',
-                  label: 'Description',
-                  validators: [VooValidator.required()],
-                ),
+                VooTextField(name: 'siteName', label: 'Site Name', validators: [VooValidator.required()]),
+                VooTextField(name: 'description', label: 'Description', validators: [VooValidator.required()]),
               ],
             ),
           ),
@@ -77,9 +67,7 @@ void main() {
     });
 
     testWidgets('should maintain focus across multiple error clearings', (tester) async {
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -88,14 +76,7 @@ void main() {
               controller: controller,
               isReadOnly: false,
               isLoading: false,
-              child: VooTextField(
-                name: 'email',
-                label: 'Email',
-                validators: [
-                  VooValidator.required(),
-                  VooValidator.email(),
-                ],
-              ),
+              child: VooTextField(name: 'email', label: 'Email', validators: [VooValidator.required(), VooValidator.email()]),
             ),
           ),
         ),
@@ -139,14 +120,7 @@ void main() {
               controller: controller,
               isReadOnly: false,
               isLoading: false,
-              child: VooTextField(
-                name: 'username',
-                label: 'Username',
-                validators: [
-                  VooValidator.required(),
-                  VooValidator.minLength(5),
-                ],
-              ),
+              child: VooTextField(name: 'username', label: 'Username', validators: [VooValidator.required(), VooValidator.minLength(5)]),
             ),
           ),
         ),
@@ -179,9 +153,7 @@ void main() {
     });
 
     testWidgets('focus node should be stable across rebuilds', (tester) async {
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
 
       FocusNode? firstFocusNode;
       FocusNode? secondFocusNode;
@@ -193,11 +165,7 @@ void main() {
               controller: controller,
               isReadOnly: false,
               isLoading: false,
-              child: VooTextField(
-                name: 'testField',
-                label: 'Test Field',
-                validators: [VooValidator.required()],
-              ),
+              child: VooTextField(name: 'testField', label: 'Test Field', validators: [VooValidator.required()]),
             ),
           ),
         ),

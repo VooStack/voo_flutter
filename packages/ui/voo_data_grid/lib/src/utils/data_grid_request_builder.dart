@@ -30,10 +30,7 @@ class DataGridRequestBuilder {
   final ApiFilterStandard standard;
   final String? fieldPrefix;
 
-  const DataGridRequestBuilder({
-    this.standard = ApiFilterStandard.custom,
-    this.fieldPrefix,
-  });
+  const DataGridRequestBuilder({this.standard = ApiFilterStandard.custom, this.fieldPrefix});
 
   /// Apply field prefix to field name if prefix is set
   String _applyFieldPrefix(String field, {bool pascalCaseField = false}) {
@@ -58,61 +55,19 @@ class DataGridRequestBuilder {
   }) {
     switch (standard) {
       case ApiFilterStandard.simple:
-        return _buildSimpleRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildSimpleRequest(page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.jsonApi:
-        return _buildJsonApiRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildJsonApiRequest(page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.odata:
-        return _buildODataRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildODataRequest(page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.mongodb:
-        return _buildMongoDbRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildMongoDbRequest(page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.graphql:
-        return _buildGraphQLRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildGraphQLRequest(page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.voo:
-        return _buildVooRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildVooRequest(page, pageSize, filters, sorts, additionalParams);
       case ApiFilterStandard.custom:
-        return _buildCustomRequest(
-          page,
-          pageSize,
-          filters,
-          sorts,
-          additionalParams,
-        );
+        return _buildCustomRequest(page, pageSize, filters, sorts, additionalParams);
     }
   }
 
@@ -125,10 +80,7 @@ class DataGridRequestBuilder {
     Map<String, dynamic>? additionalParams,
   ) {
     final params = <String, dynamic>{
-      'params': <String, String>{
-        'page': page.toString(),
-        'limit': pageSize.toString(),
-      },
+      'params': <String, String>{'page': page.toString(), 'limit': pageSize.toString()},
     };
 
     final queryParams = params['params'] as Map<String, String>;
@@ -167,9 +119,7 @@ class DataGridRequestBuilder {
     // Add sorts in simple format
     if (sorts.isNotEmpty) {
       queryParams['sort'] = sorts
-          .map(
-            (s) => s.direction == VooSortDirection.descending ? '-${_applyFieldPrefix(s.field)}' : _applyFieldPrefix(s.field),
-          )
+          .map((s) => s.direction == VooSortDirection.descending ? '-${_applyFieldPrefix(s.field)}' : _applyFieldPrefix(s.field))
           .join(',');
     }
 
@@ -214,9 +164,7 @@ class DataGridRequestBuilder {
     // Add sorts in JSON:API format
     if (sorts.isNotEmpty) {
       queryParams['sort'] = sorts
-          .map(
-            (s) => s.direction == VooSortDirection.descending ? '-${_applyFieldPrefix(s.field)}' : _applyFieldPrefix(s.field),
-          )
+          .map((s) => s.direction == VooSortDirection.descending ? '-${_applyFieldPrefix(s.field)}' : _applyFieldPrefix(s.field))
           .join(',');
     }
 
@@ -237,10 +185,7 @@ class DataGridRequestBuilder {
   ) {
     // For OData, return query parameters directly without wrapper
     // This allows them to be used directly in the URL query string
-    final queryParams = <String, String>{
-      '\$skip': (page * pageSize).toString(),
-      '\$top': pageSize.toString(),
-    };
+    final queryParams = <String, String>{'\$skip': (page * pageSize).toString(), '\$top': pageSize.toString()};
 
     // Add $count for total count (OData v4 standard)
     if (additionalParams?['includeCount'] == true) {
@@ -297,11 +242,7 @@ class DataGridRequestBuilder {
 
     // Add sorts in OData format
     if (sorts.isNotEmpty) {
-      final orderBy = sorts
-          .map(
-            (s) => '${_applyFieldPrefix(s.field)} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}',
-          )
-          .join(',');
+      final orderBy = sorts.map((s) => '${_applyFieldPrefix(s.field)} ${s.direction == VooSortDirection.ascending ? 'asc' : 'desc'}').join(',');
       queryParams['\$orderby'] = orderBy;
     }
 
@@ -363,10 +304,7 @@ class DataGridRequestBuilder {
     List<VooColumnSort> sorts,
     Map<String, dynamic>? additionalParams,
   ) {
-    final body = <String, dynamic>{
-      'skip': page * pageSize,
-      'limit': pageSize,
-    };
+    final body = <String, dynamic>{'skip': page * pageSize, 'limit': pageSize};
 
     // Build MongoDB query
     if (filters.isNotEmpty) {
@@ -401,10 +339,7 @@ class DataGridRequestBuilder {
     List<VooColumnSort> sorts,
     Map<String, dynamic>? additionalParams,
   ) {
-    final variables = <String, dynamic>{
-      'page': page,
-      'pageSize': pageSize,
-    };
+    final variables = <String, dynamic>{'page': page, 'pageSize': pageSize};
 
     // Add filters as GraphQL variables
     if (filters.isNotEmpty) {
@@ -418,12 +353,7 @@ class DataGridRequestBuilder {
     // Add sorts as GraphQL variables
     if (sorts.isNotEmpty) {
       variables['orderBy'] = sorts
-          .map(
-            (s) => {
-              'field': _applyFieldPrefix(s.field),
-              'direction': s.direction == VooSortDirection.ascending ? 'ASC' : 'DESC',
-            },
-          )
+          .map((s) => {'field': _applyFieldPrefix(s.field), 'direction': s.direction == VooSortDirection.ascending ? 'ASC' : 'DESC'})
           .toList();
     }
 
@@ -606,12 +536,7 @@ class DataGridRequestBuilder {
     Map<String, dynamic>? additionalParams,
   ) {
     final request = <String, dynamic>{
-      'pagination': {
-        'page': page,
-        'pageSize': pageSize,
-        'offset': page * pageSize,
-        'limit': pageSize,
-      },
+      'pagination': {'page': page, 'pageSize': pageSize, 'offset': page * pageSize, 'limit': pageSize},
     };
 
     // Add filters if present
@@ -824,53 +749,39 @@ class DataGridRequestBuilder {
     Map<String, dynamic>? additionalParams,
   }) {
     const builder = DataGridRequestBuilder();
-    return builder.buildRequest(
-      page: page,
-      pageSize: pageSize,
-      filters: filters,
-      sorts: sorts,
-      additionalParams: additionalParams,
-    );
+    return builder.buildRequest(page: page, pageSize: pageSize, filters: filters, sorts: sorts, additionalParams: additionalParams);
   }
 
   /// Build filters array for the request
   List<Map<String, dynamic>> _buildFilters(Map<String, VooDataFilter> filters) => filters.entries.map((entry) {
-        final filter = entry.value;
-        final filterMap = <String, dynamic>{
-          'field': _applyFieldPrefix(entry.key),
-          'operator': _operatorToString(filter.operator),
-        };
+    final filter = entry.value;
+    final filterMap = <String, dynamic>{'field': _applyFieldPrefix(entry.key), 'operator': _operatorToString(filter.operator)};
 
-        // Add value based on operator
-        switch (filter.operator) {
-          case VooFilterOperator.isNull:
-          case VooFilterOperator.isNotNull:
-            // No value needed
-            break;
-          case VooFilterOperator.between:
-            filterMap['value'] = filter.value;
-            filterMap['valueTo'] = filter.valueTo;
-            break;
-          case VooFilterOperator.inList:
-          case VooFilterOperator.notInList:
-            filterMap['values'] = filter.value is List ? filter.value : [filter.value];
-            break;
-          default:
-            filterMap['value'] = filter.value;
-        }
+    // Add value based on operator
+    switch (filter.operator) {
+      case VooFilterOperator.isNull:
+      case VooFilterOperator.isNotNull:
+        // No value needed
+        break;
+      case VooFilterOperator.between:
+        filterMap['value'] = filter.value;
+        filterMap['valueTo'] = filter.valueTo;
+        break;
+      case VooFilterOperator.inList:
+      case VooFilterOperator.notInList:
+        filterMap['values'] = filter.value is List ? filter.value : [filter.value];
+        break;
+      default:
+        filterMap['value'] = filter.value;
+    }
 
-        return filterMap;
-      }).toList();
+    return filterMap;
+  }).toList();
 
   /// Build sorts array for the request
   List<Map<String, dynamic>> _buildSorts(List<VooColumnSort> sorts) => sorts
       .where((sort) => sort.direction != VooSortDirection.none)
-      .map(
-        (sort) => {
-          'field': _applyFieldPrefix(sort.field),
-          'direction': _sortDirectionToString(sort.direction),
-        },
-      )
+      .map((sort) => {'field': _applyFieldPrefix(sort.field), 'direction': _sortDirectionToString(sort.direction)})
       .toList();
 
   /// Convert filter operator to API string
@@ -928,10 +839,7 @@ class DataGridRequestBuilder {
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) {
-    final params = <String, String>{
-      'page': page.toString(),
-      'pageSize': pageSize.toString(),
-    };
+    final params = <String, String>{'page': page.toString(), 'pageSize': pageSize.toString()};
 
     // Add filters as query params
     int filterIndex = 0;
@@ -979,20 +887,11 @@ class DataGridRequestBuilder {
     final page = pageKey != null ? (json[pageKey] as int? ?? 0) : 0;
     final pageSize = pageSizeKey != null ? (json[pageSizeKey] as int? ?? 20) : 20;
 
-    return VooDataGridResponse(
-      rows: data,
-      totalRows: total,
-      page: page,
-      pageSize: pageSize,
-    );
+    return VooDataGridResponse(rows: data, totalRows: total, page: page, pageSize: pageSize);
   }
 
   /// Parse OData v4 response format
-  static VooDataGridResponse parseODataResponse({
-    required Map<String, dynamic> json,
-    int page = 0,
-    int pageSize = 20,
-  }) {
+  static VooDataGridResponse parseODataResponse({required Map<String, dynamic> json, int page = 0, int pageSize = 20}) {
     // OData v4 standard response structure
     // {
     //   "@odata.context": "$metadata#Products",
@@ -1011,12 +910,7 @@ class DataGridRequestBuilder {
     // This is only available when $count=true is included in the request
     final total = json['@odata.count'] as int? ?? data.length;
 
-    return VooDataGridResponse(
-      rows: data,
-      totalRows: total,
-      page: page,
-      pageSize: pageSize,
-    );
+    return VooDataGridResponse(rows: data, totalRows: total, page: page, pageSize: pageSize);
   }
 
   /// Extract OData metadata from response
@@ -1055,20 +949,13 @@ class DataGridRequestBuilder {
 
     if (json.containsKey('error')) {
       final error = json['error'] as Map<String, dynamic>;
-      return {
-        'code': error['code'],
-        'message': error['message'],
-        'details': error['details'],
-      };
+      return {'code': error['code'], 'message': error['message'], 'details': error['details']};
     }
     return null;
   }
 
   /// Build an advanced filter request body with support for secondary filters
-  static Map<String, dynamic> buildAdvancedRequestBody({
-    required AdvancedFilterRequest request,
-    Map<String, dynamic>? additionalParams,
-  }) {
+  static Map<String, dynamic> buildAdvancedRequestBody({required AdvancedFilterRequest request, Map<String, dynamic>? additionalParams}) {
     final body = request.toJson();
 
     // Add any additional parameters
@@ -1097,50 +984,18 @@ class DataGridRequestBuilder {
 
       SecondaryFilter? secondaryFilter;
       if (filter.valueTo != null && filter.operator == VooFilterOperator.between) {
-        secondaryFilter = SecondaryFilter(
-          logic: FilterLogic.and,
-          value: filter.valueTo,
-          operator: 'LessThanOrEqual',
-        );
+        secondaryFilter = SecondaryFilter(logic: FilterLogic.and, value: filter.valueTo, operator: 'LessThanOrEqual');
       }
 
       // Determine filter type based on value type
       if (value is String) {
-        stringFilters.add(
-          StringFilter(
-            fieldName: field,
-            value: value,
-            operator: operator,
-            secondaryFilter: secondaryFilter,
-          ),
-        );
+        stringFilters.add(StringFilter(fieldName: field, value: value, operator: operator, secondaryFilter: secondaryFilter));
       } else if (value is int) {
-        intFilters.add(
-          IntFilter(
-            fieldName: field,
-            value: value,
-            operator: operator,
-            secondaryFilter: secondaryFilter,
-          ),
-        );
+        intFilters.add(IntFilter(fieldName: field, value: value, operator: operator, secondaryFilter: secondaryFilter));
       } else if (value is double) {
-        decimalFilters.add(
-          DecimalFilter(
-            fieldName: field,
-            value: value,
-            operator: operator,
-            secondaryFilter: secondaryFilter,
-          ),
-        );
+        decimalFilters.add(DecimalFilter(fieldName: field, value: value, operator: operator, secondaryFilter: secondaryFilter));
       } else if (value is DateTime) {
-        dateFilters.add(
-          DateFilter(
-            fieldName: field,
-            value: value,
-            operator: operator,
-            secondaryFilter: secondaryFilter,
-          ),
-        );
+        dateFilters.add(DateFilter(fieldName: field, value: value, operator: operator, secondaryFilter: secondaryFilter));
       }
     });
 
@@ -1203,23 +1058,11 @@ class RemoteDataGridSource extends VooDataGridSource {
   final ApiFilterStandard apiStandard;
   final String? fieldPrefix;
   final DataGridRequestBuilder requestBuilder;
-  final Future<Map<String, dynamic>> Function(
-    String url,
-    Map<String, dynamic> requestData,
-    Map<String, String>? headers,
-  )? httpClient;
+  final Future<Map<String, dynamic>> Function(String url, Map<String, dynamic> requestData, Map<String, String>? headers)? httpClient;
 
-  RemoteDataGridSource({
-    required this.apiEndpoint,
-    this.headers,
-    this.apiStandard = ApiFilterStandard.custom,
-    this.fieldPrefix,
-    this.httpClient,
-  })  : requestBuilder = DataGridRequestBuilder(
-          standard: apiStandard,
-          fieldPrefix: fieldPrefix,
-        ),
-        super(mode: VooDataGridMode.remote);
+  RemoteDataGridSource({required this.apiEndpoint, this.headers, this.apiStandard = ApiFilterStandard.custom, this.fieldPrefix, this.httpClient})
+    : requestBuilder = DataGridRequestBuilder(standard: apiStandard, fieldPrefix: fieldPrefix),
+      super(mode: VooDataGridMode.remote);
 
   @override
   Future<VooDataGridResponse> fetchRemoteData({
@@ -1229,12 +1072,7 @@ class RemoteDataGridSource extends VooDataGridSource {
     required List<VooColumnSort> sorts,
   }) async {
     // Build request based on API standard
-    final requestData = requestBuilder.buildRequest(
-      page: page,
-      pageSize: pageSize,
-      filters: filters,
-      sorts: sorts,
-    );
+    final requestData = requestBuilder.buildRequest(page: page, pageSize: pageSize, filters: filters, sorts: sorts);
 
     // Make API call (using provided httpClient or throw error)
     if (httpClient == null) {

@@ -4,10 +4,7 @@ import 'package:voo_forms/src/domain/entities/validation_rules/voo_validation_ru
 class MinLengthValidation extends VooValidationRule<String> {
   final int minLength;
 
-  const MinLengthValidation({
-    required this.minLength,
-    String? errorMessage,
-  }) : super(errorMessage: errorMessage ?? 'Minimum $minLength characters required');
+  const MinLengthValidation({required this.minLength, String? errorMessage}) : super(errorMessage: errorMessage ?? 'Minimum $minLength characters required');
 
   @override
   String? validate(String? value) {

@@ -9,7 +9,7 @@ void main() {
       expect(VooAnimationConfig, isNotNull);
       expect(VooMotionController, isNotNull);
       expect(VooMotionCurve, isNotNull);
-      
+
       // Animations
       expect(VooFadeAnimation, isNotNull);
       expect(VooSlideAnimation, isNotNull);
@@ -27,20 +27,20 @@ void main() {
       expect(VooRippleAnimation, isNotNull);
       expect(VooParallaxAnimation, isNotNull);
       expect(VooTypewriterAnimation, isNotNull);
-      
+
       // Widgets
       expect(VooAnimatedWidget, isNotNull);
       expect(VooStaggerList, isNotNull);
       expect(VooHeroAnimation, isNotNull);
-      
+
       // Settings
       expect(VooMotionSettings, isNotNull);
       expect(VooMotionSettingsProvider, isNotNull);
     });
-    
+
     test('VooAnimationConfig should have reasonable defaults', () {
       const config = VooAnimationConfig();
-      
+
       expect(config.duration.inMilliseconds, 500);
       expect(config.delay, Duration.zero);
       expect(config.curve, Curves.easeInOut);
@@ -49,33 +49,33 @@ void main() {
       expect(config.reverse, false);
       expect(config.repeatCount, 1);
     });
-    
+
     test('VooMotionSettings should have sensible defaults', () {
       const settings = VooMotionSettings();
-      
+
       expect(settings.enabled, true);
       expect(settings.speedMultiplier, 1.0);
       expect(settings.respectAccessibilitySettings, true);
       expect(settings.defaultConfig, isA<VooAnimationConfig>());
     });
-    
+
     test('VooMotionSettings should apply speed multiplier correctly', () {
       const settings = VooMotionSettings(speedMultiplier: 2.0);
       const originalDuration = Duration(milliseconds: 500);
-      
+
       final modifiedDuration = settings.applySpeedMultiplier(originalDuration);
       expect(modifiedDuration.inMilliseconds, 1000);
     });
-    
+
     test('VooMotionSettings should return zero duration when disabled', () {
       const settings = VooMotionSettings(enabled: false);
       const originalDuration = Duration(milliseconds: 500);
-      
+
       final modifiedDuration = settings.applySpeedMultiplier(originalDuration);
       expect(modifiedDuration, Duration.zero);
     });
   });
-  
+
   group('Extension Methods', () {
     testWidgets('should be available on all widgets', (tester) async {
       await tester.pumpWidget(
@@ -92,7 +92,7 @@ void main() {
           ),
         ),
       );
-      
+
       expect(find.byType(VooFadeAnimation), findsOneWidget);
       expect(find.byType(VooScaleAnimation), findsOneWidget);
       expect(find.byType(VooSlideAnimation), findsOneWidget);

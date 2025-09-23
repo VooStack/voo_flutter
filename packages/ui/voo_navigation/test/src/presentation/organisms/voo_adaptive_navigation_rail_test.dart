@@ -44,7 +44,9 @@ void main() {
       );
     });
 
-    testWidgets('should render navigation rail with items', (WidgetTester tester) async {
+    testWidgets('should render navigation rail with items', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: Scaffold(
@@ -68,7 +70,9 @@ void main() {
       expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
     });
 
-    testWidgets('should show extended rail with labels', (WidgetTester tester) async {
+    testWidgets('should show extended rail with labels', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: Scaffold(
@@ -151,14 +155,17 @@ void main() {
           (widget) =>
               widget is Container &&
               widget.decoration is BoxDecoration &&
-              ((widget.decoration as BoxDecoration?)?.shape == BoxShape.circle) &&
+              ((widget.decoration as BoxDecoration?)?.shape ==
+                  BoxShape.circle) &&
               widget.constraints?.maxWidth == 6,
         ),
         findsOneWidget,
       );
     });
 
-    testWidgets('should animate on selection change', (WidgetTester tester) async {
+    testWidgets('should animate on selection change', (
+      WidgetTester tester,
+    ) async {
       String selectedId = 'dashboard';
 
       await tester.pumpWidget(
@@ -201,7 +208,9 @@ void main() {
       expect(find.byIcon(Icons.analytics), findsOneWidget);
     });
 
-    testWidgets('should apply custom background color', (WidgetTester tester) async {
+    testWidgets('should apply custom background color', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: Scaffold(
@@ -259,10 +268,15 @@ void main() {
             .first,
       );
 
-      expect(material.borderRadius, const BorderRadius.horizontal(right: Radius.circular(16)));
+      expect(
+        material.borderRadius,
+        const BorderRadius.horizontal(right: Radius.circular(16)),
+      );
     });
 
-    testWidgets('should handle hover states on desktop', (WidgetTester tester) async {
+    testWidgets('should handle hover states on desktop', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: Scaffold(
@@ -288,9 +302,13 @@ void main() {
       expect(mouseRegion, findsWidgets);
 
       // Simulate hover
-      final TestGesture gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      final TestGesture gesture = await tester.createGesture(
+        kind: PointerDeviceKind.mouse,
+      );
       await gesture.addPointer();
-      await gesture.moveTo(tester.getCenter(find.byIcon(Icons.analytics_outlined)));
+      await gesture.moveTo(
+        tester.getCenter(find.byIcon(Icons.analytics_outlined)),
+      );
       await tester.pumpAndSettle();
 
       // Hover state should be applied (visual changes tested through integration tests)
@@ -349,7 +367,9 @@ void main() {
       expect(find.text('Main'), findsOneWidget);
     });
 
-    testWidgets('should animate width change when toggling extended', (WidgetTester tester) async {
+    testWidgets('should animate width change when toggling extended', (
+      WidgetTester tester,
+    ) async {
       bool extended = false;
 
       await tester.pumpWidget(

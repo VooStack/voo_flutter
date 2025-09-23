@@ -15,26 +15,15 @@ class VooFormScope extends InheritedWidget {
   final bool isReadOnly;
   final bool isLoading;
   final VooFormController? controller;
-  final int rebuildKey;  // Add a key that changes when controller state changes
+  final int rebuildKey; // Add a key that changes when controller state changes
 
-  const VooFormScope({
-    super.key,
-    required this.isReadOnly,
-    required this.isLoading,
-    this.controller,
-    this.rebuildKey = 0,
-    required super.child,
-  });
+  const VooFormScope({super.key, required this.isReadOnly, required this.isLoading, this.controller, this.rebuildKey = 0, required super.child});
 
-  static VooFormScope? of(BuildContext context) => 
-      context.dependOnInheritedWidgetOfExactType<VooFormScope>();
+  static VooFormScope? of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooFormScope>();
 
   @override
-  bool updateShouldNotify(VooFormScope oldWidget) => 
-      isReadOnly != oldWidget.isReadOnly || 
-      isLoading != oldWidget.isLoading ||
-      controller != oldWidget.controller ||
-      rebuildKey != oldWidget.rebuildKey;  // Notify when rebuild key changes
+  bool updateShouldNotify(VooFormScope oldWidget) =>
+      isReadOnly != oldWidget.isReadOnly || isLoading != oldWidget.isLoading || controller != oldWidget.controller || rebuildKey != oldWidget.rebuildKey; // Notify when rebuild key changes
 }
 
 /// Simple, atomic form widget that manages field collection and validation
@@ -109,36 +98,30 @@ class _VooFormState extends State<VooForm> {
   @override
   void initState() {
     super.initState();
-    
+
     // Use provided controller or create a new one
-    _controller = widget.controller ?? VooFormController(
-      errorDisplayMode: widget.errorDisplayMode,
-    );
-    
+    _controller = widget.controller ?? VooFormController(errorDisplayMode: widget.errorDisplayMode);
+
     // Register all fields with the controller
     _registerFieldsWithController();
-    
+
     _controller.addListener(_handleControllerChange);
   }
-  
+
   void _registerFieldsWithController() {
     // Begin initialization to batch all field registrations
     _controller.beginInitialization();
-    
+
     for (final field in widget.fields) {
-      _controller.registerField(
-        field.name,
-        initialValue: field.initialValue,
-        validators: field is VooFieldBase ? (field.validators ?? []) : [],
-      );
-      
+      _controller.registerField(field.name, initialValue: field.initialValue, validators: field is VooFieldBase ? (field.validators ?? []) : []);
+
       // Set initial value if provided and field hasn't been touched by user
       if (field.initialValue != null && !_controller.isFieldTouched(field.name)) {
         final currentValue = _controller.getValue(field.name);
-        
+
         // Check if we should update the value
         bool shouldUpdate = false;
-        
+
         if (currentValue == null) {
           // No value set yet
           shouldUpdate = true;
@@ -155,11 +138,11 @@ class _VooFormState extends State<VooForm> {
         }
         // Note: We generally don't update fields with existing values to preserve form state
         // Exception: During initial form setup (not a field change scenario)
-        
+
         if (shouldUpdate) {
           _controller.setValue(field.name, field.initialValue, isUserInput: false);
           // Mark this field as having loaded a value
-          if (field.initialValue != null && 
+          if (field.initialValue != null &&
               !(field.initialValue is String && (field.initialValue as String).isEmpty) &&
               !(field.initialValue is List && (field.initialValue as List).isEmpty)) {
             _fieldsWithLoadedValues.add(field.name);
@@ -167,7 +150,7 @@ class _VooFormState extends State<VooForm> {
         }
       }
     }
-    
+
     // End initialization and send a single notification
     _controller.endInitialization();
   }
@@ -175,7 +158,7 @@ class _VooFormState extends State<VooForm> {
   @override
   void didUpdateWidget(VooForm oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // Check if fields have actually changed (compare lengths and field names)
     bool fieldsChanged = oldWidget.fields.length != widget.fields.length;
     if (!fieldsChanged) {
@@ -186,7 +169,7 @@ class _VooFormState extends State<VooForm> {
         }
       }
     }
-    
+
     // Only clear and re-register if fields have actually changed
     if (fieldsChanged) {
       // Clear and re-register fields when widget updates
@@ -198,15 +181,11 @@ class _VooFormState extends State<VooForm> {
       // Fields haven't changed structurally, just a rebuild (e.g., from BLoC state change)
       // Use batching to avoid setState during build
       _controller.beginInitialization();
-      
+
       // Re-register fields to update callbacks and validators
       for (final field in widget.fields) {
-        _controller.registerField(
-          field.name,
-          initialValue: field.initialValue,
-          validators: field is VooFieldBase ? (field.validators ?? []) : [],
-        );
-        
+        _controller.registerField(field.name, initialValue: field.initialValue, validators: field is VooFieldBase ? (field.validators ?? []) : []);
+
         // Update value if:
         // 1. Field hasn't been touched by the user (preserve user input)
         // 2. Either no value loaded yet OR form hasn't been touched at all
@@ -214,15 +193,15 @@ class _VooFormState extends State<VooForm> {
           final currentValue = _controller.getValue(field.name);
           final hasLoadedValue = _fieldsWithLoadedValues.contains(field.name);
           final formHasBeenTouched = _controller.hasAnyFieldBeenTouched();
-          
+
           // If form has been touched and field has loaded value, preserve it
           if (hasLoadedValue && formHasBeenTouched) {
             continue;
           }
-          
+
           // Check if we should load/update the value
           bool shouldUpdate = false;
-          
+
           if (currentValue == null) {
             // No value set yet
             shouldUpdate = true;
@@ -239,11 +218,11 @@ class _VooFormState extends State<VooForm> {
             // Form hasn't been touched, allow updates (for async data loading)
             shouldUpdate = true;
           }
-          
+
           if (shouldUpdate) {
             _controller.setValue(field.name, field.initialValue, isUserInput: false);
             // Mark this field as having loaded a value (only for non-empty values)
-            if (field.initialValue != null && 
+            if (field.initialValue != null &&
                 !(field.initialValue is String && (field.initialValue as String).isEmpty) &&
                 !(field.initialValue is List && (field.initialValue as List).isEmpty)) {
               _fieldsWithLoadedValues.add(field.name);
@@ -251,7 +230,7 @@ class _VooFormState extends State<VooForm> {
           }
         }
       }
-      
+
       _controller.endInitialization();
     }
   }
@@ -269,7 +248,7 @@ class _VooFormState extends State<VooForm> {
   void _handleControllerChange() {
     if (mounted) {
       widget.onChanged?.call(_controller.values);
-      
+
       // Increment rebuild key and rebuild when the controller notifies listeners
       // This ensures that error states are properly reflected in the UI
       setState(() {
@@ -278,18 +257,13 @@ class _VooFormState extends State<VooForm> {
     }
   }
 
-
   /// Prepare fields with readonly state applied
   List<VooFormFieldWidget> _prepareFields() {
     if (!widget.isReadOnly) return widget.fields;
-    
+
     return widget.fields.map((field) {
       if (field is VooFieldBase) {
-        return field.copyWith(
-          readOnly: true,
-          label: field.label,
-          layout: field.layout,
-        );
+        return field.copyWith(readOnly: true, label: field.label, layout: field.layout);
       }
       return field;
     }).toList();
@@ -324,11 +298,7 @@ class _VooFormState extends State<VooForm> {
           mainAxisSize: widget.mainAxisSize,
         );
       case FormLayout.wrapped:
-        return VooWrappedFormLayout(
-          fields: preparedFields,
-          spacing: widget.spacing,
-          runSpacing: widget.spacing,
-        );
+        return VooWrappedFormLayout(fields: preparedFields, spacing: widget.spacing, runSpacing: widget.spacing);
       case FormLayout.dynamic:
         return VooDynamicFormLayout(
           fields: preparedFields,
@@ -354,10 +324,7 @@ class _VooFormState extends State<VooForm> {
   Widget build(BuildContext context) {
     // Show loading indicator if form is loading
     if (widget.isLoading) {
-      return widget.loadingWidget ??
-          const Center(
-            child: CircularProgressIndicator(),
-          );
+      return widget.loadingWidget ?? const Center(child: CircularProgressIndicator());
     }
 
     // Show the form with controller in scope
@@ -370,4 +337,3 @@ class _VooFormState extends State<VooForm> {
     );
   }
 }
-

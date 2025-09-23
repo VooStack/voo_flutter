@@ -52,13 +52,5 @@ class ResponsiveConfig extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        breakpoints,
-        enableAdaptiveLayout,
-        enableOrientationChanges,
-        enableDensityScaling,
-        baseFontSize,
-        baseSpacing,
-        customSettings,
-      ];
+  List<Object?> get props => [breakpoints, enableAdaptiveLayout, enableOrientationChanges, enableDensityScaling, baseFontSize, baseSpacing, customSettings];
 }

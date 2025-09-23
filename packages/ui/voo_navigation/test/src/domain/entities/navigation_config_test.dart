@@ -103,7 +103,10 @@ void main() {
       expect(config.appBarLeading, isNotNull);
       expect(config.appBarActions?.length, 1);
       expect(config.floatingActionButton, isNotNull);
-      expect(config.floatingActionButtonAnimator, FloatingActionButtonAnimator.scaling);
+      expect(
+        config.floatingActionButtonAnimator,
+        FloatingActionButtonAnimator.scaling,
+      );
       expect(config.breakpoints, isEmpty);
     });
 
@@ -183,13 +186,13 @@ void main() {
         id: 'home',
         label: 'Home',
         icon: Icons.home,
-          route: '/test',
+        route: '/test',
       );
       const settingsItem = VooNavigationItem(
         id: 'settings',
         label: 'Settings',
         icon: Icons.settings,
-          route: '/test',
+        route: '/test',
       );
 
       final items = [homeItem, settingsItem];
@@ -264,7 +267,7 @@ void main() {
       ];
 
       String? selectedItemId;
-      
+
       final config = VooNavigationConfig(
         items: items,
         selectedId: 'home',
@@ -275,7 +278,7 @@ void main() {
 
       // Simulate navigation item selection
       config.onNavigationItemSelected?.call('settings');
-      
+
       expect(selectedItemId, 'settings');
     });
   });

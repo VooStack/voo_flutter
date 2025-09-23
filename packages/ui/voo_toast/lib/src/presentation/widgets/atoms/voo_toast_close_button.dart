@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
 class VooToastCloseButton extends StatefulWidget {
-  const VooToastCloseButton({
-    super.key,
-    required this.onPressed,
-    this.size = 20.0,
-    this.color,
-  });
+  const VooToastCloseButton({super.key, required this.onPressed, this.size = 20.0, this.color});
 
   final VoidCallback onPressed;
   final double size;
@@ -24,28 +19,9 @@ class _VooToastCloseButtonState extends State<VooToastCloseButton> with SingleTi
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
-    _rotateAnimation = Tween<double>(
-      begin: 0,
-      end: 0.25,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _rotateAnimation = Tween<double>(begin: 0, end: 0.25).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -77,16 +53,9 @@ class _VooToastCloseButtonState extends State<VooToastCloseButton> with SingleTi
               ),
               child: IconButton(
                 onPressed: widget.onPressed,
-                icon: Icon(
-                  Icons.close_rounded,
-                  size: widget.size,
-                  color: buttonColor,
-                ),
+                icon: Icon(Icons.close_rounded, size: widget.size, color: buttonColor),
                 padding: EdgeInsets.zero,
-                constraints: BoxConstraints.tightFor(
-                  width: widget.size + 12,
-                  height: widget.size + 12,
-                ),
+                constraints: BoxConstraints.tightFor(width: widget.size + 12, height: widget.size + 12),
               ),
             ),
           ),

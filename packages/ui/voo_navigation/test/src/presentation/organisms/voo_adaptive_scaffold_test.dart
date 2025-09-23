@@ -52,7 +52,9 @@ void main() {
       expect(find.byType(Scaffold), findsWidgets);
     });
 
-    testWidgets('should show bottom navigation on mobile', (WidgetTester tester) async {
+    testWidgets('should show bottom navigation on mobile', (
+      WidgetTester tester,
+    ) async {
       // Set mobile screen size
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1.0;
@@ -72,7 +74,9 @@ void main() {
       expect(find.byType(VooAdaptiveNavigationDrawer), findsNothing);
     });
 
-    testWidgets('should show navigation rail on tablet', (WidgetTester tester) async {
+    testWidgets('should show navigation rail on tablet', (
+      WidgetTester tester,
+    ) async {
       // Set tablet screen size
       tester.view.physicalSize = const Size(700, 1000);
       tester.view.devicePixelRatio = 1.0;
@@ -92,7 +96,9 @@ void main() {
       expect(find.byType(VooAdaptiveNavigationDrawer), findsNothing);
     });
 
-    testWidgets('should show navigation drawer on desktop', (WidgetTester tester) async {
+    testWidgets('should show navigation drawer on desktop', (
+      WidgetTester tester,
+    ) async {
       // Set desktop screen size
       tester.view.physicalSize = const Size(1400, 900);
       tester.view.devicePixelRatio = 1.0;
@@ -112,7 +118,9 @@ void main() {
       expect(find.byType(VooAdaptiveNavigationRail), findsNothing);
     });
 
-    testWidgets('should show app bar when specified', (WidgetTester tester) async {
+    testWidgets('should show app bar when specified', (
+      WidgetTester tester,
+    ) async {
       final configWithAppBar = config.copyWith(
         appBarTitle: const Text('Test Title'),
       );
@@ -130,7 +138,9 @@ void main() {
       expect(find.text('Test Title'), findsOneWidget);
     });
 
-    testWidgets('should show floating action button when provided', (WidgetTester tester) async {
+    testWidgets('should show floating action button when provided', (
+      WidgetTester tester,
+    ) async {
       final configWithFab = config.copyWith(
         floatingActionButton: FloatingActionButton(
           onPressed: () {},
@@ -151,7 +161,9 @@ void main() {
       expect(find.byIcon(Icons.add), findsOneWidget);
     });
 
-    testWidgets('should force navigation type when specified', (WidgetTester tester) async {
+    testWidgets('should force navigation type when specified', (
+      WidgetTester tester,
+    ) async {
       // Set mobile size but force navigation rail
       tester.view.physicalSize = const Size(400, 800);
       tester.view.devicePixelRatio = 1.0;
@@ -175,9 +187,11 @@ void main() {
       expect(find.byType(VooAdaptiveBottomNavigation), findsNothing);
     });
 
-    testWidgets('should handle navigation item selection', (WidgetTester tester) async {
+    testWidgets('should handle navigation item selection', (
+      WidgetTester tester,
+    ) async {
       String? selectedId;
-      
+
       // Create navigation items with onTap callbacks for testing
       final testItems = [
         VooNavigationItem(
@@ -199,7 +213,7 @@ void main() {
           onTap: () {},
         ),
       ];
-      
+
       final interactiveConfig = VooNavigationConfig(
         items: testItems,
         selectedId: 'home',
@@ -228,10 +242,10 @@ void main() {
       expect(selectedId, 'search');
     });
 
-    testWidgets('should apply custom background color', (WidgetTester tester) async {
-      final coloredConfig = config.copyWith(
-        backgroundColor: Colors.red,
-      );
+    testWidgets('should apply custom background color', (
+      WidgetTester tester,
+    ) async {
+      final coloredConfig = config.copyWith(backgroundColor: Colors.red);
 
       await tester.pumpWidget(
         createTestApp(
@@ -242,21 +256,19 @@ void main() {
         ),
       );
 
-      final scaffold = tester.widget<Scaffold>(
-        find.byType(Scaffold).first,
-      );
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold).first);
 
       expect(scaffold.backgroundColor, Colors.red);
     });
 
-    testWidgets('should show extended rail at appropriate size', (WidgetTester tester) async {
+    testWidgets('should show extended rail at appropriate size', (
+      WidgetTester tester,
+    ) async {
       // Set size for extended rail
       tester.view.physicalSize = const Size(900, 800);
       tester.view.devicePixelRatio = 1.0;
 
-      final extendedConfig = config.copyWith(
-        useExtendedRail: true,
-      );
+      final extendedConfig = config.copyWith(useExtendedRail: true);
 
       await tester.pumpWidget(
         createTestApp(
@@ -271,7 +283,7 @@ void main() {
       final rail = tester.widget<VooAdaptiveNavigationRail>(
         find.byType(VooAdaptiveNavigationRail),
       );
-      
+
       expect(rail.extended, isTrue);
     });
 

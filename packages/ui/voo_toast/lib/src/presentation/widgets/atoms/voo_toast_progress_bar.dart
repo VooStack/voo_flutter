@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
 class VooToastProgressBar extends StatefulWidget {
-  const VooToastProgressBar({
-    super.key,
-    required this.duration,
-    this.height = 3.0,
-    this.color,
-    this.backgroundColor,
-  });
+  const VooToastProgressBar({super.key, required this.duration, this.height = 3.0, this.color, this.backgroundColor});
 
   final Duration duration;
   final double height;
@@ -25,20 +19,9 @@ class _VooToastProgressBarState extends State<VooToastProgressBar> with SingleTi
   @override
   void initState() {
     super.initState();
-    _shimmerController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    )..repeat();
+    _shimmerController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this)..repeat();
 
-    _shimmerAnimation = Tween<double>(
-      begin: -1.0,
-      end: 2.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _shimmerController,
-        curve: Curves.linear,
-      ),
-    );
+    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(CurvedAnimation(parent: _shimmerController, curve: Curves.linear));
   }
 
   @override
@@ -54,10 +37,7 @@ class _VooToastProgressBarState extends State<VooToastProgressBar> with SingleTi
 
     return Container(
       height: widget.height,
-      decoration: BoxDecoration(
-        color: widget.backgroundColor ?? progressColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(widget.height / 2),
-      ),
+      decoration: BoxDecoration(color: widget.backgroundColor ?? progressColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(widget.height / 2)),
       child: TweenAnimationBuilder<double>(
         duration: widget.duration,
         tween: Tween<double>(begin: 1.0, end: 0.0),
@@ -71,11 +51,7 @@ class _VooToastProgressBarState extends State<VooToastProgressBar> with SingleTi
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        progressColor.withValues(alpha: 0.8),
-                        progressColor,
-                        progressColor.withValues(alpha: 0.8),
-                      ],
+                      colors: [progressColor.withValues(alpha: 0.8), progressColor, progressColor.withValues(alpha: 0.8)],
                       stops: const [0.0, 0.5, 1.0],
                     ),
                   ),
@@ -88,18 +64,12 @@ class _VooToastProgressBarState extends State<VooToastProgressBar> with SingleTi
                   animation: _shimmerAnimation,
                   builder: (context, child) => ShaderMask(
                     shaderCallback: (rect) => LinearGradient(
-                      colors: [
-                        Colors.white.withValues(alpha: 0.0),
-                        Colors.white.withValues(alpha: 0.3),
-                        Colors.white.withValues(alpha: 0.0),
-                      ],
+                      colors: [Colors.white.withValues(alpha: 0.0), Colors.white.withValues(alpha: 0.3), Colors.white.withValues(alpha: 0.0)],
                       stops: const [0.0, 0.5, 1.0],
                       transform: GradientTranslation(_shimmerAnimation.value),
                     ).createShader(rect),
                     blendMode: BlendMode.srcOver,
-                    child: Container(
-                      color: Colors.white.withValues(alpha: 0.1),
-                    ),
+                    child: Container(color: Colors.white.withValues(alpha: 0.1)),
                   ),
                 ),
               ),

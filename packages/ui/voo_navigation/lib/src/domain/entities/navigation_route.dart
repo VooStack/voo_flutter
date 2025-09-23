@@ -16,7 +16,8 @@ class VooNavigationRoute {
   final Widget Function(BuildContext context, GoRouterState state) builder;
 
   /// Page builder for custom transitions
-  final Page<dynamic> Function(BuildContext context, GoRouterState state)? pageBuilder;
+  final Page<dynamic> Function(BuildContext context, GoRouterState state)?
+  pageBuilder;
 
   /// Child routes
   final List<VooNavigationRoute> routes;
@@ -33,7 +34,8 @@ class VooNavigationRoute {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  )? transitionBuilder;
+  )?
+  transitionBuilder;
 
   /// Transition duration
   final Duration transitionDuration;
@@ -109,7 +111,8 @@ class VooNavigationRoute {
       Animation<double> animation,
       Animation<double> secondaryAnimation,
       Widget child,
-    ) transitionBuilder,
+    )
+    transitionBuilder,
     List<VooNavigationRoute> routes = const [],
     String? Function(BuildContext context, GoRouterState state)? redirect,
     Future<bool> Function(BuildContext context, GoRouterState state)? guard,
@@ -169,10 +172,7 @@ class VooNavigationRoute {
       maintainState: maintainState,
       metadata: metadata,
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
     );
   }

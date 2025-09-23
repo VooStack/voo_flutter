@@ -10,10 +10,7 @@ void main() {
 
         // Start with empty
         var oldValue = TextEditingValue.empty;
-        var newValue = const TextEditingValue(
-          text: '5',
-          selection: TextSelection.collapsed(offset: 1),
-        );
+        var newValue = const TextEditingValue(text: '5', selection: TextSelection.collapsed(offset: 1));
         var result = formatter.formatEditUpdate(oldValue, newValue);
         expect(result.text, '\$0.05');
 
@@ -41,28 +38,19 @@ void main() {
 
         // Type '7'
         var oldValue = TextEditingValue.empty;
-        var newValue = const TextEditingValue(
-          text: '7',
-          selection: TextSelection.collapsed(offset: 1),
-        );
+        var newValue = const TextEditingValue(text: '7', selection: TextSelection.collapsed(offset: 1));
         var result = formatter.formatEditUpdate(oldValue, newValue);
         expect(result.text, '\$0.07');
 
         // Type second '7'
         oldValue = result;
-        newValue = const TextEditingValue(
-          text: '\$0.077',
-          selection: TextSelection.collapsed(offset: 6),
-        );
+        newValue = const TextEditingValue(text: '\$0.077', selection: TextSelection.collapsed(offset: 6));
         result = formatter.formatEditUpdate(oldValue, newValue);
         expect(result.text, '\$0.77');
 
         // Type third '7'
         oldValue = result;
-        newValue = const TextEditingValue(
-          text: '\$0.777',
-          selection: TextSelection.collapsed(offset: 6),
-        );
+        newValue = const TextEditingValue(text: '\$0.777', selection: TextSelection.collapsed(offset: 6));
         result = formatter.formatEditUpdate(oldValue, newValue);
         expect(result.text, '\$7.77');
       });
@@ -132,10 +120,7 @@ void main() {
 
         // Type 123456 to get $1,234.56
         formatter.setInitialValue(1234.56);
-        final result = formatter.formatEditUpdate(
-          TextEditingValue.empty,
-          const TextEditingValue(text: '123456'),
-        );
+        final result = formatter.formatEditUpdate(TextEditingValue.empty, const TextEditingValue(text: '123456'));
         expect(result.text, '\$1,234.56');
       });
 
@@ -144,10 +129,7 @@ void main() {
 
         // Type 12345678 to get $123,456.78
         formatter.setInitialValue(123456.78);
-        final result = formatter.formatEditUpdate(
-          TextEditingValue.empty,
-          const TextEditingValue(text: '12345678'),
-        );
+        final result = formatter.formatEditUpdate(TextEditingValue.empty, const TextEditingValue(text: '12345678'));
         expect(result.text, '\$123,456.78');
       });
     });
@@ -156,10 +138,7 @@ void main() {
       test('EUR formatter works correctly', () {
         final formatter = CurrencyFormatter.eur();
 
-        final result = formatter.formatEditUpdate(
-          TextEditingValue.empty,
-          const TextEditingValue(text: '99'),
-        );
+        final result = formatter.formatEditUpdate(TextEditingValue.empty, const TextEditingValue(text: '99'));
         expect(result.text, contains('0,99'));
         expect(result.text, contains('€'));
       });
@@ -167,20 +146,14 @@ void main() {
       test('GBP formatter works correctly', () {
         final formatter = CurrencyFormatter.gbp();
 
-        final result = formatter.formatEditUpdate(
-          TextEditingValue.empty,
-          const TextEditingValue(text: '99'),
-        );
+        final result = formatter.formatEditUpdate(TextEditingValue.empty, const TextEditingValue(text: '99'));
         expect(result.text, '£0.99');
       });
 
       test('JPY formatter works correctly (no decimal)', () {
         final formatter = CurrencyFormatter.jpy();
 
-        final result = formatter.formatEditUpdate(
-          TextEditingValue.empty,
-          const TextEditingValue(text: '100'),
-        );
+        final result = formatter.formatEditUpdate(TextEditingValue.empty, const TextEditingValue(text: '100'));
         expect(result.text, '¥100');
       });
     });

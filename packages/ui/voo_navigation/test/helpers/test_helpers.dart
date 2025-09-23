@@ -3,30 +3,20 @@ import 'package:go_router/go_router.dart';
 import 'package:voo_tokens/voo_tokens.dart';
 
 /// Creates a MaterialApp with VooTokensTheme configured for testing
-Widget createTestApp({
-  required Widget child,
-  ThemeData? theme,
-}) {
+Widget createTestApp({required Widget child, ThemeData? theme}) {
   return MaterialApp(
     theme: (theme ?? ThemeData()).copyWith(
-      extensions: [
-        VooTokensTheme.standard(),
-      ],
+      extensions: [VooTokensTheme.standard()],
     ),
     home: child,
   );
 }
 
 /// Creates a MaterialApp.router with VooTokensTheme configured for testing
-Widget createTestRouterApp({
-  required GoRouter routerConfig,
-  ThemeData? theme,
-}) {
+Widget createTestRouterApp({required GoRouter routerConfig, ThemeData? theme}) {
   return MaterialApp.router(
     theme: (theme ?? ThemeData()).copyWith(
-      extensions: [
-        VooTokensTheme.standard(),
-      ],
+      extensions: [VooTokensTheme.standard()],
     ),
     routerConfig: routerConfig,
   );
@@ -35,13 +25,7 @@ Widget createTestRouterApp({
 /// Creates a Material widget with VooTokensTheme configured for testing
 Widget wrapWithMaterialAndTheme(Widget child) {
   return MaterialApp(
-    theme: ThemeData(
-      extensions: [
-        VooTokensTheme.standard(),
-      ],
-    ),
-    home: Material(
-      child: child,
-    ),
+    theme: ThemeData(extensions: [VooTokensTheme.standard()]),
+    home: Material(child: child),
   );
 }

@@ -6,9 +6,7 @@ import 'package:voo_toast/src/domain/entities/toast_config.dart';
 import 'package:voo_toast/src/domain/repositories/toast_repository.dart';
 
 class ToastRepositoryImpl implements ToastRepository {
-  ToastRepositoryImpl({
-    ToastConfig? config,
-  }) : _config = config ?? const ToastConfig();
+  ToastRepositoryImpl({ToastConfig? config}) : _config = config ?? const ToastConfig();
 
   final ToastConfig _config;
   final _toastsSubject = BehaviorSubject<List<Toast>>.seeded([]);
@@ -38,11 +36,10 @@ class ToastRepositoryImpl implements ToastRepository {
       dismiss(toRemove.id);
     }
 
-    final updatedToasts = [...currentToasts, toast]
-      ..sort((a, b) => b.priority.compareTo(a.priority));
-    
+    final updatedToasts = [...currentToasts, toast]..sort((a, b) => b.priority.compareTo(a.priority));
+
     _toastsSubject.add(updatedToasts);
-    
+
     if (toast.duration != Duration.zero) {
       _startTimer(toast);
     }
@@ -51,19 +48,19 @@ class ToastRepositoryImpl implements ToastRepository {
   @override
   void dismiss(String toastId) {
     _cancelTimer(toastId);
-    
+
     // Find the toast to dismiss (if it exists)
     final toastIndex = currentToasts.indexWhere((t) => t.id == toastId);
-    
+
     // If toast not found, just return (already dismissed)
     if (toastIndex == -1) return;
-    
+
     final dismissedToast = currentToasts[toastIndex];
     final updatedToasts = currentToasts.where((t) => t.id != toastId).toList();
     _toastsSubject.add(updatedToasts);
-    
+
     dismissedToast.onDismissed?.call();
-    
+
     _processQueue();
   }
 
@@ -73,11 +70,11 @@ class ToastRepositoryImpl implements ToastRepository {
       timer.cancel();
     }
     _timers.clear();
-    
+
     for (final toast in currentToasts) {
       toast.onDismissed?.call();
     }
-    
+
     _toastsSubject.add([]);
     _queueSubject.add([]);
   }
@@ -95,11 +92,11 @@ class ToastRepositoryImpl implements ToastRepository {
   void _processQueue() {
     if (_queueSubject.value.isEmpty) return;
     if (currentToasts.length >= _config.maxToasts) return;
-    
+
     final nextToast = _queueSubject.value.first;
     final updatedQueue = _queueSubject.value.skip(1).toList();
     _queueSubject.add(updatedQueue);
-    
+
     show(nextToast);
   }
 

@@ -1,6 +1,1 @@
-enum FormValidationMode {
-  onSubmit,
-  onChange,
-  onBlur,
-  manual,
-}
+enum FormValidationMode { onSubmit, onChange, onBlur, manual }

@@ -8,12 +8,7 @@ import 'package:voo_toast/src/domain/enums/toast_type.dart';
 void main() {
   group('Toast Entity', () {
     test('creates toast with required parameters', () {
-      const toast = Toast(
-        id: 'test-id',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-id', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       expect(toast.id, 'test-id');
       expect(toast.message, 'Test message');
@@ -24,10 +19,7 @@ void main() {
     });
 
     test('creates toast with all optional parameters', () {
-      final action = ToastAction(
-        label: 'Action',
-        onPressed: () {},
-      );
+      final action = ToastAction(label: 'Action', onPressed: () {});
 
       final toast = Toast(
         id: 'test-id',
@@ -72,18 +64,9 @@ void main() {
     });
 
     test('copyWith creates new instance with updated values', () {
-      const original = Toast(
-        id: 'original-id',
-        message: 'Original message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const original = Toast(id: 'original-id', message: 'Original message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      final updated = original.copyWith(
-        message: 'Updated message',
-        type: ToastType.success,
-        title: 'New Title',
-      );
+      final updated = original.copyWith(message: 'Updated message', type: ToastType.success, title: 'New Title');
 
       expect(updated.id, 'original-id');
       expect(updated.message, 'Updated message');
@@ -121,26 +104,11 @@ void main() {
     });
 
     test('equals and hashCode work correctly', () {
-      const toast1 = Toast(
-        id: 'same-id',
-        message: 'Same message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'same-id', message: 'Same message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'same-id',
-        message: 'Same message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast2 = Toast(id: 'same-id', message: 'Same message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast3 = Toast(
-        id: 'different-id',
-        message: 'Same message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast3 = Toast(id: 'different-id', message: 'Same message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       expect(toast1, equals(toast2));
       expect(toast1.hashCode, equals(toast2.hashCode));
@@ -166,12 +134,7 @@ void main() {
     });
 
     test('creates toast action with optional parameters', () {
-      final action = ToastAction(
-        label: 'Styled Action',
-        onPressed: () {},
-        textColor: Colors.blue,
-        backgroundColor: Colors.blue.withValues(alpha: 0.1),
-      );
+      final action = ToastAction(label: 'Styled Action', onPressed: () {}, textColor: Colors.blue, backgroundColor: Colors.blue.withValues(alpha: 0.1));
 
       expect(action.label, 'Styled Action');
       expect(action.textColor, Colors.blue);
@@ -179,12 +142,7 @@ void main() {
     });
 
     test('creates action with all parameters', () {
-      final action = ToastAction(
-        label: 'Full Action',
-        onPressed: () {},
-        textColor: Colors.red,
-        backgroundColor: Colors.grey,
-      );
+      final action = ToastAction(label: 'Full Action', onPressed: () {}, textColor: Colors.red, backgroundColor: Colors.grey);
 
       expect(action.label, 'Full Action');
       expect(action.textColor, Colors.red);
@@ -195,23 +153,11 @@ void main() {
     test('equals and hashCode work correctly', () {
       void callback() {}
 
-      final action1 = ToastAction(
-        label: 'Same',
-        onPressed: callback,
-        textColor: Colors.blue,
-      );
+      final action1 = ToastAction(label: 'Same', onPressed: callback, textColor: Colors.blue);
 
-      final action2 = ToastAction(
-        label: 'Same',
-        onPressed: callback,
-        textColor: Colors.blue,
-      );
+      final action2 = ToastAction(label: 'Same', onPressed: callback, textColor: Colors.blue);
 
-      final action3 = ToastAction(
-        label: 'Different',
-        onPressed: callback,
-        textColor: Colors.blue,
-      );
+      final action3 = ToastAction(label: 'Different', onPressed: callback, textColor: Colors.blue);
 
       expect(action1, equals(action2));
       expect(action1.hashCode, equals(action2.hashCode));

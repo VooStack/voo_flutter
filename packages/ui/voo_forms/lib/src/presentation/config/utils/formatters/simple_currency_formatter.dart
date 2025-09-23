@@ -20,47 +20,22 @@ class SimpleCurrencyFormatter extends TextInputFormatter {
 
   late final NumberFormat _currencyFormatter;
 
-  SimpleCurrencyFormatter({
-    this.symbol = '\$',
-    this.decimalDigits = 2,
-    this.locale = 'en_US',
-    this.symbolBeforeAmount = true,
-    this.maxValue,
-    this.minValue,
-  }) {
+  SimpleCurrencyFormatter({this.symbol = '\$', this.decimalDigits = 2, this.locale = 'en_US', this.symbolBeforeAmount = true, this.maxValue, this.minValue}) {
     // Use intl's currency formatter for proper locale formatting
-    _currencyFormatter = NumberFormat.currency(
-      locale: locale,
-      symbol: symbol,
-      decimalDigits: decimalDigits,
-    );
+    _currencyFormatter = NumberFormat.currency(locale: locale, symbol: symbol, decimalDigits: decimalDigits);
   }
 
   /// Factory constructors for common currencies
   factory SimpleCurrencyFormatter.usd() => SimpleCurrencyFormatter();
 
-  factory SimpleCurrencyFormatter.eur() => SimpleCurrencyFormatter(
-        symbol: '€',
-        locale: 'de_DE',
-        symbolBeforeAmount: false,
-      );
+  factory SimpleCurrencyFormatter.eur() => SimpleCurrencyFormatter(symbol: '€', locale: 'de_DE', symbolBeforeAmount: false);
 
-  factory SimpleCurrencyFormatter.gbp() => SimpleCurrencyFormatter(
-        symbol: '£',
-        locale: 'en_GB',
-      );
+  factory SimpleCurrencyFormatter.gbp() => SimpleCurrencyFormatter(symbol: '£', locale: 'en_GB');
 
-  factory SimpleCurrencyFormatter.jpy() => SimpleCurrencyFormatter(
-        symbol: '¥',
-        decimalDigits: 0,
-        locale: 'ja_JP',
-      );
+  factory SimpleCurrencyFormatter.jpy() => SimpleCurrencyFormatter(symbol: '¥', decimalDigits: 0, locale: 'ja_JP');
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     // Handle empty input
     if (newValue.text.isEmpty) {
       return newValue;

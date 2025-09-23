@@ -50,12 +50,7 @@ class FilterChipList extends StatelessWidget {
       padding: EdgeInsets.all(design.spacingSm),
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        border: Border(
-          bottom: BorderSide(
-            color: borderColor ?? theme.dividerColor,
-            width: 0.5,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: borderColor ?? theme.dividerColor, width: 0.5)),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
@@ -70,10 +65,7 @@ class FilterChipList extends StatelessWidget {
                 onDeleted: onFilterRemoved != null ? () => onFilterRemoved!(entry.key) : null,
               ),
             ),
-            if (showClearAll && filters.length >= clearAllThreshold)
-              ClearAllChip(
-                onPressed: onClearAll,
-              ),
+            if (showClearAll && filters.length >= clearAllThreshold) ClearAllChip(onPressed: onClearAll),
           ],
         ),
       ),

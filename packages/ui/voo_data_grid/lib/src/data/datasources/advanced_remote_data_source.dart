@@ -12,11 +12,7 @@ import 'package:voo_data_grid/src/utils/data_grid_request_builder.dart';
 class AdvancedRemoteDataSource extends VooDataGridSource {
   final String apiEndpoint;
   final Map<String, String>? headers;
-  final Future<Map<String, dynamic>> Function(
-    String url,
-    Map<String, dynamic> body,
-    Map<String, String>? headers,
-  )? httpClient;
+  final Future<Map<String, dynamic>> Function(String url, Map<String, dynamic> body, Map<String, String>? headers)? httpClient;
 
   /// Whether to use advanced filter format
   bool useAdvancedFilters;
@@ -24,12 +20,7 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
   /// Custom advanced filter request for direct API calls
   AdvancedFilterRequest? _customFilterRequest;
 
-  AdvancedRemoteDataSource({
-    required this.apiEndpoint,
-    this.headers,
-    this.httpClient,
-    this.useAdvancedFilters = true,
-  }) : super(mode: VooDataGridMode.remote);
+  AdvancedRemoteDataSource({required this.apiEndpoint, this.headers, this.httpClient, this.useAdvancedFilters = true}) : super(mode: VooDataGridMode.remote);
 
   /// Set a custom advanced filter request
   void setAdvancedFilterRequest(AdvancedFilterRequest request) {
@@ -60,30 +51,16 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
 
     // Use custom advanced filter request if provided
     if (_customFilterRequest != null) {
-      requestBody = DataGridRequestBuilder.buildAdvancedRequestBody(
-        request: _customFilterRequest!,
-      );
+      requestBody = DataGridRequestBuilder.buildAdvancedRequestBody(request: _customFilterRequest!);
     }
     // Use advanced filter format if enabled
     else if (useAdvancedFilters) {
-      final advancedRequest = DataGridRequestBuilder.convertToAdvancedRequest(
-        filters: filters,
-        sorts: sorts,
-        page: page,
-        pageSize: pageSize,
-      );
-      requestBody = DataGridRequestBuilder.buildAdvancedRequestBody(
-        request: advancedRequest,
-      );
+      final advancedRequest = DataGridRequestBuilder.convertToAdvancedRequest(filters: filters, sorts: sorts, page: page, pageSize: pageSize);
+      requestBody = DataGridRequestBuilder.buildAdvancedRequestBody(request: advancedRequest);
     }
     // Fall back to standard format
     else {
-      requestBody = DataGridRequestBuilder.buildRequestBody(
-        page: page,
-        pageSize: pageSize,
-        filters: filters,
-        sorts: sorts,
-      );
+      requestBody = DataGridRequestBuilder.buildRequestBody(page: page, pageSize: pageSize, filters: filters, sorts: sorts);
     }
 
     final response = await httpClient!(apiEndpoint, requestBody, headers);
@@ -107,12 +84,7 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
     BaseFilter filter;
     switch (filterType) {
       case FilterType.string:
-        filter = StringFilter(
-          fieldName: fieldName,
-          value: value.toString(),
-          operator: operator,
-          secondaryFilter: secondaryFilter,
-        );
+        filter = StringFilter(fieldName: fieldName, value: value.toString(), operator: operator, secondaryFilter: secondaryFilter);
         break;
       case FilterType.int:
         filter = IntFilter(
@@ -172,10 +144,7 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
   }
 
   /// Helper to add a filter to the request
-  AdvancedFilterRequest _addFilterToRequest(
-    AdvancedFilterRequest request,
-    BaseFilter filter,
-  ) {
+  AdvancedFilterRequest _addFilterToRequest(AdvancedFilterRequest request, BaseFilter filter) {
     final stringFilters = List<StringFilter>.from(request.stringFilters);
     final intFilters = List<IntFilter>.from(request.intFilters);
     final decimalFilters = List<DecimalFilter>.from(request.decimalFilters);
@@ -224,11 +193,4 @@ class AdvancedRemoteDataSource extends VooDataGridSource {
 }
 
 /// Filter type enumeration
-enum FilterType {
-  string,
-  int,
-  decimal,
-  date,
-  dateTime,
-  bool,
-}
+enum FilterType { string, int, decimal, date, dateTime, bool }

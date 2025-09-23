@@ -13,13 +13,8 @@ class TestDataSource<T> extends VooDataGridSource<T> {
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
   }) async =>
-    // Not needed for these tests
-    VooDataGridResponse<T>(
-      rows: [],
-      totalRows: 0,
-      page: page,
-      pageSize: pageSize,
-    );
+      // Not needed for these tests
+      VooDataGridResponse<T>(rows: [], totalRows: 0, page: page, pageSize: pageSize);
 }
 
 // Test model classes
@@ -29,12 +24,7 @@ class OrderList {
   final FileStatus? status;
   final double amount;
 
-  OrderList({
-    required this.id,
-    required this.siteNumber,
-    this.status,
-    required this.amount,
-  });
+  OrderList({required this.id, required this.siteNumber, this.status, required this.amount});
 }
 
 class FileStatus {
@@ -42,11 +32,7 @@ class FileStatus {
   final String name;
   final Color color;
 
-  FileStatus({
-    required this.code,
-    required this.name,
-    required this.color,
-  });
+  FileStatus({required this.code, required this.name, required this.color});
 }
 
 void main() {
@@ -63,18 +49,10 @@ void main() {
         OrderList(
           id: '2',
           siteNumber: 'SITE002',
-          status: FileStatus(
-            code: 'PENDING',
-            name: 'Pending',
-            color: Colors.orange,
-          ),
+          status: FileStatus(code: 'PENDING', name: 'Pending', color: Colors.orange),
           amount: 200.0,
         ),
-        OrderList(
-          id: '3',
-          siteNumber: 'SITE003',
-          amount: 300.0,
-        ),
+        OrderList(id: '3', siteNumber: 'SITE003', amount: 300.0),
       ];
 
       // Create data source with proper type
@@ -83,16 +61,8 @@ void main() {
 
       // Create columns with properly typed valueGetters
       final columns = [
-        VooDataColumn<OrderList>(
-          field: 'id',
-          label: 'ID',
-          valueGetter: (OrderList row) => row.id,
-        ),
-        VooDataColumn<OrderList>(
-          field: 'siteNumber',
-          label: 'Site Number',
-          valueGetter: (OrderList row) => row.siteNumber,
-        ),
+        VooDataColumn<OrderList>(field: 'id', label: 'ID', valueGetter: (OrderList row) => row.id),
+        VooDataColumn<OrderList>(field: 'siteNumber', label: 'Site Number', valueGetter: (OrderList row) => row.siteNumber),
         VooDataColumn<OrderList>(
           field: 'status',
           label: 'Status',
@@ -121,11 +91,7 @@ void main() {
       // Build the widget
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid<OrderList>(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid<OrderList>(controller: controller)),
         ),
       );
 
@@ -214,17 +180,13 @@ void main() {
       dataSource.setLocalData(testData);
 
       final columns = [
-        VooDataColumn<Map<String, dynamic>>(
-          field: 'id',
-          label: 'ID',
-          valueGetter: (row) => row['id'],
-        ),
+        VooDataColumn<Map<String, dynamic>>(field: 'id', label: 'ID', valueGetter: (row) => row['id']),
         VooDataColumn<Map<String, dynamic>>(
           field: 'value',
           label: 'Value',
           valueGetter: (row) =>
-            // This could potentially throw if the value type changes
-            row['value'] as int,
+              // This could potentially throw if the value type changes
+              row['value'] as int,
           valueFormatter: (value) => '\$\$value',
         ),
       ];
@@ -255,13 +217,7 @@ void main() {
       final remoteDataSource = TestDataSource<OrderList>(mode: VooDataGridMode.remote);
 
       // Apply filter (this would be sent to server in remote mode)
-      remoteDataSource.applyFilter(
-        'siteNumber',
-        const VooDataFilter(
-          value: 'SITE001',
-          operator: VooFilterOperator.equals,
-        ),
-      );
+      remoteDataSource.applyFilter('siteNumber', const VooDataFilter(value: 'SITE001', operator: VooFilterOperator.equals));
 
       expect(remoteDataSource.filters.length, 1);
       expect(remoteDataSource.filters['siteNumber']?.value, 'SITE001');
@@ -273,13 +229,7 @@ void main() {
       // This test ensures that generic types are properly maintained
 
       // Create strongly typed columns
-      final columns = <VooDataColumn<OrderList>>[
-        VooDataColumn<OrderList>(
-          field: 'id',
-          label: 'ID',
-          valueGetter: (OrderList row) => row.id,
-        ),
-      ];
+      final columns = <VooDataColumn<OrderList>>[VooDataColumn<OrderList>(field: 'id', label: 'ID', valueGetter: (OrderList row) => row.id)];
 
       // Create strongly typed data source
       final dataSource = TestDataSource<OrderList>(mode: VooDataGridMode.local);

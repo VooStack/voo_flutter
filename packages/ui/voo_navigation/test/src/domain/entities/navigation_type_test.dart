@@ -6,10 +6,22 @@ void main() {
   group('VooNavigationType', () {
     test('should have correct values', () {
       expect(VooNavigationType.values.length, 4);
-      expect(VooNavigationType.values, contains(VooNavigationType.bottomNavigation));
-      expect(VooNavigationType.values, contains(VooNavigationType.navigationRail));
-      expect(VooNavigationType.values, contains(VooNavigationType.extendedNavigationRail));
-      expect(VooNavigationType.values, contains(VooNavigationType.navigationDrawer));
+      expect(
+        VooNavigationType.values,
+        contains(VooNavigationType.bottomNavigation),
+      );
+      expect(
+        VooNavigationType.values,
+        contains(VooNavigationType.navigationRail),
+      );
+      expect(
+        VooNavigationType.values,
+        contains(VooNavigationType.extendedNavigationRail),
+      );
+      expect(
+        VooNavigationType.values,
+        contains(VooNavigationType.navigationDrawer),
+      );
     });
 
     test('isBottom should return correct value', () {
@@ -41,47 +53,106 @@ void main() {
     });
 
     test('displayName should return correct names', () {
-      expect(VooNavigationType.bottomNavigation.displayName, 'Bottom Navigation');
+      expect(
+        VooNavigationType.bottomNavigation.displayName,
+        'Bottom Navigation',
+      );
       expect(VooNavigationType.navigationRail.displayName, 'Navigation Rail');
-      expect(VooNavigationType.extendedNavigationRail.displayName, 'Extended Navigation Rail');
-      expect(VooNavigationType.navigationDrawer.displayName, 'Navigation Drawer');
+      expect(
+        VooNavigationType.extendedNavigationRail.displayName,
+        'Extended Navigation Rail',
+      );
+      expect(
+        VooNavigationType.navigationDrawer.displayName,
+        'Navigation Drawer',
+      );
     });
   });
 
   group('VooNavigationTypeHelper', () {
     test('fromWidth should return correct navigation type', () {
-      expect(VooNavigationTypeHelper.fromWidth(300), VooNavigationType.bottomNavigation);
-      expect(VooNavigationTypeHelper.fromWidth(599), VooNavigationType.bottomNavigation);
-      expect(VooNavigationTypeHelper.fromWidth(600), VooNavigationType.navigationRail);
-      expect(VooNavigationTypeHelper.fromWidth(839), VooNavigationType.navigationRail);
-      expect(VooNavigationTypeHelper.fromWidth(840), VooNavigationType.extendedNavigationRail);
-      expect(VooNavigationTypeHelper.fromWidth(1239), VooNavigationType.extendedNavigationRail);
-      expect(VooNavigationTypeHelper.fromWidth(1240), VooNavigationType.navigationDrawer);
-      expect(VooNavigationTypeHelper.fromWidth(1920), VooNavigationType.navigationDrawer);
+      expect(
+        VooNavigationTypeHelper.fromWidth(300),
+        VooNavigationType.bottomNavigation,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(599),
+        VooNavigationType.bottomNavigation,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(600),
+        VooNavigationType.navigationRail,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(839),
+        VooNavigationType.navigationRail,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(840),
+        VooNavigationType.extendedNavigationRail,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(1239),
+        VooNavigationType.extendedNavigationRail,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(1240),
+        VooNavigationType.navigationDrawer,
+      );
+      expect(
+        VooNavigationTypeHelper.fromWidth(1920),
+        VooNavigationType.navigationDrawer,
+      );
     });
 
     test('shouldShowFab should return correct value', () {
-      expect(VooNavigationTypeHelper.shouldShowFab(VooNavigationType.bottomNavigation), isTrue);
-      expect(VooNavigationTypeHelper.shouldShowFab(VooNavigationType.navigationRail), isTrue);
-      expect(VooNavigationTypeHelper.shouldShowFab(VooNavigationType.extendedNavigationRail), isTrue);
-      expect(VooNavigationTypeHelper.shouldShowFab(VooNavigationType.navigationDrawer), isFalse);
+      expect(
+        VooNavigationTypeHelper.shouldShowFab(
+          VooNavigationType.bottomNavigation,
+        ),
+        isTrue,
+      );
+      expect(
+        VooNavigationTypeHelper.shouldShowFab(VooNavigationType.navigationRail),
+        isTrue,
+      );
+      expect(
+        VooNavigationTypeHelper.shouldShowFab(
+          VooNavigationType.extendedNavigationRail,
+        ),
+        isTrue,
+      );
+      expect(
+        VooNavigationTypeHelper.shouldShowFab(
+          VooNavigationType.navigationDrawer,
+        ),
+        isFalse,
+      );
     });
 
     test('getFabLocation should return correct location', () {
       expect(
-        VooNavigationTypeHelper.getFabLocation(VooNavigationType.bottomNavigation),
+        VooNavigationTypeHelper.getFabLocation(
+          VooNavigationType.bottomNavigation,
+        ),
         FloatingActionButtonLocation.centerDocked,
       );
       expect(
-        VooNavigationTypeHelper.getFabLocation(VooNavigationType.navigationRail),
+        VooNavigationTypeHelper.getFabLocation(
+          VooNavigationType.navigationRail,
+        ),
         FloatingActionButtonLocation.endFloat,
       );
       expect(
-        VooNavigationTypeHelper.getFabLocation(VooNavigationType.extendedNavigationRail),
+        VooNavigationTypeHelper.getFabLocation(
+          VooNavigationType.extendedNavigationRail,
+        ),
         FloatingActionButtonLocation.endFloat,
       );
       expect(
-        VooNavigationTypeHelper.getFabLocation(VooNavigationType.navigationDrawer),
+        VooNavigationTypeHelper.getFabLocation(
+          VooNavigationType.navigationDrawer,
+        ),
         FloatingActionButtonLocation.endFloat,
       );
     });

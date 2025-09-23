@@ -7,22 +7,22 @@ import 'package:voo_data_grid/src/presentation/widgets/molecules/primary_filter.
 class PrimaryFiltersBar extends StatelessWidget {
   /// List of available primary filters
   final List<PrimaryFilter> filters;
-  
+
   /// Currently selected filter (null means "All" is selected)
   final VooDataFilter? selectedFilter;
-  
+
   /// Callback when a filter is changed - same signature as regular filters
   final void Function(String field, VooDataFilter? filter)? onFilterChanged;
-  
+
   /// Whether to show an "All" option
   final bool showAllOption;
-  
+
   /// Label for the "All" option
   final String allOptionLabel;
-  
+
   /// Icon for the "All" option
   final IconData? allOptionIcon;
-  
+
   const PrimaryFiltersBar({
     super.key,
     required this.filters,
@@ -36,16 +36,12 @@ class PrimaryFiltersBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       height: 44,
       decoration: BoxDecoration(
         color: colorScheme.surface.withValues(alpha: 0.95),
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.3))),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
@@ -69,16 +65,18 @@ class PrimaryFiltersBar extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
               ],
-              ...filters.map((filter) => Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: PrimaryFilterButton(
-                  label: filter.label,
-                  icon: filter.icon,
-                  count: filter.count,
-                  isSelected: selectedFilter == filter.filter,
-                  onPressed: () => onFilterChanged?.call(filter.field, filter.filter),
+              ...filters.map(
+                (filter) => Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: PrimaryFilterButton(
+                    label: filter.label,
+                    icon: filter.icon,
+                    count: filter.count,
+                    isSelected: selectedFilter == filter.filter,
+                    onPressed: () => onFilterChanged?.call(filter.field, filter.filter),
+                  ),
                 ),
-              ),),
+              ),
             ],
           ),
         ),

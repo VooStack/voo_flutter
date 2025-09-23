@@ -144,11 +144,7 @@ class VooContainer extends StatelessWidget {
             surfaceTintColor: surfaceTintColor,
             elevation: elevation!,
             borderRadius: effectiveBorderRadius is BorderRadius ? effectiveBorderRadius : null,
-            shape: shape == BoxShape.circle
-                ? const CircleBorder()
-                : RoundedRectangleBorder(
-                    borderRadius: effectiveBorderRadius ?? BorderRadius.zero,
-                  ),
+            shape: shape == BoxShape.circle ? const CircleBorder() : RoundedRectangleBorder(borderRadius: effectiveBorderRadius ?? BorderRadius.zero),
             clipBehavior: clipBehavior,
             animationDuration: animationDuration ?? design.animationDuration,
             child: Container(
@@ -273,10 +269,7 @@ class VooResponsiveContainer extends StatelessWidget {
     if (centerContent) {
       content = Center(child: content);
     } else {
-      content = Align(
-        alignment: alignment,
-        child: content,
-      );
+      content = Align(alignment: alignment, child: content);
     }
 
     return content;

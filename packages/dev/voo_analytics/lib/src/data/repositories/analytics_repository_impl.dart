@@ -295,7 +295,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   }) {
     try {
       final timestamp = DateTime.now();
-      
+
       // Create entry data, filtering out null values for web compatibility
       final entryData = <String, dynamic>{
         'id': '${category.toLowerCase()}_${timestamp.millisecondsSinceEpoch}',
@@ -305,7 +305,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         'category': category,
         'tag': 'VooAnalytics',
       };
-      
+
       // Add metadata if present, filtering out null values
       if (metadata != null) {
         final cleanMetadata = <String, dynamic>{};
@@ -314,11 +314,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         });
         if (cleanMetadata.isNotEmpty) entryData['metadata'] = cleanMetadata;
       }
-      
-      final structuredData = {
-        '__voo_logger__': true,
-        'entry': entryData,
-      };
+
+      final structuredData = {'__voo_logger__': true, 'entry': entryData};
 
       // Send via postEvent for DevTools extension
       developer.postEvent('voo_logger_event', structuredData);

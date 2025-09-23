@@ -10,14 +10,7 @@ class RowDataCell<T> extends StatelessWidget {
   final VooDataGridTheme theme;
   final VooDesignSystemData design;
 
-  const RowDataCell({
-    super.key,
-    required this.row,
-    required this.column,
-    required this.controller,
-    required this.theme,
-    required this.design,
-  });
+  const RowDataCell({super.key, required this.row, required this.column, required this.controller, required this.theme, required this.design});
 
   // Static method with const values for better performance
   static const Map<TextAlign, Alignment> _alignmentCache = {
@@ -41,15 +34,11 @@ class RowDataCell<T> extends StatelessWidget {
       } else if (row is Map) {
         value = (row as Map)[column.field];
       } else {
-        debugPrint(
-          '[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects.',
-        );
+        debugPrint('[VooDataGrid Warning] Column "${column.field}" requires a valueGetter for typed objects.');
         value = null;
       }
     } catch (e) {
-      debugPrint(
-        '[VooDataGrid Error] Failed to get value for column "${column.field}": $e',
-      );
+      debugPrint('[VooDataGrid Error] Failed to get value for column "${column.field}": $e');
       value = null;
     }
 
@@ -58,12 +47,7 @@ class RowDataCell<T> extends StatelessWidget {
     // Use const where possible for better performance
     final cellContent = Align(
       alignment: _getAlignment(column.textAlign),
-      child: column.cellBuilder?.call(context, value, row) ??
-          Text(
-            displayValue,
-            style: theme.cellTextStyle,
-            overflow: TextOverflow.ellipsis,
-          ),
+      child: column.cellBuilder?.call(context, value, row) ?? Text(displayValue, style: theme.cellTextStyle, overflow: TextOverflow.ellipsis),
     );
 
     return Container(
@@ -71,22 +55,11 @@ class RowDataCell<T> extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
       decoration: BoxDecoration(
         border: Border(
-          right: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
-          ),
-          bottom: BorderSide(
-            color: theme.gridLineColor,
-            width: controller.showGridLines ? 1 : 0,
-          ),
+          right: BorderSide(color: theme.gridLineColor, width: controller.showGridLines ? 1 : 0),
+          bottom: BorderSide(color: theme.gridLineColor, width: controller.showGridLines ? 1 : 0),
         ),
       ),
-      child: column.onCellTap != null
-          ? InkWell(
-              onTap: () => column.onCellTap!(context, row, value),
-              child: cellContent,
-            )
-          : cellContent,
+      child: column.onCellTap != null ? InkWell(onTap: () => column.onCellTap!(context, row, value), child: cellContent) : cellContent,
     );
   }
 

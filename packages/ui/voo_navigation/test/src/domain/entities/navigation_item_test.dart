@@ -73,7 +73,10 @@ void main() {
       expect(divider.id, startsWith('divider_'));
       expect(divider.label, '');
       expect(divider.icon, Icons.remove);
-      expect(divider.isEnabled, isTrue); // divider has onTap callback, so it's enabled
+      expect(
+        divider.isEnabled,
+        isTrue,
+      ); // divider has onTap callback, so it's enabled
       expect(divider.isVisible, isTrue);
     });
 
@@ -97,7 +100,10 @@ void main() {
       );
 
       expect(section.label, 'Settings');
-      expect(section.id, 'section_settings'); // factory method generates 'section_' prefix
+      expect(
+        section.id,
+        'section_settings',
+      ); // factory method generates 'section_' prefix
       expect(section.icon, Icons.folder_outlined);
       expect(section.selectedIcon, Icons.folder);
       expect(section.children?.length, 2);

@@ -6,31 +6,31 @@ import 'package:voo_data_grid/src/utils/debouncer.dart';
 class NumberFilterField extends StatefulWidget {
   /// The current value
   final num? value;
-  
+
   /// Callback when value changes
   final void Function(num?) onChanged;
-  
+
   /// Hint text for the field
   final String? hintText;
-  
+
   /// Label for the field
   final String? label;
-  
+
   /// Whether to show clear button
   final bool showClearButton;
-  
+
   /// Whether to allow decimals
   final bool allowDecimals;
-  
+
   /// Text controller (optional, for external control)
   final TextEditingController? controller;
-  
+
   /// Whether to use debouncing for input changes
   final bool useDebouncing;
-  
+
   /// Debounce duration in milliseconds
   final Duration debounceDuration;
-  
+
   const NumberFilterField({
     super.key,
     this.value,
@@ -52,7 +52,7 @@ class _NumberFilterFieldState extends State<NumberFilterField> {
   late TextEditingController _effectiveController;
   late Debouncer _debouncer;
   bool _isControllerInternal = false;
-  
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +64,7 @@ class _NumberFilterFieldState extends State<NumberFilterField> {
       _effectiveController = widget.controller!;
     }
   }
-  
+
   @override
   void dispose() {
     _debouncer.dispose();
@@ -73,7 +73,7 @@ class _NumberFilterFieldState extends State<NumberFilterField> {
     }
     super.dispose();
   }
-  
+
   void _handleChange(String value) {
     if (value.isEmpty) {
       if (widget.useDebouncing) {
@@ -84,10 +84,8 @@ class _NumberFilterFieldState extends State<NumberFilterField> {
         widget.onChanged(null);
       }
     } else {
-      final parsed = widget.allowDecimals 
-          ? double.tryParse(value)
-          : int.tryParse(value);
-      
+      final parsed = widget.allowDecimals ? double.tryParse(value) : int.tryParse(value);
+
       if (widget.useDebouncing) {
         _debouncer.run(() {
           widget.onChanged(parsed);
@@ -101,7 +99,7 @@ class _NumberFilterFieldState extends State<NumberFilterField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       height: 32,
       decoration: BoxDecoration(
@@ -129,16 +127,8 @@ class _NumberFilterFieldState extends State<NumberFilterField> {
           suffixIconConstraints: const BoxConstraints(maxWidth: 30, maxHeight: 32),
         ),
         style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
-        keyboardType: TextInputType.numberWithOptions(
-          decimal: widget.allowDecimals,
-        ),
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(
-            widget.allowDecimals 
-                ? RegExp(r'^\d*\.?\d*')
-                : RegExp(r'^\d*'),
-          ),
-        ],
+        keyboardType: TextInputType.numberWithOptions(decimal: widget.allowDecimals),
+        inputFormatters: [FilteringTextInputFormatter.allow(widget.allowDecimals ? RegExp(r'^\d*\.?\d*') : RegExp(r'^\d*'))],
         onChanged: _handleChange,
       ),
     );

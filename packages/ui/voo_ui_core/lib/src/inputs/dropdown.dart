@@ -120,8 +120,8 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
                 color: hasError
                     ? theme.colorScheme.error
                     : _isFocused
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.onSurfaceVariant,
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurfaceVariant,
                 fontWeight: _isFocused ? FontWeight.w500 : FontWeight.normal,
               ),
             ),
@@ -129,26 +129,16 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
           ],
           Container(
             height: design.inputHeight,
-            padding: widget.padding ??
-                EdgeInsets.symmetric(
-                  horizontal: design.spacingLg,
-                ),
+            padding: widget.padding ?? EdgeInsets.symmetric(horizontal: design.spacingLg),
             decoration: BoxDecoration(
               // No background color to match TextFormField styling
               borderRadius: BorderRadius.circular(design.radiusMd),
-              border: Border.all(
-                color: borderColor,
-                width: _isFocused ? 2 : 1,
-              ),
+              border: Border.all(color: borderColor, width: _isFocused ? 2 : 1),
             ),
             child: Row(
               children: [
                 if (widget.prefixIcon != null) ...[
-                  Icon(
-                    widget.prefixIcon,
-                    size: design.iconSizeMd,
-                    color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-                  ),
+                  Icon(widget.prefixIcon, size: design.iconSizeMd, color: _isFocused ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant),
                   SizedBox(width: design.spacingMd),
                 ],
                 Expanded(
@@ -184,12 +174,7 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
                                         ),
                                         if (item.subtitle != null) ...[
                                           const SizedBox(height: 2),
-                                          Text(
-                                            item.subtitle!,
-                                            style: theme.textTheme.bodySmall?.copyWith(
-                                              color: theme.colorScheme.onSurfaceVariant,
-                                            ),
-                                          ),
+                                          Text(item.subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                                         ],
                                       ],
                                     ),
@@ -201,12 +186,7 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
                           .toList(),
                       onChanged: widget.enabled ? widget.onChanged : null,
                       hint: widget.hint != null
-                          ? Text(
-                              widget.hint!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                              ),
-                            )
+                          ? Text(widget.hint!, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)))
                           : null,
                       disabledHint: widget.disabledHint,
                       focusNode: _focusNode,
@@ -215,7 +195,8 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
                       isExpanded: widget.isExpanded,
                       elevation: widget.elevation,
                       style: widget.style ?? theme.textTheme.bodyMedium,
-                      icon: widget.icon ??
+                      icon:
+                          widget.icon ??
                           Icon(
                             Icons.arrow_drop_down,
                             color: widget.enabled
@@ -237,9 +218,7 @@ class _VooDropdownState<T> extends State<VooDropdown<T>> {
             SizedBox(height: design.spacingXs),
             Text(
               widget.error ?? widget.helper ?? '',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: hasError ? theme.colorScheme.error : theme.colorScheme.onSurfaceVariant,
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: hasError ? theme.colorScheme.error : theme.colorScheme.onSurfaceVariant),
             ),
           ],
         ],
@@ -255,11 +234,5 @@ class VooDropdownItem<T> {
   final IconData? icon;
   final bool enabled;
 
-  const VooDropdownItem({
-    required this.value,
-    required this.label,
-    this.subtitle,
-    this.icon,
-    this.enabled = true,
-  });
+  const VooDropdownItem({required this.value, required this.label, this.subtitle, this.icon, this.enabled = true});
 }

@@ -7,19 +7,14 @@ import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
 class OperatorSelector<T> extends StatelessWidget {
   /// The column configuration
   final VooDataColumn<T> column;
-  
+
   /// The current filter value
   final VooDataFilter? currentFilter;
-  
+
   /// Callback when operator changes
   final void Function(VooFilterOperator) onOperatorChanged;
 
-  const OperatorSelector({
-    super.key,
-    required this.column,
-    this.currentFilter,
-    required this.onOperatorChanged,
-  });
+  const OperatorSelector({super.key, required this.column, this.currentFilter, required this.onOperatorChanged});
 
   /// Get symbol representation for a filter operator
   String _getOperatorSymbol(VooFilterOperator operator) {
@@ -79,12 +74,7 @@ class OperatorSelector<T> extends StatelessWidget {
               .map(
                 (op) => DropdownMenuItem(
                   value: op,
-                  child: Center(
-                    child: Text(
-                      _getOperatorSymbol(op),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
+                  child: Center(child: Text(_getOperatorSymbol(op), style: const TextStyle(fontSize: 11))),
                 ),
               )
               .toList(),

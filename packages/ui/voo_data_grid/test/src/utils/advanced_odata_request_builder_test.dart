@@ -5,41 +5,19 @@ void main() {
   group('Advanced OData DataGridRequestBuilder Tests', () {
     group('Complex Real-World Scenarios', () {
       test('should handle e-commerce product filtering scenario', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          fieldPrefix: 'Product',
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, fieldPrefix: 'Product');
 
         final testDate = DateTime(2024);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 50,
           filters: {
-            'name': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'laptop',
-            ),
-            'price': const VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: 500.00,
-              valueTo: 2000.00,
-            ),
-            'category': const VooDataFilter(
-              operator: VooFilterOperator.inList,
-              value: ['Electronics', 'Computers', 'Accessories'],
-            ),
-            'inStock': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: true,
-            ),
-            'releaseDate': VooDataFilter(
-              operator: VooFilterOperator.greaterThanOrEqual,
-              value: testDate,
-            ),
-            'discontinuedDate': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
+            'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'laptop'),
+            'price': const VooDataFilter(operator: VooFilterOperator.between, value: 500.00, valueTo: 2000.00),
+            'category': const VooDataFilter(operator: VooFilterOperator.inList, value: ['Electronics', 'Computers', 'Accessories']),
+            'inStock': const VooDataFilter(operator: VooFilterOperator.equals, value: true),
+            'releaseDate': VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: testDate),
+            'discontinuedDate': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
           },
           sorts: [
             const VooColumnSort(field: 'price', direction: VooSortDirection.ascending),
@@ -78,9 +56,7 @@ void main() {
       });
 
       test('should handle financial transaction filtering', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
         final startDate = DateTime(2024);
         final endDate = DateTime(2024, 3, 31);
@@ -89,34 +65,13 @@ void main() {
           page: 2,
           pageSize: 100,
           filters: {
-            'transactionDate': VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: startDate,
-              valueTo: endDate,
-            ),
-            'amount': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 1000.00,
-            ),
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.notEquals,
-              value: 'cancelled',
-            ),
-            'accountType': const VooDataFilter(
-              operator: VooFilterOperator.inList,
-              value: ['checking', 'savings', 'investment'],
-            ),
-            'flaggedForReview': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: false,
-            ),
+            'transactionDate': VooDataFilter(operator: VooFilterOperator.between, value: startDate, valueTo: endDate),
+            'amount': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 1000.00),
+            'status': const VooDataFilter(operator: VooFilterOperator.notEquals, value: 'cancelled'),
+            'accountType': const VooDataFilter(operator: VooFilterOperator.inList, value: ['checking', 'savings', 'investment']),
+            'flaggedForReview': const VooDataFilter(operator: VooFilterOperator.equals, value: false),
           },
-          sorts: [
-            const VooColumnSort(
-              field: 'transactionDate',
-              direction: VooSortDirection.descending,
-            ),
-          ],
+          sorts: [const VooColumnSort(field: 'transactionDate', direction: VooSortDirection.descending)],
           additionalParams: {
             'includeCount': true,
             'compute': 'amount * exchangeRate as convertedAmount',
@@ -141,30 +96,17 @@ void main() {
       });
 
       test('should handle user management scenario with OR logic', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 25,
           filters: {
-            'role': const VooDataFilter(
-              operator: VooFilterOperator.inList,
-              value: ['admin', 'moderator'],
-            ),
-            'isActive': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: true,
-            ),
-            'lastLoginDate': const VooDataFilter(
-              operator: VooFilterOperator.isNotNull,
-              value: null,
-            ),
+            'role': const VooDataFilter(operator: VooFilterOperator.inList, value: ['admin', 'moderator']),
+            'isActive': const VooDataFilter(operator: VooFilterOperator.equals, value: true),
+            'lastLoginDate': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
           },
-          sorts: [
-            const VooColumnSort(field: 'lastLoginDate', direction: VooSortDirection.descending),
-          ],
+          sorts: [const VooColumnSort(field: 'lastLoginDate', direction: VooSortDirection.descending)],
           additionalParams: {
             'logicalOperator': 'or', // Use OR instead of AND
             'select': ['id', 'username', 'email', 'role', 'isActive'],
@@ -203,12 +145,7 @@ void main() {
           final result = builder.buildRequest(
             page: 0,
             pageSize: 20,
-            filters: {
-              'name': VooDataFilter(
-                operator: VooFilterOperator.equals,
-                value: str,
-              ),
-            },
+            filters: {'name': VooDataFilter(operator: VooFilterOperator.equals, value: str)},
             sorts: [],
           );
 
@@ -222,10 +159,7 @@ void main() {
       });
 
       test('should handle very long field names and values', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          fieldPrefix: 'VeryLongPrefixForNestedObjectProperties',
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, fieldPrefix: 'VeryLongPrefixForNestedObjectProperties');
 
         const veryLongFieldName = 'thisIsAVeryLongFieldNameThatMightBeUsedInEnterpriseApplicationsWithComplexDataModels';
         final veryLongValue = 'A' * 1000; // 1000 character string
@@ -233,15 +167,8 @@ void main() {
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            veryLongFieldName: VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: veryLongValue,
-            ),
-          },
-          sorts: [
-            const VooColumnSort(field: veryLongFieldName, direction: VooSortDirection.ascending),
-          ],
+          filters: {veryLongFieldName: VooDataFilter(operator: VooFilterOperator.contains, value: veryLongValue)},
+          sorts: [const VooColumnSort(field: veryLongFieldName, direction: VooSortDirection.ascending)],
         );
 
         final params = result['params'] as Map<String, String>;
@@ -258,18 +185,9 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'emptyString': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: '',
-            ),
-            'nullField': const VooDataFilter(
-              operator: VooFilterOperator.isNull,
-              value: null,
-            ),
-            'notNullField': const VooDataFilter(
-              operator: VooFilterOperator.isNotNull,
-              value: null,
-            ),
+            'emptyString': const VooDataFilter(operator: VooFilterOperator.equals, value: ''),
+            'nullField': const VooDataFilter(operator: VooFilterOperator.isNull, value: null),
+            'notNullField': const VooDataFilter(operator: VooFilterOperator.isNotNull, value: null),
           },
           sorts: [],
         );
@@ -289,22 +207,10 @@ void main() {
           page: 0,
           pageSize: 20,
           filters: {
-            'zero': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 0,
-            ),
-            'negative': const VooDataFilter(
-              operator: VooFilterOperator.lessThan,
-              value: -100.5,
-            ),
-            'veryLarge': const VooDataFilter(
-              operator: VooFilterOperator.greaterThan,
-              value: 9999999999999.99,
-            ),
-            'verySmall': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 0.00000001,
-            ),
+            'zero': const VooDataFilter(operator: VooFilterOperator.equals, value: 0),
+            'negative': const VooDataFilter(operator: VooFilterOperator.lessThan, value: -100.5),
+            'veryLarge': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 9999999999999.99),
+            'verySmall': const VooDataFilter(operator: VooFilterOperator.equals, value: 0.00000001),
           },
           sorts: [],
         );
@@ -316,41 +222,22 @@ void main() {
         expect(filter, contains('negative lt -100.5'));
         expect(filter, contains('veryLarge gt 9999999999999.99'));
         // Very small numbers may be formatted in scientific notation
-        expect(
-          filter,
-          anyOf(
-            contains('verySmall eq 0.00000001'),
-            contains('verySmall eq 1e-8'),
-          ),
-        );
+        expect(filter, anyOf(contains('verySmall eq 0.00000001'), contains('verySmall eq 1e-8')));
       });
     });
 
     group('DataGridRequestBuilder Integration Tests', () {
       test('should switch between different API standards', () {
         final filters = {
-          'status': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 'active',
-          ),
-          'age': const VooDataFilter(
-            operator: VooFilterOperator.greaterThan,
-            value: 25,
-          ),
+          'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
+          'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25),
         };
-        final sorts = [
-          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
-        ];
+        final sorts = [const VooColumnSort(field: 'name', direction: VooSortDirection.ascending)];
 
         // Test each API standard
         for (final standard in ApiFilterStandard.values) {
           final builder = DataGridRequestBuilder(standard: standard);
-          final result = builder.buildRequest(
-            page: 0,
-            pageSize: 20,
-            filters: filters,
-            sorts: sorts,
-          );
+          final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: sorts);
 
           expect(result, isNotNull);
           expect(result, isA<Map<String, dynamic>>());
@@ -399,23 +286,14 @@ void main() {
       });
 
       test('should maintain field prefix across all operations', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          fieldPrefix: 'Entity.Nested',
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, fieldPrefix: 'Entity.Nested');
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'field1': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'value1',
-            ),
-            'field2': const VooDataFilter(
-              operator: VooFilterOperator.contains,
-              value: 'search',
-            ),
+            'field1': const VooDataFilter(operator: VooFilterOperator.equals, value: 'value1'),
+            'field2': const VooDataFilter(operator: VooFilterOperator.contains, value: 'search'),
           },
           sorts: [
             const VooColumnSort(field: 'field1', direction: VooSortDirection.ascending),
@@ -438,10 +316,7 @@ void main() {
           apiEndpoint: 'https://api.example.com/odata/products',
           apiStandard: ApiFilterStandard.odata,
           fieldPrefix: 'Product',
-          headers: {
-            'Authorization': 'Bearer token123',
-            'X-API-Version': '2.0',
-          },
+          headers: {'Authorization': 'Bearer token123', 'X-API-Version': '2.0'},
         );
 
         expect(source.apiStandard, ApiFilterStandard.odata);
@@ -467,26 +342,13 @@ void main() {
               'id': 1,
               'name': 'Product 1',
               'price': 99.99,
-              'category': {
-                '@odata.id': 'Categories(1)',
-                'id': 1,
-                'name': 'Electronics',
-              },
+              'category': {'@odata.id': 'Categories(1)', 'id': 1, 'name': 'Electronics'},
             },
-            {
-              '@odata.id': 'Products(2)',
-              '@odata.editLink': 'Products(2)',
-              'id': 2,
-              'name': 'Product 2',
-              'price': 149.99,
-            },
+            {'@odata.id': 'Products(2)', '@odata.editLink': 'Products(2)', 'id': 2, 'name': 'Product 2', 'price': 149.99},
           ],
         };
 
-        final parsed = DataGridRequestBuilder.parseODataResponse(
-          json: response,
-          pageSize: 50,
-        );
+        final parsed = DataGridRequestBuilder.parseODataResponse(json: response, pageSize: 50);
 
         expect(parsed.rows.length, 2);
         expect(parsed.totalRows, 500);
@@ -516,22 +378,10 @@ void main() {
             'code': 'ValidationError',
             'message': 'One or more validation errors occurred.',
             'details': [
-              {
-                'code': 'RangeError',
-                'target': 'price',
-                'message': 'The field Price must be between 0 and 10000.',
-              },
-              {
-                'code': 'RequiredError',
-                'target': 'name',
-                'message': 'The Name field is required.',
-              },
+              {'code': 'RangeError', 'target': 'price', 'message': 'The field Price must be between 0 and 10000.'},
+              {'code': 'RequiredError', 'target': 'name', 'message': 'The Name field is required.'},
             ],
-            'innererror': {
-              'message': 'Inner error details',
-              'type': 'System.ArgumentException',
-              'stacktrace': 'at ProductController.Post()...',
-            },
+            'innererror': {'message': 'Inner error details', 'type': 'System.ArgumentException', 'stacktrace': 'at ProductController.Post()...'},
           },
         };
 
@@ -549,14 +399,9 @@ void main() {
       });
 
       test('should handle empty OData response', () {
-        final emptyResponse = {
-          '@odata.context': r'$metadata#Products',
-          'value': <Map<String, dynamic>>[],
-        };
+        final emptyResponse = {'@odata.context': r'$metadata#Products', 'value': <Map<String, dynamic>>[]};
 
-        final parsed = DataGridRequestBuilder.parseODataResponse(
-          json: emptyResponse,
-        );
+        final parsed = DataGridRequestBuilder.parseODataResponse(json: emptyResponse);
 
         expect(parsed.rows, isEmpty);
         expect(parsed.totalRows, 0);
@@ -572,19 +417,11 @@ void main() {
         // Create 100 filters
         final filters = <String, VooDataFilter>{};
         for (int i = 0; i < 100; i++) {
-          filters['field$i'] = VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 'value$i',
-          );
+          filters['field$i'] = VooDataFilter(operator: VooFilterOperator.equals, value: 'value$i');
         }
 
         final stopwatch = Stopwatch()..start();
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
         stopwatch.stop();
 
         expect(result, isNotNull);
@@ -609,12 +446,7 @@ void main() {
         ];
 
         for (final testCase in testCases) {
-          final result = builder.buildRequest(
-            page: testCase['page']! as int,
-            pageSize: testCase['pageSize']! as int,
-            filters: {},
-            sorts: [],
-          );
+          final result = builder.buildRequest(page: testCase['page']! as int, pageSize: testCase['pageSize']! as int, filters: {}, sorts: []);
 
           final params = result['params'] as Map<String, String>;
           expect(params[r'$skip'], testCase['expectedSkip']);
@@ -628,12 +460,7 @@ void main() {
         final result = DataGridRequestBuilder.buildRequestBody(
           page: 0,
           pageSize: 20,
-          filters: {
-            'status': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: 'active',
-            ),
-          },
+          filters: {'status': const VooDataFilter(operator: VooFilterOperator.equals, value: 'active')},
           sorts: [],
         );
 
@@ -653,9 +480,7 @@ void main() {
           'pageSize': 20,
         };
 
-        final response = DataGridRequestBuilder.parseResponse(
-          json: json,
-        );
+        final response = DataGridRequestBuilder.parseResponse(json: json);
 
         expect(response.rows.length, 2);
         expect(response.totalRows, 100);
@@ -674,13 +499,7 @@ void main() {
           'size': 10,
         };
 
-        final response = DataGridRequestBuilder.parseResponse(
-          json: json,
-          dataKey: 'items',
-          totalKey: 'count',
-          pageKey: 'currentPage',
-          pageSizeKey: 'size',
-        );
+        final response = DataGridRequestBuilder.parseResponse(json: json, dataKey: 'items', totalKey: 'count', pageKey: 'currentPage', pageSizeKey: 'size');
 
         expect(response.rows.length, 2);
         expect(response.totalRows, 50);

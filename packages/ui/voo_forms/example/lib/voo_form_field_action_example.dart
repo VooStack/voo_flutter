@@ -7,7 +7,8 @@ class VooFormFieldActionExample extends StatefulWidget {
   const VooFormFieldActionExample({super.key});
 
   @override
-  State<VooFormFieldActionExample> createState() => _VooFormFieldActionExampleState();
+  State<VooFormFieldActionExample> createState() =>
+      _VooFormFieldActionExampleState();
 }
 
 class _VooFormFieldActionExampleState extends State<VooFormFieldActionExample> {

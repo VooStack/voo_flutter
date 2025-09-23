@@ -2,13 +2,9 @@ import 'package:voo_forms/src/domain/entities/validation_rules/voo_validation_ru
 
 /// Validation rule for phone number format
 class PhoneValidation extends VooValidationRule<String> {
-  static final RegExp _phoneRegExp = RegExp(
-    r'^\+?[0-9]{10,15}$',
-  );
+  static final RegExp _phoneRegExp = RegExp(r'^\+?[0-9]{10,15}$');
 
-  const PhoneValidation({
-    super.errorMessage = 'Please enter a valid phone number',
-  });
+  const PhoneValidation({super.errorMessage = 'Please enter a valid phone number'});
 
   @override
   String? validate(String? value) {

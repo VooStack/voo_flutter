@@ -1,3 +1,6 @@
+## 0.1.3
+ - **FIX**: Dependencies incorrectly importing voo_core 
+
 ## 0.1.2
 
  - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.

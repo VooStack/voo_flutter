@@ -9,16 +9,16 @@ import 'package:voo_data_grid/src/utils/debouncer.dart';
 class NumberFilter<T> extends StatefulWidget {
   /// The column configuration
   final VooDataColumn<T> column;
-  
+
   /// The current filter value
   final VooDataFilter? currentFilter;
-  
+
   /// Callback when filter value changes
   final void Function(dynamic) onFilterChanged;
-  
+
   /// Callback to clear filter
   final void Function() onFilterCleared;
-  
+
   /// Text controllers map for maintaining state
   final Map<String, TextEditingController> textControllers;
 
@@ -43,10 +43,7 @@ class _NumberFilterState<T> extends State<NumberFilter<T>> {
   void initState() {
     super.initState();
     _debouncer = Debouncer();
-    _controller = widget.textControllers.putIfAbsent(
-      widget.column.field,
-      () => TextEditingController(text: widget.currentFilter?.value?.toString() ?? ''),
-    );
+    _controller = widget.textControllers.putIfAbsent(widget.column.field, () => TextEditingController(text: widget.currentFilter?.value?.toString() ?? ''));
   }
 
   @override
@@ -87,9 +84,7 @@ class _NumberFilterState<T> extends State<NumberFilter<T>> {
       ),
       style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp('[0-9.-]')),
-      ],
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9.-]'))],
       onChanged: _handleChange,
     );
   }

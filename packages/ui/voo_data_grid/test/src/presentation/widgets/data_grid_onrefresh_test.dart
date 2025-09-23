@@ -20,17 +20,8 @@ void main() {
       controller = VooDataGridController<Map<String, dynamic>>(
         dataSource: dataSource,
         columns: [
-          VooDataColumn<Map<String, dynamic>>(
-            field: 'name',
-            label: 'Name',
-            valueGetter: (row) => row['name'],
-          ),
-          VooDataColumn<Map<String, dynamic>>(
-            field: 'age',
-            label: 'Age',
-            dataType: VooDataColumnType.number,
-            valueGetter: (row) => row['age'],
-          ),
+          VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name', valueGetter: (row) => row['name']),
+          VooDataColumn<Map<String, dynamic>>(field: 'age', label: 'Age', dataType: VooDataColumnType.number, valueGetter: (row) => row['age']),
         ],
       );
     });
@@ -113,17 +104,8 @@ void main() {
                 selectedRows: {},
               ),
               columns: [
-                VooDataColumn<Map<String, dynamic>>(
-                  field: 'name',
-                  label: 'Name',
-                  valueGetter: (row) => row['name'],
-                ),
-                VooDataColumn<Map<String, dynamic>>(
-                  field: 'age',
-                  label: 'Age',
-                  dataType: VooDataColumnType.number,
-                  valueGetter: (row) => row['age'],
-                ),
+                VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name', valueGetter: (row) => row['name']),
+                VooDataColumn<Map<String, dynamic>>(field: 'age', label: 'Age', dataType: VooDataColumnType.number, valueGetter: (row) => row['age']),
               ],
               onRefresh: () {
                 refreshCalled = true;
@@ -150,10 +132,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-              onRefresh: () {},
-            ),
+            body: VooDataGrid<Map<String, dynamic>>(controller: controller, onRefresh: () {}),
           ),
         ),
       );
@@ -167,11 +146,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-              showToolbar: false,
-              onRefresh: () {},
-            ),
+            body: VooDataGrid<Map<String, dynamic>>(controller: controller, showToolbar: false, onRefresh: () {}),
           ),
         ),
       );

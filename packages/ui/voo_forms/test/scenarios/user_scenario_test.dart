@@ -37,11 +37,7 @@ void main() {
           body: VooForm(
             isReadOnly: readOnly,
             fields: [
-              VooDropdownField(
-                name: 'name',
-                options: ['Option 1', 'Option 2'],
-                initialValue: 'Option 1',
-              ),
+              VooDropdownField(name: 'name', options: ['Option 1', 'Option 2'], initialValue: 'Option 1'),
             ],
           ),
         ),

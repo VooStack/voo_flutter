@@ -9,22 +9,10 @@ class User {
   final String lastName;
   final String email;
 
-  User({
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-  });
+  User({required this.firstName, required this.lastName, required this.email});
 
-  User copyWith({
-    String? firstName,
-    String? lastName,
-    String? email,
-  }) =>
-      User(
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        email: email ?? this.email,
-      );
+  User copyWith({String? firstName, String? lastName, String? email}) =>
+      User(firstName: firstName ?? this.firstName, lastName: lastName ?? this.lastName, email: email ?? this.email);
 }
 
 // Simulate the user's Cubit state
@@ -48,15 +36,7 @@ class UserFormCubit extends Cubit<UserFormState> {
   void loadUser() {
     emit(UserFormLoading());
     // Simulate loading a user
-    emit(
-      UserFormLoaded(
-        User(
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john@example.com',
-        ),
-      ),
-    );
+    emit(UserFormLoaded(User(firstName: 'John', lastName: 'Doe', email: 'john@example.com')));
   }
 
   void updateUser(User user) {
@@ -73,10 +53,7 @@ class UserFormPage extends StatelessWidget {
   const UserFormPage({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-        create: (_) => UserFormCubit()..loadUser(),
-        child: const UserFormView(),
-      );
+  Widget build(BuildContext context) => BlocProvider(create: (_) => UserFormCubit()..loadUser(), child: const UserFormView());
 }
 
 class UserFormView extends StatefulWidget {
@@ -97,54 +74,50 @@ class _UserFormViewState extends State<UserFormView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: BlocBuilder<UserFormCubit, UserFormState>(
-          builder: (context, state) {
-            if (state is UserFormLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    body: BlocBuilder<UserFormCubit, UserFormState>(
+      builder: (context, state) {
+        if (state is UserFormLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            if (state is UserFormLoaded) {
-              // This is exactly how the user's code works - VooForm inside BlocBuilder
-              // with new initialValues on each state change
-              return VooForm(
-                controller: controller,
-                fields: [
-                  VooTextField(
-                    name: 'firstName',
-                    label: 'First Name',
-                    initialValue: state.user.firstName,
-                    validators: const [RequiredValidation(errorMessage: 'First name is required')],
-                  ),
-                  VooTextField(
-                    name: 'lastName',
-                    label: 'Last Name',
-                    initialValue: state.user.lastName,
-                    validators: const [RequiredValidation(errorMessage: 'Last name is required')],
-                  ),
-                  VooEmailField(
-                    name: 'email',
-                    label: 'Email',
-                    initialValue: state.user.email,
-                    validators: const [RequiredValidation(errorMessage: 'Email is required')],
-                  ),
-                ],
-              );
-            }
+        if (state is UserFormLoaded) {
+          // This is exactly how the user's code works - VooForm inside BlocBuilder
+          // with new initialValues on each state change
+          return VooForm(
+            controller: controller,
+            fields: [
+              VooTextField(
+                name: 'firstName',
+                label: 'First Name',
+                initialValue: state.user.firstName,
+                validators: const [RequiredValidation(errorMessage: 'First name is required')],
+              ),
+              VooTextField(
+                name: 'lastName',
+                label: 'Last Name',
+                initialValue: state.user.lastName,
+                validators: const [RequiredValidation(errorMessage: 'Last name is required')],
+              ),
+              VooEmailField(
+                name: 'email',
+                label: 'Email',
+                initialValue: state.user.email,
+                validators: const [RequiredValidation(errorMessage: 'Email is required')],
+              ),
+            ],
+          );
+        }
 
-            return const SizedBox.shrink();
-          },
-        ),
-      );
+        return const SizedBox.shrink();
+      },
+    ),
+  );
 }
 
 void main() {
   group('User Form BLoC Integration Tests', () {
     testWidgets('preserves user input when BLoC state changes with new initialValues', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage()));
 
       // Wait for initial load
       await tester.pumpAndSettle();
@@ -181,13 +154,7 @@ void main() {
       final cubit = context.read<UserFormCubit>();
 
       // Update with different initial values
-      cubit.updateUser(
-        User(
-          firstName: 'Updated',
-          lastName: 'User',
-          email: 'updated@example.com',
-        ),
-      );
+      cubit.updateUser(User(firstName: 'Updated', lastName: 'User', email: 'updated@example.com'));
       await tester.pumpAndSettle();
 
       // Critical test: User's typed value should persist, not be replaced by new initialValue
@@ -200,11 +167,7 @@ void main() {
     });
 
     testWidgets('allows continuous typing when clearing validation errors', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage()));
 
       await tester.pumpAndSettle();
 
@@ -240,11 +203,7 @@ void main() {
     });
 
     testWidgets('maintains focus and keyboard when validation triggers', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage()));
 
       await tester.pumpAndSettle();
 
@@ -279,11 +238,7 @@ void main() {
     });
 
     testWidgets('handles rapid BLoC state changes without losing user input', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage()));
 
       await tester.pumpAndSettle();
 
@@ -297,13 +252,7 @@ void main() {
 
       // Simulate rapid state changes (like from real-time updates)
       for (int i = 0; i < 5; i++) {
-        cubit.updateUser(
-          User(
-            firstName: 'Server$i',
-            lastName: 'Update$i',
-            email: 'server$i@example.com',
-          ),
-        );
+        cubit.updateUser(User(firstName: 'Server$i', lastName: 'Update$i', email: 'server$i@example.com'));
         await tester.pump(const Duration(milliseconds: 100));
       }
 
@@ -317,11 +266,7 @@ void main() {
     });
 
     testWidgets('preserves validation state across BLoC rebuilds', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage()));
 
       await tester.pumpAndSettle();
 
@@ -341,13 +286,7 @@ void main() {
       final context = tester.element(find.byType(UserFormView));
       final cubit = context.read<UserFormCubit>();
 
-      cubit.updateUser(
-        User(
-          firstName: 'NewFirst',
-          lastName: 'NewLast',
-          email: 'new@example.com',
-        ),
-      );
+      cubit.updateUser(User(firstName: 'NewFirst', lastName: 'NewLast', email: 'new@example.com'));
       await tester.pumpAndSettle();
 
       // Errors should still be visible (validation state preserved)

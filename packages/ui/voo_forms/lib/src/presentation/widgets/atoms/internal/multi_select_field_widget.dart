@@ -7,10 +7,7 @@ import 'package:voo_forms/voo_forms.dart';
 class MultiSelectFieldWidget<T> extends StatefulWidget {
   final VooMultiSelectField<T> field;
 
-  const MultiSelectFieldWidget({
-    super.key,
-    required this.field,
-  });
+  const MultiSelectFieldWidget({super.key, required this.field});
 
   @override
   State<MultiSelectFieldWidget<T>> createState() => MultiSelectFieldWidgetState<T>();
@@ -29,24 +26,21 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
   void initState() {
     super.initState();
     _selectedValues = List<T>.from(widget.field.initialValue ?? []);
-    _overlayController = VooDropdownOverlayController(
-      context: context,
-      layerLink: _layerLink,
-    );
+    _overlayController = VooDropdownOverlayController(context: context, layerLink: _layerLink);
   }
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
+
     if (formController != null) {
       // Get value from form controller if available
       final currentValue = formController.getValue(widget.field.name);
-      
+
       if (currentValue != null) {
         // Use the value from the controller
         setState(() {
@@ -197,11 +191,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
 
     // Default search filter using display text
     final displayBuilder = widget.field.displayTextBuilder ?? (item) => item.toString();
-    return widget.field.options
-        .where(
-          (item) => displayBuilder(item).toLowerCase().contains(_searchQuery.toLowerCase()),
-        )
-        .toList();
+    return widget.field.options.where((item) => displayBuilder(item).toLowerCase().contains(_searchQuery.toLowerCase())).toList();
   }
 
   String _getDisplayText(T item) {
@@ -215,9 +205,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
     if (_selectedValues.isEmpty) {
       return Text(
         widget.field.emptySelectionText ?? widget.field.placeholder ?? 'Select items...',
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).hintColor,
-            ),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).hintColor),
       );
     }
 
@@ -229,26 +217,19 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
       spacing: 8.0,
       runSpacing: 4.0,
       children: [
-        ...displayItems.map((item) => Chip(
-              label: Text(
-                _getDisplayText(item),
-                style: const TextStyle(fontSize: 12),
-              ),
-              deleteIcon: const Icon(Icons.close, size: 16),
-              onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context) 
-                  ? () => _handleSelectionChange(item) 
-                  : null,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              labelPadding: const EdgeInsets.only(left: 4),
-            ),
+        ...displayItems.map(
+          (item) => Chip(
+            label: Text(_getDisplayText(item), style: const TextStyle(fontSize: 12)),
+            deleteIcon: const Icon(Icons.close, size: 16),
+            onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context) ? () => _handleSelectionChange(item) : null,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            labelPadding: const EdgeInsets.only(left: 4),
+          ),
         ),
         if (remaining > 0)
           Chip(
-            label: Text(
-              '+$remaining more',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
+            label: Text('+$remaining more', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -273,10 +254,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
                 onPressed: _selectAll,
                 icon: const Icon(Icons.select_all, size: 16),
                 label: const Text('Select All', overflow: TextOverflow.ellipsis),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  minimumSize: const Size(0, 36),
-                ),
+                style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8), minimumSize: const Size(0, 36)),
               ),
             ),
           if (widget.field.showClearAll)
@@ -285,10 +263,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
                 onPressed: _clearAll,
                 icon: const Icon(Icons.clear_all, size: 16),
                 label: const Text('Clear All', overflow: TextOverflow.ellipsis),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  minimumSize: const Size(0, 36),
-                ),
+                style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8), minimumSize: const Size(0, 36)),
               ),
             ),
         ],
@@ -303,12 +278,7 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
     if (filteredOptions.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'No items found',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
+        child: Text('No items found', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
       );
     }
 
@@ -318,39 +288,27 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
       children: filteredOptions.map((item) {
         final isSelected = _selectedValues.contains(item);
         final displayText = _getDisplayText(item);
-        
+
         // Use custom option builder if provided
         if (widget.field.optionBuilder != null) {
-          return InkWell(
-            onTap: () => _handleSelectionChange(item),
-            child: widget.field.optionBuilder!(context, item, isSelected, displayText),
-          );
+          return InkWell(onTap: () => _handleSelectionChange(item), child: widget.field.optionBuilder!(context, item, isSelected, displayText));
         }
-        
+
         // Default option rendering with subtitle support
         final subtitle = widget.field.subtitleBuilder?.call(item);
-        
+
         return ListTile(
           dense: true,
-          leading: Checkbox(
-            value: isSelected,
-            onChanged: (_) => _handleSelectionChange(item),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          title: Text(
-            displayText,
-            style: TextStyle(
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-          subtitle: subtitle != null ? Text(
-            subtitle,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ) : null,
+          leading: Checkbox(value: isSelected, onChanged: (_) => _handleSelectionChange(item), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
+          title: Text(displayText, style: TextStyle(fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal)),
+          subtitle: subtitle != null
+              ? Text(
+                  subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )
+              : null,
           onTap: () => _handleSelectionChange(item),
           selected: isSelected,
           selectedTileColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
@@ -365,21 +323,16 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
 
     // If read-only, show VooReadOnlyField with comma-separated values
     if (effectiveReadOnly) {
-      final displayValue = _selectedValues.isEmpty 
-          ? ''
-          : _selectedValues.map(_getDisplayText).join(', ');
-      
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: widget.field.prefixIcon ?? widget.field.suffixIcon,
-      );
-      
+      final displayValue = _selectedValues.isEmpty ? '' : _selectedValues.map(_getDisplayText).join(', ');
+
+      Widget readOnlyContent = VooReadOnlyField(value: displayValue, icon: widget.field.prefixIcon ?? widget.field.suffixIcon);
+
       // Apply standard field building pattern
       readOnlyContent = widget.field.buildWithHelper(context, readOnlyContent);
       readOnlyContent = widget.field.buildWithError(context, readOnlyContent);
       readOnlyContent = widget.field.buildWithLabel(context, readOnlyContent);
       readOnlyContent = widget.field.buildWithActions(context, readOnlyContent);
-      
+
       return widget.field.buildFieldContainer(context, readOnlyContent);
     }
 
@@ -393,7 +346,9 @@ class MultiSelectFieldWidgetState<T> extends State<MultiSelectFieldWidget<T>> {
         onTap: widget.field.enabled && !effectiveReadOnly ? _toggleDropdown : null,
         borderRadius: BorderRadius.circular(12),
         child: InputDecorator(
-          decoration: widget.field.getInputDecoration(context).copyWith(
+          decoration: widget.field
+              .getInputDecoration(context)
+              .copyWith(
                 errorText: fieldError,
                 suffixIcon: AnimatedRotation(
                   turns: _overlayController.isOpen ? 0.5 : 0,

@@ -5,22 +5,10 @@ import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooPhoneField', () {
-    Widget buildTestWidget(Widget child) => MaterialApp(
-          home: Scaffold(
-            body: child,
-          ),
-        );
+    Widget buildTestWidget(Widget child) => MaterialApp(home: Scaffold(body: child));
 
     testWidgets('formats US phone numbers correctly', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US')));
 
       final textField = find.byType(TextFormField);
       expect(textField, findsOneWidget);
@@ -36,16 +24,7 @@ void main() {
     });
 
     testWidgets('shows country flag and dial code', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-            showDialCode: true,
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', showDialCode: true)));
 
       // Should show US flag
       expect(find.text('🇺🇸'), findsOneWidget);
@@ -55,14 +34,7 @@ void main() {
     });
 
     testWidgets('allows country selection when no default provided', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number')));
 
       // Should show dropdown arrow icon
       expect(find.byIcon(Icons.arrow_drop_down), findsOneWidget);
@@ -73,14 +45,7 @@ void main() {
     });
 
     testWidgets('opens country picker on tap', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number')));
 
       // Tap on the country selector
       await tester.tap(find.text('🇺🇸'));
@@ -98,15 +63,7 @@ void main() {
     testWidgets('changes country and updates formatting', (tester) async {
       CountryCode? selectedCountry;
 
-      await tester.pumpWidget(
-        buildTestWidget(
-          VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            onCountryChanged: (country) => selectedCountry = country,
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(VooPhoneField(name: 'phone', label: 'Phone Number', onCountryChanged: (country) => selectedCountry = country)));
 
       // Open country picker
       await tester.tap(find.text('🇺🇸'));
@@ -136,13 +93,7 @@ void main() {
 
       await tester.pumpWidget(
         buildTestWidget(
-          VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-            showDialCode: true,
-            onChanged: (value) => lastValue = value,
-          ),
+          VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', showDialCode: true, onChanged: (value) => lastValue = value),
         ),
       );
 
@@ -158,14 +109,7 @@ void main() {
 
     testWidgets('displays initial value correctly', (tester) async {
       await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-            initialValue: '(555) 123-4567',
-          ),
-        ),
+        buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', initialValue: '(555) 123-4567')),
       );
 
       // Should display the initial value
@@ -176,15 +120,7 @@ void main() {
 
     testWidgets('handles read-only mode', (tester) async {
       await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-            initialValue: '+1 (555) 123-4567',
-            readOnly: true,
-          ),
-        ),
+        buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', initialValue: '+1 (555) 123-4567', readOnly: true)),
       );
 
       // Should show read-only field
@@ -205,12 +141,7 @@ void main() {
           VooForm(
             controller: controller,
             fields: const [
-              VooPhoneField(
-                name: 'phone',
-                label: 'Phone Number',
-                defaultCountryCode: 'US',
-                validators: [RequiredValidation<String>()],
-              ),
+              VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', validators: [RequiredValidation<String>()]),
             ],
           ),
         ),
@@ -232,50 +163,39 @@ void main() {
       expect(find.text('This field is required'), findsNothing);
     });
 
-    testWidgets(
-      'formats different country numbers correctly',
-      (tester) async {
-        await tester.pumpWidget(
-          buildTestWidget(
-            const VooPhoneField(
-              name: 'phone',
-              label: 'Phone Number',
-            ),
-          ),
-        );
+    testWidgets('formats different country numbers correctly', (tester) async {
+      await tester.pumpWidget(buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number')));
 
-        // Select France
-        await tester.tap(find.text('🇺🇸'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('France'));
-        await tester.pumpAndSettle();
+      // Select France
+      await tester.tap(find.text('🇺🇸'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('France'));
+      await tester.pumpAndSettle();
 
-        // Type French phone number
-        final textField = find.byType(TextFormField);
-        await tester.enterText(textField, '612345678');
-        await tester.pump();
+      // Type French phone number
+      final textField = find.byType(TextFormField);
+      await tester.enterText(textField, '612345678');
+      await tester.pump();
 
-        // Should be formatted as French number
-        expect(find.text('6 12 34 56 78'), findsOneWidget);
+      // Should be formatted as French number
+      expect(find.text('6 12 34 56 78'), findsOneWidget);
 
-        // Select Japan
-        await tester.tap(find.text('🇫🇷'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Japan'));
-        await tester.pumpAndSettle();
+      // Select Japan
+      await tester.tap(find.text('🇫🇷'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Japan'));
+      await tester.pumpAndSettle();
 
-        // Text should be cleared when country changes
-        expect(find.text('6 12 34 56 78'), findsNothing);
+      // Text should be cleared when country changes
+      expect(find.text('6 12 34 56 78'), findsNothing);
 
-        // Type Japanese phone number
-        await tester.enterText(textField, '9012345678');
-        await tester.pump();
+      // Type Japanese phone number
+      await tester.enterText(textField, '9012345678');
+      await tester.pump();
 
-        // Should be formatted as Japanese number
-        expect(find.text('90-1234-5678'), findsOneWidget);
-      },
-      skip: true,
-    );
+      // Should be formatted as Japanese number
+      expect(find.text('90-1234-5678'), findsOneWidget);
+    }, skip: true);
 
     testWidgets('limits input to correct phone length', (tester) async {
       await tester.pumpWidget(
@@ -300,14 +220,7 @@ void main() {
 
     testWidgets('does not allow country selection when default is set and allowCountrySelection is false', (tester) async {
       await tester.pumpWidget(
-        buildTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-            allowCountrySelection: false,
-          ),
-        ),
+        buildTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', allowCountrySelection: false)),
       );
 
       // Should not show dropdown arrow
@@ -328,14 +241,7 @@ void main() {
         buildTestWidget(
           VooForm(
             controller: controller,
-            fields: const [
-              VooPhoneField(
-                name: 'phone',
-                label: 'Phone Number',
-                defaultCountryCode: 'US',
-                showDialCode: true,
-              ),
-            ],
+            fields: const [VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', showDialCode: true)],
           ),
         ),
       );

@@ -15,16 +15,16 @@ class VooCurrencyField extends VooFieldBase<double> {
   final VoidCallback? onEditingComplete;
   final ValueChanged<String>? onSubmitted;
   final bool autofocus;
-  
+
   /// Currency symbol to display (default: $)
   final String currencySymbol;
-  
+
   /// Currency code for locale-specific formatting
   final String? currencyCode;
-  
+
   /// Number of decimal places (default: 2)
   final int decimalDigits;
-  
+
   /// Locale for number formatting (default: en_US)
   final String locale;
 
@@ -86,16 +86,12 @@ class VooCurrencyField extends VooFieldBase<double> {
 
     return null;
   }
-  
+
   String _formatCurrencyValue(double value) {
-    final formatter = NumberFormat.currency(
-      locale: locale,
-      symbol: currencySymbol,
-      decimalDigits: decimalDigits,
-    );
+    final formatter = NumberFormat.currency(locale: locale, symbol: currencySymbol, decimalDigits: decimalDigits);
     return formatter.format(value);
   }
-  
+
   CurrencyFormatter _getCurrencyFormatter() {
     // Use predefined formatters for common currencies
     switch (currencySymbol.toLowerCase()) {
@@ -109,13 +105,7 @@ class VooCurrencyField extends VooFieldBase<double> {
       case 'jpy':
         return CurrencyFormatter.jpy();
       default:
-        final formatter = CurrencyFormatter(
-          symbol: currencySymbol,
-          decimalDigits: decimalDigits,
-          locale: locale,
-          minValue: min,
-          maxValue: max,
-        );
+        final formatter = CurrencyFormatter(symbol: currencySymbol, decimalDigits: decimalDigits, locale: locale, minValue: min, maxValue: max);
         // Set initial value if provided
         if (initialValue != null) {
           formatter.setInitialValue(initialValue!);
@@ -137,29 +127,23 @@ class VooCurrencyField extends VooFieldBase<double> {
       if (initialValue != null) {
         displayValue = _formatCurrencyValue(initialValue!);
       }
-      
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: _getCurrencyIcon(),
-      );
-      
+
+      Widget readOnlyContent = VooReadOnlyField(value: displayValue, icon: _getCurrencyIcon());
+
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
       readOnlyContent = buildWithError(context, readOnlyContent);
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
-      
+
       return buildFieldContainer(context, readOnlyContent);
     }
 
     // Use the stateful widget with a stable key based on field name
     // This ensures the widget survives parent rebuilds
-    return _VooCurrencyFieldStateful(
-      key: ValueKey('voo_currency_field_$name'),
-      field: this,
-    );
+    return _VooCurrencyFieldStateful(key: ValueKey('voo_currency_field_$name'), field: this);
   }
-  
+
   Widget _getCurrencyIcon() {
     IconData iconData;
     switch (currencySymbol.toLowerCase()) {
@@ -209,93 +193,82 @@ class VooCurrencyField extends VooFieldBase<double> {
   }
 
   @override
-  VooCurrencyField copyWith({
-    double? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooCurrencyField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        controller: controller,
-        focusNode: focusNode,
-        min: min,
-        max: max,
-        onEditingComplete: onEditingComplete,
-        onSubmitted: onSubmitted,
-        autofocus: autofocus,
-        currencySymbol: currencySymbol,
-        currencyCode: currencyCode,
-        decimalDigits: decimalDigits,
-        locale: locale,
-      );
+  VooCurrencyField copyWith({double? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooCurrencyField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    controller: controller,
+    focusNode: focusNode,
+    min: min,
+    max: max,
+    onEditingComplete: onEditingComplete,
+    onSubmitted: onSubmitted,
+    autofocus: autofocus,
+    currencySymbol: currencySymbol,
+    currencyCode: currencyCode,
+    decimalDigits: decimalDigits,
+    locale: locale,
+  );
 }
 
 /// Stateful widget to manage currency field state and prevent keyboard dismissal
 class _VooCurrencyFieldStateful extends StatefulWidget {
   final VooCurrencyField field;
 
-  const _VooCurrencyFieldStateful({
-    super.key,
-    required this.field,
-  });
+  const _VooCurrencyFieldStateful({super.key, required this.field});
 
   @override
   State<_VooCurrencyFieldStateful> createState() => _VooCurrencyFieldStatefulState();
 }
 
-class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> 
-    with AutomaticKeepAliveClientMixin {
+class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful> with AutomaticKeepAliveClientMixin {
   TextEditingController? _effectiveController;
   FocusNode? _effectiveFocusNode;
   VooFormController? _formController;
   CurrencyFormatter? _currencyFormatter;
-  
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     _formController = formScope?.controller;
-    
+
     // Initialize or update controllers
     _initializeControllers();
   }
-  
+
   @override
   void didUpdateWidget(_VooCurrencyFieldStateful oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // Preserve focus state during widget updates
     final hadFocus = _effectiveFocusNode?.hasFocus ?? false;
-    
+
     // If the field name changed, we need to get the correct controller
     if (oldWidget.field.name != widget.field.name) {
       _initializeControllers();
     }
-    
+
     // Restore focus if the field had it before the update
     if (hadFocus && _effectiveFocusNode != null && !_effectiveFocusNode!.hasFocus) {
       // Schedule focus restoration after the build
@@ -310,7 +283,7 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
   void _initializeControllers() {
     // Initialize currency formatter once (persistent across keystrokes)
     _currencyFormatter ??= widget.field._getCurrencyFormatter();
-    
+
     // Create controller if not provided (only create if we don't already have one)
     if (widget.field.controller != null) {
       _effectiveController = widget.field.controller;
@@ -321,7 +294,7 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
         _effectiveController!.text = widget.field._formatCurrencyValue(widget.field.initialValue!);
       }
     }
-    
+
     // Use provided focus node or get one from form controller if available
     _effectiveFocusNode = widget.field.focusNode;
     if (_effectiveFocusNode == null && _formController != null) {
@@ -341,27 +314,26 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
-    
+
     // Create wrapped onChanged that updates both controller and calls user callback
     void handleChanged(String text) {
       // Parse the formatted currency value back to double
       final value = CurrencyFormatter.parse(text, symbol: widget.field.currencySymbol);
-      
+
       // Update form controller if available
       if (_formController != null) {
         // Check if we should validate based on error display mode and current error state
         final hasError = _formController!.hasError(widget.field.name);
-        final shouldValidate = hasError || 
-            _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
-            _formController!.validationMode == FormValidationMode.onChange;
-        
+        final shouldValidate =
+            hasError || _formController!.errorDisplayMode == VooFormErrorDisplayMode.onTyping || _formController!.validationMode == FormValidationMode.onChange;
+
         _formController!.setValue(widget.field.name, value, validate: shouldValidate);
       }
-      
+
       // Call user's onChanged if provided
       widget.field.onChanged?.call(value);
     }
-    
+
     // Listen to form controller for error state changes only
     if (_formController != null) {
       return AnimatedBuilder(
@@ -369,25 +341,23 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
         builder: (context, child) {
           // Get the current error from the form controller
           final error = _formController!.getError(widget.field.name);
-          
+
           // Create decoration with error text included
-          final decoration = widget.field.getInputDecoration(context).copyWith(
-            prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
-            suffixIcon: widget.field.suffixIcon,
-            errorText: widget.field.showError != false ? error : null,
-          );
-          
+          final decoration = widget.field
+              .getInputDecoration(context)
+              .copyWith(
+                prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
+                suffixIcon: widget.field.suffixIcon,
+                errorText: widget.field.showError != false ? error : null,
+              );
+
           // Build the currency input widget with the error in the decoration
           final currencyInput = TextFormField(
             controller: _effectiveController,
             focusNode: _effectiveFocusNode,
-            keyboardType: const TextInputType.numberWithOptions(
-              decimal: true,
-            ),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             textInputAction: TextInputAction.done,
-            inputFormatters: [
-              _currencyFormatter!,
-            ],
+            inputFormatters: [_currencyFormatter!],
             onChanged: handleChanged,
             onEditingComplete: widget.field.onEditingComplete,
             onFieldSubmitted: widget.field.onSubmitted,
@@ -396,67 +366,47 @@ class _VooCurrencyFieldStatefulState extends State<_VooCurrencyFieldStateful>
             style: Theme.of(context).textTheme.bodyLarge,
             decoration: decoration, // Use decoration with error
           );
-          
+
           // Apply height constraints to the input widget
           final constrainedInput = widget.field.applyInputHeightConstraints(currencyInput);
-          
+
           // Build with label, helper, and actions (but NOT error - it's in the decoration now)
           return widget.field.buildFieldContainer(
             context,
-            widget.field.buildWithLabel(
-              context,
-              widget.field.buildWithHelper(
-                context,
-                widget.field.buildWithActions(
-                  context,
-                  constrainedInput,
-                ),
-              ),
-            ),
+            widget.field.buildWithLabel(context, widget.field.buildWithHelper(context, widget.field.buildWithActions(context, constrainedInput))),
           );
         },
       );
     }
-    
+
     // If no form controller, build without AnimatedBuilder
     final currencyInput = TextFormField(
       controller: _effectiveController,
       focusNode: _effectiveFocusNode,
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: true,
-      ),
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
       textInputAction: TextInputAction.done,
-      inputFormatters: [
-        _currencyFormatter!,
-      ],
+      inputFormatters: [_currencyFormatter!],
       onChanged: handleChanged,
       onEditingComplete: widget.field.onEditingComplete,
       onFieldSubmitted: widget.field.onSubmitted,
       enabled: widget.field.enabled,
       autofocus: widget.field.autofocus,
       style: Theme.of(context).textTheme.bodyLarge,
-      decoration: widget.field.getInputDecoration(context).copyWith(
-        prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
-        suffixIcon: widget.field.suffixIcon,
-        errorText: widget.field.showError != false ? widget.field.error : null,
-      ),
+      decoration: widget.field
+          .getInputDecoration(context)
+          .copyWith(
+            prefixIcon: widget.field.prefixIcon ?? widget.field._getCurrencyIcon(),
+            suffixIcon: widget.field.suffixIcon,
+            errorText: widget.field.showError != false ? widget.field.error : null,
+          ),
     );
-    
+
     // Apply height constraints to the input widget
     final constrainedInput = widget.field.applyInputHeightConstraints(currencyInput);
-    
+
     return widget.field.buildFieldContainer(
       context,
-      widget.field.buildWithLabel(
-        context,
-        widget.field.buildWithHelper(
-          context,
-          widget.field.buildWithActions(
-            context,
-            constrainedInput,
-          ),
-        ),
-      ),
+      widget.field.buildWithLabel(context, widget.field.buildWithHelper(context, widget.field.buildWithActions(context, constrainedInput))),
     );
   }
 }

@@ -5,41 +5,27 @@ class VooStatusBadge extends StatelessWidget {
   final int statusCode;
   final bool compact;
 
-  const VooStatusBadge({
-    super.key,
-    required this.statusCode,
-    this.compact = false,
-  });
+  const VooStatusBadge({super.key, required this.statusCode, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = VooColors.getHttpStatusColor(statusCode);
-    final textColor =
-        color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    final textColor = color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
     if (compact) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(4),
-        ),
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
         child: Text(
           statusCode.toString(),
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
+          style: theme.textTheme.labelSmall?.copyWith(color: textColor, fontWeight: FontWeight.bold),
         ),
       );
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         border: Border.all(color: color),
@@ -52,10 +38,7 @@ class VooStatusBadge extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             statusCode.toString(),
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
+            style: theme.textTheme.labelMedium?.copyWith(color: color, fontWeight: FontWeight.bold),
           ),
         ],
       ),

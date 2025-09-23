@@ -5,29 +5,23 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 class SortIndicator extends StatelessWidget {
   /// The current sort direction
   final VooSortDirection direction;
-  
+
   /// Color for the active sort icon
   final Color? activeColor;
-  
+
   /// Color for the inactive sort icon
   final Color? inactiveColor;
-  
+
   /// Size of the icon
   final double iconSize;
-  
-  const SortIndicator({
-    super.key,
-    required this.direction,
-    this.activeColor,
-    this.inactiveColor,
-    this.iconSize = 16,
-  });
+
+  const SortIndicator({super.key, required this.direction, this.activeColor, this.inactiveColor, this.iconSize = 16});
 
   @override
   Widget build(BuildContext context) {
     IconData icon;
     Color? color;
-    
+
     switch (direction) {
       case VooSortDirection.ascending:
         icon = Icons.arrow_upward;
@@ -42,11 +36,7 @@ class SortIndicator extends StatelessWidget {
         color = inactiveColor ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3);
         break;
     }
-    
-    return Icon(
-      icon,
-      size: iconSize,
-      color: color,
-    );
+
+    return Icon(icon, size: iconSize, color: color);
   }
 }

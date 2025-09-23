@@ -8,10 +8,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooBooleanField(
-              name: 'active',
-              label: 'Active',
-            ),
+            body: VooBooleanField(name: 'active', label: 'Active'),
           ),
         ),
       );
@@ -23,12 +20,7 @@ void main() {
     testWidgets('displays initial value', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooBooleanField(
-              name: 'active',
-              initialValue: true,
-            ),
-          ),
+          home: Scaffold(body: VooBooleanField(name: 'active', initialValue: true)),
         ),
       );
 
@@ -62,13 +54,7 @@ void main() {
     testWidgets('is disabled when enabled is false', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooBooleanField(
-              name: 'active',
-              enabled: false,
-              initialValue: true,
-            ),
-          ),
+          home: Scaffold(body: VooBooleanField(name: 'active', enabled: false, initialValue: true)),
         ),
       );
 
@@ -80,11 +66,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooBooleanField(
-              name: 'active',
-              label: 'Active',
-              helper: 'Enable to activate this feature',
-            ),
+            body: VooBooleanField(name: 'active', label: 'Active', helper: 'Enable to activate this feature'),
           ),
         ),
       );
@@ -95,11 +77,7 @@ void main() {
     testWidgets('defaults to false when no initial value', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooBooleanField(
-              name: 'active',
-            ),
-          ),
+          home: Scaffold(body: VooBooleanField(name: 'active')),
         ),
       );
 
@@ -113,10 +91,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooCheckboxField(
-              name: 'terms',
-              label: 'I agree to the terms',
-            ),
+            body: VooCheckboxField(name: 'terms', label: 'I agree to the terms'),
           ),
         ),
       );
@@ -129,11 +104,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooCheckboxField(
-              name: 'terms',
-              label: 'Terms and Conditions',
-              validators: [VooValidator.required()],
-            ),
+            body: VooCheckboxField(name: 'terms', label: 'Terms and Conditions', validators: [VooValidator.required()]),
           ),
         ),
       );
@@ -146,12 +117,7 @@ void main() {
     testWidgets('displays initial value', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooCheckboxField(
-              name: 'subscribe',
-              initialValue: true,
-            ),
-          ),
+          home: Scaffold(body: VooCheckboxField(name: 'subscribe', initialValue: true)),
         ),
       );
 
@@ -186,11 +152,7 @@ void main() {
       final field = VooCheckboxField(
         name: 'terms',
         label: 'Terms',
-        validators: [
-          CustomValidation<bool>(
-            validator: (bool? value) => value != true ? 'Terms must be accepted' : null,
-          ),
-        ],
+        validators: [CustomValidation<bool>(validator: (bool? value) => value != true ? 'Terms must be accepted' : null)],
       );
 
       expect(field.validate(false), 'Terms must be accepted');
@@ -201,13 +163,7 @@ void main() {
     testWidgets('is disabled when enabled is false', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooCheckboxField(
-              name: 'subscribe',
-              enabled: false,
-              initialValue: true,
-            ),
-          ),
+          home: Scaffold(body: VooCheckboxField(name: 'subscribe', enabled: false, initialValue: true)),
         ),
       );
 
@@ -219,10 +175,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooCheckboxField(
-              name: 'terms',
-              helper: 'Please read the terms carefully',
-            ),
+            body: VooCheckboxField(name: 'terms', helper: 'Please read the terms carefully'),
           ),
         ),
       );
@@ -233,11 +186,7 @@ void main() {
     testWidgets('defaults to false when no initial value', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooCheckboxField(
-              name: 'subscribe',
-            ),
-          ),
+          home: Scaffold(body: VooCheckboxField(name: 'subscribe')),
         ),
       );
 

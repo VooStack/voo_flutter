@@ -5,28 +5,28 @@ import 'package:intl/intl.dart';
 class DateFilterField extends StatelessWidget {
   /// The current date value
   final DateTime? value;
-  
+
   /// Callback when date changes
   final void Function(DateTime?) onChanged;
-  
+
   /// Hint text for the field
   final String? hintText;
-  
+
   /// Label for the field
   final String? label;
-  
+
   /// Date format for display
   final DateFormat? dateFormat;
-  
+
   /// First selectable date
   final DateTime? firstDate;
-  
+
   /// Last selectable date
   final DateTime? lastDate;
-  
+
   /// Whether to show clear button
   final bool showClearButton;
-  
+
   const DateFilterField({
     super.key,
     this.value,
@@ -44,7 +44,7 @@ class DateFilterField extends StatelessWidget {
     final format = dateFormat ?? DateFormat('yyyy-MM-dd');
     final displayValue = value != null ? format.format(value!) : null;
     final theme = Theme.of(context);
-    
+
     return Container(
       height: 32,
       decoration: BoxDecoration(
@@ -71,27 +71,16 @@ class DateFilterField extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
                   displayValue ?? hintText ?? 'Select date...',
-                  style: TextStyle(
-                    fontSize: 12, 
-                    color: displayValue != null 
-                        ? theme.textTheme.bodyMedium?.color 
-                        : theme.hintColor,
-                  ),
+                  style: TextStyle(fontSize: 12, color: displayValue != null ? theme.textTheme.bodyMedium?.color : theme.hintColor),
                 ),
               ),
             ),
             if (showClearButton && displayValue != null)
               InkWell(
                 onTap: () => onChanged(null),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4),
-                  child: Icon(Icons.clear, size: 16),
-                ),
+                child: const Padding(padding: EdgeInsets.symmetric(horizontal: 4), child: Icon(Icons.clear, size: 16)),
               ),
-            const Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: Icon(Icons.calendar_today, size: 16),
-            ),
+            const Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.calendar_today, size: 16)),
           ],
         ),
       ),

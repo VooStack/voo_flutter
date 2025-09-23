@@ -13,14 +13,8 @@ class VooDataGridStateController<T> extends ChangeNotifier {
   VooDataGridState<T> _state;
   Timer? _debounceTimer;
 
-  VooDataGridStateController({
-    required this.dataSource,
-    VooDataGridMode mode = VooDataGridMode.remote,
-    int pageSize = 20,
-  }) : _state = VooDataGridState<T>(
-          mode: mode,
-          pageSize: pageSize,
-        );
+  VooDataGridStateController({required this.dataSource, VooDataGridMode mode = VooDataGridMode.remote, int pageSize = 20})
+    : _state = VooDataGridState<T>(mode: mode, pageSize: pageSize);
 
   /// Get current state
   VooDataGridState<T> get state => _state;
@@ -46,7 +40,7 @@ class VooDataGridStateController<T> extends ChangeNotifier {
     // Schedule the async processing for next frame to avoid blocking
     Future.microtask(_applyLocalFiltersAndSorts);
   }
-  
+
   /// Set local data and wait for processing (for tests)
   Future<void> setLocalDataAsync(List<T> data) async {
     _state = _state.copyWith(allRows: data);
@@ -71,17 +65,8 @@ class VooDataGridStateController<T> extends ChangeNotifier {
           break;
 
         case VooDataGridMode.remote:
-          final response = await dataSource.fetchRemoteData(
-            page: _state.currentPage,
-            pageSize: _state.pageSize,
-            filters: _state.filters,
-            sorts: _state.sorts,
-          );
-          _state = _state.copyWith(
-            rows: response.rows,
-            totalRows: response.totalRows,
-            error: null,
-          );
+          final response = await dataSource.fetchRemoteData(page: _state.currentPage, pageSize: _state.pageSize, filters: _state.filters, sorts: _state.sorts);
+          _state = _state.copyWith(rows: response.rows, totalRows: response.totalRows, error: null);
           break;
 
         case VooDataGridMode.mixed:
@@ -99,11 +84,7 @@ class VooDataGridStateController<T> extends ChangeNotifier {
           break;
       }
     } catch (e) {
-      _state = _state.copyWith(
-        error: e.toString(),
-        rows: [],
-        totalRows: 0,
-      );
+      _state = _state.copyWith(error: e.toString(), rows: [], totalRows: 0);
     } finally {
       _state = _state.copyWith(isLoading: false);
       notifyListeners();
@@ -122,11 +103,8 @@ class VooDataGridStateController<T> extends ChangeNotifier {
     );
 
     final result = await IsolateComputeHelper.processDataInIsolate(computeData);
-    
-    _state = _state.copyWith(
-      rows: result.rows,
-      totalRows: result.totalRows,
-    );
+
+    _state = _state.copyWith(rows: result.rows, totalRows: result.totalRows);
   }
 
   /// Apply filter to a column

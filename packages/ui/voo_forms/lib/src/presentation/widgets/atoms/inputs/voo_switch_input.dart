@@ -25,7 +25,7 @@ class VooSwitchInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Switch(
       value: value,
       onChanged: enabled ? onChanged : null,

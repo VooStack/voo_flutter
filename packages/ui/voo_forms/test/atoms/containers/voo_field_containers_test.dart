@@ -23,12 +23,12 @@ void main() {
       expect(find.text('Field 1'), findsOneWidget);
       expect(find.text('Field 2'), findsOneWidget);
       expect(find.text('Field 3'), findsOneWidget);
-      
+
       // Verify vertical arrangement
       final field1 = tester.getTopLeft(find.text('Field 1'));
       final field2 = tester.getTopLeft(find.text('Field 2'));
       final field3 = tester.getTopLeft(find.text('Field 3'));
-      
+
       expect(field2.dy > field1.dy, isTrue);
       expect(field3.dy > field2.dy, isTrue);
     });
@@ -108,11 +108,11 @@ void main() {
 
       expect(find.text('Field 1'), findsOneWidget);
       expect(find.text('Field 2'), findsOneWidget);
-      
+
       // Verify horizontal arrangement
       final field1 = tester.getTopLeft(find.text('Field 1'));
       final field2 = tester.getTopLeft(find.text('Field 2'));
-      
+
       expect(field2.dx > field1.dx, isTrue);
       expect((field2.dy - field1.dy).abs() < 5, isTrue); // Same vertical position
     });

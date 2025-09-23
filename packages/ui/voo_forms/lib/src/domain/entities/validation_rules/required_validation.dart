@@ -2,9 +2,7 @@ import 'package:voo_forms/src/domain/entities/validation_rules/voo_validation_ru
 
 /// Validation rule for required fields
 class RequiredValidation<T> extends VooValidationRule<T> {
-  const RequiredValidation({
-    super.errorMessage = 'This field is required',
-  });
+  const RequiredValidation({super.errorMessage = 'This field is required'});
 
   @override
   String? validate(T? value) {

@@ -52,7 +52,7 @@ class VooFile extends Equatable {
   String? get fileExtension {
     if (extension != null) return extension;
     if (platformFile?.extension != null) return platformFile!.extension;
-    
+
     // Try to extract from name
     final fileName = name;
     final lastDot = fileName.lastIndexOf('.');
@@ -68,70 +68,29 @@ class VooFile extends Equatable {
     return size ?? 0;
   }
 
-  const VooFile({
-    this.url,
-    this.platformFile,
-    this.displayName,
-    this.size,
-    this.extension,
-    this.mimeType,
-  }) : assert(
-          url != null || platformFile != null,
-          'Either url or platformFile must be provided',
-        );
+  const VooFile({this.url, this.platformFile, this.displayName, this.size, this.extension, this.mimeType})
+    : assert(url != null || platformFile != null, 'Either url or platformFile must be provided');
 
   /// Create VooFile from URL (for existing files)
-  factory VooFile.fromUrl(
-    String url, {
-    String? displayName,
-    int? size,
-    String? extension,
-    String? mimeType,
-  }) =>
-      VooFile(
-        url: url,
-        displayName: displayName,
-        size: size,
-        extension: extension,
-        mimeType: mimeType,
-      );
+  factory VooFile.fromUrl(String url, {String? displayName, int? size, String? extension, String? mimeType}) =>
+      VooFile(url: url, displayName: displayName, size: size, extension: extension, mimeType: mimeType);
 
   /// Create VooFile from PlatformFile (for newly uploaded files)
-  factory VooFile.fromPlatformFile(PlatformFile file) => VooFile(
-        platformFile: file,
-        size: file.size,
-        extension: file.extension,
-      );
+  factory VooFile.fromPlatformFile(PlatformFile file) => VooFile(platformFile: file, size: file.size, extension: file.extension);
 
   /// Copy with new values
-  VooFile copyWith({
-    String? url,
-    PlatformFile? platformFile,
-    String? displayName,
-    int? size,
-    String? extension,
-    String? mimeType,
-  }) =>
-      VooFile(
-        url: url ?? this.url,
-        platformFile: platformFile ?? this.platformFile,
-        displayName: displayName ?? this.displayName,
-        size: size ?? this.size,
-        extension: extension ?? this.extension,
-        mimeType: mimeType ?? this.mimeType,
-      );
+  VooFile copyWith({String? url, PlatformFile? platformFile, String? displayName, int? size, String? extension, String? mimeType}) => VooFile(
+    url: url ?? this.url,
+    platformFile: platformFile ?? this.platformFile,
+    displayName: displayName ?? this.displayName,
+    size: size ?? this.size,
+    extension: extension ?? this.extension,
+    mimeType: mimeType ?? this.mimeType,
+  );
 
   @override
-  List<Object?> get props => [
-        url,
-        platformFile,
-        displayName,
-        size,
-        extension,
-        mimeType,
-      ];
+  List<Object?> get props => [url, platformFile, displayName, size, extension, mimeType];
 
   @override
-  String toString() =>
-      'VooFile(name: $name, isFromUrl: $isFromUrl, size: $fileSize)';
+  String toString() => 'VooFile(name: $name, isFromUrl: $isFromUrl, size: $fileSize)';
 }

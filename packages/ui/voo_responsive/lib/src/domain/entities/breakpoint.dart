@@ -8,47 +8,17 @@ class Breakpoint extends Equatable {
   final DeviceType deviceType;
   final Map<String, dynamic>? metadata;
 
-  const Breakpoint({
-    required this.name,
-    required this.minWidth,
-    this.maxWidth,
-    required this.deviceType,
-    this.metadata,
-  });
+  const Breakpoint({required this.name, required this.minWidth, this.maxWidth, required this.deviceType, this.metadata});
 
-  static const Breakpoint mobile = Breakpoint(
-    name: 'mobile',
-    minWidth: 0,
-    maxWidth: 599,
-    deviceType: DeviceType.mobile,
-  );
+  static const Breakpoint mobile = Breakpoint(name: 'mobile', minWidth: 0, maxWidth: 599, deviceType: DeviceType.mobile);
 
-  static const Breakpoint tablet = Breakpoint(
-    name: 'tablet',
-    minWidth: 600,
-    maxWidth: 1023,
-    deviceType: DeviceType.tablet,
-  );
+  static const Breakpoint tablet = Breakpoint(name: 'tablet', minWidth: 600, maxWidth: 1023, deviceType: DeviceType.tablet);
 
-  static const Breakpoint desktop = Breakpoint(
-    name: 'desktop',
-    minWidth: 1024,
-    maxWidth: 1439,
-    deviceType: DeviceType.desktop,
-  );
+  static const Breakpoint desktop = Breakpoint(name: 'desktop', minWidth: 1024, maxWidth: 1439, deviceType: DeviceType.desktop);
 
-  static const Breakpoint widescreen = Breakpoint(
-    name: 'widescreen',
-    minWidth: 1440,
-    deviceType: DeviceType.widescreen,
-  );
+  static const Breakpoint widescreen = Breakpoint(name: 'widescreen', minWidth: 1440, deviceType: DeviceType.widescreen);
 
-  static const List<Breakpoint> defaults = [
-    mobile,
-    tablet,
-    desktop,
-    widescreen,
-  ];
+  static const List<Breakpoint> defaults = [mobile, tablet, desktop, widescreen];
 
   bool matches(double width) {
     final minCheck = width >= minWidth;
@@ -56,13 +26,7 @@ class Breakpoint extends Equatable {
     return minCheck && maxCheck;
   }
 
-  Breakpoint copyWith({
-    String? name,
-    double? minWidth,
-    double? maxWidth,
-    DeviceType? deviceType,
-    Map<String, dynamic>? metadata,
-  }) {
+  Breakpoint copyWith({String? name, double? minWidth, double? maxWidth, DeviceType? deviceType, Map<String, dynamic>? metadata}) {
     return Breakpoint(
       name: name ?? this.name,
       minWidth: minWidth ?? this.minWidth,
@@ -73,11 +37,5 @@ class Breakpoint extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        name,
-        minWidth,
-        maxWidth,
-        deviceType,
-        metadata,
-      ];
+  List<Object?> get props => [name, minWidth, maxWidth, deviceType, metadata];
 }

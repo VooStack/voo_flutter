@@ -67,7 +67,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
   @override
   void initState() {
     super.initState();
-    
+
     columns = [
       const VooDataColumn(
         field: 'site_number',
@@ -211,7 +211,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
       data: testData,
       selectionMode: VooSelectionMode.multiple,
     );
-    
+
     gridController = VooDataGridController<Map<String, dynamic>>(
       dataSource: dataSource,
       columns: columns,
@@ -235,7 +235,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleSort(String field, VooSortDirection direction) {
     _logEvent('SORT: $field - ${direction.name}');
-    
+
     setState(() {
       if (direction == VooSortDirection.none) {
         gridState = gridState.copyWith(sorts: []);
@@ -244,11 +244,15 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
           sorts: [VooColumnSort(field: field, direction: direction)],
         );
       }
-      
+
       // Apply sorting to data
       final filteredData = _applyFiltering(testData, gridState.filters);
       final sortedData = _applySorting(filteredData, gridState.sorts);
-      final paginatedData = _applyPagination(sortedData, gridState.currentPage, gridState.pageSize);
+      final paginatedData = _applyPagination(
+        sortedData,
+        gridState.currentPage,
+        gridState.pageSize,
+      );
       gridState = gridState.copyWith(
         rows: paginatedData,
         totalRows: filteredData.length,
@@ -258,7 +262,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleFilter(String field, VooDataFilter? filter) {
     _logEvent('FILTER: $field - ${filter?.value ?? 'cleared'}');
-    
+
     setState(() {
       final newFilters = Map<String, VooDataFilter>.from(gridState.filters);
       if (filter == null) {
@@ -266,14 +270,14 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
       } else {
         newFilters[field] = filter;
       }
-      
+
       gridState = gridState.copyWith(filters: newFilters);
-      
+
       // Apply filtering and pagination
       final filteredData = _applyFiltering(testData, newFilters);
       final sortedData = _applySorting(filteredData, gridState.sorts);
       final paginatedData = _applyPagination(sortedData, 0, gridState.pageSize);
-      
+
       gridState = gridState.copyWith(
         rows: paginatedData,
         totalRows: filteredData.length,
@@ -284,27 +288,31 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handlePageChanged(int page) {
     _logEvent('PAGE: ${page + 1}');
-    
+
     setState(() {
       gridState = gridState.copyWith(currentPage: page);
-      
+
       // Apply pagination
       final filteredData = _applyFiltering(testData, gridState.filters);
       final sortedData = _applySorting(filteredData, gridState.sorts);
-      final paginatedData = _applyPagination(sortedData, page, gridState.pageSize);
-      
+      final paginatedData = _applyPagination(
+        sortedData,
+        page,
+        gridState.pageSize,
+      );
+
       gridState = gridState.copyWith(rows: paginatedData);
     });
   }
 
   void _handlePageSizeChanged(int pageSize) {
     _logEvent('PAGE SIZE: $pageSize');
-    
+
     setState(() {
       final filteredData = _applyFiltering(testData, gridState.filters);
       final sortedData = _applySorting(filteredData, gridState.sorts);
       final paginatedData = _applyPagination(sortedData, 0, pageSize);
-      
+
       gridState = gridState.copyWith(
         pageSize: pageSize,
         currentPage: 0,
@@ -315,9 +323,11 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleRowSelected(Map<String, dynamic> row) {
     _logEvent('ROW SELECTED: ${row['site_number']}');
-    
+
     setState(() {
-      final newSelection = Set<Map<String, dynamic>>.from(gridState.selectedRows);
+      final newSelection = Set<Map<String, dynamic>>.from(
+        gridState.selectedRows,
+      );
       newSelection.add(row);
       gridState = gridState.copyWith(selectedRows: newSelection);
     });
@@ -325,9 +335,11 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleRowDeselected(Map<String, dynamic> row) {
     _logEvent('ROW DESELECTED: ${row['site_number']}');
-    
+
     setState(() {
-      final newSelection = Set<Map<String, dynamic>>.from(gridState.selectedRows);
+      final newSelection = Set<Map<String, dynamic>>.from(
+        gridState.selectedRows,
+      );
       newSelection.remove(row);
       gridState = gridState.copyWith(selectedRows: newSelection);
     });
@@ -335,17 +347,15 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleSelectAll() {
     _logEvent('SELECT ALL');
-    
+
     setState(() {
-      gridState = gridState.copyWith(
-        selectedRows: gridState.rows.toSet(),
-      );
+      gridState = gridState.copyWith(selectedRows: gridState.rows.toSet());
     });
   }
 
   void _handleDeselectAll() {
     _logEvent('DESELECT ALL');
-    
+
     setState(() {
       gridState = gridState.copyWith(selectedRows: {});
     });
@@ -353,7 +363,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleToggleFilters() {
     _logEvent('TOGGLE FILTERS: ${!gridState.filtersVisible}');
-    
+
     setState(() {
       gridState = gridState.copyWith(filtersVisible: !gridState.filtersVisible);
     });
@@ -361,14 +371,14 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
 
   void _handleFiltersCleared() {
     _logEvent('FILTERS CLEARED');
-    
+
     setState(() {
       gridState = gridState.copyWith(filters: {});
-      
+
       // Re-apply data without filters
       final sortedData = _applySorting(testData, gridState.sorts);
       final paginatedData = _applyPagination(sortedData, 0, gridState.pageSize);
-      
+
       gridState = gridState.copyWith(
         rows: paginatedData,
         totalRows: testData.length,
@@ -382,18 +392,20 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
     Map<String, VooDataFilter> filters,
   ) {
     if (filters.isEmpty) return data;
-    
+
     return data.where((row) {
       for (final entry in filters.entries) {
         final field = entry.key;
         final filter = entry.value;
         final value = row[field];
-        
+
         if (filter.operator == VooFilterOperator.equals) {
           if (value != filter.value) return false;
         } else if (filter.operator == VooFilterOperator.contains) {
-          if (value == null || !value.toString().toLowerCase().contains(
-                filter.value.toString().toLowerCase())) {
+          if (value == null ||
+              !value.toString().toLowerCase().contains(
+                filter.value.toString().toLowerCase(),
+              )) {
             return false;
           }
         }
@@ -407,22 +419,24 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
     List<VooColumnSort> sorts,
   ) {
     if (sorts.isEmpty) return data;
-    
+
     final sortedData = List<Map<String, dynamic>>.from(data);
     for (final sort in sorts) {
       sortedData.sort((a, b) {
         final aValue = a[sort.field];
         final bValue = b[sort.field];
-        
+
         if (aValue == null && bValue == null) return 0;
         if (aValue == null) return 1;
         if (bValue == null) return -1;
-        
+
         final comparison = aValue.toString().compareTo(bValue.toString());
-        return sort.direction == VooSortDirection.ascending ? comparison : -comparison;
+        return sort.direction == VooSortDirection.ascending
+            ? comparison
+            : -comparison;
       });
     }
-    
+
     return sortedData;
   }
 
@@ -433,7 +447,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
   ) {
     final start = page * pageSize;
     final end = (start + pageSize).clamp(0, data.length);
-    
+
     if (start >= data.length) return [];
     return data.sublist(start, end);
   }
@@ -451,7 +465,9 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
             onChanged: (value) {
               setState(() {
                 useStatelessGrid = value;
-                _logEvent('SWITCHED TO: ${value ? 'Stateless' : 'Controller'} Grid');
+                _logEvent(
+                  'SWITCHED TO: ${value ? 'Stateless' : 'Controller'} Grid',
+                );
               });
             },
           ),
@@ -476,7 +492,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
               child: Column(
                 children: [
                   // Status Bar
-                  if (gridState.selectedRows.isNotEmpty || 
+                  if (gridState.selectedRows.isNotEmpty ||
                       gridState.filters.isNotEmpty ||
                       gridState.sorts.isNotEmpty)
                     Container(
@@ -491,13 +507,17 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
                         children: [
                           if (gridState.selectedRows.isNotEmpty)
                             Chip(
-                              label: Text('${gridState.selectedRows.length} selected'),
+                              label: Text(
+                                '${gridState.selectedRows.length} selected',
+                              ),
                               backgroundColor: Colors.green.shade100,
                             ),
                           const SizedBox(width: 8),
                           if (gridState.filters.isNotEmpty)
                             Chip(
-                              label: Text('${gridState.filters.length} filters'),
+                              label: Text(
+                                '${gridState.filters.length} filters',
+                              ),
                               backgroundColor: Colors.orange.shade100,
                             ),
                           const SizedBox(width: 8),
@@ -509,7 +529,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
                         ],
                       ),
                     ),
-                  
+
                   // The Grid
                   Expanded(
                     child: useStatelessGrid
@@ -530,7 +550,9 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
                               _logEvent('ROW TAP: ${row['site_number']}');
                             },
                             onRowDoubleTap: (row) {
-                              _logEvent('ROW DOUBLE TAP: ${row['site_number']}');
+                              _logEvent(
+                                'ROW DOUBLE TAP: ${row['site_number']}',
+                              );
                             },
                           )
                         : VooDataGrid<Map<String, dynamic>>(
@@ -539,7 +561,9 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
                               _logEvent('ROW TAP: ${row['site_number']}');
                             },
                             onRowDoubleTap: (row) {
-                              _logEvent('ROW DOUBLE TAP: ${row['site_number']}');
+                              _logEvent(
+                                'ROW DOUBLE TAP: ${row['site_number']}',
+                              );
                             },
                           ),
                   ),
@@ -547,15 +571,13 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
               ),
             ),
           ),
-          
+
           // Event Log Panel
           Container(
             width: 300,
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
-              border: Border(
-                left: BorderSide(color: Colors.grey.shade300),
-              ),
+              border: Border(left: BorderSide(color: Colors.grey.shade300)),
             ),
             child: Column(
               children: [
@@ -593,7 +615,7 @@ class _ComprehensiveTestPageState extends State<ComprehensiveTestPage> {
                       final parts = event.split(': ');
                       final timestamp = parts[0].split('T')[1].split('.')[0];
                       final message = parts.sublist(1).join(': ');
-                      
+
                       return Card(
                         margin: const EdgeInsets.only(bottom: 4),
                         child: Padding(

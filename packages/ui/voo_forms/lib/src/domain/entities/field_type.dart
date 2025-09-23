@@ -97,25 +97,16 @@ extension VooFieldTypeExtension on VooFieldType {
   }
 
   bool get isTextInput => [
-        VooFieldType.text,
-        VooFieldType.number,
-        VooFieldType.email,
-        VooFieldType.password,
-        VooFieldType.phone,
-        VooFieldType.url,
-        VooFieldType.multiline,
-      ].contains(this);
+    VooFieldType.text,
+    VooFieldType.number,
+    VooFieldType.email,
+    VooFieldType.password,
+    VooFieldType.phone,
+    VooFieldType.url,
+    VooFieldType.multiline,
+  ].contains(this);
 
-  bool get isSelectionInput => [
-        VooFieldType.dropdown,
-        VooFieldType.multiSelect,
-        VooFieldType.radio,
-        VooFieldType.checkbox,
-      ].contains(this);
+  bool get isSelectionInput => [VooFieldType.dropdown, VooFieldType.multiSelect, VooFieldType.radio, VooFieldType.checkbox].contains(this);
 
-  bool get isDateTimeInput => [
-        VooFieldType.date,
-        VooFieldType.time,
-        VooFieldType.dateTime,
-      ].contains(this);
+  bool get isDateTimeInput => [VooFieldType.date, VooFieldType.time, VooFieldType.dateTime].contains(this);
 }

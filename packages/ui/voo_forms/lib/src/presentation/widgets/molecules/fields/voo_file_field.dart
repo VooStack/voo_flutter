@@ -50,7 +50,7 @@ class VooFileField extends VooFieldBase<VooFile?> {
 
   /// Whether to show image preview for image files
   final bool showImagePreview;
-  
+
   /// Whether to enable drag and drop (web/desktop only)
   final bool enableDragDrop;
 
@@ -97,7 +97,7 @@ class VooFileField extends VooFieldBase<VooFile?> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -115,21 +115,17 @@ class VooFileField extends VooFieldBase<VooFile?> {
         }
         return null;
       },
-      builder: (FormFieldState<VooFile?> fieldState) =>
-          _VooFileFieldContent(
-            fieldState: fieldState,
-            field: this,
-          ),
+      builder: (FormFieldState<VooFile?> fieldState) => _VooFileFieldContent(fieldState: fieldState, field: this),
     );
 
     // Apply standard field building pattern
     fileField = buildWithHelper(context, fileField);
-    
+
     // Build with error if present
     if (fieldError != null && fieldError.isNotEmpty) {
       fileField = buildWithError(context, fileField);
     }
-    
+
     fileField = buildWithLabel(context, fileField);
     fileField = buildWithActions(context, fileField);
 
@@ -137,51 +133,44 @@ class VooFileField extends VooFieldBase<VooFile?> {
   }
 
   @override
-  VooFileField copyWith({
-    VooFile? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooFileField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        layout: layout ?? this.layout,
-        isHidden: isHidden,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-        allowedExtensions: allowedExtensions,
-        fileType: fileType,
-        allowMultiple: allowMultiple,
-        allowCompression: allowCompression,
-        showPreview: showPreview,
-        buttonText: buttonText,
-        buttonIcon: buttonIcon,
-        maxFileSize: maxFileSize,
-        fileSizeErrorMessage: fileSizeErrorMessage,
-        onFileSelected: onFileSelected,
-        onFileRemoved: onFileRemoved,
-        showImagePreview: showImagePreview,
-        enableDragDrop: enableDragDrop,
-      );
+  VooFileField copyWith({VooFile? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooFileField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    layout: layout ?? this.layout,
+    isHidden: isHidden,
+    minWidth: minWidth,
+    maxWidth: maxWidth,
+    minHeight: minHeight,
+    maxHeight: maxHeight,
+    allowedExtensions: allowedExtensions,
+    fileType: fileType,
+    allowMultiple: allowMultiple,
+    allowCompression: allowCompression,
+    showPreview: showPreview,
+    buttonText: buttonText,
+    buttonIcon: buttonIcon,
+    maxFileSize: maxFileSize,
+    fileSizeErrorMessage: fileSizeErrorMessage,
+    onFileSelected: onFileSelected,
+    onFileRemoved: onFileRemoved,
+    showImagePreview: showImagePreview,
+    enableDragDrop: enableDragDrop,
+  );
 }
 
 /// Internal stateful widget to handle drag and drop state
@@ -189,10 +178,7 @@ class _VooFileFieldContent extends StatefulWidget {
   final FormFieldState<VooFile?> fieldState;
   final VooFileField field;
 
-  const _VooFileFieldContent({
-    required this.fieldState,
-    required this.field,
-  });
+  const _VooFileFieldContent({required this.fieldState, required this.field});
 
   @override
   State<_VooFileFieldContent> createState() => _VooFileFieldContentState();
@@ -200,12 +186,9 @@ class _VooFileFieldContent extends StatefulWidget {
 
 class _VooFileFieldContentState extends State<_VooFileFieldContent> {
   bool _isDragging = false;
-  
-  bool get _canDragDrop => 
-      widget.field.enableDragDrop && 
-      (kIsWeb || !Platform.isAndroid && !Platform.isIOS) &&
-      widget.field.enabled &&
-      !widget.field.getEffectiveReadOnly(context);
+
+  bool get _canDragDrop =>
+      widget.field.enableDragDrop && (kIsWeb || !Platform.isAndroid && !Platform.isIOS) && widget.field.enabled && !widget.field.getEffectiveReadOnly(context);
 
   @override
   Widget build(BuildContext context) {
@@ -227,21 +210,11 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
             children: [
               TextButton.icon(
                 onPressed: () => _removeFile(context),
-                icon: Icon(
-                  Icons.delete_outline,
-                  color: theme.colorScheme.error,
-                ),
-                label: Text(
-                  'Remove',
-                  style: TextStyle(color: theme.colorScheme.error),
-                ),
+                icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+                label: Text('Remove', style: TextStyle(color: theme.colorScheme.error)),
               ),
               const SizedBox(width: 8),
-              TextButton.icon(
-                onPressed: () => _pickFile(context),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Change'),
-              ),
+              TextButton.icon(onPressed: () => _pickFile(context), icon: const Icon(Icons.refresh), label: const Text('Change')),
             ],
           ),
         ],
@@ -265,7 +238,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
           setState(() {
             _isDragging = false;
           });
-          
+
           if (details.files.isNotEmpty) {
             final file = details.files.first;
             await _handleDroppedFile(context, file);
@@ -278,17 +251,12 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
     return content;
   }
 
-  Widget _buildFileSelectionArea(
-    BuildContext context,
-    ThemeData theme,
-    bool hasFile,
-    bool effectiveReadOnly,
-  ) {
+  Widget _buildFileSelectionArea(BuildContext context, ThemeData theme, bool hasFile, bool effectiveReadOnly) {
     // Determine the border and background colors based on state
     Color borderColor;
     Color backgroundColor;
     double borderWidth = 1;
-    
+
     if (widget.field.error != null) {
       borderColor = theme.colorScheme.error;
       borderWidth = 2;
@@ -300,36 +268,27 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
     } else {
       borderColor = theme.colorScheme.outline.withValues(alpha: 0.3);
     }
-    
+
     if (_isDragging) {
       backgroundColor = theme.colorScheme.primary.withValues(alpha: 0.08);
     } else if (effectiveReadOnly) {
-      backgroundColor = theme.colorScheme.surfaceContainerHighest
-          .withValues(alpha: 0.3);
+      backgroundColor = theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
     } else {
       backgroundColor = theme.colorScheme.surface;
     }
 
     return InkWell(
-      onTap: widget.field.enabled && !effectiveReadOnly
-          ? () => _pickFile(context)
-          : null,
+      onTap: widget.field.enabled && !effectiveReadOnly ? () => _pickFile(context) : null,
       borderRadius: BorderRadius.circular(12),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: borderColor,
-            width: borderWidth,
-            style: _isDragging ? BorderStyle.solid : BorderStyle.solid,
-          ),
+          border: Border.all(color: borderColor, width: borderWidth, style: _isDragging ? BorderStyle.solid : BorderStyle.solid),
           borderRadius: BorderRadius.circular(12),
           color: backgroundColor,
         ),
-        child: hasFile
-            ? _buildFilePreview(context)
-            : _buildPlaceholder(context, effectiveReadOnly),
+        child: hasFile ? _buildFilePreview(context) : _buildPlaceholder(context, effectiveReadOnly),
       ),
     );
   }
@@ -340,19 +299,9 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
     if (effectiveReadOnly) {
       return Row(
         children: [
-          Icon(
-            Icons.attach_file,
-            size: 24,
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
+          Icon(Icons.attach_file, size: 24, color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
           const SizedBox(width: 12),
-          Text(
-            'No file attached',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color:
-                  theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
-          ),
+          Text('No file attached', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5))),
         ],
       );
     }
@@ -361,58 +310,33 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          _isDragging 
-              ? Icons.file_download 
-              : (widget.field.buttonIcon != null ? null : Icons.cloud_upload_outlined),
+          _isDragging ? Icons.file_download : (widget.field.buttonIcon != null ? null : Icons.cloud_upload_outlined),
           size: 48,
-          color: _isDragging 
-              ? theme.colorScheme.primary
-              : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+          color: _isDragging ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         ),
         if (widget.field.buttonIcon != null && !_isDragging) widget.field.buttonIcon!,
         const SizedBox(height: 8),
         Text(
-          _isDragging 
-              ? 'Drop file here'
-              : (widget.field.buttonText ?? 'Click to select file'),
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: _isDragging 
-                ? theme.colorScheme.primary
-                : theme.colorScheme.primary,
-            fontWeight: FontWeight.w500,
-          ),
+          _isDragging ? 'Drop file here' : (widget.field.buttonText ?? 'Click to select file'),
+          style: theme.textTheme.bodyLarge?.copyWith(color: _isDragging ? theme.colorScheme.primary : theme.colorScheme.primary, fontWeight: FontWeight.w500),
         ),
         if (!_isDragging && _canDragDrop) ...[
           const SizedBox(height: 4),
-          Text(
-            'or drag and drop',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color:
-                  theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            ),
-          ),
+          Text('or drag and drop', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6))),
         ],
         if (widget.field.placeholder != null && !_isDragging) ...[
           const SizedBox(height: 4),
           Text(
             widget.field.placeholder!,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color:
-                  theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            ),
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
             textAlign: TextAlign.center,
           ),
         ],
-        if (widget.field.allowedExtensions != null && 
-            widget.field.allowedExtensions!.isNotEmpty &&
-            !_isDragging) ...[
+        if (widget.field.allowedExtensions != null && widget.field.allowedExtensions!.isNotEmpty && !_isDragging) ...[
           const SizedBox(height: 4),
           Text(
             'Allowed: ${widget.field.allowedExtensions!.join(', ')}',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color:
-                  theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            ),
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
           ),
         ],
       ],
@@ -434,9 +358,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
             height: 56,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: theme.colorScheme.outline.withValues(alpha: 0.2),
-              ),
+              border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
             ),
             clipBehavior: Clip.antiAlias,
             child: Image.network(
@@ -444,10 +366,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => ColoredBox(
                 color: theme.colorScheme.primaryContainer,
-                child: Icon(
-                  Icons.broken_image,
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
+                child: Icon(Icons.broken_image, color: theme.colorScheme.onPrimaryContainer),
               ),
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
@@ -456,10 +375,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
                   child: Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                      value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
                     ),
                   ),
                 );
@@ -470,14 +386,8 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
           // Show file icon
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              _getFileIcon(file.fileExtension),
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
+            decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(8)),
+            child: Icon(_getFileIcon(file.fileExtension), color: theme.colorScheme.onPrimaryContainer),
           ),
         ],
         const SizedBox(width: 12),
@@ -490,43 +400,22 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      file.name,
-                      style: theme.textTheme.bodyLarge,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Text(file.name, style: theme.textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
                   if (file.isFromUrl) ...[
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'Uploaded',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onPrimaryContainer,
-                        ),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(12)),
+                      child: Text('Uploaded', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
                     ),
                   ],
                 ],
               ),
               const SizedBox(height: 2),
               Text(
-                file.fileSize > 0
-                    ? _formatFileSize(file.fileSize)
-                    : 'Unknown size',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color:
-                      theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                ),
+                file.fileSize > 0 ? _formatFileSize(file.fileSize) : 'Unknown size',
+                style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
               ),
             ],
           ),
@@ -551,14 +440,14 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
       final bytes = await droppedFile.readAsBytes();
       final fileName = droppedFile.name;
       final fileSize = bytes.length;
-      
+
       // Extract extension from filename
       String? extension;
       final lastDot = fileName.lastIndexOf('.');
       if (lastDot != -1 && lastDot < fileName.length - 1) {
         extension = fileName.substring(lastDot + 1).toLowerCase();
       }
-      
+
       // Check if extension is allowed
       if (widget.field.allowedExtensions != null &&
           widget.field.allowedExtensions!.isNotEmpty &&
@@ -567,53 +456,39 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'File type .$extension is not allowed. Allowed types: ${widget.field.allowedExtensions!.join(', ')}',
-              ),
+              content: Text('File type .$extension is not allowed. Allowed types: ${widget.field.allowedExtensions!.join(', ')}'),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
         return;
       }
-      
+
       // Check file size
       if (widget.field.maxFileSize != null && fileSize > widget.field.maxFileSize!) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                widget.field.fileSizeErrorMessage ?? 
-                'File size exceeds maximum allowed size of ${_formatFileSize(widget.field.maxFileSize!)}',
-              ),
+              content: Text(widget.field.fileSizeErrorMessage ?? 'File size exceeds maximum allowed size of ${_formatFileSize(widget.field.maxFileSize!)}'),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
         return;
       }
-      
+
       // Create PlatformFile from dropped file
-      final platformFile = PlatformFile(
-        name: fileName,
-        size: fileSize,
-        bytes: bytes,
-        path: droppedFile.path,
-      );
-      
+      final platformFile = PlatformFile(name: fileName, size: fileSize, bytes: bytes, path: droppedFile.path);
+
       // Create VooFile and update field
       final vooFile = VooFile.fromPlatformFile(platformFile);
       widget.fieldState.didChange(vooFile);
       widget.field.onFileSelected?.call(vooFile);
-      
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error processing dropped file: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error processing dropped file: $e'), backgroundColor: Theme.of(context).colorScheme.error));
       }
     }
   }
@@ -622,10 +497,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: widget.field.fileType,
-        allowedExtensions:
-            widget.field.fileType == FileType.custom 
-                ? widget.field.allowedExtensions 
-                : null,
+        allowedExtensions: widget.field.fileType == FileType.custom ? widget.field.allowedExtensions : null,
         allowCompression: widget.field.allowCompression,
       );
 
@@ -633,15 +505,11 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
         final platformFile = result.files.first;
 
         // Check file size if specified
-        if (widget.field.maxFileSize != null && 
-            platformFile.size > widget.field.maxFileSize!) {
+        if (widget.field.maxFileSize != null && platformFile.size > widget.field.maxFileSize!) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  widget.field.fileSizeErrorMessage ??
-                      'File size exceeds maximum allowed size of ${_formatFileSize(widget.field.maxFileSize!)}',
-                ),
+                content: Text(widget.field.fileSizeErrorMessage ?? 'File size exceeds maximum allowed size of ${_formatFileSize(widget.field.maxFileSize!)}'),
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),
             );
@@ -658,12 +526,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error selecting file: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error selecting file: $e'), backgroundColor: Theme.of(context).colorScheme.error));
       }
     }
   }
@@ -678,22 +541,14 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
     final uri = Uri.parse(url);
     try {
       if (await canLaunchUrl(uri)) {
-        await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-        );
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
         debugPrint('Could not launch URL: $url');
         if (context.mounted) {
           // Try to show error in a safe way
           final scaffoldMessenger = ScaffoldMessenger.maybeOf(context);
           if (scaffoldMessenger != null) {
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text('Could not open file: $url'),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
+            scaffoldMessenger.showSnackBar(SnackBar(content: Text('Could not open file: $url'), backgroundColor: Theme.of(context).colorScheme.error));
           }
         }
       }

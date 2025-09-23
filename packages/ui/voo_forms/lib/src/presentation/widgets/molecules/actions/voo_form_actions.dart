@@ -72,22 +72,10 @@ class VooFormActions extends StatelessWidget {
     return Row(
       mainAxisAlignment: alignment,
       children: [
-        if (showCancel)
-          VooFormButton(
-            text: cancelText,
-            onPressed: onCancel,
-            enabled: cancelEnabled && !isLoading,
-            type: cancelButtonType,
-          ),
+        if (showCancel) VooFormButton(text: cancelText, onPressed: onCancel, enabled: cancelEnabled && !isLoading, type: cancelButtonType),
         if (showCancel && showSubmit) SizedBox(width: spacing),
         if (showSubmit)
-          VooFormButton(
-            text: submitText,
-            onPressed: onSubmit,
-            enabled: submitEnabled && !isLoading,
-            type: submitButtonType,
-            showLoading: isLoading,
-          ),
+          VooFormButton(text: submitText, onPressed: onSubmit, enabled: submitEnabled && !isLoading, type: submitButtonType, showLoading: isLoading),
       ],
     );
   }

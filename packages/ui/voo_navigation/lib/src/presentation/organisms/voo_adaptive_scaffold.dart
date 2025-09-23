@@ -104,7 +104,8 @@ class VooAdaptiveScaffold extends StatefulWidget {
   State<VooAdaptiveScaffold> createState() => _VooAdaptiveScaffoldState();
 }
 
-class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTickerProviderStateMixin {
+class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
+    with SingleTickerProviderStateMixin {
   late String _selectedId;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -114,16 +115,27 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
   @override
   void initState() {
     super.initState();
-    _selectedId = widget.config.selectedId ?? widget.config.items.firstWhere((item) => item.isEnabled).id;
+    _selectedId =
+        widget.config.selectedId ??
+        widget.config.items.firstWhere((item) => item.isEnabled).id;
 
-    _animationController = AnimationController(duration: widget.config.animationDuration, vsync: this);
+    _animationController = AnimationController(
+      duration: widget.config.animationDuration,
+      vsync: this,
+    );
 
-    _fadeAnimation = CurvedAnimation(parent: _animationController, curve: widget.config.animationCurve);
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: widget.config.animationCurve,
+    );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _animationController, curve: widget.config.animationCurve));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0.0, 0.05), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: widget.config.animationCurve,
+          ),
+        );
 
     _animationController.forward();
   }
@@ -173,7 +185,9 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
         final navigationType = widget.config.getNavigationType(screenWidth);
 
         // Animate navigation type changes
-        if (_previousNavigationType != null && _previousNavigationType != navigationType && widget.config.enableAnimations) {
+        if (_previousNavigationType != null &&
+            _previousNavigationType != navigationType &&
+            widget.config.enableAnimations) {
           _animationController.forward(from: 0);
         }
         _previousNavigationType = navigationType;
@@ -184,9 +198,16 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     ),
   );
 
-  Widget _buildScaffold(BuildContext context, VooNavigationType navigationType, ScreenInfo screenInfo) {
+  Widget _buildScaffold(
+    BuildContext context,
+    VooNavigationType navigationType,
+    ScreenInfo screenInfo,
+  ) {
     final theme = Theme.of(context);
-    final effectiveBackgroundColor = widget.backgroundColor ?? widget.config.backgroundColor ?? theme.scaffoldBackgroundColor;
+    final effectiveBackgroundColor =
+        widget.backgroundColor ??
+        widget.config.backgroundColor ??
+        theme.scaffoldBackgroundColor;
 
     // Apply body padding based on navigation type and screen size
     final defaultPadding = _getDefaultBodyPadding(navigationType, screenInfo);
@@ -196,13 +217,20 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     Widget body = widget.body;
 
     // Wrap in card if requested
-    if (widget.useBodyCard && navigationType != VooNavigationType.bottomNavigation) {
+    if (widget.useBodyCard &&
+        navigationType != VooNavigationType.bottomNavigation) {
       final tokens = context.vooTokens;
-      final cardColor = widget.bodyCardColor ?? (theme.brightness == Brightness.light ? Colors.white : theme.colorScheme.surface);
+      final cardColor =
+          widget.bodyCardColor ??
+          (theme.brightness == Brightness.light
+              ? Colors.white
+              : theme.colorScheme.surface);
       final borderRadius = widget.bodyCardBorderRadius ?? tokens.radius.card;
 
       body = Material(
-        elevation: widget.bodyCardElevation == 0 ? tokens.elevation.card : widget.bodyCardElevation,
+        elevation: widget.bodyCardElevation == 0
+            ? tokens.elevation.card
+            : widget.bodyCardElevation,
         borderRadius: borderRadius,
         color: cardColor,
         child: ClipRRect(borderRadius: borderRadius, child: body),
@@ -225,19 +253,30 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     Widget scaffold;
     switch (navigationType) {
       case VooNavigationType.bottomNavigation:
-        scaffold = KeyedSubtree(key: const ValueKey('mobile_scaffold'), child: _buildMobileScaffold(context, body, effectiveBackgroundColor));
+        scaffold = KeyedSubtree(
+          key: const ValueKey('mobile_scaffold'),
+          child: _buildMobileScaffold(context, body, effectiveBackgroundColor),
+        );
         break;
 
       case VooNavigationType.navigationRail:
       case VooNavigationType.extendedNavigationRail:
         scaffold = KeyedSubtree(
           key: ValueKey('tablet_scaffold_$navigationType'),
-          child: _buildTabletScaffold(context, body, effectiveBackgroundColor, navigationType == VooNavigationType.extendedNavigationRail),
+          child: _buildTabletScaffold(
+            context,
+            body,
+            effectiveBackgroundColor,
+            navigationType == VooNavigationType.extendedNavigationRail,
+          ),
         );
         break;
 
       case VooNavigationType.navigationDrawer:
-        scaffold = KeyedSubtree(key: const ValueKey('desktop_scaffold'), child: _buildDesktopScaffold(context, body, effectiveBackgroundColor));
+        scaffold = KeyedSubtree(
+          key: const ValueKey('desktop_scaffold'),
+          child: _buildDesktopScaffold(context, body, effectiveBackgroundColor),
+        );
         break;
     }
 
@@ -245,14 +284,21 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     return AnimatedSwitcher(
       duration: widget.config.animationDuration,
       child: scaffold,
-      transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+      transitionBuilder: (child, animation) =>
+          FadeTransition(opacity: animation, child: child),
     );
   }
 
-  Widget _buildMobileScaffold(BuildContext context, Widget body, Color backgroundColor) => Scaffold(
+  Widget _buildMobileScaffold(
+    BuildContext context,
+    Widget body,
+    Color backgroundColor,
+  ) => Scaffold(
     key: widget.scaffoldKey,
     backgroundColor: backgroundColor,
-    appBar: widget.showAppBar ? (widget.appBar ?? const VooAdaptiveAppBar()) : null,
+    appBar: widget.showAppBar
+        ? (widget.appBar ?? const VooAdaptiveAppBar())
+        : null,
     body: body,
     bottomNavigationBar: VooAdaptiveBottomNavigation(
       config: widget.config,
@@ -260,8 +306,12 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
       onNavigationItemSelected: _onNavigationItemSelected,
       type: widget.config.bottomNavigationType,
     ),
-    floatingActionButton: widget.config.showFloatingActionButton ? widget.config.floatingActionButton : null,
-    floatingActionButtonLocation: widget.config.floatingActionButtonLocation ?? FloatingActionButtonLocation.centerDocked,
+    floatingActionButton: widget.config.showFloatingActionButton
+        ? widget.config.floatingActionButton
+        : null,
+    floatingActionButtonLocation:
+        widget.config.floatingActionButtonLocation ??
+        FloatingActionButtonLocation.centerDocked,
     floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
     endDrawer: widget.endDrawer,
     drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
@@ -275,10 +325,17 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     restorationId: widget.restorationId,
   );
 
-  Widget _buildTabletScaffold(BuildContext context, Widget body, Color backgroundColor, bool extended) => Scaffold(
+  Widget _buildTabletScaffold(
+    BuildContext context,
+    Widget body,
+    Color backgroundColor,
+    bool extended,
+  ) => Scaffold(
     key: widget.scaffoldKey,
     backgroundColor: backgroundColor,
-    appBar: widget.showAppBar ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false)) : null,
+    appBar: widget.showAppBar
+        ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
+        : null,
     body: Row(
       children: [
         ClipRect(
@@ -292,7 +349,9 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
         Expanded(child: body),
       ],
     ),
-    floatingActionButton: widget.config.showFloatingActionButton ? widget.config.floatingActionButton : null,
+    floatingActionButton: widget.config.showFloatingActionButton
+        ? widget.config.floatingActionButton
+        : null,
     floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
     floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
     endDrawer: widget.endDrawer,
@@ -307,19 +366,31 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     restorationId: widget.restorationId,
   );
 
-  Widget _buildDesktopScaffold(BuildContext context, Widget body, Color backgroundColor) => Scaffold(
+  Widget _buildDesktopScaffold(
+    BuildContext context,
+    Widget body,
+    Color backgroundColor,
+  ) => Scaffold(
     key: widget.scaffoldKey,
     backgroundColor: backgroundColor,
-    appBar: widget.showAppBar ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false)) : null,
+    appBar: widget.showAppBar
+        ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
+        : null,
     body: Row(
       children: [
         ClipRect(
-          child: VooAdaptiveNavigationDrawer(config: widget.config, selectedId: _selectedId, onNavigationItemSelected: _onNavigationItemSelected),
+          child: VooAdaptiveNavigationDrawer(
+            config: widget.config,
+            selectedId: _selectedId,
+            onNavigationItemSelected: _onNavigationItemSelected,
+          ),
         ),
         Expanded(child: body),
       ],
     ),
-    floatingActionButton: widget.config.showFloatingActionButton ? widget.config.floatingActionButton : null,
+    floatingActionButton: widget.config.showFloatingActionButton
+        ? widget.config.floatingActionButton
+        : null,
     floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
     floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
     endDrawer: widget.endDrawer,
@@ -335,7 +406,10 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
   );
 
   /// Get default body padding based on navigation type and screen size
-  EdgeInsetsGeometry _getDefaultBodyPadding(VooNavigationType navigationType, ScreenInfo screenInfo) {
+  EdgeInsetsGeometry _getDefaultBodyPadding(
+    VooNavigationType navigationType,
+    ScreenInfo screenInfo,
+  ) {
     final tokens = context.vooTokens;
     final spacing = tokens.spacing;
     final screenWidth = screenInfo.width;
@@ -362,12 +436,19 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
     switch (navigationType) {
       case VooNavigationType.bottomNavigation:
         // Mobile: padding on all sides
-        return EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding);
+        return EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: verticalPadding,
+        );
       case VooNavigationType.navigationRail:
       case VooNavigationType.extendedNavigationRail:
       case VooNavigationType.navigationDrawer:
         // Desktop/Tablet: no left padding since navigation is there
-        return EdgeInsets.only(right: horizontalPadding, top: verticalPadding, bottom: verticalPadding);
+        return EdgeInsets.only(
+          right: horizontalPadding,
+          top: verticalPadding,
+          bottom: verticalPadding,
+        );
     }
   }
 }

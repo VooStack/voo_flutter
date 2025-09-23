@@ -39,10 +39,13 @@ class VooAdaptiveNavigationDrawer extends StatefulWidget {
   });
 
   @override
-  State<VooAdaptiveNavigationDrawer> createState() => _VooAdaptiveNavigationDrawerState();
+  State<VooAdaptiveNavigationDrawer> createState() =>
+      _VooAdaptiveNavigationDrawerState();
 }
 
-class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawer> with TickerProviderStateMixin {
+class _VooAdaptiveNavigationDrawerState
+    extends State<VooAdaptiveNavigationDrawer>
+    with TickerProviderStateMixin {
   final Map<String, AnimationController> _expansionControllers = {};
   final Map<String, Animation<double>> _expansionAnimations = {};
   final Map<String, bool> _hoveredItems = {};
@@ -51,7 +54,8 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
   @override
   void initState() {
     super.initState();
-    _scrollController = widget.config.drawerScrollController ?? ScrollController();
+    _scrollController =
+        widget.config.drawerScrollController ?? ScrollController();
     _initializeExpansionAnimations();
   }
 
@@ -113,7 +117,8 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final effectiveWidth = widget.width ?? widget.config.navigationDrawerWidth ?? 300;
+    final effectiveWidth =
+        widget.width ?? widget.config.navigationDrawerWidth ?? 300;
 
     // Sophisticated sidebar design
     final isDark = theme.brightness == Brightness.dark;
@@ -157,7 +162,9 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
               // Footer
               if (widget.config.drawerFooter != null)
                 Padding(
-                  padding: EdgeInsets.all(context.vooSpacing.sm + context.vooSpacing.xs),
+                  padding: EdgeInsets.all(
+                    context.vooSpacing.sm + context.vooSpacing.xs,
+                  ),
                   child: widget.config.drawerFooter!,
                 ),
             ],
@@ -202,8 +209,10 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (widget.config.appBarTitle != null && widget.config.appBarTitle is Text)
-                          ? ((widget.config.appBarTitle! as Text).data ?? 'Navigation')
+                      (widget.config.appBarTitle != null &&
+                              widget.config.appBarTitle is Text)
+                          ? ((widget.config.appBarTitle! as Text).data ??
+                                'Navigation')
                           : 'Navigation',
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white,
@@ -280,7 +289,9 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                 vertical: context.vooSpacing.sm + context.vooSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: _hoveredItems[item.id] == true ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
+                color: _hoveredItems[item.id] == true
+                    ? Colors.white.withValues(alpha: 0.05)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(context.vooRadius.lg),
               ),
               child: Row(
@@ -290,7 +301,9 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                     color: Colors.white,
                     size: 20,
                   ),
-                  SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
+                  SizedBox(
+                    width: context.vooSpacing.sm + context.vooSpacing.xs,
+                  ),
                   Expanded(
                     child: Text(
                       item.label,
@@ -320,17 +333,16 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
           SizeTransition(
             sizeFactor: _expansionAnimations[item.id]!,
             child: Column(
-              children: item.children!.map((child) => _buildChildNavigationItem(child, context)).toList(),
+              children: item.children!
+                  .map((child) => _buildChildNavigationItem(child, context))
+                  .toList(),
             ),
           ),
       ],
     );
   }
 
-  Widget _buildNavigationItem(
-    VooNavigationItem item,
-    BuildContext context,
-  ) {
+  Widget _buildNavigationItem(VooNavigationItem item, BuildContext context) {
     final theme = Theme.of(context);
     final isSelected = item.id == widget.selectedId;
     final isHovered = _hoveredItems[item.id] == true;
@@ -353,8 +365,8 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
               color: isSelected
                   ? theme.colorScheme.primary.withValues(alpha: 0.12)
                   : isHovered
-                      ? Colors.white.withValues(alpha: 0.05)
-                      : Colors.transparent,
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.transparent,
               border: isSelected
                   ? Border.all(
                       color: theme.colorScheme.primary.withValues(alpha: 0.2),
@@ -380,7 +392,9 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                   child: Icon(
                     isSelected ? item.effectiveSelectedIcon : item.icon,
                     key: ValueKey(isSelected),
-                    color: isSelected ? theme.colorScheme.primary : Colors.white.withValues(alpha: 0.8),
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : Colors.white.withValues(alpha: 0.8),
                     size: 20,
                   ),
                 ),
@@ -392,8 +406,12 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                   child: Text(
                     item.label,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isSelected ? theme.colorScheme.primary : Colors.white.withValues(alpha: 0.85),
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      color: isSelected
+                          ? theme.colorScheme.primary
+                          : Colors.white.withValues(alpha: 0.85),
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                       fontSize: 14,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -448,8 +466,8 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
               color: isSelected
                   ? Colors.white.withValues(alpha: 0.12)
                   : isHovered
-                      ? Colors.white.withValues(alpha: 0.06)
-                      : Colors.transparent,
+                  ? Colors.white.withValues(alpha: 0.06)
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(context.vooRadius.md),
             ),
             child: Row(
@@ -459,7 +477,10 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                   width: 6,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: isSelected ? widget.config.selectedItemColor ?? theme.colorScheme.primary : Colors.white.withValues(alpha: 0.6),
+                    color: isSelected
+                        ? widget.config.selectedItemColor ??
+                              theme.colorScheme.primary
+                        : Colors.white.withValues(alpha: 0.6),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -471,8 +492,13 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                   child: Text(
                     item.label,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isSelected ? widget.config.selectedItemColor ?? theme.colorScheme.primary : Colors.white.withValues(alpha: 0.9),
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      color: isSelected
+                          ? widget.config.selectedItemColor ??
+                                theme.colorScheme.primary
+                          : Colors.white.withValues(alpha: 0.9),
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -518,13 +544,17 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
         vertical: context.vooSpacing.xxs,
       ),
       decoration: BoxDecoration(
-        color: isSelected ? (item.badgeColor ?? theme.colorScheme.primary) : Colors.white.withValues(alpha: 0.2),
+        color: isSelected
+            ? (item.badgeColor ?? theme.colorScheme.primary)
+            : Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         badgeText,
         style: theme.textTheme.labelSmall?.copyWith(
-          color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.9),
+          color: isSelected
+              ? Colors.white
+              : Colors.white.withValues(alpha: 0.9),
           fontWeight: FontWeight.w600,
         ),
       ),

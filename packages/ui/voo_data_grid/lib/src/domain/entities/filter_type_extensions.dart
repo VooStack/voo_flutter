@@ -7,41 +7,15 @@ extension FilterTypeExtensions on FilterType {
   List<String> get operators {
     switch (this) {
       case FilterType.string:
-        return [
-          'Equals',
-          'NotEquals',
-          'Contains',
-          'NotContains',
-          'StartsWith',
-          'EndsWith',
-        ];
+        return ['Equals', 'NotEquals', 'Contains', 'NotContains', 'StartsWith', 'EndsWith'];
       case FilterType.int:
       case FilterType.decimal:
-        return [
-          'Equals',
-          'NotEquals',
-          'GreaterThan',
-          'GreaterThanOrEqual',
-          'LessThan',
-          'LessThanOrEqual',
-          'Between',
-        ];
+        return ['Equals', 'NotEquals', 'GreaterThan', 'GreaterThanOrEqual', 'LessThan', 'LessThanOrEqual', 'Between'];
       case FilterType.date:
       case FilterType.dateTime:
-        return [
-          'Equals',
-          'NotEquals',
-          'After',
-          'AfterOrEqual',
-          'Before',
-          'BeforeOrEqual',
-          'Between',
-        ];
+        return ['Equals', 'NotEquals', 'After', 'AfterOrEqual', 'Before', 'BeforeOrEqual', 'Between'];
       case FilterType.bool:
-        return [
-          'Equals',
-          'NotEquals',
-        ];
+        return ['Equals', 'NotEquals'];
     }
   }
 
@@ -194,18 +168,7 @@ extension FilterTypeExtensions on FilterType {
 }
 
 /// Input types for filter widgets
-enum FilterInputType {
-  text,
-  number,
-  decimal,
-  datePicker,
-  dateTimePicker,
-  checkbox,
-  dropdown,
-  multiSelect,
-  range,
-  slider,
-}
+enum FilterInputType { text, number, decimal, datePicker, dateTimePicker, checkbox, dropdown, multiSelect, range, slider }
 
 /// Extension methods for filter operators
 extension FilterOperatorExtensions on String {

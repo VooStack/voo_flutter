@@ -13,25 +13,9 @@ class UserFormState {
   final List<String> tags;
   final bool isLoading;
 
-  UserFormState({
-    this.firstName = '',
-    this.lastName = '',
-    this.email = '',
-    this.isActive = false,
-    this.role,
-    this.tags = const [],
-    this.isLoading = false,
-  });
+  UserFormState({this.firstName = '', this.lastName = '', this.email = '', this.isActive = false, this.role, this.tags = const [], this.isLoading = false});
 
-  UserFormState copyWith({
-    String? firstName,
-    String? lastName,
-    String? email,
-    bool? isActive,
-    String? role,
-    List<String>? tags,
-    bool? isLoading,
-  }) =>
+  UserFormState copyWith({String? firstName, String? lastName, String? email, bool? isActive, String? role, List<String>? tags, bool? isLoading}) =>
       UserFormState(
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
@@ -201,13 +185,7 @@ void main() {
               builder: (context, state) => Scaffold(
                 body: VooForm(
                   controller: formController,
-                  fields: [
-                    VooTextField(
-                      name: 'first_name',
-                      label: 'First Name',
-                      initialValue: state.firstName,
-                    ),
-                  ],
+                  fields: [VooTextField(name: 'first_name', label: 'First Name', initialValue: state.firstName)],
                 ),
               ),
             ),
@@ -247,16 +225,8 @@ void main() {
                   controller: formController,
                   isLoading: state.isLoading,
                   fields: [
-                    VooTextField(
-                      name: 'first_name',
-                      label: 'First Name',
-                      initialValue: state.firstName,
-                    ),
-                    VooTextField(
-                      name: 'email',
-                      label: 'Email',
-                      initialValue: state.email,
-                    ),
+                    VooTextField(name: 'first_name', label: 'First Name', initialValue: state.firstName),
+                    VooTextField(name: 'email', label: 'Email', initialValue: state.email),
                   ],
                 ),
               ),
@@ -287,13 +257,7 @@ void main() {
                   body: VooForm(
                     controller: formController,
                     isLoading: state.isLoading,
-                    fields: [
-                      VooTextField(
-                        name: 'first_name',
-                        label: 'First Name',
-                        initialValue: state.firstName,
-                      ),
-                    ],
+                    fields: [VooTextField(name: 'first_name', label: 'First Name', initialValue: state.firstName)],
                   ),
                 );
               },
@@ -324,13 +288,7 @@ void main() {
               builder: (context, state) => Scaffold(
                 body: VooForm(
                   controller: formController,
-                  fields: [
-                    VooTextField(
-                      name: 'first_name',
-                      label: 'First Name',
-                      initialValue: state.firstName,
-                    ),
-                  ],
+                  fields: [VooTextField(name: 'first_name', label: 'First Name', initialValue: state.firstName)],
                 ),
               ),
             ),
@@ -365,21 +323,12 @@ void main() {
             builder: (context, setState) => Scaffold(
               body: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () => setState(() => isReadOnly = !isReadOnly),
-                    child: const Text('Toggle ReadOnly'),
-                  ),
+                  ElevatedButton(onPressed: () => setState(() => isReadOnly = !isReadOnly), child: const Text('Toggle ReadOnly')),
                   Expanded(
                     child: VooForm(
                       controller: formController,
                       isReadOnly: isReadOnly,
-                      fields: const [
-                        VooTextField(
-                          name: 'first_name',
-                          label: 'First Name',
-                          initialValue: 'John',
-                        ),
-                      ],
+                      fields: const [VooTextField(name: 'first_name', label: 'First Name', initialValue: 'John')],
                     ),
                   ),
                 ],

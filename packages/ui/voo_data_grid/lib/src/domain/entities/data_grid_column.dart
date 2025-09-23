@@ -6,7 +6,7 @@ import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_widget_type.dart';
 
 /// Represents a column in the VooDataGrid
-/// 
+///
 /// Generic type parameter T represents the row data type.
 /// Use dynamic if working with untyped Map data.
 class VooDataColumn<T> {
@@ -22,7 +22,7 @@ class VooDataColumn<T> {
   /// Minimum width for the column
   final double minWidth;
 
-  /// Maximum width for the column  
+  /// Maximum width for the column
   final double? maxWidth;
 
   /// Whether this column is sortable
@@ -61,12 +61,7 @@ class VooDataColumn<T> {
   final VooFilterWidgetType? filterWidgetType;
 
   /// Custom filter widget builder
-  final Widget Function(
-    BuildContext context,
-    VooDataColumn<T> column,
-    dynamic currentValue,
-    void Function(dynamic value) onChanged,
-  )? filterBuilder;
+  final Widget Function(BuildContext context, VooDataColumn<T> column, dynamic currentValue, void Function(dynamic value) onChanged)? filterBuilder;
 
   /// Custom filter options for select/multiselect columns
   final List<VooFilterOption>? filterOptions;
@@ -123,7 +118,7 @@ class VooDataColumn<T> {
   /// Get the effective filter widget type
   VooFilterWidgetType get effectiveFilterWidgetType {
     if (filterWidgetType != null) return filterWidgetType!;
-    
+
     switch (dataType) {
       case VooDataColumnType.text:
         return VooFilterWidgetType.textField;
@@ -145,7 +140,7 @@ class VooDataColumn<T> {
   /// Get default filter operator for this column type
   VooFilterOperator get effectiveDefaultFilterOperator {
     if (defaultFilterOperator != null) return defaultFilterOperator!;
-    
+
     switch (dataType) {
       case VooDataColumnType.text:
         return VooFilterOperator.contains;
@@ -165,7 +160,7 @@ class VooDataColumn<T> {
   /// Get allowed filter operators for this column type
   List<VooFilterOperator> get effectiveAllowedFilterOperators {
     if (allowedFilterOperators != null) return allowedFilterOperators!;
-    
+
     switch (dataType) {
       case VooDataColumnType.text:
         return [
@@ -192,26 +187,11 @@ class VooDataColumn<T> {
           VooFilterOperator.isNotNull,
         ];
       case VooDataColumnType.boolean:
-        return [
-          VooFilterOperator.equals,
-          VooFilterOperator.notEquals,
-          VooFilterOperator.isNull,
-          VooFilterOperator.isNotNull,
-        ];
+        return [VooFilterOperator.equals, VooFilterOperator.notEquals, VooFilterOperator.isNull, VooFilterOperator.isNotNull];
       case VooDataColumnType.select:
-        return [
-          VooFilterOperator.equals,
-          VooFilterOperator.notEquals,
-          VooFilterOperator.isNull,
-          VooFilterOperator.isNotNull,
-        ];
+        return [VooFilterOperator.equals, VooFilterOperator.notEquals, VooFilterOperator.isNull, VooFilterOperator.isNotNull];
       case VooDataColumnType.multiSelect:
-        return [
-          VooFilterOperator.inList,
-          VooFilterOperator.notInList,
-          VooFilterOperator.isNull,
-          VooFilterOperator.isNotNull,
-        ];
+        return [VooFilterOperator.inList, VooFilterOperator.notInList, VooFilterOperator.isNull, VooFilterOperator.isNotNull];
       case VooDataColumnType.custom:
         return VooFilterOperator.values;
     }
@@ -235,12 +215,7 @@ class VooDataColumn<T> {
     bool? frozen,
     VooDataColumnType? dataType,
     VooFilterWidgetType? filterWidgetType,
-    Widget Function(
-      BuildContext context,
-      VooDataColumn<T> column,
-      dynamic currentValue,
-      void Function(dynamic value) onChanged,
-    )? filterBuilder,
+    Widget Function(BuildContext context, VooDataColumn<T> column, dynamic currentValue, void Function(dynamic value) onChanged)? filterBuilder,
     List<VooFilterOption>? filterOptions,
     String? filterHint,
     VooFilterOperator? defaultFilterOperator,
@@ -250,30 +225,30 @@ class VooDataColumn<T> {
     bool? excludeFromApi,
     void Function(BuildContext context, T row, dynamic value)? onCellTap,
   }) => VooDataColumn<T>(
-      field: field ?? this.field,
-      label: label ?? this.label,
-      width: width ?? this.width,
-      minWidth: minWidth ?? this.minWidth,
-      maxWidth: maxWidth ?? this.maxWidth,
-      sortable: sortable ?? this.sortable,
-      filterable: filterable ?? this.filterable,
-      textAlign: textAlign ?? this.textAlign,
-      headerBuilder: headerBuilder ?? this.headerBuilder,
-      cellBuilder: cellBuilder ?? this.cellBuilder,
-      valueGetter: valueGetter ?? this.valueGetter,
-      valueFormatter: valueFormatter ?? this.valueFormatter,
-      visible: visible ?? this.visible,
-      frozen: frozen ?? this.frozen,
-      dataType: dataType ?? this.dataType,
-      filterWidgetType: filterWidgetType ?? this.filterWidgetType,
-      filterBuilder: filterBuilder ?? this.filterBuilder,
-      filterOptions: filterOptions ?? this.filterOptions,
-      filterHint: filterHint ?? this.filterHint,
-      defaultFilterOperator: defaultFilterOperator ?? this.defaultFilterOperator,
-      allowedFilterOperators: allowedFilterOperators ?? this.allowedFilterOperators,
-      flex: flex ?? this.flex,
-      showFilterOperator: showFilterOperator ?? this.showFilterOperator,
-      excludeFromApi: excludeFromApi ?? this.excludeFromApi,
-      onCellTap: onCellTap ?? this.onCellTap,
-    );
+    field: field ?? this.field,
+    label: label ?? this.label,
+    width: width ?? this.width,
+    minWidth: minWidth ?? this.minWidth,
+    maxWidth: maxWidth ?? this.maxWidth,
+    sortable: sortable ?? this.sortable,
+    filterable: filterable ?? this.filterable,
+    textAlign: textAlign ?? this.textAlign,
+    headerBuilder: headerBuilder ?? this.headerBuilder,
+    cellBuilder: cellBuilder ?? this.cellBuilder,
+    valueGetter: valueGetter ?? this.valueGetter,
+    valueFormatter: valueFormatter ?? this.valueFormatter,
+    visible: visible ?? this.visible,
+    frozen: frozen ?? this.frozen,
+    dataType: dataType ?? this.dataType,
+    filterWidgetType: filterWidgetType ?? this.filterWidgetType,
+    filterBuilder: filterBuilder ?? this.filterBuilder,
+    filterOptions: filterOptions ?? this.filterOptions,
+    filterHint: filterHint ?? this.filterHint,
+    defaultFilterOperator: defaultFilterOperator ?? this.defaultFilterOperator,
+    allowedFilterOperators: allowedFilterOperators ?? this.allowedFilterOperators,
+    flex: flex ?? this.flex,
+    showFilterOperator: showFilterOperator ?? this.showFilterOperator,
+    excludeFromApi: excludeFromApi ?? this.excludeFromApi,
+    onCellTap: onCellTap ?? this.onCellTap,
+  );
 }

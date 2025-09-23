@@ -8,10 +8,7 @@ void main() {
       final controller = VooFormController();
 
       // Register field with required validation
-      controller.registerField(
-        'testField',
-        validators: [const RequiredValidation<String>()],
-      );
+      controller.registerField('testField', validators: [const RequiredValidation<String>()]);
 
       // Create a focus node to track focus state
       final focusNode = FocusNode();
@@ -23,11 +20,7 @@ void main() {
               controller: controller,
               isReadOnly: false,
               isLoading: false,
-              child: VooTextField(
-                name: 'testField',
-                label: 'Test Field',
-                focusNode: focusNode,
-              ),
+              child: VooTextField(name: 'testField', label: 'Test Field', focusNode: focusNode),
             ),
           ),
         ),
@@ -69,10 +62,7 @@ void main() {
       final controller = VooFormController();
 
       // Register field with required validation
-      controller.registerField(
-        'currencyField',
-        validators: [const RequiredValidation<double>()],
-      );
+      controller.registerField('currencyField', validators: [const RequiredValidation<double>()]);
 
       // Create a focus node to track focus state
       final focusNode = FocusNode();
@@ -84,11 +74,7 @@ void main() {
               controller: controller,
               isReadOnly: false,
               isLoading: false,
-              child: VooCurrencyField(
-                name: 'currencyField',
-                label: 'Amount',
-                focusNode: focusNode,
-              ),
+              child: VooCurrencyField(name: 'currencyField', label: 'Amount', focusNode: focusNode),
             ),
           ),
         ),
@@ -130,10 +116,7 @@ void main() {
       final controller = VooFormController();
 
       // Register field with required validation
-      controller.registerField(
-        'numberField',
-        validators: [const RequiredValidation<num>()],
-      );
+      controller.registerField('numberField', validators: [const RequiredValidation<num>()]);
 
       // Create a focus node to track focus state
       final focusNode = FocusNode();
@@ -145,11 +128,7 @@ void main() {
               controller: controller,
               isReadOnly: false,
               isLoading: false,
-              child: VooNumberField(
-                name: 'numberField',
-                label: 'Number',
-                focusNode: focusNode,
-              ),
+              child: VooNumberField(name: 'numberField', label: 'Number', focusNode: focusNode),
             ),
           ),
         ),
@@ -191,14 +170,8 @@ void main() {
       final controller = VooFormController();
 
       // Register fields with required validation
-      controller.registerField(
-        'field1',
-        validators: [const RequiredValidation<String>()],
-      );
-      controller.registerField(
-        'field2',
-        validators: [const RequiredValidation<String>()],
-      );
+      controller.registerField('field1', validators: [const RequiredValidation<String>()]);
+      controller.registerField('field2', validators: [const RequiredValidation<String>()]);
 
       // Create focus nodes to track focus state
       final focusNode1 = FocusNode();
@@ -213,16 +186,8 @@ void main() {
               isLoading: false,
               child: Column(
                 children: [
-                  VooTextField(
-                    name: 'field1',
-                    label: 'Field 1',
-                    focusNode: focusNode1,
-                  ),
-                  VooTextField(
-                    name: 'field2',
-                    label: 'Field 2',
-                    focusNode: focusNode2,
-                  ),
+                  VooTextField(name: 'field1', label: 'Field 1', focusNode: focusNode1),
+                  VooTextField(name: 'field2', label: 'Field 2', focusNode: focusNode2),
                 ],
               ),
             ),
@@ -277,10 +242,7 @@ void main() {
     });
 
     testWidgets('focus is maintained when validation mode is onChange', (tester) async {
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-        validationMode: FormValidationMode.onChange,
-      );
+      final controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit, validationMode: FormValidationMode.onChange);
 
       // Create a focus node to track focus state
       final focusNode = FocusNode();
@@ -291,12 +253,7 @@ void main() {
             body: VooForm(
               controller: controller,
               fields: [
-                VooTextField(
-                  name: 'testField',
-                  label: 'Test Field',
-                  focusNode: focusNode,
-                  validators: const [RequiredValidation<String>()],
-                ),
+                VooTextField(name: 'testField', label: 'Test Field', focusNode: focusNode, validators: const [RequiredValidation<String>()]),
               ],
             ),
           ),

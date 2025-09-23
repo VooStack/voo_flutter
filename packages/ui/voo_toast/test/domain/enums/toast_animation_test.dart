@@ -109,9 +109,7 @@ void main() {
 
     test('can determine animation complexity', () {
       bool isComplexAnimation(ToastAnimation animation) =>
-          animation == ToastAnimation.bounce ||
-          animation == ToastAnimation.scale ||
-          animation == ToastAnimation.rotate;
+          animation == ToastAnimation.bounce || animation == ToastAnimation.scale || animation == ToastAnimation.rotate;
 
       expect(isComplexAnimation(ToastAnimation.bounce), true);
       expect(isComplexAnimation(ToastAnimation.scale), true);

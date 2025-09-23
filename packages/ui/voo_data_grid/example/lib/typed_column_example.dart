@@ -37,7 +37,7 @@ class TypedColumnExample extends StatelessWidget {
         typedValueFormatter: (name) => name.toUpperCase(),
         width: 200,
       ),
-      
+
       // Type-safe int column
       TypedVooDataColumn<Person, int>(
         field: 'age',
@@ -45,11 +45,11 @@ class TypedColumnExample extends StatelessWidget {
         typedValueGetter: (person) => person.age,
         typedValueFormatter: (age) => '$age years',
         typedCellBuilder: (context, age, person) {
-          final color = age < 18 
-              ? Colors.orange 
-              : age < 65 
-                  ? Colors.green 
-                  : Colors.blue;
+          final color = age < 18
+              ? Colors.orange
+              : age < 65
+              ? Colors.green
+              : Colors.blue;
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -65,7 +65,7 @@ class TypedColumnExample extends StatelessWidget {
         width: 100,
         textAlign: TextAlign.center,
       ),
-      
+
       // Type-safe DateTime column
       TypedVooDataColumn<Person, DateTime>(
         field: 'birthDate',
@@ -77,7 +77,7 @@ class TypedColumnExample extends StatelessWidget {
         width: 150,
         dataType: VooDataColumnType.date,
       ),
-      
+
       // Type-safe double column (salary)
       TypedVooDataColumn<Person, double>(
         field: 'salary',
@@ -85,16 +85,19 @@ class TypedColumnExample extends StatelessWidget {
         typedValueGetter: (person) => person.salary,
         typedValueFormatter: (salary) {
           // Format with thousand separators
-          final formatted = salary.toStringAsFixed(2)
-              .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), 
-                  (Match m) => '${m[1]},');
+          final formatted = salary
+              .toStringAsFixed(2)
+              .replaceAllMapped(
+                RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                (Match m) => '${m[1]},',
+              );
           return '\$$formatted';
         },
         width: 150,
         textAlign: TextAlign.right,
         dataType: VooDataColumnType.number,
       ),
-      
+
       // Type-safe enum column
       TypedVooDataColumn<Person, Department>(
         field: 'department',
@@ -110,12 +113,13 @@ class TypedColumnExample extends StatelessWidget {
         },
         width: 150,
         filterable: true,
-        filterOptions: Department.values.map((dept) => VooFilterOption(
-          value: dept,
-          label: dept.displayName,
-        )).toList(),
+        filterOptions: Department.values
+            .map(
+              (dept) => VooFilterOption(value: dept, label: dept.displayName),
+            )
+            .toList(),
       ),
-      
+
       // Type-safe boolean column
       TypedVooDataColumn<Person, bool>(
         field: 'isActive',
@@ -262,13 +266,11 @@ enum Department {
 
   final String displayName;
   final Color color;
-  
+
   const Department(this.displayName, this.color);
 }
 
 // Example usage in main app
 void main() {
-  runApp(const MaterialApp(
-    home: TypedColumnExample(),
-  ));
+  runApp(const MaterialApp(home: TypedColumnExample()));
 }

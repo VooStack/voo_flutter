@@ -37,8 +37,7 @@ class _VooSimpleListState<T> extends State<VooSimpleList<T>> {
   void _setupScrollListener() {
     if (widget.config.enableInfiniteScroll && widget.onLoadMore != null) {
       _scrollController.addListener(() {
-        if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200) {
+        if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
           widget.onLoadMore!();
         }
       });
@@ -86,9 +85,7 @@ class _VooSimpleListState<T> extends State<VooSimpleList<T>> {
       });
 
       if (widget.onSelectionChanged != null) {
-        final selectedItems = widget.items
-            .where((item) => _selectedItems.contains(item.id))
-            .toList();
+        final selectedItems = widget.items.where((item) => _selectedItems.contains(item.id)).toList();
         widget.onSelectionChanged!(selectedItems);
       }
     }
@@ -119,12 +116,8 @@ class _VooSimpleListState<T> extends State<VooSimpleList<T>> {
           return const Divider();
         }
         return SizedBox(
-          height: widget.config.scrollDirection == Axis.vertical
-              ? widget.config.itemSpacing ?? 0
-              : 0,
-          width: widget.config.scrollDirection == Axis.horizontal
-              ? widget.config.itemSpacing ?? 0
-              : 0,
+          height: widget.config.scrollDirection == Axis.vertical ? widget.config.itemSpacing ?? 0 : 0,
+          width: widget.config.scrollDirection == Axis.horizontal ? widget.config.itemSpacing ?? 0 : 0,
         );
       },
       itemBuilder: (context, index) {
@@ -143,10 +136,7 @@ class _VooSimpleListState<T> extends State<VooSimpleList<T>> {
     );
 
     if (widget.config.enablePullToRefresh && widget.onRefresh != null) {
-      listView = RefreshIndicator(
-        onRefresh: widget.onRefresh!,
-        child: listView,
-      );
+      listView = RefreshIndicator(onRefresh: widget.onRefresh!, child: listView);
     }
 
     return listView;

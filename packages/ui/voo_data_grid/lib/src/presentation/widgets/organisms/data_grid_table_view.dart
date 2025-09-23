@@ -43,14 +43,12 @@ class DataGridTableView<T> extends StatelessWidget {
     final dataSource = controller.dataSource;
 
     if (dataSource.isLoading && dataSource.rows.isEmpty) {
-      return Center(
-        child: loadingWidget ?? const CircularProgressIndicator(),
-      );
+      return Center(child: loadingWidget ?? const CircularProgressIndicator());
     }
 
     // Filter columns based on screen width - update controller after build
     final visibleColumns = _getVisibleColumnsForWidth(width);
-    
+
     // Use post-frame callback to avoid setState during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.setVisibleColumns(visibleColumns);
@@ -62,18 +60,10 @@ class DataGridTableView<T> extends StatelessWidget {
     return Column(
       children: [
         // Header - Always show headers even when no data or error
-        VooDataGridHeader<T>(
-          controller: controller,
-          theme: theme,
-          onSort: controller.sortColumn,
-        ),
+        VooDataGridHeader<T>(controller: controller, theme: theme, onSort: controller.sortColumn),
 
         // Filters (only on desktop) - Keep visible even during errors
-        if (showInlineFilters)
-          VooDataGridFilterRow<T>(
-            controller: controller,
-            theme: theme,
-          ),
+        if (showInlineFilters) VooDataGridFilterRow<T>(controller: controller, theme: theme),
 
         // Data rows, error state, or empty state
         Expanded(
@@ -81,25 +71,18 @@ class DataGridTableView<T> extends StatelessWidget {
             children: [
               if (dataSource.error != null)
                 Center(
-                  child: errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
+                  child:
+                      errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
                       VooEmptyState(
                         icon: Icons.error_outline,
                         title: 'Error Loading Data',
                         message: dataSource.error!,
-                        action: TextButton(
-                          onPressed: dataSource.refresh,
-                          child: const Text('Retry'),
-                        ),
+                        action: TextButton(onPressed: dataSource.refresh, child: const Text('Retry')),
                       ),
                 )
               else if (dataSource.rows.isEmpty)
                 Center(
-                  child: emptyStateWidget ??
-                      const VooEmptyState(
-                        icon: Icons.table_rows_outlined,
-                        title: 'No Data',
-                        message: 'No rows to display',
-                      ),
+                  child: emptyStateWidget ?? const VooEmptyState(icon: Icons.table_rows_outlined, title: 'No Data', message: 'No rows to display'),
                 )
               else
                 _DataGridRowsSection<T>(
@@ -118,9 +101,7 @@ class DataGridTableView<T> extends StatelessWidget {
                   top: 0,
                   left: 0,
                   right: 0,
-                  child: LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
-                  ),
+                  child: LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3)),
                 ),
             ],
           ),

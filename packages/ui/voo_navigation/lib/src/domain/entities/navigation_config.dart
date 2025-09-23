@@ -8,133 +8,134 @@ import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_na
 class VooNavigationConfig {
   /// List of navigation items to display
   final List<VooNavigationItem> items;
-  
+
   /// Currently selected navigation item ID
   final String? selectedId;
-  
+
   /// Custom breakpoints (defaults to Material 3 breakpoints)
   final List<VooBreakpoint> breakpoints;
-  
+
   /// Whether to automatically select navigation type based on screen size
   final bool isAdaptive;
-  
+
   /// Force a specific navigation type (overrides adaptive behavior)
   final VooNavigationType? forcedNavigationType;
-  
+
   /// Theme data for styling
   final ThemeData? theme;
-  
+
   /// Whether to show labels in navigation rail
   final NavigationRailLabelType railLabelType;
-  
+
   /// Whether to use extended navigation rail when possible
   final bool useExtendedRail;
-  
+
   /// Custom header widget for navigation drawer
   final Widget? drawerHeader;
-  
+
   /// Custom footer widget for navigation drawer
   final Widget? drawerFooter;
-  
+
   /// Custom leading widget for app bar
   final Widget? appBarLeading;
-  
+
   /// Custom actions for app bar
   final List<Widget>? appBarActions;
-  
+
   /// App bar title
   final Widget? appBarTitle;
-  
+
   /// Whether to center the app bar title
   final bool centerAppBarTitle;
-  
+
   /// Custom floating action button
   final Widget? floatingActionButton;
-  
+
   /// Floating action button location
   final FloatingActionButtonLocation? floatingActionButtonLocation;
-  
+
   /// Floating action button animator
   final FloatingActionButtonAnimator? floatingActionButtonAnimator;
-  
+
   /// Whether to show floating action button
   final bool showFloatingActionButton;
-  
+
   /// Background color for the scaffold
   final Color? backgroundColor;
-  
+
   /// Background color for navigation components
   final Color? navigationBackgroundColor;
-  
+
   /// Selected item color
   final Color? selectedItemColor;
-  
+
   /// Unselected item color
   final Color? unselectedItemColor;
-  
+
   /// Indicator color for selected items
   final Color? indicatorColor;
-  
+
   /// Indicator shape
   final ShapeBorder? indicatorShape;
-  
+
   /// Elevation for navigation components
   final double? elevation;
-  
+
   /// Whether to show divider in navigation rail
   final bool showNavigationRailDivider;
-  
+
   /// Custom navigation rail width
   final double? navigationRailWidth;
-  
+
   /// Custom extended navigation rail width
   final double? extendedNavigationRailWidth;
-  
+
   /// Custom navigation drawer width
   final double? navigationDrawerWidth;
-  
+
   /// Animation duration for transitions
   final Duration animationDuration;
-  
+
   /// Animation curve for transitions
   final Curve animationCurve;
-  
+
   /// Whether to enable haptic feedback
   final bool enableHapticFeedback;
-  
+
   /// Whether to enable animations
   final bool enableAnimations;
-  
+
   /// Custom transition builder for navigation animations
-  final Widget Function(Widget child, Animation<double> animation)? transitionBuilder;
-  
+  final Widget Function(Widget child, Animation<double> animation)?
+  transitionBuilder;
+
   /// Callback when navigation item is selected
   final void Function(String itemId)? onNavigationItemSelected;
-  
+
   /// Whether to persist navigation state
   final bool persistNavigationState;
-  
+
   /// Custom scroll controller for navigation drawer
   final ScrollController? drawerScrollController;
-  
+
   /// Whether to show notification badge
   final bool showNotificationBadges;
-  
+
   /// Badge animation duration
   final Duration badgeAnimationDuration;
-  
+
   /// Whether to group items by sections
   final bool groupItemsBySections;
-  
+
   /// Whether to allow item reordering
   final bool allowItemReordering;
-  
+
   /// Custom empty state widget
   final Widget? emptyStateWidget;
-  
+
   /// Custom error widget
   final Widget Function(Object error)? errorBuilder;
-  
+
   /// Custom loading widget
   final Widget? loadingWidget;
 
@@ -188,7 +189,7 @@ class VooNavigationConfig {
     this.loadingWidget,
     this.bottomNavigationType = NavigationBarType.custom,
   });
-  
+
   /// Creates a copy of this configuration with the given fields replaced
   VooNavigationConfig copyWith({
     List<VooNavigationItem>? items,
@@ -224,7 +225,8 @@ class VooNavigationConfig {
     Curve? animationCurve,
     bool? enableHapticFeedback,
     bool? enableAnimations,
-    Widget Function(Widget child, Animation<double> animation)? transitionBuilder,
+    Widget Function(Widget child, Animation<double> animation)?
+    transitionBuilder,
     void Function(String itemId)? onNavigationItemSelected,
     bool? persistNavigationState,
     ScrollController? drawerScrollController,
@@ -237,68 +239,79 @@ class VooNavigationConfig {
     Widget? loadingWidget,
     NavigationBarType? bottomNavigationType,
   }) => VooNavigationConfig(
-      items: items ?? this.items,
-      selectedId: selectedId ?? this.selectedId,
-      breakpoints: breakpoints ?? this.breakpoints,
-      isAdaptive: isAdaptive ?? this.isAdaptive,
-      forcedNavigationType: forcedNavigationType ?? this.forcedNavigationType,
-      theme: theme ?? this.theme,
-      railLabelType: railLabelType ?? this.railLabelType,
-      useExtendedRail: useExtendedRail ?? this.useExtendedRail,
-      drawerHeader: drawerHeader ?? this.drawerHeader,
-      drawerFooter: drawerFooter ?? this.drawerFooter,
-      appBarLeading: appBarLeading ?? this.appBarLeading,
-      appBarActions: appBarActions ?? this.appBarActions,
-      appBarTitle: appBarTitle ?? this.appBarTitle,
-      centerAppBarTitle: centerAppBarTitle ?? this.centerAppBarTitle,
-      floatingActionButton: floatingActionButton ?? this.floatingActionButton,
-      floatingActionButtonLocation: floatingActionButtonLocation ?? this.floatingActionButtonLocation,
-      floatingActionButtonAnimator: floatingActionButtonAnimator ?? this.floatingActionButtonAnimator,
-      showFloatingActionButton: showFloatingActionButton ?? this.showFloatingActionButton,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      navigationBackgroundColor: navigationBackgroundColor ?? this.navigationBackgroundColor,
-      selectedItemColor: selectedItemColor ?? this.selectedItemColor,
-      unselectedItemColor: unselectedItemColor ?? this.unselectedItemColor,
-      indicatorColor: indicatorColor ?? this.indicatorColor,
-      indicatorShape: indicatorShape ?? this.indicatorShape,
-      elevation: elevation ?? this.elevation,
-      showNavigationRailDivider: showNavigationRailDivider ?? this.showNavigationRailDivider,
-      navigationRailWidth: navigationRailWidth ?? this.navigationRailWidth,
-      extendedNavigationRailWidth: extendedNavigationRailWidth ?? this.extendedNavigationRailWidth,
-      navigationDrawerWidth: navigationDrawerWidth ?? this.navigationDrawerWidth,
-      animationDuration: animationDuration ?? this.animationDuration,
-      animationCurve: animationCurve ?? this.animationCurve,
-      enableHapticFeedback: enableHapticFeedback ?? this.enableHapticFeedback,
-      enableAnimations: enableAnimations ?? this.enableAnimations,
-      transitionBuilder: transitionBuilder ?? this.transitionBuilder,
-      onNavigationItemSelected: onNavigationItemSelected ?? this.onNavigationItemSelected,
-      persistNavigationState: persistNavigationState ?? this.persistNavigationState,
-      drawerScrollController: drawerScrollController ?? this.drawerScrollController,
-      showNotificationBadges: showNotificationBadges ?? this.showNotificationBadges,
-      badgeAnimationDuration: badgeAnimationDuration ?? this.badgeAnimationDuration,
-      groupItemsBySections: groupItemsBySections ?? this.groupItemsBySections,
-      allowItemReordering: allowItemReordering ?? this.allowItemReordering,
-      emptyStateWidget: emptyStateWidget ?? this.emptyStateWidget,
-      errorBuilder: errorBuilder ?? this.errorBuilder,
-      loadingWidget: loadingWidget ?? this.loadingWidget,
-      bottomNavigationType: bottomNavigationType ?? this.bottomNavigationType,
-    );
-  
+    items: items ?? this.items,
+    selectedId: selectedId ?? this.selectedId,
+    breakpoints: breakpoints ?? this.breakpoints,
+    isAdaptive: isAdaptive ?? this.isAdaptive,
+    forcedNavigationType: forcedNavigationType ?? this.forcedNavigationType,
+    theme: theme ?? this.theme,
+    railLabelType: railLabelType ?? this.railLabelType,
+    useExtendedRail: useExtendedRail ?? this.useExtendedRail,
+    drawerHeader: drawerHeader ?? this.drawerHeader,
+    drawerFooter: drawerFooter ?? this.drawerFooter,
+    appBarLeading: appBarLeading ?? this.appBarLeading,
+    appBarActions: appBarActions ?? this.appBarActions,
+    appBarTitle: appBarTitle ?? this.appBarTitle,
+    centerAppBarTitle: centerAppBarTitle ?? this.centerAppBarTitle,
+    floatingActionButton: floatingActionButton ?? this.floatingActionButton,
+    floatingActionButtonLocation:
+        floatingActionButtonLocation ?? this.floatingActionButtonLocation,
+    floatingActionButtonAnimator:
+        floatingActionButtonAnimator ?? this.floatingActionButtonAnimator,
+    showFloatingActionButton:
+        showFloatingActionButton ?? this.showFloatingActionButton,
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    navigationBackgroundColor:
+        navigationBackgroundColor ?? this.navigationBackgroundColor,
+    selectedItemColor: selectedItemColor ?? this.selectedItemColor,
+    unselectedItemColor: unselectedItemColor ?? this.unselectedItemColor,
+    indicatorColor: indicatorColor ?? this.indicatorColor,
+    indicatorShape: indicatorShape ?? this.indicatorShape,
+    elevation: elevation ?? this.elevation,
+    showNavigationRailDivider:
+        showNavigationRailDivider ?? this.showNavigationRailDivider,
+    navigationRailWidth: navigationRailWidth ?? this.navigationRailWidth,
+    extendedNavigationRailWidth:
+        extendedNavigationRailWidth ?? this.extendedNavigationRailWidth,
+    navigationDrawerWidth: navigationDrawerWidth ?? this.navigationDrawerWidth,
+    animationDuration: animationDuration ?? this.animationDuration,
+    animationCurve: animationCurve ?? this.animationCurve,
+    enableHapticFeedback: enableHapticFeedback ?? this.enableHapticFeedback,
+    enableAnimations: enableAnimations ?? this.enableAnimations,
+    transitionBuilder: transitionBuilder ?? this.transitionBuilder,
+    onNavigationItemSelected:
+        onNavigationItemSelected ?? this.onNavigationItemSelected,
+    persistNavigationState:
+        persistNavigationState ?? this.persistNavigationState,
+    drawerScrollController:
+        drawerScrollController ?? this.drawerScrollController,
+    showNotificationBadges:
+        showNotificationBadges ?? this.showNotificationBadges,
+    badgeAnimationDuration:
+        badgeAnimationDuration ?? this.badgeAnimationDuration,
+    groupItemsBySections: groupItemsBySections ?? this.groupItemsBySections,
+    allowItemReordering: allowItemReordering ?? this.allowItemReordering,
+    emptyStateWidget: emptyStateWidget ?? this.emptyStateWidget,
+    errorBuilder: errorBuilder ?? this.errorBuilder,
+    loadingWidget: loadingWidget ?? this.loadingWidget,
+    bottomNavigationType: bottomNavigationType ?? this.bottomNavigationType,
+  );
+
   /// Gets the current navigation type based on screen width
   VooNavigationType getNavigationType(double screenWidth) {
     if (!isAdaptive || forcedNavigationType != null) {
       return forcedNavigationType ?? VooNavigationType.bottomNavigation;
     }
-    
+
     final breakpoint = VooBreakpoint.fromWidth(screenWidth, breakpoints);
     return breakpoint.navigationType;
   }
-  
+
   /// Gets visible navigation items
-  List<VooNavigationItem> get visibleItems => 
+  List<VooNavigationItem> get visibleItems =>
       items.where((item) => item.isVisible).toList()
         ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-  
+
   /// Gets the selected navigation item
   VooNavigationItem? get selectedItem {
     if (selectedId == null) return null;

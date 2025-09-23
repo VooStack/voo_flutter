@@ -9,46 +9,27 @@ class VooDesignSystemData {
   final bool isDarkMode;
   final ColorScheme? materialColorScheme;
   final ThemeData? customTheme;
-  
-  const VooDesignSystemData({
-    this.type = DesignSystemType.voo,
-    this.isDarkMode = false,
-    this.materialColorScheme,
-    this.customTheme,
-  });
-  
+
+  const VooDesignSystemData({this.type = DesignSystemType.voo, this.isDarkMode = false, this.materialColorScheme, this.customTheme});
+
   /// Default Voo Design System (light mode)
-  static const VooDesignSystemData defaultSystem = VooDesignSystemData(
-    
-  );
-  
+  static const VooDesignSystemData defaultSystem = VooDesignSystemData();
+
   /// Default Material Design System (light mode)
-  static const VooDesignSystemData materialSystem = VooDesignSystemData(
-    type: DesignSystemType.material,
-  );
-  
+  static const VooDesignSystemData materialSystem = VooDesignSystemData(type: DesignSystemType.material);
+
   /// Dark Voo Design System
-  static const VooDesignSystemData darkVooSystem = VooDesignSystemData(
-    isDarkMode: true,
-  );
-  
+  static const VooDesignSystemData darkVooSystem = VooDesignSystemData(isDarkMode: true);
+
   /// Dark Material Design System
-  static const VooDesignSystemData darkMaterialSystem = VooDesignSystemData(
-    type: DesignSystemType.material,
-    isDarkMode: true,
+  static const VooDesignSystemData darkMaterialSystem = VooDesignSystemData(type: DesignSystemType.material, isDarkMode: true);
+
+  VooDesignSystemData copyWith({DesignSystemType? type, bool? isDarkMode, ColorScheme? materialColorScheme, ThemeData? customTheme}) => VooDesignSystemData(
+    type: type ?? this.type,
+    isDarkMode: isDarkMode ?? this.isDarkMode,
+    materialColorScheme: materialColorScheme ?? this.materialColorScheme,
+    customTheme: customTheme ?? this.customTheme,
   );
-  
-  VooDesignSystemData copyWith({
-    DesignSystemType? type,
-    bool? isDarkMode,
-    ColorScheme? materialColorScheme,
-    ThemeData? customTheme,
-  }) => VooDesignSystemData(
-      type: type ?? this.type,
-      isDarkMode: isDarkMode ?? this.isDarkMode,
-      materialColorScheme: materialColorScheme ?? this.materialColorScheme,
-      customTheme: customTheme ?? this.customTheme,
-    );
 }
 
 /// Main widget for providing design system to the app
@@ -56,22 +37,17 @@ class VooDesignSystem extends StatefulWidget {
   final Widget child;
   final VooDesignSystemData data;
   final bool adaptToSystemBrightness;
-  
-  const VooDesignSystem({
-    super.key,
-    required this.child,
-    required this.data,
-    this.adaptToSystemBrightness = true,
-  });
-  
+
+  const VooDesignSystem({super.key, required this.child, required this.data, this.adaptToSystemBrightness = true});
+
   static VooDesignSystemState? maybeOf(BuildContext context) => context.findAncestorStateOfType<VooDesignSystemState>();
-  
+
   static VooDesignSystemState of(BuildContext context) {
     final state = maybeOf(context);
     assert(state != null, 'No VooDesignSystem found in context');
     return state!;
   }
-  
+
   @override
   State<VooDesignSystem> createState() => VooDesignSystemState();
 }
@@ -79,14 +55,14 @@ class VooDesignSystem extends StatefulWidget {
 class VooDesignSystemState extends State<VooDesignSystem> {
   late VooDesignSystemData _data;
   late DesignSystem _designSystem;
-  
+
   @override
   void initState() {
     super.initState();
     _data = widget.data;
     _updateDesignSystem();
   }
-  
+
   @override
   void didUpdateWidget(VooDesignSystem oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -95,21 +71,18 @@ class VooDesignSystemState extends State<VooDesignSystem> {
       _updateDesignSystem();
     }
   }
-  
+
   void _updateDesignSystem() {
     switch (_data.type) {
       case DesignSystemType.voo:
         _designSystem = VooDesignTokens(isDarkMode: _data.isDarkMode);
         break;
       case DesignSystemType.material:
-        _designSystem = MaterialDesignTokens(
-          isDarkMode: _data.isDarkMode,
-          colorScheme: _data.materialColorScheme,
-        );
+        _designSystem = MaterialDesignTokens(isDarkMode: _data.isDarkMode, colorScheme: _data.materialColorScheme);
         break;
     }
   }
-  
+
   /// Switch to a different design system
   void switchSystem(DesignSystemType type) {
     setState(() {
@@ -117,7 +90,7 @@ class VooDesignSystemState extends State<VooDesignSystem> {
       _updateDesignSystem();
     });
   }
-  
+
   /// Toggle dark mode
   void toggleDarkMode() {
     setState(() {
@@ -125,7 +98,7 @@ class VooDesignSystemState extends State<VooDesignSystem> {
       _updateDesignSystem();
     });
   }
-  
+
   /// Update the entire configuration
   void updateData(VooDesignSystemData data) {
     setState(() {
@@ -133,10 +106,10 @@ class VooDesignSystemState extends State<VooDesignSystem> {
       _updateDesignSystem();
     });
   }
-  
+
   DesignSystem get designSystem => _designSystem;
   VooDesignSystemData get data => _data;
-  
+
   @override
   Widget build(BuildContext context) {
     // Check system brightness if adaptation is enabled
@@ -154,7 +127,7 @@ class VooDesignSystemState extends State<VooDesignSystem> {
         });
       }
     }
-    
+
     return DesignSystemProvider(
       designSystem: _designSystem,
       systemType: _data.type,
@@ -162,12 +135,9 @@ class VooDesignSystemState extends State<VooDesignSystem> {
         builder: (context) {
           // Apply theme if we have a custom theme
           if (_data.customTheme != null) {
-            return Theme(
-              data: _data.customTheme!,
-              child: widget.child,
-            );
+            return Theme(data: _data.customTheme!, child: widget.child);
           }
-          
+
           // Otherwise use the design system's theme
           return Theme(
             data: _designSystem.toThemeData(isDark: _data.isDarkMode),

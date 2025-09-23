@@ -21,14 +21,7 @@ extension VooFormExtension on List<VooFormFieldWidget> {
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.stretch,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     MainAxisSize mainAxisSize = MainAxisSize.min,
-  }) =>
-      VooForm(
-        fields: this,
-        spacing: spacing,
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
-        mainAxisSize: mainAxisSize,
-      );
+  }) => VooForm(fields: this, spacing: spacing, crossAxisAlignment: crossAxisAlignment, mainAxisAlignment: mainAxisAlignment, mainAxisSize: mainAxisSize);
 
   /// Create a full form page with layout, actions, and callbacks
   ///
@@ -62,26 +55,25 @@ extension VooFormExtension on List<VooFormFieldWidget> {
     bool wrapInCard = false,
     double? cardElevation,
     EdgeInsetsGeometry? cardMargin,
-  }) =>
-      VooFormPageBuilder(
-        form: VooForm(fields: this, spacing: spacing, errorDisplayMode: errorDisplayMode),
-        onSubmit: onSubmit,
-        onCancel: onCancel,
-        onSuccess: onSuccess,
-        onError: onError,
-        showSubmitButton: showSubmitButton,
-        showCancelButton: showCancelButton,
-        submitText: submitText,
-        cancelText: cancelText,
-        header: header,
-        footer: footer,
-        spacing: spacing,
-        padding: padding,
-        physics: physics,
-        isEditable: isEditable,
-        showProgress: showProgress,
-        wrapInCard: wrapInCard,
-        cardElevation: cardElevation,
-        cardMargin: cardMargin,
-      );
+  }) => VooFormPageBuilder(
+    form: VooForm(fields: this, spacing: spacing, errorDisplayMode: errorDisplayMode),
+    onSubmit: onSubmit,
+    onCancel: onCancel,
+    onSuccess: onSuccess,
+    onError: onError,
+    showSubmitButton: showSubmitButton,
+    showCancelButton: showCancelButton,
+    submitText: submitText,
+    cancelText: cancelText,
+    header: header,
+    footer: footer,
+    spacing: spacing,
+    padding: padding,
+    physics: physics,
+    isEditable: isEditable,
+    showProgress: showProgress,
+    wrapInCard: wrapInCard,
+    cardElevation: cardElevation,
+    cardMargin: cardMargin,
+  );
 }

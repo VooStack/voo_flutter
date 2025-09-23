@@ -20,36 +20,19 @@ void main() {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isSelected ? Colors.blue.withValues(alpha: 0.2) : null,
-                  border: Border(
-                    left: BorderSide(
-                      color: isSelected ? Colors.blue : Colors.transparent,
-                      width: 4,
-                    ),
-                  ),
+                  border: Border(left: BorderSide(color: isSelected ? Colors.blue : Colors.transparent, width: 4)),
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.star,
-                      color: isSelected ? Colors.blue : Colors.grey,
-                      size: 20,
-                    ),
+                    Icon(Icons.star, color: isSelected ? Colors.blue : Colors.grey, size: 20),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         displayText,
-                        style: TextStyle(
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? Colors.blue : null,
-                        ),
+                        style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? Colors.blue : null),
                       ),
                     ),
-                    if (isSelected)
-                      const Icon(
-                        Icons.check_circle,
-                        color: Colors.blue,
-                        size: 20,
-                      ),
+                    if (isSelected) const Icon(Icons.check_circle, color: Colors.blue, size: 20),
                   ],
                 ),
               ),
@@ -91,12 +74,7 @@ void main() {
                 }
                 return Container(
                   padding: const EdgeInsets.all(12),
-                  child: Text(
-                    displayText,
-                    style: TextStyle(
-                      color: isSelected ? Colors.green : null,
-                    ),
-                  ),
+                  child: Text(displayText, style: TextStyle(color: isSelected ? Colors.green : null)),
                 );
               },
             ),
@@ -118,12 +96,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'test',
-              label: 'Test Dropdown',
-              options: options,
-              initialValue: 'Option 2',
-            ),
+            body: VooDropdownField<String>(name: 'test', label: 'Test Dropdown', options: options, initialValue: 'Option 2'),
           ),
         ),
       );
@@ -158,10 +131,7 @@ void main() {
                     const Icon(Icons.cloud, size: 20),
                     const SizedBox(width: 8),
                     Text(displayText),
-                    if (isSelected) ...[
-                      const Spacer(),
-                      const Icon(Icons.check, color: Colors.green),
-                    ],
+                    if (isSelected) ...[const Spacer(), const Icon(Icons.check, color: Colors.green)],
                   ],
                 ),
               ),
@@ -224,12 +194,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooOption(
-              title: 'Test Option',
-              subtitle: 'Test subtitle',
-              isSelected: true,
-              leading: Icon(Icons.star),
-            ),
+            body: VooOption(title: 'Test Option', subtitle: 'Test subtitle', isSelected: true, leading: Icon(Icons.star)),
           ),
         ),
       );
@@ -247,12 +212,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooSimpleOption(
-              text: 'Simple Option',
-              isSelected: true,
-              onTap: () => tapped = true,
-              showCheckbox: true,
-            ),
+            body: VooSimpleOption(text: 'Simple Option', isSelected: true, onTap: () => tapped = true, showCheckbox: true),
           ),
         ),
       );
@@ -285,13 +245,7 @@ void main() {
               },
               optionBuilder: (context, item, isSelected, displayText) {
                 optionBuilderCalled = true;
-                return VooOption(
-                  title: displayText,
-                  isSelected: isSelected,
-                  leading: const Icon(Icons.cloud_download),
-                  showCheckbox: true,
-                  dense: true,
-                );
+                return VooOption(title: displayText, isSelected: isSelected, leading: const Icon(Icons.cloud_download), showCheckbox: true, dense: true);
               },
             ),
           ),

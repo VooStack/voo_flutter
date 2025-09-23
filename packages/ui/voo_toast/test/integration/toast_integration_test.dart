@@ -9,7 +9,7 @@ void main() {
       VooToast.dismissAll();
       VooToastController.reset();
     });
-    
+
     testWidgets('complete toast lifecycle', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -22,21 +22,13 @@ void main() {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          VooToast.showSuccess(
-                            title: 'Success',
-                            message: 'Operation completed successfully!',
-                            context: context,
-                          );
+                          VooToast.showSuccess(title: 'Success', message: 'Operation completed successfully!', context: context);
                         },
                         child: const Text('Show Success'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          VooToast.showError(
-                            title: 'Error',
-                            message: 'Something went wrong',
-                            context: context,
-                          );
+                          VooToast.showError(title: 'Error', message: 'Something went wrong', context: context);
                         },
                         child: const Text('Show Error'),
                       ),
@@ -86,7 +78,7 @@ void main() {
 
       expect(find.text('Success'), findsNothing);
       expect(find.text('Error'), findsNothing);
-      
+
       // Ensure clean up
       await tester.pumpAndSettle();
     });
@@ -110,16 +102,10 @@ void main() {
                             label: 'UNDO',
                             onPressed: () {
                               undoPressed = true;
-                              VooToast.showSuccess(
-                                message: 'Action undone',
-                                context: context,
-                              );
+                              VooToast.showSuccess(message: 'Action undone', context: context);
                             },
                           ),
-                          ToastAction(
-                            label: 'DELETE PERMANENTLY',
-                            onPressed: () {},
-                          ),
+                          ToastAction(label: 'DELETE PERMANENTLY', onPressed: () {}),
                         ],
                       );
                     },
@@ -148,7 +134,7 @@ void main() {
 
       expect(undoPressed, true);
       expect(find.text('Action undone'), findsOneWidget);
-      
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -170,15 +156,9 @@ void main() {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
+                              CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                               SizedBox(width: 16),
-                              Text(
-                                'Loading...',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              Text('Loading...', style: TextStyle(color: Colors.white)),
                             ],
                           ),
                         ),
@@ -208,7 +188,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.text('Loading...'), findsNothing);
-      
+
       // Ensure cleanup
       await tester.pumpAndSettle();
     });
@@ -236,21 +216,9 @@ void main() {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            VooToast.showInfo(
-                              message: 'First toast',
-                              duration: const Duration(milliseconds: 500),
-                              context: context,
-                            );
-                            VooToast.showInfo(
-                              message: 'Second toast',
-                              duration: const Duration(milliseconds: 500),
-                              context: context,
-                            );
-                            VooToast.showInfo(
-                              message: 'Third toast',
-                              duration: const Duration(milliseconds: 500),
-                              context: context,
-                            );
+                            VooToast.showInfo(message: 'First toast', duration: const Duration(milliseconds: 500), context: context);
+                            VooToast.showInfo(message: 'Second toast', duration: const Duration(milliseconds: 500), context: context);
+                            VooToast.showInfo(message: 'Third toast', duration: const Duration(milliseconds: 500), context: context);
                           },
                           child: const Text('Queue Toasts'),
                         ),
@@ -290,7 +258,7 @@ void main() {
         expect(find.text('First toast'), findsNothing);
         expect(find.text('Second toast'), findsNothing);
         expect(find.text('Third toast'), findsOneWidget);
-        
+
         // Clean up
         VooToast.dismissAll();
         await tester.pumpAndSettle();
@@ -310,11 +278,7 @@ void main() {
                 body: Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      VooToast.showInfo(
-                        message: 'Responsive toast',
-                        position: ToastPosition.auto,
-                        context: context,
-                      );
+                      VooToast.showInfo(message: 'Responsive toast', position: ToastPosition.auto, context: context);
                     },
                     child: const Text('Show Toast'),
                   ),
@@ -349,7 +313,7 @@ void main() {
 
       // Reset surface size
       await tester.binding.setSurfaceSize(null);
-      
+
       // Clean up
       VooToast.dismissAll();
       await tester.pumpAndSettle();
@@ -364,11 +328,7 @@ void main() {
                 body: Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      VooToast.showInfo(
-                        message: 'Toast with progress',
-                        duration: const Duration(seconds: 2),
-                        context: context,
-                      );
+                      VooToast.showInfo(message: 'Toast with progress', duration: const Duration(seconds: 2), context: context);
                     },
                     child: const Text('Show Progress'),
                   ),
@@ -394,7 +354,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Toast with progress'), findsNothing);
-      
+
       // Ensure cleanup
       await tester.pumpAndSettle();
     });
@@ -408,11 +368,7 @@ void main() {
                 body: Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      VooToast.showInfo(
-                        message: 'Persistent toast',
-                        duration: Duration.zero,
-                        context: context,
-                      );
+                      VooToast.showInfo(message: 'Persistent toast', duration: Duration.zero, context: context);
                     },
                     child: const Text('Show Persistent'),
                   ),
@@ -441,7 +397,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.text('Persistent toast'), findsNothing);
-      
+
       // Ensure cleanup
       await tester.pumpAndSettle();
     });

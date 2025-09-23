@@ -8,44 +8,28 @@ class VooShakeAnimation extends StatefulWidget {
   final VooAnimationConfig config;
   final double intensity;
   final int numberOfShakes;
-  
-  const VooShakeAnimation({
-    super.key,
-    required this.child,
-    this.config = const VooAnimationConfig(),
-    this.intensity = 10,
-    this.numberOfShakes = 5,
-  });
-  
+
+  const VooShakeAnimation({super.key, required this.child, this.config = const VooAnimationConfig(), this.intensity = 10, this.numberOfShakes = 5});
+
   @override
   State<VooShakeAnimation> createState() => _VooShakeAnimationState();
 }
 
-class _VooShakeAnimationState extends State<VooShakeAnimation>
-    with SingleTickerProviderStateMixin {
+class _VooShakeAnimationState extends State<VooShakeAnimation> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    _controller = AnimationController(
-      duration: widget.config.duration,
-      vsync: this,
-    );
-    
+
+    _controller = AnimationController(duration: widget.config.duration, vsync: this);
+
     // Create custom shake curve
     final curve = _ShakeCustomCurve(widget.numberOfShakes);
-    
-    _animation = Tween<double>(
-      begin: 0,
-      end: widget.intensity,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: curve,
-    ),);
-    
+
+    _animation = Tween<double>(begin: 0, end: widget.intensity).animate(CurvedAnimation(parent: _controller, curve: curve));
+
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
         if (mounted) {
@@ -60,29 +44,26 @@ class _VooShakeAnimationState extends State<VooShakeAnimation>
       });
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) => Transform.translate(
-          offset: Offset(_animation.value, 0),
-          child: widget.child,
-        ),
-    );
+    animation: _animation,
+    builder: (context, child) => Transform.translate(offset: Offset(_animation.value, 0), child: widget.child),
+  );
 }
 
 /// Custom shake curve that creates oscillating motion
 class _ShakeCustomCurve extends Curve {
   final int numberOfShakes;
-  
+
   const _ShakeCustomCurve(this.numberOfShakes);
-  
+
   @override
   double transformInternal(double t) {
     // Create oscillating pattern that decays over time

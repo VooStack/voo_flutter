@@ -38,9 +38,5 @@ class VooDecimalField extends VooNumberField {
     super.onEditingComplete,
     super.onSubmitted,
     super.autofocus,
-  }) : super(
-          placeholder: placeholder ?? '0.00',
-          allowDecimals: true,
-          onChanged: onChanged != null ? (num? value) => onChanged(value?.toDouble()) : null,
-        );
+  }) : super(placeholder: placeholder ?? '0.00', allowDecimals: true, onChanged: onChanged != null ? (num? value) => onChanged(value?.toDouble()) : null);
 }

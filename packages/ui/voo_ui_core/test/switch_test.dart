@@ -7,15 +7,7 @@ import 'helpers/test_helpers.dart';
 void main() {
   group('VooSwitch', () {
     testWidgets('renders with default properties', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooSwitch(
-            value: false,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooSwitch(value: false, onChanged: (_) {})));
 
       expect(find.byType(Switch), findsOneWidget);
     });
@@ -29,12 +21,12 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooSwitch(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -53,16 +45,7 @@ void main() {
     });
 
     testWidgets('shows error state', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooSwitch(
-            value: true,
-            isError: true,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooSwitch(value: true, isError: true, onChanged: (_) {})));
 
       final switchWidget = tester.widget<Switch>(find.byType(Switch));
       final theme = Theme.of(tester.element(find.byType(Switch)));
@@ -72,15 +55,7 @@ void main() {
     testWidgets('disabled state prevents interaction', (tester) async {
       final callbacks = MockCallbacks();
 
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: const VooSwitch(
-            value: false,
-            onChanged: null,
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: const VooSwitch(value: false, onChanged: null)));
 
       await tester.tap(find.byType(Switch));
       await tester.pumpAndSettle();
@@ -92,11 +67,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitch(
-            value: true,
-            onChanged: (_) {},
-            thumbIcon: const Icon(Icons.check, size: 16),
-          ),
+          child: VooSwitch(value: true, onChanged: (_) {}, thumbIcon: const Icon(Icons.check, size: 16)),
         ),
       );
 
@@ -109,12 +80,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitchListTile(
-            value: true,
-            onChanged: (_) {},
-            title: const Text('Dark Mode'),
-            subtitle: const Text('Use dark theme'),
-          ),
+          child: VooSwitchListTile(value: true, onChanged: (_) {}, title: const Text('Dark Mode'), subtitle: const Text('Use dark theme')),
         ),
       );
 
@@ -127,12 +93,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitchListTile(
-            value: false,
-            onChanged: (_) {},
-            title: const Text('Notifications'),
-            secondary: const Icon(Icons.notifications),
-          ),
+          child: VooSwitchListTile(value: false, onChanged: (_) {}, title: const Text('Notifications'), secondary: const Icon(Icons.notifications)),
         ),
       );
 
@@ -148,13 +109,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooSwitchListTile(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-                title: const Text('Enable Feature'),
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+              title: const Text('Enable Feature'),
+            ),
           ),
         ),
       );
@@ -172,12 +133,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledSwitch(
-            value: true,
-            onChanged: (_) {},
-            label: 'Auto-save',
-            subtitle: 'Save changes automatically',
-          ),
+          child: VooLabeledSwitch(value: true, onChanged: (_) {}, label: 'Auto-save', subtitle: 'Save changes automatically'),
         ),
       );
 
@@ -189,12 +145,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledSwitch(
-            value: false,
-            onChanged: (_) {},
-            label: 'Setting',
-            leading: const Icon(Icons.settings),
-          ),
+          child: VooLabeledSwitch(value: false, onChanged: (_) {}, label: 'Setting', leading: const Icon(Icons.settings)),
         ),
       );
 
@@ -210,13 +161,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooLabeledSwitch(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-                label: 'Tap anywhere',
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+              label: 'Tap anywhere',
+            ),
           ),
         ),
       );
@@ -233,12 +184,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledSwitch(
-            value: false,
-            onChanged: (_) {},
-            label: 'Disabled',
-            enabled: false,
-          ),
+          child: VooLabeledSwitch(value: false, onChanged: (_) {}, label: 'Disabled', enabled: false),
         ),
       );
 
@@ -250,24 +196,13 @@ void main() {
 
   group('VooSwitchGroup', () {
     testWidgets('renders multiple switches', (tester) async {
-      final switches = {
-        'wifi': true,
-        'bluetooth': false,
-        'location': true,
-      };
-      final labels = {
-        'wifi': 'Wi-Fi',
-        'bluetooth': 'Bluetooth',
-        'location': 'Location',
-      };
+      final switches = {'wifi': true, 'bluetooth': false, 'location': true};
+      final labels = {'wifi': 'Wi-Fi', 'bluetooth': 'Bluetooth', 'location': 'Location'};
 
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitchGroup(
-            switches: switches,
-            labels: labels,
-          ),
+          child: VooSwitchGroup(switches: switches, labels: labels),
         ),
       );
 
@@ -278,14 +213,8 @@ void main() {
     });
 
     testWidgets('handles individual switch changes', (tester) async {
-      Map<String, bool> switches = {
-        'option1': true,
-        'option2': false,
-      };
-      final labels = {
-        'option1': 'Option 1',
-        'option2': 'Option 2',
-      };
+      Map<String, bool> switches = {'option1': true, 'option2': false};
+      final labels = {'option1': 'Option 1', 'option2': 'Option 2'};
       final callbacks = MockCallbacks();
 
       await pumpWidgetAndSettle(
@@ -293,13 +222,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooSwitchGroup(
-                switches: switches,
-                labels: labels,
-                onChanged: (newSwitches) {
-                  setState(() => switches = newSwitches);
-                  callbacks.onChanged(newSwitches);
-                },
-              ),
+              switches: switches,
+              labels: labels,
+              onChanged: (newSwitches) {
+                setState(() => switches = newSwitches);
+                callbacks.onChanged(newSwitches);
+              },
+            ),
           ),
         ),
       );
@@ -317,12 +246,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: const VooSwitchGroup(
-            switches: {'test': false},
-            labels: {'test': 'Test'},
-            groupLabel: 'Settings',
-            helperText: 'Configure your preferences',
-          ),
+          child: const VooSwitchGroup(switches: {'test': false}, labels: {'test': 'Test'}, groupLabel: 'Settings', helperText: 'Configure your preferences'),
         ),
       );
 
@@ -334,11 +258,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: const VooSwitchGroup(
-            switches: {'test': false},
-            labels: {'test': 'Test'},
-            errorText: 'Please enable at least one option',
-          ),
+          child: const VooSwitchGroup(switches: {'test': false}, labels: {'test': 'Test'}, errorText: 'Please enable at least one option'),
         ),
       );
 
@@ -350,14 +270,8 @@ void main() {
         tester,
         createTestApp(
           child: const VooSwitchGroup(
-            switches: {
-              'option1': true,
-              'option2': false,
-            },
-            labels: {
-              'option1': 'Option 1',
-              'option2': 'Option 2',
-            },
+            switches: {'option1': true, 'option2': false},
+            labels: {'option1': 'Option 1', 'option2': 'Option 2'},
             showDividers: true,
           ),
         ),
@@ -373,14 +287,8 @@ void main() {
         tester,
         createTestApp(
           child: VooSwitchGroup(
-            switches: const {
-              'enabled': false,
-              'disabled': false,
-            },
-            labels: const {
-              'enabled': 'Enabled',
-              'disabled': 'Disabled',
-            },
+            switches: const {'enabled': false, 'disabled': false},
+            labels: const {'enabled': 'Enabled', 'disabled': 'Disabled'},
             disabledSwitches: const {'disabled'},
             onChanged: callbacks.onChanged,
           ),
@@ -390,13 +298,13 @@ void main() {
       // Try to tap disabled switch
       await tester.tap(find.text('Disabled'));
       await tester.pumpAndSettle();
-      
+
       expect(callbacks.wasCalled, false);
 
       // Tap enabled switch
       await tester.tap(find.text('Enabled'));
       await tester.pumpAndSettle();
-      
+
       expect(callbacks.wasCalled, true);
     });
 
@@ -404,13 +312,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: const VooSwitchGroup(
-            switches: {'wifi': true},
-            labels: {'wifi': 'Wi-Fi'},
-            icons: {
-              'wifi': Icon(Icons.wifi),
-            },
-          ),
+          child: const VooSwitchGroup(switches: {'wifi': true}, labels: {'wifi': 'Wi-Fi'}, icons: {'wifi': Icon(Icons.wifi)}),
         ),
       );
 
@@ -423,12 +325,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitchCard(
-            value: true,
-            onChanged: (_) {},
-            title: const Text('Premium Features'),
-            subtitle: const Text('Access all features'),
-          ),
+          child: VooSwitchCard(value: true, onChanged: (_) {}, title: const Text('Premium Features'), subtitle: const Text('Access all features')),
         ),
       );
 
@@ -443,16 +340,8 @@ void main() {
         createTestApp(
           child: Column(
             children: [
-              VooSwitchCard(
-                value: true,
-                onChanged: (_) {},
-                title: const Text('On'),
-              ),
-              VooSwitchCard(
-                value: false,
-                onChanged: (_) {},
-                title: const Text('Off'),
-              ),
+              VooSwitchCard(value: true, onChanged: (_) {}, title: const Text('On')),
+              VooSwitchCard(value: false, onChanged: (_) {}, title: const Text('Off')),
             ],
           ),
         ),
@@ -460,7 +349,7 @@ void main() {
 
       final onCard = tester.widget<Card>(find.byType(Card).first);
       final offCard = tester.widget<Card>(find.byType(Card).last);
-      
+
       expect(onCard.elevation, 4);
       expect(offCard.elevation, 1);
     });
@@ -469,12 +358,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitchCard(
-            value: false,
-            onChanged: (_) {},
-            title: const Text('Feature'),
-            leading: const Icon(Icons.star),
-          ),
+          child: VooSwitchCard(value: false, onChanged: (_) {}, title: const Text('Feature'), leading: const Icon(Icons.star)),
         ),
       );
 
@@ -490,13 +374,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooSwitchCard(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-                title: const Text('Toggle Feature'),
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+              title: const Text('Toggle Feature'),
+            ),
           ),
         ),
       );
@@ -512,12 +396,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSwitchCard(
-            value: true,
-            onChanged: (_) {},
-            title: const Text('Custom'),
-            trailing: const Text('Active'),
-          ),
+          child: VooSwitchCard(value: true, onChanged: (_) {}, title: const Text('Custom'), trailing: const Text('Active')),
         ),
       );
 
@@ -529,15 +408,7 @@ void main() {
 
   group('VooAdaptiveSwitch', () {
     testWidgets('renders adaptive switch', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooAdaptiveSwitch(
-            value: false,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooAdaptiveSwitch(value: false, onChanged: (_) {})));
 
       expect(find.byType(Switch), findsOneWidget);
     });
@@ -551,12 +422,12 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooAdaptiveSwitch(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -572,12 +443,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooAdaptiveSwitch(
-            value: true,
-            onChanged: (_) {},
-            activeColor: Colors.green,
-            inactiveColor: Colors.grey,
-          ),
+          child: VooAdaptiveSwitch(value: true, onChanged: (_) {}, activeColor: Colors.green, inactiveColor: Colors.grey),
         ),
       );
 

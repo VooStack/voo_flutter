@@ -35,68 +35,25 @@ class VooElevationTokens extends Equatable {
   List<BoxShadow> shadow0() => [];
 
   List<BoxShadow> shadow1() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.3)
-              : Colors.black.withValues(alpha: 0.05),
-          blurRadius: 2,
-          offset: const Offset(0, 1),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.05), blurRadius: 2, offset: const Offset(0, 1)),
+  ];
 
   List<BoxShadow> shadow2() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.4)
-              : Colors.black.withValues(alpha: 0.08),
-          blurRadius: 4,
-          offset: const Offset(0, 2),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.4) : Colors.black.withValues(alpha: 0.08), blurRadius: 4, offset: const Offset(0, 2)),
+  ];
 
   List<BoxShadow> shadow3() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.5)
-              : Colors.black.withValues(alpha: 0.12),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.12), blurRadius: 8, offset: const Offset(0, 4)),
+  ];
 
   List<BoxShadow> shadow4() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.6)
-              : Colors.black.withValues(alpha: 0.16),
-          blurRadius: 16,
-          offset: const Offset(0, 8),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.6) : Colors.black.withValues(alpha: 0.16), blurRadius: 16, offset: const Offset(0, 8)),
+  ];
 
   List<BoxShadow> shadow5() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.7)
-              : Colors.black.withValues(alpha: 0.24),
-          blurRadius: 24,
-          offset: const Offset(0, 12),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.7) : Colors.black.withValues(alpha: 0.24), blurRadius: 24, offset: const Offset(0, 12)),
+  ];
 
   @override
-  List<Object?> get props => [
-        isDarkMode,
-        level0,
-        level1,
-        level2,
-        level3,
-        level4,
-        level5,
-        card,
-        dialog,
-        menu,
-        tooltip,
-        snackbar,
-      ];
+  List<Object?> get props => [isDarkMode, level0, level1, level2, level3, level4, level5, card, dialog, menu, tooltip, snackbar];
 }

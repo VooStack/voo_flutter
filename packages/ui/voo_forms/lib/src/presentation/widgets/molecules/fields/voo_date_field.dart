@@ -58,7 +58,7 @@ class VooDateField extends VooFieldBase<DateTime> {
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -69,10 +69,10 @@ class VooDateField extends VooFieldBase<DateTime> {
         value: initialValue != null ? format.format(initialValue!) : '',
         icon: prefixIcon ?? const Icon(Icons.calendar_today),
       );
-      
+
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
-      
+
       // Build error widget if there's an error
       if (fieldError != null && fieldError.isNotEmpty) {
         readOnlyContent = Column(
@@ -83,20 +83,15 @@ class VooDateField extends VooFieldBase<DateTime> {
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(left: 12.0),
-              child: Text(
-                fieldError,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              ),
+              child: Text(fieldError, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error)),
             ),
           ],
         );
       }
-      
+
       readOnlyContent = buildWithLabel(context, readOnlyContent);
       readOnlyContent = buildWithActions(context, readOnlyContent);
-      
+
       return buildFieldContainer(context, readOnlyContent);
     }
 
@@ -144,71 +139,47 @@ class VooDateField extends VooFieldBase<DateTime> {
           const SizedBox(height: 4),
           Padding(
             padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              fieldError,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
-            ),
+            child: Text(fieldError, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error)),
           ),
         ],
       );
     }
 
     // Compose with label, helper and actions using base class methods
-    return buildFieldContainer(
-      context,
-      buildWithLabel(
-        context,
-        buildWithHelper(
-          context,
-          buildWithActions(
-            context,
-            fieldWithError,
-          ),
-        ),
-      ),
-    );
+    return buildFieldContainer(context, buildWithLabel(context, buildWithHelper(context, buildWithActions(context, fieldWithError))));
   }
 
   @override
-  VooDateField copyWith({
-    String? name,
-    String? label,
-    DateTime? initialValue,
-    VooFieldLayout? layout,
-    bool? readOnly,
-  }) =>
-      VooDateField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        layout: layout ?? this.layout,
-        isHidden: isHidden,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-        controller: controller,
-        focusNode: focusNode,
-        firstDate: firstDate,
-        lastDate: lastDate,
-        dateFormat: dateFormat,
-        autofocus: autofocus,
-      );
+  VooDateField copyWith({String? name, String? label, DateTime? initialValue, VooFieldLayout? layout, bool? readOnly}) => VooDateField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    layout: layout ?? this.layout,
+    isHidden: isHidden,
+    minWidth: minWidth,
+    maxWidth: maxWidth,
+    minHeight: minHeight,
+    maxHeight: maxHeight,
+    controller: controller,
+    focusNode: focusNode,
+    firstDate: firstDate,
+    lastDate: lastDate,
+    dateFormat: dateFormat,
+    autofocus: autofocus,
+  );
 }

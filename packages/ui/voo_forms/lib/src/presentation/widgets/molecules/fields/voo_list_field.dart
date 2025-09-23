@@ -127,18 +127,12 @@ class VooListField<T> extends VooFieldBase<List<T>> {
               labelWidget ??
                   Text(
                     label!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                   ),
               const SizedBox(height: 8),
             ],
             if (items.isEmpty)
-              VooReadOnlyField(
-                value: placeholder ?? 'No items',
-                showBorder: false,
-              )
+              VooReadOnlyField(value: placeholder ?? 'No items', showBorder: false)
             else
               ...items.asMap().entries.map((entry) {
                 final index = entry.key;
@@ -152,36 +146,21 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                         Container(
                           margin: const EdgeInsets.only(right: 8),
                           padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer,
-                            shape: BoxShape.circle,
-                          ),
+                          decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, shape: BoxShape.circle),
                           child: Text(
                             '${index + 1}',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
-                      Expanded(
-                        child: AbsorbPointer(
-                          child: itemBuilder(context, item, index),
-                        ),
-                      ),
+                      Expanded(child: AbsorbPointer(child: itemBuilder(context, item, index))),
                     ],
                   ),
                 );
               }).toList(),
             if (helper != null) ...[
               const SizedBox(height: 8),
-              Text(
-                helper!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
           ],
         ),
@@ -199,9 +178,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
           padding: const EdgeInsets.all(24.0),
           child: Text(
             placeholder ?? 'No items added yet',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            ),
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
           ),
         ),
       );
@@ -214,12 +191,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
         onReorder: onReorder!,
         proxyDecorator: (child, index, animation) => AnimatedBuilder(
           animation: animation,
-          builder: (context, child) => Material(
-            elevation: 8,
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            child: child,
-          ),
+          builder: (context, child) => Material(elevation: 8, color: Colors.transparent, borderRadius: BorderRadius.circular(12), child: child),
           child: child,
         ),
         itemBuilder: (context, index) => Container(
@@ -233,30 +205,19 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                   width: 32,
                   height: 32,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(16)),
                   child: Text(
                     '${index + 1}',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(width: 12),
               ],
               // Main item content
-              Expanded(
-                child: itemBuilder(context, items[index], index),
-              ),
+              Expanded(child: itemBuilder(context, items[index], index)),
               // Drag handle for reordering
               const SizedBox(width: 8),
-              Icon(
-                Icons.drag_indicator,
-                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-              ),
+              Icon(Icons.drag_indicator, color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
             ],
           ),
         ),
@@ -276,23 +237,15 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                           width: 32,
                           height: 32,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
+                          decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(16)),
                           child: Text(
                             '${i + 1}',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
                           ),
                         ),
                         const SizedBox(width: 12),
                         // Main item content
-                        Expanded(
-                          child: itemBuilder(context, items[i], i),
-                        ),
+                        Expanded(child: itemBuilder(context, items[i], i)),
                       ],
                     )
                   : itemBuilder(context, items[i], i),
@@ -307,10 +260,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
       mainAxisSize: MainAxisSize.min,
       children: [
         listContent,
-        if (showAddButton && !effectiveReadOnly && onAddPressed != null) ...[
-          SizedBox(height: itemSpacing),
-          _buildAddButton(context, theme),
-        ],
+        if (showAddButton && !effectiveReadOnly && onAddPressed != null) ...[SizedBox(height: itemSpacing), _buildAddButton(context, theme)],
       ],
     );
 
@@ -332,23 +282,19 @@ class VooListField<T> extends VooFieldBase<List<T>> {
   }
 
   Widget _buildAddButton(BuildContext context, ThemeData theme) => SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: enabled && !getEffectiveReadOnly(context) ? onAddPressed : null,
-          icon: addButtonIcon ?? const Icon(Icons.add),
-          label: Text(addButtonText ?? 'Add Item'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: theme.colorScheme.primary,
-            side: BorderSide(
-              color: enabled ? theme.colorScheme.outline.withValues(alpha: 0.5) : theme.colorScheme.outline.withValues(alpha: 0.3),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
-      );
+    width: double.infinity,
+    child: OutlinedButton.icon(
+      onPressed: enabled && !getEffectiveReadOnly(context) ? onAddPressed : null,
+      icon: addButtonIcon ?? const Icon(Icons.add),
+      label: Text(addButtonText ?? 'Add Item'),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: theme.colorScheme.primary,
+        side: BorderSide(color: enabled ? theme.colorScheme.outline.withValues(alpha: 0.5) : theme.colorScheme.outline.withValues(alpha: 0.3)),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    ),
+  );
 
   @override
   String? validate(List<T>? value) {
@@ -363,46 +309,39 @@ class VooListField<T> extends VooFieldBase<List<T>> {
   }
 
   @override
-  VooListField<T> copyWith({
-    List<T>? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooListField<T>(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        layout: layout ?? this.layout,
-        items: initialValue ?? items,
-        itemBuilder: itemBuilder,
-        onAddPressed: onAddPressed,
-        onReorder: onReorder,
-        showAddButton: showAddButton,
-        showRemoveButtons: showRemoveButtons,
-        canReorderItems: canReorderItems,
-        addButtonText: addButtonText,
-        addButtonIcon: addButtonIcon,
-        removeButtonTooltip: removeButtonTooltip,
-        removeButtonIcon: removeButtonIcon,
-        showItemNumbers: showItemNumbers,
-        showItemBorders: showItemBorders,
-        emptyStateWidget: emptyStateWidget,
-        itemDecoration: itemDecoration,
-        itemSpacing: itemSpacing,
-      );
+  VooListField<T> copyWith({List<T>? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooListField<T>(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    layout: layout ?? this.layout,
+    items: initialValue ?? items,
+    itemBuilder: itemBuilder,
+    onAddPressed: onAddPressed,
+    onReorder: onReorder,
+    showAddButton: showAddButton,
+    showRemoveButtons: showRemoveButtons,
+    canReorderItems: canReorderItems,
+    addButtonText: addButtonText,
+    addButtonIcon: addButtonIcon,
+    removeButtonTooltip: removeButtonTooltip,
+    removeButtonIcon: removeButtonIcon,
+    showItemNumbers: showItemNumbers,
+    showItemBorders: showItemBorders,
+    emptyStateWidget: emptyStateWidget,
+    itemDecoration: itemDecoration,
+    itemSpacing: itemSpacing,
+  );
 }

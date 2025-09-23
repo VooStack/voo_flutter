@@ -141,9 +141,7 @@ class VooDataGridController<T> extends ChangeNotifier {
   void toggleColumnVisibility(String field) {
     final index = _columns.indexWhere((col) => col.field == field);
     if (index >= 0) {
-      _columns[index] = _columns[index].copyWith(
-        visible: !_columns[index].visible,
-      );
+      _columns[index] = _columns[index].copyWith(visible: !_columns[index].visible);
       notifyListeners();
     }
   }
@@ -151,7 +149,7 @@ class VooDataGridController<T> extends ChangeNotifier {
   /// Set visible columns for responsive behavior
   void setVisibleColumns(List<VooDataColumn<T>> visibleColumns) {
     bool hasChanges = false;
-    
+
     for (final column in _columns) {
       final shouldBeVisible = visibleColumns.any((col) => col.field == column.field);
       if (column.visible != shouldBeVisible) {
@@ -162,7 +160,7 @@ class VooDataGridController<T> extends ChangeNotifier {
         }
       }
     }
-    
+
     // Only notify listeners if there were actual changes
     if (hasChanges) {
       notifyListeners();
@@ -185,9 +183,9 @@ class VooDataGridController<T> extends ChangeNotifier {
 
   /// Calculate flex width for column
   double _calculateFlexWidth(VooDataColumn<T> column) =>
-    // This will be calculated based on available space
-    // For now, return a default width
-    150.0;
+      // This will be calculated based on available space
+      // For now, return a default width
+      150.0;
 
   /// Reorder columns
   void reorderColumns(int oldIndex, int newIndex) {
@@ -260,10 +258,7 @@ class VooDataGridController<T> extends ChangeNotifier {
 
     final currentSort = dataSource.sorts.firstWhere(
       (sort) => sort.field == field,
-      orElse: () => VooColumnSort(
-        field: field,
-        direction: VooSortDirection.none,
-      ),
+      orElse: () => VooColumnSort(field: field, direction: VooSortDirection.none),
     );
 
     VooSortDirection newDirection;
@@ -299,10 +294,7 @@ class VooDataGridController<T> extends ChangeNotifier {
   VooSortDirection getSortDirection(String field) {
     final sort = dataSource.sorts.firstWhere(
       (sort) => sort.field == field,
-      orElse: () => VooColumnSort(
-        field: field,
-        direction: VooSortDirection.none,
-      ),
+      orElse: () => VooColumnSort(field: field, direction: VooSortDirection.none),
     );
     return sort.direction;
   }
@@ -316,16 +308,16 @@ class VooDataGridController<T> extends ChangeNotifier {
   void dispose() {
     // Remove data source listener first
     dataSource.removeListener(_onDataSourceChanged);
-    
+
     // Dispose synchronized controller to remove all scroll listeners
     horizontalSyncController.dispose();
-    
+
     // Now safe to dispose individual scroll controllers
     horizontalScrollController.dispose();
     filterHorizontalScrollController.dispose();
     bodyHorizontalScrollController.dispose();
     verticalScrollController.dispose();
-    
+
     super.dispose();
   }
 }

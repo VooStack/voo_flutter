@@ -41,9 +41,7 @@ class VooDataGridTheme {
       hoveredRowBackgroundColor: colorScheme.surfaceContainerHigh,
       borderColor: colorScheme.outline,
       gridLineColor: colorScheme.outlineVariant.withValues(alpha: 0.3),
-      headerTextStyle: theme.textTheme.titleSmall!.copyWith(
-        fontWeight: FontWeight.w600,
-      ),
+      headerTextStyle: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w600),
       cellTextStyle: theme.textTheme.bodyMedium!,
     );
   }

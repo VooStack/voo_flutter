@@ -23,7 +23,7 @@ class VooFormField<T> extends Equatable {
   final VoidCallback? onTap;
   final FocusNode? focusNode;
   final TextEditingController? controller;
-  
+
   // For selection fields
   final List<VooFieldOption<T>>? options;
   final bool allowMultiple;
@@ -33,13 +33,13 @@ class VooFormField<T> extends Equatable {
   final String? searchHint;
   final Duration? searchDebounce;
   final int? minSearchLength;
-  
+
   // For numeric fields
   final num? min;
   final num? max;
   final num? step;
   final int? divisions;
-  
+
   // For text fields
   final int? maxLength;
   final int? maxLines;
@@ -52,13 +52,13 @@ class VooFormField<T> extends Equatable {
   final bool? obscureText;
   final bool? autocorrect;
   final bool? enableSuggestions;
-  
+
   // For date/time fields
   final DateTime? minDate;
   final DateTime? maxDate;
   final TimeOfDay? minTime;
   final TimeOfDay? maxTime;
-  
+
   // Styling
   final IconData? prefixIcon;
   final IconData? suffixIcon;
@@ -67,13 +67,13 @@ class VooFormField<T> extends Equatable {
   final EdgeInsetsGeometry? padding;
   final InputDecoration? decoration;
   final List<Widget>? actions;
-  
+
   // Layout
   final int? gridColumns;
   final double? width;
   final double? height;
   final bool expanded;
-  
+
   // List field specific
   final VooFormField? itemTemplate;
   final List<VooFormField>? listItems;
@@ -89,13 +89,13 @@ class VooFormField<T> extends Equatable {
   final void Function(T item)? onAddItem;
   final void Function(int index, T item)? onRemoveItem;
   final void Function(int index, T item)? onEditItem;
-  
+
   // Validation
   final String? error;
   final bool showError;
   final bool validateOnChange;
   final bool validateOnFocusLost;
-  
+
   // Custom
   final Map<String, dynamic>? metadata;
   final String? customWidgetType;
@@ -268,103 +268,102 @@ class VooFormField<T> extends Equatable {
     Widget? customWidget,
     Widget Function(BuildContext context, VooFormField field, dynamic value)? customBuilder,
     Widget? readOnlyWidget,
-  }) =>
-      VooFormField<T>(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        hint: hint ?? this.hint,
-        placeholder: placeholder ?? this.placeholder,
-        helper: helper ?? this.helper,
-        value: value ?? this.value,
-        initialValue: initialValue ?? this.initialValue,
-        type: type ?? this.type,
-        required: required ?? this.required,
-        enabled: enabled ?? this.enabled,
-        visible: visible ?? this.visible,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators ?? this.validators,
-        onChanged: onChanged ?? this.onChanged,
-        onTap: onTap ?? this.onTap,
-        focusNode: focusNode ?? this.focusNode,
-        controller: controller ?? this.controller,
-        options: options ?? this.options,
-        allowMultiple: allowMultiple ?? this.allowMultiple,
-        items: items ?? this.items,
-        asyncOptionsLoader: asyncOptionsLoader ?? this.asyncOptionsLoader,
-        enableSearch: enableSearch ?? this.enableSearch,
-        searchHint: searchHint ?? this.searchHint,
-        searchDebounce: searchDebounce ?? this.searchDebounce,
-        minSearchLength: minSearchLength ?? this.minSearchLength,
-        min: min ?? this.min,
-        max: max ?? this.max,
-        step: step ?? this.step,
-        divisions: divisions ?? this.divisions,
-        maxLength: maxLength ?? this.maxLength,
-        maxLines: maxLines ?? this.maxLines,
-        minLines: minLines ?? this.minLines,
-        pattern: pattern ?? this.pattern,
-        inputFormatters: inputFormatters ?? this.inputFormatters,
-        textCapitalization: textCapitalization ?? this.textCapitalization,
-        textInputAction: textInputAction ?? this.textInputAction,
-        keyboardType: keyboardType ?? this.keyboardType,
-        obscureText: obscureText ?? this.obscureText,
-        autocorrect: autocorrect ?? this.autocorrect,
-        enableSuggestions: enableSuggestions ?? this.enableSuggestions,
-        minDate: minDate ?? this.minDate,
-        maxDate: maxDate ?? this.maxDate,
-        minTime: minTime ?? this.minTime,
-        maxTime: maxTime ?? this.maxTime,
-        prefixIcon: prefixIcon ?? this.prefixIcon,
-        suffixIcon: suffixIcon ?? this.suffixIcon,
-        prefix: prefix ?? this.prefix,
-        suffix: suffix ?? this.suffix,
-        padding: padding ?? this.padding,
-        decoration: decoration ?? this.decoration,
-        actions: actions ?? this.actions,
-        gridColumns: gridColumns ?? this.gridColumns,
-        width: width ?? this.width,
-        height: height ?? this.height,
-        expanded: expanded ?? this.expanded,
-        itemTemplate: itemTemplate ?? this.itemTemplate,
-        listItems: listItems ?? this.listItems,
-        minItems: minItems ?? this.minItems,
-        maxItems: maxItems ?? this.maxItems,
-        canAddItems: canAddItems ?? this.canAddItems,
-        canRemoveItems: canRemoveItems ?? this.canRemoveItems,
-        canReorderItems: canReorderItems ?? this.canReorderItems,
-        addButtonText: addButtonText ?? this.addButtonText,
-        removeButtonText: removeButtonText ?? this.removeButtonText,
-        addButtonIcon: addButtonIcon ?? this.addButtonIcon,
-        removeButtonIcon: removeButtonIcon ?? this.removeButtonIcon,
-        onAddItem: onAddItem ?? this.onAddItem,
-        onRemoveItem: onRemoveItem ?? this.onRemoveItem,
-        onEditItem: onEditItem ?? this.onEditItem,
-        error: error ?? this.error,
-        showError: showError ?? this.showError,
-        validateOnChange: validateOnChange ?? this.validateOnChange,
-        validateOnFocusLost: validateOnFocusLost ?? this.validateOnFocusLost,
-        metadata: metadata ?? this.metadata,
-        customWidgetType: customWidgetType ?? this.customWidgetType,
-        customWidgetData: customWidgetData ?? this.customWidgetData,
-        customWidget: customWidget ?? this.customWidget,
-        customBuilder: customBuilder ?? this.customBuilder,
-        readOnlyWidget: readOnlyWidget ?? this.readOnlyWidget,
-      );
+  }) => VooFormField<T>(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    hint: hint ?? this.hint,
+    placeholder: placeholder ?? this.placeholder,
+    helper: helper ?? this.helper,
+    value: value ?? this.value,
+    initialValue: initialValue ?? this.initialValue,
+    type: type ?? this.type,
+    required: required ?? this.required,
+    enabled: enabled ?? this.enabled,
+    visible: visible ?? this.visible,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators ?? this.validators,
+    onChanged: onChanged ?? this.onChanged,
+    onTap: onTap ?? this.onTap,
+    focusNode: focusNode ?? this.focusNode,
+    controller: controller ?? this.controller,
+    options: options ?? this.options,
+    allowMultiple: allowMultiple ?? this.allowMultiple,
+    items: items ?? this.items,
+    asyncOptionsLoader: asyncOptionsLoader ?? this.asyncOptionsLoader,
+    enableSearch: enableSearch ?? this.enableSearch,
+    searchHint: searchHint ?? this.searchHint,
+    searchDebounce: searchDebounce ?? this.searchDebounce,
+    minSearchLength: minSearchLength ?? this.minSearchLength,
+    min: min ?? this.min,
+    max: max ?? this.max,
+    step: step ?? this.step,
+    divisions: divisions ?? this.divisions,
+    maxLength: maxLength ?? this.maxLength,
+    maxLines: maxLines ?? this.maxLines,
+    minLines: minLines ?? this.minLines,
+    pattern: pattern ?? this.pattern,
+    inputFormatters: inputFormatters ?? this.inputFormatters,
+    textCapitalization: textCapitalization ?? this.textCapitalization,
+    textInputAction: textInputAction ?? this.textInputAction,
+    keyboardType: keyboardType ?? this.keyboardType,
+    obscureText: obscureText ?? this.obscureText,
+    autocorrect: autocorrect ?? this.autocorrect,
+    enableSuggestions: enableSuggestions ?? this.enableSuggestions,
+    minDate: minDate ?? this.minDate,
+    maxDate: maxDate ?? this.maxDate,
+    minTime: minTime ?? this.minTime,
+    maxTime: maxTime ?? this.maxTime,
+    prefixIcon: prefixIcon ?? this.prefixIcon,
+    suffixIcon: suffixIcon ?? this.suffixIcon,
+    prefix: prefix ?? this.prefix,
+    suffix: suffix ?? this.suffix,
+    padding: padding ?? this.padding,
+    decoration: decoration ?? this.decoration,
+    actions: actions ?? this.actions,
+    gridColumns: gridColumns ?? this.gridColumns,
+    width: width ?? this.width,
+    height: height ?? this.height,
+    expanded: expanded ?? this.expanded,
+    itemTemplate: itemTemplate ?? this.itemTemplate,
+    listItems: listItems ?? this.listItems,
+    minItems: minItems ?? this.minItems,
+    maxItems: maxItems ?? this.maxItems,
+    canAddItems: canAddItems ?? this.canAddItems,
+    canRemoveItems: canRemoveItems ?? this.canRemoveItems,
+    canReorderItems: canReorderItems ?? this.canReorderItems,
+    addButtonText: addButtonText ?? this.addButtonText,
+    removeButtonText: removeButtonText ?? this.removeButtonText,
+    addButtonIcon: addButtonIcon ?? this.addButtonIcon,
+    removeButtonIcon: removeButtonIcon ?? this.removeButtonIcon,
+    onAddItem: onAddItem ?? this.onAddItem,
+    onRemoveItem: onRemoveItem ?? this.onRemoveItem,
+    onEditItem: onEditItem ?? this.onEditItem,
+    error: error ?? this.error,
+    showError: showError ?? this.showError,
+    validateOnChange: validateOnChange ?? this.validateOnChange,
+    validateOnFocusLost: validateOnFocusLost ?? this.validateOnFocusLost,
+    metadata: metadata ?? this.metadata,
+    customWidgetType: customWidgetType ?? this.customWidgetType,
+    customWidgetData: customWidgetData ?? this.customWidgetData,
+    customWidget: customWidget ?? this.customWidget,
+    customBuilder: customBuilder ?? this.customBuilder,
+    readOnlyWidget: readOnlyWidget ?? this.readOnlyWidget,
+  );
 
   String? validate() {
     // ignore: cast_nullable_to_non_nullable
     if (required && (value == null || (value is String && (value as String).isEmpty))) {
       return '${label ?? name} is required';
     }
-    
+
     for (final validator in validators) {
       final error = validator.validate(value);
       if (error != null) {
         return error;
       }
     }
-    
+
     return null;
   }
 
@@ -397,14 +396,7 @@ class VooFieldOption<T> extends Equatable {
   final bool enabled;
   final Map<String, dynamic>? metadata;
 
-  const VooFieldOption({
-    required this.value,
-    required this.label,
-    this.subtitle,
-    this.icon,
-    this.enabled = true,
-    this.metadata,
-  });
+  const VooFieldOption({required this.value, required this.label, this.subtitle, this.icon, this.enabled = true, this.metadata});
 
   @override
   List<Object?> get props => [value, label, subtitle, icon, enabled];

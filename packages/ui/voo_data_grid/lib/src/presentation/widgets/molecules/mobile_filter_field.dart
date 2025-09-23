@@ -10,13 +10,7 @@ class MobileFilterField extends StatelessWidget {
   final Map<String, TextEditingController> textControllers;
   final void Function(String field, dynamic value) onFilterChanged;
 
-  const MobileFilterField({
-    super.key,
-    required this.column,
-    required this.tempFilters,
-    required this.textControllers,
-    required this.onFilterChanged,
-  });
+  const MobileFilterField({super.key, required this.column, required this.tempFilters, required this.textControllers, required this.onFilterChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +20,9 @@ class MobileFilterField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          column.label,
-          style: theme.textTheme.labelLarge,
-        ),
+        Text(column.label, style: theme.textTheme.labelLarge),
         SizedBox(height: design.spacingXs),
-        MobileFilterInput(
-          column: column,
-          tempFilters: tempFilters,
-          textControllers: textControllers,
-          onFilterChanged: onFilterChanged,
-        ),
+        MobileFilterInput(column: column, tempFilters: tempFilters, textControllers: textControllers, onFilterChanged: onFilterChanged),
       ],
     );
   }

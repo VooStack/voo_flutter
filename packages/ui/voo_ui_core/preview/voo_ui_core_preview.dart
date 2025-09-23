@@ -9,45 +9,28 @@ class VooButtonPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                VooButton(
-                  onPressed: () {},
-                  child: const Text('Elevated Button'),
-                ),
-                const SizedBox(height: 16),
-                VooButton(
-                  variant: VooButtonVariant.outlined,
-                  onPressed: () {},
-                  child: const Text('Outlined Button'),
-                ),
-                const SizedBox(height: 16),
-                VooButton(
-                  variant: VooButtonVariant.text,
-                  onPressed: () {},
-                  child: const Text('Text Button'),
-                ),
-                const SizedBox(height: 16),
-                const VooButton(
-                  child: Text('Disabled Button'),
-                ),
-                const SizedBox(height: 16),
-                VooButton(
-                  icon: Icons.add,
-                  onPressed: () {},
-                  child: const Text('Button with Icon'),
-                ),
-              ],
-            ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              VooButton(onPressed: () {}, child: const Text('Elevated Button')),
+              const SizedBox(height: 16),
+              VooButton(variant: VooButtonVariant.outlined, onPressed: () {}, child: const Text('Outlined Button')),
+              const SizedBox(height: 16),
+              VooButton(variant: VooButtonVariant.text, onPressed: () {}, child: const Text('Text Button')),
+              const SizedBox(height: 16),
+              const VooButton(child: Text('Disabled Button')),
+              const SizedBox(height: 16),
+              VooButton(icon: Icons.add, onPressed: () {}, child: const Text('Button with Icon')),
+            ],
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -64,41 +47,26 @@ class _VooCheckboxPreviewState extends State<VooCheckboxPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                VooCheckbox(
-                  value: _checked,
-                  onChanged: (value) => setState(() => _checked = value ?? false),
-                ),
-                const SizedBox(height: 16),
-                VooCheckboxListTile(
-                  title: const Text('Checkbox with Label'),
-                  value: _checked,
-                  onChanged: (value) => setState(() => _checked = value ?? false),
-                ),
-                const SizedBox(height: 16),
-                VooCheckbox(
-                  value: _tristate,
-                  tristate: true,
-                  onChanged: (value) => setState(() => _tristate = value),
-                ),
-                const SizedBox(height: 16),
-                const VooCheckboxListTile(
-                  title: Text('Disabled Checkbox'),
-                  value: true,
-                  onChanged: null,
-                ),
-              ],
-            ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              VooCheckbox(value: _checked, onChanged: (value) => setState(() => _checked = value ?? false)),
+              const SizedBox(height: 16),
+              VooCheckboxListTile(title: const Text('Checkbox with Label'), value: _checked, onChanged: (value) => setState(() => _checked = value ?? false)),
+              const SizedBox(height: 16),
+              VooCheckbox(value: _tristate, tristate: true, onChanged: (value) => setState(() => _tristate = value)),
+              const SizedBox(height: 16),
+              const VooCheckboxListTile(title: Text('Disabled Checkbox'), value: true, onChanged: null),
+            ],
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -120,51 +88,31 @@ class _VooTextFieldPreviewState extends State<VooTextFieldPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  VooTextField(
-                    controller: _controller,
-                    label: 'Text Field',
-                    hint: 'Enter some text',
-                  ),
-                  const SizedBox(height: 16),
-                  const VooTextField(
-                    label: 'Password Field',
-                    hint: 'Enter password',
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 16),
-                  const VooTextField(
-                    label: 'Disabled Field',
-                    hint: 'Cannot edit',
-                    enabled: false,
-                  ),
-                  const SizedBox(height: 16),
-                  const VooTextField(
-                    label: 'Multiline Field',
-                    hint: 'Enter multiple lines',
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  const VooTextField(
-                    label: 'Field with Error',
-                    hint: 'This field has an error',
-                    error: 'This field is required',
-                  ),
-                ],
-              ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                VooTextField(controller: _controller, label: 'Text Field', hint: 'Enter some text'),
+                const SizedBox(height: 16),
+                const VooTextField(label: 'Password Field', hint: 'Enter password', obscureText: true),
+                const SizedBox(height: 16),
+                const VooTextField(label: 'Disabled Field', hint: 'Cannot edit', enabled: false),
+                const SizedBox(height: 16),
+                const VooTextField(label: 'Multiline Field', hint: 'Enter multiple lines', maxLines: 3),
+                const SizedBox(height: 16),
+                const VooTextField(label: 'Field with Error', hint: 'This field has an error', error: 'This field is required'),
+              ],
             ),
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -180,20 +128,20 @@ class _VooRadioGroupPreviewState extends State<VooRadioGroupPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: VooRadioGroup<String>(
-              items: const ['option1', 'option2', 'option3'],
-              value: _selectedValue,
-              onChanged: (value) => setState(() => _selectedValue = value),
-              labelBuilder: (value) => 'Option ${value.substring(6)}',
-            ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: VooRadioGroup<String>(
+            items: const ['option1', 'option2', 'option3'],
+            value: _selectedValue,
+            onChanged: (value) => setState(() => _selectedValue = value),
+            labelBuilder: (value) => 'Option ${value.substring(6)}',
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -209,35 +157,24 @@ class _VooSwitchPreviewState extends State<VooSwitchPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                VooSwitch(
-                  value: _enabled,
-                  onChanged: (value) => setState(() => _enabled = value),
-                ),
-                const SizedBox(height: 16),
-                VooSwitchListTile(
-                  title: const Text('Enable Feature'),
-                  value: _enabled,
-                  onChanged: (value) => setState(() => _enabled = value),
-                ),
-                const SizedBox(height: 16),
-                const VooSwitchListTile(
-                  title: Text('Disabled Switch'),
-                  value: true,
-                  onChanged: null,
-                ),
-              ],
-            ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              VooSwitch(value: _enabled, onChanged: (value) => setState(() => _enabled = value)),
+              const SizedBox(height: 16),
+              VooSwitchListTile(title: const Text('Enable Feature'), value: _enabled, onChanged: (value) => setState(() => _enabled = value)),
+              const SizedBox(height: 16),
+              const VooSwitchListTile(title: Text('Disabled Switch'), value: true, onChanged: null),
+            ],
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -253,46 +190,33 @@ class _VooSliderPreviewState extends State<VooSliderPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Value: ${_value.toStringAsFixed(0)}'),
-                  const SizedBox(height: 16),
-                  VooSlider(
-                    value: _value,
-                    onChanged: (value) => setState(() => _value = value),
-                    label: _value.toStringAsFixed(0),
-                  ),
-                  const SizedBox(height: 32),
-                  const Text('Disabled Slider'),
-                  const SizedBox(height: 16),
-                  const VooSlider(
-                    value: 30,
-                    onChanged: null,
-                  ),
-                  const SizedBox(height: 32),
-                  Text('Stepped Slider: ${_value.toStringAsFixed(0)}'),
-                  const SizedBox(height: 16),
-                  VooSlider(
-                    value: _value,
-                    onChanged: (value) => setState(() => _value = value),
-                    max: 100,
-                    divisions: 10,
-                    label: _value.toStringAsFixed(0),
-                  ),
-                ],
-              ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Value: ${_value.toStringAsFixed(0)}'),
+                const SizedBox(height: 16),
+                VooSlider(value: _value, onChanged: (value) => setState(() => _value = value), label: _value.toStringAsFixed(0)),
+                const SizedBox(height: 32),
+                const Text('Disabled Slider'),
+                const SizedBox(height: 16),
+                const VooSlider(value: 30, onChanged: null),
+                const SizedBox(height: 32),
+                Text('Stepped Slider: ${_value.toStringAsFixed(0)}'),
+                const SizedBox(height: 16),
+                VooSlider(value: _value, onChanged: (value) => setState(() => _value = value), max: 100, divisions: 10, label: _value.toStringAsFixed(0)),
+              ],
             ),
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -309,34 +233,30 @@ class _VooDateTimePickerPreviewState extends State<VooDateTimePickerPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  VooDateTimePicker(
-                    value: _selectedDate,
-                    onChanged: (value) => setState(() => _selectedDate = value),
-                    label: 'Date Picker',
-                  ),
-                  const SizedBox(height: 24),
-                  VooDateTimePicker(
-                    value: _selectedDateTime,
-                    onChanged: (value) => setState(() => _selectedDateTime = value),
-                    label: 'Date & Time Picker',
-                    showTime: true,
-                  ),
-                ],
-              ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                VooDateTimePicker(value: _selectedDate, onChanged: (value) => setState(() => _selectedDate = value), label: 'Date Picker'),
+                const SizedBox(height: 24),
+                VooDateTimePicker(
+                  value: _selectedDateTime,
+                  onChanged: (value) => setState(() => _selectedDateTime = value),
+                  label: 'Date & Time Picker',
+                  showTime: true,
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -352,22 +272,18 @@ class _VooDateRangePickerPreviewState extends State<VooDateRangePickerPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: VooDateRangePicker(
-                value: _selectedRange,
-                onChanged: (value) => setState(() => _selectedRange = value),
-                label: 'Date Range',
-              ),
-            ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Center(
+            child: VooDateRangePicker(value: _selectedRange, onChanged: (value) => setState(() => _selectedRange = value), label: 'Date Range'),
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 @pragma('preview')
@@ -383,30 +299,21 @@ class _VooSegmentedButtonPreviewState extends State<VooSegmentedButtonPreview> {
 
   @override
   Widget build(BuildContext context) => VooDesignSystem(
-      data: VooDesignSystemData.defaultSystem,
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: VooSegmentedButton<String>(
-              segments: const [
-                VooButtonSegment(
-                  value: 'option1',
-                  label: Text('Option 1'),
-                ),
-                VooButtonSegment(
-                  value: 'option2',
-                  label: Text('Option 2'),
-                ),
-                VooButtonSegment(
-                  value: 'option3',
-                  label: Text('Option 3'),
-                ),
-              ],
-              selected: _selected,
-              onSelectionChanged: (value) => setState(() => _selected = value),
-            ),
+    data: VooDesignSystemData.defaultSystem,
+    child: MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: VooSegmentedButton<String>(
+            segments: const [
+              VooButtonSegment(value: 'option1', label: Text('Option 1')),
+              VooButtonSegment(value: 'option2', label: Text('Option 2')),
+              VooButtonSegment(value: 'option3', label: Text('Option 3')),
+            ],
+            selected: _selected,
+            onSelectionChanged: (value) => setState(() => _selected = value),
           ),
         ),
       ),
-    );
+    ),
+  );
 }

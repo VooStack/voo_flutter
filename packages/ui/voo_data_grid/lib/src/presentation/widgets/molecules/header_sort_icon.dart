@@ -6,11 +6,7 @@ class HeaderSortIcon extends StatelessWidget {
   final VooSortDirection direction;
   final VooDataGridTheme theme;
 
-  const HeaderSortIcon({
-    super.key,
-    required this.direction,
-    required this.theme,
-  });
+  const HeaderSortIcon({super.key, required this.direction, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +30,7 @@ class HeaderSortIcon extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(left: 4),
-      child: Icon(
-        icon,
-        size: 16,
-        color: color,
-      ),
+      child: Icon(icon, size: 16, color: color),
     );
   }
 }

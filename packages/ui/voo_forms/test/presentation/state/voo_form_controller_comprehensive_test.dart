@@ -53,15 +53,15 @@ void main() {
 
       test('handles numeric boundary values', () {
         controller.registerField('number');
-        
+
         // Test max int
         controller.setValue('number', 9223372036854775807);
         expect(controller.getValue('number'), 9223372036854775807);
-        
+
         // Test min int
         controller.setValue('number', -9223372036854775808);
         expect(controller.getValue('number'), -9223372036854775808);
-        
+
         // Test double precision
         controller.setValue('number', 0.00000000001);
         expect(controller.getValue('number'), 0.00000000001);
@@ -78,10 +78,8 @@ void main() {
 
     group('Validation - Error Conditions', () {
       test('validates with throwing validators', () {
-        controller.registerField('field1', validators: [
-          (dynamic value) => throw Exception('Validator error'),
-        ],);
-        
+        controller.registerField('field1', validators: [(dynamic value) => throw Exception('Validator error')]);
+
         controller.setValue('field1', 'test');
         final isValid = controller.validate();
         expect(isValid, false);
@@ -89,10 +87,13 @@ void main() {
       });
 
       test('validates with null-returning validators', () {
-        controller.registerField('field1', validators: [
-          (dynamic value) => null, // Validator returns null (valid)
-        ],);
-        
+        controller.registerField(
+          'field1',
+          validators: [
+            (dynamic value) => null, // Validator returns null (valid)
+          ],
+        );
+
         controller.setValue('field1', 'test');
         final isValid = controller.validate();
         expect(isValid, true);
@@ -100,10 +101,13 @@ void main() {
       });
 
       test('validates with empty string error messages', () {
-        controller.registerField('field1', validators: [
-          (dynamic value) => '', // Empty string should be treated as valid
-        ],);
-        
+        controller.registerField(
+          'field1',
+          validators: [
+            (dynamic value) => '', // Empty string should be treated as valid
+          ],
+        );
+
         controller.setValue('field1', 'test');
         final isValid = controller.validate();
         expect(isValid, true);
@@ -111,10 +115,13 @@ void main() {
       });
 
       test('validates with whitespace-only error messages', () {
-        controller.registerField('field1', validators: [
-          (dynamic value) => '   ', // Whitespace-only should be invalid
-        ],);
-        
+        controller.registerField(
+          'field1',
+          validators: [
+            (dynamic value) => '   ', // Whitespace-only should be invalid
+          ],
+        );
+
         controller.setValue('field1', 'test');
         final isValid = controller.validate();
         expect(isValid, false);
@@ -122,24 +129,23 @@ void main() {
       });
 
       test('handles validation with mixed validator types', () {
-        controller.registerField('field1', validators: [
-          VooValidator.required<String>(),
-          (dynamic value) => (value as String).length < 3 ? 'Too short' : null,
-          VooValidator.maxLength(10),
-        ],);
-        
+        controller.registerField(
+          'field1',
+          validators: [VooValidator.required<String>(), (dynamic value) => (value as String).length < 3 ? 'Too short' : null, VooValidator.maxLength(10)],
+        );
+
         // Test empty value
         controller.setValue('field1', '');
         expect(controller.validate(), false);
-        
+
         // Test too short
         controller.setValue('field1', 'ab');
         expect(controller.validate(), false);
-        
+
         // Test too long
         controller.setValue('field1', 'this is way too long');
         expect(controller.validate(), false);
-        
+
         // Test valid
         controller.setValue('field1', 'perfect');
         expect(controller.validate(), true);
@@ -147,17 +153,20 @@ void main() {
 
       test('stops at first validation error', () {
         var secondValidatorCalled = false;
-        controller.registerField('field1', validators: [
-          (dynamic value) => 'First error',
-          (dynamic value) {
-            secondValidatorCalled = true;
-            return 'Second error';
-          },
-        ],);
-        
+        controller.registerField(
+          'field1',
+          validators: [
+            (dynamic value) => 'First error',
+            (dynamic value) {
+              secondValidatorCalled = true;
+              return 'Second error';
+            },
+          ],
+        );
+
         controller.setValue('field1', 'test');
         controller.validate();
-        
+
         expect(controller.getError('field1'), 'First error');
         expect(secondValidatorCalled, false);
       });
@@ -166,65 +175,50 @@ void main() {
     group('Validation - Display Modes', () {
       test('respects onTyping display mode', () {
         controller = VooFormController();
-        
-        controller.registerField(
-          'field1',
-          validators: [VooValidator.required()],
-        );
-        
+
+        controller.registerField('field1', validators: [VooValidator.required()]);
+
         // Error should show when validation is triggered
         controller.setValue('field1', '', validate: true);
         expect(controller.hasError('field1'), true);
-        
+
         // Setting valid value with validate=true should clear error
         controller.setValue('field1', 'valid', validate: true);
         expect(controller.hasError('field1'), false);
-        
+
         // Setting empty again should show error with onTyping mode
         controller.setValue('field1', '', validate: true);
         expect(controller.hasError('field1'), true);
       });
 
       test('respects onSubmit display mode', () async {
-        controller = VooFormController(
-          errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-        );
-        
-        controller.registerField(
-          'field1',
-          validators: [VooValidator.required()],
-        );
-        
+        controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
+
+        controller.registerField('field1', validators: [VooValidator.required()]);
+
         // Error should not show before submit
         controller.setValue('field1', '');
         controller.validate();
         expect(controller.hasError('field1'), false);
-        
+
         // Error should show after submit attempt
-        final result = await controller.submit(
-          onSubmit: (_) async {},
-        );
-        
+        final result = await controller.submit(onSubmit: (_) async {});
+
         expect(result, false); // Submit should fail
         expect(controller.hasError('field1'), true); // Error should now be visible
       });
 
       test('respects none display mode', () {
-        controller = VooFormController(
-          errorDisplayMode: VooFormErrorDisplayMode.none,
-        );
-        
-        controller.registerField(
-          'field1',
-          validators: [VooValidator.required()],
-        );
-        
+        controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.none);
+
+        controller.registerField('field1', validators: [VooValidator.required()]);
+
         controller.setValue('field1', '');
         final isValid = controller.validate();
-        
+
         // Validation should return false but errors are shown with none mode
         expect(isValid, false);
-        
+
         // With none mode, validateAll shows errors
         expect(controller.hasError('field1'), true);
       });
@@ -233,35 +227,31 @@ void main() {
     group('State Management - Race Conditions', () {
       test('handles rapid value changes', () {
         controller.registerField('field1');
-        
+
         for (int i = 0; i < 1000; i++) {
           controller.setValue('field1', 'value$i');
         }
-        
+
         expect(controller.getValue('field1'), 'value999');
         expect(controller.isDirty, true);
       });
 
       test('handles concurrent validation calls', () async {
-        controller.registerField('field1', validators: [
-          (dynamic value) => value == null || value.toString().isEmpty
-              ? 'Required'
-              : null,
-        ],);
-        
+        controller.registerField('field1', validators: [(dynamic value) => value == null || value.toString().isEmpty ? 'Required' : null]);
+
         // Simulate concurrent validation
         final futures = <Future<bool>>[];
         for (int i = 0; i < 10; i++) {
           futures.add(Future<bool>(() => controller.validate()));
         }
-        
+
         final results = await Future.wait(futures);
         expect(results.every((r) => r == false), isTrue);
       });
 
       test('prevents multiple simultaneous submits', () async {
         controller.registerField('field1', initialValue: 'test');
-        
+
         var submitCount = 0;
         Future<bool> submit() => controller.submit(
           onSubmit: (_) async {
@@ -269,15 +259,15 @@ void main() {
             await Future<void>.delayed(const Duration(milliseconds: 100));
           },
         );
-        
+
         // Try to submit multiple times
         final futures = <Future<bool>>[];
         for (int i = 0; i < 5; i++) {
           futures.add(submit());
         }
-        
+
         await Future.wait(futures);
-        
+
         // Only first submit should execute
         expect(submitCount, 1);
         expect(controller.isSubmitting, false);
@@ -289,22 +279,22 @@ void main() {
         // Register fields and controllers
         controller.registerField('field1', initialValue: 'test1');
         controller.registerField('field2', initialValue: 'test2');
-        
+
         final textController1 = controller.registerTextController('field1');
         final textController2 = controller.registerTextController('field2');
         final focusNode1 = controller.getFocusNode('field1');
         final focusNode2 = controller.getFocusNode('field2');
-        
+
         // Verify everything works before dispose
         expect(textController1.text, 'test1');
         expect(textController2.text, 'test2');
         expect(focusNode1, isNotNull);
         expect(focusNode2, isNotNull);
         expect(controller.values.length, 2);
-        
+
         // Dispose the controller
         controller.dispose();
-        
+
         // Create new controller and verify clean state
         controller = VooFormController();
         expect(controller.values, isEmpty);
@@ -317,17 +307,17 @@ void main() {
         controller.registerField('field2', initialValue: 'test2');
         controller.setValue('field1', 'modified');
         controller.setValidators('field1', [VooValidator.required()]);
-        
+
         // Verify state before dispose
         expect(controller.getValue('field1'), 'modified');
         expect(controller.getValue('field2'), 'test2');
-        
+
         // Dispose
         controller.dispose();
-        
+
         // Create new controller
         controller = VooFormController();
-        
+
         // Verify new controller has clean state
         expect(controller.values, isEmpty);
         expect(controller.errors, isEmpty);
@@ -349,37 +339,11 @@ void main() {
               VooValidator.pattern(r'^[a-zA-Z0-9_]+$', 'Only alphanumeric and underscore allowed'),
             ],
           ),
-          'email': FormFieldConfig(
-            name: 'email',
-            validators: [
-              VooValidator.required(),
-              VooValidator.email(),
-            ],
-          ),
-          'password': FormFieldConfig(
-            name: 'password',
-            validators: [
-              VooValidator.required(),
-              VooValidator.password(),
-            ],
-          ),
-          'confirmPassword': const FormFieldConfig(
-            name: 'confirmPassword',
-          ),
-          'age': FormFieldConfig(
-            name: 'age',
-            validators: [
-              VooValidator.required(),
-              VooValidator.min(18),
-              VooValidator.max(120),
-            ],
-          ),
-          'terms': FormFieldConfig(
-            name: 'terms',
-            validators: [
-              (dynamic value) => value == true ? null : 'You must accept the terms',
-            ],
-          ),
+          'email': FormFieldConfig(name: 'email', validators: [VooValidator.required(), VooValidator.email()]),
+          'password': FormFieldConfig(name: 'password', validators: [VooValidator.required(), VooValidator.password()]),
+          'confirmPassword': const FormFieldConfig(name: 'confirmPassword'),
+          'age': FormFieldConfig(name: 'age', validators: [VooValidator.required(), VooValidator.min(18), VooValidator.max(120)]),
+          'terms': FormFieldConfig(name: 'terms', validators: [(dynamic value) => value == true ? null : 'You must accept the terms']),
         });
         // Add dynamic validator for password confirmation
         controller.addValidators('confirmPassword', [
@@ -434,7 +398,7 @@ void main() {
         // Dynamic validation based on user type
         void updateValidators() {
           final userType = controller.getValue('userType');
-          
+
           if (userType == 'business') {
             controller.setValidators('companyName', [VooValidator.required()]);
             controller.setValidators('taxId', [VooValidator.required()]);
@@ -458,25 +422,19 @@ void main() {
 
         // Initial setup for personal
         updateValidators();
-        
-        controller.setValues({
-          'firstName': 'John',
-          'lastName': 'Doe',
-        });
-        
+
+        controller.setValues({'firstName': 'John', 'lastName': 'Doe'});
+
         expect(controller.validate(), true);
 
         // Switch to business
         controller.setValue('userType', 'business');
         updateValidators();
-        
+
         expect(controller.validate(), false); // Company fields not filled
 
-        controller.setValues({
-          'companyName': 'Acme Corp',
-          'taxId': '12-3456789',
-        });
-        
+        controller.setValues({'companyName': 'Acme Corp', 'taxId': '12-3456789'});
+
         expect(controller.validate(), true);
         expect(controller.isFieldVisible('firstName'), false);
         expect(controller.isFieldVisible('companyName'), true);
@@ -509,35 +467,20 @@ void main() {
         controller.setValidators('email', [VooValidator.required(), VooValidator.email()]);
 
         // Validate step 1
-        controller.setValues({
-          'firstName': 'John',
-          'lastName': 'Doe',
-          'email': 'john@example.com',
-        });
-        
-        final step1Valid = controller.validateField('firstName') &&
-                           controller.validateField('lastName') &&
-                           controller.validateField('email');
+        controller.setValues({'firstName': 'John', 'lastName': 'Doe', 'email': 'john@example.com'});
+
+        final step1Valid = controller.validateField('firstName') && controller.validateField('lastName') && controller.validateField('email');
         expect(step1Valid, true);
 
         // Add validators for step 2
         controller.setValidators('street', [VooValidator.required()]);
         controller.setValidators('city', [VooValidator.required()]);
-        controller.setValidators('zipCode', [
-          VooValidator.required(),
-          VooValidator.pattern(r'^\d{5}$', 'Invalid zip code'),
-        ]);
+        controller.setValidators('zipCode', [VooValidator.required(), VooValidator.pattern(r'^\d{5}$', 'Invalid zip code')]);
 
         // Validate step 2
-        controller.setValues({
-          'street': '123 Main St',
-          'city': 'New York',
-          'zipCode': '10001',
-        });
-        
-        final step2Valid = controller.validateField('street') &&
-                           controller.validateField('city') &&
-                           controller.validateField('zipCode');
+        controller.setValues({'street': '123 Main St', 'city': 'New York', 'zipCode': '10001'});
+
+        final step2Valid = controller.validateField('street') && controller.validateField('city') && controller.validateField('zipCode');
         expect(step2Valid, true);
 
         // Final validation
@@ -549,28 +492,28 @@ void main() {
     group('Performance Tests', () {
       test('handles large number of fields efficiently', () {
         final stopwatch = Stopwatch()..start();
-        
+
         // Register 1000 fields
         for (int i = 0; i < 1000; i++) {
           controller.registerField('field$i', initialValue: 'value$i');
         }
-        
+
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
         stopwatch.reset();
-        
+
         // Set all values
         final values = <String, dynamic>{};
         for (int i = 0; i < 1000; i++) {
           values['field$i'] = 'newValue$i';
         }
         controller.setValues(values);
-        
+
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
         stopwatch.reset();
-        
+
         // Validate all
         controller.validate();
-        
+
         expect(stopwatch.elapsedMilliseconds, lessThan(100));
         stopwatch.stop();
       });
@@ -580,45 +523,36 @@ void main() {
         for (int i = 0; i < 100; i++) {
           validators.add((dynamic value) => null); // All pass
         }
-        
+
         controller.registerField('field1', validators: validators);
         controller.setValue('field1', 'test');
-        
+
         final stopwatch = Stopwatch()..start();
         controller.validate();
         stopwatch.stop();
-        
+
         expect(stopwatch.elapsedMilliseconds, lessThan(50));
       });
     });
 
     group('isValid Getter - Critical Tests', () {
       test('returns false when field has validation errors', () {
-        controller.registerField(
-          'field1',
-          validators: [VooValidator.required()],
-        );
-        
+        controller.registerField('field1', validators: [VooValidator.required()]);
+
         // Don't set value (field is empty)
         expect(controller.isValid, false);
       });
 
       test('returns true when all fields are valid', () {
-        controller.registerField(
-          'field1',
-          validators: [VooValidator.required()],
-        );
-        
+        controller.registerField('field1', validators: [VooValidator.required()]);
+
         controller.setValue('field1', 'valid value');
         expect(controller.isValid, true);
       });
 
       test('does not modify errors map during silent validation', () {
-        controller.registerField(
-          'field1',
-          validators: [VooValidator.required()],
-        );
-        
+        controller.registerField('field1', validators: [VooValidator.required()]);
+
         // Field is invalid but errors shouldn't show
         expect(controller.errors, isEmpty);
         expect(controller.isValid, false);
@@ -629,21 +563,24 @@ void main() {
         controller.registerField('field1', validators: [VooValidator.required()]);
         controller.registerField('field2', validators: [VooValidator.required()]);
         controller.registerField('field3'); // No validators
-        
+
         controller.setValue('field1', 'value');
         // field2 is empty
         controller.setValue('field3', 'value');
-        
+
         expect(controller.isValid, false);
       });
 
       test('handles validators that return non-string values', () {
-        controller.registerField('field1', validators: [
-          (dynamic value) => true, // Returns bool instead of string
-          (dynamic value) => 123, // Returns number instead of string
-          (dynamic value) => <dynamic>[], // Returns list instead of string
-        ],);
-        
+        controller.registerField(
+          'field1',
+          validators: [
+            (dynamic value) => true, // Returns bool instead of string
+            (dynamic value) => 123, // Returns number instead of string
+            (dynamic value) => <dynamic>[], // Returns list instead of string
+          ],
+        );
+
         controller.setValue('field1', 'test');
         expect(controller.isValid, true); // Non-string returns should be treated as valid
       });

@@ -12,15 +12,8 @@ class FormFieldConfig {
   final ValueChanged<dynamic>? onChanged;
   final bool enabled;
   final bool visible;
-  
-  const FormFieldConfig({
-    required this.name,
-    this.initialValue,
-    this.validators = const [],
-    this.onChanged,
-    this.enabled = true,
-    this.visible = true,
-  });
+
+  const FormFieldConfig({required this.name, this.initialValue, this.validators = const [], this.onChanged, this.enabled = true, this.visible = true});
 }
 
 /// Form controller that manages form state without depending on domain entities
@@ -35,17 +28,17 @@ class VooFormController extends ChangeNotifier {
   final Map<String, bool> _fieldVisible = {};
   final Set<String> _initializedFields = {}; // Track which fields have been initialized
   final Set<String> _touchedFields = {}; // Track which fields have been modified by user
-  
+
   final VooFormErrorDisplayMode errorDisplayMode;
   final FormValidationMode validationMode;
-  
+
   bool _hasSubmitted = false;
   bool _isDirty = false;
   bool _isSubmitting = false;
   bool _isSubmitted = false;
-  bool _isResetting = false;  // Track when we're resetting to avoid validation
-  bool _isInitializing = false;  // Track when we're initializing to avoid triggering changes
-  bool _errorsForced = false;  // Track when errors have been forced to display
+  bool _isResetting = false; // Track when we're resetting to avoid validation
+  bool _isInitializing = false; // Track when we're initializing to avoid triggering changes
+  bool _errorsForced = false; // Track when errors have been forced to display
 
   VooFormController({
     this.errorDisplayMode = VooFormErrorDisplayMode.onTyping,
@@ -94,7 +87,7 @@ class VooFormController extends ChangeNotifier {
     _onChangedCallbacks[fieldName] = onChanged;
     _fieldEnabled[fieldName] = enabled;
     _fieldVisible[fieldName] = visible;
-    
+
     // Only use initialValue on first registration
     // This prevents losing user input when BLoC rebuilds with new initialValue
     if (!_initializedFields.contains(fieldName)) {
@@ -103,7 +96,7 @@ class VooFormController extends ChangeNotifier {
         _fieldValues[fieldName] = initialValue;
       }
     }
-    
+
     // Create focus node if not exists
     _focusNodes.putIfAbsent(fieldName, FocusNode.new);
   }
@@ -115,26 +108,24 @@ class VooFormController extends ChangeNotifier {
     if (_textControllers.containsKey(fieldName)) {
       return _textControllers[fieldName]!;
     }
-    
+
     // Only create new controller on first registration
     // Prefer existing field value over initialText to preserve user input
     final existingValue = _fieldValues[fieldName]?.toString();
-    final controller = TextEditingController(
-      text: existingValue ?? initialText ?? '',
-    );
-    
+    final controller = TextEditingController(text: existingValue ?? initialText ?? '');
+
     controller.addListener(() {
       // Always update the field value when the controller text changes
       _fieldValues[fieldName] = controller.text;
       _isDirty = true;
-      
+
       // Mark field as touched when user types (unless we're initializing)
       if (!_isInitializing && !_isResetting) {
         _touchedFields.add(fieldName);
         _handleFieldChange(fieldName, controller.text);
       }
     });
-    
+
     _textControllers[fieldName] = controller;
     // Only store initial value if field doesn't already have a value
     // This preserves user input across rebuilds
@@ -148,8 +139,7 @@ class VooFormController extends ChangeNotifier {
   TextEditingController? getTextController(String fieldName) => _textControllers[fieldName];
 
   /// Get or create a focus node for a field
-  FocusNode getFocusNode(String fieldName) =>
-      _focusNodes.putIfAbsent(fieldName, FocusNode.new);
+  FocusNode getFocusNode(String fieldName) => _focusNodes.putIfAbsent(fieldName, FocusNode.new);
 
   /// Get the current value of a field
   dynamic getValue(String fieldName) => _fieldValues[fieldName];
@@ -166,10 +156,10 @@ class VooFormController extends ChangeNotifier {
 
   /// Check if a field has an error
   bool hasError(String fieldName) => _fieldErrors.containsKey(fieldName) && _fieldErrors[fieldName]!.isNotEmpty;
-  
+
   /// Check if a field has been touched by the user
   bool isFieldTouched(String fieldName) => _touchedFields.contains(fieldName);
-  
+
   bool hasAnyFieldBeenTouched() => _touchedFields.isNotEmpty;
 
   /// Begin initialization phase - prevents notifications during setup
@@ -189,17 +179,17 @@ class VooFormController extends ChangeNotifier {
   /// Set the value of a field
   void setValue(String fieldName, dynamic value, {bool validate = false, bool isUserInput = true}) {
     _fieldValues[fieldName] = value;
-    
+
     // Mark field as touched if this is user input
     if (isUserInput) {
       _touchedFields.add(fieldName);
     }
-    
+
     // Only set dirty flag if this is user input
     if (isUserInput && !_isDirty) {
       _isDirty = true;
     }
-    
+
     // Update text controller if it exists
     if (_textControllers.containsKey(fieldName)) {
       final text = value?.toString() ?? '';
@@ -207,12 +197,12 @@ class VooFormController extends ChangeNotifier {
         _textControllers[fieldName]!.text = text;
       }
     }
-    
+
     // Validate if requested
     if (validate) {
       validateField(fieldName);
     }
-    
+
     // Only notify if not initializing and is user input
     // During initialization, we'll batch notifications
     if (!_isInitializing) {
@@ -224,7 +214,7 @@ class VooFormController extends ChangeNotifier {
   void setValues(Map<String, dynamic> values, {bool validate = false}) {
     values.forEach((fieldName, value) {
       _fieldValues[fieldName] = value;
-      
+
       // Update text controller if it exists
       if (_textControllers.containsKey(fieldName)) {
         final text = value?.toString() ?? '';
@@ -233,15 +223,15 @@ class VooFormController extends ChangeNotifier {
         }
       }
     });
-    
+
     if (!_isDirty) {
       _isDirty = true;
     }
-    
+
     if (validate || validationMode == FormValidationMode.onChange) {
       validateAll();
     }
-    
+
     notifyListeners();
   }
 
@@ -250,25 +240,23 @@ class VooFormController extends ChangeNotifier {
     if (_isInitializing || _isResetting) {
       return;
     }
-    
+
     // Note: The value has already been set in the listener, so we just need to handle validation
     // Validate on change if:
     // 1. There's an existing error (always clear/update errors when user types)
     // 2. OR validationMode is onChange (explicit validation on change)
     // 3. OR errorDisplayMode is onTyping (need to show errors as user types)
     final fieldHasError = hasError(fieldName);
-    final shouldValidate = fieldHasError ||
-                         validationMode == FormValidationMode.onChange ||
-                         errorDisplayMode == VooFormErrorDisplayMode.onTyping;
-    
+    final shouldValidate = fieldHasError || validationMode == FormValidationMode.onChange || errorDisplayMode == VooFormErrorDisplayMode.onTyping;
+
     if (shouldValidate) {
       // Validate without changing the value (it's already set)
       _validateField(fieldName, value);
     }
-    
+
     // Call field's onChange callback
     _onChangedCallbacks[fieldName]?.call(value);
-    
+
     notifyListeners();
   }
 
@@ -276,7 +264,7 @@ class VooFormController extends ChangeNotifier {
   void _validateField(String fieldName, dynamic value) {
     final validators = _validators[fieldName];
     if (validators == null || validators.isEmpty) return;
-    
+
     for (final validator in validators) {
       String? error;
       // Handle both function validators and VooValidationRule objects
@@ -286,7 +274,7 @@ class VooFormController extends ChangeNotifier {
       } else if (validator is VooValidationRule) {
         error = validator.validate(value);
       }
-      
+
       if (error != null) {
         _fieldErrors[fieldName] = error;
         return;
@@ -300,20 +288,21 @@ class VooFormController extends ChangeNotifier {
   bool validateField(String fieldName, {bool force = false}) {
     final validators = _validators[fieldName];
     if (validators == null || validators.isEmpty) return true;
-    
+
     // Check if we should show errors based on errorDisplayMode
-    final shouldShowError = force || 
-        _errorsForced ||  // If errors were forced to display, keep showing them
+    final shouldShowError =
+        force ||
+        _errorsForced || // If errors were forced to display, keep showing them
         errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted);
-    
+
     final value = _fieldValues[fieldName];
     String? fieldError;
-    
+
     // Run through validators until we find an error
     for (final validator in validators) {
       String? error;
-      
+
       // Handle both function validators and VooValidationRule objects
       if (validator is Function) {
         try {
@@ -328,13 +317,13 @@ class VooFormController extends ChangeNotifier {
       } else if (validator is VooValidationRule) {
         error = validator.validate(value);
       }
-      
+
       if (error != null && error.isNotEmpty) {
         fieldError = error;
         break;
       }
     }
-    
+
     if (shouldShowError) {
       // Only notify listeners if the error state actually changed
       final previousError = _fieldErrors[fieldName];
@@ -349,7 +338,7 @@ class VooFormController extends ChangeNotifier {
         }
       }
     }
-    
+
     return fieldError == null;
   }
 
@@ -359,34 +348,35 @@ class VooFormController extends ChangeNotifier {
     if (force) {
       _errorsForced = true;
     }
-    
+
     // Check if we should show errors based on errorDisplayMode
-    final shouldShowError = force || 
+    final shouldShowError =
+        force ||
         _errorsForced ||
         errorDisplayMode == VooFormErrorDisplayMode.onTyping ||
         (errorDisplayMode == VooFormErrorDisplayMode.onSubmit && _hasSubmitted) ||
         errorDisplayMode == VooFormErrorDisplayMode.none;
-    
+
     // Clear errors when we're about to re-validate with error display
     if (shouldShowError) {
       _fieldErrors.clear();
     }
-    
+
     bool allFieldsValid = true;
-    
+
     for (final entry in _validators.entries) {
       final fieldName = entry.key;
       final validators = entry.value;
-      
+
       if (validators.isEmpty) continue;
-      
+
       final value = _fieldValues[fieldName];
       String? fieldError;
-      
+
       // Run through validators until we find an error
       for (final validator in validators) {
         String? error;
-        
+
         // Handle both function validators and VooValidationRule objects
         if (validator is Function) {
           try {
@@ -401,13 +391,13 @@ class VooFormController extends ChangeNotifier {
         } else if (validator is VooValidationRule) {
           error = validator.validate(value);
         }
-        
+
         if (error != null && error.isNotEmpty) {
           fieldError = error;
           break; // Stop checking validators for this field
         }
       }
-      
+
       if (fieldError != null) {
         if (shouldShowError) {
           _fieldErrors[fieldName] = fieldError;
@@ -415,11 +405,11 @@ class VooFormController extends ChangeNotifier {
         allFieldsValid = false;
       }
     }
-    
+
     if (shouldShowError) {
       notifyListeners();
     }
-    
+
     return allFieldsValid;
   }
 
@@ -428,17 +418,17 @@ class VooFormController extends ChangeNotifier {
     if (silent) {
       // Silent validation - check all validators without updating UI
       bool allValid = true;
-      
+
       for (final entry in _validators.entries) {
         final fieldName = entry.key;
         final validators = entry.value;
         if (validators.isEmpty) continue;
-        
+
         final value = _fieldValues[fieldName];
-        
+
         for (final validator in validators) {
           String? error;
-          
+
           // Handle both function validators and VooValidationRule objects
           if (validator is Function) {
             try {
@@ -453,19 +443,19 @@ class VooFormController extends ChangeNotifier {
           } else if (validator is VooValidationRule) {
             error = validator.validate(value);
           }
-          
+
           if (error != null && error.isNotEmpty) {
             allValid = false;
             break; // No need to check more validators for this field
           }
         }
-        
+
         if (!allValid) break; // Exit early if we found an invalid field
       }
-      
+
       return allValid;
     }
-    
+
     // Non-silent validation updates the UI based on display mode
     // Only force display if we're in onTyping mode or if the form has been submitted
     final shouldForce = errorDisplayMode == VooFormErrorDisplayMode.onTyping || _hasSubmitted;
@@ -475,7 +465,7 @@ class VooFormController extends ChangeNotifier {
   /// Clear all errors
   void clearErrors() {
     _fieldErrors.clear();
-    _errorsForced = false;  // Reset forced errors state
+    _errorsForced = false; // Reset forced errors state
     notifyListeners();
   }
 
@@ -487,22 +477,22 @@ class VooFormController extends ChangeNotifier {
 
   /// Reset form to initial values
   void reset() {
-    _isResetting = true;  // Set flag to prevent validation during reset
+    _isResetting = true; // Set flag to prevent validation during reset
     _fieldValues.clear();
     _fieldErrors.clear();
-    _initializedFields.clear();  // Clear initialized fields to allow new initialValues
+    _initializedFields.clear(); // Clear initialized fields to allow new initialValues
     _hasSubmitted = false;
     _isDirty = false;
     _isSubmitting = false;
     _isSubmitted = false;
     _errorsForced = false;
-    
+
     // Reset text controllers
     for (final controller in _textControllers.values) {
       controller.clear();
     }
-    
-    _isResetting = false;  // Clear flag after reset
+
+    _isResetting = false; // Clear flag after reset
     notifyListeners();
   }
 
@@ -510,15 +500,15 @@ class VooFormController extends ChangeNotifier {
   void clear() {
     _fieldValues.clear();
     _fieldErrors.clear();
-    _initializedFields.clear();  // Clear initialized fields to allow new initialValues
+    _initializedFields.clear(); // Clear initialized fields to allow new initialValues
     _hasSubmitted = false;
     _isDirty = false;
-    
+
     // Clear text controllers
     for (final controller in _textControllers.values) {
       controller.clear();
     }
-    
+
     notifyListeners();
   }
 
@@ -529,19 +519,19 @@ class VooFormController extends ChangeNotifier {
     void Function(dynamic error)? onError,
   }) async {
     if (_isSubmitting) return false;
-    
+
     // Mark as submitted for error display
     _hasSubmitted = true;
-    _errorsForced = true;  // Also mark errors as forced for submit
-    
+    _errorsForced = true; // Also mark errors as forced for submit
+
     // Validate all fields (force display of errors on submit)
     if (!validateAll(force: true)) {
       return false;
     }
-    
+
     _isSubmitting = true;
     notifyListeners();
-    
+
     try {
       await onSubmit(_fieldValues);
       _isSubmitting = false;
@@ -568,11 +558,8 @@ class VooFormController extends ChangeNotifier {
 
   /// Focus the next field in the tab order
   void focusNextField(String currentFieldName) {
-    final visibleFields = _fieldVisible.entries
-        .where((e) => e.value && _fieldEnabled[e.key] == true)
-        .map((e) => e.key)
-        .toList();
-    
+    final visibleFields = _fieldVisible.entries.where((e) => e.value && _fieldEnabled[e.key] == true).map((e) => e.key).toList();
+
     final currentIndex = visibleFields.indexOf(currentFieldName);
     if (currentIndex >= 0 && currentIndex < visibleFields.length - 1) {
       focusField(visibleFields[currentIndex + 1]);
@@ -581,11 +568,8 @@ class VooFormController extends ChangeNotifier {
 
   /// Focus the previous field in the tab order
   void focusPreviousField(String currentFieldName) {
-    final visibleFields = _fieldVisible.entries
-        .where((e) => e.value && _fieldEnabled[e.key] == true)
-        .map((e) => e.key)
-        .toList();
-    
+    final visibleFields = _fieldVisible.entries.where((e) => e.value && _fieldEnabled[e.key] == true).map((e) => e.key).toList();
+
     final currentIndex = visibleFields.indexOf(currentFieldName);
     if (currentIndex > 0) {
       focusField(visibleFields[currentIndex - 1]);
@@ -654,24 +638,14 @@ VooFormController useVooFormController({
   VooFormErrorDisplayMode errorDisplayMode = VooFormErrorDisplayMode.onTyping,
   FormValidationMode validationMode = FormValidationMode.onSubmit,
   Map<String, FormFieldConfig>? fields,
-}) => use(
-      _VooFormControllerHook(
-        errorDisplayMode: errorDisplayMode,
-        validationMode: validationMode,
-        fields: fields,
-      ),
-    );
+}) => use(_VooFormControllerHook(errorDisplayMode: errorDisplayMode, validationMode: validationMode, fields: fields));
 
 class _VooFormControllerHook extends Hook<VooFormController> {
   final VooFormErrorDisplayMode errorDisplayMode;
   final FormValidationMode validationMode;
   final Map<String, FormFieldConfig>? fields;
 
-  const _VooFormControllerHook({
-    required this.errorDisplayMode,
-    required this.validationMode,
-    this.fields,
-  });
+  const _VooFormControllerHook({required this.errorDisplayMode, required this.validationMode, this.fields});
 
   @override
   _VooFormControllerHookState createState() => _VooFormControllerHookState();
@@ -683,11 +657,7 @@ class _VooFormControllerHookState extends HookState<VooFormController, _VooFormC
   @override
   void initHook() {
     super.initHook();
-    _controller = VooFormController(
-      errorDisplayMode: hook.errorDisplayMode,
-      validationMode: hook.validationMode,
-      fields: hook.fields,
-    );
+    _controller = VooFormController(errorDisplayMode: hook.errorDisplayMode, validationMode: hook.validationMode, fields: hook.fields);
   }
 
   @override

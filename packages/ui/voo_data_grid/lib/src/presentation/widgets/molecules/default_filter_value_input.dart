@@ -6,22 +6,15 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 class DefaultFilterValueInput extends StatelessWidget {
   final FilterEntry filter;
   final void Function(String)? onChanged;
-  
-  const DefaultFilterValueInput({
-    super.key,
-    required this.filter,
-    this.onChanged,
-  });
+
+  const DefaultFilterValueInput({super.key, required this.filter, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return TextField(
-      decoration: FilterInputDecoration.standard(
-        context: context,
-        hintText: 'Value...',
-      ),
+      decoration: FilterInputDecoration.standard(context: context, hintText: 'Value...'),
       style: TextStyle(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
       controller: TextEditingController(text: filter.value?.toString() ?? ''),
       onChanged: onChanged,

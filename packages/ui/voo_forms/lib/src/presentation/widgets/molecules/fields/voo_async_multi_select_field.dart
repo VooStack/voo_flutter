@@ -90,13 +90,7 @@ class VooAsyncMultiSelectField<T> extends VooFieldBase<List<T>> {
   }
 
   @override
-  VooAsyncMultiSelectField<T> copyWith({
-    List<T>? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
+  VooAsyncMultiSelectField<T> copyWith({List<T>? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) =>
       VooAsyncMultiSelectField<T>(
         key: key,
         name: name ?? this.name,

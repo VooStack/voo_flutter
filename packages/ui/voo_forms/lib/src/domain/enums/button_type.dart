@@ -1,6 +1,2 @@
 /// Button type enum for form actions
-enum ButtonType {
-  filled,
-  outlined,
-  text,
-}
+enum ButtonType { filled, outlined, text }

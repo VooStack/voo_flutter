@@ -24,10 +24,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),
@@ -55,10 +52,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),
@@ -85,11 +79,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-                size: 8,
-              ),
+              child: VooNavigationBadge(item: item, config: config, size: 8),
             ),
           ),
         ),
@@ -97,12 +87,14 @@ void main() {
 
       // Should find a container with specific size
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(VooNavigationBadge),
-          matching: find.byType(Container),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(VooNavigationBadge),
+              matching: find.byType(Container),
+            )
+            .first,
       );
-      
+
       expect(container.constraints?.minWidth, 8);
       expect(container.constraints?.minHeight, 8);
     });
@@ -125,10 +117,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),
@@ -154,10 +143,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),
@@ -186,10 +172,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),
@@ -201,16 +184,22 @@ void main() {
         of: badgeFinder,
         matching: find.byType(Container),
       );
-      
+
       Container? decoratedContainer;
-      for (int i = 0; i < tester.widgetList<Container>(containerFinder).length; i++) {
-        final container = tester.widgetList<Container>(containerFinder).elementAt(i);
+      for (
+        int i = 0;
+        i < tester.widgetList<Container>(containerFinder).length;
+        i++
+      ) {
+        final container = tester
+            .widgetList<Container>(containerFinder)
+            .elementAt(i);
         if (container.decoration != null) {
           decoratedContainer = container;
           break;
         }
       }
-      
+
       expect(decoratedContainer, isNotNull);
       final container = decoratedContainer!;
 
@@ -237,10 +226,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),
@@ -250,7 +236,9 @@ void main() {
       expect(find.byType(TweenAnimationBuilder<double>), findsOneWidget);
     });
 
-    testWidgets('should not animate when animations disabled', (WidgetTester tester) async {
+    testWidgets('should not animate when animations disabled', (
+      WidgetTester tester,
+    ) async {
       const item = VooNavigationItem(
         id: 'test',
         label: 'Test',
@@ -269,10 +257,7 @@ void main() {
         createTestApp(
           child: Scaffold(
             body: Center(
-              child: VooNavigationBadge(
-                item: item,
-                config: config,
-              ),
+              child: VooNavigationBadge(item: item, config: config),
             ),
           ),
         ),

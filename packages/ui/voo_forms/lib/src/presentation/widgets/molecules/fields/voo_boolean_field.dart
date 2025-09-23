@@ -25,9 +25,7 @@ class VooBooleanField extends VooFieldBase<bool> {
     super.maxWidth,
     super.minHeight,
     super.maxHeight,
-  }) : super(
-          initialValue: initialValue ?? false,
-        );
+  }) : super(initialValue: initialValue ?? false);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +39,7 @@ class VooBooleanField extends VooFieldBase<bool> {
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -69,27 +67,15 @@ class VooBooleanField extends VooFieldBase<bool> {
                   if (labelWidget != null) labelWidget! else buildLabel(context),
                   if (helper != null) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      helper!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
+                    Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                   ],
                 ],
               ),
             ),
           ),
         ],
-        VooSwitchInput(
-          value: currentValue,
-          onChanged: enabled && !effectiveReadOnly ? handleChanged : null,
-          enabled: enabled && !effectiveReadOnly,
-        ),
-        if (actions != null && actions!.isNotEmpty) ...[
-          const SizedBox(width: 8),
-          ...actions!,
-        ],
+        VooSwitchInput(value: currentValue, onChanged: enabled && !effectiveReadOnly ? handleChanged : null, enabled: enabled && !effectiveReadOnly),
+        if (actions != null && actions!.isNotEmpty) ...[const SizedBox(width: 8), ...actions!],
       ],
     );
 
@@ -99,9 +85,7 @@ class VooBooleanField extends VooFieldBase<bool> {
       decoration: BoxDecoration(
         color: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.outline.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       child: switchRow,
     );
@@ -119,31 +103,24 @@ class VooBooleanField extends VooFieldBase<bool> {
   }
 
   @override
-  VooBooleanField copyWith({
-    String? name,
-    String? label,
-    bool? initialValue,
-    VooFieldLayout? layout,
-    bool? readOnly,
-  }) =>
-      VooBooleanField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        helper: helper,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        gridColumns: gridColumns,
-        layout: layout ?? this.layout,
-        isHidden: isHidden,
-        minWidth: minWidth,
-        maxWidth: maxWidth,
-        minHeight: minHeight,
-        maxHeight: maxHeight,
-      );
+  VooBooleanField copyWith({String? name, String? label, bool? initialValue, VooFieldLayout? layout, bool? readOnly}) => VooBooleanField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    helper: helper,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    gridColumns: gridColumns,
+    layout: layout ?? this.layout,
+    isHidden: isHidden,
+    minWidth: minWidth,
+    maxWidth: maxWidth,
+    minHeight: minHeight,
+    maxHeight: maxHeight,
+  );
 }

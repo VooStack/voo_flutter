@@ -20,18 +20,18 @@ class VooVerticalFormLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
-        mainAxisSize: mainAxisSize,
-        children: fields.asMap().entries.map((entry) {
-          final index = entry.key;
-          final field = entry.value;
-          final isLast = index == fields.length - 1;
-          
-          return Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : spacing),
-            child: field,
-          );
-        }).toList(),
+    crossAxisAlignment: crossAxisAlignment,
+    mainAxisAlignment: mainAxisAlignment,
+    mainAxisSize: mainAxisSize,
+    children: fields.asMap().entries.map((entry) {
+      final index = entry.key;
+      final field = entry.value;
+      final isLast = index == fields.length - 1;
+
+      return Padding(
+        padding: EdgeInsets.only(bottom: isLast ? 0 : spacing),
+        child: field,
       );
+    }).toList(),
+  );
 }

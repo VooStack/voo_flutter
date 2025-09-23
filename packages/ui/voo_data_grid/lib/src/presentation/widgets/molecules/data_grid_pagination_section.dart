@@ -15,13 +15,7 @@ class DataGridPaginationSection<T> extends StatelessWidget {
   /// Whether the view is mobile
   final bool isMobile;
 
-  const DataGridPaginationSection({
-    super.key,
-    required this.controller,
-    required this.theme,
-    required this.width,
-    required this.isMobile,
-  });
+  const DataGridPaginationSection({super.key, required this.controller, required this.theme, required this.width, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {

@@ -33,11 +33,5 @@ class VooMultilineField extends VooTextField {
     int? maxLines,
     int? minLines,
     super.maxLength,
-  }) : super(
-          maxLines: maxLines ?? 5,
-          minLines: minLines ?? 3,
-          keyboardType: TextInputType.multiline,
-          textInputAction: TextInputAction.newline,
-          expands: false,
-        );
+  }) : super(maxLines: maxLines ?? 5, minLines: minLines ?? 3, keyboardType: TextInputType.multiline, textInputAction: TextInputAction.newline, expands: false);
 }

@@ -5,8 +5,5 @@ class VooColumnSort {
   final String field;
   final VooSortDirection direction;
 
-  const VooColumnSort({
-    required this.field,
-    required this.direction,
-  });
+  const VooColumnSort({required this.field, required this.direction});
 }

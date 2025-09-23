@@ -43,27 +43,20 @@ class VooNumberInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      initialValue: controller == null && initialValue != null 
-          ? initialValue.toString() 
-          : null,
-      keyboardType: TextInputType.numberWithOptions(
-        signed: signed,
-        decimal: decimal,
-      ),
-      textInputAction: TextInputAction.next,
-      inputFormatters: inputFormatters,
-      onChanged: onChanged,
-      onEditingComplete: onEditingComplete,
-      onFieldSubmitted: onSubmitted,
-      enabled: enabled,
-      readOnly: readOnly,
-      autofocus: autofocus,
-      style: style,
-      textAlign: textAlign,
-      decoration: decoration ?? InputDecoration(
-        hintText: placeholder,
-      ),
-    );
+    controller: controller,
+    focusNode: focusNode,
+    initialValue: controller == null && initialValue != null ? initialValue.toString() : null,
+    keyboardType: TextInputType.numberWithOptions(signed: signed, decimal: decimal),
+    textInputAction: TextInputAction.next,
+    inputFormatters: inputFormatters,
+    onChanged: onChanged,
+    onEditingComplete: onEditingComplete,
+    onFieldSubmitted: onSubmitted,
+    enabled: enabled,
+    readOnly: readOnly,
+    autofocus: autofocus,
+    style: style,
+    textAlign: textAlign,
+    decoration: decoration ?? InputDecoration(hintText: placeholder),
+  );
 }

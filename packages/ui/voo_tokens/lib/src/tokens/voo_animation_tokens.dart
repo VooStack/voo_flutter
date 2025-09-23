@@ -40,20 +40,20 @@ class VooAnimationTokens extends Equatable {
 
   @override
   List<Object?> get props => [
-        durationInstant,
-        durationFast,
-        durationNormal,
-        durationSlow,
-        durationSlowest,
-        curveEaseIn,
-        curveEaseOut,
-        curveEaseInOut,
-        curveLinear,
-        curveBounce,
-        curveElastic,
-        pageTransition,
-        dialogAnimation,
-        tooltipDelay,
-        rippleDuration,
-      ];
+    durationInstant,
+    durationFast,
+    durationNormal,
+    durationSlow,
+    durationSlowest,
+    curveEaseIn,
+    curveEaseOut,
+    curveEaseInOut,
+    curveLinear,
+    curveBounce,
+    curveElastic,
+    pageTransition,
+    dialogAnimation,
+    tooltipDelay,
+    rippleDuration,
+  ];
 }

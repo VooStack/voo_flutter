@@ -42,9 +42,7 @@ class VooToastCard extends StatelessWidget {
         borderRadius: toast.borderRadius ?? BorderRadius.circular(8),
         child: Container(
           width: toast.width,
-          constraints: BoxConstraints(
-            maxWidth: toast.maxWidth ?? 400,
-          ),
+          constraints: BoxConstraints(maxWidth: toast.maxWidth ?? 400),
           padding: toast.padding ?? const EdgeInsets.all(16),
           child: toast.customContent,
         ),
@@ -61,18 +59,8 @@ class VooToastCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(
-            color: _getShadowColor(theme).withValues(alpha: 0.25),
-            blurRadius: 30,
-            offset: const Offset(0, 12),
-            spreadRadius: -5,
-          ),
-          BoxShadow(
-            color: _getShadowColor(theme).withValues(alpha: 0.15),
-            blurRadius: 15,
-            offset: const Offset(0, 6),
-            spreadRadius: -3,
-          ),
+          BoxShadow(color: _getShadowColor(theme).withValues(alpha: 0.25), blurRadius: 30, offset: const Offset(0, 12), spreadRadius: -5),
+          BoxShadow(color: _getShadowColor(theme).withValues(alpha: 0.15), blurRadius: 15, offset: const Offset(0, 6), spreadRadius: -3),
         ],
       ),
       child: Material(
@@ -83,17 +71,12 @@ class VooToastCard extends StatelessWidget {
           borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
           child: Container(
             width: toast.width,
-            constraints: BoxConstraints(
-              maxWidth: toast.maxWidth ?? 420,
-            ),
+            constraints: BoxConstraints(maxWidth: toast.maxWidth ?? 420),
             decoration: BoxDecoration(
               gradient: gradient,
               color: gradient == null ? backgroundColor : null,
               borderRadius: toast.borderRadius ?? BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 1.5,
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.5),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -103,24 +86,10 @@ class VooToastCard extends StatelessWidget {
                   child: Row(
                     children: [
                       if (toast.isLoading) ...[
-                        _buildIconContainer(
-                          VooLoadingIndicator(
-                            color: textColor,
-                            size: iconSize,
-                          ),
-                          textColor,
-                        ),
+                        _buildIconContainer(VooLoadingIndicator(color: textColor, size: iconSize), textColor),
                         const SizedBox(width: 14),
                       ] else if (toast.icon != null || toast.type != ToastType.custom) ...[
-                        _buildIconContainer(
-                          VooToastIcon(
-                            type: toast.type,
-                            icon: toast.icon,
-                            size: iconSize,
-                            color: textColor,
-                          ),
-                          textColor,
-                        ),
+                        _buildIconContainer(VooToastIcon(type: toast.type, icon: toast.icon, size: iconSize, color: textColor), textColor),
                         const SizedBox(width: 14),
                       ],
                       Expanded(
@@ -131,21 +100,11 @@ class VooToastCard extends StatelessWidget {
                             if (toast.title != null) ...[
                               Text(
                                 toast.title!,
-                                style: toast.titleStyle ??
-                                    theme.textTheme.titleSmall?.copyWith(
-                                      color: textColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                style: toast.titleStyle ?? theme.textTheme.titleSmall?.copyWith(color: textColor, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                             ],
-                            Text(
-                              toast.message,
-                              style: toast.textStyle ??
-                                  theme.textTheme.bodyMedium?.copyWith(
-                                    color: textColor,
-                                  ),
-                            ),
+                            Text(toast.message, style: toast.textStyle ?? theme.textTheme.bodyMedium?.copyWith(color: textColor)),
                             if (toast.actions != null && toast.actions!.isNotEmpty) ...[
                               const SizedBox(height: 12),
                               Wrap(
@@ -157,10 +116,7 @@ class VooToastCard extends StatelessWidget {
                                         style: TextButton.styleFrom(
                                           foregroundColor: action.textColor ?? textColor,
                                           backgroundColor: action.backgroundColor,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 4,
-                                          ),
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                         ),
                                         child: Text(action.label),
                                       ),
@@ -173,11 +129,7 @@ class VooToastCard extends StatelessWidget {
                       ),
                       if (toast.showCloseButton) ...[
                         const SizedBox(width: 8),
-                        VooToastCloseButton(
-                          onPressed: onDismiss,
-                          size: closeButtonSize,
-                          color: textColor,
-                        ),
+                        VooToastCloseButton(onPressed: onDismiss, size: closeButtonSize, color: textColor),
                       ],
                     ],
                   ),
@@ -192,34 +144,21 @@ class VooToastCard extends StatelessWidget {
   }
 
   Widget _buildIconContainer(Widget icon, Color color) => Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: color.withValues(alpha: 0.3),
-          ),
-        ),
-        child: Center(child: icon),
-      );
+    width: 40,
+    height: 40,
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.15),
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: color.withValues(alpha: 0.3)),
+    ),
+    child: Center(child: icon),
+  );
 
   Widget _buildEnhancedProgressBar(Color color) => Container(
-        height: progressBarHeight,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              color.withValues(alpha: 0.1),
-              color.withValues(alpha: 0.3),
-            ],
-          ),
-        ),
-        child: VooToastProgressBar(
-          duration: toast.duration,
-          height: progressBarHeight,
-          color: color.withValues(alpha: 0.8),
-        ),
-      );
+    height: progressBarHeight,
+    decoration: BoxDecoration(gradient: LinearGradient(colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.3)])),
+    child: VooToastProgressBar(duration: toast.duration, height: progressBarHeight, color: color.withValues(alpha: 0.8)),
+  );
 
   // Disable gradient when using theme colors to maintain consistency
   LinearGradient? _getGradient() => null;

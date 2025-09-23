@@ -5,30 +5,20 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 void main() {
   group('Action Column Tests', () {
     test('excludeFromApi property should be false by default', () {
-      const column = VooDataColumn<dynamic>(
-        field: 'test',
-        label: 'Test',
-      );
-      
+      const column = VooDataColumn<dynamic>(field: 'test', label: 'Test');
+
       expect(column.excludeFromApi, false);
     });
 
     test('excludeFromApi property should be set correctly', () {
-      const column = VooDataColumn<dynamic>(
-        field: 'actions',
-        label: 'Actions',
-        excludeFromApi: true,
-      );
-      
+      const column = VooDataColumn<dynamic>(field: 'actions', label: 'Actions', excludeFromApi: true);
+
       expect(column.excludeFromApi, true);
     });
 
     test('onCellTap should be null by default', () {
-      const column = VooDataColumn<dynamic>(
-        field: 'test',
-        label: 'Test',
-      );
-      
+      const column = VooDataColumn<dynamic>(field: 'test', label: 'Test');
+
       expect(column.onCellTap, null);
     });
 
@@ -37,38 +27,26 @@ void main() {
         // Handler implementation
       }
 
-      final column = VooDataColumn<dynamic>(
-        field: 'test',
-        label: 'Test',
-        onCellTap: tapHandler,
-      );
-      
+      final column = VooDataColumn<dynamic>(field: 'test', label: 'Test', onCellTap: tapHandler);
+
       expect(column.onCellTap, isNotNull);
       expect(column.onCellTap, equals(tapHandler));
     });
 
     test('copyWith should preserve excludeFromApi', () {
-      const original = VooDataColumn<dynamic>(
-        field: 'actions',
-        label: 'Actions',
-        excludeFromApi: true,
-      );
+      const original = VooDataColumn<dynamic>(field: 'actions', label: 'Actions', excludeFromApi: true);
 
       final copied = original.copyWith(label: 'New Actions');
-      
+
       expect(copied.excludeFromApi, true);
       expect(copied.label, 'New Actions');
     });
 
     test('copyWith should update excludeFromApi', () {
-      const original = VooDataColumn<dynamic>(
-        field: 'actions',
-        label: 'Actions',
-        excludeFromApi: true,
-      );
+      const original = VooDataColumn<dynamic>(field: 'actions', label: 'Actions', excludeFromApi: true);
 
       final copied = original.copyWith(excludeFromApi: false);
-      
+
       expect(copied.excludeFromApi, false);
     });
 
@@ -77,26 +55,18 @@ void main() {
         // Handler implementation
       }
 
-      final original = VooDataColumn<dynamic>(
-        field: 'test',
-        label: 'Test',
-        onCellTap: tapHandler,
-      );
+      final original = VooDataColumn<dynamic>(field: 'test', label: 'Test', onCellTap: tapHandler);
 
       final copied = original.copyWith(label: 'New Test');
-      
+
       expect(copied.onCellTap, equals(tapHandler));
       expect(copied.label, 'New Test');
     });
 
     group('Filter behavior with excludeFromApi', () {
       test('columns with excludeFromApi should not be filterable', () {
-        const column = VooDataColumn<dynamic>(
-          field: 'actions',
-          label: 'Actions',
-          excludeFromApi: true,
-        );
-        
+        const column = VooDataColumn<dynamic>(field: 'actions', label: 'Actions', excludeFromApi: true);
+
         // The filter row should skip this column even if filterable is true
         // This is tested in the widget tests
         expect(column.excludeFromApi, true);
@@ -104,12 +74,8 @@ void main() {
       });
 
       test('columns with excludeFromApi should not be sortable in practice', () {
-        const column = VooDataColumn<dynamic>(
-          field: 'actions',
-          label: 'Actions',
-          excludeFromApi: true,
-        );
-        
+        const column = VooDataColumn<dynamic>(field: 'actions', label: 'Actions', excludeFromApi: true);
+
         // The header should not allow sorting even if sortable is true
         // This is tested in the widget tests
         expect(column.excludeFromApi, true);
@@ -123,34 +89,20 @@ void main() {
       // This is handled at the UI level - filters are not created for excluded columns
       // The DataGridRequestBuilder doesn't need to know about excluded columns
       // because they never get added to the filters map in the first place
-      
+
       final filters = <String, VooDataFilter>{
-        'name': const VooDataFilter(
-          operator: VooFilterOperator.contains,
-          value: 'John',
-        ),
+        'name': const VooDataFilter(operator: VooFilterOperator.contains, value: 'John'),
         // 'actions' column would not be here because it's excludeFromApi
       };
 
-      const builder = DataGridRequestBuilder(
-        standard: ApiFilterStandard.voo,
-      );
+      const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo);
 
-      final result = builder.buildRequest(
-        page: 0,
-        pageSize: 20,
-        filters: filters,
-        sorts: [],
-      );
+      final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
       expect(result['stringFilters'], [
-        {
-          'fieldName': 'name',
-          'value': 'John',
-          'operator': 'Contains',
-        }
+        {'fieldName': 'name', 'value': 'John', 'operator': 'Contains'},
       ]);
-      
+
       // No 'actions' filter should be present
       final allFilters = [
         ...(result['stringFilters'] as List? ?? []),
@@ -158,35 +110,25 @@ void main() {
         ...(result['dateFilters'] as List? ?? []),
         ...(result['decimalFilters'] as List? ?? []),
       ];
-      
-      expect(
-        allFilters.any((f) => f['fieldName'] == 'actions'),
-        false,
-      );
+
+      expect(allFilters.any((f) => f['fieldName'] == 'actions'), false);
     });
 
     test('sorting should exclude columns marked as excludeFromApi', () {
       // Similar to filters, sorting is prevented at the UI level
       // The header doesn't allow sorting on excluded columns
-      
+
       final sorts = [
         const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
         // 'actions' column would not be here because it's excludeFromApi
       ];
 
-      const builder = DataGridRequestBuilder(
-        standard: ApiFilterStandard.voo,
-      );
+      const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo);
 
-      final result = builder.buildRequest(
-        page: 0,
-        pageSize: 20,
-        filters: {},
-        sorts: sorts,
-      );
+      final result = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: sorts);
 
       expect(result['sortBy'], 'name');
-      
+
       // No 'actions' sort should be present
       expect(result['sortBy'], isNot('actions'));
     });

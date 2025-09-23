@@ -60,10 +60,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF2196F3),
-              error: Color(0xFFF44336),
-            ),
+            colorScheme: const ColorScheme.light(primary: Color(0xFF2196F3), error: Color(0xFFF44336)),
           ),
           home: VooToastOverlay(
             child: Scaffold(
@@ -72,10 +69,7 @@ void main() {
                   child: ElevatedButton(
                     onPressed: () {
                       // Show toast with context - should use theme colors
-                      VooToast.showSuccess(
-                        message: 'Test message',
-                        context: context,
-                      );
+                      VooToast.showSuccess(message: 'Test message', context: context);
                     },
                     child: const Text('Show Toast'),
                   ),

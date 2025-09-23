@@ -48,30 +48,21 @@ class ListGroup<T> extends Equatable {
     EdgeInsets? padding,
     Map<String, dynamic>? metadata,
   }) => ListGroup<T>(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
-      items: items ?? this.items,
-      isExpanded: isExpanded ?? this.isExpanded,
-      isCollapsible: isCollapsible ?? this.isCollapsible,
-      leading: leading ?? this.leading,
-      trailing: trailing ?? this.trailing,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      titleStyle: titleStyle ?? this.titleStyle,
-      subtitleStyle: subtitleStyle ?? this.subtitleStyle,
-      padding: padding ?? this.padding,
-      metadata: metadata ?? this.metadata,
-    );
+    id: id ?? this.id,
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    items: items ?? this.items,
+    isExpanded: isExpanded ?? this.isExpanded,
+    isCollapsible: isCollapsible ?? this.isCollapsible,
+    leading: leading ?? this.leading,
+    trailing: trailing ?? this.trailing,
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    titleStyle: titleStyle ?? this.titleStyle,
+    subtitleStyle: subtitleStyle ?? this.subtitleStyle,
+    padding: padding ?? this.padding,
+    metadata: metadata ?? this.metadata,
+  );
 
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        subtitle,
-        items,
-        isExpanded,
-        isCollapsible,
-        backgroundColor,
-        metadata,
-      ];
+  List<Object?> get props => [id, title, subtitle, items, isExpanded, isCollapsible, backgroundColor, metadata];
 }

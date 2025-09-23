@@ -8,10 +8,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-              label: 'Email Address',
-            ),
+            body: VooEmailField(name: 'email', label: 'Email Address'),
           ),
         ),
       );
@@ -23,11 +20,7 @@ void main() {
     testWidgets('uses email keyboard type', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-            ),
-          ),
+          home: Scaffold(body: VooEmailField(name: 'email')),
         ),
       );
 
@@ -36,10 +29,7 @@ void main() {
     });
 
     testWidgets('validates email format', (WidgetTester tester) async {
-      const field = VooEmailField(
-        name: 'email',
-        label: 'Email',
-      );
+      const field = VooEmailField(name: 'email', label: 'Email');
 
       // Invalid email formats
       expect(field.validate('notanemail'), contains('valid'));
@@ -54,11 +44,7 @@ void main() {
     });
 
     testWidgets('validates required email', (WidgetTester tester) async {
-      final field = VooEmailField(
-        name: 'email',
-        label: 'Email',
-        validators: [VooValidator.required()],
-      );
+      final field = VooEmailField(name: 'email', label: 'Email', validators: [VooValidator.required()]);
 
       expect(field.validate(null), 'This field is required');
       expect(field.validate(''), 'This field is required');
@@ -68,11 +54,7 @@ void main() {
     testWidgets('shows email icon by default', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-            ),
-          ),
+          home: Scaffold(body: VooEmailField(name: 'email')),
         ),
       );
 
@@ -103,10 +85,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-              initialValue: 'user@example.com',
-            ),
+            body: VooEmailField(name: 'email', initialValue: 'user@example.com'),
           ),
         ),
       );
@@ -120,10 +99,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-              error: 'Invalid email address',
-            ),
+            body: VooEmailField(name: 'email', error: 'Invalid email address'),
           ),
         ),
       );
@@ -135,10 +111,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-              helper: 'We will never share your email',
-            ),
+            body: VooEmailField(name: 'email', helper: 'We will never share your email'),
           ),
         ),
       );
@@ -149,11 +122,7 @@ void main() {
     testWidgets('autocorrect is disabled', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooEmailField(
-              name: 'email',
-            ),
-          ),
+          home: Scaffold(body: VooEmailField(name: 'email')),
         ),
       );
 

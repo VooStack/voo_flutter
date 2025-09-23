@@ -112,22 +112,22 @@ class VooDataGridState<T> {
     String? primaryFilterField,
     VooDataFilter? primaryFilter,
   }) => VooDataGridState<T>(
-      mode: mode ?? this.mode,
-      allRows: allRows ?? this.allRows,
-      rows: rows ?? this.rows,
-      totalRows: totalRows ?? this.totalRows,
-      currentPage: currentPage ?? this.currentPage,
-      pageSize: pageSize ?? this.pageSize,
-      isLoading: isLoading ?? this.isLoading,
-      error: error,
-      filters: filters ?? this.filters,
-      sorts: sorts ?? this.sorts,
-      selectedRows: selectedRows ?? this.selectedRows,
-      selectionMode: selectionMode ?? this.selectionMode,
-      filtersVisible: filtersVisible ?? this.filtersVisible,
-      primaryFilterField: primaryFilterField ?? this.primaryFilterField,
-      primaryFilter: primaryFilter ?? this.primaryFilter,
-    );
+    mode: mode ?? this.mode,
+    allRows: allRows ?? this.allRows,
+    rows: rows ?? this.rows,
+    totalRows: totalRows ?? this.totalRows,
+    currentPage: currentPage ?? this.currentPage,
+    pageSize: pageSize ?? this.pageSize,
+    isLoading: isLoading ?? this.isLoading,
+    error: error,
+    filters: filters ?? this.filters,
+    sorts: sorts ?? this.sorts,
+    selectedRows: selectedRows ?? this.selectedRows,
+    selectionMode: selectionMode ?? this.selectionMode,
+    filtersVisible: filtersVisible ?? this.filtersVisible,
+    primaryFilterField: primaryFilterField ?? this.primaryFilterField,
+    primaryFilter: primaryFilter ?? this.primaryFilter,
+  );
 
   /// Get total number of pages
   int get totalPages => pageSize > 0 ? (totalRows / pageSize).ceil() : 0;

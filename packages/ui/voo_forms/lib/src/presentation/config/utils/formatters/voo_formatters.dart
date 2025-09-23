@@ -31,17 +31,8 @@ class VooFormatters {
   static TextInputFormatter dateISO() => DateFormatter(separator: '-', isoFormat: true);
 
   /// Currency formatter with customizable symbol and decimal places
-  static TextInputFormatter currency({
-    String symbol = '\$',
-    int decimalDigits = 2,
-    String locale = 'en_US',
-    bool symbolBeforeAmount = true,
-  }) => CurrencyFormatter(
-    symbol: symbol,
-    decimalDigits: decimalDigits,
-    locale: locale,
-    symbolBeforeAmount: symbolBeforeAmount,
-  );
+  static TextInputFormatter currency({String symbol = '\$', int decimalDigits = 2, String locale = 'en_US', bool symbolBeforeAmount = true}) =>
+      CurrencyFormatter(symbol: symbol, decimalDigits: decimalDigits, locale: locale, symbolBeforeAmount: symbolBeforeAmount);
 
   /// Uppercase formatter
   static TextInputFormatter uppercase() => CaseFormatter(toUpperCase: true);
@@ -51,35 +42,26 @@ class VooFormatters {
 
   /// Alphanumeric only formatter
   static TextInputFormatter alphanumeric({bool allowSpaces = false}) =>
-      FilteringTextInputFormatter.allow(
-        RegExp(allowSpaces ? '[a-zA-Z0-9\\s]' : '[a-zA-Z0-9]'),
-      );
+      FilteringTextInputFormatter.allow(RegExp(allowSpaces ? '[a-zA-Z0-9\\s]' : '[a-zA-Z0-9]'));
 
   /// Letters only formatter
-  static TextInputFormatter lettersOnly({bool allowSpaces = false}) =>
-      FilteringTextInputFormatter.allow(
-        RegExp(allowSpaces ? r'[a-zA-Z\s]' : '[a-zA-Z]'),
-      );
+  static TextInputFormatter lettersOnly({bool allowSpaces = false}) => FilteringTextInputFormatter.allow(RegExp(allowSpaces ? r'[a-zA-Z\s]' : '[a-zA-Z]'));
 
   /// Numbers only formatter
-  static TextInputFormatter numbersOnly() =>
-      FilteringTextInputFormatter.digitsOnly;
+  static TextInputFormatter numbersOnly() => FilteringTextInputFormatter.digitsOnly;
 
   /// Decimal number formatter
-  static TextInputFormatter decimal({int decimalPlaces = 2}) =>
-      FilteringTextInputFormatter.allow(
-        RegExp('^\\d*\\.?\\d{0,$decimalPlaces}'),
-      );
+  static TextInputFormatter decimal({int decimalPlaces = 2}) => FilteringTextInputFormatter.allow(RegExp('^\\d*\\.?\\d{0,$decimalPlaces}'));
 
   /// SSN formatter (XXX-XX-XXXX)
   static TextInputFormatter ssn() => SSNFormatter();
 
   /// ZIP code formatter (XXXXX or XXXXX-XXXX)
   static TextInputFormatter zipCode() => ZipCodeFormatter();
-  
+
   /// US postal code formatter (XXXXX or XXXXX-XXXX) - alias for zipCode
   static TextInputFormatter postalCodeUS() => ZipCodeFormatter();
-  
+
   /// International phone formatter
   static TextInputFormatter phoneInternational() => InternationalPhoneFormatter();
 
@@ -87,12 +69,9 @@ class VooFormatters {
   static TextInputFormatter percentage() => PercentageFormatter();
 
   /// Custom pattern formatter
-  static TextInputFormatter pattern({
-    required String pattern,
-    required Map<String, RegExp> patternMapping,
-  }) => PatternFormatter(pattern: pattern, patternMapping: patternMapping);
+  static TextInputFormatter pattern({required String pattern, required Map<String, RegExp> patternMapping}) =>
+      PatternFormatter(pattern: pattern, patternMapping: patternMapping);
 
   /// Mask formatter (e.g., "###-##-####" for SSN)
-  static TextInputFormatter mask(String mask, {String placeholder = '#'}) =>
-      MaskFormatter(mask: mask, placeholder: placeholder);
+  static TextInputFormatter mask(String mask, {String placeholder = '#'}) => MaskFormatter(mask: mask, placeholder: placeholder);
 }

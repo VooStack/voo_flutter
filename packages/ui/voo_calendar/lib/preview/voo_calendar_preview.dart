@@ -21,7 +21,9 @@ class _VooCalendarMonthPreviewState extends State<VooCalendarMonthPreview> {
   void initState() {
     super.initState();
     _controller = cal.VooCalendarController(
-        initialDate: DateTime.now(), initialView: cal.VooCalendarView.month);
+      initialDate: DateTime.now(),
+      initialView: cal.VooCalendarView.month,
+    );
   }
 
   @override
@@ -36,9 +38,7 @@ class _VooCalendarMonthPreviewState extends State<VooCalendarMonthPreview> {
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Calendar Month View'),
-          ),
+          appBar: AppBar(title: const Text('Calendar Month View')),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: cal.VooCalendar(
@@ -89,9 +89,7 @@ class _VooCalendarWeekPreviewState extends State<VooCalendarWeekPreview> {
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Calendar Week View'),
-          ),
+          appBar: AppBar(title: const Text('Calendar Week View')),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: cal.VooCalendar(
@@ -130,27 +128,33 @@ class _VooCalendarDayPreviewState extends State<VooCalendarDayPreview> {
     );
 
     // Add sample events one by one
-    _controller.addEvent(cal.VooCalendarEvent(
-      id: '1',
-      title: 'Morning Meeting',
-      startTime: DateTime.now().copyWith(hour: 9, minute: 0),
-      endTime: DateTime.now().copyWith(hour: 10, minute: 0),
-      color: Colors.blue,
-    ));
-    _controller.addEvent(cal.VooCalendarEvent(
-      id: '2',
-      title: 'Lunch',
-      startTime: DateTime.now().copyWith(hour: 12, minute: 0),
-      endTime: DateTime.now().copyWith(hour: 13, minute: 0),
-      color: Colors.green,
-    ));
-    _controller.addEvent(cal.VooCalendarEvent(
-      id: '3',
-      title: 'Team Sync',
-      startTime: DateTime.now().copyWith(hour: 15, minute: 0),
-      endTime: DateTime.now().copyWith(hour: 16, minute: 0),
-      color: Colors.orange,
-    ));
+    _controller.addEvent(
+      cal.VooCalendarEvent(
+        id: '1',
+        title: 'Morning Meeting',
+        startTime: DateTime.now().copyWith(hour: 9, minute: 0),
+        endTime: DateTime.now().copyWith(hour: 10, minute: 0),
+        color: Colors.blue,
+      ),
+    );
+    _controller.addEvent(
+      cal.VooCalendarEvent(
+        id: '2',
+        title: 'Lunch',
+        startTime: DateTime.now().copyWith(hour: 12, minute: 0),
+        endTime: DateTime.now().copyWith(hour: 13, minute: 0),
+        color: Colors.green,
+      ),
+    );
+    _controller.addEvent(
+      cal.VooCalendarEvent(
+        id: '3',
+        title: 'Team Sync',
+        startTime: DateTime.now().copyWith(hour: 15, minute: 0),
+        endTime: DateTime.now().copyWith(hour: 16, minute: 0),
+        color: Colors.orange,
+      ),
+    );
   }
 
   @override
@@ -165,9 +169,7 @@ class _VooCalendarDayPreviewState extends State<VooCalendarDayPreview> {
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Calendar Day View'),
-          ),
+          appBar: AppBar(title: const Text('Calendar Day View')),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: cal.VooCalendar(
@@ -206,9 +208,7 @@ class _VooDateTimePickerPreviewState extends State<VooDateTimePickerPreview> {
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Date & Time Pickers'),
-          ),
+          appBar: AppBar(title: const Text('Date & Time Pickers')),
           body: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
@@ -297,29 +297,35 @@ class _VooCalendarWithEventsPreviewState
       cal.VooCalendarEvent(
         id: '3',
         title: 'Client Call',
-        startTime:
-            today.add(const Duration(days: 1)).copyWith(hour: 11, minute: 0),
-        endTime:
-            today.add(const Duration(days: 1)).copyWith(hour: 12, minute: 0),
+        startTime: today
+            .add(const Duration(days: 1))
+            .copyWith(hour: 11, minute: 0),
+        endTime: today
+            .add(const Duration(days: 1))
+            .copyWith(hour: 12, minute: 0),
         color: Colors.orange,
       ),
       cal.VooCalendarEvent(
         id: '4',
         title: 'Workshop',
-        startTime:
-            today.add(const Duration(days: 2)).copyWith(hour: 10, minute: 0),
-        endTime:
-            today.add(const Duration(days: 2)).copyWith(hour: 16, minute: 0),
+        startTime: today
+            .add(const Duration(days: 2))
+            .copyWith(hour: 10, minute: 0),
+        endTime: today
+            .add(const Duration(days: 2))
+            .copyWith(hour: 16, minute: 0),
         color: Colors.purple,
         isAllDay: false,
       ),
       cal.VooCalendarEvent(
         id: '5',
         title: 'Conference',
-        startTime:
-            today.add(const Duration(days: 5)).copyWith(hour: 0, minute: 0),
-        endTime:
-            today.add(const Duration(days: 7)).copyWith(hour: 23, minute: 59),
+        startTime: today
+            .add(const Duration(days: 5))
+            .copyWith(hour: 0, minute: 0),
+        endTime: today
+            .add(const Duration(days: 7))
+            .copyWith(hour: 23, minute: 59),
         color: Colors.red,
         isAllDay: true,
       ),
@@ -360,8 +366,8 @@ class _VooCalendarWithEventsPreviewState
                 _controller.selectDate(date);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content:
-                          Text('Selected: ${date.toString().split(' ')[0]}')),
+                    content: Text('Selected: ${date.toString().split(' ')[0]}'),
+                  ),
                 );
               },
               onEventTap: (event) {
@@ -400,9 +406,7 @@ class _VooAdvancedDateTimePickerPreviewState
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Advanced Date Time Picker'),
-          ),
+          appBar: AppBar(title: const Text('Advanced Date Time Picker')),
           body: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Center(
@@ -414,8 +418,9 @@ class _VooAdvancedDateTimePickerPreviewState
                       final date = await showDatePicker(
                         context: context,
                         initialDate: _selectedDateTime ?? DateTime.now(),
-                        firstDate:
-                            DateTime.now().subtract(const Duration(days: 365)),
+                        firstDate: DateTime.now().subtract(
+                          const Duration(days: 365),
+                        ),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
                       if (date != null && mounted && context.mounted) {
@@ -498,21 +503,28 @@ class _VooCalendarCustomizationPreviewState
 
     // Add sample events with custom colors
     final today = DateTime.now();
-    _controller.addEvent(cal.VooCalendarEvent(
-      id: '1',
-      title: 'Design Review',
-      startTime: today.copyWith(hour: 10, minute: 0),
-      endTime: today.copyWith(hour: 11, minute: 30),
-      color: const Color(0xFF4CAF50),
-    ));
-    _controller.addEvent(cal.VooCalendarEvent(
-      id: '2',
-      title: 'Sprint Planning',
-      startTime:
-          today.add(const Duration(days: 1)).copyWith(hour: 9, minute: 0),
-      endTime: today.add(const Duration(days: 1)).copyWith(hour: 12, minute: 0),
-      color: const Color(0xFF2196F3),
-    ));
+    _controller.addEvent(
+      cal.VooCalendarEvent(
+        id: '1',
+        title: 'Design Review',
+        startTime: today.copyWith(hour: 10, minute: 0),
+        endTime: today.copyWith(hour: 11, minute: 30),
+        color: const Color(0xFF4CAF50),
+      ),
+    );
+    _controller.addEvent(
+      cal.VooCalendarEvent(
+        id: '2',
+        title: 'Sprint Planning',
+        startTime: today
+            .add(const Duration(days: 1))
+            .copyWith(hour: 9, minute: 0),
+        endTime: today
+            .add(const Duration(days: 1))
+            .copyWith(hour: 12, minute: 0),
+        color: const Color(0xFF2196F3),
+      ),
+    );
   }
 
   @override
@@ -586,8 +598,9 @@ class _VooCalendarCustomizationPreviewState
                     theme: cal.VooCalendarTheme.fromContext(context).copyWith(
                       todayBackgroundColor: Colors.amber.shade100,
                       todayTextColor: Colors.amber.shade900,
-                      weekendTextColor:
-                          _showWeekends ? Colors.red : Colors.grey,
+                      weekendTextColor: _showWeekends
+                          ? Colors.red
+                          : Colors.grey,
                     ),
                     onDateSelected: (date) {
                       _controller.selectDate(date);

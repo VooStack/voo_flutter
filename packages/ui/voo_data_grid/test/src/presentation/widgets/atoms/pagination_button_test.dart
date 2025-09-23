@@ -10,11 +10,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PaginationButton(
-              icon: Icons.chevron_left,
-              onPressed: () => wasPressed = true,
-              tooltip: 'Previous',
-            ),
+            body: PaginationButton(icon: Icons.chevron_left, onPressed: () => wasPressed = true, tooltip: 'Previous'),
           ),
         ),
       );
@@ -30,10 +26,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: PaginationButton(
-              icon: Icons.chevron_right,
-              tooltip: 'Next',
-            ),
+            body: PaginationButton(icon: Icons.chevron_right, tooltip: 'Next'),
           ),
         ),
       );
@@ -46,11 +39,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PaginationButton(
-              icon: Icons.first_page,
-              onPressed: () {},
-              tooltip: 'First Page',
-            ),
+            body: PaginationButton(icon: Icons.first_page, onPressed: () {}, tooltip: 'First Page'),
           ),
         ),
       );
@@ -61,17 +50,9 @@ void main() {
     testWidgets('applies theme colors correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.blue,
-            ),
-          ),
+          theme: ThemeData(colorScheme: const ColorScheme.light(primary: Colors.blue)),
           home: Scaffold(
-            body: PaginationButton(
-              icon: Icons.last_page,
-              onPressed: () {},
-              tooltip: 'Last Page',
-            ),
+            body: PaginationButton(icon: Icons.last_page, onPressed: () {}, tooltip: 'Last Page'),
           ),
         ),
       );

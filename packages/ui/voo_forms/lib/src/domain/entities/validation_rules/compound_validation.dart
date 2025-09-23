@@ -4,10 +4,7 @@ import 'package:voo_forms/src/domain/entities/validation_rules/voo_validation_ru
 class CompoundValidation<T> extends VooValidationRule<T> {
   final List<VooValidationRule<T>> rules;
 
-  const CompoundValidation({
-    required this.rules,
-    super.errorMessage = 'Validation failed',
-  });
+  const CompoundValidation({required this.rules, super.errorMessage = 'Validation failed'});
 
   @override
   String? validate(T? value) {

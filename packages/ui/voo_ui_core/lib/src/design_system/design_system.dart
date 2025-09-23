@@ -299,12 +299,7 @@ class DesignSystemProvider extends InheritedWidget {
   final DesignSystem designSystem;
   final DesignSystemType systemType;
 
-  const DesignSystemProvider({
-    super.key,
-    required this.designSystem,
-    required this.systemType,
-    required super.child,
-  });
+  const DesignSystemProvider({super.key, required this.designSystem, required this.systemType, required super.child});
 
   static DesignSystemProvider? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DesignSystemProvider>();
 
@@ -315,8 +310,7 @@ class DesignSystemProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(DesignSystemProvider oldWidget) => designSystem != oldWidget.designSystem ||
-        systemType != oldWidget.systemType;
+  bool updateShouldNotify(DesignSystemProvider oldWidget) => designSystem != oldWidget.designSystem || systemType != oldWidget.systemType;
 }
 
 /// Extension for easy access to design system

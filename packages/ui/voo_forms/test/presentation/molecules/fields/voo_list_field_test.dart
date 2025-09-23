@@ -13,10 +13,7 @@ void main() {
               name: 'items',
               label: 'Items',
               items: const [],
-              itemBuilder: (context, item, index) => VooTextField(
-                name: 'item_$index',
-                initialValue: item,
-              ),
+              itemBuilder: (context, item, index) => VooTextField(name: 'item_$index', initialValue: item),
             ),
           ),
         ),
@@ -30,11 +27,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooListField<String>(
-              name: 'items',
-              items: const ['Item 1', 'Item 2'],
-              itemBuilder: (context, item, index) => Text(item),
-            ),
+            body: VooListField<String>(name: 'items', items: const ['Item 1', 'Item 2'], itemBuilder: (context, item, index) => Text(item)),
           ),
         ),
       );
@@ -62,7 +55,7 @@ void main() {
       );
 
       expect(find.text('Add Item'), findsOneWidget);
-      
+
       // Tap add button
       await tester.tap(find.text('Add Item'));
       await tester.pumpAndSettle();
@@ -134,24 +127,16 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooListField<String>(
-              name: 'items',
-              enabled: false,
-              items: [],
-              itemBuilder: _simpleItemBuilder,
-              onAddPressed: _dummyCallback,
-            ),
+            body: VooListField<String>(name: 'items', enabled: false, items: [], itemBuilder: _simpleItemBuilder, onAddPressed: _dummyCallback),
           ),
         ),
       );
 
       // The add button should exist but be disabled
       // Note: OutlinedButton.icon is used, so we look for OutlinedButton as the base type
-      final addButtonFinder = find.byWidgetPredicate(
-        (widget) => widget is OutlinedButton,
-      );
+      final addButtonFinder = find.byWidgetPredicate((widget) => widget is OutlinedButton);
       expect(addButtonFinder, findsOneWidget);
-      
+
       final addButton = tester.widget<OutlinedButton>(addButtonFinder);
       expect(addButton.onPressed, null);
     });
@@ -179,12 +164,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooListField<String>(
-              name: 'items',
-              helper: 'Add up to 5 items',
-              items: const [],
-              itemBuilder: (context, item, index) => Text(item),
-            ),
+            body: VooListField<String>(name: 'items', helper: 'Add up to 5 items', items: const [], itemBuilder: (context, item, index) => Text(item)),
           ),
         ),
       );
@@ -234,10 +214,7 @@ void main() {
               name: 'items',
               items: const ['Item 1'],
               itemBuilder: (context, item, index) => Text(item),
-              itemDecoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              itemDecoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
             ),
           ),
         ),
@@ -245,7 +222,7 @@ void main() {
 
       // Check that the item is rendered
       expect(find.text('Item 1'), findsOneWidget);
-      
+
       // Check that a Container with decoration exists
       final containers = find.byType(Container);
       expect(containers, findsWidgets);
@@ -273,12 +250,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooListField<String>(
-              name: 'items',
-              items: const ['Item 1'],
-              itemBuilder: (context, item, index) => Text(item),
-              showRemoveButtons: false,
-            ),
+            body: VooListField<String>(name: 'items', items: const ['Item 1'], itemBuilder: (context, item, index) => Text(item), showRemoveButtons: false),
           ),
         ),
       );

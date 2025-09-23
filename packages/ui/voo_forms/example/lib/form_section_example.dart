@@ -36,7 +36,7 @@ class FormSectionExample extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             // Section with custom styling
             VooFormSection(
               title: 'Contact Details',
@@ -62,7 +62,7 @@ class FormSectionExample extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             // Collapsible section
             VooFormSection(
               title: 'Additional Information',
@@ -88,11 +88,12 @@ class FormSectionExample extends StatelessWidget {
                 VooDateField(
                   name: 'birthdate',
                   label: 'Date of Birth',
-                  initialValue: DateTime.now().subtract(const Duration(days: 365 * 25)),
+                  initialValue:
+                      DateTime.now().subtract(const Duration(days: 365 * 25)),
                 ),
               ],
             ),
-            
+
             // Section without border
             const VooFormSection(
               title: 'Preferences',
@@ -108,7 +109,7 @@ class FormSectionExample extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             // Nested sections
             VooFormSection(
               title: 'Account Settings',
@@ -128,7 +129,10 @@ class FormSectionExample extends StatelessWidget {
                 VooFormSection(
                   title: 'Security Options',
                   elevation: 0,
-                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainerHighest
+                      .withValues(alpha: 0.3),
                   children: const [
                     VooBooleanField(
                       name: 'twoFactor',

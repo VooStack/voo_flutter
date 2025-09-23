@@ -4,85 +4,85 @@ import 'package:flutter/material.dart';
 class VooCalendarTheme {
   /// Background color of the calendar
   final Color backgroundColor;
-  
+
   /// Header background color
   final Color headerBackgroundColor;
-  
+
   /// Header text color
   final Color headerTextColor;
-  
+
   /// Header text style
   final TextStyle headerTextStyle;
-  
+
   /// Weekday text style
   final TextStyle weekdayTextStyle;
-  
+
   /// Day text style
   final TextStyle dayTextStyle;
-  
+
   /// Day text color
   final Color dayTextColor;
-  
+
   /// Selected day background color
   final Color selectedDayBackgroundColor;
-  
+
   /// Selected day text color
   final Color selectedDayTextColor;
-  
+
   /// Today background color
   final Color todayBackgroundColor;
-  
+
   /// Today text color
   final Color todayTextColor;
-  
+
   /// Outside month text color
   final Color outsideMonthTextColor;
-  
+
   /// Range selection background color
   final Color rangeBackgroundColor;
-  
+
   /// Weekend text color
   final Color weekendTextColor;
-  
+
   /// Border color
   final Color borderColor;
-  
+
   /// Grid line color
   final Color gridLineColor;
-  
+
   /// Event indicator color
   final Color eventIndicatorColor;
-  
+
   /// Event background color
   final Color eventBackgroundColor;
-  
+
   /// Event title text style
   final TextStyle eventTitleTextStyle;
-  
+
   /// Event description text style
   final TextStyle eventDescriptionTextStyle;
-  
+
   /// Event time text style
   final TextStyle eventTimeTextStyle;
-  
+
   /// Week number background color
   final Color weekNumberBackgroundColor;
-  
+
   /// Week number text style
   final TextStyle weekNumberTextStyle;
-  
+
   /// Month text style (for year view)
   final TextStyle monthTextStyle;
-  
+
   /// Time text style (for day/week views)
   final TextStyle timeTextStyle;
-  
+
   /// Disabled date color
   final Color disabledDateColor;
-  
+
   /// Holiday text color
   final Color holidayTextColor;
-  
+
   const VooCalendarTheme({
     required this.backgroundColor,
     required this.headerBackgroundColor,
@@ -112,13 +112,13 @@ class VooCalendarTheme {
     required this.disabledDateColor,
     required this.holidayTextColor,
   });
-  
+
   /// Creates a calendar theme from the current Material 3 theme context
   factory VooCalendarTheme.fromContext(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    
+
     return VooCalendarTheme(
       backgroundColor: colorScheme.surface,
       headerBackgroundColor: colorScheme.surfaceContainerHighest,
@@ -139,7 +139,9 @@ class VooCalendarTheme {
       selectedDayTextColor: colorScheme.onPrimary,
       todayBackgroundColor: colorScheme.primaryContainer,
       todayTextColor: colorScheme.onPrimaryContainer,
-      outsideMonthTextColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      outsideMonthTextColor: colorScheme.onSurfaceVariant.withValues(
+        alpha: 0.5,
+      ),
       rangeBackgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
       weekendTextColor: colorScheme.error,
       borderColor: colorScheme.outline,
@@ -171,7 +173,7 @@ class VooCalendarTheme {
       holidayTextColor: colorScheme.error,
     );
   }
-  
+
   /// Creates a light theme for the calendar
   factory VooCalendarTheme.light() {
     return VooCalendarTheme(
@@ -188,10 +190,7 @@ class VooCalendarTheme {
         fontWeight: FontWeight.w500,
         color: Colors.black54,
       ),
-      dayTextStyle: const TextStyle(
-        fontSize: 14,
-        color: Colors.black87,
-      ),
+      dayTextStyle: const TextStyle(fontSize: 14, color: Colors.black87),
       dayTextColor: Colors.black87,
       selectedDayBackgroundColor: Colors.blue,
       selectedDayTextColor: Colors.white,
@@ -213,29 +212,20 @@ class VooCalendarTheme {
         fontSize: 11,
         color: Colors.black54,
       ),
-      eventTimeTextStyle: const TextStyle(
-        fontSize: 10,
-        color: Colors.black45,
-      ),
+      eventTimeTextStyle: const TextStyle(fontSize: 10, color: Colors.black45),
       weekNumberBackgroundColor: Colors.grey.shade50,
-      weekNumberTextStyle: const TextStyle(
-        fontSize: 10,
-        color: Colors.black45,
-      ),
+      weekNumberTextStyle: const TextStyle(fontSize: 10, color: Colors.black45),
       monthTextStyle: const TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: Colors.black87,
       ),
-      timeTextStyle: const TextStyle(
-        fontSize: 11,
-        color: Colors.black54,
-      ),
+      timeTextStyle: const TextStyle(fontSize: 11, color: Colors.black54),
       disabledDateColor: Colors.black26,
       holidayTextColor: Colors.red,
     );
   }
-  
+
   /// Creates a dark theme for the calendar
   factory VooCalendarTheme.dark() {
     return VooCalendarTheme(
@@ -252,10 +242,7 @@ class VooCalendarTheme {
         fontWeight: FontWeight.w500,
         color: Colors.white70,
       ),
-      dayTextStyle: const TextStyle(
-        fontSize: 14,
-        color: Colors.white,
-      ),
+      dayTextStyle: const TextStyle(fontSize: 14, color: Colors.white),
       dayTextColor: Colors.white,
       selectedDayBackgroundColor: Colors.blue.shade400,
       selectedDayTextColor: Colors.white,
@@ -277,29 +264,20 @@ class VooCalendarTheme {
         fontSize: 11,
         color: Colors.white70,
       ),
-      eventTimeTextStyle: const TextStyle(
-        fontSize: 10,
-        color: Colors.white60,
-      ),
+      eventTimeTextStyle: const TextStyle(fontSize: 10, color: Colors.white60),
       weekNumberBackgroundColor: const Color(0xFF2C2C2C),
-      weekNumberTextStyle: const TextStyle(
-        fontSize: 10,
-        color: Colors.white60,
-      ),
+      weekNumberTextStyle: const TextStyle(fontSize: 10, color: Colors.white60),
       monthTextStyle: const TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: Colors.white,
       ),
-      timeTextStyle: const TextStyle(
-        fontSize: 11,
-        color: Colors.white70,
-      ),
+      timeTextStyle: const TextStyle(fontSize: 11, color: Colors.white70),
       disabledDateColor: Colors.white30,
       holidayTextColor: Colors.red.shade300,
     );
   }
-  
+
   /// Creates a copy with overrides
   VooCalendarTheme copyWith({
     Color? backgroundColor,
@@ -332,17 +310,20 @@ class VooCalendarTheme {
   }) {
     return VooCalendarTheme(
       backgroundColor: backgroundColor ?? this.backgroundColor,
-      headerBackgroundColor: headerBackgroundColor ?? this.headerBackgroundColor,
+      headerBackgroundColor:
+          headerBackgroundColor ?? this.headerBackgroundColor,
       headerTextColor: headerTextColor ?? this.headerTextColor,
       headerTextStyle: headerTextStyle ?? this.headerTextStyle,
       weekdayTextStyle: weekdayTextStyle ?? this.weekdayTextStyle,
       dayTextStyle: dayTextStyle ?? this.dayTextStyle,
       dayTextColor: dayTextColor ?? this.dayTextColor,
-      selectedDayBackgroundColor: selectedDayBackgroundColor ?? this.selectedDayBackgroundColor,
+      selectedDayBackgroundColor:
+          selectedDayBackgroundColor ?? this.selectedDayBackgroundColor,
       selectedDayTextColor: selectedDayTextColor ?? this.selectedDayTextColor,
       todayBackgroundColor: todayBackgroundColor ?? this.todayBackgroundColor,
       todayTextColor: todayTextColor ?? this.todayTextColor,
-      outsideMonthTextColor: outsideMonthTextColor ?? this.outsideMonthTextColor,
+      outsideMonthTextColor:
+          outsideMonthTextColor ?? this.outsideMonthTextColor,
       rangeBackgroundColor: rangeBackgroundColor ?? this.rangeBackgroundColor,
       weekendTextColor: weekendTextColor ?? this.weekendTextColor,
       borderColor: borderColor ?? this.borderColor,
@@ -350,9 +331,11 @@ class VooCalendarTheme {
       eventIndicatorColor: eventIndicatorColor ?? this.eventIndicatorColor,
       eventBackgroundColor: eventBackgroundColor ?? this.eventBackgroundColor,
       eventTitleTextStyle: eventTitleTextStyle ?? this.eventTitleTextStyle,
-      eventDescriptionTextStyle: eventDescriptionTextStyle ?? this.eventDescriptionTextStyle,
+      eventDescriptionTextStyle:
+          eventDescriptionTextStyle ?? this.eventDescriptionTextStyle,
       eventTimeTextStyle: eventTimeTextStyle ?? this.eventTimeTextStyle,
-      weekNumberBackgroundColor: weekNumberBackgroundColor ?? this.weekNumberBackgroundColor,
+      weekNumberBackgroundColor:
+          weekNumberBackgroundColor ?? this.weekNumberBackgroundColor,
       weekNumberTextStyle: weekNumberTextStyle ?? this.weekNumberTextStyle,
       monthTextStyle: monthTextStyle ?? this.monthTextStyle,
       timeTextStyle: timeTextStyle ?? this.timeTextStyle,

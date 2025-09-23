@@ -1,4 +1,3 @@
-
 // Calendar Components
 export 'src/calendar.dart';
 export 'src/calendar_theme.dart';

@@ -1,12 +1,4 @@
-enum FormLayout {
-  vertical,
-  horizontal,
-  grid,
-  wrapped,
-  stepped,
-  tabbed,
-  dynamic,
-}
+enum FormLayout { vertical, horizontal, grid, wrapped, stepped, tabbed, dynamic }
 
 extension FormLayoutExtension on FormLayout {
   String get label {

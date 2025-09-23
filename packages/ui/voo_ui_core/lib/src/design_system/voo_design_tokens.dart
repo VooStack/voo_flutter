@@ -12,8 +12,7 @@ class VooDesignTokens extends DesignSystem {
   DesignSystemType get type => DesignSystemType.voo;
 
   @override
-  DesignColorTokens get colors =>
-      isDarkMode ? VooDarkColors() : VooLightColors();
+  DesignColorTokens get colors => isDarkMode ? VooDarkColors() : VooLightColors();
 
   @override
   DesignTypographyTokens get typography => VooTypography();
@@ -346,184 +345,64 @@ class VooTypography extends DesignTypographyTokens {
   String get monospaceFontFamily => _monospaceFontFamily;
 
   @override
-  TextStyle get displayLarge => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 57,
-        fontWeight: FontWeight.w300,
-        letterSpacing: -0.25,
-        height: 1.12,
-      );
+  TextStyle get displayLarge => const TextStyle(fontFamily: _fontFamily, fontSize: 57, fontWeight: FontWeight.w300, letterSpacing: -0.25, height: 1.12);
 
   @override
-  TextStyle get displayMedium => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 45,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.16,
-      );
+  TextStyle get displayMedium => const TextStyle(fontFamily: _fontFamily, fontSize: 45, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.16);
 
   @override
-  TextStyle get displaySmall => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 36,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.22,
-      );
+  TextStyle get displaySmall => const TextStyle(fontFamily: _fontFamily, fontSize: 36, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.22);
 
   @override
-  TextStyle get headlineLarge => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 32,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0,
-        height: 1.25,
-      );
+  TextStyle get headlineLarge => const TextStyle(fontFamily: _fontFamily, fontSize: 32, fontWeight: FontWeight.w600, letterSpacing: 0, height: 1.25);
 
   @override
-  TextStyle get headlineMedium => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 28,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0,
-        height: 1.29,
-      );
+  TextStyle get headlineMedium => const TextStyle(fontFamily: _fontFamily, fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: 0, height: 1.29);
 
   @override
-  TextStyle get headlineSmall => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0,
-        height: 1.33,
-      );
+  TextStyle get headlineSmall => const TextStyle(fontFamily: _fontFamily, fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: 0, height: 1.33);
 
   @override
-  TextStyle get titleLarge => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0,
-        height: 1.27,
-      );
+  TextStyle get titleLarge => const TextStyle(fontFamily: _fontFamily, fontSize: 22, fontWeight: FontWeight.w600, letterSpacing: 0, height: 1.27);
 
   @override
-  TextStyle get titleMedium => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.15,
-        height: 1.5,
-      );
+  TextStyle get titleMedium => const TextStyle(fontFamily: _fontFamily, fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.15, height: 1.5);
 
   @override
-  TextStyle get titleSmall => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.1,
-        height: 1.43,
-      );
+  TextStyle get titleSmall => const TextStyle(fontFamily: _fontFamily, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0.1, height: 1.43);
 
   @override
-  TextStyle get bodyLarge => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.5,
-      );
+  TextStyle get bodyLarge => const TextStyle(fontFamily: _fontFamily, fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.5);
 
   @override
-  TextStyle get bodyMedium => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.43,
-      );
+  TextStyle get bodyMedium => const TextStyle(fontFamily: _fontFamily, fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.43);
 
   @override
-  TextStyle get bodySmall => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.33,
-      );
+  TextStyle get bodySmall => const TextStyle(fontFamily: _fontFamily, fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.33);
 
   @override
-  TextStyle get labelLarge => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.1,
-        height: 1.43,
-      );
+  TextStyle get labelLarge => const TextStyle(fontFamily: _fontFamily, fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1, height: 1.43);
 
   @override
-  TextStyle get labelMedium => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-        height: 1.33,
-      );
+  TextStyle get labelMedium => const TextStyle(fontFamily: _fontFamily, fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.5, height: 1.33);
 
   @override
-  TextStyle get labelSmall => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 11,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-        height: 1.45,
-      );
+  TextStyle get labelSmall => const TextStyle(fontFamily: _fontFamily, fontSize: 11, fontWeight: FontWeight.w500, letterSpacing: 0.5, height: 1.45);
 
   @override
-  TextStyle get code => const TextStyle(
-        fontFamily: _monospaceFontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.43,
-      );
+  TextStyle get code => const TextStyle(fontFamily: _monospaceFontFamily, fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.43);
 
   @override
-  TextStyle get codeBlock => const TextStyle(
-        fontFamily: _monospaceFontFamily,
-        fontSize: 13,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0,
-        height: 1.5,
-      );
+  TextStyle get codeBlock => const TextStyle(fontFamily: _monospaceFontFamily, fontSize: 13, fontWeight: FontWeight.w400, letterSpacing: 0, height: 1.5);
 
   @override
-  TextStyle get caption => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        letterSpacing: 0.4,
-        height: 1.33,
-      );
+  TextStyle get caption => const TextStyle(fontFamily: _fontFamily, fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4, height: 1.33);
 
   @override
-  TextStyle get overline => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 10,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 1.5,
-        height: 1.6,
-      );
+  TextStyle get overline => const TextStyle(fontFamily: _fontFamily, fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 1.5, height: 1.6);
 
   @override
-  TextStyle get button => const TextStyle(
-        fontFamily: _fontFamily,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.5,
-        height: 1.43,
-      );
+  TextStyle get button => const TextStyle(fontFamily: _fontFamily, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0.5, height: 1.43);
 }
 
 /// Voo Spacing Tokens
@@ -621,58 +500,28 @@ class VooElevation extends DesignElevationTokens {
 
   @override
   List<BoxShadow> shadow1() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.3)
-              : Colors.black.withValues(alpha: 0.05),
-          blurRadius: 2,
-          offset: const Offset(0, 1),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.05), blurRadius: 2, offset: const Offset(0, 1)),
+  ];
 
   @override
   List<BoxShadow> shadow2() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.4)
-              : Colors.black.withValues(alpha: 0.08),
-          blurRadius: 4,
-          offset: const Offset(0, 2),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.4) : Colors.black.withValues(alpha: 0.08), blurRadius: 4, offset: const Offset(0, 2)),
+  ];
 
   @override
   List<BoxShadow> shadow3() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.5)
-              : Colors.black.withValues(alpha: 0.12),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.12), blurRadius: 8, offset: const Offset(0, 4)),
+  ];
 
   @override
   List<BoxShadow> shadow4() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.6)
-              : Colors.black.withValues(alpha: 0.16),
-          blurRadius: 16,
-          offset: const Offset(0, 8),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.6) : Colors.black.withValues(alpha: 0.16), blurRadius: 16, offset: const Offset(0, 8)),
+  ];
 
   @override
   List<BoxShadow> shadow5() => [
-        BoxShadow(
-          color: isDarkMode
-              ? Colors.black.withValues(alpha: 0.7)
-              : Colors.black.withValues(alpha: 0.24),
-          blurRadius: 24,
-          offset: const Offset(0, 12),
-        ),
-      ];
+    BoxShadow(color: isDarkMode ? Colors.black.withValues(alpha: 0.7) : Colors.black.withValues(alpha: 0.24), blurRadius: 24, offset: const Offset(0, 12)),
+  ];
 
   @override
   double get card => level2;
@@ -741,12 +590,7 @@ class VooIcons extends DesignIconTokens {
   double get strokeWidth => 2;
 
   @override
-  IconThemeData get defaultTheme => IconThemeData(
-        size: sizeLg,
-        weight: 400,
-        grade: 0,
-        opticalSize: 48,
-      );
+  IconThemeData get defaultTheme => IconThemeData(size: sizeLg, weight: 400, grade: 0, opticalSize: 48);
 }
 
 /// Voo Component Styles
@@ -757,353 +601,276 @@ class VooComponentStyles extends ComponentStyles {
 
   @override
   ButtonStyle get primaryButton => ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.disabled)) {
-            return design.colors.primary.withValues(alpha: 0.38);
-          }
-          if (states.contains(WidgetState.hovered)) {
-            return design.colors.primary.withValues(alpha: 0.9);
-          }
-          if (states.contains(WidgetState.pressed)) {
-            return design.colors.primary.withValues(alpha: 0.8);
-          }
-          return design.colors.primary;
-        }),
-        foregroundColor: WidgetStateProperty.all(design.colors.onPrimary),
-        elevation: WidgetStateProperty.all(0),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: design.radius.button,
-        ),),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),),
-        textStyle: WidgetStateProperty.all(design.typography.button),
-      );
+    backgroundColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) {
+        return design.colors.primary.withValues(alpha: 0.38);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return design.colors.primary.withValues(alpha: 0.9);
+      }
+      if (states.contains(WidgetState.pressed)) {
+        return design.colors.primary.withValues(alpha: 0.8);
+      }
+      return design.colors.primary;
+    }),
+    foregroundColor: WidgetStateProperty.all(design.colors.onPrimary),
+    elevation: WidgetStateProperty.all(0),
+    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: design.radius.button)),
+    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm)),
+    textStyle: WidgetStateProperty.all(design.typography.button),
+  );
 
   @override
   ButtonStyle get secondaryButton => ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.disabled)) {
-            return design.colors.surfaceVariant.withValues(alpha: 0.38);
-          }
-          if (states.contains(WidgetState.hovered)) {
-            return design.colors.surfaceVariant.withValues(alpha: 0.9);
-          }
-          if (states.contains(WidgetState.pressed)) {
-            return design.colors.surfaceVariant.withValues(alpha: 0.8);
-          }
-          return design.colors.surfaceVariant;
-        }),
-        foregroundColor: WidgetStateProperty.all(design.colors.onSurface),
-        elevation: WidgetStateProperty.all(0),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: design.radius.button,
-        ),),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),),
-        textStyle: WidgetStateProperty.all(design.typography.button),
-      );
+    backgroundColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) {
+        return design.colors.surfaceVariant.withValues(alpha: 0.38);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return design.colors.surfaceVariant.withValues(alpha: 0.9);
+      }
+      if (states.contains(WidgetState.pressed)) {
+        return design.colors.surfaceVariant.withValues(alpha: 0.8);
+      }
+      return design.colors.surfaceVariant;
+    }),
+    foregroundColor: WidgetStateProperty.all(design.colors.onSurface),
+    elevation: WidgetStateProperty.all(0),
+    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: design.radius.button)),
+    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm)),
+    textStyle: WidgetStateProperty.all(design.typography.button),
+  );
 
   @override
   ButtonStyle get tertiaryButton => ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(Colors.transparent),
-        foregroundColor: WidgetStateProperty.all(design.colors.primary),
-        elevation: WidgetStateProperty.all(0),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: design.radius.button,
-          side: BorderSide(color: design.colors.outline),
-        ),),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),),
-        textStyle: WidgetStateProperty.all(design.typography.button),
-      );
+    backgroundColor: WidgetStateProperty.all(Colors.transparent),
+    foregroundColor: WidgetStateProperty.all(design.colors.primary),
+    elevation: WidgetStateProperty.all(0),
+    shape: WidgetStateProperty.all(
+      RoundedRectangleBorder(
+        borderRadius: design.radius.button,
+        side: BorderSide(color: design.colors.outline),
+      ),
+    ),
+    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm)),
+    textStyle: WidgetStateProperty.all(design.typography.button),
+  );
 
   @override
   ButtonStyle get ghostButton => ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(Colors.transparent),
-        foregroundColor: WidgetStateProperty.all(design.colors.onSurface),
-        elevation: WidgetStateProperty.all(0),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: design.radius.button,
-        ),),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),),
-        textStyle: WidgetStateProperty.all(design.typography.button),
-      );
+    backgroundColor: WidgetStateProperty.all(Colors.transparent),
+    foregroundColor: WidgetStateProperty.all(design.colors.onSurface),
+    elevation: WidgetStateProperty.all(0),
+    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: design.radius.button)),
+    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm)),
+    textStyle: WidgetStateProperty.all(design.typography.button),
+  );
 
   @override
   ButtonStyle get dangerButton => ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.disabled)) {
-            return design.colors.error.withValues(alpha: 0.38);
-          }
-          if (states.contains(WidgetState.hovered)) {
-            return design.colors.error.withValues(alpha: 0.9);
-          }
-          if (states.contains(WidgetState.pressed)) {
-            return design.colors.error.withValues(alpha: 0.8);
-          }
-          return design.colors.error;
-        }),
-        foregroundColor: WidgetStateProperty.all(design.colors.onError),
-        elevation: WidgetStateProperty.all(0),
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-          borderRadius: design.radius.button,
-        ),),
-        padding: WidgetStateProperty.all(EdgeInsets.symmetric(
-          horizontal: design.spacing.md,
-          vertical: design.spacing.sm,
-        ),),
-        textStyle: WidgetStateProperty.all(design.typography.button),
-      );
+    backgroundColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) {
+        return design.colors.error.withValues(alpha: 0.38);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return design.colors.error.withValues(alpha: 0.9);
+      }
+      if (states.contains(WidgetState.pressed)) {
+        return design.colors.error.withValues(alpha: 0.8);
+      }
+      return design.colors.error;
+    }),
+    foregroundColor: WidgetStateProperty.all(design.colors.onError),
+    elevation: WidgetStateProperty.all(0),
+    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: design.radius.button)),
+    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: design.spacing.md, vertical: design.spacing.sm)),
+    textStyle: WidgetStateProperty.all(design.typography.button),
+  );
 
   @override
   InputDecorationTheme get inputDecoration => InputDecorationTheme(
-        filled: true,
-        fillColor: design.colors.surfaceVariant,
-        border: OutlineInputBorder(
-          borderRadius: design.radius.input,
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: design.radius.input,
-          borderSide: BorderSide(color: design.colors.outline),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: design.radius.input,
-          borderSide: BorderSide(color: design.colors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: design.radius.input,
-          borderSide: BorderSide(color: design.colors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: design.radius.input,
-          borderSide: BorderSide(color: design.colors.error, width: 2),
-        ),
-        contentPadding: EdgeInsets.all(design.spacing.inputPadding),
-        labelStyle: design.typography.bodyMedium,
-        hintStyle: design.typography.bodyMedium.copyWith(
-          color: design.colors.onSurfaceVariant,
-        ),
-        errorStyle: design.typography.bodySmall.copyWith(
-          color: design.colors.error,
-        ),
-      );
+    filled: true,
+    fillColor: design.colors.surfaceVariant,
+    border: OutlineInputBorder(borderRadius: design.radius.input, borderSide: BorderSide.none),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: design.radius.input,
+      borderSide: BorderSide(color: design.colors.outline),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: design.radius.input,
+      borderSide: BorderSide(color: design.colors.primary, width: 2),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: design.radius.input,
+      borderSide: BorderSide(color: design.colors.error),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: design.radius.input,
+      borderSide: BorderSide(color: design.colors.error, width: 2),
+    ),
+    contentPadding: EdgeInsets.all(design.spacing.inputPadding),
+    labelStyle: design.typography.bodyMedium,
+    hintStyle: design.typography.bodyMedium.copyWith(color: design.colors.onSurfaceVariant),
+    errorStyle: design.typography.bodySmall.copyWith(color: design.colors.error),
+  );
 
   @override
   CardThemeData get card => CardThemeData(
-        elevation: design.elevation.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: design.radius.card,
-        ),
-        color: design.colors.surface,
-        surfaceTintColor: Colors.transparent,
-        margin: EdgeInsets.all(design.spacing.sm),
-      );
+    elevation: design.elevation.card,
+    shape: RoundedRectangleBorder(borderRadius: design.radius.card),
+    color: design.colors.surface,
+    surfaceTintColor: Colors.transparent,
+    margin: EdgeInsets.all(design.spacing.sm),
+  );
 
   @override
   ChipThemeData get chip => ChipThemeData(
-        backgroundColor: design.colors.surfaceVariant,
-        deleteIconColor: design.colors.onSurfaceVariant,
-        disabledColor: design.colors.surfaceVariant.withValues(alpha: 0.38),
-        selectedColor: design.colors.primaryContainer,
-        secondarySelectedColor: design.colors.secondaryContainer,
-        labelPadding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-        padding: EdgeInsets.all(design.spacing.xs),
-        shape: RoundedRectangleBorder(
-          borderRadius: design.radius.chip,
-        ),
-        labelStyle: design.typography.labelMedium,
-        secondaryLabelStyle: design.typography.labelSmall,
-        brightness: design.isDarkMode ? Brightness.dark : Brightness.light,
-        elevation: 0,
-        pressElevation: 0,
-      );
+    backgroundColor: design.colors.surfaceVariant,
+    deleteIconColor: design.colors.onSurfaceVariant,
+    disabledColor: design.colors.surfaceVariant.withValues(alpha: 0.38),
+    selectedColor: design.colors.primaryContainer,
+    secondarySelectedColor: design.colors.secondaryContainer,
+    labelPadding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+    padding: EdgeInsets.all(design.spacing.xs),
+    shape: RoundedRectangleBorder(borderRadius: design.radius.chip),
+    labelStyle: design.typography.labelMedium,
+    secondaryLabelStyle: design.typography.labelSmall,
+    brightness: design.isDarkMode ? Brightness.dark : Brightness.light,
+    elevation: 0,
+    pressElevation: 0,
+  );
 
   @override
   DialogThemeData get dialog => DialogThemeData(
-        backgroundColor: design.colors.surface,
-        elevation: design.elevation.dialog,
-        shape: RoundedRectangleBorder(
-          borderRadius: design.radius.dialog,
-        ),
-        titleTextStyle: design.typography.headlineSmall.copyWith(
-          color: design.colors.onSurface,
-        ),
-        contentTextStyle: design.typography.bodyMedium.copyWith(
-          color: design.colors.onSurfaceVariant,
-        ),
-      );
+    backgroundColor: design.colors.surface,
+    elevation: design.elevation.dialog,
+    shape: RoundedRectangleBorder(borderRadius: design.radius.dialog),
+    titleTextStyle: design.typography.headlineSmall.copyWith(color: design.colors.onSurface),
+    contentTextStyle: design.typography.bodyMedium.copyWith(color: design.colors.onSurfaceVariant),
+  );
 
   @override
   AppBarTheme get appBar => AppBarTheme(
-        backgroundColor: design.colors.surface,
-        foregroundColor: design.colors.onSurface,
-        elevation: 0,
-        centerTitle: false,
-        titleTextStyle: design.typography.titleLarge.copyWith(
-          color: design.colors.onSurface,
-        ),
-        toolbarTextStyle: design.typography.bodyMedium,
-        iconTheme: IconThemeData(
-          color: design.colors.onSurface,
-          size: design.icons.sizeLg,
-        ),
-      );
+    backgroundColor: design.colors.surface,
+    foregroundColor: design.colors.onSurface,
+    elevation: 0,
+    centerTitle: false,
+    titleTextStyle: design.typography.titleLarge.copyWith(color: design.colors.onSurface),
+    toolbarTextStyle: design.typography.bodyMedium,
+    iconTheme: IconThemeData(color: design.colors.onSurface, size: design.icons.sizeLg),
+  );
 
   @override
   NavigationBarThemeData get navigationBar => NavigationBarThemeData(
-        backgroundColor: design.colors.surface,
-        elevation: 0,
-        height: 64,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        indicatorColor: design.colors.primaryContainer,
-        iconTheme: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return IconThemeData(
-              color: design.colors.onPrimaryContainer,
-              size: design.icons.sizeLg,
-            );
-          }
-          return IconThemeData(
-            color: design.colors.onSurfaceVariant,
-            size: design.icons.sizeLg,
-          );
-        }),
-        labelTextStyle: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return design.typography.labelMedium.copyWith(
-              color: design.colors.onSurface,
-            );
-          }
-          return design.typography.labelMedium.copyWith(
-            color: design.colors.onSurfaceVariant,
-          );
-        }),
-      );
+    backgroundColor: design.colors.surface,
+    elevation: 0,
+    height: 64,
+    labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+    indicatorColor: design.colors.primaryContainer,
+    iconTheme: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return IconThemeData(color: design.colors.onPrimaryContainer, size: design.icons.sizeLg);
+      }
+      return IconThemeData(color: design.colors.onSurfaceVariant, size: design.icons.sizeLg);
+    }),
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return design.typography.labelMedium.copyWith(color: design.colors.onSurface);
+      }
+      return design.typography.labelMedium.copyWith(color: design.colors.onSurfaceVariant);
+    }),
+  );
 
   @override
   DrawerThemeData get drawer => DrawerThemeData(
-        backgroundColor: design.colors.surface,
-        scrimColor: design.colors.scrim,
-        elevation: design.elevation.level5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(design.radius.xl),
-            bottomRight: Radius.circular(design.radius.xl),
-          ),
-        ),
-      );
+    backgroundColor: design.colors.surface,
+    scrimColor: design.colors.scrim,
+    elevation: design.elevation.level5,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(topRight: Radius.circular(design.radius.xl), bottomRight: Radius.circular(design.radius.xl)),
+    ),
+  );
 
   @override
   SnackBarThemeData get snackBar => SnackBarThemeData(
-        backgroundColor: design.colors.inverseSurface,
-        contentTextStyle: design.typography.bodyMedium.copyWith(
-          color: design.colors.onInverseSurface,
-        ),
-        actionTextColor: design.colors.inversePrimary,
-        elevation: design.elevation.snackbar,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: design.radius.button,
-        ),
-      );
+    backgroundColor: design.colors.inverseSurface,
+    contentTextStyle: design.typography.bodyMedium.copyWith(color: design.colors.onInverseSurface),
+    actionTextColor: design.colors.inversePrimary,
+    elevation: design.elevation.snackbar,
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(borderRadius: design.radius.button),
+  );
 
   @override
   TooltipThemeData get tooltip => TooltipThemeData(
-        decoration: BoxDecoration(
-          color: design.colors.inverseSurface,
-          borderRadius: design.radius.tooltip,
-        ),
-        textStyle: design.typography.bodySmall.copyWith(
-          color: design.colors.onInverseSurface,
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: design.spacing.sm,
-          vertical: design.spacing.xs,
-        ),
-        waitDuration: design.animation.tooltipDelay,
-      );
+    decoration: BoxDecoration(color: design.colors.inverseSurface, borderRadius: design.radius.tooltip),
+    textStyle: design.typography.bodySmall.copyWith(color: design.colors.onInverseSurface),
+    padding: EdgeInsets.symmetric(horizontal: design.spacing.sm, vertical: design.spacing.xs),
+    waitDuration: design.animation.tooltipDelay,
+  );
 
   @override
-  DividerThemeData get divider => DividerThemeData(
-        color: design.colors.outlineVariant,
-        thickness: 1,
-        space: design.spacing.md,
-      );
+  DividerThemeData get divider => DividerThemeData(color: design.colors.outlineVariant, thickness: 1, space: design.spacing.md);
 
   @override
-  ProgressIndicatorThemeData get progressIndicator =>
-      ProgressIndicatorThemeData(
-        color: design.colors.primary,
-        linearTrackColor: design.colors.primaryContainer,
-        circularTrackColor: design.colors.primaryContainer,
-      );
+  ProgressIndicatorThemeData get progressIndicator => ProgressIndicatorThemeData(
+    color: design.colors.primary,
+    linearTrackColor: design.colors.primaryContainer,
+    circularTrackColor: design.colors.primaryContainer,
+  );
 
   @override
   SwitchThemeData get switchTheme => SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return design.colors.onPrimary;
-          }
-          return design.colors.outline;
-        }),
-        trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return design.colors.primary;
-          }
-          return design.colors.surfaceVariant;
-        }),
-        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return Colors.transparent;
-          }
-          return design.colors.outline;
-        }),
-      );
+    thumbColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return design.colors.onPrimary;
+      }
+      return design.colors.outline;
+    }),
+    trackColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return design.colors.primary;
+      }
+      return design.colors.surfaceVariant;
+    }),
+    trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.transparent;
+      }
+      return design.colors.outline;
+    }),
+  );
 
   @override
   CheckboxThemeData get checkbox => CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return design.colors.primary;
-          }
-          return Colors.transparent;
-        }),
-        checkColor: WidgetStateProperty.all(design.colors.onPrimary),
-        side: BorderSide(color: design.colors.outline, width: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(design.radius.xs),
-        ),
-      );
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return design.colors.primary;
+      }
+      return Colors.transparent;
+    }),
+    checkColor: WidgetStateProperty.all(design.colors.onPrimary),
+    side: BorderSide(color: design.colors.outline, width: 2),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radius.xs)),
+  );
 
   @override
   RadioThemeData get radio => RadioThemeData(
-        fillColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return design.colors.primary;
-          }
-          return design.colors.outline;
-        }),
-      );
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return design.colors.primary;
+      }
+      return design.colors.outline;
+    }),
+  );
 
   @override
   SliderThemeData get slider => SliderThemeData(
-        activeTrackColor: design.colors.primary,
-        inactiveTrackColor: design.colors.primaryContainer,
-        thumbColor: design.colors.primary,
-        overlayColor: design.colors.primary.withValues(alpha: 0.12),
-        valueIndicatorColor: design.colors.inverseSurface,
-        valueIndicatorTextStyle: design.typography.labelMedium.copyWith(
-          color: design.colors.onInverseSurface,
-        ),
-      );
+    activeTrackColor: design.colors.primary,
+    inactiveTrackColor: design.colors.primaryContainer,
+    thumbColor: design.colors.primary,
+    overlayColor: design.colors.primary.withValues(alpha: 0.12),
+    valueIndicatorColor: design.colors.inverseSurface,
+    valueIndicatorTextStyle: design.typography.labelMedium.copyWith(color: design.colors.onInverseSurface),
+  );
 }

@@ -10,12 +10,7 @@ class UserState {
   final bool isEditMode;
   final bool isLoading;
 
-  UserState({
-    this.userDetails = const {},
-    this.userForm = const {},
-    this.isEditMode = false,
-    this.isLoading = false,
-  });
+  UserState({this.userDetails = const {}, this.userForm = const {}, this.isEditMode = false, this.isLoading = false});
 }
 
 class UserCubit extends Cubit<UserState> {
@@ -32,20 +27,8 @@ class UserCubit extends Cubit<UserState> {
     // Emit loaded data
     emit(
       UserState(
-        userDetails: {
-          'firstName': 'John',
-          'lastName': 'Doe',
-          'email': 'john.doe@example.com',
-          'phoneNumber': '555-1234',
-          'isActive': true,
-        },
-        userForm: {
-          'firstName': 'John',
-          'lastName': 'Doe',
-          'email': 'john.doe@example.com',
-          'phoneNumber': '555-1234',
-          'isActive': true,
-        },
+        userDetails: {'firstName': 'John', 'lastName': 'Doe', 'email': 'john.doe@example.com', 'phoneNumber': '555-1234', 'isActive': true},
+        userForm: {'firstName': 'John', 'lastName': 'Doe', 'email': 'john.doe@example.com', 'phoneNumber': '555-1234', 'isActive': true},
       ),
     );
   }
@@ -69,9 +52,7 @@ void main() {
                     body: VooFormPageBuilder(
                       controller: formController,
                       isSubmitting: false,
-                      header: Text(
-                        state.isEditMode ? 'Edit User' : 'View User',
-                      ),
+                      header: Text(state.isEditMode ? 'Edit User' : 'View User'),
                       onSubmit: (_) {},
                       form: VooForm(
                         controller: formController,
@@ -126,34 +107,14 @@ void main() {
 
       // In readonly mode (view mode), values are displayed in VooReadOnlyField
       // We should see the values
-      expect(
-        find.text('John'),
-        findsOneWidget,
-        reason: 'First name should display in view mode',
-      );
-      expect(
-        find.text('Doe'),
-        findsOneWidget,
-        reason: 'Last name should display in view mode',
-      );
-      expect(
-        find.text('john.doe@example.com'),
-        findsOneWidget,
-        reason: 'Email should display in view mode',
-      );
-      expect(
-        find.text('555-1234'),
-        findsOneWidget,
-        reason: 'Phone should display in view mode',
-      );
+      expect(find.text('John'), findsOneWidget, reason: 'First name should display in view mode');
+      expect(find.text('Doe'), findsOneWidget, reason: 'Last name should display in view mode');
+      expect(find.text('john.doe@example.com'), findsOneWidget, reason: 'Email should display in view mode');
+      expect(find.text('555-1234'), findsOneWidget, reason: 'Phone should display in view mode');
 
       // Checkbox in readonly shows as disabled but checked
       final checkbox = tester.widget<Checkbox>(find.byType(Checkbox));
-      expect(
-        checkbox.value,
-        true,
-        reason: 'Checkbox should show as checked in view mode',
-      );
+      expect(checkbox.value, true, reason: 'Checkbox should show as checked in view mode');
     });
 
     testWidgets('Values display immediately when form starts in edit mode', (tester) async {
@@ -165,21 +126,9 @@ void main() {
             body: VooForm(
               controller: formController,
               fields: const [
-                VooTextField(
-                  name: 'first_name',
-                  label: 'First Name',
-                  initialValue: 'Jane',
-                ),
-                VooTextField(
-                  name: 'email',
-                  label: 'Email',
-                  initialValue: 'jane@example.com',
-                ),
-                VooCheckboxField(
-                  name: 'active',
-                  label: 'Active',
-                  initialValue: true,
-                ),
+                VooTextField(name: 'first_name', label: 'First Name', initialValue: 'Jane'),
+                VooTextField(name: 'email', label: 'Email', initialValue: 'jane@example.com'),
+                VooCheckboxField(name: 'active', label: 'Active', initialValue: true),
               ],
             ),
           ),
@@ -203,10 +152,7 @@ void main() {
             body: VooForm(
               controller: formController,
               fields: const [
-                VooTextField(
-                  name: 'field1',
-                  label: 'Field 1',
-                ),
+                VooTextField(name: 'field1', label: 'Field 1'),
                 VooTextField(
                   name: 'field2',
                   label: 'Field 2',

@@ -15,26 +15,13 @@ void main() {
     });
 
     Widget createTestWidget(Widget child) => MaterialApp(
-          home: Scaffold(
-            body: VooForm(
-              controller: controller,
-              fields: [
-                child as VooFormFieldWidget,
-              ],
-            ),
-          ),
-        );
+      home: Scaffold(
+        body: VooForm(controller: controller, fields: [child as VooFormFieldWidget]),
+      ),
+    );
 
     testWidgets('formats phone number as user types each digit', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US')));
 
       final textField = find.byType(TextFormField);
       expect(textField, findsOneWidget);
@@ -79,15 +66,7 @@ void main() {
     });
 
     testWidgets('maintains focus while typing', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US')));
 
       final textField = find.byType(TextFormField);
 
@@ -116,15 +95,7 @@ void main() {
     });
 
     testWidgets('handles single digit "4" correctly without issues', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US')));
 
       final textField = find.byType(TextFormField);
 
@@ -142,16 +113,7 @@ void main() {
     });
 
     testWidgets('handles country code selection with dial code', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-            showDialCode: true,
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US', showDialCode: true)));
 
       final textField = find.byType(TextFormField);
 
@@ -168,15 +130,7 @@ void main() {
     });
 
     testWidgets('allows continuous typing without interruption', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US')));
 
       final textField = find.byType(TextFormField);
 
@@ -194,15 +148,7 @@ void main() {
     });
 
     testWidgets('handles backspace/deletion properly', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooPhoneField(
-            name: 'phone',
-            label: 'Phone Number',
-            defaultCountryCode: 'US',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooPhoneField(name: 'phone', label: 'Phone Number', defaultCountryCode: 'US')));
 
       final textField = find.byType(TextFormField);
 

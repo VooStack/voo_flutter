@@ -24,7 +24,7 @@ class VooSwitch extends StatelessWidget {
   final DragStartBehavior dragStartBehavior;
   final Widget? thumbIcon;
   final bool isError;
-  
+
   const VooSwitch({
     super.key,
     required this.value,
@@ -48,31 +48,25 @@ class VooSwitch extends StatelessWidget {
     this.thumbIcon,
     this.isError = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Switch(
       value: value,
       onChanged: onChanged,
       activeThumbColor: isError ? colorScheme.error : activeColor,
-      activeTrackColor: isError 
-        ? colorScheme.error.withValues(alpha: 0.5)
-        : activeTrackColor,
+      activeTrackColor: isError ? colorScheme.error.withValues(alpha: 0.5) : activeTrackColor,
       inactiveThumbColor: inactiveThumbColor,
       inactiveTrackColor: inactiveTrackColor,
       activeThumbImage: activeThumbImage,
       inactiveThumbImage: inactiveThumbImage,
       materialTapTargetSize: materialTapTargetSize,
-      thumbIcon: thumbIcon != null && thumbIcon is Icon
-        ? WidgetStateProperty.all(thumbIcon! as Icon)
-        : null,
+      thumbIcon: thumbIcon != null && thumbIcon is Icon ? WidgetStateProperty.all(thumbIcon! as Icon) : null,
       focusColor: focusColor,
       hoverColor: hoverColor,
-      overlayColor: overlayColor != null
-        ? WidgetStateProperty.all(overlayColor)
-        : null,
+      overlayColor: overlayColor != null ? WidgetStateProperty.all(overlayColor) : null,
       splashRadius: splashRadius,
       focusNode: focusNode,
       autofocus: autofocus,
@@ -111,7 +105,7 @@ class VooSwitchListTile extends StatelessWidget {
   final Color? hoverColor;
   final MouseCursor? mouseCursor;
   final bool isError;
-  
+
   const VooSwitchListTile({
     super.key,
     required this.value,
@@ -142,19 +136,17 @@ class VooSwitchListTile extends StatelessWidget {
     this.mouseCursor,
     this.isError = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return SwitchListTile(
       value: value,
       onChanged: enabled ? onChanged : null,
       activeThumbColor: isError ? colorScheme.error : activeColor,
-      activeTrackColor: isError 
-        ? colorScheme.error.withValues(alpha: 0.5)
-        : activeTrackColor,
+      activeTrackColor: isError ? colorScheme.error.withValues(alpha: 0.5) : activeTrackColor,
       inactiveThumbColor: inactiveThumbColor,
       inactiveTrackColor: inactiveTrackColor,
       activeThumbImage: activeThumbImage,
@@ -164,15 +156,11 @@ class VooSwitchListTile extends StatelessWidget {
       secondary: secondary,
       isThreeLine: isThreeLine,
       dense: dense,
-      contentPadding: contentPadding ?? EdgeInsets.symmetric(
-        horizontal: design.spacingMd,
-      ),
+      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: design.spacingMd),
       autofocus: autofocus,
       selected: selected,
       controlAffinity: controlAffinity,
-      shape: shape ?? RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(design.radiusMd),
-      ),
+      shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusMd)),
       tileColor: tileColor,
       selectedTileColor: selectedTileColor,
       visualDensity: visualDensity,
@@ -195,7 +183,7 @@ class VooLabeledSwitch extends StatelessWidget {
   final bool isError;
   final EdgeInsetsGeometry? padding;
   final MainAxisAlignment alignment;
-  
+
   const VooLabeledSwitch({
     super.key,
     required this.value,
@@ -208,11 +196,11 @@ class VooLabeledSwitch extends StatelessWidget {
     this.padding,
     this.alignment = MainAxisAlignment.spaceBetween,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return InkWell(
       onTap: enabled ? () => onChanged?.call(!value) : null,
       borderRadius: BorderRadius.circular(design.radiusMd),
@@ -221,40 +209,26 @@ class VooLabeledSwitch extends StatelessWidget {
         child: Row(
           mainAxisAlignment: alignment,
           children: [
-            if (leading != null) ...[
-              leading!,
-              SizedBox(width: design.spacingMd),
-            ],
+            if (leading != null) ...[leading!, SizedBox(width: design.spacingMd)],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: enabled ? null : Theme.of(context).disabledColor,
-                    ),
-                  ),
+                  Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: enabled ? null : Theme.of(context).disabledColor)),
                   if (subtitle != null) ...[
                     SizedBox(height: design.spacingXs),
                     Text(
                       subtitle!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: enabled 
-                          ? Theme.of(context).colorScheme.onSurfaceVariant
-                          : Theme.of(context).disabledColor,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: enabled ? Theme.of(context).colorScheme.onSurfaceVariant : Theme.of(context).disabledColor),
                     ),
                   ],
                 ],
               ),
             ),
             SizedBox(width: design.spacingMd),
-            VooSwitch(
-              value: value,
-              onChanged: enabled ? onChanged : null,
-              isError: isError,
-            ),
+            VooSwitch(value: value, onChanged: enabled ? onChanged : null, isError: isError),
           ],
         ),
       ),
@@ -276,7 +250,7 @@ class VooSwitchGroup extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final bool enabled;
   final bool showDividers;
-  
+
   const VooSwitchGroup({
     super.key,
     required this.switches,
@@ -292,39 +266,35 @@ class VooSwitchGroup extends StatelessWidget {
     this.enabled = true,
     this.showDividers = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final hasError = errorText != null;
-    
+
     final switchKeys = switches.keys.toList();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (groupLabel != null) ...[
-          Text(
-            groupLabel!,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: hasError ? colorScheme.error : null,
-            ),
-          ),
+          Text(groupLabel!, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: hasError ? colorScheme.error : null)),
           SizedBox(height: design.spacingMd),
         ],
         Container(
           padding: contentPadding,
-          decoration: hasError ? BoxDecoration(
-            border: Border.all(color: colorScheme.error),
-            borderRadius: BorderRadius.circular(design.radiusMd),
-          ) : null,
+          decoration: hasError
+              ? BoxDecoration(
+                  border: Border.all(color: colorScheme.error),
+                  borderRadius: BorderRadius.circular(design.radiusMd),
+                )
+              : null,
           child: Column(
             children: [
               for (int i = 0; i < switchKeys.length; i++) ...[
                 _buildSwitchTile(switchKeys[i], context),
-                if (showDividers && i < switchKeys.length - 1)
-                  const Divider(),
+                if (showDividers && i < switchKeys.length - 1) const Divider(),
               ],
             ],
           ),
@@ -333,23 +303,23 @@ class VooSwitchGroup extends StatelessWidget {
           SizedBox(height: design.spacingXs),
           Text(
             errorText ?? helperText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant),
           ),
         ],
       ],
     );
   }
-  
+
   Widget _buildSwitchTile(String key, BuildContext context) {
     final isDisabled = disabledSwitches?.contains(key) ?? false;
-    
+
     return VooSwitchListTile(
       value: switches[key] ?? false,
-      onChanged: enabled && !isDisabled ? (value) {
-        onChanged?.call({...switches, key: value});
-      } : null,
+      onChanged: enabled && !isDisabled
+          ? (value) {
+              onChanged?.call({...switches, key: value});
+            }
+          : null,
       title: Text(labels[key] ?? key),
       subtitle: subtitles?[key] != null ? Text(subtitles![key]!) : null,
       secondary: icons?[key],
@@ -372,7 +342,7 @@ class VooSwitchCard extends StatelessWidget {
   final Color? inactiveColor;
   final double? elevation;
   final EdgeInsetsGeometry? padding;
-  
+
   const VooSwitchCard({
     super.key,
     required this.value,
@@ -387,17 +357,15 @@ class VooSwitchCard extends StatelessWidget {
     this.elevation,
     this.padding,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Card(
       elevation: elevation ?? (value ? 4 : 1),
-      color: value 
-        ? (activeColor ?? colorScheme.primaryContainer)
-        : inactiveColor,
+      color: value ? (activeColor ?? colorScheme.primaryContainer) : inactiveColor,
       child: InkWell(
         onTap: enabled ? () => onChanged?.call(!value) : null,
         borderRadius: BorderRadius.circular(design.radiusMd),
@@ -405,30 +373,21 @@ class VooSwitchCard extends StatelessWidget {
           padding: padding ?? EdgeInsets.all(design.spacingMd),
           child: Row(
             children: [
-              if (leading != null) ...[
-                leading!,
-                SizedBox(width: design.spacingMd),
-              ],
+              if (leading != null) ...[leading!, SizedBox(width: design.spacingMd)],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DefaultTextStyle(
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: value 
-                          ? colorScheme.onPrimaryContainer
-                          : colorScheme.onSurface,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(color: value ? colorScheme.onPrimaryContainer : colorScheme.onSurface),
                       child: title,
                     ),
                     if (subtitle != null) ...[
                       SizedBox(height: design.spacingXs),
                       DefaultTextStyle(
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: value
-                            ? colorScheme.onPrimaryContainer.withValues(alpha: 0.8)
-                            : colorScheme.onSurfaceVariant,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall!.copyWith(color: value ? colorScheme.onPrimaryContainer.withValues(alpha: 0.8) : colorScheme.onSurfaceVariant),
                         child: subtitle!,
                       ),
                     ],
@@ -440,10 +399,7 @@ class VooSwitchCard extends StatelessWidget {
                 trailing!,
               ] else ...[
                 SizedBox(width: design.spacingMd),
-                VooSwitch(
-                  value: value,
-                  onChanged: enabled ? onChanged : null,
-                ),
+                VooSwitch(value: value, onChanged: enabled ? onChanged : null),
               ],
             ],
           ),
@@ -460,21 +416,10 @@ class VooAdaptiveSwitch extends StatelessWidget {
   final Color? activeColor;
   final Color? inactiveColor;
   final bool enabled;
-  
-  const VooAdaptiveSwitch({
-    super.key,
-    required this.value,
-    required this.onChanged,
-    this.activeColor,
-    this.inactiveColor,
-    this.enabled = true,
-  });
-  
+
+  const VooAdaptiveSwitch({super.key, required this.value, required this.onChanged, this.activeColor, this.inactiveColor, this.enabled = true});
+
   @override
-  Widget build(BuildContext context) => Switch.adaptive(
-      value: value,
-      onChanged: enabled ? onChanged : null,
-      activeTrackColor: activeColor,
-      inactiveTrackColor: inactiveColor,
-    );
+  Widget build(BuildContext context) =>
+      Switch.adaptive(value: value, onChanged: enabled ? onChanged : null, activeTrackColor: activeColor, inactiveTrackColor: inactiveColor);
 }

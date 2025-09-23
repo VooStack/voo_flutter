@@ -5,11 +5,8 @@ class RangeValidation<T extends num> extends VooValidationRule<T> {
   final T minValue;
   final T maxValue;
 
-  const RangeValidation({
-    required this.minValue,
-    required this.maxValue,
-    String? errorMessage,
-  }) : super(errorMessage: errorMessage ?? 'Value must be between $minValue and $maxValue');
+  const RangeValidation({required this.minValue, required this.maxValue, String? errorMessage})
+    : super(errorMessage: errorMessage ?? 'Value must be between $minValue and $maxValue');
 
   @override
   String? validate(T? value) {

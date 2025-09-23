@@ -116,15 +116,14 @@ class VooButton extends StatelessWidget {
     // Build child widget
     Widget buttonChild;
     if (loading) {
-      buttonChild = loadingWidget ??
+      buttonChild =
+          loadingWidget ??
           SizedBox(
             width: iconSize,
             height: iconSize,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                variant == VooButtonVariant.elevated ? theme.colorScheme.onPrimary : theme.colorScheme.primary,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(variant == VooButtonVariant.elevated ? theme.colorScheme.onPrimary : theme.colorScheme.primary),
             ),
           );
     } else if (icon != null) {
@@ -154,10 +153,7 @@ class VooButton extends StatelessWidget {
 
     final effectiveMinimumSize = minimumSize ?? Size(expanded ? double.infinity : 0, buttonHeight);
 
-    final effectiveShape = shape ??
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(design.radiusMd),
-        );
+    final effectiveShape = shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusMd));
 
     final effectiveAnimationDuration = animationDuration ?? design.animationDuration;
 
@@ -171,7 +167,8 @@ class VooButton extends StatelessWidget {
             onLongPress: loading ? null : onLongPress,
             onHover: onHover,
             onFocusChange: onFocusChange,
-            style: style ??
+            style:
+                style ??
                 ElevatedButton.styleFrom(
                   foregroundColor: foregroundColor ?? theme.colorScheme.onPrimary,
                   backgroundColor: backgroundColor ?? theme.colorScheme.primary,
@@ -206,7 +203,8 @@ class VooButton extends StatelessWidget {
             onLongPress: loading ? null : onLongPress,
             onHover: onHover,
             onFocusChange: onFocusChange,
-            style: style ??
+            style:
+                style ??
                 OutlinedButton.styleFrom(
                   foregroundColor: foregroundColor ?? theme.colorScheme.primary,
                   backgroundColor: backgroundColor,
@@ -215,10 +213,7 @@ class VooButton extends StatelessWidget {
                   padding: effectivePadding,
                   minimumSize: effectiveMinimumSize,
                   maximumSize: maximumSize,
-                  side: side ??
-                      BorderSide(
-                        color: theme.colorScheme.outline,
-                      ),
+                  side: side ?? BorderSide(color: theme.colorScheme.outline),
                   shape: effectiveShape,
                   visualDensity: visualDensity,
                   tapTargetSize: tapTargetSize,
@@ -244,7 +239,8 @@ class VooButton extends StatelessWidget {
             onLongPress: loading ? null : onLongPress,
             onHover: onHover,
             onFocusChange: onFocusChange,
-            style: style ??
+            style:
+                style ??
                 TextButton.styleFrom(
                   foregroundColor: foregroundColor ?? theme.colorScheme.primary,
                   backgroundColor: backgroundColor,
@@ -278,7 +274,8 @@ class VooButton extends StatelessWidget {
             onLongPress: loading ? null : onLongPress,
             onHover: onHover,
             onFocusChange: onFocusChange,
-            style: style ??
+            style:
+                style ??
                 FilledButton.styleFrom(
                   foregroundColor: foregroundColor ?? theme.colorScheme.onSecondaryContainer,
                   backgroundColor: backgroundColor ?? theme.colorScheme.secondaryContainer,
@@ -396,10 +393,7 @@ class VooIconButton extends StatelessWidget {
     );
 
     if (tooltip != null) {
-      return Tooltip(
-        message: tooltip,
-        child: button,
-      );
+      return Tooltip(message: tooltip, child: button);
     }
 
     return button;

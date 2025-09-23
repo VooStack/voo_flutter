@@ -32,17 +32,17 @@ class UserDetails {
   factory UserDetails.empty() => UserDetails();
 
   factory UserDetails.loaded() => UserDetails(
-        firstName: 'John',
-        lastName: 'Doe',
-        middleInitial: 'A',
-        email: 'john.doe@example.com',
-        userName: 'johndoe',
-        phoneNumber: '555-1234',
-        permissionLevel: 'Admin',
-        roles: ['Manager', 'Reviewer'],
-        isAnalystOrResearcher: true,
-        isActive: true,
-      );
+    firstName: 'John',
+    lastName: 'Doe',
+    middleInitial: 'A',
+    email: 'john.doe@example.com',
+    userName: 'johndoe',
+    phoneNumber: '555-1234',
+    permissionLevel: 'Admin',
+    roles: ['Manager', 'Reviewer'],
+    isAnalystOrResearcher: true,
+    isActive: true,
+  );
 }
 
 enum UserFormStatus { initial, loading, success, submitting, submitted }
@@ -53,31 +53,16 @@ class UserFormState {
   final UserFormStatus status;
   final bool isEditMode;
 
-  UserFormState({
-    required this.userDetails,
-    required this.userForm,
-    required this.status,
-    this.isEditMode = false,
-  });
+  UserFormState({required this.userDetails, required this.userForm, required this.status, this.isEditMode = false});
 
-  factory UserFormState.initial() => UserFormState(
-        userDetails: UserDetails.empty(),
-        userForm: UserDetails.empty(),
-        status: UserFormStatus.initial,
-      );
+  factory UserFormState.initial() => UserFormState(userDetails: UserDetails.empty(), userForm: UserDetails.empty(), status: UserFormStatus.initial);
 
-  UserFormState copyWith({
-    UserDetails? userDetails,
-    UserDetails? userForm,
-    UserFormStatus? status,
-    bool? isEditMode,
-  }) =>
-      UserFormState(
-        userDetails: userDetails ?? this.userDetails,
-        userForm: userForm ?? this.userForm,
-        status: status ?? this.status,
-        isEditMode: isEditMode ?? this.isEditMode,
-      );
+  UserFormState copyWith({UserDetails? userDetails, UserDetails? userForm, UserFormStatus? status, bool? isEditMode}) => UserFormState(
+    userDetails: userDetails ?? this.userDetails,
+    userForm: userForm ?? this.userForm,
+    status: status ?? this.status,
+    isEditMode: isEditMode ?? this.isEditMode,
+  );
 }
 
 class UserFormCubit extends Cubit<UserFormState> {
@@ -85,12 +70,7 @@ class UserFormCubit extends Cubit<UserFormState> {
 
   Future<void> fetchUserDetails(String? userId) async {
     if (userId == null || userId.isEmpty || userId == 'new') {
-      emit(
-        state.copyWith(
-          userForm: UserDetails.empty(),
-          isEditMode: true,
-        ),
-      );
+      emit(state.copyWith(userForm: UserDetails.empty(), isEditMode: true));
       return;
     }
 
@@ -100,14 +80,7 @@ class UserFormCubit extends Cubit<UserFormState> {
     await Future<void>.delayed(const Duration(milliseconds: 100));
 
     final userDetails = UserDetails.loaded();
-    emit(
-      state.copyWith(
-        status: UserFormStatus.success,
-        userDetails: userDetails,
-        userForm: userDetails,
-        isEditMode: false,
-      ),
-    );
+    emit(state.copyWith(status: UserFormStatus.success, userDetails: userDetails, userForm: userDetails, isEditMode: false));
   }
 
   void toggleEditMode() {
@@ -149,11 +122,7 @@ class UserFormPage extends StatelessWidget {
             header: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    state.isEditMode ? 'Edit User' : 'View User',
-                    style: Theme.of(context).textTheme.titleLarge,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  child: Text(state.isEditMode ? 'Edit User' : 'View User', style: Theme.of(context).textTheme.titleLarge, overflow: TextOverflow.ellipsis),
                 ),
                 IconButton(
                   onPressed: () => context.read<UserFormCubit>().toggleEditMode(),
@@ -228,10 +197,7 @@ class UserFormPage extends StatelessWidget {
                   label: 'Permission Level',
                   options: const ['Admin', 'User', 'Manager'],
                   displayTextBuilder: (item) => item,
-                  optionBuilder: (context, item, isSelected, displayText) => VooOption(
-                    title: displayText,
-                    isSelected: isSelected,
-                  ),
+                  optionBuilder: (context, item, isSelected, displayText) => VooOption(title: displayText, isSelected: isSelected),
                   initialValue: state.isEditMode ? state.userForm.permissionLevel : state.userDetails.permissionLevel,
                 ),
                 VooMultiSelectField<String>(
@@ -241,23 +207,15 @@ class UserFormPage extends StatelessWidget {
                   layout: VooFieldLayout.fullWidthField,
                   initialValue: state.isEditMode ? state.userForm.roles : state.userDetails.roles,
                   displayTextBuilder: (item) => item,
-                  optionBuilder: (context, item, isSelected, displayText) => VooOption(
-                    title: item,
-                    isSelected: isSelected,
-                    showCheckbox: true,
-                    showCheckmark: false,
-                  ),
+                  optionBuilder: (context, item, isSelected, displayText) =>
+                      VooOption(title: item, isSelected: isSelected, showCheckbox: true, showCheckmark: false),
                 ),
                 VooCheckboxField(
                   name: 'is_analyst_or_researcher',
                   label: 'Is Analyst or Researcher',
                   initialValue: state.isEditMode ? state.userForm.isAnalystOrResearcher : state.userDetails.isAnalystOrResearcher,
                 ),
-                VooCheckboxField(
-                  name: 'is_active',
-                  label: 'Active',
-                  initialValue: state.isEditMode ? state.userForm.isActive : state.userDetails.isActive,
-                ),
+                VooCheckboxField(name: 'is_active', label: 'Active', initialValue: state.isEditMode ? state.userForm.isActive : state.userDetails.isActive),
               ],
             ),
           ),
@@ -281,11 +239,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(userId: '123'),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage(userId: '123')));
 
       // Initially form is loading
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -301,50 +255,18 @@ void main() {
       // The user reports these DON'T show unless toggling to readonly
 
       // Text fields should display initial values
-      expect(
-        find.text('John'),
-        findsOneWidget,
-        reason: 'First name "John" should be displayed without readonly toggle',
-      );
-      expect(
-        find.text('A'),
-        findsOneWidget,
-        reason: 'Middle initial "A" should be displayed without readonly toggle',
-      );
-      expect(
-        find.text('Doe'),
-        findsOneWidget,
-        reason: 'Last name "Doe" should be displayed without readonly toggle',
-      );
-      expect(
-        find.text('john.doe@example.com'),
-        findsOneWidget,
-        reason: 'Email should be displayed without readonly toggle',
-      );
-      expect(
-        find.text('johndoe'),
-        findsOneWidget,
-        reason: 'Username should be displayed without readonly toggle',
-      );
-      expect(
-        find.text('555-1234'),
-        findsOneWidget,
-        reason: 'Phone number should be displayed without readonly toggle',
-      );
+      expect(find.text('John'), findsOneWidget, reason: 'First name "John" should be displayed without readonly toggle');
+      expect(find.text('A'), findsOneWidget, reason: 'Middle initial "A" should be displayed without readonly toggle');
+      expect(find.text('Doe'), findsOneWidget, reason: 'Last name "Doe" should be displayed without readonly toggle');
+      expect(find.text('john.doe@example.com'), findsOneWidget, reason: 'Email should be displayed without readonly toggle');
+      expect(find.text('johndoe'), findsOneWidget, reason: 'Username should be displayed without readonly toggle');
+      expect(find.text('555-1234'), findsOneWidget, reason: 'Phone number should be displayed without readonly toggle');
 
       // Dropdown should show selected value
-      expect(
-        find.text('Admin'),
-        findsOneWidget,
-        reason: 'Permission level should be displayed without readonly toggle',
-      );
+      expect(find.text('Admin'), findsOneWidget, reason: 'Permission level should be displayed without readonly toggle');
 
       // Multi-select should show selected values (in readonly mode, they're shown as comma-separated)
-      expect(
-        find.text('Manager, Reviewer'),
-        findsOneWidget,
-        reason: 'Roles should be displayed as comma-separated in readonly mode',
-      );
+      expect(find.text('Manager, Reviewer'), findsOneWidget, reason: 'Roles should be displayed as comma-separated in readonly mode');
 
       // Checkboxes should be checked appropriately
       final checkboxes = tester.widgetList<Checkbox>(find.byType(Checkbox));
@@ -352,11 +274,7 @@ void main() {
 
       // Both checkboxes should be checked (isAnalystOrResearcher and isActive are both true)
       for (final checkbox in checkboxes) {
-        expect(
-          checkbox.value,
-          true,
-          reason: 'Checkboxes should reflect initial values without readonly toggle',
-        );
+        expect(checkbox.value, true, reason: 'Checkboxes should reflect initial values without readonly toggle');
       }
 
       // Verify form is in view mode (not edit mode) initially
@@ -370,21 +288,9 @@ void main() {
       expect(find.text('Edit User'), findsOneWidget);
 
       // Values should STILL be displayed
-      expect(
-        find.text('John'),
-        findsOneWidget,
-        reason: 'Values should persist when toggling to edit mode',
-      );
-      expect(
-        find.text('Doe'),
-        findsOneWidget,
-        reason: 'Values should persist when toggling to edit mode',
-      );
-      expect(
-        find.text('john.doe@example.com'),
-        findsOneWidget,
-        reason: 'Values should persist when toggling to edit mode',
-      );
+      expect(find.text('John'), findsOneWidget, reason: 'Values should persist when toggling to edit mode');
+      expect(find.text('Doe'), findsOneWidget, reason: 'Values should persist when toggling to edit mode');
+      expect(find.text('john.doe@example.com'), findsOneWidget, reason: 'Values should persist when toggling to edit mode');
     });
 
     testWidgets('Form with controller outside BlocBuilder maintains values across rebuilds', (tester) async {
@@ -398,11 +304,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: UserFormPage(userId: '123'),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: UserFormPage(userId: '123')));
 
       // Wait for data to load
       await tester.pump(const Duration(milliseconds: 150));
@@ -416,10 +318,7 @@ void main() {
 
       // Now we should have TextFormField widgets
       // Type in a field to change value
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'Jane',
-      );
+      await tester.enterText(find.byType(TextFormField).first, 'Jane');
       await tester.pump();
 
       // Toggle edit mode again (causes BlocBuilder rebuild)
@@ -445,73 +344,19 @@ void main() {
             body: VooForm(
               controller: formController,
               fields: [
-                const VooTextField(
-                  name: 'text',
-                  label: 'Text',
-                  initialValue: 'Initial Text',
-                ),
-                const VooEmailField(
-                  name: 'email',
-                  label: 'Email',
-                  initialValue: 'test@example.com',
-                ),
-                const VooPhoneField(
-                  name: 'phone',
-                  label: 'Phone',
-                  initialValue: '555-1234',
-                ),
-                const VooNumberField(
-                  name: 'number',
-                  label: 'Number',
-                  initialValue: 42.5,
-                ),
-                VooIntegerField(
-                  name: 'integer',
-                  label: 'Integer',
-                  initialValue: 100,
-                ),
-                VooDecimalField(
-                  name: 'decimal',
-                  label: 'Decimal',
-                  initialValue: 99.99,
-                ),
-                const VooCurrencyField(
-                  name: 'currency',
-                  label: 'Currency',
-                  initialValue: 1234.56,
-                ),
-                VooPercentageField(
-                  name: 'percentage',
-                  label: 'Percentage',
-                  initialValue: 75.5,
-                ),
-                const VooMultilineField(
-                  name: 'multiline',
-                  label: 'Multiline',
-                  initialValue: 'Line 1\nLine 2',
-                ),
-                const VooDropdownField<String>(
-                  name: 'dropdown',
-                  label: 'Dropdown',
-                  options: ['Option 1', 'Option 2', 'Option 3'],
-                  initialValue: 'Option 2',
-                ),
-                const VooMultiSelectField<String>(
-                  name: 'multiselect',
-                  label: 'Multi Select',
-                  options: ['A', 'B', 'C', 'D'],
-                  initialValue: ['B', 'D'],
-                ),
-                const VooCheckboxField(
-                  name: 'checkbox',
-                  label: 'Checkbox',
-                  initialValue: true,
-                ),
-                const VooBooleanField(
-                  name: 'boolean',
-                  label: 'Boolean',
-                  initialValue: true,
-                ),
+                const VooTextField(name: 'text', label: 'Text', initialValue: 'Initial Text'),
+                const VooEmailField(name: 'email', label: 'Email', initialValue: 'test@example.com'),
+                const VooPhoneField(name: 'phone', label: 'Phone', initialValue: '555-1234'),
+                const VooNumberField(name: 'number', label: 'Number', initialValue: 42.5),
+                VooIntegerField(name: 'integer', label: 'Integer', initialValue: 100),
+                VooDecimalField(name: 'decimal', label: 'Decimal', initialValue: 99.99),
+                const VooCurrencyField(name: 'currency', label: 'Currency', initialValue: 1234.56),
+                VooPercentageField(name: 'percentage', label: 'Percentage', initialValue: 75.5),
+                const VooMultilineField(name: 'multiline', label: 'Multiline', initialValue: 'Line 1\nLine 2'),
+                const VooDropdownField<String>(name: 'dropdown', label: 'Dropdown', options: ['Option 1', 'Option 2', 'Option 3'], initialValue: 'Option 2'),
+                const VooMultiSelectField<String>(name: 'multiselect', label: 'Multi Select', options: ['A', 'B', 'C', 'D'], initialValue: ['B', 'D']),
+                const VooCheckboxField(name: 'checkbox', label: 'Checkbox', initialValue: true),
+                const VooBooleanField(name: 'boolean', label: 'Boolean', initialValue: true),
               ],
             ),
           ),
@@ -567,16 +412,8 @@ void main() {
               form: VooForm(
                 controller: formController,
                 fields: const [
-                  VooTextField(
-                    name: 'field1',
-                    label: 'Field 1',
-                    initialValue: 'Initial Value 1',
-                  ),
-                  VooTextField(
-                    name: 'field2',
-                    label: 'Field 2',
-                    initialValue: 'Initial Value 2',
-                  ),
+                  VooTextField(name: 'field1', label: 'Field 1', initialValue: 'Initial Value 1'),
+                  VooTextField(name: 'field2', label: 'Field 2', initialValue: 'Initial Value 2'),
                 ],
               ),
             ),

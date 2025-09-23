@@ -30,7 +30,7 @@ class VooDynamicFormLayout extends StatelessWidget {
     // Only use grid for specific field counts
     if (fieldCount == 4) return 2; // Perfect 2x2 grid
     if (fieldCount == 6 && screenType != ScreenType.mobile) return 2; // 3x2 grid
-    
+
     // For all other cases, return 0 to indicate wrapped layout should be used
     return 0;
   }
@@ -64,12 +64,8 @@ class VooDynamicFormLayout extends StatelessWidget {
         mainAxisSize: mainAxisSize,
       );
     }
-    
+
     // Default to wrapped layout for all other cases
-    return VooWrappedFormLayout(
-      fields: fields,
-      spacing: spacing,
-      runSpacing: spacing,
-    );
+    return VooWrappedFormLayout(fields: fields, spacing: spacing, runSpacing: spacing);
   }
 }

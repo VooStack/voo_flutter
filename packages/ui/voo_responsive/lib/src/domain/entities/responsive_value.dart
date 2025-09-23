@@ -6,19 +6,9 @@ class ResponsiveValue<T> extends Equatable {
   final T? desktop;
   final T? widescreen;
 
-  const ResponsiveValue({
-    required this.mobile,
-    this.tablet,
-    this.desktop,
-    this.widescreen,
-  });
+  const ResponsiveValue({required this.mobile, this.tablet, this.desktop, this.widescreen});
 
-  T getValue({
-    bool isMobile = false,
-    bool isTablet = false,
-    bool isDesktop = false,
-    bool isWidescreen = false,
-  }) {
+  T getValue({bool isMobile = false, bool isTablet = false, bool isDesktop = false, bool isWidescreen = false}) {
     if (isWidescreen && widescreen != null) {
       return widescreen!;
     }
@@ -44,12 +34,7 @@ class ResponsiveValue<T> extends Equatable {
     return mobile;
   }
 
-  ResponsiveValue<T> copyWith({
-    T? mobile,
-    T? tablet,
-    T? desktop,
-    T? widescreen,
-  }) {
+  ResponsiveValue<T> copyWith({T? mobile, T? tablet, T? desktop, T? widescreen}) {
     return ResponsiveValue<T>(
       mobile: mobile ?? this.mobile,
       tablet: tablet ?? this.tablet,

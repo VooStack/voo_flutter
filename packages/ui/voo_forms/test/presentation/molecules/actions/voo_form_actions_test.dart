@@ -6,13 +6,7 @@ import 'package:voo_forms/src/presentation/widgets/molecules/actions/voo_form_ac
 void main() {
   group('VooFormActions', () {
     testWidgets('shows submit button by default', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: VooFormActions())));
 
       expect(find.text('Submit'), findsOneWidget);
       expect(find.byType(FilledButton), findsOneWidget);
@@ -21,12 +15,7 @@ void main() {
     testWidgets('shows cancel button when configured', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(
-              showCancel: true,
-              onCancel: () {},
-            ),
-          ),
+          home: Scaffold(body: VooFormActions(showCancel: true, onCancel: () {})),
         ),
       );
 
@@ -38,12 +27,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormActions(
-              submitText: 'Save',
-              cancelText: 'Discard',
-              showCancel: true,
-              onCancel: () {},
-            ),
+            body: VooFormActions(submitText: 'Save', cancelText: 'Discard', showCancel: true, onCancel: () {}),
           ),
         ),
       );
@@ -99,13 +83,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormActions(
-              submitEnabled: false,
-              cancelEnabled: false,
-              showCancel: true,
-              onSubmit: () {},
-              onCancel: () {},
-            ),
+            body: VooFormActions(submitEnabled: false, cancelEnabled: false, showCancel: true, onSubmit: () {}, onCancel: () {}),
           ),
         ),
       );
@@ -118,15 +96,7 @@ void main() {
     });
 
     testWidgets('shows loading indicator when isLoading is true', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(
-              isLoading: true,
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: VooFormActions(isLoading: true))));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.text('Submit'), findsNothing);
@@ -135,11 +105,7 @@ void main() {
     testWidgets('respects button alignment', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(
-              alignment: MainAxisAlignment.center,
-            ),
-          ),
+          home: Scaffold(body: VooFormActions(alignment: MainAxisAlignment.center)),
         ),
       );
 
@@ -150,13 +116,7 @@ void main() {
     testWidgets('respects button spacing', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(
-              showCancel: true,
-              onCancel: () {},
-              spacing: 16.0,
-            ),
-          ),
+          home: Scaffold(body: VooFormActions(showCancel: true, onCancel: () {}, spacing: 16.0)),
         ),
       );
 
@@ -169,12 +129,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooFormActions(
-              submitButtonType: ButtonType.outlined,
-              cancelButtonType: ButtonType.filled,
-              showCancel: true,
-              onCancel: () {},
-            ),
+            body: VooFormActions(submitButtonType: ButtonType.outlined, cancelButtonType: ButtonType.filled, showCancel: true, onCancel: () {}),
           ),
         ),
       );
@@ -184,15 +139,7 @@ void main() {
     });
 
     testWidgets('returns empty widget when no buttons shown', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(
-              showSubmit: false,
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: VooFormActions(showSubmit: false))));
 
       expect(find.byType(SizedBox), findsOneWidget);
       expect(find.text('Submit'), findsNothing);
@@ -202,13 +149,7 @@ void main() {
     testWidgets('disables cancel when loading', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooFormActions(
-              isLoading: true,
-              showCancel: true,
-              onCancel: () {},
-            ),
-          ),
+          home: Scaffold(body: VooFormActions(isLoading: true, showCancel: true, onCancel: () {})),
         ),
       );
 

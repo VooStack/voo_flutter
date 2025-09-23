@@ -60,5 +60,4 @@ class VooListController<T> extends ChangeNotifier {
     _items.insert(newIndex, item);
     notifyListeners();
   }
-
 }

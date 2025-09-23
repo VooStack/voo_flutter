@@ -12,7 +12,7 @@ class VooTypewriterAnimation extends StatefulWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
-  
+
   const VooTypewriterAnimation({
     super.key,
     required this.text,
@@ -25,42 +25,29 @@ class VooTypewriterAnimation extends StatefulWidget {
     this.maxLines,
     this.overflow,
   });
-  
+
   @override
   State<VooTypewriterAnimation> createState() => _VooTypewriterAnimationState();
 }
 
-class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
-    with TickerProviderStateMixin {
+class _VooTypewriterAnimationState extends State<VooTypewriterAnimation> with TickerProviderStateMixin {
   late AnimationController _typeController;
   late AnimationController _cursorController;
   late Animation<int> _characterCount;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     final textLength = widget.text.length;
     final duration = widget.config.duration;
-    
-    _typeController = AnimationController(
-      duration: duration,
-      vsync: this,
-    );
-    
-    _cursorController = AnimationController(
-      duration: widget.cursorBlinkDuration,
-      vsync: this,
-    );
-    
-    _characterCount = StepTween(
-      begin: 0,
-      end: textLength,
-    ).animate(CurvedAnimation(
-      parent: _typeController,
-      curve: widget.config.curve,
-    ),);
-    
+
+    _typeController = AnimationController(duration: duration, vsync: this);
+
+    _cursorController = AnimationController(duration: widget.cursorBlinkDuration, vsync: this);
+
+    _characterCount = StepTween(begin: 0, end: textLength).animate(CurvedAnimation(parent: _typeController, curve: widget.config.curve));
+
     if (widget.config.autoPlay) {
       Future.delayed(widget.config.delay, () {
         if (mounted) {
@@ -78,10 +65,10 @@ class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
       });
     }
   }
-  
+
   void _handleRepeat() {
     if (!mounted) return;
-    
+
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
         _typeController.reset();
@@ -89,52 +76,37 @@ class _VooTypewriterAnimationState extends State<VooTypewriterAnimation>
       }
     });
   }
-  
+
   @override
   void dispose() {
     _typeController.dispose();
     _cursorController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-      animation: _characterCount,
-      builder: (context, child) {
-        final text = widget.text.substring(0, _characterCount.value);
-        
-        if (widget.showCursor) {
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                text,
-                style: widget.style,
-                textAlign: widget.textAlign,
-                maxLines: widget.maxLines,
-                overflow: widget.overflow,
+    animation: _characterCount,
+    builder: (context, child) {
+      final text = widget.text.substring(0, _characterCount.value);
+
+      if (widget.showCursor) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(text, style: widget.style, textAlign: widget.textAlign, maxLines: widget.maxLines, overflow: widget.overflow),
+            AnimatedBuilder(
+              animation: _cursorController,
+              builder: (context, _) => Opacity(
+                opacity: _cursorController.value,
+                child: Text(widget.cursor, style: widget.style),
               ),
-              AnimatedBuilder(
-                animation: _cursorController,
-                builder: (context, _) => Opacity(
-                    opacity: _cursorController.value,
-                    child: Text(
-                      widget.cursor,
-                      style: widget.style,
-                    ),
-                  ),
-              ),
-            ],
-          );
-        }
-        
-        return Text(
-          text,
-          style: widget.style,
-          textAlign: widget.textAlign,
-          maxLines: widget.maxLines,
-          overflow: widget.overflow,
+            ),
+          ],
         );
-      },
-    );
+      }
+
+      return Text(text, style: widget.style, textAlign: widget.textAlign, maxLines: widget.maxLines, overflow: widget.overflow);
+    },
+  );
 }

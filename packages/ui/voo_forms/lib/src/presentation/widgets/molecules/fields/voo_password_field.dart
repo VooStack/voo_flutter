@@ -36,11 +36,11 @@ class VooPasswordField extends VooTextField {
     super.onSubmitted,
     super.autofocus,
   }) : super(
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          prefixIcon: prefixIcon ?? const Icon(Icons.lock),
-          suffixIcon: suffixIcon ?? const Icon(Icons.visibility),
-          textInputAction: TextInputAction.done,
-        );
+         obscureText: true,
+         enableSuggestions: false,
+         autocorrect: false,
+         prefixIcon: prefixIcon ?? const Icon(Icons.lock),
+         suffixIcon: suffixIcon ?? const Icon(Icons.visibility),
+         textInputAction: TextInputAction.done,
+       );
 }

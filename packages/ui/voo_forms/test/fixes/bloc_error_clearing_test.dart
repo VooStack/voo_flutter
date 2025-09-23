@@ -21,27 +21,16 @@ class FormStateModel {
   final int counter;
   final Map<String, dynamic> formData;
 
-  const FormStateModel({
-    this.counter = 0,
-    this.formData = const {},
-  });
+  const FormStateModel({this.counter = 0, this.formData = const {}});
 
-  FormStateModel copyWith({
-    int? counter,
-    Map<String, dynamic>? formData,
-  }) =>
-      FormStateModel(
-        counter: counter ?? this.counter,
-        formData: formData ?? this.formData,
-      );
+  FormStateModel copyWith({int? counter, Map<String, dynamic>? formData}) =>
+      FormStateModel(counter: counter ?? this.counter, formData: formData ?? this.formData);
 }
 
 void main() {
   group('BLoC Error Clearing Tests', () {
     testWidgets('errors clear when typing with BLoC state changes', (tester) async {
-      final formController = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final formController = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
       final cubit = FormStateCubit();
 
       await tester.pumpWidget(
@@ -58,19 +47,8 @@ void main() {
                       child: VooForm(
                         controller: formController,
                         fields: [
-                          VooTextField(
-                            name: 'username',
-                            label: 'Username',
-                            validators: [VooValidator.required()],
-                          ),
-                          VooTextField(
-                            name: 'email',
-                            label: 'Email',
-                            validators: [
-                              VooValidator.required(),
-                              VooValidator.email(),
-                            ],
-                          ),
+                          VooTextField(name: 'username', label: 'Username', validators: [VooValidator.required()]),
+                          VooTextField(name: 'email', label: 'Email', validators: [VooValidator.required(), VooValidator.email()]),
                         ],
                       ),
                     ),
@@ -99,11 +77,7 @@ void main() {
       await tester.pump();
 
       // Error should clear immediately
-      expect(
-        formController.getError('username'),
-        isNull,
-        reason: 'Username error should clear after typing',
-      );
+      expect(formController.getError('username'), isNull, reason: 'Username error should clear after typing');
 
       // Trigger state change (simulating external state update)
       cubit.updateCounter();
@@ -147,9 +121,7 @@ void main() {
       //
       // The error clearing functionality still works correctly,
       // which is the primary concern for form validation.
-      final formController = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final formController = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
       final cubit = FormStateCubit();
 
       await tester.pumpWidget(
@@ -161,11 +133,7 @@ void main() {
                 builder: (context, state) => VooForm(
                   controller: formController,
                   fields: [
-                    VooTextField(
-                      name: 'field1',
-                      label: 'Field 1 (Counter: ${state.counter})',
-                      validators: [VooValidator.required()],
-                    ),
+                    VooTextField(name: 'field1', label: 'Field 1 (Counter: ${state.counter})', validators: [VooValidator.required()]),
                   ],
                 ),
               ),
@@ -183,11 +151,7 @@ void main() {
       await tester.pump();
 
       // Verify keyboard is shown
-      expect(
-        tester.testTextInput.isVisible,
-        isTrue,
-        reason: 'Keyboard should be visible after tapping field',
-      );
+      expect(tester.testTextInput.isVisible, isTrue, reason: 'Keyboard should be visible after tapping field');
 
       // Type to clear error
       await tester.enterText(find.byType(TextFormField), 'a');
@@ -217,9 +181,7 @@ void main() {
     });
 
     testWidgets('rapid BLoC state changes do not break error clearing', (tester) async {
-      final formController = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final formController = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
       final cubit = FormStateCubit();
 
       await tester.pumpWidget(
@@ -230,22 +192,12 @@ void main() {
               body: BlocBuilder<FormStateCubit, FormStateModel>(
                 builder: (context, state) => Column(
                   children: [
-                    ElevatedButton(
-                      onPressed: cubit.updateCounter,
-                      child: Text('Update State (${state.counter})'),
-                    ),
+                    ElevatedButton(onPressed: cubit.updateCounter, child: Text('Update State (${state.counter})')),
                     Expanded(
                       child: VooForm(
                         controller: formController,
                         fields: [
-                          VooTextField(
-                            name: 'name',
-                            label: 'Name',
-                            validators: [
-                              VooValidator.required(),
-                              VooValidator.minLength(3),
-                            ],
-                          ),
+                          VooTextField(name: 'name', label: 'Name', validators: [VooValidator.required(), VooValidator.minLength(3)]),
                         ],
                       ),
                     ),
@@ -281,17 +233,9 @@ void main() {
         // Check error state
         final value = formController.getValue('name');
         if (value != null && value.toString().length >= 3) {
-          expect(
-            formController.getError('name'),
-            isNull,
-            reason: 'Error should be cleared for valid input: $value',
-          );
+          expect(formController.getError('name'), isNull, reason: 'Error should be cleared for valid input: $value');
         } else if (value != null && value.toString().isNotEmpty) {
-          expect(
-            formController.getError('name'),
-            contains('3 characters'),
-            reason: 'Should show min length error for: $value',
-          );
+          expect(formController.getError('name'), contains('3 characters'), reason: 'Should show min length error for: $value');
         }
       }
 
@@ -312,12 +256,7 @@ void main() {
               body: BlocBuilder<FormStateCubit, FormStateModel>(
                 builder: (context, state) => VooForm(
                   controller: formController,
-                  fields: const [
-                    VooTextField(
-                      name: 'persistent',
-                      label: 'Persistent Field',
-                    ),
-                  ],
+                  fields: const [VooTextField(name: 'persistent', label: 'Persistent Field')],
                 ),
               ),
             ),
@@ -372,14 +311,7 @@ void main() {
                 builder: (context, state) => VooForm(
                   controller: formController,
                   fields: [
-                    VooTextField(
-                      name: 'email',
-                      label: 'Email (Updates: ${state.counter})',
-                      validators: [
-                        VooValidator.required(),
-                        VooValidator.email(),
-                      ],
-                    ),
+                    VooTextField(name: 'email', label: 'Email (Updates: ${state.counter})', validators: [VooValidator.required(), VooValidator.email()]),
                   ],
                 ),
               ),

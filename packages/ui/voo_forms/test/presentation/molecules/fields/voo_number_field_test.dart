@@ -12,10 +12,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooNumberField(
-              name: 'quantity',
-              label: 'Quantity',
-            ),
+            body: VooNumberField(name: 'quantity', label: 'Quantity'),
           ),
         ),
       );
@@ -47,11 +44,7 @@ void main() {
     testWidgets('restricts to valid numbers', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooNumberField(
-              name: 'quantity',
-            ),
-          ),
+          home: Scaffold(body: VooNumberField(name: 'quantity')),
         ),
       );
 
@@ -60,12 +53,7 @@ void main() {
     });
 
     testWidgets('validates min and max values', (WidgetTester tester) async {
-      const field = VooNumberField(
-        name: 'quantity',
-        label: 'Quantity',
-        min: 10,
-        max: 100,
-      );
+      const field = VooNumberField(name: 'quantity', label: 'Quantity', min: 10, max: 100);
 
       expect(field.validate(5), contains('at least'));
       expect(field.validate(150), contains('at most'));
@@ -99,12 +87,7 @@ void main() {
     });
 
     testWidgets('validates integer range', (WidgetTester tester) async {
-      final field = VooIntegerField(
-        name: 'age',
-        label: 'Age',
-        min: 18,
-        max: 65,
-      );
+      final field = VooIntegerField(name: 'age', label: 'Age', min: 18, max: 65);
 
       expect(field.validate(17), contains('at least'));
       expect(field.validate(66), contains('at most'));
@@ -136,11 +119,7 @@ void main() {
     testWidgets('respects maxDecimalPlaces', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDecimalField(
-              name: 'price',
-            ),
-          ),
+          home: Scaffold(body: VooDecimalField(name: 'price')),
         ),
       );
 
@@ -160,10 +139,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooCurrencyField(
-              name: 'price',
-              label: 'Price',
-            ),
+            body: VooCurrencyField(name: 'price', label: 'Price'),
           ),
         ),
       );
@@ -174,12 +150,7 @@ void main() {
     testWidgets('formats as currency with 2 decimal places', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooCurrencyField(
-              name: 'price',
-              initialValue: 99.9,
-            ),
-          ),
+          home: Scaffold(body: VooCurrencyField(name: 'price', initialValue: 99.9)),
         ),
       );
 
@@ -188,10 +159,7 @@ void main() {
     });
 
     testWidgets('does not allow negative values', (WidgetTester tester) async {
-      const field = VooCurrencyField(
-        name: 'price',
-        label: 'Price',
-      );
+      const field = VooCurrencyField(name: 'price', label: 'Price');
 
       // Currency fields have min: 0 by default
       expect(field.validate(-10), contains('at least'));
@@ -202,10 +170,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooCurrencyField(
-              name: 'price',
-              currencySymbol: '€',
-            ),
+            body: VooCurrencyField(name: 'price', currencySymbol: '€'),
           ),
         ),
       );
@@ -219,10 +184,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooPercentageField(
-              name: 'discount',
-              label: 'Discount',
-            ),
+            body: VooPercentageField(name: 'discount', label: 'Discount'),
           ),
         ),
       );
@@ -231,10 +193,7 @@ void main() {
     });
 
     testWidgets('restricts values between 0 and 100', (WidgetTester tester) async {
-      final field = VooPercentageField(
-        name: 'discount',
-        label: 'Discount',
-      );
+      final field = VooPercentageField(name: 'discount', label: 'Discount');
 
       expect(field.validate(-10), contains('at least'));
       expect(field.validate(150), contains('at most'));
@@ -244,12 +203,7 @@ void main() {
     testWidgets('handles integer percentages when decimals disabled', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooPercentageField(
-              name: 'tax',
-              allowDecimals: false,
-            ),
-          ),
+          home: Scaffold(body: VooPercentageField(name: 'tax', allowDecimals: false)),
         ),
       );
 

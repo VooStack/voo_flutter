@@ -6,10 +6,7 @@ import 'package:voo_forms/voo_forms.dart';
 class AsyncDropdownFieldWidget<T> extends StatefulWidget {
   final VooAsyncDropdownField<T> field;
 
-  const AsyncDropdownFieldWidget({
-    super.key,
-    required this.field,
-  });
+  const AsyncDropdownFieldWidget({super.key, required this.field});
 
   @override
   State<AsyncDropdownFieldWidget<T>> createState() => AsyncDropdownFieldWidgetState<T>();
@@ -75,10 +72,9 @@ class AsyncDropdownFieldWidgetState<T> extends State<AsyncDropdownFieldWidget<T>
       asyncSearch: widget.field.asyncOptionsLoader,
       searchDebounce: widget.field.searchDebounce,
       optionBuilder: widget.field.optionBuilder,
-      decoration: widget.field.getInputDecoration(context).copyWith(
-        suffixIcon: widget.field.dropdownIcon,
-        errorText: widget.field.showError != false ? fieldError : null,
-      ),
+      decoration: widget.field
+          .getInputDecoration(context)
+          .copyWith(suffixIcon: widget.field.dropdownIcon, errorText: widget.field.showError != false ? fieldError : null),
     );
 
     // Apply standard field building pattern

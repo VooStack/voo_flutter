@@ -39,7 +39,7 @@ class VooFormFieldAction extends StatelessWidget {
 
   /// Whether dialog/bottom sheet/side panel is dismissible
   final bool isDismissible;
-  
+
   /// Callback when the form should exit
   /// Defaults to Navigator.of(context).pop() if not provided
   final void Function(BuildContext)? onExit;
@@ -102,74 +102,55 @@ class VooFormFieldAction extends StatelessWidget {
 
   Future<dynamic> _openSidePanel(BuildContext context) async =>
       // Use Navigator to push a side panel route
-      Navigator.of(context).push(
-        VooSidePanelRoute(
-          form: formBuilder(context),
-          title: title,
-          width: sidePanelWidth,
-          dismissible: isDismissible,
-        ),
-      );
+      Navigator.of(context).push(VooSidePanelRoute(form: formBuilder(context), title: title, width: sidePanelWidth, dismissible: isDismissible));
 
   Future<dynamic> _openDialog(BuildContext context) async => showDialog(
-        context: context,
-        barrierDismissible: isDismissible,
-        builder: (context) => Dialog(
-          child: Container(
-            constraints: BoxConstraints(
-              maxWidth: 600,
-              maxHeight: MediaQuery.of(context).size.height * 0.8,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (title != null) _buildHeader(context),
-                  Expanded(
-                    child: formBuilder(context),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-
-  Future<dynamic> _openBottomSheet(BuildContext context) async => showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        isDismissible: isDismissible,
-        backgroundColor: Colors.transparent,
-        builder: (context) => Container(
-          height: MediaQuery.of(context).size.height * bottomSheetHeightFactor,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-          ),
+    context: context,
+    barrierDismissible: isDismissible,
+    builder: (context) => Dialog(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 600, maxHeight: MediaQuery.of(context).size.height * 0.8),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Drag handle
-              Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
               if (title != null) _buildHeader(context),
-              Expanded(
-                child: formBuilder(context),
-              ),
+              Expanded(child: formBuilder(context)),
             ],
           ),
         ),
-      );
+      ),
+    ),
+  );
+
+  Future<dynamic> _openBottomSheet(BuildContext context) async => showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    isDismissible: isDismissible,
+    backgroundColor: Colors.transparent,
+    builder: (context) => Container(
+      height: MediaQuery.of(context).size.height * bottomSheetHeightFactor,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
+          ),
+          if (title != null) _buildHeader(context),
+          Expanded(child: formBuilder(context)),
+        ],
+      ),
+    ),
+  );
 
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);
@@ -177,19 +158,12 @@ class VooFormFieldAction extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title!,
-            style: theme.textTheme.titleLarge,
-          ),
+          Text(title!, style: theme.textTheme.titleLarge),
           IconButton(
             onPressed: () {
               if (onExit != null) {

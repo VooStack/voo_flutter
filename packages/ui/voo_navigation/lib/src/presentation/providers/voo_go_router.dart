@@ -56,7 +56,8 @@ class VooGoRouter {
   /// Creates a GoRouter with automatic route generation from navigation items
   static GoRouter fromNavigationItems({
     required VooNavigationConfig config,
-    required Widget Function(BuildContext context, VooNavigationItem item) pageBuilder,
+    required Widget Function(BuildContext context, VooNavigationItem item)
+    pageBuilder,
     String? initialLocation,
     String? Function(BuildContext, GoRouterState)? redirect,
     void Function(BuildContext, GoRouterState, Object)? onException,
@@ -135,9 +136,7 @@ class VooGoRouter {
       routes: routes,
       initialLocation: initialLocation,
       redirect: redirect,
-      errorBuilder: errorPage != null
-          ? (context, state) => errorPage
-          : null,
+      errorBuilder: errorPage != null ? (context, state) => errorPage : null,
       observer: observer,
       observers: observers,
       debugLogDiagnostics: debugLogDiagnostics,
@@ -198,12 +197,14 @@ class VooGoRouter {
 
       // Process children even if parent doesn't have a route
       if (item.children != null && item.route == null) {
-        routes.addAll(_generateRoutesFromItems(
-          item.children!,
-          pageBuilder,
-          useAnimatedTransitions,
-          transitionDuration,
-        ));
+        routes.addAll(
+          _generateRoutesFromItems(
+            item.children!,
+            pageBuilder,
+            useAnimatedTransitions,
+            transitionDuration,
+          ),
+        );
       }
     }
 
@@ -231,7 +232,8 @@ class VooGoRouter {
       // Check children
       if (item.children != null) {
         for (final childItem in item.children!) {
-          if (childItem.route != null && currentPath.startsWith(childItem.route!)) {
+          if (childItem.route != null &&
+              currentPath.startsWith(childItem.route!)) {
             selectedId = childItem.id;
             break;
           }
@@ -241,10 +243,7 @@ class VooGoRouter {
 
     final updatedConfig = config.copyWith(selectedId: selectedId);
 
-    final shell = VooNavigationShell(
-      config: updatedConfig,
-      child: child,
-    );
+    final shell = VooNavigationShell(config: updatedConfig, child: child);
 
     return customBuilder != null ? customBuilder(context, shell) : shell;
   }

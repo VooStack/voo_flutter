@@ -21,10 +21,22 @@ void main() {
     });
 
     test('VooCalendarSelectionMode enum values exist', () {
-      expect(VooCalendarSelectionMode.values, contains(VooCalendarSelectionMode.none));
-      expect(VooCalendarSelectionMode.values, contains(VooCalendarSelectionMode.single));
-      expect(VooCalendarSelectionMode.values, contains(VooCalendarSelectionMode.multiple));
-      expect(VooCalendarSelectionMode.values, contains(VooCalendarSelectionMode.range));
+      expect(
+        VooCalendarSelectionMode.values,
+        contains(VooCalendarSelectionMode.none),
+      );
+      expect(
+        VooCalendarSelectionMode.values,
+        contains(VooCalendarSelectionMode.single),
+      );
+      expect(
+        VooCalendarSelectionMode.values,
+        contains(VooCalendarSelectionMode.multiple),
+      );
+      expect(
+        VooCalendarSelectionMode.values,
+        contains(VooCalendarSelectionMode.range),
+      );
     });
   });
 }

@@ -8,12 +8,7 @@ class TestModel {
   final String name;
   final double amount;
 
-  TestModel({
-    required this.id,
-    required this.siteNumber,
-    required this.name,
-    required this.amount,
-  });
+  TestModel({required this.id, required this.siteNumber, required this.name, required this.amount});
 }
 
 // Test data source
@@ -28,12 +23,7 @@ class TestTypedDataSource extends VooDataGridSource {
     required List<VooColumnSort> sorts,
   }) async =>
       // Not used in local mode
-      VooDataGridResponse(
-        rows: [],
-        totalRows: 0,
-        page: page,
-        pageSize: pageSize,
-      );
+      VooDataGridResponse(rows: [], totalRows: 0, page: page, pageSize: pageSize);
 }
 
 void main() {
@@ -41,24 +31,9 @@ void main() {
     test('should handle typed objects with valueGetter', () {
       // Create test data
       final testData = [
-        TestModel(
-          id: '1',
-          siteNumber: 'SITE001',
-          name: 'Test 1',
-          amount: 100.0,
-        ),
-        TestModel(
-          id: '2',
-          siteNumber: 'SITE002',
-          name: 'Test 2',
-          amount: 200.0,
-        ),
-        TestModel(
-          id: '3',
-          siteNumber: 'SITE003',
-          name: 'Test 3',
-          amount: 300.0,
-        ),
+        TestModel(id: '1', siteNumber: 'SITE001', name: 'Test 1', amount: 100.0),
+        TestModel(id: '2', siteNumber: 'SITE002', name: 'Test 2', amount: 200.0),
+        TestModel(id: '3', siteNumber: 'SITE003', name: 'Test 3', amount: 300.0),
       ];
 
       // Create data source
@@ -67,26 +42,10 @@ void main() {
 
       // Create columns with valueGetter (REQUIRED for typed objects)
       final columns = [
-        VooDataColumn<TestModel>(
-          field: 'id',
-          label: 'ID',
-          valueGetter: (row) => row.id,
-        ),
-        VooDataColumn<TestModel>(
-          field: 'siteNumber',
-          label: 'Site Number',
-          valueGetter: (row) => row.siteNumber,
-        ),
-        VooDataColumn<TestModel>(
-          field: 'name',
-          label: 'Name',
-          valueGetter: (row) => row.name,
-        ),
-        VooDataColumn<TestModel>(
-          field: 'amount',
-          label: 'Amount',
-          valueGetter: (row) => row.amount,
-        ),
+        VooDataColumn<TestModel>(field: 'id', label: 'ID', valueGetter: (row) => row.id),
+        VooDataColumn<TestModel>(field: 'siteNumber', label: 'Site Number', valueGetter: (row) => row.siteNumber),
+        VooDataColumn<TestModel>(field: 'name', label: 'Name', valueGetter: (row) => row.name),
+        VooDataColumn<TestModel>(field: 'amount', label: 'Amount', valueGetter: (row) => row.amount),
       ];
 
       // Load data
@@ -99,10 +58,7 @@ void main() {
       // Test that valueGetter works
       final firstRow = dataSource.rows[0] as TestModel;
       expect(columns[0].valueGetter!(firstRow), '1'); // ID column
-      expect(
-        columns[1].valueGetter!(firstRow),
-        'SITE001',
-      ); // Site Number column
+      expect(columns[1].valueGetter!(firstRow), 'SITE001'); // Site Number column
       expect(columns[2].valueGetter!(firstRow), 'Test 1'); // Name column
       expect(columns[3].valueGetter!(firstRow), 100.0); // Amount column
     });
@@ -110,24 +66,9 @@ void main() {
     test('should work with Map objects without valueGetter', () {
       // Create test data as Maps
       final testData = [
-        {
-          'id': '1',
-          'siteNumber': 'SITE001',
-          'name': 'Test 1',
-          'amount': 100.0,
-        },
-        {
-          'id': '2',
-          'siteNumber': 'SITE002',
-          'name': 'Test 2',
-          'amount': 200.0,
-        },
-        {
-          'id': '3',
-          'siteNumber': 'SITE003',
-          'name': 'Test 3',
-          'amount': 300.0,
-        },
+        {'id': '1', 'siteNumber': 'SITE001', 'name': 'Test 1', 'amount': 100.0},
+        {'id': '2', 'siteNumber': 'SITE002', 'name': 'Test 2', 'amount': 200.0},
+        {'id': '3', 'siteNumber': 'SITE003', 'name': 'Test 3', 'amount': 300.0},
       ];
 
       // Create data source
@@ -152,24 +93,9 @@ void main() {
     test('demonstrates typed object filtering limitation', () {
       // Create test data
       final testData = [
-        TestModel(
-          id: '1',
-          siteNumber: 'SITE001',
-          name: 'Test Alpha',
-          amount: 100.0,
-        ),
-        TestModel(
-          id: '2',
-          siteNumber: 'SITE002',
-          name: 'Test Beta',
-          amount: 200.0,
-        ),
-        TestModel(
-          id: '3',
-          siteNumber: 'SITE003',
-          name: 'Test Gamma',
-          amount: 300.0,
-        ),
+        TestModel(id: '1', siteNumber: 'SITE001', name: 'Test Alpha', amount: 100.0),
+        TestModel(id: '2', siteNumber: 'SITE002', name: 'Test Beta', amount: 200.0),
+        TestModel(id: '3', siteNumber: 'SITE003', name: 'Test Gamma', amount: 300.0),
       ];
 
       // Create data source
@@ -189,13 +115,7 @@ void main() {
       // 2. Implement custom filtering in fetchRemoteData for remote mode
 
       // This demonstrates the limitation:
-      dataSource.applyFilter(
-        'name',
-        const VooDataFilter(
-          operator: VooFilterOperator.contains,
-          value: 'Beta',
-        ),
-      );
+      dataSource.applyFilter('name', const VooDataFilter(operator: VooFilterOperator.contains, value: 'Beta'));
 
       // Filter doesn't work on typed objects in local mode without proper field access
       // The rows would be empty because _getFieldValue returns null

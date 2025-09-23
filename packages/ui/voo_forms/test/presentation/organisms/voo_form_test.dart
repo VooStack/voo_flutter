@@ -19,11 +19,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooForm(
-              fields: fields,
-            ),
-          ),
+          home: Scaffold(body: VooForm(fields: fields)),
         ),
       );
 
@@ -61,11 +57,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: const VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: const VooForm(fields: [VooTextField(name: 'test')]),
               showCancelButton: true,
               submitText: 'Save',
               cancelText: 'Discard',
@@ -87,13 +79,7 @@ void main() {
           home: Scaffold(
             body: VooFormPageBuilder(
               form: const VooForm(
-                fields: [
-                  VooTextField(
-                    name: 'username',
-                    label: 'Username',
-                    initialValue: 'testuser',
-                  ),
-                ],
+                fields: [VooTextField(name: 'username', label: 'Username', initialValue: 'testuser')],
               ),
               onSubmit: (values) {
                 submitCalled = true;
@@ -116,11 +102,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: VooForm(fields: [VooTextField(name: 'test')]),
               header: Text('Form Header'),
               footer: Text('Form Footer'),
             ),
@@ -137,11 +119,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: VooForm(fields: [VooTextField(name: 'test')]),
               showProgress: true,
             ),
           ),
@@ -158,9 +136,7 @@ void main() {
           home: Scaffold(
             body: VooFormPageBuilder(
               form: VooForm(
-                fields: [
-                  VooTextField(name: 'test', label: 'Test Field'),
-                ],
+                fields: [VooTextField(name: 'test', label: 'Test Field')],
               ),
               isEditable: false,
             ),
@@ -178,11 +154,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: const VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: const VooForm(fields: [VooTextField(name: 'test')]),
               actionsBuilder: (context, controller) => const Text('Custom Actions'),
             ),
           ),
@@ -200,25 +172,14 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: VooForm(fields: [VooTextField(name: 'test')]),
               padding: padding,
             ),
           ),
         ),
       );
 
-      final paddingWidget = tester.widget<Padding>(
-        find
-            .descendant(
-              of: find.byType(VooFormPageBuilder),
-              matching: find.byType(Padding),
-            )
-            .first,
-      );
+      final paddingWidget = tester.widget<Padding>(find.descendant(of: find.byType(VooFormPageBuilder), matching: find.byType(Padding)).first);
 
       expect(paddingWidget.padding, padding);
     });
@@ -230,11 +191,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: const VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: const VooForm(fields: [VooTextField(name: 'test')]),
               onSubmit: (values) {},
               onSuccess: () {
                 successCalled = true;
@@ -258,11 +215,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: const VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: const VooForm(fields: [VooTextField(name: 'test')]),
               onSubmit: (values) {
                 throw Exception('Test error');
               },
@@ -286,11 +239,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooFormPageBuilder(
-              form: VooForm(
-                fields: [
-                  VooTextField(name: 'test'),
-                ],
-              ),
+              form: VooForm(fields: [VooTextField(name: 'test')]),
               wrapInCard: true,
               cardElevation: 4.0,
             ),
@@ -306,16 +255,9 @@ void main() {
 
   group('VooFormExtension', () {
     testWidgets('creates simple form from field list', (WidgetTester tester) async {
-      final form = [
-        const VooTextField(name: 'name', label: 'Name'),
-        const VooEmailField(name: 'email', label: 'Email'),
-      ].toForm();
+      final form = [const VooTextField(name: 'name', label: 'Name'), const VooEmailField(name: 'email', label: 'Email')].toForm();
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(body: form),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: form)));
 
       expect(find.text('Name'), findsOneWidget);
       expect(find.text('Email'), findsOneWidget);
@@ -325,16 +267,9 @@ void main() {
       final formPage = [
         const VooTextField(name: 'name', label: 'Name'),
         const VooEmailField(name: 'email', label: 'Email'),
-      ].toFormPage(
-        onSubmit: (values) {},
-        submitText: 'Create',
-      );
+      ].toFormPage(onSubmit: (values) {}, submitText: 'Create');
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(body: formPage),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: formPage)));
 
       expect(find.text('Name'), findsOneWidget);
       expect(find.text('Email'), findsOneWidget);
@@ -373,16 +308,10 @@ void main() {
               loadingWidget: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Loading form data...'),
-                  ],
+                  children: [CircularProgressIndicator(), SizedBox(height: 16), Text('Loading form data...')],
                 ),
               ),
-              fields: [
-                VooTextField(name: 'name', label: 'Name'),
-              ],
+              fields: [VooTextField(name: 'name', label: 'Name')],
             ),
           ),
         ),
@@ -429,9 +358,7 @@ void main() {
                 children: [
                   VooForm(
                     isLoading: isLoading,
-                    fields: const [
-                      VooTextField(name: 'name', label: 'Name'),
-                    ],
+                    fields: const [VooTextField(name: 'name', label: 'Name')],
                   ),
                   ElevatedButton(
                     onPressed: () {

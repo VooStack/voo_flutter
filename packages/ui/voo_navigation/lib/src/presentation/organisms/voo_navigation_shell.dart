@@ -103,7 +103,10 @@ class _VooNavigationShellState extends State<VooNavigationShell> {
     widget.config.onNavigationItemSelected?.call(itemId);
   }
 
-  VooNavigationItem? _findNavigationItem(String id, List<VooNavigationItem> items) {
+  VooNavigationItem? _findNavigationItem(
+    String id,
+    List<VooNavigationItem> items,
+  ) {
     for (final item in items) {
       if (item.id == id) return item;
       if (item.children != null) {
@@ -174,7 +177,8 @@ class _VooNavigationShellState extends State<VooNavigationShell> {
       // Check children
       if (item.children != null) {
         for (final childItem in item.children!) {
-          if (childItem.route != null && location.startsWith(childItem.route!)) {
+          if (childItem.route != null &&
+              location.startsWith(childItem.route!)) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
                 setState(() {

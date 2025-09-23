@@ -20,8 +20,7 @@ class VooColors {
     'OPTIONS': Colors.grey,
   };
 
-  static Color getLogLevelColor(String level) =>
-      logLevels[level.toLowerCase()] ?? Colors.grey;
+  static Color getLogLevelColor(String level) => logLevels[level.toLowerCase()] ?? Colors.grey;
 
   static Color getHttpStatusColor(int statusCode) {
     if (statusCode >= 200 && statusCode < 300) return Colors.green;
@@ -40,6 +39,5 @@ class VooColors {
     return Colors.red;
   }
 
-  static Color getHttpMethodColor(String method) =>
-      httpMethods[method.toUpperCase()] ?? Colors.grey;
+  static Color getHttpMethodColor(String method) => httpMethods[method.toUpperCase()] ?? Colors.grey;
 }

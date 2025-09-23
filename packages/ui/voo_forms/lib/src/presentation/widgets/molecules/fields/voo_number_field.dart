@@ -95,10 +95,7 @@ class VooNumberField extends VooFieldBase<num> {
         }
       }
 
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: prefixIcon ?? suffixIcon,
-      );
+      Widget readOnlyContent = VooReadOnlyField(value: displayValue, icon: prefixIcon ?? suffixIcon);
 
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
@@ -111,61 +108,48 @@ class VooNumberField extends VooFieldBase<num> {
 
     // Use the stateful widget with a stable key based on field name
     // This ensures the widget survives parent rebuilds
-    return _VooNumberFieldStateful(
-      key: ValueKey('voo_number_field_$name'),
-      field: this,
-    );
+    return _VooNumberFieldStateful(key: ValueKey('voo_number_field_$name'), field: this);
   }
 
   @override
-  VooNumberField copyWith({
-    num? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooNumberField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        controller: controller,
-        focusNode: focusNode,
-        min: min,
-        max: max,
-        step: step,
-        allowDecimals: allowDecimals,
-        allowNegative: allowNegative,
-        maxDecimalPlaces: maxDecimalPlaces,
-        onEditingComplete: onEditingComplete,
-        onSubmitted: onSubmitted,
-        autofocus: autofocus,
-      );
+  VooNumberField copyWith({num? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooNumberField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    controller: controller,
+    focusNode: focusNode,
+    min: min,
+    max: max,
+    step: step,
+    allowDecimals: allowDecimals,
+    allowNegative: allowNegative,
+    maxDecimalPlaces: maxDecimalPlaces,
+    onEditingComplete: onEditingComplete,
+    onSubmitted: onSubmitted,
+    autofocus: autofocus,
+  );
 }
 
 /// Stateful widget to manage number field state and prevent keyboard dismissal
 class _VooNumberFieldStateful extends StatefulWidget {
   final VooNumberField field;
 
-  const _VooNumberFieldStateful({
-    super.key,
-    required this.field,
-  });
+  const _VooNumberFieldStateful({super.key, required this.field});
 
   @override
   State<_VooNumberFieldStateful> createState() => _VooNumberFieldStatefulState();
@@ -249,9 +233,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> with A
           final error = _formController!.getError(widget.field.name);
 
           // Create decoration with error text included
-          final decoration = widget.field.getInputDecoration(context).copyWith(
-                errorText: widget.field.showError != false ? error : null,
-              );
+          final decoration = widget.field.getInputDecoration(context).copyWith(errorText: widget.field.showError != false ? error : null);
 
           // Build the number input widget with the error in the decoration
           final numberInput = VooNumberInput(
@@ -284,16 +266,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> with A
           // Build with label, helper, and actions (but NOT error - it's in the decoration now)
           return widget.field.buildFieldContainer(
             context,
-            widget.field.buildWithLabel(
-              context,
-              widget.field.buildWithHelper(
-                context,
-                widget.field.buildWithActions(
-                  context,
-                  constrainedInput,
-                ),
-              ),
-            ),
+            widget.field.buildWithLabel(context, widget.field.buildWithHelper(context, widget.field.buildWithActions(context, constrainedInput))),
           );
         },
       );
@@ -319,9 +292,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> with A
       onSubmitted: widget.field.onSubmitted,
       enabled: widget.field.enabled,
       autofocus: widget.field.autofocus,
-      decoration: widget.field.getInputDecoration(context).copyWith(
-            errorText: widget.field.showError != false ? widget.field.error : null,
-          ),
+      decoration: widget.field.getInputDecoration(context).copyWith(errorText: widget.field.showError != false ? widget.field.error : null),
       signed: widget.field.allowNegative,
       decimal: widget.field.allowDecimals,
     );
@@ -331,16 +302,7 @@ class _VooNumberFieldStatefulState extends State<_VooNumberFieldStateful> with A
 
     return widget.field.buildFieldContainer(
       context,
-      widget.field.buildWithLabel(
-        context,
-        widget.field.buildWithHelper(
-          context,
-          widget.field.buildWithActions(
-            context,
-            constrainedInput,
-          ),
-        ),
-      ),
+      widget.field.buildWithLabel(context, widget.field.buildWithHelper(context, widget.field.buildWithActions(context, constrainedInput))),
     );
   }
 }

@@ -69,36 +69,18 @@ class _VooDataGridRowState<T> extends State<VooDataGridRow<T>> {
               children: [
                 // Selection checkbox column
                 if (widget.controller.dataSource.selectionMode != VooSelectionMode.none)
-                  RowSelectionCell<T>(
-                    controller: widget.controller,
-                    theme: widget.theme,
-                    design: design,
-                    isSelected: widget.isSelected,
-                    onTap: widget.onTap,
-                  ),
+                  RowSelectionCell<T>(controller: widget.controller, theme: widget.theme, design: design, isSelected: widget.isSelected, onTap: widget.onTap),
 
                 // Frozen columns
                 for (final column in widget.controller.frozenColumns)
                   RepaintBoundary(
-                    child: RowDataCell<T>(
-                      row: widget.row,
-                      column: column,
-                      controller: widget.controller,
-                      theme: widget.theme,
-                      design: design,
-                    ),
+                    child: RowDataCell<T>(row: widget.row, column: column, controller: widget.controller, theme: widget.theme, design: design),
                   ),
 
                 // Scrollable columns
                 for (final column in widget.controller.scrollableColumns)
                   RepaintBoundary(
-                    child: RowDataCell<T>(
-                      row: widget.row,
-                      column: column,
-                      controller: widget.controller,
-                      theme: widget.theme,
-                      design: design,
-                    ),
+                    child: RowDataCell<T>(row: widget.row, column: column, controller: widget.controller, theme: widget.theme, design: design),
                   ),
               ],
             ),

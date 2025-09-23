@@ -157,7 +157,6 @@ class VooDataGridStateless<T> extends StatelessWidget {
     this.combineFiltersAndPrimaryFilters = true,
   });
 
-
   @override
   Widget build(BuildContext context) {
     // Create a controller wrapper that bridges state and callbacks
@@ -241,21 +240,21 @@ class _StateBasedController<T> extends VooDataGridController<T> {
     VoidCallback? onSelectAll,
     VoidCallback? onDeselectAll,
     VoidCallback? onRefresh,
-  })  : _state = state,
-        _columns = columns,
-        _onPageChanged = onPageChanged,
-        _onPageSizeChanged = onPageSizeChanged,
-        _onFilterChanged = onFilterChanged,
-        _onFiltersCleared = onFiltersCleared,
-        _onToggleFilters = onToggleFilters,
-        _onSortChanged = onSortChanged,
-        _onSortsCleared = onSortsCleared,
-        _onRowSelected = onRowSelected,
-        _onRowDeselected = onRowDeselected,
-        _onSelectAll = onSelectAll,
-        _onDeselectAll = onDeselectAll,
-        _onRefresh = onRefresh,
-        super(dataSource: _DummyDataSource<T>(), columns: columns);
+  }) : _state = state,
+       _columns = columns,
+       _onPageChanged = onPageChanged,
+       _onPageSizeChanged = onPageSizeChanged,
+       _onFilterChanged = onFilterChanged,
+       _onFiltersCleared = onFiltersCleared,
+       _onToggleFilters = onToggleFilters,
+       _onSortChanged = onSortChanged,
+       _onSortsCleared = onSortsCleared,
+       _onRowSelected = onRowSelected,
+       _onRowDeselected = onRowDeselected,
+       _onSelectAll = onSelectAll,
+       _onDeselectAll = onDeselectAll,
+       _onRefresh = onRefresh,
+       super(dataSource: _DummyDataSource<T>(), columns: columns);
 
   // Override all getters to return state values
   List<T> get rows => _state.rows;
@@ -442,12 +441,7 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
     required List<VooColumnSort> sorts,
   }) async =>
       // This is never called as the state is managed externally
-      VooDataGridResponse<T>(
-        rows: _state?.rows ?? [],
-        totalRows: _state?.totalRows ?? 0,
-        page: page,
-        pageSize: pageSize,
-      );
+      VooDataGridResponse<T>(rows: _state?.rows ?? [], totalRows: _state?.totalRows ?? 0, page: page, pageSize: pageSize);
 
   @override
   void applyFilter(String field, VooDataFilter? filter) {
@@ -494,7 +488,7 @@ class _DummyDataSource<T> extends VooDataGridSource<T> {
     // Forward to controller callback
     _controller?.changePageSize(pageSize);
   }
-  
+
   @override
   void toggleRowSelection(T row) {
     // Forward to controller callback

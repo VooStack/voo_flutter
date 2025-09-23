@@ -1,5 +1,2 @@
 /// Logic operators for combining filters
-enum FilterLogic {
-  and,
-  or,
-}
+enum FilterLogic { and, or }

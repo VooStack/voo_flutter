@@ -11,10 +11,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckbox(
-            value: value,
-            onChanged: (newValue) => value = newValue,
-          ),
+          child: VooCheckbox(value: value, onChanged: (newValue) => value = newValue),
         ),
       );
 
@@ -30,12 +27,12 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooCheckbox(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -57,13 +54,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooCheckbox(
-                value: value,
-                tristate: true,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              tristate: true,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -85,16 +82,7 @@ void main() {
     });
 
     testWidgets('shows error state', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooCheckbox(
-            value: false,
-            isError: true,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooCheckbox(value: false, isError: true, onChanged: (_) {})));
 
       final checkbox = tester.widget<Checkbox>(find.byType(Checkbox));
       final theme = Theme.of(tester.element(find.byType(Checkbox)));
@@ -104,15 +92,7 @@ void main() {
     testWidgets('disabled state prevents interaction', (tester) async {
       final callbacks = MockCallbacks();
 
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: const VooCheckbox(
-            value: false,
-            onChanged: null,
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: const VooCheckbox(value: false, onChanged: null)));
 
       await tester.tap(find.byType(Checkbox));
       await tester.pumpAndSettle();
@@ -126,12 +106,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckboxListTile(
-            value: true,
-            onChanged: (_) {},
-            title: const Text('Title'),
-            subtitle: const Text('Subtitle'),
-          ),
+          child: VooCheckboxListTile(value: true, onChanged: (_) {}, title: const Text('Title'), subtitle: const Text('Subtitle')),
         ),
       );
 
@@ -144,12 +119,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckboxListTile(
-            value: false,
-            onChanged: (_) {},
-            title: const Text('Title'),
-            secondary: const Icon(Icons.info),
-          ),
+          child: VooCheckboxListTile(value: false, onChanged: (_) {}, title: const Text('Title'), secondary: const Icon(Icons.info)),
         ),
       );
 
@@ -165,13 +135,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooCheckboxListTile(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-                title: const Text('Option'),
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+              title: const Text('Option'),
+            ),
           ),
         ),
       );
@@ -192,11 +162,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckboxGroup<String>(
-            items: items,
-            values: selectedItems,
-            labelBuilder: (item) => item,
-          ),
+          child: VooCheckboxGroup<String>(items: items, values: selectedItems, labelBuilder: (item) => item),
         ),
       );
 
@@ -216,14 +182,14 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooCheckboxGroup<String>(
-                items: items,
-                values: selectedItems,
-                labelBuilder: (item) => item,
-                onChanged: (newSelection) {
-                  setState(() => selectedItems = newSelection);
-                  callbacks.onChanged(newSelection);
-                },
-              ),
+              items: items,
+              values: selectedItems,
+              labelBuilder: (item) => item,
+              onChanged: (newSelection) {
+                setState(() => selectedItems = newSelection);
+                callbacks.onChanged(newSelection);
+              },
+            ),
           ),
         ),
       );
@@ -265,17 +231,12 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckboxGroup<String>(
-            items: const ['Option'],
-            values: const [],
-            labelBuilder: (item) => item,
-            errorText: 'Selection required',
-          ),
+          child: VooCheckboxGroup<String>(items: const ['Option'], values: const [], labelBuilder: (item) => item, errorText: 'Selection required'),
         ),
       );
 
       expect(find.text('Selection required'), findsOneWidget);
-      
+
       final errorText = tester.widget<Text>(find.text('Selection required'));
       final theme = Theme.of(tester.element(find.text('Selection required')));
       expect(errorText.style?.color, theme.colorScheme.error);
@@ -285,12 +246,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooCheckboxGroup<String>(
-            items: const ['A', 'B', 'C'],
-            values: const ['A'],
-            labelBuilder: (item) => item,
-            direction: Axis.horizontal,
-          ),
+          child: VooCheckboxGroup<String>(items: const ['A', 'B', 'C'], values: const ['A'], labelBuilder: (item) => item, direction: Axis.horizontal),
         ),
       );
 
@@ -316,13 +272,13 @@ void main() {
       // Try to tap disabled item
       await tester.tap(find.text('Disabled'));
       await tester.pumpAndSettle();
-      
+
       expect(callbacks.wasCalled, false);
 
       // Tap enabled item
       await tester.tap(find.text('Enabled'));
       await tester.pumpAndSettle();
-      
+
       expect(callbacks.wasCalled, true);
     });
   });
@@ -332,12 +288,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledCheckbox(
-            value: true,
-            onChanged: (_) {},
-            label: 'Main Label',
-            subtitle: 'Description',
-          ),
+          child: VooLabeledCheckbox(value: true, onChanged: (_) {}, label: 'Main Label', subtitle: 'Description'),
         ),
       );
 
@@ -349,12 +300,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledCheckbox(
-            value: false,
-            onChanged: (_) {},
-            label: 'Label',
-            leading: const Icon(Icons.star),
-          ),
+          child: VooLabeledCheckbox(value: false, onChanged: (_) {}, label: 'Label', leading: const Icon(Icons.star)),
         ),
       );
 
@@ -370,13 +316,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooLabeledCheckbox(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-                label: 'Tap anywhere',
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+              label: 'Tap anywhere',
+            ),
           ),
         ),
       );
@@ -398,14 +344,14 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooLabeledCheckbox(
-                value: value,
-                tristate: true,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-                label: 'Tristate',
-              ),
+              value: value,
+              tristate: true,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+              label: 'Tristate',
+            ),
           ),
         ),
       );
@@ -430,12 +376,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledCheckbox(
-            value: false,
-            onChanged: (_) {},
-            label: 'Disabled',
-            enabled: false,
-          ),
+          child: VooLabeledCheckbox(value: false, onChanged: (_) {}, label: 'Disabled', enabled: false),
         ),
       );
 

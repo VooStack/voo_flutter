@@ -11,13 +11,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooTextField(
-                  name: 'testField',
-                  label: 'Test Field',
-                  initialValue: 'Initial Value',
-                ),
-              ],
+              fields: [VooTextField(name: 'testField', label: 'Test Field', initialValue: 'Initial Value')],
             ),
           ),
         ),
@@ -39,13 +33,7 @@ void main() {
           home: Scaffold(
             body: VooForm(
               isReadOnly: true,
-              fields: [
-                VooTextField(
-                  name: 'testField',
-                  label: 'Test Field',
-                  initialValue: 'Initial Value',
-                ),
-              ],
+              fields: [VooTextField(name: 'testField', label: 'Test Field', initialValue: 'Initial Value')],
             ),
           ),
         ),
@@ -70,15 +58,8 @@ void main() {
           home: Scaffold(
             body: VooForm(
               fields: [
-                VooTextField(
-                  name: 'editableField',
-                  label: 'Editable Field',
-                ),
-                VooTextField(
-                  name: 'readOnlyField',
-                  label: 'Read Only Field',
-                  readOnly: true,
-                ),
+                VooTextField(name: 'editableField', label: 'Editable Field'),
+                VooTextField(name: 'readOnlyField', label: 'Read Only Field', readOnly: true),
               ],
             ),
           ),
@@ -104,15 +85,8 @@ void main() {
             body: VooForm(
               isReadOnly: true, // Form is read-only
               fields: [
-                VooTextField(
-                  name: 'field1',
-                  label: 'Field 1',
-                ),
-                VooTextField(
-                  name: 'field2',
-                  label: 'Field 2',
-                  readOnly: true,
-                ),
+                VooTextField(name: 'field1', label: 'Field 1'),
+                VooTextField(name: 'field2', label: 'Field 2', readOnly: true),
               ],
             ),
           ),
@@ -131,14 +105,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooBooleanField(
-                  name: 'boolField',
-                  label: 'Boolean Field',
-                  initialValue: false,
-                  onChanged: (value) => changedValue = value,
-                ),
-              ],
+              fields: [VooBooleanField(name: 'boolField', label: 'Boolean Field', initialValue: false, onChanged: (value) => changedValue = value)],
             ),
           ),
         ),
@@ -162,14 +129,7 @@ void main() {
           home: Scaffold(
             body: VooForm(
               isReadOnly: true,
-              fields: [
-                VooBooleanField(
-                  name: 'boolField',
-                  label: 'Boolean Field',
-                  initialValue: false,
-                  onChanged: (value) => changedValue = value,
-                ),
-              ],
+              fields: [VooBooleanField(name: 'boolField', label: 'Boolean Field', initialValue: false, onChanged: (value) => changedValue = value)],
             ),
           ),
         ),
@@ -195,14 +155,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooCheckboxField(
-                  name: 'checkField',
-                  label: 'Checkbox Field',
-                  initialValue: false,
-                  onChanged: (value) => changedValue = value,
-                ),
-              ],
+              fields: [VooCheckboxField(name: 'checkField', label: 'Checkbox Field', initialValue: false, onChanged: (value) => changedValue = value)],
             ),
           ),
         ),
@@ -226,14 +179,7 @@ void main() {
           home: Scaffold(
             body: VooForm(
               isReadOnly: true,
-              fields: [
-                VooCheckboxField(
-                  name: 'checkField',
-                  label: 'Checkbox Field',
-                  initialValue: false,
-                  onChanged: (value) => changedValue = value,
-                ),
-              ],
+              fields: [VooCheckboxField(name: 'checkField', label: 'Checkbox Field', initialValue: false, onChanged: (value) => changedValue = value)],
             ),
           ),
         ),
@@ -255,12 +201,7 @@ void main() {
     testWidgets('VooFormScope loading state is accessible', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooForm(
-              isLoading: true,
-              fields: [],
-            ),
-          ),
+          home: Scaffold(body: VooForm(isLoading: true, fields: [])),
         ),
       );
 
@@ -271,11 +212,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooForm(
-              isLoading: true,
-              loadingWidget: Text('Custom Loading'),
-              fields: [],
-            ),
+            body: VooForm(isLoading: true, loadingWidget: Text('Custom Loading'), fields: []),
           ),
         ),
       );
@@ -294,10 +231,7 @@ void main() {
         initialValue: 'Initial',
       );
 
-      final copiedField = originalField.copyWith(
-        label: 'New Label',
-        readOnly: true,
-      );
+      final copiedField = originalField.copyWith(label: 'New Label', readOnly: true);
 
       expect(copiedField.name, 'test');
       expect(copiedField.label, 'New Label');

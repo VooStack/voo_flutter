@@ -101,18 +101,16 @@ class _VooDateInputState extends State<VooDateInput> {
 
   @override
   Widget build(BuildContext context) => TextFormField(
-      controller: _controller,
-      focusNode: _focusNode,
-      decoration: widget.decoration.copyWith(
-        hintText: widget.placeholder,
-        suffixIcon: widget.decoration.suffixIcon ?? 
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: widget.enabled && !widget.readOnly ? _selectDate : null,
-          ),
-      ),
-      readOnly: true,
-      enabled: widget.enabled,
-      onTap: widget.enabled && !widget.readOnly ? _selectDate : null,
-    );
+    controller: _controller,
+    focusNode: _focusNode,
+    decoration: widget.decoration.copyWith(
+      hintText: widget.placeholder,
+      suffixIcon:
+          widget.decoration.suffixIcon ??
+          IconButton(icon: const Icon(Icons.calendar_today), onPressed: widget.enabled && !widget.readOnly ? _selectDate : null),
+    ),
+    readOnly: true,
+    enabled: widget.enabled,
+    onTap: widget.enabled && !widget.readOnly ? _selectDate : null,
+  );
 }

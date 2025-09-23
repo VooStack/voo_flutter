@@ -79,10 +79,7 @@ class VooChip extends StatelessWidget {
           backgroundColor: backgroundColor,
           selectedColor: selectedColor,
           side: side,
-          shape: shape ??
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(design.radiusSm),
-              ),
+          shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
           padding: padding,
           materialTapTargetSize: materialTapTargetSize,
           elevation: elevation,
@@ -104,10 +101,7 @@ class VooChip extends StatelessWidget {
           selectedColor: selectedColor,
           deleteIconColor: deleteIconColor,
           side: side,
-          shape: shape ??
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(design.radiusSm),
-              ),
+          shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
           padding: padding,
           materialTapTargetSize: materialTapTargetSize,
           elevation: elevation,
@@ -124,10 +118,7 @@ class VooChip extends StatelessWidget {
           onPressed: enabled ? onPressed : null,
           backgroundColor: backgroundColor,
           side: side,
-          shape: shape ??
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(design.radiusSm),
-              ),
+          shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
           padding: padding,
           materialTapTargetSize: materialTapTargetSize,
           elevation: elevation,
@@ -144,10 +135,7 @@ class VooChip extends StatelessWidget {
           onPressed: enabled ? onPressed : null,
           backgroundColor: backgroundColor,
           side: side,
-          shape: shape ??
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(design.radiusSm),
-              ),
+          shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
           padding: padding,
           materialTapTargetSize: materialTapTargetSize,
           elevation: elevation,
@@ -159,10 +147,7 @@ class VooChip extends StatelessWidget {
     }
 
     if (tooltip != null) {
-      return Tooltip(
-        message: tooltip,
-        child: chip,
-      );
+      return Tooltip(message: tooltip, child: chip);
     }
 
     return chip;
@@ -213,18 +198,12 @@ class VooChoiceChip<T> extends StatelessWidget {
       backgroundColor: backgroundColor,
       selectedColor: selectedColor,
       side: side,
-      shape: shape ??
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(design.radiusSm),
-          ),
+      shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
       padding: padding,
     );
 
     if (tooltip != null) {
-      return Tooltip(
-        message: tooltip,
-        child: chip,
-      );
+      return Tooltip(message: tooltip, child: chip);
     }
 
     return chip;
@@ -264,41 +243,41 @@ class VooChipGroup<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Wrap(
-      alignment: alignment,
-      spacing: spacing,
-      runSpacing: runSpacing,
-      children: items.map((item) {
-        final isSelected = selectedItems.contains(item);
-        final isItemDisabled = isDisabled?.call(item) ?? false;
+    alignment: alignment,
+    spacing: spacing,
+    runSpacing: runSpacing,
+    children: items.map((item) {
+      final isSelected = selectedItems.contains(item);
+      final isItemDisabled = isDisabled?.call(item) ?? false;
 
-        return VooChip(
-          label: Text(labelBuilder(item)),
-          avatar: avatarBuilder?.call(item),
-          selected: isSelected,
-          variant: variant,
-          enabled: !isItemDisabled,
-          onPressed: onSelectionChanged != null
-              ? () {
-                  List<T> newSelection;
+      return VooChip(
+        label: Text(labelBuilder(item)),
+        avatar: avatarBuilder?.call(item),
+        selected: isSelected,
+        variant: variant,
+        enabled: !isItemDisabled,
+        onPressed: onSelectionChanged != null
+            ? () {
+                List<T> newSelection;
 
-                  if (singleSelection) {
-                    newSelection = isSelected && allowEmpty ? [] : [item];
+                if (singleSelection) {
+                  newSelection = isSelected && allowEmpty ? [] : [item];
+                } else {
+                  if (isSelected) {
+                    newSelection = selectedItems.where((i) => i != item).toList();
                   } else {
-                    if (isSelected) {
-                      newSelection = selectedItems.where((i) => i != item).toList();
-                    } else {
-                      newSelection = [...selectedItems, item];
-                    }
-                  }
-
-                  if (newSelection.isNotEmpty || allowEmpty) {
-                    onSelectionChanged!(newSelection);
+                    newSelection = [...selectedItems, item];
                   }
                 }
-              : null,
-        );
-      }).toList(),
-    );
+
+                if (newSelection.isNotEmpty || allowEmpty) {
+                  onSelectionChanged!(newSelection);
+                }
+              }
+            : null,
+      );
+    }).toList(),
+  );
 }
 
 /// Deletable chip list
@@ -328,18 +307,22 @@ class VooDeletableChipList<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Wrap(
-      alignment: alignment,
-      spacing: spacing,
-      runSpacing: runSpacing,
-      children: items.map((item) => VooChip(
-          label: Text(labelBuilder(item)),
-          avatar: avatarBuilder?.call(item),
-          variant: VooChipVariant.input,
-          backgroundColor: backgroundColor,
-          side: side,
-          onDeleted: onDeleted != null ? () => onDeleted!(item) : null,
-        ),).toList(),
-    );
+    alignment: alignment,
+    spacing: spacing,
+    runSpacing: runSpacing,
+    children: items
+        .map(
+          (item) => VooChip(
+            label: Text(labelBuilder(item)),
+            avatar: avatarBuilder?.call(item),
+            variant: VooChipVariant.input,
+            backgroundColor: backgroundColor,
+            side: side,
+            onDeleted: onDeleted != null ? () => onDeleted!(item) : null,
+          ),
+        )
+        .toList(),
+  );
 }
 
 /// Icon chip with label
@@ -373,20 +356,12 @@ class VooIconChip extends StatelessWidget {
 
     return ActionChip(
       avatar: Icon(icon, size: 18, color: iconColor),
-      label: Text(
-        label,
-        style: TextStyle(color: labelColor),
-      ),
+      label: Text(label, style: TextStyle(color: labelColor)),
       onPressed: enabled ? onPressed : null,
       backgroundColor: backgroundColor,
       side: side,
-      padding: padding ??
-          EdgeInsets.symmetric(
-            horizontal: design.spacingSm,
-          ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(design.radiusSm),
-      ),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: design.spacingSm),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
     );
   }
 }
@@ -399,14 +374,7 @@ class VooStatusChip extends StatelessWidget {
   final bool outlined;
   final double? size;
 
-  const VooStatusChip({
-    super.key,
-    required this.label,
-    required this.color,
-    this.icon,
-    this.outlined = false,
-    this.size,
-  });
+  const VooStatusChip({super.key, required this.label, required this.color, this.icon, this.outlined = false, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -415,10 +383,7 @@ class VooStatusChip extends StatelessWidget {
     final textColor = brightness == Brightness.light ? Colors.black : Colors.white;
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacingSm,
-        vertical: design.spacingXs,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingXs),
       decoration: BoxDecoration(
         color: outlined ? null : color.withValues(alpha: 0.2),
         border: outlined ? Border.all(color: color) : null,
@@ -427,20 +392,10 @@ class VooStatusChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
-            Icon(
-              icon,
-              size: size ?? 14,
-              color: outlined ? color : textColor,
-            ),
-            SizedBox(width: design.spacingXs),
-          ],
+          if (icon != null) ...[Icon(icon, size: size ?? 14, color: outlined ? color : textColor), SizedBox(width: design.spacingXs)],
           Text(
             label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: outlined ? color : textColor,
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(color: outlined ? color : textColor, fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -457,15 +412,7 @@ class VooTagChip extends StatelessWidget {
   final bool selected;
   final double? size;
 
-  const VooTagChip({
-    super.key,
-    required this.tag,
-    this.color,
-    this.onTap,
-    this.onDeleted,
-    this.selected = false,
-    this.size,
-  });
+  const VooTagChip({super.key, required this.tag, this.color, this.onTap, this.onDeleted, this.selected = false, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -476,39 +423,30 @@ class VooTagChip extends StatelessWidget {
     return Material(
       color: selected ? chipColor.withValues(alpha: 0.2) : Colors.transparent,
       shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: selected ? chipColor : colorScheme.outline,
-        ),
+        side: BorderSide(color: selected ? chipColor : colorScheme.outline),
         borderRadius: BorderRadius.circular(design.radiusSm),
       ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(design.radiusSm),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacingSm,
-            vertical: design.spacingXs,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingXs),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 '#$tag',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontSize: size,
-                      color: selected ? chipColor : null,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                    ),
+                  fontSize: size,
+                  color: selected ? chipColor : null,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                ),
               ),
               if (onDeleted != null) ...[
                 SizedBox(width: design.spacingXs),
                 InkWell(
                   onTap: onDeleted,
-                  child: Icon(
-                    Icons.close,
-                    size: size ?? 14,
-                    color: selected ? chipColor : colorScheme.onSurfaceVariant,
-                  ),
+                  child: Icon(Icons.close, size: size ?? 14, color: selected ? chipColor : colorScheme.onSurfaceVariant),
                 ),
               ],
             ],

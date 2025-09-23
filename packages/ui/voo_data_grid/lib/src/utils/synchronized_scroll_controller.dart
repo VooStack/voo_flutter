@@ -29,11 +29,11 @@ class SynchronizedScrollController {
   /// Handle scroll events
   void _onScroll(ScrollController controller) {
     if (_isUpdating || !controller.hasClients) return;
-    
+
     _isUpdating = true;
-    
+
     final offset = controller.offset;
-    
+
     // Update all other controllers
     for (final other in _controllers) {
       if (other != controller && other.hasClients) {
@@ -42,7 +42,7 @@ class SynchronizedScrollController {
         }
       }
     }
-    
+
     _isUpdating = false;
   }
 
@@ -58,26 +58,16 @@ class SynchronizedScrollController {
   }
 
   /// Animate to a specific offset for all controllers
-  Future<void> animateTo(
-    double offset, {
-    required Duration duration,
-    required Curve curve,
-  }) async {
+  Future<void> animateTo(double offset, {required Duration duration, required Curve curve}) async {
     _isUpdating = true;
     final futures = <Future>[];
-    
+
     for (final controller in _controllers) {
       if (controller.hasClients && controller.offset != offset) {
-        futures.add(
-          controller.animateTo(
-            offset,
-            duration: duration,
-            curve: curve,
-          ),
-        );
+        futures.add(controller.animateTo(offset, duration: duration, curve: curve));
       }
     }
-    
+
     await Future.wait(futures);
     _isUpdating = false;
   }

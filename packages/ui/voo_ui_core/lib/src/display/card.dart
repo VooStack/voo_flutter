@@ -72,16 +72,11 @@ class VooCard extends StatelessWidget {
 
     final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(design.radiusLg);
 
-    final effectiveShape = shape ??
+    final effectiveShape =
+        shape ??
         RoundedRectangleBorder(
           borderRadius: effectiveBorderRadius,
-          side: borderSide ??
-              (selected
-                  ? BorderSide(
-                      color: selectedColor ?? theme.colorScheme.primary,
-                      width: 2,
-                    )
-                  : BorderSide.none),
+          side: borderSide ?? (selected ? BorderSide(color: selectedColor ?? theme.colorScheme.primary, width: 2) : BorderSide.none),
         );
 
     final effectiveColor = color ?? (selected ? (selectedColor ?? theme.colorScheme.primary).withValues(alpha: 0.08) : theme.colorScheme.surface);
@@ -115,15 +110,9 @@ class VooCard extends StatelessWidget {
               highlightColor: highlightColor,
               splashFactory: splashFactory,
               borderRadius: effectiveBorderRadius,
-              child: Padding(
-                padding: effectivePadding,
-                child: child,
-              ),
+              child: Padding(padding: effectivePadding, child: child),
             )
-          : Padding(
-              padding: effectivePadding,
-              child: child,
-            ),
+          : Padding(padding: effectivePadding, child: child),
     );
 
     return card;
@@ -204,30 +193,21 @@ class VooContentCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (header != null) ...[
-            Container(
-              color: headerColor,
-              padding: effectiveHeaderPadding,
-              child: header,
-            ),
+            Container(color: headerColor, padding: effectiveHeaderPadding, child: header),
             if (dividerBetweenHeaderAndContent) const Divider(height: 1, thickness: 1),
           ],
-          Padding(
-            padding: effectiveContentPadding,
-            child: content,
-          ),
+          Padding(padding: effectiveContentPadding, child: content),
           if (footer != null || actions != null) ...[
             if (dividerBetweenContentAndFooter) const Divider(height: 1, thickness: 1),
             Container(
               color: footerColor,
               padding: effectiveFooterPadding,
-              child: footer ??
+              child:
+                  footer ??
                   Row(
                     mainAxisAlignment: actionsAlignment,
                     children: [
-                      for (int i = 0; i < actions!.length; i++) ...[
-                        actions![i],
-                        if (i < actions!.length - 1) SizedBox(width: actionsSpacing),
-                      ],
+                      for (int i = 0; i < actions!.length; i++) ...[actions![i], if (i < actions!.length - 1) SizedBox(width: actionsSpacing)],
                     ],
                   ),
             ),

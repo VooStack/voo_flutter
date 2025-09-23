@@ -9,11 +9,5 @@ class FilterEntry {
   dynamic secondaryValue; // For range operations
   FilterLogic logic;
 
-  FilterEntry({
-    this.field,
-    this.operator,
-    this.value,
-    this.secondaryValue,
-    this.logic = FilterLogic.and,
-  });
+  FilterEntry({this.field, this.operator, this.value, this.secondaryValue, this.logic = FilterLogic.and});
 }

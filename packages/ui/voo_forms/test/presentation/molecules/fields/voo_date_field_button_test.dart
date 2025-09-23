@@ -12,10 +12,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              placeholder: 'Select a date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', placeholder: 'Select a date'),
           ),
         ),
       );
@@ -28,10 +25,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              buttonText: 'Pick Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', buttonText: 'Pick Date'),
           ),
         ),
       );
@@ -45,10 +39,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              initialValue: testDate,
-            ),
+            body: VooDateFieldButton(name: 'test_date', initialValue: testDate),
           ),
         ),
       );
@@ -63,11 +54,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              initialValue: testDate,
-              dateFormat: dateFormat,
-            ),
+            body: VooDateFieldButton(name: 'test_date', initialValue: testDate, dateFormat: dateFormat),
           ),
         ),
       );
@@ -79,10 +66,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              label: 'Birth Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', label: 'Birth Date'),
           ),
         ),
       );
@@ -94,10 +78,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              helper: 'Select your date of birth',
-            ),
+            body: VooDateFieldButton(name: 'test_date', helper: 'Select your date of birth'),
           ),
         ),
       );
@@ -109,10 +90,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              error: 'Date is required',
-            ),
+            body: VooDateFieldButton(name: 'test_date', error: 'Date is required'),
           ),
         ),
       );
@@ -124,10 +102,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              placeholder: 'Select Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', placeholder: 'Select Date'),
           ),
         ),
       );
@@ -143,11 +118,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              enabled: false,
-              placeholder: 'Select Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', enabled: false, placeholder: 'Select Date'),
           ),
         ),
       );
@@ -163,11 +134,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              readOnly: true,
-              placeholder: 'Select Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', readOnly: true, placeholder: 'Select Date'),
           ),
         ),
       );
@@ -185,11 +152,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              onChanged: (value) => selectedDate = value,
-              placeholder: 'Select Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', onChanged: (value) => selectedDate = value, placeholder: 'Select Date'),
           ),
         ),
       );
@@ -214,11 +177,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              isHidden: true,
-              placeholder: 'Select Date',
-            ),
+            body: VooDateFieldButton(name: 'test_date', isHidden: true, placeholder: 'Select Date'),
           ),
         ),
       );
@@ -232,11 +191,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              placeholder: 'Select Date',
-              prefixIcon: Icon(Icons.calendar_today),
-            ),
+            body: VooDateFieldButton(name: 'test_date', placeholder: 'Select Date', prefixIcon: Icon(Icons.calendar_today)),
           ),
         ),
       );
@@ -248,11 +203,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              placeholder: 'Select Date',
-              suffixIcon: Icon(Icons.event),
-            ),
+            body: VooDateFieldButton(name: 'test_date', placeholder: 'Select Date', suffixIcon: Icon(Icons.event)),
           ),
         ),
       );
@@ -264,11 +215,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              placeholder: 'Select Date',
-              buttonType: ButtonType.filled,
-            ),
+            body: VooDateFieldButton(name: 'test_date', placeholder: 'Select Date', buttonType: ButtonType.filled),
           ),
         ),
       );
@@ -284,12 +231,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              placeholder: 'Select Date',
-              firstDate: firstDate,
-              lastDate: lastDate,
-            ),
+            body: VooDateFieldButton(name: 'test_date', placeholder: 'Select Date', firstDate: firstDate, lastDate: lastDate),
           ),
         ),
       );
@@ -308,10 +250,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'test_date',
-              initialValue: dateValue,
-            ),
+            body: VooDateFieldButton(name: 'test_date', initialValue: dateValue),
           ),
         ),
       );
@@ -380,10 +319,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'dateButton',
-              initialValue: date,
-            ),
+            body: VooDateFieldButton(name: 'dateButton', initialValue: date),
           ),
         ),
       );
@@ -396,10 +332,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'dateButton',
-              placeholder: 'Pick a date',
-            ),
+            body: VooDateFieldButton(name: 'dateButton', placeholder: 'Pick a date'),
           ),
         ),
       );
@@ -411,11 +344,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDateFieldButton(
-              name: 'date',
-              readOnly: true,
-              initialValue: DateTime(2024),
-            ),
+            body: VooDateFieldButton(name: 'date', readOnly: true, initialValue: DateTime(2024)),
           ),
         ),
       );

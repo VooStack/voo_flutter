@@ -6,19 +6,19 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 class AdvancedFilterHeader extends StatelessWidget {
   /// The current filter logic (AND/OR)
   final FilterLogic filterLogic;
-  
+
   /// Callback when filter logic changes
   final void Function(FilterLogic) onLogicChanged;
-  
+
   /// Title text
   final String title;
-  
+
   /// Icon to display
   final IconData? icon;
-  
+
   /// Icon color
   final Color? iconColor;
-  
+
   const AdvancedFilterHeader({
     super.key,
     required this.filterLogic,
@@ -32,33 +32,16 @@ class AdvancedFilterHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final design = context.vooDesign;
-    
+
     return Row(
       children: [
-        if (icon != null) ...[
-          Icon(
-            icon,
-            color: iconColor ?? theme.colorScheme.primary,
-          ),
-          SizedBox(width: design.spacingSm),
-        ],
-        Text(
-          title,
-          style: theme.textTheme.titleMedium,
-        ),
+        if (icon != null) ...[Icon(icon, color: iconColor ?? theme.colorScheme.primary), SizedBox(width: design.spacingSm)],
+        Text(title, style: theme.textTheme.titleMedium),
         const Spacer(),
         SegmentedButton<FilterLogic>(
           segments: const [
-            ButtonSegment(
-              value: FilterLogic.and,
-              label: Text('AND'),
-              icon: Icon(Icons.merge_type),
-            ),
-            ButtonSegment(
-              value: FilterLogic.or,
-              label: Text('OR'),
-              icon: Icon(Icons.alt_route),
-            ),
+            ButtonSegment(value: FilterLogic.and, label: Text('AND'), icon: Icon(Icons.merge_type)),
+            ButtonSegment(value: FilterLogic.or, label: Text('OR'), icon: Icon(Icons.alt_route)),
           ],
           selected: {filterLogic},
           onSelectionChanged: (value) {

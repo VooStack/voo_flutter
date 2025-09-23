@@ -2,13 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_toast/src/domain/enums/toast_type.dart';
 
 class VooToastIcon extends StatelessWidget {
-  const VooToastIcon({
-    super.key,
-    required this.type,
-    this.icon,
-    this.size = 24.0,
-    this.color,
-  });
+  const VooToastIcon({super.key, required this.type, this.icon, this.size = 24.0, this.color});
 
   final ToastType type;
   final Widget? icon;
@@ -40,11 +34,7 @@ class VooToastIcon extends StatelessWidget {
         return const SizedBox.shrink();
     }
 
-    return Icon(
-      iconData,
-      size: size,
-      color: color ?? defaultColor,
-    );
+    return Icon(iconData, size: size, color: color ?? defaultColor);
   }
 
   Color _getDefaultColor(ThemeData theme) {

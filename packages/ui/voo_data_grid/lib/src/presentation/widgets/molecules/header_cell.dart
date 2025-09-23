@@ -12,14 +12,7 @@ class HeaderCell<T> extends StatelessWidget {
   final VooDesignSystemData design;
   final void Function(String field) onSort;
 
-  const HeaderCell({
-    super.key,
-    required this.column,
-    required this.controller,
-    required this.theme,
-    required this.design,
-    required this.onSort,
-  });
+  const HeaderCell({super.key, required this.column, required this.controller, required this.theme, required this.design, required this.onSort});
 
   @override
   Widget build(BuildContext context) {
@@ -33,33 +26,18 @@ class HeaderCell<T> extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
         decoration: BoxDecoration(
           border: Border(
-            right: BorderSide(
-              color: theme.gridLineColor,
-              width: controller.showGridLines ? 1 : 0,
-            ),
+            right: BorderSide(color: theme.gridLineColor, width: controller.showGridLines ? 1 : 0),
           ),
         ),
         child: Row(
           children: [
             Expanded(
-              child: column.headerBuilder?.call(context, column) ??
-                  Text(
-                    column.label,
-                    style: theme.headerTextStyle,
-                    textAlign: column.textAlign,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+              child:
+                  column.headerBuilder?.call(context, column) ??
+                  Text(column.label, style: theme.headerTextStyle, textAlign: column.textAlign, overflow: TextOverflow.ellipsis),
             ),
-            if (column.sortable && !column.excludeFromApi)
-              HeaderSortIcon(
-                direction: sortDirection,
-                theme: theme,
-              ),
-            if (controller.columnResizable)
-              HeaderResizeHandle<T>(
-                column: column,
-                controller: controller,
-              ),
+            if (column.sortable && !column.excludeFromApi) HeaderSortIcon(direction: sortDirection, theme: theme),
+            if (controller.columnResizable) HeaderResizeHandle<T>(column: column, controller: controller),
           ],
         ),
       ),

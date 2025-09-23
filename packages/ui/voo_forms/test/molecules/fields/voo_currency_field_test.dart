@@ -5,22 +5,11 @@ import 'package:voo_forms/voo_forms.dart';
 
 void main() {
   group('VooCurrencyField', () {
-    Widget buildTestWidget(Widget child) => MaterialApp(
-          home: Scaffold(
-            body: child,
-          ),
-        );
+    Widget buildTestWidget(Widget child) => MaterialApp(home: Scaffold(body: child));
 
     testWidgets('formats currency correctly when typing 88', (tester) async {
       // Build the widget
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       // Find the text field
       final textField = find.byType(TextFormField);
@@ -42,14 +31,7 @@ void main() {
     });
 
     testWidgets('formats large amounts with thousand separators', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
 
@@ -62,16 +44,7 @@ void main() {
     });
 
     testWidgets('handles different currency symbols', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            currencySymbol: '€',
-            locale: 'de_DE',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount', currencySymbol: '€', locale: 'de_DE')));
 
       final textField = find.byType(TextFormField);
 
@@ -89,15 +62,7 @@ void main() {
       double? currentValue;
 
       await tester.pumpWidget(
-        buildTestWidget(
-          VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            min: 10.0,
-            max: 100.0,
-            onChanged: (value) => currentValue = value,
-          ),
-        ),
+        buildTestWidget(VooCurrencyField(name: 'amount', label: 'Amount', min: 10.0, max: 100.0, onChanged: (value) => currentValue = value)),
       );
 
       final textField = find.byType(TextFormField);
@@ -132,15 +97,7 @@ void main() {
     testWidgets('handles onChanged callback', (tester) async {
       double? lastValue;
 
-      await tester.pumpWidget(
-        buildTestWidget(
-          VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            onChanged: (value) => lastValue = value,
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(VooCurrencyField(name: 'amount', label: 'Amount', onChanged: (value) => lastValue = value)));
 
       final textField = find.byType(TextFormField);
 
@@ -153,31 +110,14 @@ void main() {
     });
 
     testWidgets('displays initial value correctly', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            initialValue: 42.50,
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount', initialValue: 42.50)));
 
       // Should display the formatted initial value
       expect(find.text('\$42.50'), findsOneWidget);
     });
 
     testWidgets('handles read-only mode', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            initialValue: 99.99,
-            readOnly: true,
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount', initialValue: 99.99, readOnly: true)));
 
       // Should show read-only field with formatted value
       expect(find.byType(VooReadOnlyField), findsOneWidget);
@@ -188,17 +128,7 @@ void main() {
     });
 
     testWidgets('handles JPY currency with no decimal places', (tester) async {
-      await tester.pumpWidget(
-        buildTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            currencySymbol: '¥',
-            decimalDigits: 0,
-            locale: 'ja_JP',
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount', currencySymbol: '¥', decimalDigits: 0, locale: 'ja_JP')));
 
       final textField = find.byType(TextFormField);
 

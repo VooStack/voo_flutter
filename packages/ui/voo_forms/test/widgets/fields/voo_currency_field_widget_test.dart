@@ -15,25 +15,13 @@ void main() {
     });
 
     Widget createTestWidget(Widget child) => MaterialApp(
-          home: Scaffold(
-            body: VooForm(
-              controller: controller,
-              fields: [
-                child as VooFormFieldWidget,
-              ],
-            ),
-          ),
-        );
+      home: Scaffold(
+        body: VooForm(controller: controller, fields: [child as VooFormFieldWidget]),
+      ),
+    );
 
     testWidgets('formats currency naturally as user types', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
       expect(textField, findsOneWidget);
@@ -66,14 +54,7 @@ void main() {
     });
 
     testWidgets('handles single digit "4" correctly', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
 
@@ -96,14 +77,7 @@ void main() {
     });
 
     testWidgets('maintains focus while typing currency', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
 
@@ -129,14 +103,7 @@ void main() {
     });
 
     testWidgets('handles calculator-style entry correctly', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
       final textFieldWidget = tester.widget<TextFormField>(textField);
@@ -157,16 +124,7 @@ void main() {
     });
 
     testWidgets('EUR currency formats with European locale', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-            currencySymbol: '€',
-            locale: 'de_DE',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount', currencySymbol: '€', locale: 'de_DE')));
 
       final textField = find.byType(TextFormField);
 
@@ -183,14 +141,7 @@ void main() {
     });
 
     testWidgets('allows continuous typing without interruption', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
 
@@ -208,14 +159,7 @@ void main() {
     });
 
     testWidgets('handles deletion properly', (tester) async {
-      await tester.pumpWidget(
-        createTestWidget(
-          const VooCurrencyField(
-            name: 'amount',
-            label: 'Amount',
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestWidget(const VooCurrencyField(name: 'amount', label: 'Amount')));
 
       final textField = find.byType(TextFormField);
 

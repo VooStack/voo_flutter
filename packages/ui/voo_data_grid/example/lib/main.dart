@@ -42,14 +42,14 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize data source with mock API
     _dataSource = AdvancedRemoteDataSource(
       apiEndpoint: '/api/orders',
       httpClient: _mockHttpClient,
       useAdvancedFilters: true,
     );
-    
+
     // Initialize controller with columns
     _controller = VooDataGridController(
       dataSource: _dataSource,
@@ -108,7 +108,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
     Map<String, String>? headers,
   ) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     // Generate mock data based on filters
     final random = Random();
     final statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Hold'];
@@ -119,7 +119,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
       'Innovation Labs LLC',
       'Digital Services Group',
     ];
-    
+
     final data = List.generate(20, (index) {
       final siteNumber = 1000 + random.nextInt(100);
       return {
@@ -133,10 +133,10 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
         'orderCost': (random.nextDouble() * 10000).toStringAsFixed(2),
       };
     });
-    
+
     // Apply filters if present
     var filteredData = List.from(data);
-    
+
     // Check for advanced filters
     if (body.containsKey('stringFilters')) {
       final stringFilters = body['stringFilters'] as List<dynamic>? ?? [];
@@ -144,10 +144,11 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
         final field = filter['fieldName'].toString().split('.').last;
         final value = filter['value'].toString().toLowerCase();
         final operator = filter['operator'];
-        
+
         filteredData = filteredData.where((item) {
-          final itemValue = item[_fieldNameToKey(field)]?.toString().toLowerCase() ?? '';
-          
+          final itemValue =
+              item[_fieldNameToKey(field)]?.toString().toLowerCase() ?? '';
+
           switch (operator) {
             case 'Contains':
               return itemValue.contains(value);
@@ -167,17 +168,17 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
         }).toList();
       }
     }
-    
+
     if (body.containsKey('intFilters')) {
       final intFilters = body['intFilters'] as List<dynamic>? ?? [];
       for (final filter in intFilters) {
         final field = filter['fieldName'].toString().split('.').last;
         final value = filter['value'] as int;
         final operator = filter['operator'];
-        
+
         filteredData = filteredData.where((item) {
           final itemValue = item[_fieldNameToKey(field)] as int? ?? 0;
-          
+
           switch (operator) {
             case 'GreaterThan':
               return itemValue > value;
@@ -195,14 +196,14 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
               return true;
           }
         }).toList();
-        
+
         // Handle secondary filter
         if (filter['secondaryFilter'] != null) {
           final secondaryFilter = filter['secondaryFilter'];
           final secondaryValue = secondaryFilter['value'] as int;
           final secondaryOperator = secondaryFilter['operator'];
           final logic = secondaryFilter['logic'];
-          
+
           if (logic == 'And') {
             filteredData = filteredData.where((item) {
               final itemValue = item[_fieldNameToKey(field)] as int? ?? 0;
@@ -223,7 +224,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
         }
       }
     }
-    
+
     return {
       'data': filteredData,
       'total': filteredData.length,
@@ -246,7 +247,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('VooDataGrid Advanced Filtering'),
@@ -309,7 +310,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
               ),
             ),
             SizedBox(height: design.spacingMd),
-            
+
             // Advanced filter widget
             if (_showAdvancedFilters) ...[
               AdvancedFilterWidget(
@@ -349,14 +350,16 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                 onFilterApplied: (request) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Applied ${request.hasFilters ? "filters" : "no filters"}'),
+                      content: Text(
+                        'Applied ${request.hasFilters ? "filters" : "no filters"}',
+                      ),
                     ),
                   );
                 },
               ),
               SizedBox(height: design.spacingMd),
             ],
-            
+
             // Data grid
             Expanded(
               child: VooDataGrid(
@@ -421,7 +424,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                   setState(() {
                     _selectedPrimaryFilter = filter;
                   });
-                  
+
                   // Apply the filter directly to the data source
                   _dataSource.applyFilter(field, filter);
                 },
@@ -464,7 +467,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
       pageNumber: 1,
       pageSize: 20,
     );
-    
+
     _dataSource.setAdvancedFilterRequest(request);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Applied: Site Number > 1006 AND < 1011')),
@@ -489,10 +492,12 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
       pageNumber: 1,
       pageSize: 20,
     );
-    
+
     _dataSource.setAdvancedFilterRequest(request);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Applied: Site Name contains "Tech" AND not "Park"')),
+      const SnackBar(
+        content: Text('Applied: Site Name contains "Tech" AND not "Park"'),
+      ),
     );
   }
 

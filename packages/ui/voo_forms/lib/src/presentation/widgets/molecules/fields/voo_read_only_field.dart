@@ -8,12 +8,7 @@ class VooReadOnlyField extends StatelessWidget {
   final Widget? icon;
   final bool showBorder;
 
-  const VooReadOnlyField({
-    super.key,
-    required this.value,
-    this.icon,
-    this.showBorder = true,
-  });
+  const VooReadOnlyField({super.key, required this.value, this.icon, this.showBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +26,7 @@ class VooReadOnlyField extends StatelessWidget {
         children: [
           if (icon != null) ...[
             IconTheme(
-              data: IconThemeData(
-                size: 24,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              data: IconThemeData(size: 24, color: theme.colorScheme.onSurfaceVariant),
               child: icon!,
             ),
             const SizedBox(width: 12),

@@ -8,19 +8,13 @@ class FilterChips<T> extends StatelessWidget {
   final List<VooDataColumn<T>> columns;
   final VooDataGridTheme theme;
   final void Function(String field) onRemoveFilter;
-  
-  const FilterChips({
-    super.key,
-    required this.filters,
-    required this.columns,
-    required this.theme,
-    required this.onRemoveFilter,
-  });
+
+  const FilterChips({super.key, required this.filters, required this.columns, required this.theme, required this.onRemoveFilter});
 
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Container(
       padding: EdgeInsets.all(design.spacingSm),
       decoration: BoxDecoration(
@@ -33,16 +27,10 @@ class FilterChips<T> extends StatelessWidget {
         children: filters.entries.map((entry) {
           final column = columns.firstWhere(
             (c) => c.field == entry.key,
-            orElse: () => VooDataColumn<T>(
-              field: entry.key,
-              label: entry.key,
-            ),
+            orElse: () => VooDataColumn<T>(field: entry.key, label: entry.key),
           );
           return Chip(
-            label: Text(
-              '${column.label}: ${entry.value.value}',
-              style: theme.cellTextStyle.copyWith(fontSize: 12),
-            ),
+            label: Text('${column.label}: ${entry.value.value}', style: theme.cellTextStyle.copyWith(fontSize: 12)),
             deleteIcon: Icon(Icons.close, size: design.iconSizeSm),
             onDeleted: () => onRemoveFilter(entry.key),
           );

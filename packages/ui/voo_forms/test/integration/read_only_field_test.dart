@@ -11,12 +11,7 @@ void main() {
           home: Scaffold(
             body: VooForm(
               fields: [
-                VooDropdownField(
-                  readOnly: true,
-                  name: 'name',
-                  options: ['Option 1', 'Option 2'],
-                  initialValue: 'Option 1',
-                ),
+                VooDropdownField(readOnly: true, name: 'name', options: ['Option 1', 'Option 2'], initialValue: 'Option 1'),
               ],
             ),
           ),
@@ -34,13 +29,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooTextField(
-                  readOnly: true,
-                  name: 'text',
-                  initialValue: 'Test Value',
-                ),
-              ],
+              fields: [VooTextField(readOnly: true, name: 'text', initialValue: 'Test Value')],
             ),
           ),
         ),
@@ -57,15 +46,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooForm(
-              fields: [
-                VooBooleanField(
-                  readOnly: true,
-                  name: 'bool',
-                  initialValue: true,
-                ),
-              ],
-            ),
+            body: VooForm(fields: [VooBooleanField(readOnly: true, name: 'bool', initialValue: true)]),
           ),
         ),
       );
@@ -84,15 +65,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooForm(
-              fields: [
-                VooCheckboxField(
-                  readOnly: true,
-                  name: 'check',
-                  initialValue: true,
-                ),
-              ],
-            ),
+            body: VooForm(fields: [VooCheckboxField(readOnly: true, name: 'check', initialValue: true)]),
           ),
         ),
       );
@@ -114,13 +87,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooDateField(
-                  readOnly: true,
-                  name: 'date',
-                  initialValue: testDate,
-                ),
-              ],
+              fields: [VooDateField(readOnly: true, name: 'date', initialValue: testDate)],
             ),
           ),
         ),
@@ -136,15 +103,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooForm(
-              fields: [
-                VooNumberField(
-                  readOnly: true,
-                  name: 'number',
-                  initialValue: 42,
-                ),
-              ],
-            ),
+            body: VooForm(fields: [VooNumberField(readOnly: true, name: 'number', initialValue: 42)]),
           ),
         ),
       );
@@ -162,15 +121,8 @@ void main() {
             body: VooForm(
               isReadOnly: true,
               fields: [
-                VooTextField(
-                  name: 'text',
-                  initialValue: 'Test',
-                ),
-                VooDropdownField(
-                  name: 'dropdown',
-                  options: ['A', 'B'],
-                  initialValue: 'A',
-                ),
+                VooTextField(name: 'text', initialValue: 'Test'),
+                VooDropdownField(name: 'dropdown', options: ['A', 'B'], initialValue: 'A'),
               ],
             ),
           ),

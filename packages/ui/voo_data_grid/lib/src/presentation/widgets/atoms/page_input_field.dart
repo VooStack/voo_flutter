@@ -8,10 +8,10 @@ class PageInputField extends StatefulWidget {
   final int currentPage;
   final int totalPages;
   final void Function(int page) onPageChanged;
-  
+
   /// Whether to use debouncing for input changes (if onChanged is used in future)
   final bool useDebouncing;
-  
+
   /// Debounce duration in milliseconds
   final Duration debounceDuration;
 
@@ -53,7 +53,7 @@ class _PageInputFieldState extends State<PageInputField> {
     _debouncer.dispose();
     super.dispose();
   }
-  
+
   void _handleSubmit(String value) {
     final page = int.tryParse(value);
     if (page != null && page > 0 && page <= widget.totalPages) {
@@ -67,7 +67,7 @@ class _PageInputFieldState extends State<PageInputField> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return SizedBox(
       width: 60,
       child: TextField(
@@ -75,18 +75,11 @@ class _PageInputFieldState extends State<PageInputField> {
         textAlign: TextAlign.center,
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: design.spacingSm,
-            vertical: design.spacingXs,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(design.radiusSm),
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingXs),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(design.radiusSm)),
         ),
         keyboardType: TextInputType.number,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onSubmitted: _handleSubmit,
       ),
     );

@@ -44,13 +44,7 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
   bool _isDragOverAsChild = false;
 
   // Color palette for depth levels
-  final List<Color> _depthColors = [
-    Colors.blue.shade50,
-    Colors.indigo.shade50,
-    Colors.purple.shade50,
-    Colors.deepPurple.shade50,
-    Colors.pink.shade50,
-  ];
+  final List<Color> _depthColors = [Colors.blue.shade50, Colors.indigo.shade50, Colors.purple.shade50, Colors.deepPurple.shade50, Colors.pink.shade50];
 
   @override
   void initState() {
@@ -95,15 +89,9 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
 
   void _createExpandAnimation(String itemId, {required bool isExpanded}) {
     if (!_expandControllers.containsKey(itemId)) {
-      final controller = AnimationController(
-        duration: const Duration(milliseconds: 300),
-        vsync: this,
-      );
+      final controller = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
       _expandControllers[itemId] = controller;
-      _expandAnimations[itemId] = CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeInOutCubic,
-      );
+      _expandAnimations[itemId] = CurvedAnimation(parent: controller, curve: Curves.easeInOutCubic);
     }
 
     if (isExpanded) {
@@ -122,32 +110,22 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
     }
 
     return widget.config.enablePullToRefresh && widget.onRefresh != null
-        ? RefreshIndicator(
-            onRefresh: widget.onRefresh!,
-            child: _buildNestedReorderableList(theme),
-          )
+        ? RefreshIndicator(onRefresh: widget.onRefresh!, child: _buildNestedReorderableList(theme))
         : _buildNestedReorderableList(theme);
   }
 
   Widget _buildNestedReorderableList(ThemeData theme) => ListView.builder(
-        padding: widget.config.padding,
-        itemCount: _items.length + 1, // Add extra item for bottom drop zone
-        itemBuilder: (context, index) {
-          if (index == _items.length) {
-            // Bottom drop zone
-            return _buildBottomDropZone();
-          }
-          final item = _items[index];
-          return _buildNestedItem(
-            item: item,
-            depth: 0,
-            index: index,
-            parentExpanded: true,
-            isLastChild: index == _items.length - 1,
-            isFirstChild: false,
-          );
-        },
-      );
+    padding: widget.config.padding,
+    itemCount: _items.length + 1, // Add extra item for bottom drop zone
+    itemBuilder: (context, index) {
+      if (index == _items.length) {
+        // Bottom drop zone
+        return _buildBottomDropZone();
+      }
+      final item = _items[index];
+      return _buildNestedItem(item: item, depth: 0, index: index, parentExpanded: true, isLastChild: index == _items.length - 1, isFirstChild: false);
+    },
+  );
 
   Widget _buildNestedItem({
     required ListItem<T> item,
@@ -174,10 +152,7 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
           Container(
             height: 4,
             margin: EdgeInsets.only(left: depth * 40.0 + 16, right: 16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(2),
-            ),
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(2)),
           ),
 
         DragTarget<ListItem<T>>(
@@ -251,12 +226,7 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
     final depthColor = widget.showDepthIndicator && depth < _depthColors.length ? _depthColors[depth] : Colors.transparent;
 
     final Widget tile = Container(
-      margin: EdgeInsets.only(
-        left: 8.0 + indentation,
-        right: 8.0,
-        top: 2.0,
-        bottom: 2.0,
-      ),
+      margin: EdgeInsets.only(left: 8.0 + indentation, right: 8.0, top: 2.0, bottom: 2.0),
       child: Material(
         elevation: isDragging ? 8 : (isDragOver ? 4 : 1),
         borderRadius: BorderRadius.circular(12),
@@ -269,10 +239,7 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
             duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isDragOver ? theme.colorScheme.primary.withValues(alpha: 0.5) : Colors.transparent,
-                width: isDragOver ? 2 : 1,
-              ),
+              border: Border.all(color: isDragOver ? theme.colorScheme.primary.withValues(alpha: 0.5) : Colors.transparent, width: isDragOver ? 2 : 1),
             ),
             child: Row(
               children: [
@@ -283,10 +250,7 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
                 if (hasChildren || item.isExpandable) _buildExpandIndicator(item.id, isExpanded) else const SizedBox(width: 40),
 
                 // Leading widget
-                if (item.leading != null) ...[
-                  item.leading!,
-                  const SizedBox(width: 12),
-                ],
+                if (item.leading != null) ...[item.leading!, const SizedBox(width: 12)],
 
                 // Title and subtitle
                 Expanded(
@@ -295,29 +259,16 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          item.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        Text(item.title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500)),
                         if (item.subtitle != null) ...[
                           const SizedBox(height: 2),
-                          Text(
-                            item.subtitle!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
-                            ),
-                          ),
+                          Text(item.subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7))),
                         ],
                         if (hasChildren && !isExpanded) ...[
                           const SizedBox(height: 4),
                           Text(
                             '${item.children!.length} items',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ],
@@ -326,27 +277,15 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
                 ),
 
                 // Trailing widget
-                if (item.trailing != null) ...[
-                  item.trailing!,
-                  const SizedBox(width: 12),
-                ],
+                if (item.trailing != null) ...[item.trailing!, const SizedBox(width: 12)],
 
                 // Depth indicator
                 if (widget.showDepthIndicator && depth > 0)
                   Container(
                     margin: const EdgeInsets.only(right: 8),
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'L$depth',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10,
-                      ),
-                    ),
+                    decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
+                    child: Text('L$depth', style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, fontSize: 10)),
                   ),
               ],
             ),
@@ -359,89 +298,75 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
   }
 
   Widget _buildDragHandle(ListItem<T> item, bool isDragging) => Draggable<ListItem<T>>(
-        data: item,
-        feedback: Material(
-          elevation: 8,
+    data: item,
+    feedback: Material(
+      elevation: 8,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
+          border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.drag_indicator, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                item.title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.drag_indicator,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    item.title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
         ),
-        childWhenDragging: Container(
-          width: 40,
-          height: 40,
-          alignment: Alignment.center,
-          child: Icon(
-            Icons.drag_indicator,
-            color: Theme.of(context).disabledColor,
-          ),
+      ),
+    ),
+    childWhenDragging: Container(
+      width: 40,
+      height: 40,
+      alignment: Alignment.center,
+      child: Icon(Icons.drag_indicator, color: Theme.of(context).disabledColor),
+    ),
+    onDragStarted: () {
+      setState(() {
+        _draggingItemId = item.id;
+      });
+    },
+    onDragEnd: (_) {
+      setState(() {
+        _draggingItemId = null;
+        _dragOverItemId = null;
+        _isDragOverAsChild = false;
+      });
+    },
+    child: MouseRegion(
+      cursor: SystemMouseCursors.move,
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.drag_indicator,
+          color: isDragging ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
         ),
-        onDragStarted: () {
-          setState(() {
-            _draggingItemId = item.id;
-          });
-        },
-        onDragEnd: (_) {
-          setState(() {
-            _draggingItemId = null;
-            _dragOverItemId = null;
-            _isDragOverAsChild = false;
-          });
-        },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.move,
-          child: Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.drag_indicator,
-              color: isDragging ? Theme.of(context).colorScheme.primary : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
-            ),
-          ),
-        ),
-      );
+      ),
+    ),
+  );
 
   Widget _buildExpandIndicator(String itemId, bool isExpanded) => IconButton(
-        icon: AnimatedRotation(
-          turns: isExpanded ? 0.5 : 0,
-          duration: const Duration(milliseconds: 300),
-          child: Icon(
-            Icons.expand_more,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-        onPressed: () => _toggleExpanded(itemId),
-        tooltip: isExpanded ? 'Collapse' : 'Expand',
-      );
+    icon: AnimatedRotation(
+      turns: isExpanded ? 0.5 : 0,
+      duration: const Duration(milliseconds: 300),
+      child: Icon(Icons.expand_more, color: Theme.of(context).colorScheme.primary),
+    ),
+    onPressed: () => _toggleExpanded(itemId),
+    tooltip: isExpanded ? 'Collapse' : 'Expand',
+  );
 
   Widget _buildBottomDropZone() {
     final isDragOver = _dragOverItemId == '__bottom__';
@@ -473,19 +398,11 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
         decoration: BoxDecoration(
           color: isDragOver ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isDragOver ? Theme.of(context).colorScheme.primary : Colors.transparent,
-            width: 2,
-          ),
+          border: Border.all(color: isDragOver ? Theme.of(context).colorScheme.primary : Colors.transparent, width: 2),
         ),
         child: Center(
           child: isDragOver || candidateData.isNotEmpty
-              ? Text(
-                  'Drop here to add at the bottom',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                )
+              ? Text('Drop here to add at the bottom', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.primary))
               : const SizedBox.shrink(),
         ),
       ),
@@ -546,12 +463,7 @@ class _VooNestedReorderableListState<T> extends State<VooNestedReorderableList<T
 
       if (_isDragOverAsChild) {
         // Add dragged item as child of target
-        final updatedTarget = targetItem.copyWith(
-          children: [
-            ...(targetItem.children ?? []),
-            draggedItem,
-          ],
-        );
+        final updatedTarget = targetItem.copyWith(children: [...(targetItem.children ?? []), draggedItem]);
 
         _updateItemInTree(updatedTarget);
 

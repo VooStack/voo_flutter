@@ -9,22 +9,16 @@ class MobileFilterInput extends StatelessWidget {
   final Map<String, TextEditingController> textControllers;
   final void Function(String field, dynamic value) onFilterChanged;
 
-  const MobileFilterInput({
-    super.key,
-    required this.column,
-    required this.tempFilters,
-    required this.textControllers,
-    required this.onFilterChanged,
-  });
+  const MobileFilterInput({super.key, required this.column, required this.tempFilters, required this.textControllers, required this.onFilterChanged});
 
   TextEditingController _getController(String field) => textControllers.putIfAbsent(field, () {
-        final controller = TextEditingController();
-        final existingValue = tempFilters[field];
-        if (existingValue != null && existingValue is! bool) {
-          controller.text = existingValue.toString();
-        }
-        return controller;
-      });
+    final controller = TextEditingController();
+    final existingValue = tempFilters[field];
+    if (existingValue != null && existingValue is! bool) {
+      controller.text = existingValue.toString();
+    }
+    return controller;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +52,7 @@ class MobileFilterInput extends StatelessWidget {
         );
 
       case VooDataColumnType.number:
-        return NumberFilterField(
-          controller: _getController(column.field),
-          onChanged: (num? value) => onFilterChanged(column.field, value),
-        );
+        return NumberFilterField(controller: _getController(column.field), onChanged: (num? value) => onFilterChanged(column.field, value));
 
       case VooDataColumnType.date:
         return DateFilterField(

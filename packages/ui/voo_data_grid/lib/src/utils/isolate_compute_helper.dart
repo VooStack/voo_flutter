@@ -28,18 +28,13 @@ class IsolateComputeResult<T> {
   final List<T> rows;
   final int totalRows;
 
-  const IsolateComputeResult({
-    required this.rows,
-    required this.totalRows,
-  });
+  const IsolateComputeResult({required this.rows, required this.totalRows});
 }
 
 /// Helper class for isolate computations
 class IsolateComputeHelper {
   /// Process data in isolate for better performance
-  static Future<IsolateComputeResult<T>> processDataInIsolate<T>(
-    IsolateComputeData<T> data,
-  ) async {
+  static Future<IsolateComputeResult<T>> processDataInIsolate<T>(IsolateComputeData<T> data) async {
     // For small datasets, process synchronously to avoid overhead
     if (data.data.length < 100) {
       return _processData(data);
@@ -83,9 +78,7 @@ class IsolateComputeHelper {
           comparison = aValue.toString().compareTo(bValue.toString());
         }
 
-        return sort.direction == VooSortDirection.ascending
-            ? comparison
-            : -comparison;
+        return sort.direction == VooSortDirection.ascending ? comparison : -comparison;
       });
     }
 
@@ -93,25 +86,13 @@ class IsolateComputeHelper {
     final totalRows = filteredData.length;
     final startIndex = data.currentPage * data.pageSize;
     final endIndex = (startIndex + data.pageSize).clamp(0, totalRows);
-    final rows = filteredData
-        .sublist(
-          startIndex.clamp(0, filteredData.length),
-          endIndex.clamp(0, filteredData.length),
-        )
-        .cast<T>();
+    final rows = filteredData.sublist(startIndex.clamp(0, filteredData.length), endIndex.clamp(0, filteredData.length)).cast<T>();
 
-    return IsolateComputeResult(
-      rows: rows,
-      totalRows: totalRows,
-    );
+    return IsolateComputeResult(rows: rows, totalRows: totalRows);
   }
 
   /// Get field value from row object
-  static dynamic _getFieldValue<T>(
-    T row,
-    String field, [
-    dynamic Function(T, String)? valueGetter,
-  ]) {
+  static dynamic _getFieldValue<T>(T row, String field, [dynamic Function(T, String)? valueGetter]) {
     if (valueGetter != null) {
       return valueGetter(row, field);
     }
@@ -137,8 +118,7 @@ class IsolateComputeHelper {
   static bool _applyFilter(dynamic value, VooDataFilter filter) {
     // Handle null values
     if (value == null) {
-      return filter.operator == VooFilterOperator.isNull ||
-          filter.operator == VooFilterOperator.notEquals;
+      return filter.operator == VooFilterOperator.isNull || filter.operator == VooFilterOperator.notEquals;
     }
 
     switch (filter.operator) {
@@ -149,24 +129,16 @@ class IsolateComputeHelper {
         return value != filter.value;
 
       case VooFilterOperator.contains:
-        return value.toString().toLowerCase().contains(
-              filter.value?.toString().toLowerCase() ?? '',
-            );
+        return value.toString().toLowerCase().contains(filter.value?.toString().toLowerCase() ?? '');
 
       case VooFilterOperator.notContains:
-        return !value.toString().toLowerCase().contains(
-              filter.value?.toString().toLowerCase() ?? '',
-            );
+        return !value.toString().toLowerCase().contains(filter.value?.toString().toLowerCase() ?? '');
 
       case VooFilterOperator.startsWith:
-        return value.toString().toLowerCase().startsWith(
-              filter.value?.toString().toLowerCase() ?? '',
-            );
+        return value.toString().toLowerCase().startsWith(filter.value?.toString().toLowerCase() ?? '');
 
       case VooFilterOperator.endsWith:
-        return value.toString().toLowerCase().endsWith(
-              filter.value?.toString().toLowerCase() ?? '',
-            );
+        return value.toString().toLowerCase().endsWith(filter.value?.toString().toLowerCase() ?? '');
 
       case VooFilterOperator.greaterThan:
         if (value is Comparable && filter.value is Comparable) {
@@ -193,11 +165,8 @@ class IsolateComputeHelper {
         return false;
 
       case VooFilterOperator.between:
-        if (value is Comparable &&
-            filter.value is Comparable &&
-            filter.valueTo is Comparable) {
-          return value.compareTo(filter.value) >= 0 &&
-              value.compareTo(filter.valueTo) <= 0;
+        if (value is Comparable && filter.value is Comparable && filter.valueTo is Comparable) {
+          return value.compareTo(filter.value) >= 0 && value.compareTo(filter.valueTo) <= 0;
         }
         return false;
 

@@ -5,9 +5,7 @@ import 'package:voo_forms/voo_forms.dart';
 void main() {
   group('Error Clearing with Rebuilds Tests', () {
     testWidgets('errors clear when typing even with frequent widget rebuilds', (tester) async {
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
 
       // Simulate external state that causes rebuilds
       final ValueNotifier<int> rebuildCounter = ValueNotifier(0);
@@ -22,27 +20,9 @@ void main() {
                 builder: (context, value, child) => VooForm(
                   controller: controller,
                   fields: [
-                    VooTextField(
-                      name: 'username',
-                      label: 'Username (Rebuild count: $value)',
-                      validators: [VooValidator.required()],
-                    ),
-                    VooCurrencyField(
-                      name: 'amount',
-                      label: 'Amount',
-                      validators: [
-                        VooValidator.required(),
-                        VooValidator.min(100),
-                      ],
-                    ),
-                    VooNumberField(
-                      name: 'quantity',
-                      label: 'Quantity',
-                      validators: [
-                        VooValidator.required(),
-                        VooValidator.min(1),
-                      ],
-                    ),
+                    VooTextField(name: 'username', label: 'Username (Rebuild count: $value)', validators: [VooValidator.required()]),
+                    VooCurrencyField(name: 'amount', label: 'Amount', validators: [VooValidator.required(), VooValidator.min(100)]),
+                    VooNumberField(name: 'quantity', label: 'Quantity', validators: [VooValidator.required(), VooValidator.min(1)]),
                   ],
                 ),
               ),
@@ -75,11 +55,7 @@ void main() {
         await tester.pump();
 
         // Error should be cleared despite the rebuild
-        expect(
-          controller.getError('username'),
-          isNull,
-          reason: 'Username error should clear after typing character $i',
-        );
+        expect(controller.getError('username'), isNull, reason: 'Username error should clear after typing character $i');
       }
 
       // Test currency field with rebuilds
@@ -118,9 +94,7 @@ void main() {
     });
 
     testWidgets('validation continues to work after multiple rebuilds', (tester) async {
-      final controller = VooFormController(
-        errorDisplayMode: VooFormErrorDisplayMode.onSubmit,
-      );
+      final controller = VooFormController(errorDisplayMode: VooFormErrorDisplayMode.onSubmit);
 
       int rebuildCount = 0;
 
@@ -143,14 +117,7 @@ void main() {
                     child: VooForm(
                       controller: controller,
                       fields: [
-                        VooTextField(
-                          name: 'email',
-                          label: 'Email',
-                          validators: [
-                            VooValidator.required(),
-                            VooValidator.email(),
-                          ],
-                        ),
+                        VooTextField(name: 'email', label: 'Email', validators: [VooValidator.required(), VooValidator.email()]),
                       ],
                     ),
                   ),
@@ -174,11 +141,7 @@ void main() {
 
       // Should show email validation error (required error cleared)
       final emailError = controller.getError('email');
-      expect(
-        emailError != null && emailError.contains('valid email'),
-        isTrue,
-        reason: 'Expected email validation error, got: $emailError',
-      );
+      expect(emailError != null && emailError.contains('valid email'), isTrue, reason: 'Expected email validation error, got: $emailError');
 
       // Trigger multiple rebuilds
       for (int i = 0; i < 3; i++) {
@@ -225,11 +188,7 @@ void main() {
               builder: (context, value, child) => VooForm(
                 controller: controller,
                 fields: [
-                  VooTextField(
-                    name: 'persistent',
-                    label: 'Persistent Field',
-                    validators: [VooValidator.required()],
-                  ),
+                  VooTextField(name: 'persistent', label: 'Persistent Field', validators: [VooValidator.required()]),
                 ],
               ),
             ),

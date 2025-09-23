@@ -13,16 +13,8 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(
-              colorScheme: const ColorScheme.light(
-                primary: Colors.blue,
-                error: Colors.red,
-                secondary: Colors.green,
-                tertiary: Colors.orange,
-              ),
-              textTheme: const TextTheme(
-                bodyMedium: TextStyle(fontSize: 14),
-                titleSmall: TextStyle(fontSize: 12),
-              ),
+              colorScheme: const ColorScheme.light(primary: Colors.blue, error: Colors.red, secondary: Colors.green, tertiary: Colors.orange),
+              textTheme: const TextTheme(bodyMedium: TextStyle(fontSize: 14), titleSmall: TextStyle(fontSize: 12)),
               cardTheme: const CardThemeData(elevation: 8.0),
             ),
             home: Builder(
@@ -69,10 +61,7 @@ void main() {
                   body: Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        VooToast.showSuccess(
-                          message: 'Success message',
-                          context: context,
-                        );
+                        VooToast.showSuccess(message: 'Success message', context: context);
                       },
                       child: const Text('Show Toast'),
                     ),
@@ -118,11 +107,7 @@ void main() {
       test('VooToastController.init replaces instance', () {
         final controller1 = VooToastController.instance;
 
-        VooToastController.init(
-          config: const ToastConfig(
-            defaultDuration: Duration(seconds: 5),
-          ),
-        );
+        VooToastController.init(config: const ToastConfig(defaultDuration: Duration(seconds: 5)));
 
         final controller2 = VooToastController.instance;
 
@@ -155,11 +140,7 @@ void main() {
       testWidgets('uses theme colors when no config provided', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.deepPurple,
-              ),
-            ),
+            theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
             home: VooToastOverlay(
               child: Builder(
                 builder: (context) => Scaffold(
@@ -168,37 +149,25 @@ void main() {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          VooToast.showSuccess(
-                            message: 'Theme success',
-                            context: context,
-                          );
+                          VooToast.showSuccess(message: 'Theme success', context: context);
                         },
                         child: const Text('Success'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          VooToast.showError(
-                            message: 'Theme error',
-                            context: context,
-                          );
+                          VooToast.showError(message: 'Theme error', context: context);
                         },
                         child: const Text('Error'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          VooToast.showWarning(
-                            message: 'Theme warning',
-                            context: context,
-                          );
+                          VooToast.showWarning(message: 'Theme warning', context: context);
                         },
                         child: const Text('Warning'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          VooToast.showInfo(
-                            message: 'Theme info',
-                            context: context,
-                          );
+                          VooToast.showInfo(message: 'Theme info', context: context);
                         },
                         child: const Text('Info'),
                       ),
@@ -264,10 +233,7 @@ void main() {
                   body: Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        VooToast.showInfo(
-                          message: 'Dark theme toast',
-                          context: context,
-                        );
+                        VooToast.showInfo(message: 'Dark theme toast', context: context);
                       },
                       child: const Text('Show Dark Toast'),
                     ),
@@ -304,10 +270,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(
-              colorScheme: const ColorScheme.light(
-                primary: Colors.teal,
-                error: Colors.pink,
-              ),
+              colorScheme: const ColorScheme.light(primary: Colors.teal, error: Colors.pink),
             ),
             home: Builder(
               builder: (context) {
@@ -331,10 +294,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(
-              colorScheme: const ColorScheme.light(
-                primary: Colors.indigo,
-                secondary: Colors.amber,
-              ),
+              colorScheme: const ColorScheme.light(primary: Colors.indigo, secondary: Colors.amber),
               cardTheme: const CardThemeData(elevation: 12.0),
             ),
             home: Builder(

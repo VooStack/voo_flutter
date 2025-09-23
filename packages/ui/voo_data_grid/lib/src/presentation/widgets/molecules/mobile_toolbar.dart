@@ -40,42 +40,24 @@ class MobileToolbar extends StatelessWidget {
       padding: EdgeInsets.all(design.spacingSm),
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: borderColor ?? theme.dividerColor,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: borderColor ?? theme.dividerColor)),
       ),
       child: Row(
         children: [
+          ToolbarButton(icon: Icons.refresh, onPressed: onRefresh, tooltip: 'Refresh'),
           ToolbarButton(
-            icon: Icons.refresh,
-            onPressed: onRefresh,
-            tooltip: 'Refresh',
-          ),
-          ToolbarButton(
-            icon: activeFilterCount > 0
-                ? Icons.filter_alt
-                : Icons.filter_alt_outlined,
+            icon: activeFilterCount > 0 ? Icons.filter_alt : Icons.filter_alt_outlined,
             onPressed: onShowMobileFilters ?? onFilterToggle,
             tooltip: 'Filters',
             isActive: activeFilterCount > 0,
             badgeCount: activeFilterCount > 0 ? activeFilterCount : null,
           ),
-          if (showViewModeToggle && displayMode != null)
-            ViewModeToggle(
-              currentMode: displayMode!,
-              onModeChanged: onDisplayModeChanged,
-            ),
+          if (showViewModeToggle && displayMode != null) ViewModeToggle(currentMode: displayMode!, onModeChanged: onDisplayModeChanged),
           const Spacer(),
           if (additionalActions != null && additionalActions!.isNotEmpty)
             PopupMenuButton(
               icon: const Icon(Icons.more_vert),
-              itemBuilder: (context) => additionalActions!
-                  .map((action) => PopupMenuItem<Widget>(
-                        child: action,
-                      ),)
-                  .toList(),
+              itemBuilder: (context) => additionalActions!.map((action) => PopupMenuItem<Widget>(child: action)).toList(),
             ),
         ],
       ),

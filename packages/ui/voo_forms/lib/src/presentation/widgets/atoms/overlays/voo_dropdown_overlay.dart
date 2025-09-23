@@ -58,9 +58,7 @@ class VooDropdownOverlay extends StatelessWidget {
           child: GestureDetector(
             onTap: onClose,
             behavior: HitTestBehavior.opaque,
-            child: Container(
-              color: Colors.transparent,
-            ),
+            child: Container(color: Colors.transparent),
           ),
         ),
         // The actual dropdown overlay
@@ -81,9 +79,7 @@ class VooDropdownOverlay extends StatelessWidget {
                   constraints: BoxConstraints(maxHeight: maxHeight),
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
-                    border: Border.all(
-                      color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                    ),
+                    border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -100,13 +96,8 @@ class VooDropdownOverlay extends StatelessWidget {
                               hintText: searchConfig!.hintText,
                               prefixIcon: const Icon(Icons.search),
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             onChanged: searchConfig!.onChanged,
                           ),
@@ -115,8 +106,7 @@ class VooDropdownOverlay extends StatelessWidget {
                       // Optional header
                       if (header != null) header!,
                       // Divider between header and content
-                      if (searchConfig != null || header != null)
-                        const Divider(height: 1),
+                      if (searchConfig != null || header != null) const Divider(height: 1),
                       // Main content
                       Flexible(child: child),
                     ],
@@ -148,13 +138,7 @@ class VooDropdownSearchConfig {
   /// Whether to autofocus the search field
   final bool autofocus;
 
-  const VooDropdownSearchConfig({
-    required this.controller,
-    required this.onChanged,
-    this.focusNode,
-    this.hintText = 'Search...',
-    this.autofocus = true,
-  });
+  const VooDropdownSearchConfig({required this.controller, required this.onChanged, this.focusNode, this.hintText = 'Search...', this.autofocus = true});
 }
 
 /// Helper class to manage dropdown overlay state
@@ -164,10 +148,7 @@ class VooDropdownOverlayController {
   final LayerLink layerLink;
   bool _isOpen = false;
 
-  VooDropdownOverlayController({
-    required this.context,
-    required this.layerLink,
-  });
+  VooDropdownOverlayController({required this.context, required this.layerLink});
 
   bool get isOpen => _isOpen;
 
@@ -182,9 +163,7 @@ class VooDropdownOverlayController {
   }) {
     if (_isOpen) return;
 
-    _overlayEntry = OverlayEntry(
-      builder: (context) => builder(close),
-    );
+    _overlayEntry = OverlayEntry(builder: (context) => builder(close));
 
     Overlay.of(context).insert(_overlayEntry!);
     _isOpen = true;

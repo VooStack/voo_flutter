@@ -47,22 +47,21 @@ class VooForm extends Equatable {
     bool? isSubmitting,
     bool? isSubmitted,
     FormValidationMode? validationMode,
-  }) =>
-      VooForm(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        fields: fields ?? this.fields,
-        enabled: enabled ?? this.enabled,
-        readOnly: readOnly ?? this.readOnly,
-        values: values ?? this.values,
-        errors: errors ?? this.errors,
-        isValid: isValid ?? this.isValid,
-        isDirty: isDirty ?? this.isDirty,
-        isSubmitting: isSubmitting ?? this.isSubmitting,
-        isSubmitted: isSubmitted ?? this.isSubmitted,
-        validationMode: validationMode ?? this.validationMode,
-      );
+  }) => VooForm(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    fields: fields ?? this.fields,
+    enabled: enabled ?? this.enabled,
+    readOnly: readOnly ?? this.readOnly,
+    values: values ?? this.values,
+    errors: errors ?? this.errors,
+    isValid: isValid ?? this.isValid,
+    isDirty: isDirty ?? this.isDirty,
+    isSubmitting: isSubmitting ?? this.isSubmitting,
+    isSubmitted: isSubmitted ?? this.isSubmitted,
+    validationMode: validationMode ?? this.validationMode,
+  );
 
   VooFormField? getField(String fieldId) {
     try {
@@ -109,16 +108,5 @@ class VooForm extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        id,
-        title,
-        fields,
-        values,
-        errors,
-        isValid,
-        isDirty,
-        isSubmitting,
-        isSubmitted,
-        validationMode,
-      ];
+  List<Object?> get props => [id, title, fields, values, errors, isValid, isDirty, isSubmitting, isSubmitted, validationMode];
 }

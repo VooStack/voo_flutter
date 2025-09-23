@@ -80,11 +80,7 @@ class VooMotionController extends ChangeNotifier {
 class VooMotionProvider extends InheritedWidget {
   final VooMotionController controller;
 
-  const VooMotionProvider({
-    super.key,
-    required this.controller,
-    required super.child,
-  });
+  const VooMotionProvider({super.key, required this.controller, required super.child});
 
   static VooMotionProvider? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<VooMotionProvider>();
 

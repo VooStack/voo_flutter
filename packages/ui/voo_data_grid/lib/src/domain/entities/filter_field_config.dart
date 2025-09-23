@@ -8,11 +8,5 @@ class FilterFieldConfig {
   final List<String>? options; // For dropdown fields
   final String? defaultOperator;
 
-  const FilterFieldConfig({
-    required this.fieldName,
-    required this.displayName,
-    required this.type,
-    this.options,
-    this.defaultOperator,
-  });
+  const FilterFieldConfig({required this.fieldName, required this.displayName, required this.type, this.options, this.defaultOperator});
 }

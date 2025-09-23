@@ -78,5 +78,6 @@ class LoggingConfig {
   }
 
   @override
-  int get hashCode => Object.hash(enablePrettyLogs, showEmojis, showTimestamp, showColors, showBorders, lineLength, minimumLevel, enabled, enableDevToolsJson, shouldNotify);
+  int get hashCode =>
+      Object.hash(enablePrettyLogs, showEmojis, showTimestamp, showColors, showBorders, lineLength, minimumLevel, enabled, enableDevToolsJson, shouldNotify);
 }

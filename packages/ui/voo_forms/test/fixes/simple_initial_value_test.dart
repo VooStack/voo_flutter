@@ -13,28 +13,10 @@ void main() {
             body: VooForm(
               controller: formController,
               fields: const [
-                VooTextField(
-                  name: 'text',
-                  label: 'Text Field',
-                  initialValue: 'Initial Text Value',
-                ),
-                VooDropdownField<String>(
-                  name: 'dropdown',
-                  label: 'Dropdown',
-                  options: ['Option 1', 'Option 2', 'Option 3'],
-                  initialValue: 'Option 2',
-                ),
-                VooCheckboxField(
-                  name: 'checkbox',
-                  label: 'Checkbox',
-                  initialValue: true,
-                ),
-                VooMultiSelectField<String>(
-                  name: 'multiselect',
-                  label: 'Multi Select',
-                  options: ['A', 'B', 'C', 'D'],
-                  initialValue: ['B', 'D'],
-                ),
+                VooTextField(name: 'text', label: 'Text Field', initialValue: 'Initial Text Value'),
+                VooDropdownField<String>(name: 'dropdown', label: 'Dropdown', options: ['Option 1', 'Option 2', 'Option 3'], initialValue: 'Option 2'),
+                VooCheckboxField(name: 'checkbox', label: 'Checkbox', initialValue: true),
+                VooMultiSelectField<String>(name: 'multiselect', label: 'Multi Select', options: ['A', 'B', 'C', 'D'], initialValue: ['B', 'D']),
               ],
             ),
           ),
@@ -42,37 +24,17 @@ void main() {
       );
 
       // All initial values should be displayed immediately
-      expect(
-        find.text('Initial Text Value'),
-        findsOneWidget,
-        reason: 'Text field should display initial value',
-      );
+      expect(find.text('Initial Text Value'), findsOneWidget, reason: 'Text field should display initial value');
 
-      expect(
-        find.text('Option 2'),
-        findsOneWidget,
-        reason: 'Dropdown should display initial value',
-      );
+      expect(find.text('Option 2'), findsOneWidget, reason: 'Dropdown should display initial value');
 
       // Checkbox should be checked
       final checkbox = tester.widget<Checkbox>(find.byType(Checkbox));
-      expect(
-        checkbox.value,
-        true,
-        reason: 'Checkbox should be checked',
-      );
+      expect(checkbox.value, true, reason: 'Checkbox should be checked');
 
       // Multi-select should show selected values as chips
-      expect(
-        find.text('B'),
-        findsOneWidget,
-        reason: 'Multi-select should show selected value B',
-      );
-      expect(
-        find.text('D'),
-        findsOneWidget,
-        reason: 'Multi-select should show selected value D',
-      );
+      expect(find.text('B'), findsOneWidget, reason: 'Multi-select should show selected value B');
+      expect(find.text('D'), findsOneWidget, reason: 'Multi-select should show selected value D');
     });
 
     testWidgets('Form in readonly mode displays initial values', (tester) async {
@@ -85,23 +47,9 @@ void main() {
               controller: formController,
               isReadOnly: true, // Readonly mode
               fields: const [
-                VooTextField(
-                  name: 'text',
-                  label: 'Text Field',
-                  initialValue: 'Readonly Text',
-                ),
-                VooDropdownField<String>(
-                  name: 'dropdown',
-                  label: 'Dropdown',
-                  options: ['Option 1', 'Option 2', 'Option 3'],
-                  initialValue: 'Option 3',
-                ),
-                VooMultiSelectField<String>(
-                  name: 'multiselect',
-                  label: 'Multi Select',
-                  options: ['A', 'B', 'C'],
-                  initialValue: ['A', 'C'],
-                ),
+                VooTextField(name: 'text', label: 'Text Field', initialValue: 'Readonly Text'),
+                VooDropdownField<String>(name: 'dropdown', label: 'Dropdown', options: ['Option 1', 'Option 2', 'Option 3'], initialValue: 'Option 3'),
+                VooMultiSelectField<String>(name: 'multiselect', label: 'Multi Select', options: ['A', 'B', 'C'], initialValue: ['A', 'C']),
               ],
             ),
           ),
@@ -109,24 +57,12 @@ void main() {
       );
 
       // In readonly mode, values should still be displayed
-      expect(
-        find.text('Readonly Text'),
-        findsOneWidget,
-        reason: 'Text field should display value in readonly',
-      );
+      expect(find.text('Readonly Text'), findsOneWidget, reason: 'Text field should display value in readonly');
 
-      expect(
-        find.text('Option 3'),
-        findsOneWidget,
-        reason: 'Dropdown should display value in readonly',
-      );
+      expect(find.text('Option 3'), findsOneWidget, reason: 'Dropdown should display value in readonly');
 
       // Multi-select in readonly shows comma-separated
-      expect(
-        find.text('A, C'),
-        findsOneWidget,
-        reason: 'Multi-select should show comma-separated values in readonly',
-      );
+      expect(find.text('A, C'), findsOneWidget, reason: 'Multi-select should show comma-separated values in readonly');
     });
 
     testWidgets('Form with async initial values displays them when available', (tester) async {
@@ -155,11 +91,7 @@ void main() {
                     child: VooForm(
                       controller: formController,
                       fields: [
-                        VooTextField(
-                          name: 'text',
-                          label: 'Text',
-                          initialValue: textValue,
-                        ),
+                        VooTextField(name: 'text', label: 'Text', initialValue: textValue),
                         VooDropdownField<String>(
                           name: 'dropdown',
                           label: 'Dropdown',
@@ -190,29 +122,13 @@ void main() {
       await tester.pump();
 
       // After loading, values should be displayed
-      expect(
-        find.text('Async Loaded'),
-        findsOneWidget,
-        reason: 'Text field should display async loaded value',
-      );
+      expect(find.text('Async Loaded'), findsOneWidget, reason: 'Text field should display async loaded value');
 
-      expect(
-        find.text('Option 2'),
-        findsOneWidget,
-        reason: 'Dropdown should display async loaded value',
-      );
+      expect(find.text('Option 2'), findsOneWidget, reason: 'Dropdown should display async loaded value');
 
       // Multi-select should show the loaded values
-      expect(
-        find.text('B'),
-        findsOneWidget,
-        reason: 'Multi-select should show B',
-      );
-      expect(
-        find.text('C'),
-        findsOneWidget,
-        reason: 'Multi-select should show C',
-      );
+      expect(find.text('B'), findsOneWidget, reason: 'Multi-select should show B');
+      expect(find.text('C'), findsOneWidget, reason: 'Multi-select should show C');
     });
   });
 }

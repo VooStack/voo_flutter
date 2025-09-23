@@ -22,26 +22,23 @@ class VooHorizontalFormLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: crossAxisAlignment,
-            mainAxisAlignment: mainAxisAlignment,
-            mainAxisSize: mainAxisSize,
-            children: fields.asMap().entries.map((entry) {
-              final index = entry.key;
-              final field = entry.value;
-              final isLast = index == fields.length - 1;
-              
-              return Padding(
-                padding: EdgeInsets.only(right: isLast ? 0 : spacing),
-                child: SizedBox(
-                  width: fieldWidth,
-                  child: field,
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      );
+    scrollDirection: Axis.horizontal,
+    child: IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        children: fields.asMap().entries.map((entry) {
+          final index = entry.key;
+          final field = entry.value;
+          final isLast = index == fields.length - 1;
+
+          return Padding(
+            padding: EdgeInsets.only(right: isLast ? 0 : spacing),
+            child: SizedBox(width: fieldWidth, child: field),
+          );
+        }).toList(),
+      ),
+    ),
+  );
 }

@@ -76,7 +76,8 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // Try to get config from scaffold if not provided
     final effectiveConfig = config ?? _getConfigFromScaffold(context);
-    final effectiveSelectedId = selectedId ?? _getSelectedIdFromScaffold(context);
+    final effectiveSelectedId =
+        selectedId ?? _getSelectedIdFromScaffold(context);
 
     // Get the selected navigation item for title (if config is available)
     final selectedItem = effectiveConfig != null && effectiveSelectedId != null
@@ -86,11 +87,21 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
           )
         : null;
 
-    final effectiveTitle = title ?? (selectedItem != null ? _buildTitle(selectedItem, theme, effectiveConfig) : const Text(''));
-    final effectiveLeading = leading ?? _buildLeading(context, theme, effectiveConfig);
-    final effectiveActions = actions ?? _buildActions(context, theme, effectiveConfig);
-    final effectiveCenterTitle = centerTitle ?? effectiveConfig?.centerAppBarTitle ?? false;
-    final effectiveBackgroundColor = backgroundColor ?? effectiveConfig?.backgroundColor ?? theme.scaffoldBackgroundColor;
+    final effectiveTitle =
+        title ??
+        (selectedItem != null
+            ? _buildTitle(selectedItem, theme, effectiveConfig)
+            : const Text(''));
+    final effectiveLeading =
+        leading ?? _buildLeading(context, theme, effectiveConfig);
+    final effectiveActions =
+        actions ?? _buildActions(context, theme, effectiveConfig);
+    final effectiveCenterTitle =
+        centerTitle ?? effectiveConfig?.centerAppBarTitle ?? false;
+    final effectiveBackgroundColor =
+        backgroundColor ??
+        effectiveConfig?.backgroundColor ??
+        theme.scaffoldBackgroundColor;
     final effectiveForegroundColor = foregroundColor ?? colorScheme.onSurface;
     final effectiveElevation = elevation ?? (showBottomBorder ? 0 : 0);
 
@@ -114,17 +125,25 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
           : null,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: theme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: theme.brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
         statusBarBrightness: theme.brightness,
       ),
     );
   }
 
-  VooNavigationConfig? _getConfigFromScaffold(BuildContext context) => VooNavigationInherited.maybeOf(context)?.config;
+  VooNavigationConfig? _getConfigFromScaffold(BuildContext context) =>
+      VooNavigationInherited.maybeOf(context)?.config;
 
-  String? _getSelectedIdFromScaffold(BuildContext context) => VooNavigationInherited.maybeOf(context)?.selectedId;
+  String? _getSelectedIdFromScaffold(BuildContext context) =>
+      VooNavigationInherited.maybeOf(context)?.selectedId;
 
-  Widget? _buildLeading(BuildContext context, ThemeData theme, VooNavigationConfig? config) {
+  Widget? _buildLeading(
+    BuildContext context,
+    ThemeData theme,
+    VooNavigationConfig? config,
+  ) {
     if (!showMenuButton) return null;
 
     if (config?.appBarLeading != null) {
@@ -162,7 +181,11 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
     return null;
   }
 
-  Widget _buildTitle(VooNavigationItem item, ThemeData theme, VooNavigationConfig? config) {
+  Widget _buildTitle(
+    VooNavigationItem item,
+    ThemeData theme,
+    VooNavigationConfig? config,
+  ) {
     if (config?.appBarTitle != null) {
       return config!.appBarTitle!;
     }
@@ -187,7 +210,11 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  List<Widget> _buildActions(BuildContext context, ThemeData theme, VooNavigationConfig? config) {
+  List<Widget> _buildActions(
+    BuildContext context,
+    ThemeData theme,
+    VooNavigationConfig? config,
+  ) {
     final actions = <Widget>[];
 
     // Add custom actions from config
@@ -197,7 +224,9 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // Add notification bell if there are any badges
     if (config?.showNotificationBadges ?? false) {
-      final totalBadgeCount = config?.items.where((item) => item.badgeCount != null).fold<int>(0, (sum, item) => sum + item.badgeCount!);
+      final totalBadgeCount = config?.items
+          .where((item) => item.badgeCount != null)
+          .fold<int>(0, (sum, item) => sum + item.badgeCount!);
 
       if (totalBadgeCount != null && totalBadgeCount > 0) {
         actions.add(
@@ -299,4 +328,5 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 /// Function to determine if a notification should be handled
-bool defaultScrollNotificationPredicate(ScrollNotification notification) => notification.depth == 0;
+bool defaultScrollNotificationPredicate(ScrollNotification notification) =>
+    notification.depth == 0;

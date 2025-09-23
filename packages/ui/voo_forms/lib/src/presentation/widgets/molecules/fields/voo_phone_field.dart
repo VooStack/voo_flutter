@@ -81,10 +81,7 @@ class VooPhoneField extends VooFieldBase<String> {
     if (effectiveReadOnly) {
       final String displayValue = initialValue ?? '';
 
-      Widget readOnlyContent = VooReadOnlyField(
-        value: displayValue,
-        icon: const Icon(Icons.phone),
-      );
+      Widget readOnlyContent = VooReadOnlyField(value: displayValue, icon: const Icon(Icons.phone));
 
       // Apply standard field building pattern
       readOnlyContent = buildWithHelper(context, readOnlyContent);
@@ -96,59 +93,46 @@ class VooPhoneField extends VooFieldBase<String> {
     }
 
     // Use stateful widget for interactive phone field
-    return _VooPhoneFieldStateful(
-      key: ValueKey('voo_phone_field_$name'),
-      field: this,
-    );
+    return _VooPhoneFieldStateful(key: ValueKey('voo_phone_field_$name'), field: this);
   }
 
   @override
-  VooPhoneField copyWith({
-    String? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooPhoneField(
-        key: key,
-        name: name ?? this.name,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        controller: controller,
-        focusNode: focusNode,
-        onEditingComplete: onEditingComplete,
-        onSubmitted: onSubmitted,
-        autofocus: autofocus,
-        defaultCountryCode: defaultCountryCode,
-        showDialCode: showDialCode,
-        allowCountrySelection: allowCountrySelection,
-        onCountryChanged: onCountryChanged,
-      );
+  VooPhoneField copyWith({String? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooPhoneField(
+    key: key,
+    name: name ?? this.name,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    controller: controller,
+    focusNode: focusNode,
+    onEditingComplete: onEditingComplete,
+    onSubmitted: onSubmitted,
+    autofocus: autofocus,
+    defaultCountryCode: defaultCountryCode,
+    showDialCode: showDialCode,
+    allowCountrySelection: allowCountrySelection,
+    onCountryChanged: onCountryChanged,
+  );
 }
 
 /// Stateful widget to manage phone field state
 class _VooPhoneFieldStateful extends StatefulWidget {
   final VooPhoneField field;
 
-  const _VooPhoneFieldStateful({
-    super.key,
-    required this.field,
-  });
+  const _VooPhoneFieldStateful({super.key, required this.field});
 
   @override
   State<_VooPhoneFieldStateful> createState() => _VooPhoneFieldStatefulState();
@@ -203,10 +187,7 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
       final currentValue = _formController!.getValue(widget.field.name);
       final effectiveInitialValue = currentValue?.toString() ?? widget.field.initialValue;
 
-      _effectiveController = _formController!.registerTextController(
-        widget.field.name,
-        initialText: effectiveInitialValue,
-      );
+      _effectiveController = _formController!.registerTextController(widget.field.name, initialText: effectiveInitialValue);
 
       // If we have an initial value but the controller doesn't have it yet, defer setting it
       if (effectiveInitialValue != null && currentValue == null) {
@@ -246,53 +227,34 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
   }
 
   Widget _buildCountrySelector() => DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            right: BorderSide(
-              color: Theme.of(context).dividerColor,
-            ),
-          ),
+    decoration: BoxDecoration(
+      border: Border(right: BorderSide(color: Theme.of(context).dividerColor)),
+    ),
+    child: InkWell(
+      onTap: widget.field.allowCountrySelection && widget.field.defaultCountryCode == null && widget.field.enabled != false ? _showCountryPicker : null,
+      borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_selectedCountry.flag, style: const TextStyle(fontSize: 24)),
+            if (widget.field.showDialCode) ...[const SizedBox(width: 8), Text(_selectedCountry.dialCode, style: Theme.of(context).textTheme.bodyLarge)],
+            if (widget.field.allowCountrySelection && widget.field.defaultCountryCode == null && widget.field.enabled != false) ...[
+              const SizedBox(width: 4),
+              Icon(Icons.arrow_drop_down, size: 20, color: Theme.of(context).hintColor),
+            ],
+          ],
         ),
-        child: InkWell(
-          onTap: widget.field.allowCountrySelection && widget.field.defaultCountryCode == null && widget.field.enabled != false ? _showCountryPicker : null,
-          borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _selectedCountry.flag,
-                  style: const TextStyle(fontSize: 24),
-                ),
-                if (widget.field.showDialCode) ...[
-                  const SizedBox(width: 8),
-                  Text(
-                    _selectedCountry.dialCode,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-                if (widget.field.allowCountrySelection && widget.field.defaultCountryCode == null && widget.field.enabled != false) ...[
-                  const SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    size: 20,
-                    color: Theme.of(context).hintColor,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      );
+      ),
+    ),
+  );
 
   void _showCountryPicker() {
     showModalBottomSheet<CountryCode>(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (BuildContext context) => DraggableScrollableSheet(
         initialChildSize: 0.7,
         minChildSize: 0.5,
@@ -305,18 +267,12 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
               margin: const EdgeInsets.symmetric(vertical: 8),
               width: 40,
               height: 4,
-              decoration: BoxDecoration(
-                color: Theme.of(context).dividerColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
+              decoration: BoxDecoration(color: Theme.of(context).dividerColor, borderRadius: BorderRadius.circular(2)),
             ),
             // Title
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(
-                'Select Country',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text('Select Country', style: Theme.of(context).textTheme.titleLarge),
             ),
             const Divider(height: 1),
             // Country list
@@ -329,18 +285,10 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
                   final isSelected = country.isoCode == _selectedCountry.isoCode;
 
                   return ListTile(
-                    leading: Text(
-                      country.flag,
-                      style: const TextStyle(fontSize: 28),
-                    ),
+                    leading: Text(country.flag, style: const TextStyle(fontSize: 28)),
                     title: Text(country.name),
                     subtitle: Text(country.dialCode),
-                    trailing: isSelected
-                        ? Icon(
-                            Icons.check_circle,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : null,
+                    trailing: isSelected ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor) : null,
                     selected: isSelected,
                     onTap: () {
                       Navigator.pop(context);
@@ -410,17 +358,16 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
             focusNode: _effectiveFocusNode,
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.done,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              _phoneFormatter,
-            ],
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly, _phoneFormatter],
             onChanged: handleChanged,
             onEditingComplete: widget.field.onEditingComplete,
             onFieldSubmitted: widget.field.onSubmitted,
             enabled: widget.field.enabled,
             autofocus: widget.field.autofocus,
             style: Theme.of(context).textTheme.bodyLarge,
-            decoration: widget.field.getInputDecoration(context).copyWith(
+            decoration: widget.field
+                .getInputDecoration(context)
+                .copyWith(
                   prefixIcon: _buildCountrySelector(),
                   prefixIconConstraints: const BoxConstraints(),
                   suffixIcon: widget.field.suffixIcon,
@@ -436,10 +383,7 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
         focusNode: _effectiveFocusNode,
         keyboardType: TextInputType.phone,
         textInputAction: TextInputAction.done,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          _phoneFormatter,
-        ],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly, _phoneFormatter],
         onChanged: handleChanged,
         onEditingComplete: widget.field.onEditingComplete,
         onFieldSubmitted: widget.field.onSubmitted,
@@ -448,7 +392,9 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
         autocorrect: false,
         enableSuggestions: false,
         style: Theme.of(context).textTheme.bodyLarge,
-        decoration: widget.field.getInputDecoration(context).copyWith(
+        decoration: widget.field
+            .getInputDecoration(context)
+            .copyWith(
               prefixIcon: _buildCountrySelector(),
               prefixIconConstraints: const BoxConstraints(),
               suffixIcon: widget.field.suffixIcon,
@@ -464,16 +410,7 @@ class _VooPhoneFieldStatefulState extends State<_VooPhoneFieldStateful> with Aut
     // Build with label, helper, and actions
     return widget.field.buildFieldContainer(
       context,
-      widget.field.buildWithLabel(
-        context,
-        widget.field.buildWithHelper(
-          context,
-          widget.field.buildWithActions(
-            context,
-            constrainedInput,
-          ),
-        ),
-      ),
+      widget.field.buildWithLabel(context, widget.field.buildWithHelper(context, widget.field.buildWithActions(context, constrainedInput))),
     );
   }
 }

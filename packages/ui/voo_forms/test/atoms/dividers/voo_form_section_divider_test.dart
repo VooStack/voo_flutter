@@ -7,11 +7,7 @@ void main() {
     testWidgets('renders basic divider line', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: VooFormSectionDivider(
-              name: 'divider1',
-            ),
-          ),
+          home: Scaffold(body: VooFormSectionDivider(name: 'divider1')),
         ),
       );
 
@@ -23,10 +19,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooFormSectionDivider(
-              name: 'section1',
-              label: 'Personal Information',
-            ),
+            body: VooFormSectionDivider(name: 'section1', label: 'Personal Information'),
           ),
         ),
       );
@@ -40,11 +33,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooFormSectionDivider(
-              name: 'section2',
-              label: 'Contact Details',
-              subtitle: 'Please provide your contact information',
-            ),
+            body: VooFormSectionDivider(name: 'section2', label: 'Contact Details', subtitle: 'Please provide your contact information'),
           ),
         ),
       );
@@ -61,13 +50,7 @@ void main() {
           home: Scaffold(
             body: VooFormSectionDivider(
               name: 'custom',
-              customWidget: Row(
-                children: [
-                  Icon(Icons.info),
-                  SizedBox(width: 8),
-                  Text('Custom Section'),
-                ],
-              ),
+              customWidget: Row(children: [Icon(Icons.info), SizedBox(width: 8), Text('Custom Section')]),
             ),
           ),
         ),
@@ -83,11 +66,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooFormSectionDivider(
-              name: 'no-line',
-              label: 'Section Title',
-              showLine: false,
-            ),
+            body: VooFormSectionDivider(name: 'no-line', label: 'Section Title', showLine: false),
           ),
         ),
       );
@@ -103,18 +82,9 @@ void main() {
           home: Scaffold(
             body: VooForm(
               fields: [
-                VooTextField(
-                  name: 'firstName',
-                  label: 'First Name',
-                ),
-                VooFormSectionDivider(
-                  name: 'divider1',
-                  label: 'Contact Information',
-                ),
-                VooTextField(
-                  name: 'email',
-                  label: 'Email',
-                ),
+                VooTextField(name: 'firstName', label: 'First Name'),
+                VooFormSectionDivider(name: 'divider1', label: 'Contact Information'),
+                VooTextField(name: 'email', label: 'Email'),
               ],
             ),
           ),
@@ -135,10 +105,7 @@ void main() {
             body: Column(
               children: [
                 VooFormSectionDividerStyles.line(),
-                VooFormSectionDividerStyles.section(
-                  name: 'section',
-                  label: 'Section Title',
-                ),
+                VooFormSectionDividerStyles.section(name: 'section', label: 'Section Title'),
                 VooFormSectionDividerStyles.spacer(),
               ],
             ),
@@ -149,10 +116,10 @@ void main() {
       // Line divider and section divider show gradient containers
       // Spacer doesn't show line when showLine is false
       expect(find.byType(Container), findsWidgets);
-      
+
       // Section shows title
       expect(find.text('Section Title'), findsOneWidget);
-      
+
       // All three dividers render
       expect(find.byType(VooFormSectionDivider), findsNWidgets(3));
     });
@@ -161,12 +128,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooFormSectionDivider(
-              name: 'spaced',
-              label: 'Spaced Section',
-              topSpacing: 32.0,
-              bottomSpacing: 24.0,
-            ),
+            body: VooFormSectionDivider(name: 'spaced', label: 'Spaced Section', topSpacing: 32.0, bottomSpacing: 24.0),
           ),
         ),
       );
@@ -176,10 +138,7 @@ void main() {
     });
 
     testWidgets('VooFormSectionDivider implements VooFormFieldWidget correctly', (tester) async {
-      const divider = VooFormSectionDivider(
-        name: 'test-divider',
-        label: 'Test Section',
-      );
+      const divider = VooFormSectionDivider(name: 'test-divider', label: 'Test Section');
 
       expect(divider.name, 'test-divider');
       expect(divider.label, 'Test Section');

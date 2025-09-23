@@ -19,8 +19,10 @@ class VooCalendarMonthView extends StatefulWidget {
     bool isToday,
     bool isOutsideMonth,
     List<VooCalendarEvent> events,
-  )? dayBuilder;
-  final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
+  )?
+  dayBuilder;
+  final Widget Function(BuildContext context, VooCalendarEvent event)?
+  eventBuilder;
   final bool compact;
   final VooCalendarGestureConfig? gestureConfig;
 
@@ -44,7 +46,7 @@ class VooCalendarMonthView extends StatefulWidget {
 
 class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
   final Map<int, DateTime> _indexToDate = {};
-  
+
   void _handleDragStart(Offset position, VooDesignSystemData design) {
     // Find which cell was tapped based on position
     final date = _getDateFromPosition(position, design);
@@ -52,18 +54,18 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
       widget.controller.startDragSelection(date);
     }
   }
-  
+
   void _handleDragUpdate(Offset position, VooDesignSystemData design) {
     final date = _getDateFromPosition(position, design);
     if (date != null) {
       widget.controller.updateDragSelection(date);
     }
   }
-  
+
   void _handleDragEnd() {
     widget.controller.endDragSelection();
   }
-  
+
   DateTime? _getDateFromPosition(Offset position, VooDesignSystemData design) {
     // This is a simplified calculation - you'll need to refine based on actual grid layout
     // For now, return null to avoid errors
@@ -75,22 +77,26 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
     final design = context.vooDesign;
     final focusedDate = widget.controller.focusedDate;
     final firstDayOfMonth = DateTime(focusedDate.year, focusedDate.month, 1);
-    
+
     // Calculate first day to show (might be from previous month)
-    int daysFromStartOfWeek = (firstDayOfMonth.weekday - widget.firstDayOfWeek) % 7;
-    final firstDateToShow = firstDayOfMonth.subtract(Duration(days: daysFromStartOfWeek));
-    
+    int daysFromStartOfWeek =
+        (firstDayOfMonth.weekday - widget.firstDayOfWeek) % 7;
+    final firstDateToShow = firstDayOfMonth.subtract(
+      Duration(days: daysFromStartOfWeek),
+    );
+
     // Calculate total days to show (always show 6 weeks)
     const int weeksToShow = 6;
     const int daysToShow = weeksToShow * 7;
-    
+
     // Build index to date mapping for gesture detection
     _indexToDate.clear();
     for (int i = 0; i < daysToShow; i++) {
       _indexToDate[i] = firstDateToShow.add(Duration(days: i));
     }
 
-    final gestureConfig = widget.gestureConfig ?? const VooCalendarGestureConfig();
+    final gestureConfig =
+        widget.gestureConfig ?? const VooCalendarGestureConfig();
 
     return Column(
       children: [
@@ -101,15 +107,21 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
           child: GestureDetector(
             onPanStart: gestureConfig.enableDragSelection
                 ? (details) {
-                    final RenderBox box = context.findRenderObject() as RenderBox;
-                    final localPosition = box.globalToLocal(details.globalPosition);
+                    final RenderBox box =
+                        context.findRenderObject() as RenderBox;
+                    final localPosition = box.globalToLocal(
+                      details.globalPosition,
+                    );
                     _handleDragStart(localPosition, design);
                   }
                 : null,
             onPanUpdate: gestureConfig.enableDragSelection
                 ? (details) {
-                    final RenderBox box = context.findRenderObject() as RenderBox;
-                    final localPosition = box.globalToLocal(details.globalPosition);
+                    final RenderBox box =
+                        context.findRenderObject() as RenderBox;
+                    final localPosition = box.globalToLocal(
+                      details.globalPosition,
+                    );
                     _handleDragUpdate(localPosition, design);
                   }
                 : null,
@@ -124,33 +136,37 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
                 crossAxisSpacing: design.spacingXs,
                 childAspectRatio: widget.compact ? 1.2 : 1.0,
               ),
-              itemCount: daysToShow + (widget.showWeekNumbers ? weeksToShow : 0),
+              itemCount:
+                  daysToShow + (widget.showWeekNumbers ? weeksToShow : 0),
               itemBuilder: (context, index) {
                 if (widget.showWeekNumbers && index % 8 == 0) {
                   // Week number cell
                   final weekIndex = index ~/ 8;
-                  final weekDate = firstDateToShow.add(Duration(days: weekIndex * 7));
+                  final weekDate = firstDateToShow.add(
+                    Duration(days: weekIndex * 7),
+                  );
                   return _buildWeekNumber(weekDate);
                 }
-                
-                final dayIndex = widget.showWeekNumbers 
+
+                final dayIndex = widget.showWeekNumbers
                     ? index - (index ~/ 8) - 1
                     : index;
-                
+
                 if (dayIndex < 0 || dayIndex >= daysToShow) {
                   return const SizedBox.shrink();
                 }
-                
+
                 final date = firstDateToShow.add(Duration(days: dayIndex));
                 final isOutsideMonth = date.month != focusedDate.month;
                 final isToday = _isToday(date);
-                final isSelected = widget.controller.isDateSelected(date) || 
-                                   widget.controller.isDragSelecting(date);
+                final isSelected =
+                    widget.controller.isDateSelected(date) ||
+                    widget.controller.isDragSelecting(date);
                 final isRangeStart = widget.controller.isRangeStart(date);
                 final isRangeEnd = widget.controller.isRangeEnd(date);
                 final isInRange = widget.controller.isDateInRange(date);
                 final events = widget.controller.getEventsForDate(date);
-                
+
                 if (widget.dayBuilder != null) {
                   return GestureDetector(
                     onTap: () => widget.onDateSelected(date),
@@ -167,7 +183,7 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
                     ),
                   );
                 }
-                
+
                 return _buildDay(
                   context,
                   date,
@@ -200,7 +216,9 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
       height: 32,
       decoration: BoxDecoration(
         color: widget.theme.headerBackgroundColor.withValues(alpha: 0.5),
-        border: Border(bottom: BorderSide(color: widget.theme.borderColor, width: 0.5)),
+        border: Border(
+          bottom: BorderSide(color: widget.theme.borderColor, width: 0.5),
+        ),
       ),
       child: Row(
         children: [
@@ -208,20 +226,19 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
             SizedBox(
               width: 40,
               child: Center(
+                child: Text('W', style: widget.theme.weekdayTextStyle),
+              ),
+            ),
+          ...rotatedWeekdays.map(
+            (day) => Expanded(
+              child: Center(
                 child: Text(
-                  'W',
+                  widget.compact ? day[0] : day,
                   style: widget.theme.weekdayTextStyle,
                 ),
               ),
             ),
-          ...rotatedWeekdays.map((day) => Expanded(
-                child: Center(
-                  child: Text(
-                    widget.compact ? day[0] : day,
-                    style: widget.theme.weekdayTextStyle,
-                  ),
-                ),
-              )),
+          ),
         ],
       ),
     );
@@ -255,11 +272,11 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
     required List<VooCalendarEvent> events,
   }) {
     final design = context.vooDesign;
-    
+
     Color? backgroundColor;
     Color? textColor;
     BoxDecoration? decoration;
-    
+
     if (isSelected || isRangeStart || isRangeEnd) {
       backgroundColor = widget.theme.selectedDayBackgroundColor;
       textColor = widget.theme.selectedDayTextColor;
@@ -270,7 +287,7 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
       backgroundColor = widget.theme.todayBackgroundColor;
       textColor = widget.theme.todayTextColor;
     }
-    
+
     if (isRangeStart) {
       decoration = BoxDecoration(
         color: backgroundColor,
@@ -278,7 +295,9 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
           topLeft: Radius.circular(design.radiusSm),
           bottomLeft: Radius.circular(design.radiusSm),
           topRight: isRangeEnd ? Radius.circular(design.radiusSm) : Radius.zero,
-          bottomRight: isRangeEnd ? Radius.circular(design.radiusSm) : Radius.zero,
+          bottomRight: isRangeEnd
+              ? Radius.circular(design.radiusSm)
+              : Radius.zero,
         ),
       );
     } else if (isRangeEnd) {
@@ -295,7 +314,7 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
         borderRadius: BorderRadius.circular(design.radiusSm),
       );
     }
-    
+
     if (isOutsideMonth) {
       textColor = widget.theme.outsideMonthTextColor;
     }
@@ -340,7 +359,9 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   int _getWeekNumber(DateTime date) {
@@ -357,9 +378,10 @@ class VooCalendarWeekView extends StatelessWidget {
   final int firstDayOfWeek;
   final void Function(DateTime date) onDateSelected;
   final void Function(VooCalendarEvent event)? onEventTap;
-  final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
+  final Widget Function(BuildContext context, VooCalendarEvent event)?
+  eventBuilder;
   final bool compact;
-  
+
   static const double _hourHeight = 60.0;
 
   const VooCalendarWeekView({
@@ -377,13 +399,15 @@ class VooCalendarWeekView extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final focusedDate = controller.focusedDate;
-    
+
     // Calculate first day of week
     int daysFromStartOfWeek = (focusedDate.weekday - firstDayOfWeek) % 7;
-    final firstDayOfWeekDate = focusedDate.subtract(Duration(days: daysFromStartOfWeek));
-    
+    final firstDayOfWeekDate = focusedDate.subtract(
+      Duration(days: daysFromStartOfWeek),
+    );
+
     final hours = List.generate(24, (i) => i);
-    
+
     return Row(
       children: [
         // Time column
@@ -403,7 +427,7 @@ class VooCalendarWeekView extends StatelessWidget {
                       padding: EdgeInsets.only(right: design.spacingXs),
                       alignment: Alignment.topRight,
                       child: Text(
-                        compact 
+                        compact
                             ? '${hours[index]}'
                             : '${hours[index].toString().padLeft(2, '0')}:00',
                         style: theme.timeTextStyle,
@@ -425,11 +449,13 @@ class VooCalendarWeekView extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: List.generate(7, (dayIndex) {
-                    final date = firstDayOfWeekDate.add(Duration(days: dayIndex));
+                    final date = firstDayOfWeekDate.add(
+                      Duration(days: dayIndex),
+                    );
                     final events = controller.getEventsForDate(date);
                     final isSelected = controller.isDateSelected(date);
                     final isToday = _isToday(date);
-                    
+
                     return Expanded(
                       child: _buildDayColumn(
                         context,
@@ -462,18 +488,18 @@ class VooCalendarWeekView extends StatelessWidget {
           final date = firstDay.add(Duration(days: index));
           final isToday = _isToday(date);
           final isSelected = controller.isDateSelected(date);
-          
+
           return Expanded(
             child: InkWell(
               onTap: () => onDateSelected(date),
               child: Container(
                 margin: EdgeInsets.all(design.spacingXs),
                 decoration: BoxDecoration(
-                  color: isSelected 
-                      ? theme.selectedDayBackgroundColor 
-                      : isToday 
-                          ? theme.todayBackgroundColor 
-                          : null,
+                  color: isSelected
+                      ? theme.selectedDayBackgroundColor
+                      : isToday
+                      ? theme.todayBackgroundColor
+                      : null,
                   borderRadius: BorderRadius.circular(design.radiusSm),
                 ),
                 child: Column(
@@ -482,20 +508,18 @@ class VooCalendarWeekView extends StatelessWidget {
                     Text(
                       DateFormat('E').format(date),
                       style: theme.weekdayTextStyle.copyWith(
-                        color: isSelected 
-                            ? theme.selectedDayTextColor 
-                            : null,
+                        color: isSelected ? theme.selectedDayTextColor : null,
                       ),
                     ),
                     Text(
                       date.day.toString(),
                       style: theme.dayTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: isSelected 
-                            ? theme.selectedDayTextColor 
-                            : isToday 
-                                ? theme.todayTextColor 
-                                : null,
+                        color: isSelected
+                            ? theme.selectedDayTextColor
+                            : isToday
+                            ? theme.todayTextColor
+                            : null,
                       ),
                     ),
                   ],
@@ -518,14 +542,12 @@ class VooCalendarWeekView extends StatelessWidget {
   ) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(color: theme.gridLineColor),
-        ),
-        color: isSelected 
+        border: Border(right: BorderSide(color: theme.gridLineColor)),
+        color: isSelected
             ? theme.selectedDayBackgroundColor.withValues(alpha: 0.1)
-            : isToday 
-                ? theme.todayBackgroundColor.withValues(alpha: 0.05)
-                : null,
+            : isToday
+            ? theme.todayBackgroundColor.withValues(alpha: 0.05)
+            : null,
       ),
       child: Stack(
         children: [
@@ -579,7 +601,9 @@ class VooCalendarWeekView extends StatelessWidget {
           color: event.color ?? theme.eventBackgroundColor,
           borderRadius: BorderRadius.circular(design.radiusXs),
           border: Border.all(
-            color: (event.color ?? theme.eventBackgroundColor).withValues(alpha: 0.8),
+            color: (event.color ?? theme.eventBackgroundColor).withValues(
+              alpha: 0.8,
+            ),
           ),
         ),
         child: Column(
@@ -617,7 +641,9 @@ class VooCalendarWeekView extends StatelessWidget {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 }
 
@@ -626,7 +652,8 @@ class VooCalendarDayView extends StatefulWidget {
   final VooCalendarController controller;
   final VooCalendarTheme theme;
   final void Function(VooCalendarEvent event)? onEventTap;
-  final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
+  final Widget Function(BuildContext context, VooCalendarEvent event)?
+  eventBuilder;
   final bool compact;
 
   const VooCalendarDayView({
@@ -675,11 +702,11 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     final focusedDate = widget.controller.focusedDate;
     final events = widget.controller.getEventsForDate(focusedDate);
     final hours = List.generate(24, (i) => i);
-    
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final timeColumnWidth = widget.compact ? 50.0 : 60.0;
-        
+
         return SingleChildScrollView(
           controller: _scrollController,
           child: SizedBox(
@@ -798,7 +825,9 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                 ),
               ],
             ),
-            if (event.description != null && !widget.compact && _getEventHeight(event) > 40) ...[
+            if (event.description != null &&
+                !widget.compact &&
+                _getEventHeight(event) > 40) ...[
               SizedBox(height: design.spacingXs),
               Text(
                 event.description!,
@@ -812,9 +841,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
             if (_getEventHeight(event) > 30)
               Text(
                 DateFormat('HH:mm').format(event.startTime),
-                style: widget.theme.eventTimeTextStyle.copyWith(
-                  fontSize: 9,
-                ),
+                style: widget.theme.eventTimeTextStyle.copyWith(fontSize: 9),
               ),
           ],
         ),
@@ -853,7 +880,7 @@ class VooCalendarYearView extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final year = controller.focusedDate.year;
-    
+
     return GridView.builder(
       padding: EdgeInsets.all(design.spacingLg),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -867,9 +894,11 @@ class VooCalendarYearView extends StatelessWidget {
         final month = index + 1;
         final monthDate = DateTime(year, month);
         final monthName = DateFormat('MMMM').format(monthDate);
-        final hasEvents = controller.events.any((event) => 
-            event.startTime.year == year && event.startTime.month == month);
-        
+        final hasEvents = controller.events.any(
+          (event) =>
+              event.startTime.year == year && event.startTime.month == month,
+        );
+
         return InkWell(
           onTap: () => onMonthSelected(month),
           borderRadius: BorderRadius.circular(design.radiusMd),
@@ -882,10 +911,7 @@ class VooCalendarYearView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  monthName,
-                  style: theme.monthTextStyle,
-                ),
+                Text(monthName, style: theme.monthTextStyle),
                 const Spacer(),
                 if (hasEvents) ...[
                   Row(
@@ -921,7 +947,8 @@ class VooCalendarScheduleView extends StatelessWidget {
   final VooCalendarTheme theme;
   final void Function(DateTime date) onDateSelected;
   final void Function(VooCalendarEvent event)? onEventTap;
-  final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
+  final Widget Function(BuildContext context, VooCalendarEvent event)?
+  eventBuilder;
   final bool compact;
 
   const VooCalendarScheduleView({
@@ -937,7 +964,7 @@ class VooCalendarScheduleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     // Group events by date
     final Map<DateTime, List<VooCalendarEvent>> eventsByDate = {};
     for (final event in controller.events) {
@@ -948,9 +975,9 @@ class VooCalendarScheduleView extends StatelessWidget {
       );
       eventsByDate.putIfAbsent(dateKey, () => []).add(event);
     }
-    
+
     final sortedDates = eventsByDate.keys.toList()..sort();
-    
+
     if (sortedDates.isEmpty) {
       return Center(
         child: Column(
@@ -962,15 +989,12 @@ class VooCalendarScheduleView extends StatelessWidget {
               color: theme.outsideMonthTextColor,
             ),
             SizedBox(height: design.spacingMd),
-            Text(
-              'No events scheduled',
-              style: theme.monthTextStyle,
-            ),
+            Text('No events scheduled', style: theme.monthTextStyle),
           ],
         ),
       );
     }
-    
+
     return ListView.builder(
       padding: EdgeInsets.all(design.spacingMd),
       itemCount: sortedDates.length,
@@ -979,7 +1003,7 @@ class VooCalendarScheduleView extends StatelessWidget {
         final events = eventsByDate[date]!;
         final isSelected = controller.isDateSelected(date);
         final isToday = _isToday(date);
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -989,11 +1013,11 @@ class VooCalendarScheduleView extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(design.spacingMd),
                 decoration: BoxDecoration(
-                  color: isSelected 
-                      ? theme.selectedDayBackgroundColor 
-                      : isToday 
-                          ? theme.todayBackgroundColor 
-                          : theme.headerBackgroundColor.withValues(alpha: 0.5),
+                  color: isSelected
+                      ? theme.selectedDayBackgroundColor
+                      : isToday
+                      ? theme.todayBackgroundColor
+                      : theme.headerBackgroundColor.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(design.radiusSm),
                 ),
                 child: Row(
@@ -1002,11 +1026,11 @@ class VooCalendarScheduleView extends StatelessWidget {
                       DateFormat('EEEE, MMMM d').format(date),
                       style: theme.dayTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: isSelected 
-                            ? theme.selectedDayTextColor 
-                            : isToday 
-                                ? theme.todayTextColor 
-                                : null,
+                        color: isSelected
+                            ? theme.selectedDayTextColor
+                            : isToday
+                            ? theme.todayTextColor
+                            : null,
                       ),
                     ),
                     const Spacer(),
@@ -1053,10 +1077,14 @@ class VooCalendarScheduleView extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(design.spacingMd),
         decoration: BoxDecoration(
-          color: event.color?.withValues(alpha: 0.1) ?? theme.eventBackgroundColor.withValues(alpha: 0.5),
+          color:
+              event.color?.withValues(alpha: 0.1) ??
+              theme.eventBackgroundColor.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(design.radiusSm),
           border: Border.all(
-            color: event.color?.withValues(alpha: 0.3) ?? theme.eventBackgroundColor,
+            color:
+                event.color?.withValues(alpha: 0.3) ??
+                theme.eventBackgroundColor,
           ),
         ),
         child: Row(
@@ -1106,6 +1134,8 @@ class VooCalendarScheduleView extends StatelessWidget {
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 }

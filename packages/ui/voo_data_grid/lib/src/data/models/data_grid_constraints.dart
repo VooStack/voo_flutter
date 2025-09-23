@@ -48,7 +48,7 @@ class VooDataGridConstraints {
   /// Whether to allow horizontal scrolling
   final bool allowHorizontalScroll;
 
-  /// Whether to allow vertical scrolling  
+  /// Whether to allow vertical scrolling
   final bool allowVerticalScroll;
 
   /// Whether to allow pagination
@@ -104,38 +104,32 @@ class VooDataGridConstraints {
     List<int>? availablePageSizes,
     int? defaultPageSize,
   }) => VooDataGridConstraints(
-      maxSortColumns: maxSortColumns ?? this.maxSortColumns,
-      maxActiveFilters: maxActiveFilters ?? this.maxActiveFilters,
-      allowMultiSort: allowMultiSort ?? this.allowMultiSort,
-      allowColumnReordering: allowColumnReordering ?? this.allowColumnReordering,
-      allowColumnResizing: allowColumnResizing ?? this.allowColumnResizing,
-      allowRowSelection: allowRowSelection ?? this.allowRowSelection,
-      maxSelectedRows: maxSelectedRows ?? this.maxSelectedRows,
-      allowExport: allowExport ?? this.allowExport,
-      allowFiltering: allowFiltering ?? this.allowFiltering,
-      allowSorting: allowSorting ?? this.allowSorting,
-      clearSortsOnNewSort: clearSortsOnNewSort ?? this.clearSortsOnNewSort,
-      clearFiltersOnDataChange: clearFiltersOnDataChange ?? this.clearFiltersOnDataChange,
-      minColumnWidth: minColumnWidth ?? this.minColumnWidth,
-      maxColumnWidth: maxColumnWidth ?? this.maxColumnWidth,
-      allowHorizontalScroll: allowHorizontalScroll ?? this.allowHorizontalScroll,
-      allowVerticalScroll: allowVerticalScroll ?? this.allowVerticalScroll,
-      allowPagination: allowPagination ?? this.allowPagination,
-      availablePageSizes: availablePageSizes ?? this.availablePageSizes,
-      defaultPageSize: defaultPageSize ?? this.defaultPageSize,
-    );
+    maxSortColumns: maxSortColumns ?? this.maxSortColumns,
+    maxActiveFilters: maxActiveFilters ?? this.maxActiveFilters,
+    allowMultiSort: allowMultiSort ?? this.allowMultiSort,
+    allowColumnReordering: allowColumnReordering ?? this.allowColumnReordering,
+    allowColumnResizing: allowColumnResizing ?? this.allowColumnResizing,
+    allowRowSelection: allowRowSelection ?? this.allowRowSelection,
+    maxSelectedRows: maxSelectedRows ?? this.maxSelectedRows,
+    allowExport: allowExport ?? this.allowExport,
+    allowFiltering: allowFiltering ?? this.allowFiltering,
+    allowSorting: allowSorting ?? this.allowSorting,
+    clearSortsOnNewSort: clearSortsOnNewSort ?? this.clearSortsOnNewSort,
+    clearFiltersOnDataChange: clearFiltersOnDataChange ?? this.clearFiltersOnDataChange,
+    minColumnWidth: minColumnWidth ?? this.minColumnWidth,
+    maxColumnWidth: maxColumnWidth ?? this.maxColumnWidth,
+    allowHorizontalScroll: allowHorizontalScroll ?? this.allowHorizontalScroll,
+    allowVerticalScroll: allowVerticalScroll ?? this.allowVerticalScroll,
+    allowPagination: allowPagination ?? this.allowPagination,
+    availablePageSizes: availablePageSizes ?? this.availablePageSizes,
+    defaultPageSize: defaultPageSize ?? this.defaultPageSize,
+  );
 
   /// Preset for single sort mode (most common)
-  static const VooDataGridConstraints singleSort = VooDataGridConstraints(
-    
-  );
+  static const VooDataGridConstraints singleSort = VooDataGridConstraints();
 
   /// Preset for multi-sort mode
-  static const VooDataGridConstraints multiSort = VooDataGridConstraints(
-    maxSortColumns: 3,
-    allowMultiSort: true,
-    clearSortsOnNewSort: false,
-  );
+  static const VooDataGridConstraints multiSort = VooDataGridConstraints(maxSortColumns: 3, allowMultiSort: true, clearSortsOnNewSort: false);
 
   /// Preset for read-only grid
   static const VooDataGridConstraints readOnly = VooDataGridConstraints(

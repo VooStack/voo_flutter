@@ -236,7 +236,8 @@ class _ScaffoldWithNavigationState extends State<ScaffoldWithNavigation> {
         items: _navigationItems,
         selectedId: _navigationItems[widget.navigationShell.currentIndex].id,
         onNavigationItemSelected: (itemId) {
-          final index = _navigationItems.indexWhere((item) => item.id == itemId);
+          final index =
+              _navigationItems.indexWhere((item) => item.id == itemId);
           if (index != -1) {
             // Use go_router's navigation shell to switch branches
             widget.navigationShell.goBranch(
@@ -246,7 +247,8 @@ class _ScaffoldWithNavigationState extends State<ScaffoldWithNavigation> {
             );
           }
         },
-        appBarTitle: Text(_navigationItems[widget.navigationShell.currentIndex].label),
+        appBarTitle:
+            Text(_navigationItems[widget.navigationShell.currentIndex].label),
         enableAnimations: true,
         enableHapticFeedback: true,
         showNotificationBadges: true,

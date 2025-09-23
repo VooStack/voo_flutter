@@ -56,7 +56,6 @@ class Span {
     status = SpanStatus.error(description: exception.toString());
   }
 
-
   /// End the span
   void end([DateTime? endTime]) {
     this.endTime = endTime ?? DateTime.now();

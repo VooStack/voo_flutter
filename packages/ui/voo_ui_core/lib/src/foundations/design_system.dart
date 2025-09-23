@@ -91,55 +91,41 @@ class VooDesignSystemData {
     double? filterBarHeight,
     double? listTileHeight,
     double? headerHeight,
-  }) =>
-      VooDesignSystemData(
-        spacingUnit: spacingUnit ?? this.spacingUnit,
-        radiusUnit: radiusUnit ?? this.radiusUnit,
-        borderWidth: borderWidth ?? this.borderWidth,
-        animationDuration: animationDuration ?? this.animationDuration,
-        animationDurationSlow:
-            animationDurationSlow ?? this.animationDurationSlow,
-        animationDurationFast:
-            animationDurationFast ?? this.animationDurationFast,
-        animationCurve: animationCurve ?? this.animationCurve,
-        inputHeight: inputHeight ?? this.inputHeight,
-        buttonHeight: buttonHeight ?? this.buttonHeight,
-        appBarHeight: appBarHeight ?? this.appBarHeight,
-        filterBarHeight: filterBarHeight ?? this.filterBarHeight,
-        listTileHeight: listTileHeight ?? this.listTileHeight,
-        headerHeight: headerHeight ?? this.headerHeight,
-      );
+  }) => VooDesignSystemData(
+    spacingUnit: spacingUnit ?? this.spacingUnit,
+    radiusUnit: radiusUnit ?? this.radiusUnit,
+    borderWidth: borderWidth ?? this.borderWidth,
+    animationDuration: animationDuration ?? this.animationDuration,
+    animationDurationSlow: animationDurationSlow ?? this.animationDurationSlow,
+    animationDurationFast: animationDurationFast ?? this.animationDurationFast,
+    animationCurve: animationCurve ?? this.animationCurve,
+    inputHeight: inputHeight ?? this.inputHeight,
+    buttonHeight: buttonHeight ?? this.buttonHeight,
+    appBarHeight: appBarHeight ?? this.appBarHeight,
+    filterBarHeight: filterBarHeight ?? this.filterBarHeight,
+    listTileHeight: listTileHeight ?? this.listTileHeight,
+    headerHeight: headerHeight ?? this.headerHeight,
+  );
 
   /// Default design system
   static const VooDesignSystemData defaultSystem = VooDesignSystemData();
 
   /// Compact design system with smaller spacing
-  static const VooDesignSystemData compact = VooDesignSystemData(
-    spacingUnit: 6.0,
-    radiusUnit: 3.0,
-  );
+  static const VooDesignSystemData compact = VooDesignSystemData(spacingUnit: 6.0, radiusUnit: 3.0);
 
   /// Comfortable design system with larger spacing
-  static const VooDesignSystemData comfortable = VooDesignSystemData(
-    spacingUnit: 10.0,
-    radiusUnit: 5.0,
-  );
+  static const VooDesignSystemData comfortable = VooDesignSystemData(spacingUnit: 10.0, radiusUnit: 5.0);
 }
 
 /// InheritedWidget that provides design system throughout the widget tree
 class VooDesignSystem extends InheritedWidget {
   final VooDesignSystemData data;
 
-  const VooDesignSystem({
-    super.key,
-    required this.data,
-    required super.child,
-  });
+  const VooDesignSystem({super.key, required this.data, required super.child});
 
   /// Access the design system from context
   static VooDesignSystemData of(BuildContext context) {
-    final system =
-        context.dependOnInheritedWidgetOfExactType<VooDesignSystem>();
+    final system = context.dependOnInheritedWidgetOfExactType<VooDesignSystem>();
     return system?.data ?? VooDesignSystemData.defaultSystem;
   }
 

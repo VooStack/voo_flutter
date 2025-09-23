@@ -27,21 +27,22 @@ class VooLogger {
     return level.priority >= (instance._config?.minimumLevel.priority ?? LogLevel.info.priority);
   }
 
-  static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose, LoggingConfig? config, bool shouldNotify = false}) async {
+  static Future<void> initialize({
+    String? appName,
+    String? appVersion,
+    String? userId,
+    LogLevel minimumLevel = LogLevel.verbose,
+    LoggingConfig? config,
+    bool shouldNotify = false,
+  }) async {
     if (instance._initialized) {
       // If already initialized, just update the config
-      instance._config = config ?? LoggingConfig(
-        minimumLevel: minimumLevel,
-        shouldNotify: shouldNotify,
-      );
+      instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel, shouldNotify: shouldNotify);
       return;
     }
 
     instance._initialized = true;
-    instance._config = config ?? LoggingConfig(
-      minimumLevel: minimumLevel,
-      shouldNotify: shouldNotify,
-    );
+    instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel, shouldNotify: shouldNotify);
 
     await instance._repository.initialize(
       appName: appName,
@@ -83,10 +84,7 @@ class VooLogger {
     await instance._repository.info(message, category: category, tag: tag, metadata: metadata);
 
     if (_shouldShowToast(LogLevel.info)) {
-      VooToast.showInfo(
-        message: message,
-        title: category ?? 'Info',
-      );
+      VooToast.showInfo(message: message, title: category ?? 'Info');
     }
   }
 
@@ -97,10 +95,7 @@ class VooLogger {
     await instance._repository.warning(message, category: category, tag: tag, metadata: metadata);
 
     if (_shouldShowToast(LogLevel.warning)) {
-      VooToast.showWarning(
-        message: message,
-        title: category ?? 'Warning',
-      );
+      VooToast.showWarning(message: message, title: category ?? 'Warning');
     }
   }
 
@@ -112,10 +107,7 @@ class VooLogger {
 
     if (_shouldShowToast(LogLevel.error)) {
       final errorMessage = error != null ? '$message: $error' : message;
-      VooToast.showError(
-        message: errorMessage,
-        title: category ?? 'Error',
-      );
+      VooToast.showError(message: errorMessage, title: category ?? 'Error');
     }
   }
 

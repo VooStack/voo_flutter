@@ -7,15 +7,7 @@ import 'helpers/test_helpers.dart';
 void main() {
   group('VooSlider', () {
     testWidgets('renders with default properties', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooSlider(
-            value: 0.5,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooSlider(value: 0.5, onChanged: (_) {})));
 
       expect(find.byType(Slider), findsOneWidget);
     });
@@ -29,12 +21,12 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooSlider(
-                value: value,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -58,13 +50,13 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooSlider(
-                value: value,
-                max: 100,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              max: 100,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -77,17 +69,7 @@ void main() {
     });
 
     testWidgets('shows divisions', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooSlider(
-            value: 2,
-            max: 10,
-            divisions: 10,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooSlider(value: 2, max: 10, divisions: 10, onChanged: (_) {})));
 
       final slider = tester.widget<Slider>(find.byType(Slider));
       expect(slider.divisions, 10);
@@ -97,13 +79,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSlider(
-            value: 5,
-            max: 10,
-            divisions: 10,
-            label: '5',
-            onChanged: (_) {},
-          ),
+          child: VooSlider(value: 5, max: 10, divisions: 10, label: '5', onChanged: (_) {}),
         ),
       );
 
@@ -112,16 +88,7 @@ void main() {
     });
 
     testWidgets('shows error state', (tester) async {
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: VooSlider(
-            value: 0.5,
-            isError: true,
-            onChanged: (_) {},
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: VooSlider(value: 0.5, isError: true, onChanged: (_) {})));
 
       final slider = tester.widget<Slider>(find.byType(Slider));
       final theme = Theme.of(tester.element(find.byType(Slider)));
@@ -131,15 +98,7 @@ void main() {
     testWidgets('disabled state prevents interaction', (tester) async {
       final callbacks = MockCallbacks();
 
-      await pumpWidgetAndSettle(
-        tester,
-        createTestApp(
-          child: const VooSlider(
-            value: 0.5,
-            onChanged: null,
-          ),
-        ),
-      );
+      await pumpWidgetAndSettle(tester, createTestApp(child: const VooSlider(value: 0.5, onChanged: null)));
 
       await tester.tap(find.byType(Slider));
       await tester.pumpAndSettle();
@@ -154,12 +113,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooSlider(
-            value: 0.5,
-            onChanged: (_) {},
-            onChangeStart: (value) => startValue = value,
-            onChangeEnd: (value) => endValue = value,
-          ),
+          child: VooSlider(value: 0.5, onChanged: (_) {}, onChangeStart: (value) => startValue = value, onChangeEnd: (value) => endValue = value),
         ),
       );
 
@@ -179,10 +133,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooRangeSlider(
-            values: const RangeValues(0.3, 0.7),
-            onChanged: (_) {},
-          ),
+          child: VooRangeSlider(values: const RangeValues(0.3, 0.7), onChanged: (_) {}),
         ),
       );
 
@@ -198,12 +149,12 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooRangeSlider(
-                values: values,
-                onChanged: (newValues) {
-                  setState(() => values = newValues);
-                  callbacks.onChanged(newValues);
-                },
-              ),
+              values: values,
+              onChanged: (newValues) {
+                setState(() => values = newValues);
+                callbacks.onChanged(newValues);
+              },
+            ),
           ),
         ),
       );
@@ -212,7 +163,7 @@ void main() {
       final rangeSlider = find.byType(RangeSlider);
       final sliderBox = tester.getRect(rangeSlider);
       final startPosition = Offset(sliderBox.left + sliderBox.width * 0.2, sliderBox.center.dy);
-      
+
       await tester.dragFrom(startPosition, const Offset(50, 0));
       await tester.pumpAndSettle();
 
@@ -225,11 +176,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooRangeSlider(
-            values: const RangeValues(25, 75),
-            max: 100,
-            onChanged: (_) {},
-          ),
+          child: VooRangeSlider(values: const RangeValues(25, 75), max: 100, onChanged: (_) {}),
         ),
       );
 
@@ -244,12 +191,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooRangeSlider(
-            values: const RangeValues(2, 8),
-            max: 10,
-            divisions: 10,
-            onChanged: (_) {},
-          ),
+          child: VooRangeSlider(values: const RangeValues(2, 8), max: 10, divisions: 10, onChanged: (_) {}),
         ),
       );
 
@@ -261,12 +203,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooRangeSlider(
-            values: const RangeValues(2, 8),
-            max: 10,
-            labels: const RangeLabels('2', '8'),
-            onChanged: (_) {},
-          ),
+          child: VooRangeSlider(values: const RangeValues(2, 8), max: 10, labels: const RangeLabels('2', '8'), onChanged: (_) {}),
         ),
       );
 
@@ -279,11 +216,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooRangeSlider(
-            values: const RangeValues(0.3, 0.7),
-            isError: true,
-            onChanged: (_) {},
-          ),
+          child: VooRangeSlider(values: const RangeValues(0.3, 0.7), isError: true, onChanged: (_) {}),
         ),
       );
 
@@ -298,12 +231,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledSlider(
-            value: 50,
-            max: 100,
-            label: 'Volume',
-            onChanged: (_) {},
-          ),
+          child: VooLabeledSlider(value: 50, max: 100, label: 'Volume', onChanged: (_) {}),
         ),
       );
 
@@ -315,12 +243,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledSlider(
-            value: 0.75,
-            label: 'Progress',
-            valueFormatter: (value) => '${(value * 100).toInt()}%',
-            onChanged: (_) {},
-          ),
+          child: VooLabeledSlider(value: 0.75, label: 'Progress', valueFormatter: (value) => '${(value * 100).toInt()}%', onChanged: (_) {}),
         ),
       );
 
@@ -333,20 +256,8 @@ void main() {
         createTestApp(
           child: Column(
             children: [
-              VooLabeledSlider(
-                value: 5,
-                max: 10,
-                label: 'With Helper',
-                helperText: 'Adjust the value',
-                onChanged: (_) {},
-              ),
-              VooLabeledSlider(
-                value: 5,
-                max: 10,
-                label: 'With Error',
-                errorText: 'Value too low',
-                onChanged: (_) {},
-              ),
+              VooLabeledSlider(value: 5, max: 10, label: 'With Helper', helperText: 'Adjust the value', onChanged: (_) {}),
+              VooLabeledSlider(value: 5, max: 10, label: 'With Error', errorText: 'Value too low', onChanged: (_) {}),
             ],
           ),
         ),
@@ -379,13 +290,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledSlider(
-            value: 50,
-            max: 100,
-            label: 'No Value',
-            showValue: false,
-            onChanged: (_) {},
-          ),
+          child: VooLabeledSlider(value: 50, max: 100, label: 'No Value', showValue: false, onChanged: (_) {}),
         ),
       );
 
@@ -398,12 +303,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooLabeledRangeSlider(
-            values: const RangeValues(20, 80),
-            max: 100,
-            label: 'Price Range',
-            onChanged: (_) {},
-          ),
+          child: VooLabeledRangeSlider(values: const RangeValues(20, 80), max: 100, label: 'Price Range', onChanged: (_) {}),
         ),
       );
 
@@ -434,23 +334,12 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooDiscreteSlider(
-            value: 3,
-            max: 5,
-            divisions: 5,
-            label: 'Rating',
-            onChanged: (_) {},
-          ),
+          child: VooDiscreteSlider(value: 3, max: 5, divisions: 5, label: 'Rating', onChanged: (_) {}),
         ),
       );
 
       expect(find.text('Rating'), findsOneWidget);
-      final slider = tester.widget<Slider>(
-        find.descendant(
-          of: find.byType(VooSlider),
-          matching: find.byType(Slider),
-        ),
-      );
+      final slider = tester.widget<Slider>(find.descendant(of: find.byType(VooSlider), matching: find.byType(Slider)));
       expect(slider.divisions, 5);
     });
 
@@ -458,13 +347,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooDiscreteSlider(
-            value: 1,
-            max: 3,
-            divisions: 3,
-            labels: const ['Small', 'Medium', 'Large', 'XL'],
-            onChanged: (_) {},
-          ),
+          child: VooDiscreteSlider(value: 1, max: 3, divisions: 3, labels: const ['Small', 'Medium', 'Large', 'XL'], onChanged: (_) {}),
         ),
       );
 
@@ -480,13 +363,7 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooIconSlider(
-            value: 0.5,
-            startIcon: Icons.volume_mute,
-            endIcon: Icons.volume_up,
-            label: 'Volume',
-            onChanged: (_) {},
-          ),
+          child: VooIconSlider(value: 0.5, startIcon: Icons.volume_mute, endIcon: Icons.volume_up, label: 'Volume', onChanged: (_) {}),
         ),
       );
 
@@ -504,14 +381,14 @@ void main() {
         createTestApp(
           child: StatefulBuilder(
             builder: (context, setState) => VooIconSlider(
-                value: value,
-                startIcon: Icons.brightness_low,
-                endIcon: Icons.brightness_high,
-                onChanged: (newValue) {
-                  setState(() => value = newValue);
-                  callbacks.onChanged(newValue);
-                },
-              ),
+              value: value,
+              startIcon: Icons.brightness_low,
+              endIcon: Icons.brightness_high,
+              onChanged: (newValue) {
+                setState(() => value = newValue);
+                callbacks.onChanged(newValue);
+              },
+            ),
           ),
         ),
       );
@@ -528,22 +405,13 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: const VooIconSlider(
-            value: 0.5,
-            startIcon: Icons.volume_mute,
-            endIcon: Icons.volume_up,
-            enabled: false,
-            onChanged: null,
-          ),
+          child: const VooIconSlider(value: 0.5, startIcon: Icons.volume_mute, endIcon: Icons.volume_up, enabled: false, onChanged: null),
         ),
       );
 
       final startIcon = tester.widget<Icon>(find.byIcon(Icons.volume_mute));
       final theme = Theme.of(tester.element(find.byIcon(Icons.volume_mute)));
-      expect(
-        startIcon.color,
-        theme.colorScheme.onSurface.withValues(alpha: 0.38),
-      );
+      expect(startIcon.color, theme.colorScheme.onSurface.withValues(alpha: 0.38));
     });
   });
 
@@ -552,36 +420,20 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooTickMarkSlider(
-            value: 50,
-            label: 'Progress',
-            onChanged: (_) {},
-          ),
+          child: VooTickMarkSlider(value: 50, label: 'Progress', onChanged: (_) {}),
         ),
       );
 
       expect(find.text('Progress'), findsOneWidget);
       // Tick marks are rendered as Container widgets
-      expect(
-        find.descendant(
-          of: find.byType(VooTickMarkSlider),
-          matching: find.byType(Container),
-        ),
-        findsWidgets,
-      );
+      expect(find.descendant(of: find.byType(VooTickMarkSlider), matching: find.byType(Container)), findsWidgets);
     });
 
     testWidgets('shows tick labels when enabled', (tester) async {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooTickMarkSlider(
-            value: 50,
-            tickCount: 3,
-            showTickLabels: true,
-            tickLabels: const ['0', '50', '100'],
-            onChanged: (_) {},
-          ),
+          child: VooTickMarkSlider(value: 50, tickCount: 3, showTickLabels: true, tickLabels: const ['0', '50', '100'], onChanged: (_) {}),
         ),
       );
 
@@ -594,24 +446,13 @@ void main() {
       await pumpWidgetAndSettle(
         tester,
         createTestApp(
-          child: VooTickMarkSlider(
-            value: 60,
-            tickCount: 5,
-            activeColor: Colors.blue,
-            inactiveColor: Colors.grey,
-            onChanged: (_) {},
-          ),
+          child: VooTickMarkSlider(value: 60, tickCount: 5, activeColor: Colors.blue, inactiveColor: Colors.grey, onChanged: (_) {}),
         ),
       );
 
       // Verify tick marks are rendered
-      final containers = tester.widgetList<Container>(
-        find.descendant(
-          of: find.byType(VooTickMarkSlider),
-          matching: find.byType(Container),
-        ),
-      );
-      
+      final containers = tester.widgetList<Container>(find.descendant(of: find.byType(VooTickMarkSlider), matching: find.byType(Container)));
+
       expect(containers.length, greaterThan(0));
     });
   });

@@ -20,7 +20,7 @@ class VooSlider extends StatelessWidget {
   final MouseCursor? mouseCursor;
   final SliderInteraction? allowedInteraction;
   final bool isError;
-  
+
   const VooSlider({
     super.key,
     required this.value,
@@ -41,21 +41,17 @@ class VooSlider extends StatelessWidget {
     this.allowedInteraction,
     this.isError = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
         activeTrackColor: isError ? colorScheme.error : activeColor,
-        inactiveTrackColor: isError 
-          ? colorScheme.error.withValues(alpha: 0.3)
-          : inactiveColor,
+        inactiveTrackColor: isError ? colorScheme.error.withValues(alpha: 0.3) : inactiveColor,
         thumbColor: isError ? colorScheme.error : thumbColor,
-        overlayColor: isError 
-          ? colorScheme.error.withValues(alpha: 0.12)
-          : null,
+        overlayColor: isError ? colorScheme.error.withValues(alpha: 0.12) : null,
       ),
       child: Slider(
         value: value,
@@ -67,9 +63,7 @@ class VooSlider extends StatelessWidget {
         divisions: divisions,
         label: label,
         activeColor: isError ? colorScheme.error : activeColor,
-        inactiveColor: isError 
-          ? colorScheme.error.withValues(alpha: 0.3)
-          : inactiveColor,
+        inactiveColor: isError ? colorScheme.error.withValues(alpha: 0.3) : inactiveColor,
         thumbColor: isError ? colorScheme.error : thumbColor,
         semanticFormatterCallback: semanticFormatterCallback,
         focusNode: focusNode,
@@ -95,7 +89,7 @@ class VooRangeSlider extends StatelessWidget {
   final Color? inactiveColor;
   final SemanticFormatterCallback? semanticFormatterCallback;
   final bool isError;
-  
+
   const VooRangeSlider({
     super.key,
     required this.values,
@@ -111,21 +105,17 @@ class VooRangeSlider extends StatelessWidget {
     this.semanticFormatterCallback,
     this.isError = false,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
         activeTrackColor: isError ? colorScheme.error : activeColor,
-        inactiveTrackColor: isError 
-          ? colorScheme.error.withValues(alpha: 0.3)
-          : inactiveColor,
+        inactiveTrackColor: isError ? colorScheme.error.withValues(alpha: 0.3) : inactiveColor,
         thumbColor: isError ? colorScheme.error : null,
-        overlayColor: isError 
-          ? colorScheme.error.withValues(alpha: 0.12)
-          : null,
+        overlayColor: isError ? colorScheme.error.withValues(alpha: 0.12) : null,
       ),
       child: RangeSlider(
         values: values,
@@ -137,9 +127,7 @@ class VooRangeSlider extends StatelessWidget {
         divisions: divisions,
         labels: labels,
         activeColor: isError ? colorScheme.error : activeColor,
-        inactiveColor: isError 
-          ? colorScheme.error.withValues(alpha: 0.3)
-          : inactiveColor,
+        inactiveColor: isError ? colorScheme.error.withValues(alpha: 0.3) : inactiveColor,
         semanticFormatterCallback: semanticFormatterCallback,
       ),
     );
@@ -163,7 +151,7 @@ class VooLabeledSlider extends StatelessWidget {
   final String Function(double)? valueFormatter;
   final Color? activeColor;
   final Color? inactiveColor;
-  
+
   const VooLabeledSlider({
     super.key,
     required this.value,
@@ -182,7 +170,7 @@ class VooLabeledSlider extends StatelessWidget {
     this.activeColor,
     this.inactiveColor,
   });
-  
+
   String _formatValue(double value) {
     if (valueFormatter != null) {
       return valueFormatter!(value);
@@ -192,13 +180,13 @@ class VooLabeledSlider extends StatelessWidget {
     }
     return value.toStringAsFixed(1);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final hasError = errorText != null;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -206,19 +194,13 @@ class VooLabeledSlider extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                label!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text(label!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant)),
               if (showValue)
                 Text(
                   _formatValue(value),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: hasError ? colorScheme.error : colorScheme.primary,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: hasError ? colorScheme.error : colorScheme.primary),
                 ),
             ],
           ),
@@ -226,10 +208,7 @@ class VooLabeledSlider extends StatelessWidget {
         ],
         Row(
           children: [
-            if (leading != null) ...[
-              leading!,
-              SizedBox(width: design.spacingSm),
-            ],
+            if (leading != null) ...[leading!, SizedBox(width: design.spacingSm)],
             Expanded(
               child: VooSlider(
                 value: value,
@@ -243,19 +222,14 @@ class VooLabeledSlider extends StatelessWidget {
                 isError: hasError,
               ),
             ),
-            if (trailing != null) ...[
-              SizedBox(width: design.spacingSm),
-              trailing!,
-            ],
+            if (trailing != null) ...[SizedBox(width: design.spacingSm), trailing!],
           ],
         ),
         if (helperText != null || errorText != null) ...[
           SizedBox(height: design.spacingXs),
           Text(
             errorText ?? helperText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant),
           ),
         ],
       ],
@@ -280,7 +254,7 @@ class VooLabeledRangeSlider extends StatelessWidget {
   final String Function(double)? valueFormatter;
   final Color? activeColor;
   final Color? inactiveColor;
-  
+
   const VooLabeledRangeSlider({
     super.key,
     required this.values,
@@ -299,7 +273,7 @@ class VooLabeledRangeSlider extends StatelessWidget {
     this.activeColor,
     this.inactiveColor,
   });
-  
+
   String _formatValue(double value) {
     if (valueFormatter != null) {
       return valueFormatter!(value);
@@ -309,13 +283,13 @@ class VooLabeledRangeSlider extends StatelessWidget {
     }
     return value.toStringAsFixed(1);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final hasError = errorText != null;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -323,19 +297,13 @@ class VooLabeledRangeSlider extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                label!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text(label!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant)),
               if (showValues)
                 Text(
                   '${_formatValue(values.start)} - ${_formatValue(values.end)}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: hasError ? colorScheme.error : colorScheme.primary,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: hasError ? colorScheme.error : colorScheme.primary),
                 ),
             ],
           ),
@@ -343,10 +311,7 @@ class VooLabeledRangeSlider extends StatelessWidget {
         ],
         Row(
           children: [
-            if (leading != null) ...[
-              leading!,
-              SizedBox(width: design.spacingSm),
-            ],
+            if (leading != null) ...[leading!, SizedBox(width: design.spacingSm)],
             Expanded(
               child: VooRangeSlider(
                 values: values,
@@ -354,30 +319,20 @@ class VooLabeledRangeSlider extends StatelessWidget {
                 min: min,
                 max: max,
                 divisions: divisions,
-                labels: showValues 
-                  ? RangeLabels(
-                      _formatValue(values.start),
-                      _formatValue(values.end),
-                    )
-                  : null,
+                labels: showValues ? RangeLabels(_formatValue(values.start), _formatValue(values.end)) : null,
                 activeColor: activeColor,
                 inactiveColor: inactiveColor,
                 isError: hasError,
               ),
             ),
-            if (trailing != null) ...[
-              SizedBox(width: design.spacingSm),
-              trailing!,
-            ],
+            if (trailing != null) ...[SizedBox(width: design.spacingSm), trailing!],
           ],
         ),
         if (helperText != null || errorText != null) ...[
           SizedBox(height: design.spacingXs),
           Text(
             errorText ?? helperText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant),
           ),
         ],
       ],
@@ -398,7 +353,7 @@ class VooDiscreteSlider extends StatelessWidget {
   final Color? activeColor;
   final Color? inactiveColor;
   final bool showLabels;
-  
+
   const VooDiscreteSlider({
     super.key,
     required this.value,
@@ -413,32 +368,24 @@ class VooDiscreteSlider extends StatelessWidget {
     this.inactiveColor,
     this.showLabels = true,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final steps = divisions + 1;
     final stepValue = (max - min) / divisions;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
-          Text(
-            label!,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          SizedBox(height: design.spacingSm),
-        ],
+        if (label != null) ...[Text(label!, style: Theme.of(context).textTheme.bodyMedium), SizedBox(height: design.spacingSm)],
         VooSlider(
           value: value,
           onChanged: enabled ? onChanged : null,
           min: min,
           max: max,
           divisions: divisions,
-          label: labels != null && labels!.isNotEmpty
-            ? labels![((value - min) / stepValue).round()]
-            : value.toStringAsFixed(0),
+          label: labels != null && labels!.isNotEmpty ? labels![((value - min) / stepValue).round()] : value.toStringAsFixed(0),
           activeColor: activeColor,
           inactiveColor: inactiveColor,
         ),
@@ -447,10 +394,7 @@ class VooDiscreteSlider extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: labels!.map((label) => Text(
-                label,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),).toList(),
+              children: labels!.map((label) => Text(label, style: Theme.of(context).textTheme.labelSmall)).toList(),
             ),
           ),
         ],
@@ -472,7 +416,7 @@ class VooTickMarkSlider extends StatelessWidget {
   final Color? activeColor;
   final Color? inactiveColor;
   final bool enabled;
-  
+
   const VooTickMarkSlider({
     super.key,
     required this.value,
@@ -487,22 +431,16 @@ class VooTickMarkSlider extends StatelessWidget {
     this.inactiveColor,
     this.enabled = true,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
-          Text(
-            label!,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          SizedBox(height: design.spacingSm),
-        ],
+        if (label != null) ...[Text(label!, style: Theme.of(context).textTheme.bodyMedium), SizedBox(height: design.spacingSm)],
         Stack(
           alignment: Alignment.center,
           children: [
@@ -518,9 +456,7 @@ class VooTickMarkSlider extends StatelessWidget {
                     return Container(
                       width: 2,
                       height: 8,
-                      color: isActive
-                        ? (activeColor ?? colorScheme.primary)
-                        : (inactiveColor ?? colorScheme.onSurfaceVariant.withValues(alpha: 0.3)),
+                      color: isActive ? (activeColor ?? colorScheme.primary) : (inactiveColor ?? colorScheme.onSurfaceVariant.withValues(alpha: 0.3)),
                     );
                   }),
                 ),
@@ -543,10 +479,7 @@ class VooTickMarkSlider extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: tickLabels!.map((label) => Text(
-                label,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),).toList(),
+              children: tickLabels!.map((label) => Text(label, style: Theme.of(context).textTheme.labelSmall)).toList(),
             ),
           ),
         ],
@@ -568,7 +501,7 @@ class VooIconSlider extends StatelessWidget {
   final bool enabled;
   final Color? activeColor;
   final Color? inactiveColor;
-  
+
   const VooIconSlider({
     super.key,
     required this.value,
@@ -583,32 +516,20 @@ class VooIconSlider extends StatelessWidget {
     this.activeColor,
     this.inactiveColor,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
-          Text(
-            label!,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          SizedBox(height: design.spacingSm),
-        ],
+        if (label != null) ...[Text(label!, style: Theme.of(context).textTheme.bodyMedium), SizedBox(height: design.spacingSm)],
         Row(
           children: [
             if (startIcon != null) ...[
-              Icon(
-                startIcon,
-                size: 20,
-                color: enabled 
-                  ? colorScheme.onSurfaceVariant
-                  : colorScheme.onSurface.withValues(alpha: 0.38),
-              ),
+              Icon(startIcon, size: 20, color: enabled ? colorScheme.onSurfaceVariant : colorScheme.onSurface.withValues(alpha: 0.38)),
               SizedBox(width: design.spacingMd),
             ],
             Expanded(
@@ -624,13 +545,7 @@ class VooIconSlider extends StatelessWidget {
             ),
             if (endIcon != null) ...[
               SizedBox(width: design.spacingMd),
-              Icon(
-                endIcon,
-                size: 20,
-                color: enabled 
-                  ? colorScheme.onSurfaceVariant
-                  : colorScheme.onSurface.withValues(alpha: 0.38),
-              ),
+              Icon(endIcon, size: 20, color: enabled ? colorScheme.onSurfaceVariant : colorScheme.onSurface.withValues(alpha: 0.38)),
             ],
           ],
         ),

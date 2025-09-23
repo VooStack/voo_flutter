@@ -19,10 +19,7 @@ class ListLoaded<T> extends VooListState<T> {
   final List<ListItem<T>> items;
   final Set<String> selectedItems;
 
-  const ListLoaded({
-    required this.items,
-    this.selectedItems = const {},
-  });
+  const ListLoaded({required this.items, this.selectedItems = const {}});
 
   @override
   List<Object> get props => [items, selectedItems];

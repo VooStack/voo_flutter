@@ -34,32 +34,23 @@ class VooFormProgress extends StatelessWidget {
     this.valueColor,
     this.borderRadius,
     this.animate = true,
-  }) : assert(
-          isIndeterminate || (value != null && value >= 0.0 && value <= 1.0),
-          'Value must be between 0.0 and 1.0 for determinate progress',
-        );
+  }) : assert(isIndeterminate || (value != null && value >= 0.0 && value <= 1.0), 'Value must be between 0.0 and 1.0 for determinate progress');
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveBackgroundColor = backgroundColor ??
-        theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
+    final effectiveBackgroundColor = backgroundColor ?? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
     final effectiveValueColor = valueColor ?? theme.colorScheme.primary;
 
     final progressIndicator = LinearProgressIndicator(
       value: isIndeterminate ? null : value,
       backgroundColor: effectiveBackgroundColor,
-      valueColor: animate
-          ? AlwaysStoppedAnimation<Color>(effectiveValueColor)
-          : AlwaysStoppedAnimation<Color>(effectiveValueColor),
+      valueColor: animate ? AlwaysStoppedAnimation<Color>(effectiveValueColor) : AlwaysStoppedAnimation<Color>(effectiveValueColor),
       minHeight: height,
     );
 
     if (borderRadius != null) {
-      return ClipRRect(
-        borderRadius: borderRadius!,
-        child: progressIndicator,
-      );
+      return ClipRRect(borderRadius: borderRadius!, child: progressIndicator);
     }
 
     return progressIndicator;
@@ -80,13 +71,7 @@ class VooFormCircularProgress extends StatelessWidget {
   /// Color for the progress indicator
   final Color? valueColor;
 
-  const VooFormCircularProgress({
-    super.key,
-    this.size = 24.0,
-    this.strokeWidth = 2.0,
-    this.value,
-    this.valueColor,
-  });
+  const VooFormCircularProgress({super.key, this.size = 24.0, this.strokeWidth = 2.0, this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +81,7 @@ class VooFormCircularProgress extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CircularProgressIndicator(
-        value: value,
-        strokeWidth: strokeWidth,
-        valueColor: AlwaysStoppedAnimation<Color>(effectiveValueColor),
-      ),
+      child: CircularProgressIndicator(value: value, strokeWidth: strokeWidth, valueColor: AlwaysStoppedAnimation<Color>(effectiveValueColor)),
     );
   }
 }

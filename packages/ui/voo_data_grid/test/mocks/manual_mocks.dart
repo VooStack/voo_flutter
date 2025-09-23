@@ -13,19 +13,19 @@ class MockVooDataGridSource<T> extends Mock implements VooDataGridSource<T> {
 
   @override
   List<T> get rows => _rows;
-  
+
   @override
   List<T> get allRows => _allRows;
-  
+
   @override
   int get totalRows => _totalRows;
-  
+
   @override
   bool get isLoading => _isLoading;
-  
+
   @override
   String? get error => _error;
-  
+
   @override
   VooDataGridMode get mode => _mode;
 
@@ -49,23 +49,10 @@ class MockVooDataGridSource<T> extends Mock implements VooDataGridSource<T> {
     required List<VooColumnSort> sorts,
   }) async =>
       super.noSuchMethod(
-        Invocation.method(
-          #fetchRemoteData,
-          [],
-          {
-            #page: page,
-            #pageSize: pageSize,
-            #filters: filters,
-            #sorts: sorts,
-          },
-        ),
-        returnValue: Future.value(VooDataGridResponse<T>(
-          rows: [],
-          totalRows: 0,
-          page: page,
-          pageSize: pageSize,
-        ),),
-      ) as Future<VooDataGridResponse<T>>;
+            Invocation.method(#fetchRemoteData, [], {#page: page, #pageSize: pageSize, #filters: filters, #sorts: sorts}),
+            returnValue: Future.value(VooDataGridResponse<T>(rows: [], totalRows: 0, page: page, pageSize: pageSize)),
+          )
+          as Future<VooDataGridResponse<T>>;
 }
 
 /// Manual mock for BuildContext
@@ -73,10 +60,7 @@ class MockBuildContext extends Mock implements BuildContext {}
 
 /// Test stub for VooDataGridSource implementation
 class StubVooDataGridSource extends VooDataGridSource<Map<String, dynamic>> {
-  StubVooDataGridSource({
-    List<Map<String, dynamic>>? data,
-    VooDataGridMode mode = VooDataGridMode.local,
-  }) : super(mode: mode) {
+  StubVooDataGridSource({List<Map<String, dynamic>>? data, VooDataGridMode mode = VooDataGridMode.local}) : super(mode: mode) {
     if (data != null && mode == VooDataGridMode.local) {
       setLocalData(data);
     }
@@ -91,11 +75,6 @@ class StubVooDataGridSource extends VooDataGridSource<Map<String, dynamic>> {
   }) async {
     // Simulate network delay
     await Future<void>.delayed(const Duration(milliseconds: 50));
-    return VooDataGridResponse<Map<String, dynamic>>(
-      rows: [],
-      totalRows: 0,
-      page: page,
-      pageSize: pageSize,
-    );
+    return VooDataGridResponse<Map<String, dynamic>>(rows: [], totalRows: 0, page: page, pageSize: pageSize);
   }
 }

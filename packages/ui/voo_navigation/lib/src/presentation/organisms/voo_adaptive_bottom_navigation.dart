@@ -10,34 +10,34 @@ import 'package:voo_tokens/voo_tokens.dart';
 class VooAdaptiveBottomNavigation extends StatefulWidget {
   /// Navigation configuration
   final VooNavigationConfig config;
-  
+
   /// Currently selected item ID
   final String selectedId;
-  
+
   /// Callback when an item is selected
   final void Function(String itemId) onNavigationItemSelected;
-  
+
   /// Custom height for the navigation bar
   final double? height;
-  
+
   /// Whether to show labels
   final bool showLabels;
-  
+
   /// Whether to show selected labels only
   final bool showSelectedLabels;
-  
+
   /// Type of bottom navigation bar
   final NavigationBarType type;
-  
+
   /// Custom background color
   final Color? backgroundColor;
-  
+
   /// Custom elevation
   final double? elevation;
-  
+
   /// Whether to enable splash/ripple effect
   final bool enableFeedback;
-  
+
   const VooAdaptiveBottomNavigation({
     super.key,
     required this.config,
@@ -53,23 +53,25 @@ class VooAdaptiveBottomNavigation extends StatefulWidget {
   });
 
   @override
-  State<VooAdaptiveBottomNavigation> createState() => _VooAdaptiveBottomNavigationState();
+  State<VooAdaptiveBottomNavigation> createState() =>
+      _VooAdaptiveBottomNavigationState();
 }
 
-class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigation> 
+class _VooAdaptiveBottomNavigationState
+    extends State<VooAdaptiveBottomNavigation>
     with TickerProviderStateMixin {
   late List<AnimationController> _itemAnimations;
   late List<Animation<double>> _scaleAnimations;
   late List<Animation<double>> _rotationAnimations;
   late AnimationController _rippleController;
   int? _previousIndex;
-  
+
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
   }
-  
+
   void _initializeAnimations() {
     final itemCount = widget.config.visibleItems.length;
     _itemAnimations = List.generate(
@@ -79,32 +81,28 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
         vsync: this,
       ),
     );
-    
-    _scaleAnimations = _itemAnimations.map((controller) => 
-      Tween<double>(
-        begin: 1.0,
-        end: 1.15,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeOutBack,
-      ),),
-    ).toList();
-    
-    _rotationAnimations = _itemAnimations.map((controller) => 
-      Tween<double>(
-        begin: 0.0,
-        end: 0.05,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.elasticOut,
-      ),),
-    ).toList();
-    
+
+    _scaleAnimations = _itemAnimations
+        .map(
+          (controller) => Tween<double>(begin: 1.0, end: 1.15).animate(
+            CurvedAnimation(parent: controller, curve: Curves.easeOutBack),
+          ),
+        )
+        .toList();
+
+    _rotationAnimations = _itemAnimations
+        .map(
+          (controller) => Tween<double>(begin: 0.0, end: 0.05).animate(
+            CurvedAnimation(parent: controller, curve: Curves.elasticOut),
+          ),
+        )
+        .toList();
+
     _rippleController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     // Animate the initially selected item
     final selectedIndex = _getSelectedIndex();
     if (selectedIndex != null && selectedIndex < _itemAnimations.length) {
@@ -112,24 +110,25 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       _previousIndex = selectedIndex;
     }
   }
-  
+
   @override
   void didUpdateWidget(VooAdaptiveBottomNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
-    if (widget.config.visibleItems.length != oldWidget.config.visibleItems.length) {
+
+    if (widget.config.visibleItems.length !=
+        oldWidget.config.visibleItems.length) {
       _disposeAnimations();
       _initializeAnimations();
     }
-    
+
     if (widget.selectedId != oldWidget.selectedId) {
       _animateSelection();
     }
   }
-  
+
   void _animateSelection() {
     if (!widget.config.enableAnimations) return;
-    
+
     final newIndex = _getSelectedIndex();
     if (newIndex != null && newIndex < _itemAnimations.length) {
       // Reverse previous animation
@@ -141,7 +140,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       _previousIndex = newIndex;
     }
   }
-  
+
   int? _getSelectedIndex() {
     final items = widget.config.visibleItems;
     for (int i = 0; i < items.length; i++) {
@@ -151,29 +150,29 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     }
     return null;
   }
-  
+
   @override
   void dispose() {
     _disposeAnimations();
     super.dispose();
   }
-  
+
   void _disposeAnimations() {
     for (final controller in _itemAnimations) {
       controller.dispose();
     }
     _rippleController.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final items = widget.config.visibleItems;
-    
+
     if (items.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     switch (widget.type) {
       case NavigationBarType.material3:
         return _buildMaterial3NavigationBar(context, theme, items);
@@ -183,14 +182,14 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
         return _buildCustomNavigationBar(context, theme, items);
     }
   }
-  
+
   Widget _buildMaterial3NavigationBar(
     BuildContext context,
     ThemeData theme,
     List<VooNavigationItem> items,
   ) {
     final selectedIndex = _getSelectedIndex() ?? 0;
-    
+
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: (index) {
@@ -203,39 +202,47 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
         }
       },
       height: widget.height,
-      backgroundColor: widget.backgroundColor ?? 
-          widget.config.navigationBackgroundColor,
-      elevation: widget.elevation ?? widget.config.elevation ?? context.vooElevation.level2,
+      backgroundColor:
+          widget.backgroundColor ?? widget.config.navigationBackgroundColor,
+      elevation:
+          widget.elevation ??
+          widget.config.elevation ??
+          context.vooElevation.level2,
       labelBehavior: widget.showLabels
-          ? (widget.showSelectedLabels 
-              ? NavigationDestinationLabelBehavior.onlyShowSelected
-              : NavigationDestinationLabelBehavior.alwaysShow)
+          ? (widget.showSelectedLabels
+                ? NavigationDestinationLabelBehavior.onlyShowSelected
+                : NavigationDestinationLabelBehavior.alwaysShow)
           : NavigationDestinationLabelBehavior.alwaysHide,
       indicatorColor: widget.config.indicatorColor,
       indicatorShape: widget.config.indicatorShape,
-        destinations: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
-          final isSelected = index == selectedIndex;
-          
-          return NavigationDestination(
-            icon: _buildAnimatedIcon(item, isSelected, index),
-            selectedIcon: _buildAnimatedIcon(item, isSelected, index, useSelected: true),
-            label: item.label,
-            tooltip: item.effectiveTooltip,
-            enabled: item.isEnabled,
-          );
-        }).toList(),
+      destinations: items.asMap().entries.map((entry) {
+        final index = entry.key;
+        final item = entry.value;
+        final isSelected = index == selectedIndex;
+
+        return NavigationDestination(
+          icon: _buildAnimatedIcon(item, isSelected, index),
+          selectedIcon: _buildAnimatedIcon(
+            item,
+            isSelected,
+            index,
+            useSelected: true,
+          ),
+          label: item.label,
+          tooltip: item.effectiveTooltip,
+          enabled: item.isEnabled,
+        );
+      }).toList(),
     );
   }
-  
+
   Widget _buildMaterial2BottomNavigation(
     BuildContext context,
     ThemeData theme,
     List<VooNavigationItem> items,
   ) {
     final selectedIndex = _getSelectedIndex() ?? 0;
-    
+
     return BottomNavigationBar(
       currentIndex: selectedIndex,
       onTap: (index) {
@@ -247,24 +254,32 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
           widget.onNavigationItemSelected(item.id);
         }
       },
-      backgroundColor: widget.backgroundColor ?? 
-          widget.config.navigationBackgroundColor,
-      elevation: widget.elevation ?? widget.config.elevation ?? context.vooElevation.level4,
+      backgroundColor:
+          widget.backgroundColor ?? widget.config.navigationBackgroundColor,
+      elevation:
+          widget.elevation ??
+          widget.config.elevation ??
+          context.vooElevation.level4,
       selectedItemColor: widget.config.selectedItemColor,
       unselectedItemColor: widget.config.unselectedItemColor,
       showSelectedLabels: widget.showSelectedLabels,
       showUnselectedLabels: widget.showLabels,
-      type: items.length > 3 
-          ? BottomNavigationBarType.fixed 
+      type: items.length > 3
+          ? BottomNavigationBarType.fixed
           : BottomNavigationBarType.shifting,
       items: items.asMap().entries.map((entry) {
         final index = entry.key;
         final item = entry.value;
         final isSelected = index == selectedIndex;
-        
+
         return BottomNavigationBarItem(
           icon: _buildIconWithBadge(item, isSelected, index),
-          activeIcon: _buildIconWithBadge(item, isSelected, index, useSelected: true),
+          activeIcon: _buildIconWithBadge(
+            item,
+            isSelected,
+            index,
+            useSelected: true,
+          ),
           label: item.label,
           tooltip: item.effectiveTooltip,
           backgroundColor: item.iconColor?.withAlpha((0.1 * 255).round()),
@@ -272,7 +287,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       }).toList(),
     );
   }
-  
+
   Widget _buildCustomNavigationBar(
     BuildContext context,
     ThemeData theme,
@@ -284,7 +299,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bottomBarColor = isDark
-        ? const Color(0xFF1A1D23)  // Dark mode: very dark blue-gray
+        ? const Color(0xFF1A1D23) // Dark mode: very dark blue-gray
         : const Color(0xFF1F2937); // Light mode: professional dark gray
 
     return Container(
@@ -305,7 +320,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
           final index = entry.key;
           final item = entry.value;
           final isSelected = index == selectedIndex;
-          
+
           return Expanded(
             child: _buildCustomNavigationItem(
               item: item,
@@ -318,22 +333,25 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       ),
     );
   }
-  
+
   Widget _buildCustomNavigationItem({
     required VooNavigationItem item,
     required bool isSelected,
     required int index,
     required ThemeData theme,
   }) {
-    final primaryColor = widget.config.selectedItemColor ?? theme.colorScheme.primary;
+    final primaryColor =
+        widget.config.selectedItemColor ?? theme.colorScheme.primary;
 
     return InkWell(
-      onTap: item.isEnabled ? () {
-        if (widget.enableFeedback) {
-          HapticFeedback.lightImpact();
-        }
-        widget.onNavigationItemSelected(item.id);
-      } : null,
+      onTap: item.isEnabled
+          ? () {
+              if (widget.enableFeedback) {
+                HapticFeedback.lightImpact();
+              }
+              widget.onNavigationItemSelected(item.id);
+            }
+          : null,
       borderRadius: BorderRadius.circular(context.vooRadius.lg),
       child: AnimatedContainer(
         duration: widget.config.animationDuration,
@@ -346,7 +364,9 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
           vertical: context.vooSpacing.xs,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(context.vooRadius.md + context.vooSpacing.xxs),
+          borderRadius: BorderRadius.circular(
+            context.vooRadius.md + context.vooSpacing.xxs,
+          ),
           color: isSelected
               ? theme.colorScheme.primary.withValues(alpha: 0.12)
               : Colors.transparent,
@@ -406,7 +426,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       ),
     );
   }
-  
+
   Widget _buildModernIcon(
     VooNavigationItem item,
     bool isSelected,
@@ -443,7 +463,11 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     return icon;
   }
 
-  Widget _buildModernBadge(VooNavigationItem item, bool isSelected, Color primaryColor) {
+  Widget _buildModernBadge(
+    VooNavigationItem item,
+    bool isSelected,
+    Color primaryColor,
+  ) {
     final theme = Theme.of(context);
 
     String badgeText;
@@ -496,13 +520,18 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     int index, {
     bool useSelected = false,
   }) => AnimatedBuilder(
-      animation: _scaleAnimations[index],
-      builder: (context, child) => Transform.scale(
-        scale: _scaleAnimations[index].value,
-        child: _buildIconWithBadge(item, isSelected, index, useSelected: useSelected),
+    animation: _scaleAnimations[index],
+    builder: (context, child) => Transform.scale(
+      scale: _scaleAnimations[index].value,
+      child: _buildIconWithBadge(
+        item,
+        isSelected,
+        index,
+        useSelected: useSelected,
       ),
-    );
-  
+    ),
+  );
+
   Widget _buildIconWithBadge(
     VooNavigationItem item,
     bool isSelected,
@@ -511,29 +540,29 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final selectedColor = widget.config.selectedItemColor ?? colorScheme.primary;
-    final unselectedColor = widget.config.unselectedItemColor ?? 
-        colorScheme.onSurfaceVariant;
-    
+    final selectedColor =
+        widget.config.selectedItemColor ?? colorScheme.primary;
+    final unselectedColor =
+        widget.config.unselectedItemColor ?? colorScheme.onSurfaceVariant;
+
     final Widget icon = AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
       transitionBuilder: (child, animation) => FadeTransition(
         opacity: animation,
-        child: ScaleTransition(
-          scale: animation,
-          child: child,
-        ),
+        child: ScaleTransition(scale: animation, child: child),
       ),
-      child: item.leadingWidget ?? Icon(
-        useSelected ? item.effectiveSelectedIcon : item.icon,
-        key: ValueKey('${item.id}_${useSelected}_$isSelected'),
-        color: isSelected 
-            ? (item.selectedIconColor ?? selectedColor)
-            : (item.iconColor ?? unselectedColor),
-        size: isSelected ? 28 : 24,
-      ),
+      child:
+          item.leadingWidget ??
+          Icon(
+            useSelected ? item.effectiveSelectedIcon : item.icon,
+            key: ValueKey('${item.id}_${useSelected}_$isSelected'),
+            color: isSelected
+                ? (item.selectedIconColor ?? selectedColor)
+                : (item.iconColor ?? unselectedColor),
+            size: isSelected ? 28 : 24,
+          ),
     );
-    
+
     if (item.hasBadge) {
       return Stack(
         clipBehavior: Clip.none,
@@ -542,15 +571,12 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
           Positioned(
             top: -4,
             right: -4,
-            child: VooNavigationBadge(
-              item: item,
-              config: widget.config,
-            ),
+            child: VooNavigationBadge(item: item, config: widget.config),
           ),
         ],
       );
     }
-    
+
     return icon;
   }
 }
@@ -559,10 +585,10 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
 enum NavigationBarType {
   /// Material 3 NavigationBar
   material3,
-  
+
   /// Material 2 BottomNavigationBar
   material2,
-  
+
   /// Custom implementation
   custom,
 }

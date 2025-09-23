@@ -103,11 +103,7 @@ void main() {
             body: VooForm(
               controller: controller,
               fields: const [
-                VooTextField(
-                  name: 'textField',
-                  label: 'Text Field',
-                  validators: [RequiredValidation<String>()],
-                ),
+                VooTextField(name: 'textField', label: 'Text Field', validators: [RequiredValidation<String>()]),
               ],
             ),
           ),
@@ -150,11 +146,7 @@ void main() {
             body: VooForm(
               controller: controller,
               fields: const [
-                VooCurrencyField(
-                  name: 'currencyField',
-                  label: 'Amount',
-                  validators: [RequiredValidation<double>()],
-                ),
+                VooCurrencyField(name: 'currencyField', label: 'Amount', validators: [RequiredValidation<double>()]),
               ],
             ),
           ),
@@ -178,11 +170,11 @@ void main() {
 
       // Verify error is cleared (main goal of this test)
       expect(find.text('This field is required'), findsNothing);
-      
+
       // Type more to verify field still has focus
       await tester.enterText(find.byType(TextFormField), '50');
       await tester.pump();
-      
+
       // Just verify we have input (don't check exact format)
       expect(controller.getValue('currencyField'), isNotNull);
     });
@@ -196,11 +188,7 @@ void main() {
             body: VooForm(
               controller: controller,
               fields: const [
-                VooNumberField(
-                  name: 'numberField',
-                  label: 'Number',
-                  validators: [RequiredValidation<num>()],
-                ),
+                VooNumberField(name: 'numberField', label: 'Number', validators: [RequiredValidation<num>()]),
               ],
             ),
           ),
@@ -243,11 +231,7 @@ void main() {
             body: VooForm(
               controller: controller,
               fields: const [
-                VooDateField(
-                  name: 'dateField',
-                  label: 'Date',
-                  validators: [RequiredValidation<DateTime>()],
-                ),
+                VooDateField(name: 'dateField', label: 'Date', validators: [RequiredValidation<DateTime>()]),
               ],
             ),
           ),

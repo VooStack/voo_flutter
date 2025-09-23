@@ -6,21 +6,10 @@ class SecondaryFilter {
   final dynamic value;
   final String operator;
 
-  const SecondaryFilter({
-    required this.logic,
-    required this.value,
-    required this.operator,
-  });
+  const SecondaryFilter({required this.logic, required this.value, required this.operator});
 
-  Map<String, dynamic> toJson() => {
-        'logic': logic == FilterLogic.and ? 'And' : 'Or',
-        'value': value,
-        'operator': operator,
-      };
+  Map<String, dynamic> toJson() => {'logic': logic == FilterLogic.and ? 'And' : 'Or', 'value': value, 'operator': operator};
 
-  factory SecondaryFilter.fromJson(Map<String, dynamic> json) => SecondaryFilter(
-      logic: json['logic'] == 'And' ? FilterLogic.and : FilterLogic.or,
-      value: json['value'],
-      operator: json['operator']?.toString() ?? '',
-    );
+  factory SecondaryFilter.fromJson(Map<String, dynamic> json) =>
+      SecondaryFilter(logic: json['logic'] == 'And' ? FilterLogic.and : FilterLogic.or, value: json['value'], operator: json['operator']?.toString() ?? '');
 }

@@ -4,21 +4,14 @@ import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_dropdown_sea
 
 void main() {
   group('VooDropdownSearchField', () {
-    Widget wrapInApp(Widget child) => MaterialApp(
-          home: Scaffold(
-            body: child,
-          ),
-        );
+    Widget wrapInApp(Widget child) => MaterialApp(home: Scaffold(body: child));
 
     testWidgets('dismisses dropdown when clicking outside', (tester) async {
       await tester.pumpWidget(
         wrapInApp(
           const Column(
             children: [
-              VooDropdownSearchField<String>(
-                items: ['Option 1', 'Option 2', 'Option 3'],
-                value: 'Option 1',
-              ),
+              VooDropdownSearchField<String>(items: ['Option 1', 'Option 2', 'Option 3'], value: 'Option 1'),
               SizedBox(height: 100),
               Text('Outside Area'),
             ],
@@ -47,11 +40,7 @@ void main() {
         wrapInApp(
           Column(
             children: [
-              VooDropdownSearchField<String>(
-                items: const [],
-                value: 'A',
-                asyncSearch: (query) async => ['A', 'B', 'C'],
-              ),
+              VooDropdownSearchField<String>(items: const [], value: 'A', asyncSearch: (query) async => ['A', 'B', 'C']),
               const SizedBox(height: 100),
               const Text('Outside Area'),
             ],
@@ -80,14 +69,7 @@ void main() {
     testWidgets('displays initial value', (tester) async {
       const initialValue = 'Option 2';
 
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooDropdownSearchField<String>(
-            items: ['Option 1', 'Option 2', 'Option 3'],
-            value: initialValue,
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooDropdownSearchField<String>(items: ['Option 1', 'Option 2', 'Option 3'], value: initialValue)));
 
       expect(find.text(initialValue), findsOneWidget);
     });
@@ -96,13 +78,7 @@ void main() {
       const initialValue = 2;
 
       await tester.pumpWidget(
-        wrapInApp(
-          VooDropdownSearchField<int>(
-            items: const [1, 2, 3],
-            value: initialValue,
-            displayTextBuilder: (value) => 'Number $value',
-          ),
-        ),
+        wrapInApp(VooDropdownSearchField<int>(items: const [1, 2, 3], value: initialValue, displayTextBuilder: (value) => 'Number $value')),
       );
 
       expect(find.text('Number 2'), findsOneWidget);
@@ -141,14 +117,7 @@ void main() {
     });
 
     testWidgets('filters items based on search term', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooDropdownSearchField<String>(
-            items: ['Apple', 'Banana', 'Cherry', 'Date'],
-            value: 'Apple',
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooDropdownSearchField<String>(items: ['Apple', 'Banana', 'Cherry', 'Date'], value: 'Apple')));
 
       // Open dropdown
       await tester.tap(find.text('Apple'));
@@ -201,14 +170,7 @@ void main() {
     });
 
     testWidgets('shows check icon for selected item', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooDropdownSearchField<String>(
-            items: ['Option 1', 'Option 2', 'Option 3'],
-            value: 'Option 2',
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooDropdownSearchField<String>(items: ['Option 1', 'Option 2', 'Option 3'], value: 'Option 2')));
 
       // Open dropdown
       await tester.tap(find.text('Option 2'));
@@ -219,15 +181,7 @@ void main() {
     });
 
     testWidgets('respects enabled property', (tester) async {
-      await tester.pumpWidget(
-        wrapInApp(
-          const VooDropdownSearchField<String>(
-            items: ['Option 1', 'Option 2'],
-            value: 'Option 1',
-            enabled: false,
-          ),
-        ),
-      );
+      await tester.pumpWidget(wrapInApp(const VooDropdownSearchField<String>(items: ['Option 1', 'Option 2'], value: 'Option 1', enabled: false)));
 
       // Try to tap the disabled dropdown
       await tester.tap(find.text('Option 1'));

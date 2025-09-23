@@ -36,10 +36,7 @@ class VooDataGridMobilePagination extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.headerBackgroundColor,
         border: Border(
-          top: BorderSide(
-            color: theme.borderColor,
-            width: theme.borderWidth,
-          ),
+          top: BorderSide(color: theme.borderColor, width: theme.borderWidth),
         ),
       ),
       child: Column(
@@ -48,26 +45,12 @@ class VooDataGridMobilePagination extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PageInfoDisplay(
-                currentPage: currentPage,
-                pageSize: pageSize,
-                totalRows: totalRows,
-              ),
+              PageInfoDisplay(currentPage: currentPage, pageSize: pageSize, totalRows: totalRows),
               PopupMenuButton<int>(
                 onSelected: onPageSizeChanged,
-                itemBuilder: (context) => pageSizeOptions
-                    .map(
-                      (size) => PopupMenuItem<int>(
-                        value: size,
-                        child: Text('$size rows per page'),
-                      ),
-                    )
-                    .toList(),
+                itemBuilder: (context) => pageSizeOptions.map((size) => PopupMenuItem<int>(value: size, child: Text('$size rows per page'))).toList(),
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacingMd,
-                    vertical: design.spacingXs,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: design.spacingMd, vertical: design.spacingXs),
                   decoration: BoxDecoration(
                     border: Border.all(color: theme.borderColor),
                     borderRadius: BorderRadius.circular(design.radiusSm),
@@ -75,10 +58,7 @@ class VooDataGridMobilePagination extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        '$pageSize rows',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                      Text('$pageSize rows', style: Theme.of(context).textTheme.bodySmall),
                       const Icon(Icons.arrow_drop_down, size: 16),
                     ],
                   ),
@@ -91,24 +71,11 @@ class VooDataGridMobilePagination extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.first_page),
-                onPressed: currentPage > 0 ? () => onPageChanged(0) : null,
-                tooltip: 'First',
-              ),
-              IconButton(
-                icon: const Icon(Icons.chevron_left),
-                onPressed: currentPage > 0 ? () => onPageChanged(currentPage - 1) : null,
-                tooltip: 'Previous',
-              ),
+              IconButton(icon: const Icon(Icons.first_page), onPressed: currentPage > 0 ? () => onPageChanged(0) : null, tooltip: 'First'),
+              IconButton(icon: const Icon(Icons.chevron_left), onPressed: currentPage > 0 ? () => onPageChanged(currentPage - 1) : null, tooltip: 'Previous'),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
-                child: Text(
-                  '${currentPage + 1} / $totalPages',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
+                child: Text('${currentPage + 1} / $totalPages', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
               ),
               IconButton(
                 icon: const Icon(Icons.chevron_right),
@@ -161,32 +128,19 @@ class VooDataGridPagination extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.headerBackgroundColor,
         border: Border(
-          top: BorderSide(
-            color: theme.borderColor,
-            width: theme.borderWidth,
-          ),
+          top: BorderSide(color: theme.borderColor, width: theme.borderWidth),
         ),
       ),
       child: Row(
         children: [
           // Page size selector
-          Text(
-            'Rows per page:',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          Text('Rows per page:', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(width: design.spacingSm),
           SizedBox(
             width: 80,
             child: VooDropdown<int>(
               value: pageSize,
-              items: pageSizeOptions
-                  .map(
-                    (size) => VooDropdownItem(
-                      value: size,
-                      label: size.toString(),
-                    ),
-                  )
-                  .toList(),
+              items: pageSizeOptions.map((size) => VooDropdownItem(value: size, label: size.toString())).toList(),
               onChanged: (value) {
                 if (value != null) {
                   onPageSizeChanged(value);
@@ -198,37 +152,18 @@ class VooDataGridPagination extends StatelessWidget {
           const Spacer(),
 
           // Row info
-          PageInfoDisplay(
-            currentPage: currentPage,
-            pageSize: pageSize,
-            totalRows: totalRows,
-          ),
+          PageInfoDisplay(currentPage: currentPage, pageSize: pageSize, totalRows: totalRows),
 
           SizedBox(width: design.spacingLg),
 
           // Navigation buttons
-          IconButton(
-            icon: const Icon(Icons.first_page),
-            onPressed: currentPage > 0 ? () => onPageChanged(0) : null,
-            tooltip: 'First page',
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: currentPage > 0 ? () => onPageChanged(currentPage - 1) : null,
-            tooltip: 'Previous page',
-          ),
+          IconButton(icon: const Icon(Icons.first_page), onPressed: currentPage > 0 ? () => onPageChanged(0) : null, tooltip: 'First page'),
+          IconButton(icon: const Icon(Icons.chevron_left), onPressed: currentPage > 0 ? () => onPageChanged(currentPage - 1) : null, tooltip: 'Previous page'),
 
           // Page number input
-          PageInputField(
-            currentPage: currentPage,
-            totalPages: totalPages,
-            onPageChanged: onPageChanged,
-          ),
+          PageInputField(currentPage: currentPage, totalPages: totalPages, onPageChanged: onPageChanged),
 
-          Text(
-            ' / $totalPages',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          Text(' / $totalPages', style: Theme.of(context).textTheme.bodySmall),
 
           IconButton(
             icon: const Icon(Icons.chevron_right),

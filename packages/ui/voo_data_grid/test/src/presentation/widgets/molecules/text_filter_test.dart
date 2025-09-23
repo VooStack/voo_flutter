@@ -17,12 +17,7 @@ void main() {
         width: 150,
         filterHint: 'Filter by name...',
         showFilterOperator: true,
-        allowedFilterOperators: [
-          VooFilterOperator.contains,
-          VooFilterOperator.equals,
-          VooFilterOperator.startsWith,
-          VooFilterOperator.endsWith,
-        ],
+        allowedFilterOperators: [VooFilterOperator.contains, VooFilterOperator.equals, VooFilterOperator.startsWith, VooFilterOperator.endsWith],
       );
     });
 
@@ -81,10 +76,7 @@ void main() {
     testWidgets('allows operator selection', (WidgetTester tester) async {
       // ignore: unused_local_variable
       dynamic capturedValue;
-      const currentFilter = VooDataFilter(
-        operator: VooFilterOperator.contains,
-        value: 'test',
-      );
+      const currentFilter = VooDataFilter(operator: VooFilterOperator.contains, value: 'test');
 
       await tester.pumpWidget(
         MaterialApp(
@@ -110,10 +102,7 @@ void main() {
 
     testWidgets('clears value when clear button is pressed', (WidgetTester tester) async {
       bool clearCalled = false;
-      const currentFilter = VooDataFilter(
-        operator: VooFilterOperator.contains,
-        value: 'test',
-      );
+      const currentFilter = VooDataFilter(operator: VooFilterOperator.contains, value: 'test');
 
       await tester.pumpWidget(
         MaterialApp(
@@ -132,10 +121,10 @@ void main() {
       // Clear button should be visible when there's a current filter
       final clearButton = find.byIcon(Icons.clear);
       expect(clearButton, findsOneWidget);
-      
+
       await tester.tap(clearButton);
       await tester.pumpAndSettle();
-      
+
       expect(clearCalled, isTrue);
     });
 
@@ -143,12 +132,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: TextFilter<Map<String, dynamic>>(
-              column: testColumn,
-              onFilterChanged: (_) {},
-              onFilterCleared: () {},
-              textControllers: textControllers,
-            ),
+            body: TextFilter<Map<String, dynamic>>(column: testColumn, onFilterChanged: (_) {}, onFilterCleared: () {}, textControllers: textControllers),
           ),
         ),
       );
@@ -161,12 +145,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: TextFilter<Map<String, dynamic>>(
-              column: testColumn,
-              onFilterChanged: (_) {},
-              onFilterCleared: () {},
-              textControllers: textControllers,
-            ),
+            body: TextFilter<Map<String, dynamic>>(column: testColumn, onFilterChanged: (_) {}, onFilterCleared: () {}, textControllers: textControllers),
           ),
         ),
       );
@@ -176,11 +155,7 @@ void main() {
     });
 
     testWidgets('hides operator selector when showFilterOperator is false', (WidgetTester tester) async {
-      const columnWithoutOperator = VooDataColumn<Map<String, dynamic>>(
-        field: 'name',
-        label: 'Name',
-        width: 150,
-      );
+      const columnWithoutOperator = VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name', width: 150);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -199,10 +174,7 @@ void main() {
     });
 
     testWidgets('maintains text controller state', (WidgetTester tester) async {
-      const currentFilter = VooDataFilter(
-        operator: VooFilterOperator.contains,
-        value: 'initial value',
-      );
+      const currentFilter = VooDataFilter(operator: VooFilterOperator.contains, value: 'initial value');
 
       await tester.pumpWidget(
         MaterialApp(

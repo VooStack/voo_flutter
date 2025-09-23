@@ -7,40 +7,40 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 class DataGridToolbar extends StatelessWidget {
   /// Callback for refresh action
   final VoidCallback? onRefresh;
-  
+
   /// Callback for filter toggle
   final VoidCallback? onFilterToggle;
-  
+
   /// Whether filters are currently shown
   final bool filtersVisible;
-  
+
   /// Number of active filters
   final int activeFilterCount;
-  
+
   /// Current display mode
   final VooDataGridDisplayMode? displayMode;
-  
+
   /// Callback when display mode changes
   final void Function(VooDataGridDisplayMode)? onDisplayModeChanged;
-  
+
   /// Whether to show view mode toggle
   final bool showViewModeToggle;
-  
+
   /// Additional action widgets
   final List<Widget>? additionalActions;
-  
+
   /// Background color
   final Color? backgroundColor;
-  
+
   /// Border color
   final Color? borderColor;
-  
+
   /// Whether this is mobile layout
   final bool isMobile;
-  
+
   /// Callback to show mobile filter sheet
   final VoidCallback? onShowMobileFilters;
-  
+
   const DataGridToolbar({
     super.key,
     this.onRefresh,
@@ -73,7 +73,7 @@ class DataGridToolbar extends StatelessWidget {
         onShowMobileFilters: onShowMobileFilters,
       );
     }
-    
+
     return DesktopToolbar(
       onRefresh: onRefresh,
       onFilterToggle: onFilterToggle,

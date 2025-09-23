@@ -3,15 +3,12 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 
 // Test implementation of VooDataGridSource
 class TestDataGridSource extends VooDataGridSource {
-  TestDataGridSource({
-    super.mode = VooDataGridMode.local,
-    List<dynamic>? data,
-  }) {
+  TestDataGridSource({super.mode = VooDataGridMode.local, List<dynamic>? data}) {
     if (data != null) {
       setLocalData(data);
     }
   }
-  
+
   @override
   Future<VooDataGridResponse> fetchRemoteData({
     required int page,
@@ -20,12 +17,7 @@ class TestDataGridSource extends VooDataGridSource {
     required List<VooColumnSort> sorts,
   }) async {
     if (mode == VooDataGridMode.local) {
-      return VooDataGridResponse(
-        rows: rows,
-        totalRows: totalRows,
-        page: page,
-        pageSize: pageSize,
-      );
+      return VooDataGridResponse(rows: rows, totalRows: totalRows, page: page, pageSize: pageSize);
     }
     throw UnimplementedError();
   }
@@ -48,9 +40,7 @@ void main() {
 
     group('Local Mode', () {
       setUp(() {
-        dataSource = TestDataGridSource(
-          data: testData,
-        );
+        dataSource = TestDataGridSource(data: testData);
       });
 
       test('should initialize with local data', () {
@@ -79,24 +69,15 @@ void main() {
       });
 
       test('should apply filters', () {
-        dataSource.applyFilter('status', const VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'active',
-        ),);
+        dataSource.applyFilter('status', const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'));
 
         expect(dataSource.filters.length, 1);
         expect(dataSource.filters['status']?.value, 'active');
       });
 
       test('should clear filters', () {
-        dataSource.applyFilter('status', const VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'active',
-        ),);
-        dataSource.applyFilter('age', const VooDataFilter(
-          operator: VooFilterOperator.greaterThan,
-          value: 30,
-        ),);
+        dataSource.applyFilter('status', const VooDataFilter(operator: VooFilterOperator.equals, value: 'active'));
+        dataSource.applyFilter('age', const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 30));
 
         expect(dataSource.filters.length, 2);
 
@@ -133,7 +114,7 @@ void main() {
 
       test('should handle row selection in single mode', () {
         dataSource.setSelectionMode(VooSelectionMode.single);
-        
+
         dataSource.toggleRowSelection(testData[0]);
         expect(dataSource.selectedRows.length, 1);
         expect(dataSource.selectedRows.contains(testData[0]), true);
@@ -145,7 +126,7 @@ void main() {
 
       test('should handle row selection in multiple mode', () {
         dataSource.setSelectionMode(VooSelectionMode.multiple);
-        
+
         dataSource.toggleRowSelection(testData[0]);
         dataSource.toggleRowSelection(testData[1]);
         expect(dataSource.selectedRows.length, 2);
@@ -157,7 +138,7 @@ void main() {
 
       test('should toggle row selection', () {
         dataSource.setSelectionMode(VooSelectionMode.multiple);
-        
+
         dataSource.toggleRowSelection(testData[0]);
         expect(dataSource.selectedRows.contains(testData[0]), true);
 
@@ -167,14 +148,14 @@ void main() {
 
       test('should select all rows', () {
         dataSource.setSelectionMode(VooSelectionMode.multiple);
-        
+
         dataSource.selectAllRows();
         expect(dataSource.selectedRows.length, testData.length);
       });
 
       test('should deselect all rows', () {
         dataSource.setSelectionMode(VooSelectionMode.multiple);
-        
+
         dataSource.selectAllRows();
         expect(dataSource.selectedRows.length, testData.length);
 
@@ -184,7 +165,7 @@ void main() {
 
       test('should not allow selection when mode is none', () {
         dataSource.setSelectionMode(VooSelectionMode.none);
-        
+
         dataSource.toggleRowSelection(testData[0]);
         expect(dataSource.selectedRows.isEmpty, true);
       });
@@ -204,9 +185,7 @@ void main() {
 
     group('Remote Mode', () {
       setUp(() {
-        dataSource = TestDataGridSource(
-          mode: VooDataGridMode.remote,
-        );
+        dataSource = TestDataGridSource(mode: VooDataGridMode.remote);
       });
 
       test('should initialize in remote mode', () {
@@ -221,10 +200,7 @@ void main() {
       });
 
       test('should apply filter in remote mode', () {
-        dataSource.applyFilter('test', const VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'value',
-        ),);
+        dataSource.applyFilter('test', const VooDataFilter(operator: VooFilterOperator.equals, value: 'value'));
 
         // In remote mode, applying filter updates the filters
         expect(dataSource.filters.containsKey('test'), true);
@@ -232,26 +208,13 @@ void main() {
       });
 
       test('should throw unimplemented error for fetchRemoteData', () {
-        expect(
-          () => dataSource.fetchRemoteData(
-            page: 0,
-            pageSize: 20,
-            filters: {},
-            sorts: [],
-          ),
-          throwsUnimplementedError,
-        );
+        expect(() => dataSource.fetchRemoteData(page: 0, pageSize: 20, filters: {}, sorts: []), throwsUnimplementedError);
       });
     });
 
     group('VooDataGridResponse', () {
       test('should create response with all properties', () {
-        final response = VooDataGridResponse(
-          rows: testData,
-          totalRows: 100,
-          page: 2,
-          pageSize: 20,
-        );
+        final response = VooDataGridResponse(rows: testData, totalRows: 100, page: 2, pageSize: 20);
 
         expect(response.rows, testData);
         expect(response.totalRows, 100);
@@ -260,33 +223,18 @@ void main() {
       });
 
       test('should have correct properties', () {
-        final response1 = VooDataGridResponse(
-          rows: testData,
-          totalRows: 100,
-          page: 1,
-          pageSize: 20,
-        );
+        final response1 = VooDataGridResponse(rows: testData, totalRows: 100, page: 1, pageSize: 20);
 
-        final response2 = VooDataGridResponse(
-          rows: testData,
-          totalRows: 100,
-          page: 1,
-          pageSize: 20,
-        );
+        final response2 = VooDataGridResponse(rows: testData, totalRows: 100, page: 1, pageSize: 20);
 
-        final response3 = VooDataGridResponse(
-          rows: testData,
-          totalRows: 100,
-          page: 2,
-          pageSize: 20,
-        );
+        final response3 = VooDataGridResponse(rows: testData, totalRows: 100, page: 2, pageSize: 20);
 
         // Check properties instead of equality since VooDataGridResponse doesn't override ==
         expect(response1.rows, response2.rows);
         expect(response1.totalRows, response2.totalRows);
         expect(response1.page, response2.page);
         expect(response1.pageSize, response2.pageSize);
-        
+
         expect(response1.page, isNot(response3.page));
       });
     });
@@ -294,7 +242,7 @@ void main() {
     group('Filter Operators', () {
       test('should have all expected operators', () {
         const operators = VooFilterOperator.values;
-        
+
         expect(operators.contains(VooFilterOperator.equals), true);
         expect(operators.contains(VooFilterOperator.notEquals), true);
         expect(operators.contains(VooFilterOperator.contains), true);
@@ -316,7 +264,7 @@ void main() {
     group('Selection Modes', () {
       test('should have all expected selection modes', () {
         const modes = VooSelectionMode.values;
-        
+
         expect(modes.contains(VooSelectionMode.none), true);
         expect(modes.contains(VooSelectionMode.single), true);
         expect(modes.contains(VooSelectionMode.multiple), true);
@@ -326,7 +274,7 @@ void main() {
     group('Data Grid Modes', () {
       test('should have all expected data grid modes', () {
         const modes = VooDataGridMode.values;
-        
+
         expect(modes.contains(VooDataGridMode.local), true);
         expect(modes.contains(VooDataGridMode.remote), true);
       });

@@ -99,31 +99,22 @@ class VooFormConfig {
 
   /// Create a config optimized for mobile
   factory VooFormConfig.mobile() => const VooFormConfig(
-        labelPosition: LabelPosition.floating,
-        fieldSize: VooSpacingSize.lg,
-        fieldSpacing: 12.0,
-        maxFormWidth: double.infinity,
-        centerOnLargeScreens: false,
-      );
+    labelPosition: LabelPosition.floating,
+    fieldSize: VooSpacingSize.lg,
+    fieldSpacing: 12.0,
+    maxFormWidth: double.infinity,
+    centerOnLargeScreens: false,
+  );
 
   /// Create a config optimized for desktop with centered form
-  factory VooFormConfig.desktop() => const VooFormConfig(
-        maxFormWidth: 600.0,
-        padding: EdgeInsets.all(24.0),
-      );
+  factory VooFormConfig.desktop() => const VooFormConfig(maxFormWidth: 600.0, padding: EdgeInsets.all(24.0));
 
   /// Create a config for compact forms
-  factory VooFormConfig.compact() => const VooFormConfig(
-        labelPosition: LabelPosition.inline,
-        fieldSize: VooSpacingSize.sm,
-        fieldSpacing: 8.0,
-        sectionSpacing: 16.0,
-      );
+  factory VooFormConfig.compact() =>
+      const VooFormConfig(labelPosition: LabelPosition.inline, fieldSize: VooSpacingSize.sm, fieldSpacing: 8.0, sectionSpacing: 16.0);
 
   /// Create a config for material design forms
-  factory VooFormConfig.material() => const VooFormConfig(
-        labelPosition: LabelPosition.floating,
-      );
+  factory VooFormConfig.material() => const VooFormConfig(labelPosition: LabelPosition.floating);
 
   VooFormConfig copyWith({
     LabelPosition? labelPosition,
@@ -146,29 +137,28 @@ class VooFormConfig {
     bool? centerOnLargeScreens,
     ResponsiveColumns? gridColumns,
     ThemeData? themeOverrides,
-  }) =>
-      VooFormConfig(
-        labelPosition: labelPosition ?? this.labelPosition,
-        labelStyle: labelStyle ?? this.labelStyle,
-        fieldVariant: fieldVariant ?? this.fieldVariant,
-        fieldSize: fieldSize ?? this.fieldSize,
-        fieldSpacing: fieldSpacing ?? this.fieldSpacing,
-        sectionSpacing: sectionSpacing ?? this.sectionSpacing,
-        maxFormWidth: maxFormWidth ?? this.maxFormWidth,
-        showFieldIcons: showFieldIcons ?? this.showFieldIcons,
-        showRequiredIndicator: showRequiredIndicator ?? this.showRequiredIndicator,
-        requiredIndicator: requiredIndicator ?? this.requiredIndicator,
-        errorDisplayMode: errorDisplayMode ?? this.errorDisplayMode,
-        submitButtonPosition: submitButtonPosition ?? this.submitButtonPosition,
-        submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
-        padding: padding ?? this.padding,
-        margin: margin ?? this.margin,
-        backgroundColor: backgroundColor ?? this.backgroundColor,
-        decoration: decoration ?? this.decoration,
-        centerOnLargeScreens: centerOnLargeScreens ?? this.centerOnLargeScreens,
-        gridColumns: gridColumns ?? this.gridColumns,
-        themeOverrides: themeOverrides ?? this.themeOverrides,
-      );
+  }) => VooFormConfig(
+    labelPosition: labelPosition ?? this.labelPosition,
+    labelStyle: labelStyle ?? this.labelStyle,
+    fieldVariant: fieldVariant ?? this.fieldVariant,
+    fieldSize: fieldSize ?? this.fieldSize,
+    fieldSpacing: fieldSpacing ?? this.fieldSpacing,
+    sectionSpacing: sectionSpacing ?? this.sectionSpacing,
+    maxFormWidth: maxFormWidth ?? this.maxFormWidth,
+    showFieldIcons: showFieldIcons ?? this.showFieldIcons,
+    showRequiredIndicator: showRequiredIndicator ?? this.showRequiredIndicator,
+    requiredIndicator: requiredIndicator ?? this.requiredIndicator,
+    errorDisplayMode: errorDisplayMode ?? this.errorDisplayMode,
+    submitButtonPosition: submitButtonPosition ?? this.submitButtonPosition,
+    submitButtonStyle: submitButtonStyle ?? this.submitButtonStyle,
+    padding: padding ?? this.padding,
+    margin: margin ?? this.margin,
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    decoration: decoration ?? this.decoration,
+    centerOnLargeScreens: centerOnLargeScreens ?? this.centerOnLargeScreens,
+    gridColumns: gridColumns ?? this.gridColumns,
+    themeOverrides: themeOverrides ?? this.themeOverrides,
+  );
 
   /// Get responsive column count based on screen context
   int getColumnCount(BuildContext context) {
@@ -219,22 +209,11 @@ class VooFormConfig {
       case LabelStyle.bold:
         return baseStyle?.copyWith(fontWeight: FontWeight.bold);
       case LabelStyle.uppercase:
-        return baseStyle?.copyWith(
-          fontSize: 12.0,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        );
+        return baseStyle?.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600, letterSpacing: 0.5);
       case LabelStyle.minimal:
-        return baseStyle?.copyWith(
-          fontSize: 13.0,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-        );
+        return baseStyle?.copyWith(fontSize: 13.0, color: theme.colorScheme.onSurface.withValues(alpha: 0.7));
       case LabelStyle.emphasized:
-        return baseStyle?.copyWith(
-          fontSize: 14.0,
-          fontWeight: FontWeight.w600,
-          color: theme.colorScheme.primary,
-        );
+        return baseStyle?.copyWith(fontSize: 14.0, fontWeight: FontWeight.w600, color: theme.colorScheme.primary);
     }
   }
 }

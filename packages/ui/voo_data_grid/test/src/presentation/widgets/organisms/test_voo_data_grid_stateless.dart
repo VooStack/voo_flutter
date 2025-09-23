@@ -11,16 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-      title: 'VooDataGridStateless Test',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const VooDesignSystem(
-        data: VooDesignSystemData.defaultSystem,
-        child: MyHomePage(),
-      ),
-    );
+    title: 'VooDataGridStateless Test',
+    theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+    home: const VooDesignSystem(data: VooDesignSystemData.defaultSystem, child: MyHomePage()),
+  );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -33,27 +27,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late VooDataGridState<Product> _state;
   final List<VooDataColumn<Product>> _columns = [
-    VooDataColumn<Product>(
-      field: 'id',
-      label: 'ID',
-      valueGetter: (product) => product.id,
-    ),
-    VooDataColumn<Product>(
-      field: 'name',
-      label: 'Name',
-      valueGetter: (product) => product.name,
-    ),
-    VooDataColumn<Product>(
-      field: 'price',
-      label: 'Price',
-      valueGetter: (product) => product.price,
-      valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
-    ),
-    VooDataColumn<Product>(
-      field: 'stock',
-      label: 'Stock',
-      valueGetter: (product) => product.stock,
-    ),
+    VooDataColumn<Product>(field: 'id', label: 'ID', valueGetter: (product) => product.id),
+    VooDataColumn<Product>(field: 'name', label: 'Name', valueGetter: (product) => product.name),
+    VooDataColumn<Product>(field: 'price', label: 'Price', valueGetter: (product) => product.price, valueFormatter: (value) => '\$${value.toStringAsFixed(2)}'),
+    VooDataColumn<Product>(field: 'stock', label: 'Stock', valueGetter: (product) => product.stock),
   ];
 
   @override
@@ -71,31 +48,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('VooDataGridStateless Test'),
-      ),
-      body: VooDataGridStateless<Product>(
-        state: _state,
-        columns: _columns,
-        onPageChanged: (page) {
-          setState(() {
-            _state = _state.copyWith(currentPage: page);
-          });
-        },
-        onFilterChanged: (field, filter) {
-          setState(() {
-            final newFilters = Map<String, VooDataFilter>.from(_state.filters);
-            if (filter == null) {
-              newFilters.remove(field);
-            } else {
-              newFilters[field] = filter;
-            }
-            _state = _state.copyWith(filters: newFilters);
-          });
-        },
-      ),
-    );
+    appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: const Text('VooDataGridStateless Test')),
+    body: VooDataGridStateless<Product>(
+      state: _state,
+      columns: _columns,
+      onPageChanged: (page) {
+        setState(() {
+          _state = _state.copyWith(currentPage: page);
+        });
+      },
+      onFilterChanged: (field, filter) {
+        setState(() {
+          final newFilters = Map<String, VooDataFilter>.from(_state.filters);
+          if (filter == null) {
+            newFilters.remove(field);
+          } else {
+            newFilters[field] = filter;
+          }
+          _state = _state.copyWith(filters: newFilters);
+        });
+      },
+    ),
+  );
 }
 
 class Product {
@@ -104,10 +78,5 @@ class Product {
   final double price;
   final int stock;
 
-  Product({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.stock,
-  });
+  Product({required this.id, required this.name, required this.price, required this.stock});
 }

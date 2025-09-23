@@ -4,46 +4,46 @@ import 'package:flutter/material.dart';
 class VooNavigationLabel extends StatelessWidget {
   /// The label text
   final String label;
-  
+
   /// Whether the label is selected
   final bool isSelected;
-  
+
   /// Text style for the label
   final TextStyle? style;
-  
+
   /// Text style when selected
   final TextStyle? selectedStyle;
-  
+
   /// Text color
   final Color? color;
-  
+
   /// Text color when selected
   final Color? selectedColor;
-  
+
   /// Maximum lines for the label
   final int maxLines;
-  
+
   /// Text overflow behavior
   final TextOverflow overflow;
-  
+
   /// Text alignment
   final TextAlign textAlign;
-  
+
   /// Animation duration for style transitions
   final Duration duration;
-  
+
   /// Animation curve
   final Curve curve;
-  
+
   /// Whether to animate style changes
   final bool animate;
-  
+
   /// Optional semantics label
   final String? semanticsLabel;
-  
+
   /// Whether to scale text based on accessibility settings
   final bool scaleText;
-  
+
   const VooNavigationLabel({
     super.key,
     required this.label,
@@ -67,22 +67,20 @@ class VooNavigationLabel extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final defaultStyle = theme.textTheme.labelMedium ?? const TextStyle();
-    
+
     // Determine effective styles
     final baseStyle = isSelected
-        ? (selectedStyle ?? defaultStyle.copyWith(
-            fontWeight: FontWeight.w600,
-          ))
+        ? (selectedStyle ?? defaultStyle.copyWith(fontWeight: FontWeight.w600))
         : (style ?? defaultStyle);
-    
+
     // Determine effective color
     final effectiveColor = isSelected
         ? (selectedColor ?? colorScheme.primary)
         : (color ?? colorScheme.onSurfaceVariant);
-    
+
     // Apply color to style
     final effectiveStyle = baseStyle.copyWith(color: effectiveColor);
-    
+
     // Build text widget
     final textWidget = Text(
       label,
@@ -91,14 +89,16 @@ class VooNavigationLabel extends StatelessWidget {
       overflow: overflow,
       textAlign: textAlign,
       semanticsLabel: semanticsLabel ?? label,
-      textScaler: scaleText ? MediaQuery.textScalerOf(context) : TextScaler.noScaling,
+      textScaler: scaleText
+          ? MediaQuery.textScalerOf(context)
+          : TextScaler.noScaling,
     );
-    
+
     // Return with or without animation
     if (!animate) {
       return textWidget;
     }
-    
+
     return AnimatedDefaultTextStyle(
       duration: duration,
       curve: curve,
@@ -109,7 +109,9 @@ class VooNavigationLabel extends StatelessWidget {
         overflow: overflow,
         textAlign: textAlign,
         semanticsLabel: semanticsLabel ?? label,
-        textScaler: scaleText ? MediaQuery.textScalerOf(context) : TextScaler.noScaling,
+        textScaler: scaleText
+            ? MediaQuery.textScalerOf(context)
+            : TextScaler.noScaling,
       ),
     );
   }

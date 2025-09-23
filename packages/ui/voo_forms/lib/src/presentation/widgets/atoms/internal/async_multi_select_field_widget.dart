@@ -8,10 +8,7 @@ import 'package:voo_forms/voo_forms.dart';
 class AsyncMultiSelectFieldWidget<T> extends StatefulWidget {
   final VooAsyncMultiSelectField<T> field;
 
-  const AsyncMultiSelectFieldWidget({
-    super.key,
-    required this.field,
-  });
+  const AsyncMultiSelectFieldWidget({super.key, required this.field});
 
   @override
   State<AsyncMultiSelectFieldWidget<T>> createState() => AsyncMultiSelectFieldWidgetState<T>();
@@ -32,10 +29,7 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
   void initState() {
     super.initState();
     _selectedValues = List<T>.from(widget.field.initialValue ?? []);
-    _overlayController = VooDropdownOverlayController(
-      context: context,
-      layerLink: _layerLink,
-    );
+    _overlayController = VooDropdownOverlayController(context: context, layerLink: _layerLink);
     // Load initial options
     _loadOptions('');
   }
@@ -114,11 +108,7 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
           _closeDropdown();
           close();
         },
-        searchConfig: VooDropdownSearchConfig(
-          controller: _searchController,
-          focusNode: _focusNode,
-          onChanged: _onSearchChanged,
-        ),
+        searchConfig: VooDropdownSearchConfig(controller: _searchController, focusNode: _focusNode, onChanged: _onSearchChanged),
         header: _buildHeader(),
         child: _buildOptionsList(),
       ),
@@ -184,9 +174,7 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
     if (_selectedValues.isEmpty) {
       return Text(
         widget.field.emptySelectionText ?? widget.field.placeholder ?? 'Select items...',
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).hintColor,
-            ),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).hintColor),
       );
     }
 
@@ -198,26 +186,19 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
       spacing: 8.0,
       runSpacing: 4.0,
       children: [
-        ...displayItems.map((item) => Chip(
-              label: Text(
-                _getDisplayText(item),
-                style: const TextStyle(fontSize: 12),
-              ),
-              deleteIcon: const Icon(Icons.close, size: 16),
-              onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context) 
-                  ? () => _handleSelectionChange(item) 
-                  : null,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              labelPadding: const EdgeInsets.only(left: 4),
-            ),
+        ...displayItems.map(
+          (item) => Chip(
+            label: Text(_getDisplayText(item), style: const TextStyle(fontSize: 12)),
+            deleteIcon: const Icon(Icons.close, size: 16),
+            onDeleted: widget.field.enabled && !widget.field.getEffectiveReadOnly(context) ? () => _handleSelectionChange(item) : null,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            labelPadding: const EdgeInsets.only(left: 4),
+          ),
         ),
         if (remaining > 0)
           Chip(
-            label: Text(
-              '+$remaining more',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
+            label: Text('+$remaining more', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -240,9 +221,7 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
             onPressed: _clearAll,
             icon: const Icon(Icons.clear_all, size: 18),
             label: const Text('Clear All'),
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-            ),
+            style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12)),
           ),
         ],
       ),
@@ -254,22 +233,14 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
 
     if (_isLoading) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: widget.field.loadingIndicator ?? const CircularProgressIndicator(),
-        ),
+        child: Padding(padding: const EdgeInsets.all(24), child: widget.field.loadingIndicator ?? const CircularProgressIndicator()),
       );
     }
 
     if (_availableOptions.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'No items found',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
+        child: Text('No items found', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
       );
     }
 
@@ -279,29 +250,17 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
       children: _availableOptions.map((item) {
         final isSelected = _selectedValues.contains(item);
         final displayText = _getDisplayText(item);
-        
+
         // Use custom option builder if provided
         if (widget.field.optionBuilder != null) {
-          return InkWell(
-            onTap: () => _handleSelectionChange(item),
-            child: widget.field.optionBuilder!(context, item, isSelected, displayText),
-          );
+          return InkWell(onTap: () => _handleSelectionChange(item), child: widget.field.optionBuilder!(context, item, isSelected, displayText));
         }
-        
+
         // Default option rendering
         return ListTile(
           dense: true,
-          leading: Checkbox(
-            value: isSelected,
-            onChanged: (_) => _handleSelectionChange(item),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          title: Text(
-            displayText,
-            style: TextStyle(
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
+          leading: Checkbox(value: isSelected, onChanged: (_) => _handleSelectionChange(item), materialTapTargetSize: MaterialTapTargetSize.shrinkWrap),
+          title: Text(displayText, style: TextStyle(fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal)),
           onTap: () => _handleSelectionChange(item),
           selected: isSelected,
           selectedTileColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
@@ -324,7 +283,9 @@ class AsyncMultiSelectFieldWidgetState<T> extends State<AsyncMultiSelectFieldWid
         onTap: widget.field.enabled && !effectiveReadOnly ? _toggleDropdown : null,
         borderRadius: BorderRadius.circular(12),
         child: InputDecorator(
-          decoration: widget.field.getInputDecoration(context).copyWith(
+          decoration: widget.field
+              .getInputDecoration(context)
+              .copyWith(
                 errorText: fieldError,
                 suffixIcon: AnimatedRotation(
                   turns: _overlayController.isOpen ? 0.5 : 0,

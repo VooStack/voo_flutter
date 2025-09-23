@@ -59,7 +59,8 @@ class _ReadOnlyFormExampleState extends State<ReadOnlyFormExample> {
             VooMultilineField(
               name: 'notes',
               label: 'Additional Notes',
-              initialValue: 'This is a sample note that demonstrates the read-only functionality.',
+              initialValue:
+                  'This is a sample note that demonstrates the read-only functionality.',
               maxLines: 4,
             ),
           ],

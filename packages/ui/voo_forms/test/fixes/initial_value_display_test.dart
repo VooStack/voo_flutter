@@ -10,13 +10,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooTextField(
-                  name: 'username',
-                  label: 'Username',
-                  initialValue: 'john_doe',
-                ),
-              ],
+              fields: [VooTextField(name: 'username', label: 'Username', initialValue: 'john_doe')],
             ),
           ),
         ),
@@ -33,14 +27,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooDropdownField<String>(
-                  name: 'option',
-                  label: 'Select Option',
-                  options: options,
-                  initialValue: 'Option 2',
-                ),
-              ],
+              fields: [VooDropdownField<String>(name: 'option', label: 'Select Option', options: options, initialValue: 'Option 2')],
             ),
           ),
         ),
@@ -55,13 +42,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooCheckboxField(
-                  name: 'agree',
-                  label: 'I agree',
-                  initialValue: true,
-                ),
-              ],
+              fields: [VooCheckboxField(name: 'agree', label: 'I agree', initialValue: true)],
             ),
           ),
         ),
@@ -80,14 +61,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooForm(
-              fields: [
-                VooMultiSelectField<String>(
-                  name: 'tags',
-                  label: 'Select Tags',
-                  options: options,
-                  initialValue: initialValues,
-                ),
-              ],
+              fields: [VooMultiSelectField<String>(name: 'tags', label: 'Select Tags', options: options, initialValue: initialValues)],
             ),
           ),
         ),
@@ -105,17 +79,8 @@ void main() {
             body: VooForm(
               isReadOnly: true,
               fields: [
-                VooTextField(
-                  name: 'username',
-                  label: 'Username',
-                  initialValue: 'john_doe',
-                ),
-                VooDropdownField<String>(
-                  name: 'option',
-                  label: 'Option',
-                  options: ['Option 1', 'Option 2'],
-                  initialValue: 'Option 1',
-                ),
+                VooTextField(name: 'username', label: 'Username', initialValue: 'john_doe'),
+                VooDropdownField<String>(name: 'option', label: 'Option', options: ['Option 1', 'Option 2'], initialValue: 'Option 1'),
               ],
             ),
           ),
@@ -140,13 +105,7 @@ void main() {
             body: StatefulBuilder(
               builder: (context, setState) => VooForm(
                 controller: controller,
-                fields: const [
-                  VooTextField(
-                    name: 'username',
-                    label: 'Username',
-                    initialValue: 'initial_value',
-                  ),
-                ],
+                fields: const [VooTextField(name: 'username', label: 'Username', initialValue: 'initial_value')],
               ),
             ),
           ),

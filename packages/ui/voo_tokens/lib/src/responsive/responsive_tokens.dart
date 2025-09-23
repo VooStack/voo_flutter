@@ -20,16 +20,13 @@ class ResponsiveTokens extends Equatable {
     VooRadiusTokens? radius,
     VooElevationTokens? elevation,
     VooAnimationTokens? animation,
-  })  : spacing = spacing ?? const VooSpacingTokens(),
-        typography = typography ?? const VooTypographyTokens(),
-        radius = radius ?? VooRadiusTokens(),
-        elevation = elevation ?? const VooElevationTokens(),
-        animation = animation ?? const VooAnimationTokens();
+  }) : spacing = spacing ?? const VooSpacingTokens(),
+       typography = typography ?? const VooTypographyTokens(),
+       radius = radius ?? VooRadiusTokens(),
+       elevation = elevation ?? const VooElevationTokens(),
+       animation = animation ?? const VooAnimationTokens();
 
-  factory ResponsiveTokens.forScreenWidth(
-    double screenWidth, {
-    bool isDark = false,
-  }) {
+  factory ResponsiveTokens.forScreenWidth(double screenWidth, {bool isDark = false}) {
     final scaleFactor = _calculateScaleFactor(screenWidth);
 
     return ResponsiveTokens(
@@ -61,13 +58,13 @@ class ResponsiveTokens extends Equatable {
   }
 
   ResponsiveTokens scale(double factor) => ResponsiveTokens(
-        scaleFactor: factor,
-        spacing: spacing.scale(factor),
-        typography: typography.scale(factor),
-        radius: radius.scale(factor),
-        elevation: elevation,
-        animation: animation,
-      );
+    scaleFactor: factor,
+    spacing: spacing.scale(factor),
+    typography: typography.scale(factor),
+    radius: radius.scale(factor),
+    elevation: elevation,
+    animation: animation,
+  );
 
   ResponsiveTokens copyWith({
     double? scaleFactor,
@@ -76,23 +73,15 @@ class ResponsiveTokens extends Equatable {
     VooRadiusTokens? radius,
     VooElevationTokens? elevation,
     VooAnimationTokens? animation,
-  }) =>
-      ResponsiveTokens(
-        scaleFactor: scaleFactor ?? this.scaleFactor,
-        spacing: spacing ?? this.spacing,
-        typography: typography ?? this.typography,
-        radius: radius ?? this.radius,
-        elevation: elevation ?? this.elevation,
-        animation: animation ?? this.animation,
-      );
+  }) => ResponsiveTokens(
+    scaleFactor: scaleFactor ?? this.scaleFactor,
+    spacing: spacing ?? this.spacing,
+    typography: typography ?? this.typography,
+    radius: radius ?? this.radius,
+    elevation: elevation ?? this.elevation,
+    animation: animation ?? this.animation,
+  );
 
   @override
-  List<Object?> get props => [
-        scaleFactor,
-        spacing,
-        typography,
-        radius,
-        elevation,
-        animation,
-      ];
+  List<Object?> get props => [scaleFactor, spacing, typography, radius, elevation, animation];
 }

@@ -20,7 +20,7 @@ class VooCheckbox extends StatelessWidget {
   final bool isError;
   final MouseCursor? mouseCursor;
   final double? splashRadius;
-  
+
   const VooCheckbox({
     super.key,
     required this.value,
@@ -41,11 +41,11 @@ class VooCheckbox extends StatelessWidget {
     this.mouseCursor,
     this.splashRadius,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Checkbox(
       value: value,
       tristate: tristate,
@@ -58,12 +58,8 @@ class VooCheckbox extends StatelessWidget {
       visualDensity: visualDensity,
       focusNode: focusNode,
       autofocus: autofocus,
-      shape: shape ?? RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
-      side: side ?? (isError 
-        ? BorderSide(color: colorScheme.error, width: 2)
-        : null),
+      shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      side: side ?? (isError ? BorderSide(color: colorScheme.error, width: 2) : null),
       semanticLabel: semanticLabel,
       mouseCursor: mouseCursor,
       splashRadius: splashRadius,
@@ -98,7 +94,7 @@ class VooCheckboxListTile extends StatelessWidget {
   final bool isError;
   final Color? hoverColor;
   final MouseCursor? mouseCursor;
-  
+
   const VooCheckboxListTile({
     super.key,
     required this.value,
@@ -127,12 +123,12 @@ class VooCheckboxListTile extends StatelessWidget {
     this.hoverColor,
     this.mouseCursor,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return CheckboxListTile(
       value: value,
       onChanged: enabled ? onChanged : null,
@@ -147,12 +143,8 @@ class VooCheckboxListTile extends StatelessWidget {
       tristate: tristate,
       controlAffinity: controlAffinity,
       autofocus: autofocus,
-      contentPadding: contentPadding ?? EdgeInsets.symmetric(
-        horizontal: design.spacingMd,
-      ),
-      shape: shape ?? RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(design.radiusMd),
-      ),
+      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: design.spacingMd),
+      shape: shape ?? RoundedRectangleBorder(borderRadius: BorderRadius.circular(design.radiusMd)),
       tileColor: tileColor,
       selectedTileColor: selectedTileColor,
       visualDensity: visualDensity,
@@ -183,7 +175,7 @@ class VooCheckboxGroup<T> extends StatelessWidget {
   final double spacing;
   final double runSpacing;
   final bool enabled;
-  
+
   const VooCheckboxGroup({
     super.key,
     required this.items,
@@ -203,20 +195,17 @@ class VooCheckboxGroup<T> extends StatelessWidget {
     this.runSpacing = 8.0,
     this.enabled = true,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final hasError = errorText != null;
-    
+
     Widget content;
-    
+
     if (direction == Axis.vertical) {
-      content = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: items.map((item) => _buildCheckboxTile(item, context)).toList(),
-      );
+      content = Column(crossAxisAlignment: CrossAxisAlignment.start, children: items.map((item) => _buildCheckboxTile(item, context)).toList());
     } else {
       content = Wrap(
         direction: direction,
@@ -226,53 +215,50 @@ class VooCheckboxGroup<T> extends StatelessWidget {
         children: items.map((item) => _buildCheckboxChip(item, context)).toList(),
       );
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(
-            label!,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
-          ),
+          Text(label!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant)),
           SizedBox(height: design.spacingSm),
         ],
         Container(
           padding: contentPadding,
-          decoration: hasError ? BoxDecoration(
-            border: Border.all(color: colorScheme.error),
-            borderRadius: BorderRadius.circular(design.radiusMd),
-          ) : null,
+          decoration: hasError
+              ? BoxDecoration(
+                  border: Border.all(color: colorScheme.error),
+                  borderRadius: BorderRadius.circular(design.radiusMd),
+                )
+              : null,
           child: content,
         ),
         if (helperText != null || errorText != null) ...[
           SizedBox(height: design.spacingXs),
           Text(
             errorText ?? helperText!,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: hasError ? colorScheme.error : colorScheme.onSurfaceVariant),
           ),
         ],
       ],
     );
   }
-  
+
   Widget _buildCheckboxTile(T item, BuildContext context) {
     final isSelected = values.contains(item);
     final isItemDisabled = isDisabled?.call(item) ?? false;
-    
+
     return VooCheckboxListTile(
       value: isSelected,
-      onChanged: enabled && !isItemDisabled ? (value) {
-        if (value == true) {
-          onChanged?.call([...values, item]);
-        } else {
-          onChanged?.call(values.where((v) => v != item).toList());
-        }
-      } : null,
+      onChanged: enabled && !isItemDisabled
+          ? (value) {
+              if (value == true) {
+                onChanged?.call([...values, item]);
+              } else {
+                onChanged?.call(values.where((v) => v != item).toList());
+              }
+            }
+          : null,
       title: Text(labelBuilder(item)),
       subtitle: subtitleBuilder != null ? Text(subtitleBuilder!(item) ?? '') : null,
       secondary: leadingBuilder?.call(item),
@@ -280,34 +266,29 @@ class VooCheckboxGroup<T> extends StatelessWidget {
       isError: errorText != null,
     );
   }
-  
+
   Widget _buildCheckboxChip(T item, BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final isSelected = values.contains(item);
     final isItemDisabled = isDisabled?.call(item) ?? false;
-    
+
     return FilterChip(
       label: Text(labelBuilder(item)),
       selected: isSelected,
-      onSelected: enabled && !isItemDisabled ? (value) {
-        if (value) {
-          onChanged?.call([...values, item]);
-        } else {
-          onChanged?.call(values.where((v) => v != item).toList());
-        }
-      } : null,
+      onSelected: enabled && !isItemDisabled
+          ? (value) {
+              if (value) {
+                onChanged?.call([...values, item]);
+              } else {
+                onChanged?.call(values.where((v) => v != item).toList());
+              }
+            }
+          : null,
       avatar: leadingBuilder?.call(item),
-      backgroundColor: errorText != null 
-        ? colorScheme.errorContainer 
-        : null,
-      selectedColor: errorText != null
-        ? colorScheme.error.withValues(alpha: 0.2)
-        : null,
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacingSm,
-        vertical: design.spacingXs,
-      ),
+      backgroundColor: errorText != null ? colorScheme.errorContainer : null,
+      selectedColor: errorText != null ? colorScheme.error.withValues(alpha: 0.2) : null,
+      padding: EdgeInsets.symmetric(horizontal: design.spacingSm, vertical: design.spacingXs),
     );
   }
 }
@@ -323,7 +304,7 @@ class VooLabeledCheckbox extends StatelessWidget {
   final bool tristate;
   final bool isError;
   final EdgeInsetsGeometry? padding;
-  
+
   const VooLabeledCheckbox({
     super.key,
     required this.value,
@@ -336,60 +317,47 @@ class VooLabeledCheckbox extends StatelessWidget {
     this.isError = false,
     this.padding,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return InkWell(
-      onTap: enabled ? () {
-        if (tristate) {
-          if (value == null) {
-            onChanged?.call(false);
-          } else if (value == false) {
-            onChanged?.call(true);
-          } else {
-            onChanged?.call(null);
-          }
-        } else {
-          onChanged?.call(!(value ?? false));
-        }
-      } : null,
+      onTap: enabled
+          ? () {
+              if (tristate) {
+                if (value == null) {
+                  onChanged?.call(false);
+                } else if (value == false) {
+                  onChanged?.call(true);
+                } else {
+                  onChanged?.call(null);
+                }
+              } else {
+                onChanged?.call(!(value ?? false));
+              }
+            }
+          : null,
       borderRadius: BorderRadius.circular(design.radiusMd),
       child: Padding(
         padding: padding ?? EdgeInsets.all(design.spacingSm),
         child: Row(
           children: [
-            if (leading != null) ...[
-              leading!,
-              SizedBox(width: design.spacingMd),
-            ],
-            VooCheckbox(
-              value: value,
-              onChanged: enabled ? onChanged : null,
-              tristate: tristate,
-              isError: isError,
-            ),
+            if (leading != null) ...[leading!, SizedBox(width: design.spacingMd)],
+            VooCheckbox(value: value, onChanged: enabled ? onChanged : null, tristate: tristate, isError: isError),
             SizedBox(width: design.spacingMd),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: enabled ? null : Theme.of(context).disabledColor,
-                    ),
-                  ),
+                  Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: enabled ? null : Theme.of(context).disabledColor)),
                   if (subtitle != null) ...[
                     SizedBox(height: design.spacingXs),
                     Text(
                       subtitle!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: enabled 
-                          ? Theme.of(context).colorScheme.onSurfaceVariant
-                          : Theme.of(context).disabledColor,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: enabled ? Theme.of(context).colorScheme.onSurfaceVariant : Theme.of(context).disabledColor),
                     ),
                   ],
                 ],

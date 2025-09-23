@@ -6,13 +6,7 @@ class VooEmptyState extends StatelessWidget {
   final String message;
   final Widget? action;
 
-  const VooEmptyState({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.message,
-    this.action,
-  });
+  const VooEmptyState({super.key, required this.icon, required this.title, required this.message, this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -28,39 +22,22 @@ class VooEmptyState extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.3,
-                ),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 64,
-                color: colorScheme.onSurfaceVariant,
-              ),
+              decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3), shape: BoxShape.circle),
+              child: Icon(icon, size: 64, color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 24),
             Text(
               title,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
+              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               message,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
-            if (action != null) ...[
-              const SizedBox(height: 24),
-              action!,
-            ],
+            if (action != null) ...[const SizedBox(height: 24), action!],
           ],
         ),
       ),

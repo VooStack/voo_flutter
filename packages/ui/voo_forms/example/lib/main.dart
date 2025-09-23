@@ -39,7 +39,8 @@ class VooFormsHomePage extends StatelessWidget {
           _buildExampleCard(
             context,
             title: 'Client Form Page',
-            description: 'Example showing a form with client selection and nested form modals',
+            description:
+                'Example showing a form with client selection and nested form modals',
             icon: Icons.business,
             onTap: () => Navigator.push(
               context,
@@ -52,7 +53,8 @@ class VooFormsHomePage extends StatelessWidget {
           _buildExampleCard(
             context,
             title: 'Form Field Actions',
-            description: 'Demonstrates form field actions with adaptive UI for different screen sizes',
+            description:
+                'Demonstrates form field actions with adaptive UI for different screen sizes',
             icon: Icons.touch_app,
             onTap: () => Navigator.push(
               context,
@@ -65,7 +67,8 @@ class VooFormsHomePage extends StatelessWidget {
           _buildExampleCard(
             context,
             title: 'Read-Only Forms',
-            description: 'Shows how to use the isReadOnly parameter to display forms in view-only mode',
+            description:
+                'Shows how to use the isReadOnly parameter to display forms in view-only mode',
             icon: Icons.visibility,
             onTap: () => Navigator.push(
               context,
@@ -91,9 +94,10 @@ class VooFormsHomePage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         'About VooForms',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                     ],
                   ),
@@ -111,12 +115,13 @@ class VooFormsHomePage extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 4),
-                  ...['• Type-safe field widgets',
-                      '• Rich validation system',
-                      '• Custom formatters',
-                      '• Responsive layouts',
-                      '• Read-only mode support',
-                      '• Form field actions',
+                  ...[
+                    '• Type-safe field widgets',
+                    '• Rich validation system',
+                    '• Custom formatters',
+                    '• Responsive layouts',
+                    '• Read-only mode support',
+                    '• Form field actions',
                   ].map((feature) => Padding(
                         padding: const EdgeInsets.only(left: 8.0, top: 2.0),
                         child: Text(
@@ -176,7 +181,8 @@ class VooFormsHomePage extends StatelessWidget {
                     Text(
                       description,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                     ),
                   ],

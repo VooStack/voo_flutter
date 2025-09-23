@@ -16,25 +16,25 @@ import 'package:voo_data_grid/src/presentation/widgets/molecules/text_filter.dar
 class FilterInput<T> extends StatelessWidget {
   /// The column configuration
   final VooDataColumn<T> column;
-  
+
   /// The current filter value
   final VooDataFilter? currentFilter;
-  
+
   /// Callback when filter value changes
   final void Function(dynamic) onFilterChanged;
-  
+
   /// Callback to clear filter
   final void Function() onFilterCleared;
-  
+
   /// Text controllers map for maintaining state
   final Map<String, TextEditingController> textControllers;
-  
+
   /// Dropdown values map for maintaining state
   final Map<String, dynamic> dropdownValues;
-  
+
   /// Checkbox values map for maintaining state
   final Map<String, bool> checkboxValues;
-  
+
   /// Function to get filter options for dropdown/multiselect
   final List<VooFilterOption> Function(VooDataColumn<T>) getFilterOptions;
 
@@ -54,12 +54,7 @@ class FilterInput<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     // Use custom filter builder if provided
     if (column.filterBuilder != null) {
-      return column.filterBuilder!(
-        context,
-        column,
-        currentFilter?.value,
-        onFilterChanged,
-      );
+      return column.filterBuilder!(context, column, currentFilter?.value, onFilterChanged);
     }
 
     // Build filter based on widget type
@@ -101,19 +96,14 @@ class FilterInput<T> extends StatelessWidget {
         );
 
       case VooFilterWidgetType.dateRange:
-        return DateRangeFilter<T>(
-          column: column,
-          currentFilter: currentFilter,
-          onFilterChanged: onFilterChanged,
-          onFilterCleared: onFilterCleared,
-        );
+        return DateRangeFilter<T>(column: column, currentFilter: currentFilter, onFilterChanged: onFilterChanged, onFilterCleared: onFilterCleared);
 
       case VooFilterWidgetType.dropdown:
         // Initialize dropdown value from current filter if not already set
         if (!dropdownValues.containsKey(column.field) && currentFilter != null) {
           dropdownValues[column.field] = currentFilter!.value;
         }
-        
+
         return DropdownFilterField<dynamic>(
           value: dropdownValues[column.field],
           options: getFilterOptions(column),
@@ -131,19 +121,14 @@ class FilterInput<T> extends StatelessWidget {
         );
 
       case VooFilterWidgetType.multiSelect:
-        return MultiSelectFilter<T>(
-          column: column,
-          currentFilter: currentFilter,
-          onFilterChanged: onFilterChanged,
-          getFilterOptions: getFilterOptions,
-        );
+        return MultiSelectFilter<T>(column: column, currentFilter: currentFilter, onFilterChanged: onFilterChanged, getFilterOptions: getFilterOptions);
 
       case VooFilterWidgetType.checkbox:
         // Initialize checkbox value from current filter if not already set
         if (!checkboxValues.containsKey(column.field) && currentFilter != null) {
           checkboxValues[column.field] = currentFilter!.value == true;
         }
-        
+
         return CheckboxFilterField(
           value: checkboxValues[column.field] ?? false,
           compactStyle: true,

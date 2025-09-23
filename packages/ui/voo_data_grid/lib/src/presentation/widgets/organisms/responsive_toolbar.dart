@@ -16,7 +16,7 @@ class ResponsiveToolbar<T> extends StatelessWidget {
   final void Function() onToggleFilters;
   final void Function() onClearFilters;
   final void Function(BuildContext, dynamic) onShowMobileFilterSheet;
-  
+
   const ResponsiveToolbar({
     super.key,
     required this.width,
@@ -55,11 +55,7 @@ class ResponsiveToolbar<T> extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      onPressed: onRefresh,
-                      tooltip: 'Refresh',
-                    ),
+                    IconButton(icon: const Icon(Icons.refresh), onPressed: onRefresh, tooltip: 'Refresh'),
                     Stack(
                       children: [
                         IconButton(
@@ -76,17 +72,10 @@ class ResponsiveToolbar<T> extends StatelessWidget {
                             top: 8,
                             child: Container(
                               padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
+                              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle),
                               child: Text(
                                 '${state.filters.length}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -95,15 +84,9 @@ class ResponsiveToolbar<T> extends StatelessWidget {
                     if (displayMode == VooDataGridDisplayMode.table)
                       if (isMobile) // Only show view switcher on mobile
                         IconButton(
-                          icon: Icon(
-                            displayMode == VooDataGridDisplayMode.table ? Icons.view_agenda : Icons.table_chart,
-                          ),
+                          icon: Icon(displayMode == VooDataGridDisplayMode.table ? Icons.view_agenda : Icons.table_chart),
                           onPressed: () {
-                            onDisplayModeChanged(
-                              displayMode == VooDataGridDisplayMode.table 
-                                ? VooDataGridDisplayMode.cards 
-                                : VooDataGridDisplayMode.table,
-                            );
+                            onDisplayModeChanged(displayMode == VooDataGridDisplayMode.table ? VooDataGridDisplayMode.cards : VooDataGridDisplayMode.table);
                           },
                           tooltip: displayMode == VooDataGridDisplayMode.table ? 'Switch to Card View' : 'Switch to Table View',
                         ),
@@ -111,13 +94,7 @@ class ResponsiveToolbar<T> extends StatelessWidget {
                     if (toolbarActions != null && toolbarActions!.isNotEmpty)
                       PopupMenuButton(
                         icon: const Icon(Icons.more_vert),
-                        itemBuilder: (context) => toolbarActions!
-                            .map(
-                              (action) => PopupMenuItem<Widget>(
-                                child: action,
-                              ),
-                            )
-                            .toList(),
+                        itemBuilder: (context) => toolbarActions!.map((action) => PopupMenuItem<Widget>(child: action)).toList(),
                       ),
                   ],
                 ),
@@ -138,27 +115,16 @@ class ResponsiveToolbar<T> extends StatelessWidget {
       ),
       child: Row(
         children: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: onRefresh, tooltip: 'Refresh'),
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: onRefresh,
-            tooltip: 'Refresh',
-          ),
-          IconButton(
-            icon: Icon(
-              hasActiveFilters ? Icons.filter_alt : Icons.filter_alt_outlined,
-              color: hasActiveFilters ? Theme.of(context).colorScheme.primary : null,
-            ),
+            icon: Icon(hasActiveFilters ? Icons.filter_alt : Icons.filter_alt_outlined, color: hasActiveFilters ? Theme.of(context).colorScheme.primary : null),
             onPressed: onToggleFilters,
             tooltip: 'Toggle Filters',
           ),
           if (hasActiveFilters)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Chip(
-                label: Text('${state.filters.length} filters'),
-                deleteIcon: const Icon(Icons.clear, size: 18),
-                onDeleted: onClearFilters,
-              ),
+              child: Chip(label: Text('${state.filters.length} filters'), deleteIcon: const Icon(Icons.clear, size: 18), onDeleted: onClearFilters),
             ),
           const Spacer(),
           if (toolbarActions != null) ...toolbarActions!,

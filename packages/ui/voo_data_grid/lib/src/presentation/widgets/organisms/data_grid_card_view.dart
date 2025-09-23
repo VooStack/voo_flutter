@@ -33,35 +33,26 @@ class DataGridCardView<T> extends StatelessWidget {
     final dataSource = controller.dataSource;
 
     if (dataSource.isLoading && dataSource.rows.isEmpty) {
-      return Center(
-        child: loadingWidget ?? const CircularProgressIndicator(),
-      );
+      return Center(child: loadingWidget ?? const CircularProgressIndicator());
     }
 
     // Handle error state but still allow filtering to remain visible
     if (dataSource.error != null) {
       return Center(
-        child: errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
+        child:
+            errorBuilder?.call(dataSource.error ?? 'Unknown error') ??
             VooEmptyState(
               icon: Icons.error_outline,
               title: 'Error Loading Data',
               message: dataSource.error!,
-              action: TextButton(
-                onPressed: dataSource.refresh,
-                child: const Text('Retry'),
-              ),
+              action: TextButton(onPressed: dataSource.refresh, child: const Text('Retry')),
             ),
       );
     }
 
     if (dataSource.rows.isEmpty) {
       return Center(
-        child: emptyStateWidget ??
-            const VooEmptyState(
-              icon: Icons.table_rows_outlined,
-              title: 'No Data',
-              message: 'No rows to display',
-            ),
+        child: emptyStateWidget ?? const VooEmptyState(icon: Icons.table_rows_outlined, title: 'No Data', message: 'No rows to display'),
       );
     }
 
@@ -99,14 +90,7 @@ class DataGridCardView<T> extends StatelessWidget {
                   padding: EdgeInsets.all(design.spacingMd),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (final column in priorityColumns) 
-                        _DataGridCardField<T>(
-                          column: column,
-                          row: row,
-                          design: design,
-                        ),
-                    ],
+                    children: [for (final column in priorityColumns) _DataGridCardField<T>(column: column, row: row, design: design)],
                   ),
                 ),
               ),
@@ -115,14 +99,7 @@ class DataGridCardView<T> extends StatelessWidget {
         ),
         // Loading overlay at the top of cards only
         if (dataSource.isLoading && dataSource.rows.isNotEmpty)
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: LinearProgressIndicator(
-              backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
-            ),
-          ),
+          Positioned(top: 0, left: 0, right: 0, child: LinearProgressIndicator(backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3))),
       ],
     );
   }
@@ -145,11 +122,7 @@ class _DataGridCardField<T> extends StatelessWidget {
   final T row;
   final VooDesignSystemData design;
 
-  const _DataGridCardField({
-    required this.column,
-    required this.row,
-    required this.design,
-  });
+  const _DataGridCardField({required this.column, required this.row, required this.design});
 
   @override
   Widget build(BuildContext context) {
@@ -203,19 +176,10 @@ class _DataGridCardField<T> extends StatelessWidget {
             width: 120,
             child: Text(
               '${column.label}:',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
             ),
           ),
-          Expanded(
-            child: column.cellBuilder?.call(context, value, row) ??
-                Text(
-                  displayValue,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-          ),
+          Expanded(child: column.cellBuilder?.call(context, value, row) ?? Text(displayValue, style: Theme.of(context).textTheme.bodyMedium)),
         ],
       ),
     );

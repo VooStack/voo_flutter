@@ -50,15 +50,7 @@ class DropdownFilterField<T> extends StatelessWidget {
     if (compactStyle) {
       return CompactDropdown<T>(
         value: value,
-        options: options
-            .map(
-              (opt) => DropdownOptionData(
-                label: opt.label,
-                value: opt.value,
-                icon: opt.icon,
-              ),
-            )
-            .toList(),
+        options: options.map((opt) => DropdownOptionData(label: opt.label, value: opt.value, icon: opt.icon)).toList(),
         onChanged: onChanged,
         hintText: hintText,
         allOptionLabel: allOptionLabel,
@@ -68,24 +60,15 @@ class DropdownFilterField<T> extends StatelessWidget {
 
     return DropdownButtonFormField<T>(
       initialValue: options.any((opt) => opt.value == value) ? value : null,
-      decoration: FilterInputDecoration.standard(
-        context: context,
-        hintText: hintText ?? 'Select option...',
-      ),
+      decoration: FilterInputDecoration.standard(context: context, hintText: hintText ?? 'Select option...'),
       items: [
-        if (showAllOption)
-          DropdownMenuItem<T>(
-            child: Text(allOptionLabel),
-          ),
+        if (showAllOption) DropdownMenuItem<T>(child: Text(allOptionLabel)),
         ...options.map(
           (option) => DropdownMenuItem<T>(
             value: option.value as T?,
             child: Row(
               children: [
-                if (option.icon != null) ...[
-                  Icon(option.icon, size: 18),
-                  const SizedBox(width: 8),
-                ],
+                if (option.icon != null) ...[Icon(option.icon, size: 18), const SizedBox(width: 8)],
                 Text(option.label),
               ],
             ),

@@ -8,11 +8,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              label: 'Country',
-              options: ['USA', 'Canada', 'Mexico'],
-            ),
+            body: VooDropdownField<String>(name: 'country', label: 'Country', options: ['USA', 'Canada', 'Mexico']),
           ),
         ),
       );
@@ -26,11 +22,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              label: 'Country',
-              options: ['USA', 'Canada'],
-            ),
+            body: VooDropdownField<String>(name: 'country', label: 'Country', options: ['USA', 'Canada']),
           ),
         ),
       );
@@ -43,11 +35,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              placeholder: 'Select a country',
-              options: ['USA', 'Canada'],
-            ),
+            body: VooDropdownField<String>(name: 'country', placeholder: 'Select a country', options: ['USA', 'Canada']),
           ),
         ),
       );
@@ -59,11 +47,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              initialValue: 'Canada',
-              options: ['USA', 'Canada', 'Mexico'],
-            ),
+            body: VooDropdownField<String>(name: 'country', initialValue: 'Canada', options: ['USA', 'Canada', 'Mexico']),
           ),
         ),
       );
@@ -103,11 +87,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<int>(
-              name: 'number',
-              options: const [1, 2, 3],
-              displayTextBuilder: (value) => 'Number: $value',
-            ),
+            body: VooDropdownField<int>(name: 'number', options: const [1, 2, 3], displayTextBuilder: (value) => 'Number: $value'),
           ),
         ),
       );
@@ -131,11 +111,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              options: ['USA', 'Canada'],
-              error: 'Please select a country',
-            ),
+            body: VooDropdownField<String>(name: 'country', options: ['USA', 'Canada'], error: 'Please select a country'),
           ),
         ),
       );
@@ -147,11 +123,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              options: ['USA', 'Canada'],
-              helper: 'Select your country of residence',
-            ),
+            body: VooDropdownField<String>(name: 'country', options: ['USA', 'Canada'], helper: 'Select your country of residence'),
           ),
         ),
       );
@@ -163,12 +135,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              options: ['USA', 'Canada'],
-              enabled: false,
-              initialValue: 'USA',
-            ),
+            body: VooDropdownField<String>(name: 'country', options: ['USA', 'Canada'], enabled: false, initialValue: 'USA'),
           ),
         ),
       );
@@ -183,12 +150,7 @@ void main() {
     });
 
     testWidgets('validates required field', (WidgetTester tester) async {
-      final field = VooDropdownField<String>(
-        name: 'country',
-        label: 'Country',
-        options: const ['USA', 'Canada'],
-        validators: [VooValidator.required()],
-      );
+      final field = VooDropdownField<String>(name: 'country', label: 'Country', options: const ['USA', 'Canada'], validators: [VooValidator.required()]);
 
       expect(field.validate(null), 'This field is required');
       expect(field.validate('USA'), null);
@@ -198,11 +160,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooDropdownField<String>(
-              name: 'country',
-              label: 'Country',
-              options: ['USA', 'Canada'],
-            ),
+            body: VooDropdownField<String>(name: 'country', label: 'Country', options: ['USA', 'Canada']),
           ),
         ),
       );
@@ -241,11 +199,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooAsyncDropdownField<String>(
-              name: 'async_country',
-              label: 'Country',
-              asyncOptionsLoader: (query) async => ['USA', 'Canada', 'Mexico'],
-            ),
+            body: VooAsyncDropdownField<String>(name: 'async_country', label: 'Country', asyncOptionsLoader: (query) async => ['USA', 'Canada', 'Mexico']),
           ),
         ),
       );
@@ -463,11 +417,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooAsyncDropdownField<String>(
-              name: 'country',
-              label: 'Country',
-              asyncOptionsLoader: (query) async => ['USA', 'Canada'],
-            ),
+            body: VooAsyncDropdownField<String>(name: 'country', label: 'Country', asyncOptionsLoader: (query) async => ['USA', 'Canada']),
           ),
         ),
       );

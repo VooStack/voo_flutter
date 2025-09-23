@@ -9,12 +9,7 @@ class TestUser {
   final DateTime birthDate;
   final double salary;
 
-  TestUser({
-    required this.name,
-    required this.age,
-    required this.birthDate,
-    required this.salary,
-  });
+  TestUser({required this.name, required this.age, required this.birthDate, required this.salary});
 }
 
 void main() {
@@ -27,12 +22,7 @@ void main() {
         typedValueFormatter: (name) => name.toUpperCase(),
       );
 
-      final testUser = TestUser(
-        name: 'John Doe',
-        age: 30,
-        birthDate: DateTime(1993, 5, 15),
-        salary: 50000.0,
-      );
+      final testUser = TestUser(name: 'John Doe', age: 30, birthDate: DateTime(1993, 5, 15), salary: 50000.0);
 
       // Test value getter
       expect(column.valueGetter?.call(testUser), 'John Doe');
@@ -49,12 +39,7 @@ void main() {
         typedValueFormatter: (age) => '$age years old',
       );
 
-      final testUser = TestUser(
-        name: 'Jane Smith',
-        age: 25,
-        birthDate: DateTime(1998, 3, 20),
-        salary: 60000.0,
-      );
+      final testUser = TestUser(name: 'Jane Smith', age: 25, birthDate: DateTime(1998, 3, 20), salary: 60000.0);
 
       // Test value getter
       expect(column.valueGetter?.call(testUser), 25);
@@ -71,12 +56,7 @@ void main() {
         typedValueFormatter: (date) => '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
       );
 
-      final testUser = TestUser(
-        name: 'Bob Johnson',
-        age: 35,
-        birthDate: DateTime(1988, 12, 10),
-        salary: 75000.0,
-      );
+      final testUser = TestUser(name: 'Bob Johnson', age: 35, birthDate: DateTime(1988, 12, 10), salary: 75000.0);
 
       // Test value getter
       expect(column.valueGetter?.call(testUser), DateTime(1988, 12, 10));
@@ -93,12 +73,7 @@ void main() {
         typedValueFormatter: (salary) => '\$${salary.toStringAsFixed(2)}',
       );
 
-      final testUser = TestUser(
-        name: 'Alice Williams',
-        age: 28,
-        birthDate: DateTime(1995, 7, 22),
-        salary: 55000.50,
-      );
+      final testUser = TestUser(name: 'Alice Williams', age: 28, birthDate: DateTime(1995, 7, 22), salary: 55000.50);
 
       // Test value getter
       expect(column.valueGetter?.call(testUser), 55000.50);
@@ -125,29 +100,17 @@ void main() {
         field: 'age',
         label: 'Age',
         typedValueGetter: (user) => user.age,
-        typedCellBuilder: (context, age, user) => Container(
-            padding: const EdgeInsets.all(8.0),
-            color: age >= 30 ? Colors.green : Colors.blue,
-            child: Text('$age years'),
-          ),
+        typedCellBuilder: (context, age, user) =>
+            Container(padding: const EdgeInsets.all(8.0), color: age >= 30 ? Colors.green : Colors.blue, child: Text('$age years')),
       );
 
-      final testUser = TestUser(
-        name: 'Test User',
-        age: 32,
-        birthDate: DateTime.now(),
-        salary: 50000.0,
-      );
+      final testUser = TestUser(name: 'Test User', age: 32, birthDate: DateTime.now(), salary: 50000.0);
 
       // Test that cell builder is properly set
       expect(column.cellBuilder != null, true);
-      
+
       // Test cell builder with correct type
-      final widget = column.cellBuilder?.call(
-        MockBuildContext(),
-        32,
-        testUser,
-      );
+      final widget = column.cellBuilder?.call(MockBuildContext(), 32, testUser);
       expect(widget != null, true);
     });
 
@@ -159,20 +122,12 @@ void main() {
         typedValueFormatter: (name) => name.toLowerCase(),
       );
 
-      final copiedColumn = originalColumn.copyWith(
-        label: 'Full Name',
-        typedValueFormatter: (name) => name.toUpperCase(),
-      );
+      final copiedColumn = originalColumn.copyWith(label: 'Full Name', typedValueFormatter: (name) => name.toUpperCase());
 
       expect(copiedColumn.label, 'Full Name');
       expect(copiedColumn.field, 'name');
-      
-      final testUser = TestUser(
-        name: 'Test Name',
-        age: 25,
-        birthDate: DateTime.now(),
-        salary: 45000.0,
-      );
+
+      final testUser = TestUser(name: 'Test Name', age: 25, birthDate: DateTime.now(), salary: 45000.0);
 
       expect(copiedColumn.valueGetter?.call(testUser), 'Test Name');
       expect(copiedColumn.valueFormatter?.call('Test Name'), 'TEST NAME');

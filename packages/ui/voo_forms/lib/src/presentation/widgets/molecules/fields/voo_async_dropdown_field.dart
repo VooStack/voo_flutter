@@ -77,46 +77,39 @@ class VooAsyncDropdownField<T> extends VooFieldBase<T> {
   Widget build(BuildContext context) {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
-    
+
     return AsyncDropdownFieldWidget<T>(field: this);
   }
 
   @override
-  VooAsyncDropdownField<T> copyWith({
-    T? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooAsyncDropdownField<T>(
-        key: key,
-        name: name ?? this.name,
-        asyncOptionsLoader: asyncOptionsLoader,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        displayTextBuilder: displayTextBuilder,
-        subtitleBuilder: subtitleBuilder,
-        dropdownIcon: dropdownIcon,
-        maxDropdownHeight: maxDropdownHeight,
-        isExpanded: isExpanded,
-        loadingIndicator: loadingIndicator,
-        searchDebounce: searchDebounce,
-        sortOptions: sortOptions,
-        optionBuilder: optionBuilder,
-      );
+  VooAsyncDropdownField<T> copyWith({T? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooAsyncDropdownField<T>(
+    key: key,
+    name: name ?? this.name,
+    asyncOptionsLoader: asyncOptionsLoader,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    displayTextBuilder: displayTextBuilder,
+    subtitleBuilder: subtitleBuilder,
+    dropdownIcon: dropdownIcon,
+    maxDropdownHeight: maxDropdownHeight,
+    isExpanded: isExpanded,
+    loadingIndicator: loadingIndicator,
+    searchDebounce: searchDebounce,
+    sortOptions: sortOptions,
+    optionBuilder: optionBuilder,
+  );
 }

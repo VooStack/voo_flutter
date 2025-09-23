@@ -28,17 +28,8 @@ void main() {
       controller = VooDataGridController<Map<String, dynamic>>(
         dataSource: dataSource,
         columns: [
-          VooDataColumn<Map<String, dynamic>>(
-            field: 'name',
-            label: 'Name',
-            valueGetter: (row) => row['name'],
-          ),
-          VooDataColumn<Map<String, dynamic>>(
-            field: 'age',
-            label: 'Age',
-            dataType: VooDataColumnType.number,
-            valueGetter: (row) => row['age'],
-          ),
+          VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name', valueGetter: (row) => row['name']),
+          VooDataColumn<Map<String, dynamic>>(field: 'age', label: 'Age', dataType: VooDataColumnType.number, valueGetter: (row) => row['age']),
         ],
       );
     });
@@ -46,11 +37,7 @@ void main() {
     testWidgets('should debounce text filter changes in data grid', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
         ),
       );
       await tester.pumpAndSettle();
@@ -85,11 +72,7 @@ void main() {
     testWidgets('should debounce number filter changes in data grid', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
         ),
       );
       await tester.pumpAndSettle();
@@ -122,11 +105,7 @@ void main() {
     testWidgets('should apply filters immediately when moving between fields', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
         ),
       );
       await tester.pumpAndSettle();
@@ -165,11 +144,7 @@ void main() {
     testWidgets('should cancel pending debounce when clearing filter', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
         ),
       );
       await tester.pumpAndSettle();
@@ -200,10 +175,8 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Builder(
-              builder: (BuildContext context) => VooDataGridFilterRow<Map<String, dynamic>>(
-                controller: controller,
-                theme: VooDataGridTheme.fromContext(context),
-              ),
+              builder: (BuildContext context) =>
+                  VooDataGridFilterRow<Map<String, dynamic>>(controller: controller, theme: VooDataGridTheme.fromContext(context)),
             ),
           ),
         ),
@@ -234,11 +207,7 @@ void main() {
     testWidgets('should handle rapid filter changes across multiple columns', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid<Map<String, dynamic>>(controller: controller)),
         ),
       );
       await tester.pumpAndSettle();

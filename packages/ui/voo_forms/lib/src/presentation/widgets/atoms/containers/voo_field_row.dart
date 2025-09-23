@@ -110,18 +110,13 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
       // Apply flex if expanding fields
       if (expandFields || (fieldFlex != null && i < fieldFlex!.length)) {
         final flex = fieldFlex != null && i < fieldFlex!.length ? fieldFlex![i] : 1;
-        field = Expanded(
-          flex: flex,
-          child: field,
-        );
+        field = Expanded(flex: flex, child: field);
       } else if (!wrap && flexibleFields && !hasWidthConstraints) {
         // Only wrap in Flexible if:
         // 1. Not using Wrap layout
         // 2. flexibleFields is true
         // 3. Field doesn't have its own width constraints
-        field = Flexible(
-          child: field,
-        );
+        field = Flexible(child: field);
       }
       // Fields with width constraints or when flexibleFields is false
       // manage their own constraints
@@ -149,12 +144,7 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
       // Use MainAxisSize.max when expanding fields or if explicitly specified
       final effectiveMainAxisSize = mainAxisSize ?? (expandFields || fieldFlex != null ? MainAxisSize.max : MainAxisSize.min);
 
-      content = Row(
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
-        mainAxisSize: effectiveMainAxisSize,
-        children: fieldWidgets,
-      );
+      content = Row(crossAxisAlignment: crossAxisAlignment, mainAxisAlignment: mainAxisAlignment, mainAxisSize: effectiveMainAxisSize, children: fieldWidgets);
     }
 
     // Build the complete widget with optional title
@@ -164,19 +154,13 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
       children: [
         // Header widget or title
         if (headerWidget != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: headerWidget,
-          )
+          Padding(padding: const EdgeInsets.only(bottom: 12), child: headerWidget)
         else if (label != null || title != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
               label ?? title ?? '',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface,
-              ),
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface),
             ),
           ),
 
@@ -187,11 +171,7 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
 
     // Apply decoration if provided
     if (decoration != null || padding != null) {
-      result = Container(
-        padding: padding,
-        decoration: decoration,
-        child: result,
-      );
+      result = Container(padding: padding, decoration: decoration, child: result);
     }
 
     return result;
@@ -199,18 +179,18 @@ class VooFieldRow extends StatelessWidget implements VooFormFieldWidget {
 
   @override
   VooFormFieldWidget copyWith() => VooFieldRow(
-        key: key,
-        name: name,
-        fields: fields.map((field) => field.copyWith()).toList(),
-        label: label,
-        title: title,
-        headerWidget: headerWidget,
-        spacing: spacing,
-        padding: padding,
-        decoration: decoration,
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
-        mainAxisSize: mainAxisSize,
-        layout: layout,
-      );
+    key: key,
+    name: name,
+    fields: fields.map((field) => field.copyWith()).toList(),
+    label: label,
+    title: title,
+    headerWidget: headerWidget,
+    spacing: spacing,
+    padding: padding,
+    decoration: decoration,
+    crossAxisAlignment: crossAxisAlignment,
+    mainAxisAlignment: mainAxisAlignment,
+    mainAxisSize: mainAxisSize,
+    layout: layout,
+  );
 }

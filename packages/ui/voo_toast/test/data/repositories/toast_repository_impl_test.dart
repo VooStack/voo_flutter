@@ -20,12 +20,7 @@ void main() {
     });
 
     test('show adds a toast to the repository', () async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       repository.show(toast);
 
@@ -35,19 +30,9 @@ void main() {
     });
 
     test('show adds multiple toasts', () async {
-      const toast1 = Toast(
-        id: 'test-1',
-        message: 'First message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'test-1', message: 'First message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'test-2',
-        message: 'Second message',
-        type: ToastType.success,
-        position: ToastPosition.top,
-      );
+      const toast2 = Toast(id: 'test-2', message: 'Second message', type: ToastType.success, position: ToastPosition.top);
 
       repository.show(toast1);
       repository.show(toast2);
@@ -59,19 +44,9 @@ void main() {
     });
 
     test('dismiss removes a specific toast', () async {
-      const toast1 = Toast(
-        id: 'test-1',
-        message: 'First message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'test-1', message: 'First message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'test-2',
-        message: 'Second message',
-        type: ToastType.success,
-        position: ToastPosition.top,
-      );
+      const toast2 = Toast(id: 'test-2', message: 'Second message', type: ToastType.success, position: ToastPosition.top);
 
       repository.show(toast1);
       repository.show(toast2);
@@ -84,12 +59,7 @@ void main() {
     });
 
     test('dismiss with non-existent id returns silently', () async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       repository.show(toast);
 
@@ -102,27 +72,11 @@ void main() {
     });
 
     test('dismissAll removes all toasts', () async {
-      const toast1 = Toast(
-        id: 'test-1',
-        message: 'First message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'test-1', message: 'First message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'test-2',
-        message: 'Second message',
-        type: ToastType.success,
-        position: ToastPosition.top,
-      );
+      const toast2 = Toast(id: 'test-2', message: 'Second message', type: ToastType.success, position: ToastPosition.top);
 
-      const toast3 = Toast(
-        id: 'test-3',
-        message: 'Third message',
-        type: ToastType.error,
-        position: ToastPosition.center,
-        animation: ToastAnimation.bounce,
-      );
+      const toast3 = Toast(id: 'test-3', message: 'Third message', type: ToastType.error, position: ToastPosition.center, animation: ToastAnimation.bounce);
 
       repository.show(toast1);
       repository.show(toast2);
@@ -138,19 +92,9 @@ void main() {
     });
 
     test('toastsStream emits changes', () async {
-      const toast1 = Toast(
-        id: 'test-1',
-        message: 'First message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'test-1', message: 'First message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'test-2',
-        message: 'Second message',
-        type: ToastType.success,
-        position: ToastPosition.top,
-      );
+      const toast2 = Toast(id: 'test-2', message: 'Second message', type: ToastType.success, position: ToastPosition.top);
 
       final states = <List<Toast>>[];
       final subscription = repository.toastsStream.listen((toasts) {
@@ -189,12 +133,7 @@ void main() {
 
       final toasts = List.generate(
         5,
-        (index) => Toast(
-          id: 'test-$index',
-          message: 'Message $index',
-          position: ToastPosition.bottom,
-          animation: ToastAnimation.fade,
-        ),
+        (index) => Toast(id: 'test-$index', message: 'Message $index', position: ToastPosition.bottom, animation: ToastAnimation.fade),
       );
 
       for (final toast in toasts) {
@@ -212,20 +151,9 @@ void main() {
     });
 
     test('handles toasts with different priorities', () async {
-      const toast1 = Toast(
-        id: 'low-priority',
-        message: 'Low priority',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'low-priority', message: 'Low priority', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'high-priority',
-        message: 'High priority',
-        type: ToastType.error,
-        position: ToastPosition.top,
-        priority: 10,
-      );
+      const toast2 = Toast(id: 'high-priority', message: 'High priority', type: ToastType.error, position: ToastPosition.top, priority: 10);
 
       repository.show(toast1);
       repository.show(toast2);
@@ -244,19 +172,9 @@ void main() {
         states.add(List.from(toasts));
       });
 
-      const toast1 = Toast(
-        id: 'test-1',
-        message: 'First message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast1 = Toast(id: 'test-1', message: 'First message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
-      const toast2 = Toast(
-        id: 'test-2',
-        message: 'Second message',
-        type: ToastType.success,
-        position: ToastPosition.top,
-      );
+      const toast2 = Toast(id: 'test-2', message: 'Second message', type: ToastType.success, position: ToastPosition.top);
 
       await Future<void>.delayed(const Duration(milliseconds: 10));
       repository.show(toast1);
@@ -294,10 +212,7 @@ void main() {
       repository.dispose();
 
       // The subscription should complete/close
-      await expectLater(
-        subscription.asFuture(),
-        completes,
-      );
+      await expectLater(subscription.asFuture(), completes);
 
       await subscription.cancel();
     });

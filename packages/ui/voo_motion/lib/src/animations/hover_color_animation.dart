@@ -17,9 +17,7 @@ class VooHoverColorAnimation extends StatelessWidget {
   const VooHoverColorAnimation({
     super.key,
     required this.child,
-    this.config = const VooAnimationConfig(
-      duration: Duration(milliseconds: 200),
-    ),
+    this.config = const VooAnimationConfig(duration: Duration(milliseconds: 200)),
     this.fromColor,
     required this.hoverColor,
     this.applyToContainer = true,
@@ -39,24 +37,12 @@ class VooHoverColorAnimation extends StatelessWidget {
       builder: (context, isHovered, child) => TweenAnimationBuilder<Color?>(
         duration: config.duration,
         curve: config.curve,
-        tween: ColorTween(
-          begin: defaultColor,
-          end: isHovered ? hoverColor : defaultColor,
-        ),
+        tween: ColorTween(begin: defaultColor, end: isHovered ? hoverColor : defaultColor),
         builder: (context, color, child) {
           if (applyToContainer) {
-            return Container(
-              color: color,
-              child: child,
-            );
+            return Container(color: color, child: child);
           } else {
-            return ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                color ?? Colors.transparent,
-                BlendMode.modulate,
-              ),
-              child: child,
-            );
+            return ColorFiltered(colorFilter: ColorFilter.mode(color ?? Colors.transparent, BlendMode.modulate), child: child);
           }
         },
         child: child,
@@ -87,61 +73,48 @@ class VooHoverBlurAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VooHoverAnimation(
-        config: config,
-        onHover: onHover,
-        onExit: onExit,
-        cursor: SystemMouseCursors.click,
-        builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
-          duration: config.duration,
-          curve: config.curve,
-          tween: Tween<double>(
-            begin: 0.0,
-            end: isHovered ? blurAmount : 0.0,
-          ),
-          builder: (context, blur, child) {
-            if (!blurBackground) {
-              return Stack(
-                children: [
-                  if (blur > 0)
-                    Positioned.fill(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: blur,
-                          sigmaY: blur,
-                        ),
-                        child: Container(
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                  child!,
-                ],
-              );
-            } else {
-              return ClipRRect(
-                child: Stack(
-                  fit: StackFit.passthrough,
-                  children: [
-                    if (blur > 0)
-                      BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: blur,
-                          sigmaY: blur,
-                        ),
-                        child: Container(
-                          color: Colors.black.withValues(alpha: 0.01),
-                        ),
-                      ),
-                    child!,
-                  ],
+    config: config,
+    onHover: onHover,
+    onExit: onExit,
+    cursor: SystemMouseCursors.click,
+    builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
+      duration: config.duration,
+      curve: config.curve,
+      tween: Tween<double>(begin: 0.0, end: isHovered ? blurAmount : 0.0),
+      builder: (context, blur, child) {
+        if (!blurBackground) {
+          return Stack(
+            children: [
+              if (blur > 0)
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                    child: Container(color: Colors.transparent),
+                  ),
                 ),
-              );
-            }
-          },
-          child: child,
-        ),
-        child: child,
-      );
+              child!,
+            ],
+          );
+        } else {
+          return ClipRRect(
+            child: Stack(
+              fit: StackFit.passthrough,
+              children: [
+                if (blur > 0)
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                    child: Container(color: Colors.black.withValues(alpha: 0.01)),
+                  ),
+                child!,
+              ],
+            ),
+          );
+        }
+      },
+      child: child,
+    ),
+    child: child,
+  );
 }
 
 /// Hover underline animation for text
@@ -157,9 +130,7 @@ class VooHoverUnderlineAnimation extends StatelessWidget {
   const VooHoverUnderlineAnimation({
     super.key,
     required this.child,
-    this.config = const VooAnimationConfig(
-      duration: Duration(milliseconds: 200),
-    ),
+    this.config = const VooAnimationConfig(duration: Duration(milliseconds: 200)),
     this.underlineColor = Colors.blue,
     this.underlineThickness = 2.0,
     this.underlineOffset = 2.0,
@@ -169,36 +140,33 @@ class VooHoverUnderlineAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VooHoverAnimation(
-        config: config,
-        onHover: onHover,
-        onExit: onExit,
-        cursor: SystemMouseCursors.click,
-        builder: (context, isHovered, child) => Stack(
-          children: [
-            child,
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: -underlineOffset,
-              child: TweenAnimationBuilder<double>(
-                duration: config.duration,
-                curve: config.curve,
-                tween: Tween<double>(
-                  begin: 0.0,
-                  end: isHovered ? 1.0 : 0.0,
-                ),
-                builder: (context, value, _) => Container(
-                  height: underlineThickness,
-                  color: underlineColor.withValues(alpha: underlineColor.a * value),
-                  transform: Matrix4.diagonal3Values(value, 1.0, 1.0),
-                  transformAlignment: Alignment.centerLeft,
-                ),
-              ),
+    config: config,
+    onHover: onHover,
+    onExit: onExit,
+    cursor: SystemMouseCursors.click,
+    builder: (context, isHovered, child) => Stack(
+      children: [
+        child,
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: -underlineOffset,
+          child: TweenAnimationBuilder<double>(
+            duration: config.duration,
+            curve: config.curve,
+            tween: Tween<double>(begin: 0.0, end: isHovered ? 1.0 : 0.0),
+            builder: (context, value, _) => Container(
+              height: underlineThickness,
+              color: underlineColor.withValues(alpha: underlineColor.a * value),
+              transform: Matrix4.diagonal3Values(value, 1.0, 1.0),
+              transformAlignment: Alignment.centerLeft,
             ),
-          ],
+          ),
         ),
-        child: child,
-      );
+      ],
+    ),
+    child: child,
+  );
 }
 
 /// Hover border animation
@@ -214,9 +182,7 @@ class VooHoverBorderAnimation extends StatelessWidget {
   const VooHoverBorderAnimation({
     super.key,
     required this.child,
-    this.config = const VooAnimationConfig(
-      duration: Duration(milliseconds: 200),
-    ),
+    this.config = const VooAnimationConfig(duration: Duration(milliseconds: 200)),
     this.borderColor = Colors.blue,
     this.borderWidth = 2.0,
     this.borderRadius,
@@ -226,29 +192,26 @@ class VooHoverBorderAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VooHoverAnimation(
-        config: config,
-        onHover: onHover,
-        onExit: onExit,
-        cursor: SystemMouseCursors.click,
-        builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
-          duration: config.duration,
-          curve: config.curve,
-          tween: Tween<double>(
-            begin: 0.0,
-            end: isHovered ? 1.0 : 0.0,
+    config: config,
+    onHover: onHover,
+    onExit: onExit,
+    cursor: SystemMouseCursors.click,
+    builder: (context, isHovered, child) => TweenAnimationBuilder<double>(
+      duration: config.duration,
+      curve: config.curve,
+      tween: Tween<double>(begin: 0.0, end: isHovered ? 1.0 : 0.0),
+      builder: (context, value, child) => DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: borderColor.withValues(alpha: borderColor.a * value),
+            width: borderWidth * value,
           ),
-          builder: (context, value, child) => DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: borderColor.withValues(alpha: borderColor.a * value),
-                width: borderWidth * value,
-              ),
-              borderRadius: borderRadius,
-            ),
-            child: child,
-          ),
-          child: child,
+          borderRadius: borderRadius,
         ),
         child: child,
-      );
+      ),
+      child: child,
+    ),
+    child: child,
+  );
 }

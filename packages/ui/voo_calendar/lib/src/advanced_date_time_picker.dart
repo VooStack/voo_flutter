@@ -8,20 +8,28 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 enum VooDateTimeSelectionMode {
   /// Year only (e.g., 2024)
   year,
+
   /// Year and month (e.g., January 2024)
   yearMonth,
+
   /// Year, month, and day (e.g., January 15, 2024)
   yearMonthDay,
+
   /// Month and day only (e.g., January 15)
   monthDay,
+
   /// Day and time (e.g., 15th at 3:30 PM)
   dayTime,
+
   /// Full date and time (e.g., January 15, 2024 at 3:30 PM)
   yearMonthDayTime,
+
   /// Time only (e.g., 3:30 PM)
   time,
+
   /// Date range (start and end dates)
   dateRange,
+
   /// Date and time range (start and end with times)
   dateTimeRange,
 }
@@ -34,7 +42,7 @@ class VooDateTimeComponents {
   final bool hour;
   final bool minute;
   final bool second;
-  
+
   const VooDateTimeComponents({
     this.year = true,
     this.month = true,
@@ -43,35 +51,31 @@ class VooDateTimeComponents {
     this.minute = false,
     this.second = false,
   });
-  
+
   /// Preset for year only selection
   static const yearOnly = VooDateTimeComponents(
     year: true,
     month: false,
     day: false,
   );
-  
+
   /// Preset for year and month selection
   static const yearMonth = VooDateTimeComponents(
     year: true,
     month: true,
     day: false,
   );
-  
+
   /// Preset for full date selection
-  static const date = VooDateTimeComponents(
-    year: true,
-    month: true,
-    day: true,
-  );
-  
+  static const date = VooDateTimeComponents(year: true, month: true, day: true);
+
   /// Preset for month and day only
   static const monthDay = VooDateTimeComponents(
     year: false,
     month: true,
     day: true,
   );
-  
+
   /// Preset for time only
   static const time = VooDateTimeComponents(
     year: false,
@@ -80,7 +84,7 @@ class VooDateTimeComponents {
     hour: true,
     minute: true,
   );
-  
+
   /// Preset for day and time
   static const dayTime = VooDateTimeComponents(
     year: false,
@@ -89,7 +93,7 @@ class VooDateTimeComponents {
     hour: true,
     minute: true,
   );
-  
+
   /// Preset for full date and time
   static const dateTime = VooDateTimeComponents(
     year: true,
@@ -104,71 +108,71 @@ class VooDateTimeComponents {
 class VooAdvancedDateTimePicker extends StatefulWidget {
   /// Selection mode
   final VooDateTimeSelectionMode mode;
-  
+
   /// Components that are selectable
   final VooDateTimeComponents? components;
-  
+
   /// Initial value
   final DateTime? initialValue;
-  
+
   /// Initial range value
   final DateTimeRange? initialRange;
-  
+
   /// First selectable date
   final DateTime? firstDate;
-  
+
   /// Last selectable date
   final DateTime? lastDate;
-  
+
   /// Value changed callback
   final void Function(DateTime? value)? onChanged;
-  
+
   /// Range changed callback
   final void Function(DateTimeRange? range)? onRangeChanged;
-  
+
   /// Whether to show as inline or field
   final bool isInline;
-  
+
   /// Field decoration
   final InputDecoration? decoration;
-  
+
   /// Calendar theme
   final VooCalendarTheme? calendarTheme;
-  
+
   /// Time picker interval in minutes
   final int minuteInterval;
-  
+
   /// Use 24 hour format
   final bool use24HourFormat;
-  
+
   /// Custom date format
   final String? dateFormat;
-  
+
   /// Custom time format
   final String? timeFormat;
-  
+
   /// Enable field
   final bool enabled;
-  
+
   /// Field hint text
   final String? hintText;
-  
+
   /// Field label text
   final String? labelText;
-  
+
   /// Field helper text
   final String? helperText;
-  
+
   /// Field error text
   final String? errorText;
-  
+
   /// Whether to show seconds in time picker
   final bool showSeconds;
-  
+
   /// Custom year range (if not specified, uses current year ± 50)
   final int? yearRangeStart;
   final int? yearRangeEnd;
-  
+
   const VooAdvancedDateTimePicker({
     super.key,
     this.mode = VooDateTimeSelectionMode.yearMonthDay,
@@ -197,41 +201,42 @@ class VooAdvancedDateTimePicker extends StatefulWidget {
   });
 
   @override
-  State<VooAdvancedDateTimePicker> createState() => _VooAdvancedDateTimePickerState();
+  State<VooAdvancedDateTimePicker> createState() =>
+      _VooAdvancedDateTimePickerState();
 }
 
 class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
   late TextEditingController _controller;
   DateTime? _selectedValue;
   DateTimeRange? _selectedRange;
-  
+
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    
+
     if (_isRangeMode) {
       _selectedRange = widget.initialRange;
     } else {
       _selectedValue = widget.initialValue;
     }
-    
+
     _updateControllerText();
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   bool get _isRangeMode =>
       widget.mode == VooDateTimeSelectionMode.dateRange ||
       widget.mode == VooDateTimeSelectionMode.dateTimeRange;
-  
+
   VooDateTimeComponents get _components {
     if (widget.components != null) return widget.components!;
-    
+
     switch (widget.mode) {
       case VooDateTimeSelectionMode.year:
         return VooDateTimeComponents.yearOnly;
@@ -251,28 +256,29 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
         return VooDateTimeComponents.time;
     }
   }
-  
+
   void _updateControllerText() {
     String text = '';
-    
+
     if (_isRangeMode && _selectedRange != null) {
       final format = _getDateFormat();
-      text = '${format.format(_selectedRange!.start)} - ${format.format(_selectedRange!.end)}';
+      text =
+          '${format.format(_selectedRange!.start)} - ${format.format(_selectedRange!.end)}';
     } else if (_selectedValue != null) {
       text = _getDateFormat().format(_selectedValue!);
     }
-    
+
     _controller.text = text;
   }
-  
+
   DateFormat _getDateFormat() {
     if (widget.dateFormat != null) {
       return DateFormat(widget.dateFormat!);
     }
-    
+
     final c = _components;
     String pattern = '';
-    
+
     if (c.year) pattern += 'yyyy';
     if (c.month) {
       if (pattern.isNotEmpty) pattern += ' ';
@@ -293,18 +299,18 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
         pattern = pattern.replaceAll(':mm', ':mm:ss');
       }
     }
-    
+
     if (pattern.isEmpty) pattern = 'yyyy-MM-dd';
-    
+
     return DateFormat(pattern);
   }
-  
+
   Future<void> _showPicker() async {
     final result = await showDialog<dynamic>(
       context: context,
       builder: (context) => _buildPickerDialog(),
     );
-    
+
     if (result != null) {
       setState(() {
         if (_isRangeMode) {
@@ -318,7 +324,7 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
       });
     }
   }
-  
+
   Widget _buildPickerDialog() {
     switch (widget.mode) {
       case VooDateTimeSelectionMode.year:
@@ -334,9 +340,7 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
           yearRangeEnd: widget.yearRangeEnd ?? DateTime.now().year + 50,
         );
       case VooDateTimeSelectionMode.monthDay:
-        return _MonthDayPickerDialog(
-          initialValue: _selectedValue,
-        );
+        return _MonthDayPickerDialog(initialValue: _selectedValue);
       case VooDateTimeSelectionMode.dayTime:
         return _DayTimePickerDialog(
           initialValue: _selectedValue,
@@ -384,59 +388,61 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
         );
     }
   }
-  
+
   void _clear() {
     setState(() {
       _selectedValue = null;
       _selectedRange = null;
       _controller.clear();
     });
-    
+
     if (_isRangeMode) {
       widget.onRangeChanged?.call(null);
     } else {
       widget.onChanged?.call(null);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     if (widget.isInline) {
       return _buildInlineView();
     }
-    
+
     final hasValue = _controller.text.isNotEmpty;
-    
+
     return TextField(
       controller: _controller,
       readOnly: true,
       enabled: widget.enabled,
       onTap: widget.enabled ? _showPicker : null,
-      decoration: widget.decoration ?? InputDecoration(
-        hintText: widget.hintText ?? _getDefaultHintText(),
-        labelText: widget.labelText,
-        helperText: widget.helperText,
-        errorText: widget.errorText,
-        border: const OutlineInputBorder(),
-        suffixIcon: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (hasValue && widget.enabled)
-              IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: _clear,
-                tooltip: 'Clear',
-              ),
-            IconButton(
-              icon: _getIcon(),
-              onPressed: widget.enabled ? _showPicker : null,
+      decoration:
+          widget.decoration ??
+          InputDecoration(
+            hintText: widget.hintText ?? _getDefaultHintText(),
+            labelText: widget.labelText,
+            helperText: widget.helperText,
+            errorText: widget.errorText,
+            border: const OutlineInputBorder(),
+            suffixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (hasValue && widget.enabled)
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: _clear,
+                    tooltip: 'Clear',
+                  ),
+                IconButton(
+                  icon: _getIcon(),
+                  onPressed: widget.enabled ? _showPicker : null,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
-  
+
   Widget _buildInlineView() {
     // Simplified inline view - could be expanded based on mode
     return Card(
@@ -467,8 +473,8 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
                             : _controller.text,
                         style: _controller.text.isEmpty
                             ? Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  color: Theme.of(context).hintColor,
-                                )
+                                color: Theme.of(context).hintColor,
+                              )
                             : Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
@@ -482,7 +488,7 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
       ),
     );
   }
-  
+
   Widget _getIcon() {
     if (_components.hour || _components.minute) {
       if (_components.year || _components.month || _components.day) {
@@ -492,7 +498,7 @@ class _VooAdvancedDateTimePickerState extends State<VooAdvancedDateTimePicker> {
     }
     return const Icon(Icons.calendar_today);
   }
-  
+
   String _getDefaultHintText() {
     switch (widget.mode) {
       case VooDateTimeSelectionMode.year:
@@ -522,13 +528,13 @@ class _YearPickerDialog extends StatefulWidget {
   final int? initialYear;
   final int yearRangeStart;
   final int yearRangeEnd;
-  
+
   const _YearPickerDialog({
     this.initialYear,
     required this.yearRangeStart,
     required this.yearRangeEnd,
   });
-  
+
   @override
   State<_YearPickerDialog> createState() => _YearPickerDialogState();
 }
@@ -536,24 +542,24 @@ class _YearPickerDialog extends StatefulWidget {
 class _YearPickerDialogState extends State<_YearPickerDialog> {
   late int _selectedYear;
   late ScrollController _scrollController;
-  
+
   @override
   void initState() {
     super.initState();
     _selectedYear = widget.initialYear ?? DateTime.now().year;
     _scrollController = ScrollController();
-    
+
     // Scroll to selected year after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToSelectedYear();
     });
   }
-  
+
   void _scrollToSelectedYear() {
     final yearIndex = _selectedYear - widget.yearRangeStart;
     final itemHeight = 56.0; // Approximate height of each year item
     final targetOffset = yearIndex * itemHeight - 100; // Center approximately
-    
+
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
@@ -562,13 +568,13 @@ class _YearPickerDialogState extends State<_YearPickerDialog> {
       );
     }
   }
-  
+
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
@@ -577,13 +583,10 @@ class _YearPickerDialogState extends State<_YearPickerDialog> {
       widget.yearRangeEnd - widget.yearRangeStart + 1,
       (index) => widget.yearRangeStart + index,
     );
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 360,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 360, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -626,7 +629,7 @@ class _YearPickerDialogState extends State<_YearPickerDialog> {
                   final year = years[index];
                   final isSelected = year == _selectedYear;
                   final isCurrentYear = year == DateTime.now().year;
-                  
+
                   return Material(
                     color: isSelected
                         ? colorScheme.primaryContainer
@@ -649,14 +652,15 @@ class _YearPickerDialogState extends State<_YearPickerDialog> {
                         ),
                         child: Text(
                           year.toString(),
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: isSelected
-                                ? colorScheme.onPrimaryContainer
-                                : colorScheme.onSurface,
-                            fontWeight: isSelected || isCurrentYear
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: isSelected
+                                    ? colorScheme.onPrimaryContainer
+                                    : colorScheme.onSurface,
+                                fontWeight: isSelected || isCurrentYear
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
                         ),
                       ),
                     ),
@@ -697,13 +701,13 @@ class _YearMonthPickerDialog extends StatefulWidget {
   final DateTime? initialValue;
   final int yearRangeStart;
   final int yearRangeEnd;
-  
+
   const _YearMonthPickerDialog({
     this.initialValue,
     required this.yearRangeStart,
     required this.yearRangeEnd,
   });
-  
+
   @override
   State<_YearMonthPickerDialog> createState() => _YearMonthPickerDialogState();
 }
@@ -711,13 +715,22 @@ class _YearMonthPickerDialog extends StatefulWidget {
 class _YearMonthPickerDialogState extends State<_YearMonthPickerDialog> {
   late int _selectedYear;
   late int _selectedMonth;
-  
+
   final List<String> _monthNames = [
-    'January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
-  
+
   @override
   void initState() {
     super.initState();
@@ -725,18 +738,15 @@ class _YearMonthPickerDialogState extends State<_YearMonthPickerDialog> {
     _selectedYear = widget.initialValue?.year ?? now.year;
     _selectedMonth = widget.initialValue?.month ?? now.month;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -817,8 +827,9 @@ class _YearMonthPickerDialogState extends State<_YearMonthPickerDialog> {
                   final month = index + 1;
                   final isSelected = month == _selectedMonth;
                   final now = DateTime.now();
-                  final isCurrentMonth = month == now.month && _selectedYear == now.year;
-                  
+                  final isCurrentMonth =
+                      month == now.month && _selectedYear == now.year;
+
                   return Material(
                     color: isSelected
                         ? colorScheme.primaryContainer
@@ -841,14 +852,15 @@ class _YearMonthPickerDialogState extends State<_YearMonthPickerDialog> {
                         ),
                         child: Text(
                           _monthNames[index].substring(0, 3),
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: isSelected
-                                ? colorScheme.onPrimaryContainer
-                                : colorScheme.onSurface,
-                            fontWeight: isSelected || isCurrentMonth
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: isSelected
+                                    ? colorScheme.onPrimaryContainer
+                                    : colorScheme.onSurface,
+                                fontWeight: isSelected || isCurrentMonth
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
                         ),
                       ),
                     ),
@@ -887,11 +899,9 @@ class _YearMonthPickerDialogState extends State<_YearMonthPickerDialog> {
 /// Month and day picker dialog
 class _MonthDayPickerDialog extends StatefulWidget {
   final DateTime? initialValue;
-  
-  const _MonthDayPickerDialog({
-    this.initialValue,
-  });
-  
+
+  const _MonthDayPickerDialog({this.initialValue});
+
   @override
   State<_MonthDayPickerDialog> createState() => _MonthDayPickerDialogState();
 }
@@ -899,13 +909,22 @@ class _MonthDayPickerDialog extends StatefulWidget {
 class _MonthDayPickerDialogState extends State<_MonthDayPickerDialog> {
   late int _selectedMonth;
   late int _selectedDay;
-  
+
   final List<String> _monthNames = [
-    'January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
-  
+
   @override
   void initState() {
     super.initState();
@@ -913,29 +932,26 @@ class _MonthDayPickerDialogState extends State<_MonthDayPickerDialog> {
     _selectedMonth = widget.initialValue?.month ?? now.month;
     _selectedDay = widget.initialValue?.day ?? now.day;
   }
-  
+
   int _getDaysInMonth(int month) {
     // Use a leap year to handle February correctly
     return DateTime(2024, month + 1, 0).day;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
     final daysInMonth = _getDaysInMonth(_selectedMonth);
-    
+
     // Ensure selected day is valid for the month
     if (_selectedDay > daysInMonth) {
       _selectedDay = daysInMonth;
     }
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 600,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 600),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -972,9 +988,12 @@ class _MonthDayPickerDialogState extends State<_MonthDayPickerDialog> {
                 itemBuilder: (context, index) {
                   final month = index + 1;
                   final isSelected = month == _selectedMonth;
-                  
+
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 8,
+                    ),
                     child: FilterChip(
                       label: Text(_monthNames[index].substring(0, 3)),
                       selected: isSelected,
@@ -1002,7 +1021,7 @@ class _MonthDayPickerDialogState extends State<_MonthDayPickerDialog> {
                 itemBuilder: (context, index) {
                   final day = index + 1;
                   final isSelected = day == _selectedDay;
-                  
+
                   return Material(
                     color: isSelected
                         ? colorScheme.primaryContainer
@@ -1019,14 +1038,15 @@ class _MonthDayPickerDialogState extends State<_MonthDayPickerDialog> {
                         alignment: Alignment.center,
                         child: Text(
                           day.toString(),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: isSelected
-                                ? colorScheme.onPrimaryContainer
-                                : colorScheme.onSurface,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: isSelected
+                                    ? colorScheme.onPrimaryContainer
+                                    : colorScheme.onSurface,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
                         ),
                       ),
                     ),
@@ -1048,7 +1068,11 @@ class _MonthDayPickerDialogState extends State<_MonthDayPickerDialog> {
                   FilledButton(
                     onPressed: () {
                       // Use current year as placeholder
-                      final result = DateTime(2024, _selectedMonth, _selectedDay);
+                      final result = DateTime(
+                        2024,
+                        _selectedMonth,
+                        _selectedDay,
+                      );
                       Navigator.of(context).pop(result);
                     },
                     child: const Text('OK'),
@@ -1068,13 +1092,13 @@ class _DayTimePickerDialog extends StatefulWidget {
   final DateTime? initialValue;
   final bool use24HourFormat;
   final int minuteInterval;
-  
+
   const _DayTimePickerDialog({
     this.initialValue,
     required this.use24HourFormat,
     required this.minuteInterval,
   });
-  
+
   @override
   State<_DayTimePickerDialog> createState() => _DayTimePickerDialogState();
 }
@@ -1082,12 +1106,17 @@ class _DayTimePickerDialog extends StatefulWidget {
 class _DayTimePickerDialogState extends State<_DayTimePickerDialog> {
   late int _selectedDay;
   late TimeOfDay _selectedTime;
-  
+
   final List<String> _dayNames = [
-    'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-    'Friday', 'Saturday', 'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
   ];
-  
+
   @override
   void initState() {
     super.initState();
@@ -1097,18 +1126,15 @@ class _DayTimePickerDialogState extends State<_DayTimePickerDialog> {
         ? TimeOfDay.fromDateTime(widget.initialValue!)
         : TimeOfDay.now();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1142,7 +1168,7 @@ class _DayTimePickerDialogState extends State<_DayTimePickerDialog> {
                 children: List.generate(7, (index) {
                   final day = index + 1;
                   final isSelected = day == _selectedDay;
-                  
+
                   return ListTile(
                     title: Text(_dayNames[index]),
                     selected: isSelected,
@@ -1180,7 +1206,7 @@ class _DayTimePickerDialogState extends State<_DayTimePickerDialog> {
                       );
                     },
                   );
-                  
+
                   if (time != null) {
                     setState(() {
                       _selectedTime = time;
@@ -1211,7 +1237,7 @@ class _DayTimePickerDialogState extends State<_DayTimePickerDialog> {
                       while (targetDate.weekday != _selectedDay) {
                         targetDate = targetDate.add(const Duration(days: 1));
                       }
-                      
+
                       final result = DateTime(
                         targetDate.year,
                         targetDate.month,
@@ -1239,14 +1265,14 @@ class _FullDatePickerDialog extends StatefulWidget {
   final DateTime? firstDate;
   final DateTime? lastDate;
   final VooCalendarTheme? calendarTheme;
-  
+
   const _FullDatePickerDialog({
     this.initialDate,
     this.firstDate,
     this.lastDate,
     this.calendarTheme,
   });
-  
+
   @override
   State<_FullDatePickerDialog> createState() => _FullDatePickerDialogState();
 }
@@ -1254,7 +1280,7 @@ class _FullDatePickerDialog extends StatefulWidget {
 class _FullDatePickerDialogState extends State<_FullDatePickerDialog> {
   late VooCalendarController _controller;
   DateTime? _selectedDate;
-  
+
   @override
   void initState() {
     super.initState();
@@ -1264,23 +1290,20 @@ class _FullDatePickerDialogState extends State<_FullDatePickerDialog> {
       selectionMode: VooCalendarSelectionMode.single,
     );
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1341,7 +1364,7 @@ class _DateTimePickerDialog extends StatefulWidget {
   final VooCalendarTheme? calendarTheme;
   final bool use24HourFormat;
   final int minuteInterval;
-  
+
   const _DateTimePickerDialog({
     this.initialValue,
     this.firstDate,
@@ -1350,7 +1373,7 @@ class _DateTimePickerDialog extends StatefulWidget {
     required this.use24HourFormat,
     required this.minuteInterval,
   });
-  
+
   @override
   State<_DateTimePickerDialog> createState() => _DateTimePickerDialogState();
 }
@@ -1359,7 +1382,7 @@ class _DateTimePickerDialogState extends State<_DateTimePickerDialog> {
   late VooCalendarController _controller;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  
+
   @override
   void initState() {
     super.initState();
@@ -1372,23 +1395,20 @@ class _DateTimePickerDialogState extends State<_DateTimePickerDialog> {
       selectionMode: VooCalendarSelectionMode.single,
     );
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 600,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 600),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1424,7 +1444,7 @@ class _DateTimePickerDialogState extends State<_DateTimePickerDialog> {
                       context: context,
                       initialTime: _selectedTime ?? TimeOfDay.now(),
                     );
-                    
+
                     if (time != null) {
                       setState(() {
                         _selectedTime = time;
@@ -1480,13 +1500,13 @@ class _TimeOnlyPickerDialog extends StatelessWidget {
   final TimeOfDay? initialTime;
   final bool use24HourFormat;
   final int minuteInterval;
-  
+
   const _TimeOnlyPickerDialog({
     this.initialTime,
     required this.use24HourFormat,
     required this.minuteInterval,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     // Delegate to the built-in time picker
@@ -1507,19 +1527,25 @@ class _TimeOnlyPickerDialog extends StatelessWidget {
           );
         },
       );
-      
+
       if (context.mounted) {
         if (time != null) {
           // Convert to DateTime for consistency
           final now = DateTime.now();
-          final result = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+          final result = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            time.hour,
+            time.minute,
+          );
           Navigator.of(context).pop(result);
         } else {
           Navigator.of(context).pop();
         }
       }
     });
-    
+
     // Return empty container while waiting
     return const SizedBox.shrink();
   }
@@ -1531,14 +1557,14 @@ class _DateRangePickerDialog extends StatefulWidget {
   final DateTime? firstDate;
   final DateTime? lastDate;
   final VooCalendarTheme? calendarTheme;
-  
+
   const _DateRangePickerDialog({
     this.initialRange,
     this.firstDate,
     this.lastDate,
     this.calendarTheme,
   });
-  
+
   @override
   State<_DateRangePickerDialog> createState() => _DateRangePickerDialogState();
 }
@@ -1547,7 +1573,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
   late VooCalendarController _controller;
   DateTime? _startDate;
   DateTime? _endDate;
-  
+
   @override
   void initState() {
     super.initState();
@@ -1564,23 +1590,20 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
       }
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 400,
-          maxHeight: 500,
-        ),
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1592,7 +1615,8 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                     'Select Date Range',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  if (_controller.rangeStart != null || _controller.rangeEnd != null) ...[
+                  if (_controller.rangeStart != null ||
+                      _controller.rangeEnd != null) ...[
                     SizedBox(height: design.spacingMd),
                     Text(
                       _getRangeText(),
@@ -1633,8 +1657,8 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                   FilledButton(
                     onPressed: _startDate != null && _endDate != null
                         ? () => Navigator.of(context).pop(
-                              DateTimeRange(start: _startDate!, end: _endDate!),
-                            )
+                            DateTimeRange(start: _startDate!, end: _endDate!),
+                          )
                         : null,
                     child: const Text('OK'),
                   ),
@@ -1646,7 +1670,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
       ),
     );
   }
-  
+
   String _getRangeText() {
     if (_controller.rangeStart != null && _controller.rangeEnd != null) {
       final format = DateFormat('MMM d, yyyy');
@@ -1666,7 +1690,7 @@ class _DateTimeRangePickerDialog extends StatefulWidget {
   final DateTime? lastDate;
   final VooCalendarTheme? calendarTheme;
   final bool use24HourFormat;
-  
+
   const _DateTimeRangePickerDialog({
     this.initialRange,
     this.firstDate,
@@ -1674,26 +1698,30 @@ class _DateTimeRangePickerDialog extends StatefulWidget {
     this.calendarTheme,
     required this.use24HourFormat,
   });
-  
+
   @override
-  State<_DateTimeRangePickerDialog> createState() => _DateTimeRangePickerDialogState();
+  State<_DateTimeRangePickerDialog> createState() =>
+      _DateTimeRangePickerDialogState();
 }
 
-class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> {
+class _DateTimeRangePickerDialogState
+    extends State<_DateTimeRangePickerDialog> {
   late VooCalendarController _controller;
   DateTime? _startDate;
   DateTime? _endDate;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
-  
+
   @override
   void initState() {
     super.initState();
     _startDate = widget.initialRange?.start;
     _endDate = widget.initialRange?.end;
-    _startTime = _startDate != null ? TimeOfDay.fromDateTime(_startDate!) : null;
+    _startTime = _startDate != null
+        ? TimeOfDay.fromDateTime(_startDate!)
+        : null;
     _endTime = _endDate != null ? TimeOfDay.fromDateTime(_endDate!) : null;
-    
+
     _controller = VooCalendarController(
       initialDate: widget.initialRange?.start,
       selectionMode: VooCalendarSelectionMode.range,
@@ -1705,23 +1733,20 @@ class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> 
       }
     }
   }
-  
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    
+
     return Dialog(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 450,
-          maxHeight: 650,
-        ),
+        constraints: const BoxConstraints(maxWidth: 450, maxHeight: 650),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1733,7 +1758,8 @@ class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> 
                     'Select Date and Time Range',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  if (_controller.rangeStart != null || _controller.rangeEnd != null) ...[
+                  if (_controller.rangeStart != null ||
+                      _controller.rangeEnd != null) ...[
                     SizedBox(height: design.spacingMd),
                     Text(
                       _getRangeText(),
@@ -1776,7 +1802,7 @@ class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> 
                                 context: context,
                                 initialTime: _startTime ?? TimeOfDay.now(),
                               );
-                              
+
                               if (time != null) {
                                 setState(() {
                                   _startTime = time;
@@ -1799,7 +1825,7 @@ class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> 
                                 context: context,
                                 initialTime: _endTime ?? TimeOfDay.now(),
                               );
-                              
+
                               if (time != null) {
                                 setState(() {
                                   _endTime = time;
@@ -1846,9 +1872,9 @@ class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> 
                               _endTime?.hour ?? 23,
                               _endTime?.minute ?? 59,
                             );
-                            Navigator.of(context).pop(
-                              DateTimeRange(start: start, end: end),
-                            );
+                            Navigator.of(
+                              context,
+                            ).pop(DateTimeRange(start: start, end: end));
                           }
                         : null,
                     child: const Text('OK'),
@@ -1861,14 +1887,14 @@ class _DateTimeRangePickerDialogState extends State<_DateTimeRangePickerDialog> 
       ),
     );
   }
-  
+
   bool _canSubmit() {
-    return _startDate != null && 
-           _endDate != null && 
-           _startTime != null && 
-           _endTime != null;
+    return _startDate != null &&
+        _endDate != null &&
+        _startTime != null &&
+        _endTime != null;
   }
-  
+
   String _getRangeText() {
     if (_controller.rangeStart != null && _controller.rangeEnd != null) {
       final format = DateFormat('MMM d, yyyy');

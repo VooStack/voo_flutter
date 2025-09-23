@@ -8,11 +8,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButton(
-              label: 'Test Filter',
-              isSelected: false,
-              onPressed: () {},
-            ),
+            body: PrimaryFilterButton(label: 'Test Filter', isSelected: false, onPressed: () {}),
           ),
         ),
       );
@@ -24,12 +20,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButton(
-              label: 'Test Filter',
-              icon: Icons.filter_list,
-              isSelected: false,
-              onPressed: () {},
-            ),
+            body: PrimaryFilterButton(label: 'Test Filter', icon: Icons.filter_list, isSelected: false, onPressed: () {}),
           ),
         ),
       );
@@ -41,12 +32,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFilterButton(
-              label: 'Test Filter',
-              count: 42,
-              isSelected: false,
-              onPressed: () {},
-            ),
+            body: PrimaryFilterButton(label: 'Test Filter', count: 42, isSelected: false, onPressed: () {}),
           ),
         ),
       );
@@ -58,24 +44,13 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.blue,
-              primaryContainer: Colors.lightBlue,
-            ),
+            colorScheme: const ColorScheme.light(primary: Colors.blue, primaryContainer: Colors.lightBlue),
           ),
           home: Scaffold(
             body: Column(
               children: [
-                PrimaryFilterButton(
-                  label: 'Selected',
-                  isSelected: true,
-                  onPressed: () {},
-                ),
-                PrimaryFilterButton(
-                  label: 'Not Selected',
-                  isSelected: false,
-                  onPressed: () {},
-                ),
+                PrimaryFilterButton(label: 'Selected', isSelected: true, onPressed: () {}),
+                PrimaryFilterButton(label: 'Not Selected', isSelected: false, onPressed: () {}),
               ],
             ),
           ),
@@ -89,18 +64,12 @@ void main() {
       // Check that selected button has different styling
       // Find the Container widget within the PrimaryFilterButton
       final selectedButtonFinder = find.descendant(
-        of: find.ancestor(
-          of: find.text('Selected'),
-          matching: find.byType(PrimaryFilterButton),
-        ),
+        of: find.ancestor(of: find.text('Selected'), matching: find.byType(PrimaryFilterButton)),
         matching: find.byType(Container),
       );
-      
+
       final unselectedButtonFinder = find.descendant(
-        of: find.ancestor(
-          of: find.text('Not Selected'),
-          matching: find.byType(PrimaryFilterButton),
-        ),
+        of: find.ancestor(of: find.text('Not Selected'), matching: find.byType(PrimaryFilterButton)),
         matching: find.byType(Container),
       );
 
@@ -144,30 +113,21 @@ void main() {
         label: 'Filter 1',
         icon: Icons.filter_1,
         count: 10,
-        filter: VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'value1',
-        ),
+        filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'value1'),
       ),
       const PrimaryFilter(
         field: 'field2',
         label: 'Filter 2',
         icon: Icons.filter_2,
         count: 20,
-        filter: VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'value2',
-        ),
+        filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'value2'),
       ),
       const PrimaryFilter(
         field: 'field3',
         label: 'Filter 3',
         icon: Icons.filter_3,
         count: 30,
-        filter: VooDataFilter(
-          operator: VooFilterOperator.equals,
-          value: 'value3',
-        ),
+        filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'value3'),
       ),
     ];
 
@@ -175,10 +135,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBar(
-              filters: testFilters,
-              onFilterChanged: (_, __) {},
-            ),
+            body: PrimaryFiltersBar(filters: testFilters, onFilterChanged: (_, __) {}),
           ),
         ),
       );
@@ -192,11 +149,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBar(
-              filters: testFilters,
-              allOptionLabel: 'All Items',
-              onFilterChanged: (_, __) {},
-            ),
+            body: PrimaryFiltersBar(filters: testFilters, allOptionLabel: 'All Items', onFilterChanged: (_, __) {}),
           ),
         ),
       );
@@ -208,11 +161,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBar(
-              filters: testFilters,
-              showAllOption: false,
-              onFilterChanged: (_, __) {},
-            ),
+            body: PrimaryFiltersBar(filters: testFilters, showAllOption: false, onFilterChanged: (_, __) {}),
           ),
         ),
       );
@@ -224,20 +173,13 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryFiltersBar(
-              filters: testFilters,
-              selectedFilter: testFilters[1].filter,
-              onFilterChanged: (_, __) {},
-            ),
+            body: PrimaryFiltersBar(filters: testFilters, selectedFilter: testFilters[1].filter, onFilterChanged: (_, __) {}),
           ),
         ),
       );
 
       // Filter 2 should be selected
-      final filter2Button = find.ancestor(
-        of: find.text('Filter 2'),
-        matching: find.byType(PrimaryFilterButton),
-      );
+      final filter2Button = find.ancestor(of: find.text('Filter 2'), matching: find.byType(PrimaryFilterButton));
 
       final buttonWidget = tester.widget<PrimaryFilterButton>(filter2Button);
       expect(buttonWidget.isSelected, isTrue);
@@ -276,10 +218,7 @@ void main() {
         (index) => PrimaryFilter(
           field: 'field$index',
           label: 'Filter $index',
-          filter: VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: 'value$index',
-          ),
+          filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'value$index'),
         ),
       );
 
@@ -288,10 +227,7 @@ void main() {
           home: Scaffold(
             body: SizedBox(
               width: 300, // Constrain width to force scrolling
-              child: PrimaryFiltersBar(
-                filters: manyFilters,
-                onFilterChanged: (_, __) {},
-              ),
+              child: PrimaryFiltersBar(filters: manyFilters, onFilterChanged: (_, __) {}),
             ),
           ),
         ),
@@ -302,22 +238,22 @@ void main() {
 
       // Check that first filter is visible initially
       expect(find.text('Filter 0'), findsOneWidget);
-      
+
       // Simply verify that all filter items exist in the widget tree
       expect(find.text('Filter 19'), findsOneWidget);
-      
+
       // Verify that the scroll view is scrollable (has overflow)
       final scrollView = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView));
       expect(scrollView.scrollDirection, Axis.horizontal);
-      
+
       // Test that we can scroll
       final scrollableState = tester.state<ScrollableState>(find.byType(Scrollable));
       final initialPosition = scrollableState.position.pixels;
-      
+
       // Perform scroll gesture
       await tester.drag(find.byType(SingleChildScrollView), const Offset(-200, 0));
       await tester.pump();
-      
+
       // Verify that scroll position changed
       final newPosition = scrollableState.position.pixels;
       expect(newPosition, greaterThan(initialPosition));
@@ -333,16 +269,8 @@ void main() {
       controller = VooDataGridController(
         dataSource: dataSource,
         columns: [
-          VooDataColumn<Map<String, dynamic>>(
-            field: 'id',
-            label: 'ID',
-            valueGetter: (row) => row['id'],
-          ),
-          VooDataColumn<Map<String, dynamic>>(
-            field: 'status',
-            label: 'Status',
-            valueGetter: (row) => row['status'],
-          ),
+          VooDataColumn<Map<String, dynamic>>(field: 'id', label: 'ID', valueGetter: (row) => row['id']),
+          VooDataColumn<Map<String, dynamic>>(field: 'status', label: 'Status', valueGetter: (row) => row['status']),
         ],
       );
     });
@@ -358,18 +286,12 @@ void main() {
                 PrimaryFilter(
                   field: 'status',
                   label: 'Active',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'active',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
                 ),
                 PrimaryFilter(
                   field: 'status',
                   label: 'Inactive',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'inactive',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'inactive'),
                 ),
               ],
               onFilterChanged: (_, __) {},
@@ -394,10 +316,7 @@ void main() {
                 PrimaryFilter(
                   field: 'status',
                   label: 'Active',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'active',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
                 ),
               ],
               onFilterChanged: (_, __) {},
@@ -425,18 +344,12 @@ void main() {
                 PrimaryFilter(
                   field: 'status',
                   label: 'Active',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'active',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
                 ),
                 PrimaryFilter(
                   field: 'status',
                   label: 'Inactive',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'inactive',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'inactive'),
                 ),
               ],
               onFilterChanged: (field, filter) {
@@ -466,16 +379,8 @@ void main() {
 
     setUp(() {
       columns = [
-        VooDataColumn<Map<String, dynamic>>(
-          field: 'id',
-          label: 'ID',
-          valueGetter: (row) => row['id'],
-        ),
-        VooDataColumn<Map<String, dynamic>>(
-          field: 'status',
-          label: 'Status',
-          valueGetter: (row) => row['status'],
-        ),
+        VooDataColumn<Map<String, dynamic>>(field: 'id', label: 'ID', valueGetter: (row) => row['id']),
+        VooDataColumn<Map<String, dynamic>>(field: 'status', label: 'Status', valueGetter: (row) => row['status']),
       ];
 
       state = const VooDataGridState<Map<String, dynamic>>(
@@ -501,18 +406,12 @@ void main() {
                 PrimaryFilter(
                   field: 'status',
                   label: 'Active',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'active',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'active'),
                 ),
                 PrimaryFilter(
                   field: 'status',
                   label: 'Inactive',
-                  filter: VooDataFilter(
-                    operator: VooFilterOperator.equals,
-                    value: 'inactive',
-                  ),
+                  filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'inactive'),
                 ),
               ],
               onFilterChanged: (_, __) {},
@@ -537,10 +436,7 @@ void main() {
         totalRows: 2,
       );
 
-      const activeFilter = VooDataFilter(
-        operator: VooFilterOperator.equals,
-        value: 'active',
-      );
+      const activeFilter = VooDataFilter(operator: VooFilterOperator.equals, value: 'active');
 
       await tester.pumpWidget(
         MaterialApp(
@@ -555,19 +451,11 @@ void main() {
                   showPrimaryFilters: true,
                   selectedPrimaryFilter: selectedFilter,
                   primaryFilters: const [
-                    PrimaryFilter(
-                      field: 'status',
-                      label: 'Active',
-                      filter: activeFilter,
-                      count: 2,
-                    ),
+                    PrimaryFilter(field: 'status', label: 'Active', filter: activeFilter, count: 2),
                     PrimaryFilter(
                       field: 'status',
                       label: 'Inactive',
-                      filter: VooDataFilter(
-                        operator: VooFilterOperator.equals,
-                        value: 'inactive',
-                      ),
+                      filter: VooDataFilter(operator: VooFilterOperator.equals, value: 'inactive'),
                       count: 1,
                     ),
                   ],
@@ -616,11 +504,5 @@ class _TestDataSource extends VooDataGridSource<Map<String, dynamic>> {
     required int pageSize,
     required Map<String, VooDataFilter> filters,
     required List<VooColumnSort> sorts,
-  }) async =>
-      VooDataGridResponse<Map<String, dynamic>>(
-        rows: [],
-        totalRows: 0,
-        page: page,
-        pageSize: pageSize,
-      );
+  }) async => VooDataGridResponse<Map<String, dynamic>>(rows: [], totalRows: 0, page: page, pageSize: pageSize);
 }

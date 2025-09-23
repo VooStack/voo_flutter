@@ -4,22 +4,14 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 void main() {
   group('VooApiStandard Sorting', () {
     test('should include sortBy and sortDescending in request', () {
-      const builder = DataGridRequestBuilder(
-        standard: ApiFilterStandard.voo,
-        fieldPrefix: 'Site',
-      );
+      const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo, fieldPrefix: 'Site');
 
       // Test ascending sort
       var request = builder.buildRequest(
         page: 0,
         pageSize: 20,
         filters: {},
-        sorts: [
-          const VooColumnSort(
-            field: 'siteNumber',
-            direction: VooSortDirection.ascending,
-          ),
-        ],
+        sorts: [const VooColumnSort(field: 'siteNumber', direction: VooSortDirection.ascending)],
       );
 
       // print('Request with ascending sort: $request');
@@ -31,12 +23,7 @@ void main() {
         page: 0,
         pageSize: 20,
         filters: {},
-        sorts: [
-          const VooColumnSort(
-            field: 'siteName',
-            direction: VooSortDirection.descending,
-          ),
-        ],
+        sorts: [const VooColumnSort(field: 'siteName', direction: VooSortDirection.descending)],
       );
 
       // print('Request with descending sort: $request');
@@ -44,12 +31,7 @@ void main() {
       expect(request['sortDescending'], true);
 
       // Test no sort
-      request = builder.buildRequest(
-        page: 0,
-        pageSize: 20,
-        filters: {},
-        sorts: [],
-      );
+      request = builder.buildRequest(page: 0, pageSize: 20, filters: {}, sorts: []);
 
       // print('Request with no sort: $request');
       expect(request.containsKey('sortBy'), false);
@@ -57,23 +39,15 @@ void main() {
     });
 
     test('should handle multiple sorts but only use first one', () {
-      const builder = DataGridRequestBuilder(
-        standard: ApiFilterStandard.voo,
-      );
+      const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo);
 
       final request = builder.buildRequest(
         page: 0,
         pageSize: 20,
         filters: {},
         sorts: [
-          const VooColumnSort(
-            field: 'name',
-            direction: VooSortDirection.ascending,
-          ),
-          const VooColumnSort(
-            field: 'date',
-            direction: VooSortDirection.descending,
-          ),
+          const VooColumnSort(field: 'name', direction: VooSortDirection.ascending),
+          const VooColumnSort(field: 'date', direction: VooSortDirection.descending),
         ],
       );
 
@@ -83,9 +57,7 @@ void main() {
     });
 
     test('should not filter out none direction before sending', () {
-      const builder = DataGridRequestBuilder(
-        standard: ApiFilterStandard.voo,
-      );
+      const builder = DataGridRequestBuilder(standard: ApiFilterStandard.voo);
 
       // None direction should be filtered out before reaching buildRequest
       final request = builder.buildRequest(

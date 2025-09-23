@@ -78,9 +78,7 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
     required List<VooColumnSort> sorts,
   }) async {
     // Default implementation for local mode
-    throw UnimplementedError(
-      'fetchRemoteData must be implemented for remote/mixed modes',
-    );
+    throw UnimplementedError('fetchRemoteData must be implemented for remote/mixed modes');
   }
 
   /// Set local data (for local mode)
@@ -89,7 +87,7 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
     // Schedule the async processing for next frame to avoid blocking
     Future.microtask(_applyLocalFiltersAndSorts);
   }
-  
+
   /// Set local data and wait for processing (for tests)
   Future<void> setLocalDataAsync(List<T> data) async {
     _allRows = List.from(data);
@@ -115,12 +113,7 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
           break;
 
         case VooDataGridMode.remote:
-          final response = await fetchRemoteData(
-            page: _currentPage,
-            pageSize: _pageSize,
-            filters: _filters,
-            sorts: _sorts,
-          );
+          final response = await fetchRemoteData(page: _currentPage, pageSize: _pageSize, filters: _filters, sorts: _sorts);
           _rows = response.rows;
           _totalRows = response.totalRows;
           break;
@@ -153,16 +146,10 @@ abstract class VooDataGridSource<T> extends ChangeNotifier {
   /// Apply local filtering and sorting
   Future<void> _applyLocalFiltersAndSorts() async {
     // Use isolate helper for better performance
-    final computeData = IsolateComputeData<T>(
-      data: _allRows,
-      filters: _filters,
-      sorts: _sorts,
-      currentPage: _currentPage,
-      pageSize: _pageSize,
-    );
+    final computeData = IsolateComputeData<T>(data: _allRows, filters: _filters, sorts: _sorts, currentPage: _currentPage, pageSize: _pageSize);
 
     final result = await IsolateComputeHelper.processDataInIsolate(computeData);
-    
+
     _rows = result.rows;
     _totalRows = result.totalRows;
   }

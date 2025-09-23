@@ -1,7 +1,6 @@
 library voo_toast;
 
-import 'package:voo_toast/src/presentation/state/voo_toast_controller.dart' 
-    show VooToastController;
+import 'package:voo_toast/src/presentation/state/voo_toast_controller.dart' show VooToastController;
 
 // Domain - Entities
 export 'src/domain/entities/toast.dart';

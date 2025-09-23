@@ -7,10 +7,5 @@ class VooFilterOption {
   final IconData? icon;
   final Widget? child;
 
-  const VooFilterOption({
-    required this.value,
-    required this.label,
-    this.icon,
-    this.child,
-  });
+  const VooFilterOption({required this.value, required this.label, this.icon, this.child});
 }

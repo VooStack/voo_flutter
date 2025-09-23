@@ -4,10 +4,7 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 
 // Test implementation of VooDataGridSource
 class TestDataGridSource extends VooDataGridSource {
-  TestDataGridSource({
-    super.mode = VooDataGridMode.local,
-    List<dynamic>? data,
-  }) {
+  TestDataGridSource({super.mode = VooDataGridMode.local, List<dynamic>? data}) {
     if (data != null) {
       setLocalData(data);
     }
@@ -22,12 +19,7 @@ class TestDataGridSource extends VooDataGridSource {
   }) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 100), () {});
-    return VooDataGridResponse(
-      rows: [],
-      totalRows: 0,
-      page: page,
-      pageSize: pageSize,
-    );
+    return VooDataGridResponse(rows: [], totalRows: 0, page: page, pageSize: pageSize);
   }
 }
 
@@ -39,67 +31,40 @@ void main() {
 
     setUp(() {
       testData = List.generate(
-          100,
-          (index) => {
-                'id': index + 1,
-                'name': 'Item ${index + 1}',
-                'price': (index + 1) * 10.0,
-                'status': index % 2 == 0 ? 'active' : 'inactive',
-                'category': ['Electronics', 'Clothing', 'Food'][index % 3],
-                'quantity': (index + 1) * 5,
-                'date': DateTime.now().subtract(Duration(days: index)),
-              },);
+        100,
+        (index) => {
+          'id': index + 1,
+          'name': 'Item ${index + 1}',
+          'price': (index + 1) * 10.0,
+          'status': index % 2 == 0 ? 'active' : 'inactive',
+          'category': ['Electronics', 'Clothing', 'Food'][index % 3],
+          'quantity': (index + 1) * 5,
+          'date': DateTime.now().subtract(Duration(days: index)),
+        },
+      );
 
       columns = [
-        const VooDataColumn(
-          field: 'id',
-          label: 'ID',
-          width: 60,
-          frozen: true,
-        ),
-        const VooDataColumn(
-          field: 'name',
-          label: 'Name',
-          width: 150,
-        ),
-        VooDataColumn(
-          field: 'price',
-          label: 'Price',
-          width: 100,
-          valueFormatter: (value) => '\$${value.toStringAsFixed(2)}',
-          textAlign: TextAlign.right,
-        ),
+        const VooDataColumn(field: 'id', label: 'ID', width: 60, frozen: true),
+        const VooDataColumn(field: 'name', label: 'Name', width: 150),
+        VooDataColumn(field: 'price', label: 'Price', width: 100, valueFormatter: (value) => '\$${value.toStringAsFixed(2)}', textAlign: TextAlign.right),
         VooDataColumn(
           field: 'status',
           label: 'Status',
           width: 100,
           cellBuilder: (context, value, row) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: value == 'active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                value.toString().toUpperCase(),
-                style: TextStyle(
-                  color: value == 'active' ? Colors.green : Colors.red,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: value == 'active' ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(4),
             ),
+            child: Text(
+              value.toString().toUpperCase(),
+              style: TextStyle(color: value == 'active' ? Colors.green : Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+          ),
         ),
-        const VooDataColumn(
-          field: 'category',
-          label: 'Category',
-          width: 120,
-        ),
-        const VooDataColumn(
-          field: 'quantity',
-          label: 'Quantity',
-          width: 100,
-          textAlign: TextAlign.center,
-        ),
+        const VooDataColumn(field: 'category', label: 'Category', width: 120),
+        const VooDataColumn(field: 'quantity', label: 'Quantity', width: 100, textAlign: TextAlign.center),
         VooDataColumn(
           field: 'date',
           label: 'Date',
@@ -111,17 +76,15 @@ void main() {
         ),
       ];
 
-      final dataSource = TestDataGridSource(
-        data: testData,
-      );
-      
+      final dataSource = TestDataGridSource(data: testData);
+
       // Load the data initially
       dataSource.loadData();
 
       controller = VooDataGridController(
         dataSource: dataSource,
         columns: columns,
-        alternatingRowColors: true,  // Enable for alternating colors test
+        alternatingRowColors: true, // Enable for alternating colors test
         showHoverEffect: true,
         columnResizable: true,
       );
@@ -134,11 +97,7 @@ void main() {
     testWidgets('renders data grid with columns and data', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
@@ -161,19 +120,15 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
       await tester.pumpAndSettle();
-      
+
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(0));
-      
+
       // Directly toggle selection using the data source
       controller.dataSource.toggleRowSelection(controller.dataSource.rows[0]);
       await tester.pumpAndSettle();
@@ -186,16 +141,12 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
       await tester.pumpAndSettle();
-      
+
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(1));
 
@@ -210,11 +161,7 @@ void main() {
     testWidgets('shows pagination controls', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
@@ -230,11 +177,7 @@ void main() {
     testWidgets('handles sorting when column header is clicked', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
@@ -252,24 +195,18 @@ void main() {
     testWidgets('shows filter row when enabled', (tester) async {
       // Set a desktop-sized screen to ensure inline filters are shown
       await tester.binding.setSurfaceSize(const Size(1200, 800));
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: SizedBox(
-              width: 1200,
-              height: 800,
-              child: VooDataGrid(
-                controller: controller,
-              ),
-            ),
+            body: SizedBox(width: 1200, height: 800, child: VooDataGrid(controller: controller)),
           ),
         ),
       );
 
       // Wait for initial render
       await tester.pumpAndSettle();
-      
+
       // Toggle filters after widget is built
       controller.toggleFilters();
       await tester.pumpAndSettle();
@@ -277,28 +214,20 @@ void main() {
       // Check for filter row - on desktop it should show inline
       expect(find.byType(VooDataGridFilterRow), findsOneWidget);
       expect(find.byType(TextField), findsWidgets);
-      
+
       // Reset surface size
       addTearDown(() => tester.binding.setSurfaceSize(null));
     });
 
     testWidgets('handles empty state', (tester) async {
-      final emptySource = TestDataGridSource(
-        data: [],
-      );
+      final emptySource = TestDataGridSource(data: []);
 
-      final emptyController = VooDataGridController(
-        dataSource: emptySource,
-        columns: columns,
-      );
+      final emptyController = VooDataGridController(dataSource: emptySource, columns: columns);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDataGrid(
-              controller: emptyController,
-              emptyStateWidget: const Text('No data available'),
-            ),
+            body: VooDataGrid(controller: emptyController, emptyStateWidget: const Text('No data available')),
           ),
         ),
       );
@@ -313,16 +242,13 @@ void main() {
     testWidgets('shows loading indicator', (tester) async {
       // Skip this test as it has timeout issues with the async loading
       // The loading functionality is tested in other integration tests
-    }, skip: true,);
+    }, skip: true);
 
     testWidgets('handles error state', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-              errorBuilder: (error) => Text('Error: $error'),
-            ),
+            body: VooDataGrid(controller: controller, errorBuilder: (error) => Text('Error: $error')),
           ),
         ),
       );
@@ -353,7 +279,7 @@ void main() {
 
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(0));
-      
+
       // Simulate row tap by calling the callback directly
       final firstRow = controller.dataSource.rows[0];
       tappedRow = firstRow;
@@ -379,7 +305,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      
+
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(0));
 
@@ -396,11 +322,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
@@ -416,11 +338,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 
@@ -433,13 +351,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: SizedBox(
-              width: 800,
-              height: 600,
-              child: VooDataGrid(
-                controller: controller,
-              ),
-            ),
+            body: SizedBox(width: 800, height: 600, child: VooDataGrid(controller: controller)),
           ),
         ),
       );
@@ -454,11 +366,7 @@ void main() {
     testWidgets('handles responsive display modes', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: VooDataGrid(
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: VooDataGrid(controller: controller)),
         ),
       );
 

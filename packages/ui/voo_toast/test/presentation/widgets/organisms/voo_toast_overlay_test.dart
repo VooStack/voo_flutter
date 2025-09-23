@@ -11,13 +11,7 @@ void main() {
     });
 
     testWidgets('renders child widget', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VooToastOverlay(
-            child: Text('Child Widget'),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: VooToastOverlay(child: Text('Child Widget'))));
 
       expect(find.text('Child Widget'), findsOneWidget);
     });
@@ -29,10 +23,7 @@ void main() {
             child: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  VooToast.showInfo(
-                    message: 'Test Toast',
-                    context: context,
-                  );
+                  VooToast.showInfo(message: 'Test Toast', context: context);
                 },
                 child: const Text('Show Toast'),
               ),
@@ -92,10 +83,7 @@ void main() {
             child: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  VooToast.showInfo(
-                    message: 'Dismissable Toast',
-                    context: context,
-                  );
+                  VooToast.showInfo(message: 'Dismissable Toast', context: context);
                 },
                 child: const Text('Show Toast'),
               ),
@@ -128,11 +116,7 @@ void main() {
             child: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  VooToast.showInfo(
-                    message: 'Auto Dismiss',
-                    duration: const Duration(milliseconds: 500),
-                    context: context,
-                  );
+                  VooToast.showInfo(message: 'Auto Dismiss', duration: const Duration(milliseconds: 500), context: context);
                 },
                 child: const Text('Show Toast'),
               ),
@@ -162,16 +146,8 @@ void main() {
             child: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  VooToast.showInfo(
-                    message: 'Top Toast',
-                    position: ToastPosition.top,
-                    context: context,
-                  );
-                  VooToast.showInfo(
-                    message: 'Bottom Toast',
-                    position: ToastPosition.bottom,
-                    context: context,
-                  );
+                  VooToast.showInfo(message: 'Top Toast', position: ToastPosition.top, context: context);
+                  VooToast.showInfo(message: 'Bottom Toast', position: ToastPosition.bottom, context: context);
                 },
                 child: const Text('Show Toasts'),
               ),
@@ -203,10 +179,7 @@ void main() {
             child: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  customController.showInfo(
-                    message: 'Custom Controller Toast',
-                    context: context,
-                  );
+                  customController.showInfo(message: 'Custom Controller Toast', context: context);
                 },
                 child: const Text('Show Toast'),
               ),
@@ -233,10 +206,7 @@ void main() {
             child: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  VooToast.showInfo(
-                    message: 'Animated Toast',
-                    context: context,
-                  );
+                  VooToast.showInfo(message: 'Animated Toast', context: context);
                 },
                 child: const Text('Show Toast'),
               ),
@@ -264,11 +234,7 @@ void main() {
     testWidgets('respects max toasts configuration', (WidgetTester tester) async {
       // Reset and initialize with specific config
       VooToastController.reset();
-      VooToastController.init(
-        config: const ToastConfig(
-          queueMode: false,
-        ),
-      );
+      VooToastController.init(config: const ToastConfig(queueMode: false));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -301,13 +267,7 @@ void main() {
     });
 
     testWidgets('handles empty toast stream', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VooToastOverlay(
-            child: Text('No Toasts'),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const MaterialApp(home: VooToastOverlay(child: Text('No Toasts'))));
 
       expect(find.text('No Toasts'), findsOneWidget);
       // No toast cards should be present
@@ -322,28 +282,19 @@ void main() {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      VooToast.showInfo(
-                        message: 'Top Right',
-                        position: ToastPosition.topRight,
-                      );
+                      VooToast.showInfo(message: 'Top Right', position: ToastPosition.topRight);
                     },
                     child: const Text('Top Right'),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      VooToast.showInfo(
-                        message: 'Bottom Left',
-                        position: ToastPosition.bottomLeft,
-                      );
+                      VooToast.showInfo(message: 'Bottom Left', position: ToastPosition.bottomLeft);
                     },
                     child: const Text('Bottom Left'),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      VooToast.showInfo(
-                        message: 'Center',
-                        position: ToastPosition.center,
-                      );
+                      VooToast.showInfo(message: 'Center', position: ToastPosition.center);
                     },
                     child: const Text('Center'),
                   ),

@@ -92,36 +92,33 @@ class VooFormSection extends StatefulWidget implements VooFormFieldWidget {
     this.leading,
     this.trailing,
     this.onExpansionChanged,
-  }) : assert(
-          title != null || titleWidget != null || !isCollapsible,
-          'A title is required when section is collapsible',
-        );
+  }) : assert(title != null || titleWidget != null || !isCollapsible, 'A title is required when section is collapsible');
 
   @override
   State<VooFormSection> createState() => _VooFormSectionState();
 
   @override
   VooFormFieldWidget copyWith() => VooFormSection(
-        key: key,
-        title: title,
-        titleWidget: titleWidget,
-        description: description,
-        isCollapsible: isCollapsible,
-        initiallyExpanded: initiallyExpanded,
-        padding: padding,
-        margin: margin,
-        backgroundColor: backgroundColor,
-        border: border,
-        borderRadius: borderRadius,
-        elevation: elevation,
-        showTitleDivider: showTitleDivider,
-        childrenSpacing: childrenSpacing,
-        crossAxisAlignment: crossAxisAlignment,
-        leading: leading,
-        trailing: trailing,
-        onExpansionChanged: onExpansionChanged,
-        children: children,
-      );
+    key: key,
+    title: title,
+    titleWidget: titleWidget,
+    description: description,
+    isCollapsible: isCollapsible,
+    initiallyExpanded: initiallyExpanded,
+    padding: padding,
+    margin: margin,
+    backgroundColor: backgroundColor,
+    border: border,
+    borderRadius: borderRadius,
+    elevation: elevation,
+    showTitleDivider: showTitleDivider,
+    childrenSpacing: childrenSpacing,
+    crossAxisAlignment: crossAxisAlignment,
+    leading: leading,
+    trailing: trailing,
+    onExpansionChanged: onExpansionChanged,
+    children: children,
+  );
 }
 
 class _VooFormSectionState extends State<VooFormSection> with SingleTickerProviderStateMixin {
@@ -134,23 +131,9 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
   void initState() {
     super.initState();
     _isExpanded = widget.initiallyExpanded;
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _expandAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
-    _rotationAnimation = Tween<double>(
-      begin: 0,
-      end: 0.5,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _animationController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _expandAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    _rotationAnimation = Tween<double>(begin: 0, end: 0.5).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
 
     if (_isExpanded) {
       _animationController.value = 1.0;
@@ -182,30 +165,22 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
       return const SizedBox.shrink();
     }
 
-    final Widget titleContent = widget.titleWidget ??
+    final Widget titleContent =
+        widget.titleWidget ??
         Text(
           widget.title!,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface,
-          ),
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface),
         );
 
     // Build the title row with optional leading/trailing widgets
     Widget titleRow = Row(
       children: [
-        if (widget.leading != null) ...[
-          widget.leading!,
-          const SizedBox(width: 12),
-        ],
+        if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 12)],
         Expanded(child: titleContent),
         if (widget.isCollapsible && widget.trailing == null)
           RotationTransition(
             turns: _rotationAnimation,
-            child: Icon(
-              Icons.expand_more,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            child: Icon(Icons.expand_more, color: theme.colorScheme.onSurfaceVariant),
           )
         else if (widget.trailing != null)
           widget.trailing!,
@@ -217,10 +192,7 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
       titleRow = InkWell(
         onTap: _toggleExpansion,
         borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: titleRow,
-        ),
+        child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: titleRow),
       );
     }
 
@@ -233,12 +205,7 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 4),
-      child: Text(
-        widget.description!,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
+      child: Text(widget.description!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
     );
   }
 
@@ -248,10 +215,7 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
     return Column(
       crossAxisAlignment: widget.crossAxisAlignment,
       children: [
-        for (int i = 0; i < widget.children.length; i++) ...[
-          widget.children[i],
-          if (i < widget.children.length - 1) SizedBox(height: widget.childrenSpacing),
-        ],
+        for (int i = 0; i < widget.children.length; i++) ...[widget.children[i], if (i < widget.children.length - 1) SizedBox(height: widget.childrenSpacing)],
       ],
     );
   }
@@ -273,30 +237,18 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
         _buildDescription(context),
         if (widget.showTitleDivider && (widget.title != null || widget.titleWidget != null) && (!widget.isCollapsible || _isExpanded)) ...[
           const SizedBox(height: 12),
-          Divider(
-            height: 1,
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
-          ),
+          Divider(height: 1, color: theme.colorScheme.outline.withValues(alpha: 0.2)),
           const SizedBox(height: 16),
         ] else if (widget.title != null || widget.titleWidget != null)
           const SizedBox(height: 16),
 
         // Animated expansion for children
-        if (widget.isCollapsible)
-          SizeTransition(
-            sizeFactor: _expandAnimation,
-            child: _buildChildren(),
-          )
-        else
-          _buildChildren(),
+        if (widget.isCollapsible) SizeTransition(sizeFactor: _expandAnimation, child: _buildChildren()) else _buildChildren(),
       ],
     );
 
     // Apply padding
-    content = Padding(
-      padding: effectivePadding,
-      child: content,
-    );
+    content = Padding(padding: effectivePadding, child: content);
 
     // Apply decoration (background, border, etc.)
     if (widget.elevation > 0 || widget.backgroundColor != null || widget.border != null) {
@@ -304,35 +256,18 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
         decoration: BoxDecoration(
           color: effectiveBackgroundColor,
           borderRadius: effectiveBorderRadius,
-          border: widget.border ??
-              (widget.elevation == 0
-                  ? Border.all(
-                      color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                    )
-                  : null),
+          border: widget.border ?? (widget.elevation == 0 ? Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)) : null),
           boxShadow: widget.elevation > 0
-              ? [
-                  BoxShadow(
-                    color: theme.shadowColor.withValues(alpha: 0.1),
-                    blurRadius: widget.elevation * 2,
-                    offset: Offset(0, widget.elevation),
-                  ),
-                ]
+              ? [BoxShadow(color: theme.shadowColor.withValues(alpha: 0.1), blurRadius: widget.elevation * 2, offset: Offset(0, widget.elevation))]
               : null,
         ),
-        child: ClipRRect(
-          borderRadius: effectiveBorderRadius,
-          child: content,
-        ),
+        child: ClipRRect(borderRadius: effectiveBorderRadius, child: content),
       );
     }
 
     // Apply margin
     if (effectiveMargin != EdgeInsets.zero) {
-      content = Padding(
-        padding: effectiveMargin,
-        child: content,
-      );
+      content = Padding(padding: effectiveMargin, child: content);
     }
 
     return content;

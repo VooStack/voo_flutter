@@ -9,20 +9,12 @@ import 'package:voo_toast/src/presentation/widgets/molecules/voo_toast_card.dart
 void main() {
   group('VooToastCard Widget', () {
     testWidgets('displays basic toast message', (WidgetTester tester) async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -43,10 +35,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -56,20 +45,12 @@ void main() {
     });
 
     testWidgets('displays close button when enabled', (WidgetTester tester) async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -78,21 +59,12 @@ void main() {
     });
 
     testWidgets('hides close button when disabled', (WidgetTester tester) async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        showCloseButton: false,
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', showCloseButton: false, position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -103,12 +75,7 @@ void main() {
     testWidgets('calls onDismiss when close button tapped', (WidgetTester tester) async {
       var dismissed = false;
 
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -150,10 +117,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -182,10 +146,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -194,21 +155,12 @@ void main() {
     });
 
     testWidgets('shows progress bar when enabled', (WidgetTester tester) async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        showProgressBar: true,
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', showProgressBar: true, position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -229,10 +181,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -250,21 +199,12 @@ void main() {
       ];
 
       for (final testCase in testCases) {
-        final toast = Toast(
-          id: 'test-${testCase.$1}',
-          message: testCase.$2,
-          type: testCase.$1,
-          position: ToastPosition.bottom,
-          animation: ToastAnimation.fade,
-        );
+        final toast = Toast(id: 'test-${testCase.$1}', message: testCase.$2, type: testCase.$1, position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: VooToastCard(
-                toast: toast,
-                onDismiss: () {},
-              ),
+              body: VooToastCard(toast: toast, onDismiss: () {}),
             ),
           ),
         );
@@ -292,10 +232,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -324,44 +261,25 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
 
       expect(find.text('Styled toast'), findsOneWidget);
 
-      final material = tester.widget<Material>(
-        find
-            .descendant(
-              of: find.byType(VooToastCard),
-              matching: find.byType(Material),
-            )
-            .first,
-      );
+      final material = tester.widget<Material>(find.descendant(of: find.byType(VooToastCard), matching: find.byType(Material)).first);
 
       expect(material.borderRadius, BorderRadius.circular(20));
     });
 
     testWidgets('displays icon for toast types', (WidgetTester tester) async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test with icon',
-        type: ToastType.success,
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test with icon', type: ToastType.success, position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: () {},
-            ),
+            body: VooToastCard(toast: toast, onDismiss: () {}),
           ),
         ),
       );
@@ -371,28 +289,17 @@ void main() {
     });
 
     testWidgets('custom icon size is applied', (WidgetTester tester) async {
-      const toast = Toast(
-        id: 'test-1',
-        message: 'Test message',
-        position: ToastPosition.bottom,
-        animation: ToastAnimation.fade,
-      );
+      const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
 
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooToastCard(
-              toast: toast,
-              onDismiss: _dummyCallback,
-              iconSize: 32.0,
-            ),
+            body: VooToastCard(toast: toast, onDismiss: _dummyCallback, iconSize: 32.0),
           ),
         ),
       );
 
-      final icon = tester.widget<Icon>(
-        find.byType(Icon).first,
-      );
+      final icon = tester.widget<Icon>(find.byType(Icon).first);
 
       expect(icon.size, 32.0);
     });

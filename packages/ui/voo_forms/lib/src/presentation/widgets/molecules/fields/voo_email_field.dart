@@ -36,13 +36,13 @@ class VooEmailField extends VooTextField {
     super.onSubmitted,
     super.autofocus,
   }) : super(
-          placeholder: placeholder ?? 'user@example.com',
-          keyboardType: TextInputType.emailAddress,
-          prefixIcon: prefixIcon ?? const Icon(Icons.email),
-          autocorrect: false,
-          enableSuggestions: false,
-          textCapitalization: TextCapitalization.none,
-        );
+         placeholder: placeholder ?? 'user@example.com',
+         keyboardType: TextInputType.emailAddress,
+         prefixIcon: prefixIcon ?? const Icon(Icons.email),
+         autocorrect: false,
+         enableSuggestions: false,
+         textCapitalization: TextCapitalization.none,
+       );
 
   @override
   String? validate(String? value) {
@@ -53,9 +53,7 @@ class VooEmailField extends VooTextField {
     // Check email format if value is not empty
     if (value != null && value.isNotEmpty) {
       // Basic email regex pattern
-      final emailRegex = RegExp(
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-      );
+      final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
       if (!emailRegex.hasMatch(value)) {
         return 'Please enter a valid email address';
       }

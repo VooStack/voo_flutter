@@ -35,24 +35,25 @@ class OrderRepositoryImpl extends VooDataGridSource<OrderList> {
     required List<VooColumnSort> sorts,
   }) async {
     // Build request with VooApiStandard
-    final request = const DataGridRequestBuilder(
-      standard: ApiFilterStandard.voo,
-      fieldPrefix: 'Site',
-    ).buildRequest(
-      page: page + 1, // VooAPI uses 1-based pagination
-      pageSize: pageSize,
-      filters: filters,
-      sorts: sorts, // <-- Sorts will be included here
-    );
+    final request =
+        const DataGridRequestBuilder(
+          standard: ApiFilterStandard.voo,
+          fieldPrefix: 'Site',
+        ).buildRequest(
+          page: page + 1, // VooAPI uses 1-based pagination
+          pageSize: pageSize,
+          filters: filters,
+          sorts: sorts, // <-- Sorts will be included here
+        );
 
     debugPrint('[OrderRepository] API Request: $request');
-    
+
     // Make your actual API call here
     // final response = await remoteDataSource.getOrders(request);
-    
+
     // Mock response for example
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     return VooDataGridResponse(
       rows: _generateMockData(),
       totalRows: 100,
@@ -60,16 +61,19 @@ class OrderRepositoryImpl extends VooDataGridSource<OrderList> {
       pageSize: pageSize,
     );
   }
-  
+
   List<OrderList> _generateMockData() {
-    return List.generate(20, (index) => OrderList(
-      siteNumber: '100${index + 1}',
-      siteName: 'Site ${index + 1}',
-      clientCompanyName: 'Client ${index + 1}',
-      orderStatus: index % 2 == 0 ? 'Active' : 'Pending',
-      orderDate: DateTime.now().subtract(Duration(days: index)),
-      orderCost: 1000.0 + (index * 100),
-    ));
+    return List.generate(
+      20,
+      (index) => OrderList(
+        siteNumber: '100${index + 1}',
+        siteName: 'Site ${index + 1}',
+        clientCompanyName: 'Client ${index + 1}',
+        orderStatus: index % 2 == 0 ? 'Active' : 'Pending',
+        orderDate: DateTime.now().subtract(Duration(days: index)),
+        orderCost: 1000.0 + (index * 100),
+      ),
+    );
   }
 }
 
@@ -87,10 +91,10 @@ class _VooApiStandardExampleState extends State<VooApiStandardExample> {
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize data source
     dataSource = OrderRepositoryImpl();
-    
+
     // Initialize controller with properly configured columns
     controller = VooDataGridController<OrderList>(
       dataSource: dataSource,
@@ -106,7 +110,7 @@ class _VooApiStandardExampleState extends State<VooApiStandardExample> {
         ),
         VooDataColumn<OrderList>(
           field: 'siteName',
-          label: 'Site Name', 
+          label: 'Site Name',
           sortable: true, // <-- MUST be true for sorting to work
           filterable: true,
           width: 200,
@@ -164,7 +168,7 @@ class _VooApiStandardExampleState extends State<VooApiStandardExample> {
         ),
       ],
     );
-    
+
     // Load initial data
     dataSource.loadData();
   }
@@ -199,7 +203,9 @@ class _VooApiStandardExampleState extends State<VooApiStandardExample> {
                 const SizedBox(height: 8),
                 const Text('• Click column headers to sort'),
                 const Text('• Check console for API requests'),
-                const Text('• Sorts should appear as sortBy and sortDescending'),
+                const Text(
+                  '• Sorts should appear as sortBy and sortDescending',
+                ),
                 const SizedBox(height: 8),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.bug_report),
@@ -207,14 +213,16 @@ class _VooApiStandardExampleState extends State<VooApiStandardExample> {
                   onPressed: () {
                     debugPrint('Current sorts: ${dataSource.sorts}');
                     for (var sort in dataSource.sorts) {
-                      debugPrint('  - Field: ${sort.field}, Direction: ${sort.direction}');
+                      debugPrint(
+                        '  - Field: ${sort.field}, Direction: ${sort.direction}',
+                      );
                     }
                   },
                 ),
               ],
             ),
           ),
-          
+
           // Data Grid
           Expanded(
             child: VooDataGrid<OrderList>(

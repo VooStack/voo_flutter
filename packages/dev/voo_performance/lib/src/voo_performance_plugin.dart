@@ -154,7 +154,7 @@ class VooPerformancePlugin extends VooPlugin {
   }) {
     try {
       final timestamp = DateTime.now();
-      
+
       // Create entry data, filtering out null values for web compatibility
       final entryData = <String, dynamic>{
         'id': '${category.toLowerCase()}_${timestamp.millisecondsSinceEpoch}',
@@ -164,7 +164,7 @@ class VooPerformancePlugin extends VooPlugin {
         'category': category,
         'tag': 'VooPerformance',
       };
-      
+
       // Add metadata if present, filtering out null values
       if (metadata != null) {
         final cleanMetadata = <String, dynamic>{};
@@ -173,11 +173,8 @@ class VooPerformancePlugin extends VooPlugin {
         });
         if (cleanMetadata.isNotEmpty) entryData['metadata'] = cleanMetadata;
       }
-      
-      final structuredData = {
-        '__voo_logger__': true,
-        'entry': entryData,
-      };
+
+      final structuredData = {'__voo_logger__': true, 'entry': entryData};
 
       // Send via postEvent for DevTools extension
       developer.postEvent('voo_logger_event', structuredData);

@@ -19,17 +19,12 @@ class OrderRepositoryImpl extends VooDataGridSource<OrderList> {
     debugPrint('  - pageSize: $pageSize');
     debugPrint('  - filters: $filters');
     debugPrint('  - sorts: $sorts (length: ${sorts.length})');
-    
+
     final request = const DataGridRequestBuilder(
       standard: ApiFilterStandard.voo,
       fieldPrefix: 'Site',
-    ).buildRequest(
-      page: page + 1, 
-      pageSize: pageSize, 
-      filters: filters, 
-      sorts: sorts,
-    );
-    
+    ).buildRequest(page: page + 1, pageSize: pageSize, filters: filters, sorts: sorts);
+
     debugPrint('  - Built request: $request');
 
     // Mock response
@@ -50,32 +45,28 @@ class OrderList {
   final String siteNumber;
   final String siteName;
   final String status;
-  
-  OrderList({
-    required this.siteNumber,
-    required this.siteName,
-    required this.status,
-  });
+
+  OrderList({required this.siteNumber, required this.siteName, required this.status});
 }
 
 void main() {
   test('Debug sorting issue - check if sorts reach fetchRemoteData', () async {
     final dataSource = OrderRepositoryImpl();
-    
+
     // Check initial state
     debugPrint('\n=== Initial Load ===');
     await dataSource.loadData();
-    
+
     // Apply a sort
     debugPrint('\n=== Applying Sort ===');
     dataSource.applySort('siteNumber', VooSortDirection.ascending);
-    
+
     // Check dataSource sorts after applying
     debugPrint('DataSource sorts after applySort: ${dataSource.sorts}');
-    
+
     debugPrint('\n=== Loading After Sort ===');
     await dataSource.loadData();
-    
+
     // Verify sorts are in dataSource
     expect(dataSource.sorts.length, equals(1));
     expect(dataSource.sorts.first.field, equals('siteNumber'));
@@ -84,49 +75,41 @@ void main() {
 
   testWidgets('Debug sorting with controller and columns', (tester) async {
     final dataSource = OrderRepositoryImpl();
-    
+
     final controller = VooDataGridController<OrderList>(
       dataSource: dataSource,
       columns: [
-        VooDataColumn<OrderList>(
-          field: 'siteNumber',
-          label: 'Site Number',
-          valueGetter: (row) => row.siteNumber,
-        ),
-        VooDataColumn<OrderList>(
-          field: 'siteName',
-          label: 'Site Name',
-          valueGetter: (row) => row.siteName,
-        ),
+        VooDataColumn<OrderList>(field: 'siteNumber', label: 'Site Number', valueGetter: (row) => row.siteNumber),
+        VooDataColumn<OrderList>(field: 'siteName', label: 'Site Name', valueGetter: (row) => row.siteName),
         VooDataColumn<OrderList>(
           field: 'status',
           label: 'Status',
-          sortable: false,  // This column is not sortable
+          sortable: false, // This column is not sortable
           valueGetter: (row) => row.status,
         ),
       ],
     );
-    
+
     // Initial load
     debugPrint('\n=== Initial Load with Controller ===');
     await dataSource.loadData();
-    
+
     // Simulate column header click
     debugPrint('\n=== Simulating Column Sort ===');
     debugPrint('Column sortable? ${controller.columns[0].sortable}');
     debugPrint('DataSource sorts before: ${dataSource.sorts}');
-    
+
     controller.sortColumn('siteNumber');
-    
+
     debugPrint('DataSource sorts after: ${dataSource.sorts}');
-    
+
     // Wait for async operations
     await tester.pumpAndSettle();
-    
+
     // Verify sorts were applied
     expect(dataSource.sorts.length, equals(1));
     expect(dataSource.sorts.first.field, equals('siteNumber'));
-    
+
     controller.dispose();
   });
 }

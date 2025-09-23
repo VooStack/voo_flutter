@@ -14,7 +14,7 @@ class GridContent<T> extends StatelessWidget {
   final void Function(T)? onRowDoubleTap;
   final void Function(T)? onRowHover;
   final bool alwaysShowVerticalScrollbar;
-  
+
   const GridContent({
     super.key,
     required this.state,
@@ -42,23 +42,14 @@ class GridContent<T> extends StatelessWidget {
 
     if (state.rows.isEmpty) {
       return Center(
-        child: emptyStateWidget ??
+        child:
+            emptyStateWidget ??
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.inbox,
-                  size: 64,
-                  color: theme.headerTextColor.withValues(alpha: 0.3),
-                ),
+                Icon(Icons.inbox, size: 64, color: theme.headerTextColor.withValues(alpha: 0.3)),
                 const SizedBox(height: 16),
-                Text(
-                  'No data available',
-                  style: theme.cellTextStyle.copyWith(
-                    fontSize: 16,
-                    color: theme.headerTextColor.withValues(alpha: 0.5),
-                  ),
-                ),
+                Text('No data available', style: theme.cellTextStyle.copyWith(fontSize: 16, color: theme.headerTextColor.withValues(alpha: 0.5))),
               ],
             ),
       );
@@ -66,16 +57,8 @@ class GridContent<T> extends StatelessWidget {
 
     return Column(
       children: [
-        VooDataGridHeader<T>(
-          controller: controller,
-          theme: theme,
-          onSort: controller.sortColumn,
-        ),
-        if (state.filtersVisible)
-          VooDataGridFilterRow<T>(
-            controller: controller,
-            theme: theme,
-          ),
+        VooDataGridHeader<T>(controller: controller, theme: theme, onSort: controller.sortColumn),
+        if (state.filtersVisible) VooDataGridFilterRow<T>(controller: controller, theme: theme),
         Expanded(
           child: Scrollbar(
             controller: verticalScrollController,

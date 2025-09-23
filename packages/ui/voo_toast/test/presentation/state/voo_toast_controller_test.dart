@@ -26,9 +26,7 @@ void main() {
 
     test('showSuccess creates success toast', () async {
       final controller = VooToastController.instance;
-      controller.showSuccess(
-        message: 'Success message',
-      );
+      controller.showSuccess(message: 'Success message');
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.length, 1);
@@ -38,10 +36,7 @@ void main() {
 
     test('showError creates error toast', () async {
       final controller = VooToastController.instance;
-      controller.showError(
-        message: 'Error message',
-        title: 'Error',
-      );
+      controller.showError(message: 'Error message', title: 'Error');
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.length, 1);
@@ -52,9 +47,7 @@ void main() {
 
     test('showWarning creates warning toast', () async {
       final controller = VooToastController.instance;
-      controller.showWarning(
-        message: 'Warning message',
-      );
+      controller.showWarning(message: 'Warning message');
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.length, 1);
@@ -64,9 +57,7 @@ void main() {
 
     test('showInfo creates info toast', () async {
       final controller = VooToastController.instance;
-      controller.showInfo(
-        message: 'Info message',
-      );
+      controller.showInfo(message: 'Info message');
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.length, 1);
@@ -76,10 +67,7 @@ void main() {
 
     test('showCustom creates custom toast', () async {
       final controller = VooToastController.instance;
-      controller.showCustom(
-        content: const Text('Custom content'),
-        backgroundColor: Colors.purple,
-      );
+      controller.showCustom(content: const Text('Custom content'), backgroundColor: Colors.purple);
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.length, 1);
@@ -124,12 +112,7 @@ void main() {
     });
 
     test('respects max toasts configuration', () async {
-      VooToastController.init(
-        config: const ToastConfig(
-          maxToasts: 2,
-          queueMode: false,
-        ),
-      );
+      VooToastController.init(config: const ToastConfig(maxToasts: 2, queueMode: false));
       final controller = VooToastController.instance;
 
       controller.showInfo(message: 'First');
@@ -143,11 +126,7 @@ void main() {
     });
 
     test('queue mode queues toasts when max reached', () async {
-      VooToastController.init(
-        config: const ToastConfig(
-          maxToasts: 1,
-        ),
-      );
+      VooToastController.init(config: const ToastConfig(maxToasts: 1));
       final controller = VooToastController.instance;
 
       controller.showInfo(message: 'First');
@@ -170,11 +149,7 @@ void main() {
     });
 
     test('clearQueue removes queued toasts', () async {
-      VooToastController.init(
-        config: const ToastConfig(
-          maxToasts: 1,
-        ),
-      );
+      VooToastController.init(config: const ToastConfig(maxToasts: 1));
       final controller = VooToastController.instance;
 
       controller.showInfo(message: 'First');
@@ -192,10 +167,7 @@ void main() {
 
     test('auto-dismisses toasts after duration', () async {
       final controller = VooToastController.instance;
-      controller.showInfo(
-        message: 'Auto dismiss',
-        duration: const Duration(milliseconds: 100),
-      );
+      controller.showInfo(message: 'Auto dismiss', duration: const Duration(milliseconds: 100));
 
       await Future<void>.delayed(const Duration(milliseconds: 10));
       var toasts = await controller.toastsStream.first;
@@ -208,10 +180,7 @@ void main() {
 
     test('does not auto-dismiss with zero duration', () async {
       final controller = VooToastController.instance;
-      controller.showInfo(
-        message: 'Persistent',
-        duration: Duration.zero,
-      );
+      controller.showInfo(message: 'Persistent', duration: Duration.zero);
 
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
@@ -231,11 +200,7 @@ void main() {
 
     test('overrides default config values', () async {
       final controller = VooToastController.instance;
-      controller.showInfo(
-        message: 'Test',
-        duration: const Duration(seconds: 5),
-        position: ToastPosition.topCenter,
-      );
+      controller.showInfo(message: 'Test', duration: const Duration(seconds: 5), position: ToastPosition.topCenter);
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.first.duration, const Duration(seconds: 5));
@@ -262,9 +227,7 @@ void main() {
     test('handles context for responsive positioning', () async {
       final controller = VooToastController.instance;
       // Context handling is done internally
-      controller.showInfo(
-        message: 'Mobile toast',
-      );
+      controller.showInfo(message: 'Mobile toast');
 
       final toasts = await controller.toastsStream.first;
       expect(toasts.first.position, ToastPosition.auto);

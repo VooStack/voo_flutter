@@ -74,18 +74,18 @@ class VooDropdownField<T> extends VooFieldBase<T> {
     // Get the form controller from scope if available
     final formScope = VooFormScope.of(context);
     final formController = formScope?.controller;
-    
+
     // Get value from form controller if available, otherwise use initial value
     final currentValue = formController?.getValue(name);
     final effectiveValue = currentValue as T? ?? initialValue;
-    
+
     // If we have an initial value but the controller doesn't have it yet, set it
     if (initialValue != null && currentValue == null && formController != null) {
       formController.setValue(name, initialValue, isUserInput: false);
     }
-    
+
     final effectiveReadOnly = getEffectiveReadOnly(context);
-    
+
     // Get the error for this field using the base class method
     final fieldError = getFieldError(context);
 
@@ -113,10 +113,7 @@ class VooDropdownField<T> extends VooFieldBase<T> {
       sortComparator: sortOptions,
       searchFilter: searchFilter,
       optionBuilder: optionBuilder,
-      decoration: getInputDecoration(context).copyWith(
-        suffixIcon: dropdownIcon,
-        errorText: showError != false ? fieldError : null,
-      ),
+      decoration: getInputDecoration(context).copyWith(suffixIcon: dropdownIcon, errorText: showError != false ? fieldError : null),
     );
 
     // Apply standard field building pattern
@@ -128,40 +125,33 @@ class VooDropdownField<T> extends VooFieldBase<T> {
   }
 
   @override
-  VooDropdownField<T> copyWith({
-    T? initialValue,
-    String? label,
-    VooFieldLayout? layout,
-    String? name,
-    bool? readOnly,
-  }) =>
-      VooDropdownField<T>(
-        key: key,
-        name: name ?? this.name,
-        options: options,
-        label: label ?? this.label,
-        labelWidget: labelWidget,
-        hint: hint,
-        helper: helper,
-        placeholder: placeholder,
-        initialValue: initialValue ?? this.initialValue,
-        enabled: enabled,
-        readOnly: readOnly ?? this.readOnly,
-        validators: validators,
-        onChanged: onChanged,
-        actions: actions,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        gridColumns: gridColumns,
-        error: error,
-        showError: showError,
-        displayTextBuilder: displayTextBuilder,
-        subtitleBuilder: subtitleBuilder,
-        dropdownIcon: dropdownIcon,
-        maxDropdownHeight: maxDropdownHeight,
-        isExpanded: isExpanded,
-        sortOptions: sortOptions,
-        searchFilter: searchFilter,
-        optionBuilder: optionBuilder,
-      );
+  VooDropdownField<T> copyWith({T? initialValue, String? label, VooFieldLayout? layout, String? name, bool? readOnly}) => VooDropdownField<T>(
+    key: key,
+    name: name ?? this.name,
+    options: options,
+    label: label ?? this.label,
+    labelWidget: labelWidget,
+    hint: hint,
+    helper: helper,
+    placeholder: placeholder,
+    initialValue: initialValue ?? this.initialValue,
+    enabled: enabled,
+    readOnly: readOnly ?? this.readOnly,
+    validators: validators,
+    onChanged: onChanged,
+    actions: actions,
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
+    gridColumns: gridColumns,
+    error: error,
+    showError: showError,
+    displayTextBuilder: displayTextBuilder,
+    subtitleBuilder: subtitleBuilder,
+    dropdownIcon: dropdownIcon,
+    maxDropdownHeight: maxDropdownHeight,
+    isExpanded: isExpanded,
+    sortOptions: sortOptions,
+    searchFilter: searchFilter,
+    optionBuilder: optionBuilder,
+  );
 }

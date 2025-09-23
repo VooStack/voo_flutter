@@ -36,7 +36,7 @@ class VooMotionDemo extends StatefulWidget {
 
 class _VooMotionDemoState extends State<VooMotionDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +53,7 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               onPressed: () {},
               child: const Text('Drop In Button'),
             ).dropIn(delay: const Duration(milliseconds: 200)),
-            
             const SizedBox(height: 16),
-            
             Card(
               child: const Padding(
                 padding: EdgeInsets.all(16),
@@ -66,7 +64,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               fromHeight: 100,
             ),
           ]),
-          
           _buildSection('Fade Animations', [
             Container(
               padding: const EdgeInsets.all(16),
@@ -76,9 +73,7 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               ),
               child: const Text('Fade In Text'),
             ).fadeIn(delay: const Duration(milliseconds: 600)),
-            
             const SizedBox(height: 16),
-            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -91,39 +86,32 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               ],
             ),
           ]),
-          
           _buildSection('Slide Animations', [
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.green.shade100,
               child: const Text('Slide from Left'),
             ).slideInLeft(delay: const Duration(milliseconds: 1400)),
-            
             const SizedBox(height: 8),
-            
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.orange.shade100,
               child: const Text('Slide from Right', textAlign: TextAlign.right),
             ).slideInRight(delay: const Duration(milliseconds: 1600)),
-            
             const SizedBox(height: 8),
-            
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.purple.shade100,
               child: const Text('Slide from Top', textAlign: TextAlign.center),
             ).slideInTop(delay: const Duration(milliseconds: 1800)),
-            
             const SizedBox(height: 8),
-            
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.red.shade100,
-              child: const Text('Slide from Bottom', textAlign: TextAlign.center),
+              child:
+                  const Text('Slide from Bottom', textAlign: TextAlign.center),
             ).slideInBottom(delay: const Duration(milliseconds: 2000)),
           ]),
-          
           _buildSection('Scale Animations', [
             Container(
               width: 100,
@@ -137,9 +125,7 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               delay: const Duration(milliseconds: 2200),
               curve: Curves.elasticOut,
             ),
-            
             const SizedBox(height: 16),
-            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -158,7 +144,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               ],
             ),
           ]),
-          
           _buildSection('Rotation Animation', [
             const Icon(
               Icons.refresh,
@@ -170,7 +155,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               repeat: true,
             ),
           ]),
-          
           _buildSection('Bounce Animation', [
             Container(
               padding: const EdgeInsets.all(16),
@@ -187,7 +171,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               repeat: true,
             ),
           ]),
-          
           _buildSection('Shake Animation', [
             ElevatedButton(
               onPressed: () {},
@@ -200,7 +183,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               intensity: 5,
             ),
           ]),
-          
           _buildSection('Flip Animation', [
             Card(
               color: Colors.purple,
@@ -212,9 +194,7 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
                 ),
               ),
             ).flipX(delay: const Duration(milliseconds: 3600)),
-            
             const SizedBox(height: 16),
-            
             Card(
               color: Colors.teal,
               child: const Padding(
@@ -226,7 +206,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               ),
             ).flipY(delay: const Duration(milliseconds: 3800)),
           ]),
-          
           _buildSection('Stagger List', [
             VooStaggerList(
               animationType: StaggerAnimationType.slideLeft,
@@ -239,7 +218,8 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
                   margin: const EdgeInsets.only(bottom: 8),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.primaries[index % Colors.primaries.length].shade100,
+                    color: Colors
+                        .primaries[index % Colors.primaries.length].shade100,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text('Staggered Item ${index + 1}'),
@@ -247,7 +227,6 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
               }),
             ),
           ]),
-          
           _buildSection('Chained Animations', [
             Container(
               padding: const EdgeInsets.all(16),
@@ -261,19 +240,20 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
                 'Multiple Animations',
                 style: TextStyle(color: Colors.white),
               ),
-            ).fadeIn(
-              delay: const Duration(milliseconds: 5000),
-            ).scaleIn(
-              delay: const Duration(milliseconds: 5500),
-            ),
+            )
+                .fadeIn(
+                  delay: const Duration(milliseconds: 5000),
+                )
+                .scaleIn(
+                  delay: const Duration(milliseconds: 5500),
+                ),
           ]),
-          
           const SizedBox(height: 100),
         ],
       ),
     );
   }
-  
+
   Widget _buildSection(String title, List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -290,7 +270,7 @@ class _VooMotionDemoState extends State<VooMotionDemo> {
       ],
     );
   }
-  
+
   Widget _buildColorBox(Color color) {
     return Container(
       width: 60,

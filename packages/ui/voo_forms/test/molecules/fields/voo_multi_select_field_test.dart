@@ -8,34 +8,21 @@ void main() {
     // Sample test data
     final testOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
 
-    Widget buildTestApp({
-      required Widget child,
-      VooFormController? controller,
-    }) =>
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: controller != null
-                    ? VooForm(
-                        controller: controller,
-                        fields: [child as VooFormFieldWidget],
-                      )
-                    : child,
-              ),
-            ),
+    Widget buildTestApp({required Widget child, VooFormController? controller}) => MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: controller != null ? VooForm(controller: controller, fields: [child as VooFormFieldWidget]) : child,
           ),
-        );
+        ),
+      ),
+    );
 
     testWidgets('displays empty selection text when no items selected', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            emptySelectionText: 'Please select items',
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, emptySelectionText: 'Please select items'),
         ),
       );
 
@@ -45,11 +32,7 @@ void main() {
     testWidgets('displays placeholder when no empty text provided', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            placeholder: 'Select multiple options',
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, placeholder: 'Select multiple options'),
         ),
       );
 
@@ -60,11 +43,7 @@ void main() {
     testWidgets('displays initial values as chips', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            initialValue: const ['Option 1', 'Option 3'],
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, initialValue: const ['Option 1', 'Option 3']),
         ),
       );
 
@@ -76,12 +55,7 @@ void main() {
     testWidgets('shows +N more when selections exceed maxChipsDisplay', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            initialValue: testOptions,
-            maxChipsDisplay: 2,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, initialValue: testOptions, maxChipsDisplay: 2),
         ),
       );
 
@@ -94,10 +68,7 @@ void main() {
     testWidgets('opens dropdown overlay when tapped', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -116,10 +87,7 @@ void main() {
     testWidgets('shows all options in dropdown', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -139,10 +107,7 @@ void main() {
     testWidgets('filters options based on search', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -163,10 +128,7 @@ void main() {
     testWidgets('selects item when checkbox is tapped', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -189,11 +151,7 @@ void main() {
     testWidgets('deselects item when chip delete is tapped', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            initialValue: const ['Option 1'],
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, initialValue: const ['Option 1']),
         ),
       );
 
@@ -212,10 +170,7 @@ void main() {
     testWidgets('shows select all button when enabled', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -230,10 +185,7 @@ void main() {
     testWidgets('selects all items when select all is tapped', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -256,11 +208,7 @@ void main() {
     testWidgets('shows clear all button in dropdown when items selected', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            initialValue: const ['Option 1', 'Option 2'],
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, initialValue: const ['Option 1', 'Option 2']),
         ),
       );
 
@@ -275,11 +223,7 @@ void main() {
     testWidgets('clears all selections when clear all is tapped', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            initialValue: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, initialValue: testOptions),
         ),
       );
 
@@ -304,11 +248,7 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            onChanged: (value) => changedValue = value,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, onChanged: (value) => changedValue = value),
         ),
       );
 
@@ -329,10 +269,7 @@ void main() {
       await tester.pumpWidget(
         buildTestApp(
           controller: controller,
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions),
         ),
       );
 
@@ -354,12 +291,7 @@ void main() {
     testWidgets('respects readOnly state', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            initialValue: const ['Option 1'],
-            readOnly: true,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, initialValue: const ['Option 1'], readOnly: true),
         ),
       );
 
@@ -378,11 +310,7 @@ void main() {
     testWidgets('respects enabled state', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            enabled: false,
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, enabled: false),
         ),
       );
 
@@ -413,11 +341,7 @@ void main() {
     testWidgets('applies custom search filter', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            searchFilter: (item, query) => item.endsWith(query),
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, searchFilter: (item, query) => item.endsWith(query)),
         ),
       );
 
@@ -437,11 +361,7 @@ void main() {
     testWidgets('displays label when provided', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            label: 'Select Multiple Items',
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, label: 'Select Multiple Items'),
         ),
       );
 
@@ -451,11 +371,7 @@ void main() {
     testWidgets('displays helper text when provided', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooMultiSelectField<String>(
-            name: 'multiselect',
-            options: testOptions,
-            helper: 'You can select multiple options',
-          ),
+          child: VooMultiSelectField<String>(name: 'multiselect', options: testOptions, helper: 'You can select multiple options'),
         ),
       );
 
@@ -504,33 +420,21 @@ void main() {
       return allOptions.where((o) => o.toLowerCase().contains(query.toLowerCase())).toList();
     }
 
-    Widget buildTestApp({
-      required Widget child,
-      VooFormController? controller,
-    }) =>
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: controller != null
-                    ? VooForm(
-                        controller: controller,
-                        fields: [child as VooFormFieldWidget],
-                      )
-                    : child,
-              ),
-            ),
+    Widget buildTestApp({required Widget child, VooFormController? controller}) => MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: controller != null ? VooForm(controller: controller, fields: [child as VooFormFieldWidget]) : child,
           ),
-        );
+        ),
+      ),
+    );
 
     testWidgets('loads initial options on mount', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooAsyncMultiSelectField<String>(
-            name: 'async_multiselect',
-            asyncOptionsLoader: loadOptions,
-          ),
+          child: VooAsyncMultiSelectField<String>(name: 'async_multiselect', asyncOptionsLoader: loadOptions),
         ),
       );
 
@@ -584,10 +488,7 @@ void main() {
     testWidgets('maintains selections across searches', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: VooAsyncMultiSelectField<String>(
-            name: 'async_multiselect',
-            asyncOptionsLoader: loadOptions,
-          ),
+          child: VooAsyncMultiSelectField<String>(name: 'async_multiselect', asyncOptionsLoader: loadOptions),
         ),
       );
 
@@ -616,10 +517,7 @@ void main() {
 
       await tester.pumpWidget(
         buildTestApp(
-          child: VooAsyncMultiSelectField<String>(
-            name: 'async_multiselect',
-            asyncOptionsLoader: errorLoader,
-          ),
+          child: VooAsyncMultiSelectField<String>(name: 'async_multiselect', asyncOptionsLoader: errorLoader),
         ),
       );
 

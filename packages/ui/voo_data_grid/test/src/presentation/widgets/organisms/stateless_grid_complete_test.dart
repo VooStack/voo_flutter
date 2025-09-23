@@ -18,19 +18,8 @@ void main() {
 
     // Test columns
     final columns = <VooDataColumn<Map<String, dynamic>>>[
-      const VooDataColumn(
-        field: 'id',
-        label: 'ID',
-        width: 80,
-        dataType: VooDataColumnType.number,
-        filterWidgetType: VooFilterWidgetType.numberField,
-      ),
-      const VooDataColumn(
-        field: 'name',
-        label: 'Name',
-        width: 150,
-        filterWidgetType: VooFilterWidgetType.textField,
-      ),
+      const VooDataColumn(field: 'id', label: 'ID', width: 80, dataType: VooDataColumnType.number, filterWidgetType: VooFilterWidgetType.numberField),
+      const VooDataColumn(field: 'name', label: 'Name', width: 150, filterWidgetType: VooFilterWidgetType.textField),
       const VooDataColumn(
         field: 'category',
         label: 'Category',
@@ -42,20 +31,8 @@ void main() {
           VooFilterOption(value: 'C', label: 'Category C'),
         ],
       ),
-      const VooDataColumn(
-        field: 'price',
-        label: 'Price',
-        width: 100,
-        dataType: VooDataColumnType.number,
-        filterWidgetType: VooFilterWidgetType.numberField,
-      ),
-      const VooDataColumn(
-        field: 'active',
-        label: 'Active',
-        width: 80,
-        dataType: VooDataColumnType.boolean,
-        filterWidgetType: VooFilterWidgetType.checkbox,
-      ),
+      const VooDataColumn(field: 'price', label: 'Price', width: 100, dataType: VooDataColumnType.number, filterWidgetType: VooFilterWidgetType.numberField),
+      const VooDataColumn(field: 'active', label: 'Active', width: 80, dataType: VooDataColumnType.boolean, filterWidgetType: VooFilterWidgetType.checkbox),
     ];
 
     testWidgets('All features work correctly', (WidgetTester tester) async {
@@ -96,86 +73,80 @@ void main() {
                 state: state,
                 columns: columns,
                 onSortChanged: (field, direction) {
-                    lastSortField = field;
-                    lastSortDirection = direction;
-                    setState(() {
-                      state = state.copyWith(
-                        sorts: [VooColumnSort(field: field, direction: direction)],
-                      );
-                    });
-                  },
-                  onFilterChanged: (field, filter) {
-                    lastFilterField = field;
-                    lastFilter = filter;
-                    setState(() {
-                      final newFilters = Map<String, VooDataFilter>.from(state.filters);
-                      if (filter == null) {
-                        newFilters.remove(field);
-                      } else {
-                        newFilters[field] = filter;
-                      }
-                      state = state.copyWith(filters: newFilters);
-                    });
-                  },
-                  onPageChanged: (page) {
-                    lastPage = page;
-                    setState(() {
-                      state = state.copyWith(
-                        currentPage: page,
-                        rows: testData.skip(page * state.pageSize).take(state.pageSize).toList(),
-                      );
-                    });
-                  },
-                  onPageSizeChanged: (pageSize) {
-                    lastPageSize = pageSize;
-                    setState(() {
-                      state = state.copyWith(
-                        pageSize: pageSize,
-                        rows: testData.take(pageSize).toList(),
-                      );
-                    });
-                  },
-                  onRowSelected: (row) {
-                    lastSelectedRow = row;
-                    setState(() {
-                      final newSelection = Set<Map<String, dynamic>>.from(state.selectedRows);
-                      newSelection.add(row);
-                      state = state.copyWith(selectedRows: newSelection);
-                    });
-                  },
-                  onRowDeselected: (row) {
-                    lastDeselectedRow = row;
-                    setState(() {
-                      final newSelection = Set<Map<String, dynamic>>.from(state.selectedRows);
-                      newSelection.remove(row);
-                      state = state.copyWith(selectedRows: newSelection);
-                    });
-                  },
-                  onSelectAll: () {
-                    selectAllCalled = true;
-                    setState(() {
-                      state = state.copyWith(selectedRows: state.rows.toSet());
-                    });
-                  },
-                  onDeselectAll: () {
-                    deselectAllCalled = true;
-                    setState(() {
-                      state = state.copyWith(selectedRows: {});
-                    });
-                  },
-                  onToggleFilters: () {
-                    toggleFiltersCalled = true;
-                    setState(() {
-                      state = state.copyWith(filtersVisible: !state.filtersVisible);
-                    });
-                  },
-                  onFiltersCleared: () {
-                    filtersClearedCalled = true;
-                    setState(() {
-                      state = state.copyWith(filters: {});
-                    });
-                  },
-                ),
+                  lastSortField = field;
+                  lastSortDirection = direction;
+                  setState(() {
+                    state = state.copyWith(
+                      sorts: [VooColumnSort(field: field, direction: direction)],
+                    );
+                  });
+                },
+                onFilterChanged: (field, filter) {
+                  lastFilterField = field;
+                  lastFilter = filter;
+                  setState(() {
+                    final newFilters = Map<String, VooDataFilter>.from(state.filters);
+                    if (filter == null) {
+                      newFilters.remove(field);
+                    } else {
+                      newFilters[field] = filter;
+                    }
+                    state = state.copyWith(filters: newFilters);
+                  });
+                },
+                onPageChanged: (page) {
+                  lastPage = page;
+                  setState(() {
+                    state = state.copyWith(currentPage: page, rows: testData.skip(page * state.pageSize).take(state.pageSize).toList());
+                  });
+                },
+                onPageSizeChanged: (pageSize) {
+                  lastPageSize = pageSize;
+                  setState(() {
+                    state = state.copyWith(pageSize: pageSize, rows: testData.take(pageSize).toList());
+                  });
+                },
+                onRowSelected: (row) {
+                  lastSelectedRow = row;
+                  setState(() {
+                    final newSelection = Set<Map<String, dynamic>>.from(state.selectedRows);
+                    newSelection.add(row);
+                    state = state.copyWith(selectedRows: newSelection);
+                  });
+                },
+                onRowDeselected: (row) {
+                  lastDeselectedRow = row;
+                  setState(() {
+                    final newSelection = Set<Map<String, dynamic>>.from(state.selectedRows);
+                    newSelection.remove(row);
+                    state = state.copyWith(selectedRows: newSelection);
+                  });
+                },
+                onSelectAll: () {
+                  selectAllCalled = true;
+                  setState(() {
+                    state = state.copyWith(selectedRows: state.rows.toSet());
+                  });
+                },
+                onDeselectAll: () {
+                  deselectAllCalled = true;
+                  setState(() {
+                    state = state.copyWith(selectedRows: {});
+                  });
+                },
+                onToggleFilters: () {
+                  toggleFiltersCalled = true;
+                  setState(() {
+                    state = state.copyWith(filtersVisible: !state.filtersVisible);
+                  });
+                },
+                onFiltersCleared: () {
+                  filtersClearedCalled = true;
+                  setState(() {
+                    state = state.copyWith(filters: {});
+                  });
+                },
+              ),
             ),
           ),
         ),
@@ -218,34 +189,31 @@ void main() {
                   state: state,
                   columns: columns,
                   onToggleFilters: () {
-                      toggleFiltersCalled = true;
-                      setState(() {
-                        state = state.copyWith(filtersVisible: !state.filtersVisible);
-                      });
-                    },
-                    onFilterChanged: (field, filter) {
-                      lastFilterField = field;
-                      lastFilter = filter;
-                      setState(() {
-                        final newFilters = Map<String, VooDataFilter>.from(state.filters);
-                        if (filter == null) {
-                          newFilters.remove(field);
-                        } else {
-                          newFilters[field] = filter;
-                        }
-                        state = state.copyWith(filters: newFilters);
-                      });
-                    },
-                    onPageChanged: (page) {
-                      lastPage = page;
-                      setState(() {
-                        state = state.copyWith(
-                          currentPage: page,
-                          rows: testData.skip(page * state.pageSize).take(state.pageSize).toList(),
-                        );
-                      });
-                    },
-                  ),
+                    toggleFiltersCalled = true;
+                    setState(() {
+                      state = state.copyWith(filtersVisible: !state.filtersVisible);
+                    });
+                  },
+                  onFilterChanged: (field, filter) {
+                    lastFilterField = field;
+                    lastFilter = filter;
+                    setState(() {
+                      final newFilters = Map<String, VooDataFilter>.from(state.filters);
+                      if (filter == null) {
+                        newFilters.remove(field);
+                      } else {
+                        newFilters[field] = filter;
+                      }
+                      state = state.copyWith(filters: newFilters);
+                    });
+                  },
+                  onPageChanged: (page) {
+                    lastPage = page;
+                    setState(() {
+                      state = state.copyWith(currentPage: page, rows: testData.skip(page * state.pageSize).take(state.pageSize).toList());
+                    });
+                  },
+                ),
               ),
             ),
           ),
@@ -279,26 +247,26 @@ void main() {
                 state: state,
                 columns: columns,
                 onRowSelected: (row) {
-                    lastSelectedRow = row;
-                    setState(() {
-                      final newSelection = Set<Map<String, dynamic>>.from(state.selectedRows);
-                      newSelection.add(row);
-                      state = state.copyWith(selectedRows: newSelection);
-                    });
-                  },
-                  onSelectAll: () {
-                    selectAllCalled = true;
-                    setState(() {
-                      state = state.copyWith(selectedRows: state.rows.toSet());
-                    });
-                  },
-                  onDeselectAll: () {
-                    deselectAllCalled = true;
-                    setState(() {
-                      state = state.copyWith(selectedRows: {});
-                    });
-                  },
-                ),
+                  lastSelectedRow = row;
+                  setState(() {
+                    final newSelection = Set<Map<String, dynamic>>.from(state.selectedRows);
+                    newSelection.add(row);
+                    state = state.copyWith(selectedRows: newSelection);
+                  });
+                },
+                onSelectAll: () {
+                  selectAllCalled = true;
+                  setState(() {
+                    state = state.copyWith(selectedRows: state.rows.toSet());
+                  });
+                },
+                onDeselectAll: () {
+                  deselectAllCalled = true;
+                  setState(() {
+                    state = state.copyWith(selectedRows: {});
+                  });
+                },
+              ),
             ),
           ),
         ),
@@ -322,7 +290,7 @@ void main() {
         pageSize: 10,
         filtersVisible: true,
       );
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -353,24 +321,19 @@ void main() {
       // Verify callbacks that were definitely triggered
       expect(lastSortField, isNotNull, reason: 'Sort field should be set');
       expect(lastSortDirection, isNotNull, reason: 'Sort direction should be set');
-      
+
       // These might not be triggered depending on widget availability
       if (lastPage != null) {
         expect(lastPage, equals(1), reason: 'Page should be 1 after next button click');
       }
-      
+
       if (selectAllCalled != null) {
         expect(selectAllCalled, isTrue, reason: 'Select all should have been called');
       }
     });
 
     testWidgets('Filter widgets have consistent 12px font size', (WidgetTester tester) async {
-      final state = VooDataGridState<Map<String, dynamic>>(
-        rows: testData.take(10).toList(),
-        totalRows: testData.length,
-        pageSize: 10,
-        filtersVisible: true,
-      );
+      final state = VooDataGridState<Map<String, dynamic>>(rows: testData.take(10).toList(), totalRows: testData.length, pageSize: 10, filtersVisible: true);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -378,11 +341,7 @@ void main() {
             body: SizedBox(
               width: 1200,
               height: 800,
-              child: VooDataGridStateless<Map<String, dynamic>>(
-                state: state,
-                columns: columns,
-                onFilterChanged: (field, filter) {},
-              ),
+              child: VooDataGridStateless<Map<String, dynamic>>(state: state, columns: columns, onFilterChanged: (field, filter) {}),
             ),
           ),
         ),
@@ -392,13 +351,10 @@ void main() {
 
       // Check if filter row exists first
       final filterRowFinder = find.byType(VooDataGridFilterRow<Map<String, dynamic>>);
-      
+
       if (filterRowFinder.evaluate().isNotEmpty) {
         // Find all TextField widgets in filter row
-        final textFields = find.descendant(
-          of: filterRowFinder,
-          matching: find.byType(TextField),
-        );
+        final textFields = find.descendant(of: filterRowFinder, matching: find.byType(TextField));
 
         // Check text fields if they exist
         if (textFields.evaluate().isNotEmpty) {
@@ -411,10 +367,7 @@ void main() {
         }
 
         // Find all dropdown buttons
-        final dropdowns = find.descendant(
-          of: filterRowFinder,
-          matching: find.byType(DropdownButton),
-        );
+        final dropdowns = find.descendant(of: filterRowFinder, matching: find.byType(DropdownButton));
 
         // Check dropdowns if they exist
         if (dropdowns.evaluate().isNotEmpty) {
@@ -425,13 +378,9 @@ void main() {
             }
           }
         }
-        
+
         // At least one type of filter widget should exist
-        expect(
-          textFields.evaluate().isNotEmpty || dropdowns.evaluate().isNotEmpty,
-          isTrue,
-          reason: 'Filter row should contain at least one filter widget',
-        );
+        expect(textFields.evaluate().isNotEmpty || dropdowns.evaluate().isNotEmpty, isTrue, reason: 'Filter row should contain at least one filter widget');
       }
     });
   });
@@ -451,18 +400,17 @@ extension VooDataGridStateCopyWith<T> on VooDataGridState<T> {
     Set<T>? selectedRows,
     VooSelectionMode? selectionMode,
     bool? filtersVisible,
-  }) =>
-      VooDataGridState<T>(
-        rows: rows ?? this.rows,
-        totalRows: totalRows ?? this.totalRows,
-        currentPage: currentPage ?? this.currentPage,
-        pageSize: pageSize ?? this.pageSize,
-        isLoading: isLoading ?? this.isLoading,
-        error: error ?? this.error,
-        filters: filters ?? this.filters,
-        sorts: sorts ?? this.sorts,
-        selectedRows: selectedRows ?? this.selectedRows,
-        selectionMode: selectionMode ?? this.selectionMode,
-        filtersVisible: filtersVisible ?? this.filtersVisible,
-      );
+  }) => VooDataGridState<T>(
+    rows: rows ?? this.rows,
+    totalRows: totalRows ?? this.totalRows,
+    currentPage: currentPage ?? this.currentPage,
+    pageSize: pageSize ?? this.pageSize,
+    isLoading: isLoading ?? this.isLoading,
+    error: error ?? this.error,
+    filters: filters ?? this.filters,
+    sorts: sorts ?? this.sorts,
+    selectedRows: selectedRows ?? this.selectedRows,
+    selectionMode: selectionMode ?? this.selectionMode,
+    filtersVisible: filtersVisible ?? this.filtersVisible,
+  );
 }
