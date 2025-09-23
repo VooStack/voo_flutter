@@ -68,7 +68,7 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(toolbarHeight ?? kToolbarHeight);
+  Size get preferredSize => Size.fromHeight((toolbarHeight ?? kToolbarHeight) + 8 + 1);  // Add padding + border
 
   @override
   Widget build(BuildContext context) {
@@ -106,37 +106,64 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? theme.colorScheme.surface.withValues(alpha: 0.95)
             : theme.colorScheme.surfaceContainerLow);
     final effectiveForegroundColor = foregroundColor ?? colorScheme.onSurface;
-    final effectiveElevation = elevation ?? (showBottomBorder ? 0 : 0);
 
-    return AppBar(
-      title: effectiveTitle,
-      leading: effectiveLeading,
-      actions: effectiveActions,
-      centerTitle: effectiveCenterTitle,
-      backgroundColor: effectiveBackgroundColor,
-      foregroundColor: effectiveForegroundColor,
-      elevation: effectiveElevation,
-      toolbarHeight: toolbarHeight,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: effectiveBackgroundColor,
         borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(context.vooRadius.lg),
           topRight: Radius.circular(context.vooRadius.lg),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      bottom: showBottomBorder
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(1),
-              child: Container(
-                height: 1,
-                color: theme.dividerColor.withAlpha((0.2 * 255).round()),
-              ),
-            )
-          : null,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: theme.brightness == Brightness.light
-            ? Brightness.dark
-            : Brightness.light,
-        statusBarBrightness: theme.brightness,
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(context.vooRadius.lg),
+          topRight: Radius.circular(context.vooRadius.lg),
+        ),
+        child: AppBar(
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.vooSpacing.xs),
+          child: effectiveTitle,
+        ),
+        leading: effectiveLeading,
+        actions: effectiveActions.isNotEmpty
+            ? [
+                ...effectiveActions,
+                SizedBox(width: context.vooSpacing.md),
+              ]
+            : null,
+        centerTitle: effectiveCenterTitle,
+        backgroundColor: Colors.transparent,
+        foregroundColor: effectiveForegroundColor,
+        elevation: 0,
+        toolbarHeight: (toolbarHeight ?? kToolbarHeight) + context.vooSpacing.sm,
+        titleSpacing: context.vooSpacing.md,
+        titleTextStyle: theme.textTheme.titleLarge?.copyWith(
+          color: effectiveForegroundColor,
+          fontWeight: FontWeight.w600,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: theme.dividerColor.withValues(alpha: 0.08),
+          ),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: theme.brightness == Brightness.light
+              ? Brightness.dark
+              : Brightness.light,
+          statusBarBrightness: theme.brightness,
+        ),
+      ),
       ),
     );
   }

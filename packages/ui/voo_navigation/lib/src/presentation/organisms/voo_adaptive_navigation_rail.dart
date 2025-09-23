@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
@@ -99,41 +101,53 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
       curve: widget.config.animationCurve,
       width: effectiveWidth,
       margin: EdgeInsets.all(widget.config.navigationRailMargin),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(context.vooRadius.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: effectiveBackgroundColor,
-            borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
-            border: Border(right: BorderSide(color: theme.dividerColor.withValues(alpha: 0.1), width: 1)),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              children: [
-                // Custom header or default header
-                if (widget.extended) widget.config.drawerHeader ?? _buildDefaultHeader(context),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(context.vooRadius.lg),
+          boxShadow: [
+            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(2, 0)),
+            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(4, 0)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(context.vooRadius.lg),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: effectiveBackgroundColor,
+                borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
+                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1), width: 1),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    // Custom header or default header
+                    if (widget.extended) widget.config.drawerHeader ?? _buildDefaultHeader(context),
 
-                // Navigation items
-                Expanded(
-                  child: ListView(
-                    controller: widget.config.drawerScrollController,
-                    padding: EdgeInsets.symmetric(
-                      vertical: context.vooSpacing.sm,
-                      horizontal: widget.extended ? context.vooSpacing.sm + context.vooSpacing.xs : context.vooSpacing.sm,
+                    // Navigation items
+                    Expanded(
+                      child: ListView(
+                        controller: widget.config.drawerScrollController,
+                        padding: EdgeInsets.symmetric(
+                          vertical: context.vooSpacing.sm,
+                          horizontal: widget.extended ? context.vooSpacing.sm + context.vooSpacing.xs : context.vooSpacing.sm,
+                        ),
+                        physics: const ClampingScrollPhysics(),
+                        children: _buildNavigationItems(context),
+                      ),
                     ),
-                    physics: const ClampingScrollPhysics(),
-                    children: _buildNavigationItems(context),
-                  ),
+
+                    // Leading widget for FAB or other actions
+                    if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
+                      Padding(padding: EdgeInsets.all(context.vooSpacing.md), child: widget.config.floatingActionButton),
+
+                    // Custom footer if provided
+                    if (widget.config.drawerFooter != null) widget.config.drawerFooter!,
+                  ],
                 ),
-
-                // Leading widget for FAB or other actions
-                if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
-                  Padding(padding: EdgeInsets.all(context.vooSpacing.md), child: widget.config.floatingActionButton),
-
-                // Custom footer if provided
-                if (widget.config.drawerFooter != null) widget.config.drawerFooter!,
-              ],
+              ),
             ),
           ),
         ),
@@ -243,69 +257,80 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
         child: InkWell(
           onTap: item.isEnabled ? () => widget.onNavigationItemSelected(item.id) : null,
           borderRadius: BorderRadius.circular(widget.extended ? radius.lg : radius.full),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: widget.extended ? 48 : 56,
-            padding: EdgeInsets.symmetric(horizontal: widget.extended ? spacing.md : spacing.xs, vertical: widget.extended ? spacing.sm : spacing.xs),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(widget.extended ? radius.md + spacing.xxs : radius.full),
-              color: isSelected
-                  ? theme.colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.08)
-                  : isHovered
-                  ? theme.colorScheme.onSurface.withValues(alpha: isDark ? 0.08 : 0.04)
-                  : Colors.transparent,
-            ),
-            child: widget.extended
-                ? Row(
-                    children: [
-                      // Icon with badge
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          isSelected ? item.effectiveSelectedIcon : item.icon,
-                          key: ValueKey(isSelected),
-                          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-                          size: 20,
-                        ),
-                      ),
-                      SizedBox(width: spacing.sm + spacing.xs),
-                      Expanded(
-                        child: Text(
-                          item.label,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                            fontSize: 14,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      // Badge
-                      if (item.hasBadge) ...[SizedBox(width: spacing.sm), _buildModernBadge(item, isSelected)],
-                    ],
-                  )
-                : Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+          child: AnimatedScale(
+            scale: isHovered ? 1.02 : 1.0,
+            duration: const Duration(milliseconds: 150),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: widget.extended ? 48 : 56,
+              padding: EdgeInsets.symmetric(horizontal: widget.extended ? spacing.md : spacing.xs, vertical: widget.extended ? spacing.sm : spacing.xs),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.extended ? radius.md + spacing.xxs : radius.full),
+                gradient: isSelected
+                    ? LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary.withValues(alpha: isDark ? 0.2 : 0.12),
+                          theme.colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
+                color: !isSelected ? (isHovered ? theme.colorScheme.onSurface.withValues(alpha: isDark ? 0.08 : 0.04) : Colors.transparent) : null,
+                boxShadow: isSelected ? [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.1), blurRadius: 8, offset: const Offset(0, 2))] : null,
+              ),
+              child: widget.extended
+                  ? Row(
                       children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: Icon(
-                                isSelected ? item.effectiveSelectedIcon : item.icon,
-                                key: ValueKey(isSelected),
-                                color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-                                size: 24,
-                              ),
-                            ),
-                            if (item.hasBadge) Positioned(top: -4, right: -8, child: _buildModernBadge(item, isSelected)),
-                          ],
+                        // Icon with badge
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            isSelected ? item.effectiveSelectedIcon : item.icon,
+                            key: ValueKey(isSelected),
+                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                            size: 20,
+                          ),
                         ),
+                        SizedBox(width: spacing.sm + spacing.xs),
+                        Expanded(
+                          child: Text(
+                            item.label,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        // Badge
+                        if (item.hasBadge) ...[SizedBox(width: spacing.sm), _buildModernBadge(item, isSelected)],
                       ],
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 200),
+                                child: Icon(
+                                  isSelected ? item.effectiveSelectedIcon : item.icon,
+                                  key: ValueKey(isSelected),
+                                  color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                                  size: 24,
+                                ),
+                              ),
+                              if (item.hasBadge) Positioned(top: -4, right: -8, child: _buildModernBadge(item, isSelected)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
         ),
       ),

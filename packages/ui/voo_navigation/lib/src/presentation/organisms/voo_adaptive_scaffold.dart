@@ -334,6 +334,7 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
     Color backgroundColor,
     bool extended,
   ) {
+    final theme = Theme.of(context);
     final navigationRail = ClipRect(
       child: VooAdaptiveNavigationRail(
         config: widget.config,
@@ -357,25 +358,28 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
                   top: widget.config.navigationRailMargin,
                   right: widget.config.navigationRailMargin,
                   bottom: widget.config.navigationRailMargin,
+                  // No left margin to avoid double spacing with navigation
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withValues(alpha: 0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                    BoxShadow(
+                      color: theme.shadowColor.withValues(alpha: 0.04),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(context.vooRadius.lg),
-                    bottomRight: Radius.circular(context.vooRadius.lg),
-                  ),
+                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
                   child: Scaffold(
                     backgroundColor: backgroundColor,
-                    appBar: PreferredSize(
-                      preferredSize: Size.fromHeight(kToolbarHeight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(context.vooRadius.lg),
-                          ),
-                        ),
-                        child: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                      ),
-                    ),
+                    appBar: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
                     body: body,
                     floatingActionButton: widget.config.showFloatingActionButton
                         ? widget.config.floatingActionButton
@@ -437,6 +441,7 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
     Widget body,
     Color backgroundColor,
   ) {
+    final theme = Theme.of(context);
     final navigationDrawer = ClipRect(
       child: VooAdaptiveNavigationDrawer(
         config: widget.config,
@@ -459,25 +464,28 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
                   top: widget.config.navigationRailMargin,
                   right: widget.config.navigationRailMargin,
                   bottom: widget.config.navigationRailMargin,
+                  // No left margin to avoid double spacing with navigation
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withValues(alpha: 0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                    BoxShadow(
+                      color: theme.shadowColor.withValues(alpha: 0.04),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(context.vooRadius.lg),
-                    bottomRight: Radius.circular(context.vooRadius.lg),
-                  ),
+                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
                   child: Scaffold(
                     backgroundColor: backgroundColor,
-                    appBar: PreferredSize(
-                      preferredSize: Size.fromHeight(kToolbarHeight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(context.vooRadius.lg),
-                          ),
-                        ),
-                        child: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                      ),
-                    ),
+                    appBar: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
                     body: body,
                     floatingActionButton: widget.config.showFloatingActionButton
                         ? widget.config.floatingActionButton

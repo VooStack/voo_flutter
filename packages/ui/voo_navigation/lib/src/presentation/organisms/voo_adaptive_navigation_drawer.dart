@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
@@ -120,14 +122,38 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
       curve: widget.config.animationCurve,
       width: effectiveWidth,
       margin: EdgeInsets.all(widget.config.navigationRailMargin),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(context.vooRadius.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: effectiveBackgroundColor,
-            borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
-            border: Border(right: BorderSide(color: theme.dividerColor.withValues(alpha: 0.1), width: 1)),
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(context.vooRadius.lg),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(2, 0),
+            ),
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.04),
+              blurRadius: 20,
+              offset: const Offset(4, 0),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(context.vooRadius.lg),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: effectiveBackgroundColor,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(context.vooRadius.lg),
+                  bottomRight: Radius.circular(context.vooRadius.lg),
+                ),
+                border: Border.all(
+                  color: theme.dividerColor.withValues(alpha: 0.1),
+                  width: 1,
+                ),
+              ),
           child: Material(
             color: Colors.transparent,
             child: Column(
@@ -148,6 +174,8 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                 // Footer
                 if (widget.config.drawerFooter != null) Padding(padding: EdgeInsets.all(context.vooSpacing.sm + context.vooSpacing.xs), child: widget.config.drawerFooter!),
               ],
+            ),
+          ),
             ),
           ),
         ),
