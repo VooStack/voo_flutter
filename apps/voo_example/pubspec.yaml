@@ -10,13 +10,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  voo_core: ^0.4.1
-  voo_logging: ^0.4.2
-  voo_analytics: ^0.3.0
-  voo_performance: ^0.3.0
-  voo_telemetry: ^0.1.0
-  voo_ui_core: ^0.1.1
-  voo_data_grid: ^0.7.5
+  voo_core: ^0.4.2
+  voo_logging: ^0.4.3
+  voo_analytics: ^0.4.2
+  voo_performance: ^0.4.2
+  voo_telemetry: ^0.2.2
+  voo_ui_core: ^0.1.2
+  voo_data_grid: ^0.7.6
   voo_calendar:
     path: ../../packages/ui/voo_calendar
 

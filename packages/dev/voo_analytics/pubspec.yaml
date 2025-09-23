@@ -1,6 +1,6 @@
 name: voo_analytics
 description: 'Local analytics and heat map tracking package for Flutter applications with touch event capture.'
-version: 0.4.1
+version: 0.4.2
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_analytics
 topics:
@@ -17,7 +17,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  voo_core: ^0.4.1
+  voo_core: ^0.4.2
   json_annotation: ^4.9.0
   equatable: ^2.0.5
   path: ^1.9.1

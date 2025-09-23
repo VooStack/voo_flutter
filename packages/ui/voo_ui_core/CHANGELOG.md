@@ -1,3 +1,14 @@
+## 0.1.2
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Introduce VooFieldOptions and VooFieldWidget for enhanced form field customization.
+ - **FEAT**: Add Voo Design System implementation with responsive support.
+ - **FEAT**: Implement advanced filtering in VooDataGrid.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+ - **FEAT**: Add VooDataGrid previews and update configurations for better development experience.
+
 ## 0.1.1
 
 * **BREAKING**: Removed duplicate responsive system - now uses voo_responsive package

@@ -1,3 +1,13 @@
+## 0.0.5
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance dropdown fields with native subtitle support; update version to 0.3.44.
+ - **FEAT**: Enhance VooToast with theme-aware configurations and styling options.
+ - **FEAT**: Enhance FutureToast feature with improved loading indicators, error handling, and dynamic messages; update CHANGELOG and version to 0.0.3.
+ - **FEAT**: Update CHANGELOG and bump version to 0.0.2 with new FutureToast feature and improvements.
+ - **FEAT**: Implement future toast functionality with loading indicators and error handling.
+ - **FEAT**: Add VooToast package with customizable toast notifications.
+
 ## [0.0.4] - 2024-01-10
 
 ### Added

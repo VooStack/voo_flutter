@@ -1,3 +1,49 @@
+## 0.7.6
+
+ - **REFACTOR**: remove unused field widgets and clean up code.
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FIX**: Remove unnecessary whitespace in valueGetter error handling.
+ - **FIX**: Update repository links in pubspec.yaml to point to VooStack organization.
+ - **FEAT**: Add primary filter functionality to VooDataGrid.
+ - **FEAT**: Add IsolateComputeHelper for efficient data processing in VooDataGrid.
+ - **FEAT**: Enhance VooForms with new VooDateFieldButton and improved field handling.
+ - **FEAT**: Implement debouncing for filter fields; add onRefresh callback support; update CHANGELOG and tests.
+ - **FEAT**: Add primary filter change handling and combine filters option in VooDataGridStateless.
+ - **FEAT**: Enhance VooDataGrid with primary filter support and comprehensive tests.
+ - **FEAT**: Enhance DataGrid functionality with submission states and improved filter handling.
+ - **FEAT**: Add SortIndicator widget and comprehensive tests.
+ - **FEAT**: Add VooFormButton and VooFormActions for Material 3 compliant buttons.
+ - **FEAT**: Enhance VooDataGrid with advanced filtering capabilities.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Update font size for filter widgets to 12px for consistency.
+ - **FEAT**(data_grid): Introduce DataGridCoreOrganism for shared grid functionality.
+ - **FEAT**: Remove DEVELOPER_GUIDE.md and update validation rule exports.
+ - **FEAT**: Refactor form field components and introduce new widgets.
+ - **FEAT**: Add filter and sorting capabilities to columns in stateless data grid.
+ - **FEAT**: Add debouncing support to filter fields; improve performance and reduce API calls; update tests and CHANGELOG.
+ - **FEAT**: Add VooMotion package with enhanced animation widgets and configurations.
+ - **FEAT**: Refactor number and text filter components to use shared input decoration.
+ - **FEAT**: Update changelog to version 0.5.8 with scrolling improvements and enhance scrollbar synchronization.
+ - **FEAT**: Introduce TypedVooDataColumn for type-safe column handling and update changelog to version 0.5.7.
+ - **FEAT**: Update changelog for version 0.5.6 with OData query parameter fixes and enhancements.
+ - **FEAT**: Enhance OData v4 support in DataGridRequestBuilder.
+ - **FEAT**: Update changelog for version 0.5.4 with code quality improvements and PascalCase field name fixes.
+ - **FEAT**: Add VooDataGrid previews and update configurations for better development experience.
+ - **FEAT**: Update changelog for version 0.5.3 with bug fixes and improvements, including generic type parameter propagation and enhanced number range filtering.
+ - **FEAT**: Update changelog for version 0.5.2 with new features, bug fixes, and documentation improvements.
+ - **FEAT**: Add Nested Field Filtering Example with Field Prefix.
+ - **FEAT**: Add generic type support to VooDataGrid and related components for improved type safety and developer experience.
+ - **FEAT**: Update changelog for version 0.4.0 with new features, bug fixes, and documentation improvements.
+ - **FEAT**: Update VooDataGrid and VooForms with new features and improvements.
+ - **FEAT**: Add VooDataGridConstraints for configurable grid behavior.
+ - **FEAT**: Enhance DataGridRequestBuilder to support multiple API standards.
+ - **FEAT**: Add empty state preview for VooDataGrid.
+ - **FEAT**: Update changelog and version to 0.2.0 with advanced filtering enhancements.
+ - **FEAT**: Implement advanced filtering in VooDataGrid.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+ - **FEAT**: Enhance VooFormField with custom widget support and editable state.
+
 ## 0.7.5 - 2025-09-18
 
 * **Filter Field Styling Fix**

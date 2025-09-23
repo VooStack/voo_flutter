@@ -19,7 +19,7 @@ dependencies:
   devtools_app_shared: ^0.4.0
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
-  voo_core: ^0.4.1
+  voo_core: ^0.4.2
   voo_ui:
 
   vm_service: any

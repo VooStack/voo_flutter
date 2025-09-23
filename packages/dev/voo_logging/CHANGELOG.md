@@ -1,3 +1,13 @@
+## 0.4.3
+
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Integrate VooToast for enhanced logging notifications; update dependencies and CHANGELOG.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Update VooLogging example to initialize VooCore and enhance logging configuration.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+
 ## 0.4.2
 
 * Fixed VooToast notification behavior:

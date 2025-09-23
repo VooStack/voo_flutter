@@ -1,3 +1,8 @@
+## 0.4.2
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+
 ## 0.4.1
 
   fixed error causing repeated error in console ```DebugService: Error serving requestsError: Unsupported operation: Cannot send Null```

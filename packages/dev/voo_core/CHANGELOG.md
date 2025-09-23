@@ -1,3 +1,7 @@
+## 0.4.2
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+
 ## 0.4.1
 
 - **CHORE**: Update package dependencies to use version constraints

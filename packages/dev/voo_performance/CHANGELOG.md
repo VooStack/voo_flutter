@@ -1,3 +1,10 @@
+## 0.4.2
+
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+
 ## 0.4.1
   
   fixed error causing repeated error in console ```DebugService: Error serving requestsError: Unsupported operation: Cannot send Null```

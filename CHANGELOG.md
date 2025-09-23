@@ -3,6 +3,242 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`voo_analytics` - `v0.4.2`](#voo_analytics---v042)
+ - [`voo_calendar` - `v0.1.1`](#voo_calendar---v011)
+ - [`voo_core` - `v0.4.2`](#voo_core---v042)
+ - [`voo_data_grid` - `v0.7.6`](#voo_data_grid---v076)
+ - [`voo_forms` - `v0.3.45`](#voo_forms---v0345)
+ - [`voo_logging` - `v0.4.3`](#voo_logging---v043)
+ - [`voo_navigation` - `v0.0.8`](#voo_navigation---v008)
+ - [`voo_performance` - `v0.4.2`](#voo_performance---v042)
+ - [`voo_responsive` - `v0.1.2`](#voo_responsive---v012)
+ - [`voo_telemetry` - `v0.2.2`](#voo_telemetry---v022)
+ - [`voo_toast` - `v0.0.5`](#voo_toast---v005)
+ - [`voo_tokens` - `v0.0.3`](#voo_tokens---v003)
+ - [`voo_ui_core` - `v0.1.2`](#voo_ui_core---v012)
+
+---
+
+#### `voo_analytics` - `v0.4.2`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+
+#### `voo_calendar` - `v0.1.1`
+
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Update changelog for version 0.4.0 with new features, bug fixes, and documentation improvements.
+ - **FEAT**: Implement advanced filtering in VooDataGrid.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+
+#### `voo_core` - `v0.4.2`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+
+#### `voo_data_grid` - `v0.7.6`
+
+ - **REFACTOR**: remove unused field widgets and clean up code.
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FIX**: Remove unnecessary whitespace in valueGetter error handling.
+ - **FIX**: Update repository links in pubspec.yaml to point to VooStack organization.
+ - **FEAT**: Add primary filter functionality to VooDataGrid.
+ - **FEAT**: Add IsolateComputeHelper for efficient data processing in VooDataGrid.
+ - **FEAT**: Enhance VooForms with new VooDateFieldButton and improved field handling.
+ - **FEAT**: Implement debouncing for filter fields; add onRefresh callback support; update CHANGELOG and tests.
+ - **FEAT**: Add primary filter change handling and combine filters option in VooDataGridStateless.
+ - **FEAT**: Enhance VooDataGrid with primary filter support and comprehensive tests.
+ - **FEAT**: Enhance DataGrid functionality with submission states and improved filter handling.
+ - **FEAT**: Add SortIndicator widget and comprehensive tests.
+ - **FEAT**: Add VooFormButton and VooFormActions for Material 3 compliant buttons.
+ - **FEAT**: Enhance VooDataGrid with advanced filtering capabilities.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Update font size for filter widgets to 12px for consistency.
+ - **FEAT**(data_grid): Introduce DataGridCoreOrganism for shared grid functionality.
+ - **FEAT**: Remove DEVELOPER_GUIDE.md and update validation rule exports.
+ - **FEAT**: Refactor form field components and introduce new widgets.
+ - **FEAT**: Add filter and sorting capabilities to columns in stateless data grid.
+ - **FEAT**: Add debouncing support to filter fields; improve performance and reduce API calls; update tests and CHANGELOG.
+ - **FEAT**: Add VooMotion package with enhanced animation widgets and configurations.
+ - **FEAT**: Refactor number and text filter components to use shared input decoration.
+ - **FEAT**: Update changelog to version 0.5.8 with scrolling improvements and enhance scrollbar synchronization.
+ - **FEAT**: Introduce TypedVooDataColumn for type-safe column handling and update changelog to version 0.5.7.
+ - **FEAT**: Update changelog for version 0.5.6 with OData query parameter fixes and enhancements.
+ - **FEAT**: Enhance OData v4 support in DataGridRequestBuilder.
+ - **FEAT**: Update changelog for version 0.5.4 with code quality improvements and PascalCase field name fixes.
+ - **FEAT**: Add VooDataGrid previews and update configurations for better development experience.
+ - **FEAT**: Update changelog for version 0.5.3 with bug fixes and improvements, including generic type parameter propagation and enhanced number range filtering.
+ - **FEAT**: Update changelog for version 0.5.2 with new features, bug fixes, and documentation improvements.
+ - **FEAT**: Add Nested Field Filtering Example with Field Prefix.
+ - **FEAT**: Add generic type support to VooDataGrid and related components for improved type safety and developer experience.
+ - **FEAT**: Update changelog for version 0.4.0 with new features, bug fixes, and documentation improvements.
+ - **FEAT**: Update VooDataGrid and VooForms with new features and improvements.
+ - **FEAT**: Add VooDataGridConstraints for configurable grid behavior.
+ - **FEAT**: Enhance DataGridRequestBuilder to support multiple API standards.
+ - **FEAT**: Add empty state preview for VooDataGrid.
+ - **FEAT**: Update changelog and version to 0.2.0 with advanced filtering enhancements.
+ - **FEAT**: Implement advanced filtering in VooDataGrid.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+ - **FEAT**: Enhance VooFormField with custom widget support and editable state.
+
+#### `voo_forms` - `v0.3.45`
+
+ - **REFACTOR**: remove unused field widgets and clean up code.
+ - **REFACTOR**: update exports in voo_forms.dart to improve organization and clarity.
+ - **REFACTOR**: streamline input decoration by removing redundant error text handling and improve validation in email and number fields.
+ - **REFACTOR**: remove unused form field widgets and related code.
+ - **REFACTOR**: Handle field.onChanged in VooFieldWidget to avoid type casting issues; add tests for typed callbacks.
+ - **FIX**: resolve type casting issues in field widgets.
+ - **FEAT**: Enhance focus retention across form fields; implement stable keys and error handling for improved user experience.
+ - **FEAT**: Update CHANGELOG for version 0.3.32; enhance BLoC integration, focus management, and user input persistence during state changes.
+ - **FEAT**: Update CHANGELOG for version 0.3.29; enhance keyboard dismissal handling, error state management, and focus retention during widget rebuilds.
+ - **FEAT**: Add custom option builder for dropdown fields; enhance dropdown and async dropdown fields with optionBuilder support and improve layout properties for various field types.
+ - **FEAT**: Enhance validation and focus management for form fields; update dropdown, currency, number, and text fields to maintain focus during validation and improve read-only field handling.
+ - **FEAT**: Update CHANGELOG for version 0.3.21; fix focus retention during validation and enhance boolean, checkbox, and multi-select fields to validate on change.
+ - **FEAT**: Enhance dropdown fields with native subtitle support; update version to 0.3.44.
+ - **FEAT**: Refactor currency formatting to consolidate ImprovedCurrencyFormatter into CurrencyFormatter; enhance tests and documentation.
+ - **FEAT**: Add ImprovedCurrencyFormatter and VooMultiSelectField with comprehensive tests.
+ - **FEAT**: update version to 0.3.18; enhance test coverage, improve error handling, and perform code maintenance.
+ - **FEAT**: update version to 0.3.17; fix validation error display, form reset behavior, and enhance error handling across form fields.
+ - **FEAT**: update version to 0.3.14; enhance CurrencyFormatter and VooFormController validation, add comprehensive test suite.
+ - **FEAT**: update version to 0.3.11 and add comprehensive tests for VooFormController.
+ - **FEAT**: Update CHANGELOG for version 0.3.9; enhance VooCurrencyField cursor handling and improve VooFormPageBuilder form interactivity.
+ - **FEAT**: Update CHANGELOG and version to 0.3.7; fix incremental typing bug in VooCurrencyField and enhance CurrencyFormatter.
+ - **FEAT**: Update VooCurrencyField and CurrencyFormatter for improved formatting and validation; add comprehensive tests.
+ - **FEAT**: Add drag and drop support to VooFileField and update tests for new behavior.
+ - **FEAT**: Add VooFile entity and enhance file handling in forms.
+ - **FEAT**: Refactor VooFormSection to improve title handling and layout structure.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Add VooReadOnlyField widget for improved read-only field display.
+ - **FEAT**: Refactor number and text filter components to use shared input decoration.
+ - **FEAT**: Update VooDataGrid and VooForms with new features and improvements.
+ - **FEAT**: Add IsolateComputeHelper for efficient data processing in VooDataGrid.
+ - **FEAT**: Enhance VooForms with new VooDateFieldButton and improved field handling.
+ - **FEAT**: Add VooFieldColumn and VooFieldRow for vertical and horizontal field arrangement.
+ - **FEAT**: Add labelWidget property to VooFieldBase and related fields for customizable label rendering.
+ - **FEAT**: Add isHidden property to VooFieldBase and related fields for conditional rendering.
+ - **FEAT**: Implement VooFormErrorDisplayMode for flexible error display handling.
+ - **FEAT**: Introduce FieldGroup entity for grouping related fields.
+ - **FEAT**: Add VooDateField widget for date input with customizable features.
+ - **FEAT**: Update CHANGELOG and README for VooForms 0.3.2 release with new features and improvements.
+ - **FEAT**: add Melos configuration for Flutter test and update version in pubspec.yaml.
+ - **FEAT**: enhance checkbox validation and improve dropdown loading indicator handling.
+ - **FEAT**: Add CountryPhoneFormatter for phone number formatting based on country code.
+ - **FEAT**: Update version to 0.3.39 and enhance CHANGELOG with bug fixes for setState during build in VooListField.
+ - **FEAT**: Add various text input formatters for enhanced user input handling.
+ - **FEAT**: Add onAddItem, onRemoveItem, and onEditItem callbacks to VooField and VooListField for enhanced item management.
+ - **FEAT**: Update VooDropdownField and VooListField to enhance overlay handling and improve label visibility.
+ - **FEAT**: Enhance VooFormField and VooField with actions parameter.
+ - **FEAT**: Fix type casting in async dropdown and add tests for custom types.
+ - **FEAT**: Implement field-level readOnly control and update CHANGELOG.
+ - **FEAT**: Add readOnlyWidget support to all VooField factory methods and update CHANGELOG.
+ - **FEAT**: Add VooForms package with input formatters and validators.
+ - **FEAT**: Enhance VooFormField with custom widget support and editable state.
+ - **FEAT**: Enhance DataGrid functionality with submission states and improved filter handling.
+ - **FEAT**: Add SortIndicator widget and comprehensive tests.
+ - **FEAT**: Add VooFormButton and VooFormActions for Material 3 compliant buttons.
+ - **FEAT**(data_grid): Introduce DataGridCoreOrganism for shared grid functionality.
+ - **FEAT**: Remove DEVELOPER_GUIDE.md and update validation rule exports.
+ - **FEAT**: Refactor form field components and introduce new widgets.
+ - **FEAT**: Add Voo Design System implementation with responsive support.
+ - **FEAT**: Enhance dropdown field type safety; add comprehensive tests for typed callbacks.
+ - **FEAT**: Update CHANGELOG with critical fixes for setState errors, async data loading, and user input preservation.
+ - **FEAT**: Add FieldLabelWrapper for consistent label handling across fields.
+ - **FEAT**: Enhance VooToast with theme-aware configurations and styling options.
+ - **FEAT**: Add readOnlyWidget to VooFormField and improve dropdown handling.
+ - **FEAT**: Update version to 0.1.8; enhance dropdown type safety, async handling, and label positioning.
+ - **FEAT**: Add onChanged callbacks to VooField factory methods; update changelog for version 0.1.7.
+ - **FEAT**: Update changelog for version 0.1.6; enhance form field widgets with VooFieldOptions integration and improved async dropdown API.
+ - **FEAT**: Add searchable dropdown support with async loading and enhanced filtering options.
+ - **FEAT**: Add new atomic field widgets for form handling.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Introduce VooFieldOptions and VooFieldWidget for enhanced form field customization.
+ - **FEAT**: Add VooFormFieldBuilderV2 for enhanced theming and update imports.
+ - **FEAT**: Introduce VooFormConfig and VooFormV2 for enhanced form customization.
+ - **FEAT**: Add VooMotion package with enhanced animation widgets and configurations.
+ - **FEAT**: Update validation and focus management for form fields; enhance dropdown, date, currency, number, and text fields to clear validation errors and maintain focus.
+ - **DOCS**: Add technical debt documentation for VooForms package; outline refactoring plan and critical violations.
+
+#### `voo_logging` - `v0.4.3`
+
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Integrate VooToast for enhanced logging notifications; update dependencies and CHANGELOG.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Update VooLogging example to initialize VooCore and enhance logging configuration.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+
+#### `voo_navigation` - `v0.0.8`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Improve VooAdaptiveNavigationRail and VooAdaptiveScaffold for seamless theming and layout integration.
+ - **FEAT**: Enhance VooAdaptiveNavigationRail and VooAdaptiveScaffold with improved theming and layout options.
+ - **FEAT**: Introduce VooGoRouter for enhanced navigation integration.
+ - **FEAT**: Bump version to 0.0.3 and update dependencies for improved stability and performance.
+ - **FEAT**: Update version to 0.0.2 and enhance CHANGELOG with design, animation, and performance improvements.
+ - **FEAT**: Enhance VooFormField and VooField with actions parameter.
+
+#### `voo_performance` - `v0.4.2`
+
+ - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+
+#### `voo_responsive` - `v0.1.2`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Add All VooLists Showcase Preview.
+ - **FEAT**: Add list previews and responsive previews; remove unused list components.
+ - **FEAT**: Add responsive design system with breakpoints and responsive widgets.
+
+#### `voo_telemetry` - `v0.2.2`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Add VooDataGrid previews and update configurations for better development experience.
+
+#### `voo_toast` - `v0.0.5`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance dropdown fields with native subtitle support; update version to 0.3.44.
+ - **FEAT**: Enhance VooToast with theme-aware configurations and styling options.
+ - **FEAT**: Enhance FutureToast feature with improved loading indicators, error handling, and dynamic messages; update CHANGELOG and version to 0.0.3.
+ - **FEAT**: Update CHANGELOG and bump version to 0.0.2 with new FutureToast feature and improvements.
+ - **FEAT**: Implement future toast functionality with loading indicators and error handling.
+ - **FEAT**: Add VooToast package with customizable toast notifications.
+
+#### `voo_tokens` - `v0.0.3`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+
+#### `voo_ui_core` - `v0.1.2`
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Enhance form components with configurable options and improved theming.
+ - **FEAT**: Introduce VooFieldOptions and VooFieldWidget for enhanced form field customization.
+ - **FEAT**: Add Voo Design System implementation with responsive support.
+ - **FEAT**: Implement advanced filtering in VooDataGrid.
+ - **FEAT**: Update LICENSE files to include full MIT License text.
+ - **FEAT**: Implement Windows runner for Voo Data Grid example.
+ - **FEAT**: Add VooDataGrid previews and update configurations for better development experience.
+
+
 ## 2025-08-25
 
 ### Changes

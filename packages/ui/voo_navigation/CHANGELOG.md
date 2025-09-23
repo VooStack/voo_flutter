@@ -1,3 +1,13 @@
+## 0.0.8
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Improve VooAdaptiveNavigationRail and VooAdaptiveScaffold for seamless theming and layout integration.
+ - **FEAT**: Enhance VooAdaptiveNavigationRail and VooAdaptiveScaffold with improved theming and layout options.
+ - **FEAT**: Introduce VooGoRouter for enhanced navigation integration.
+ - **FEAT**: Bump version to 0.0.3 and update dependencies for improved stability and performance.
+ - **FEAT**: Update version to 0.0.2 and enhance CHANGELOG with design, animation, and performance improvements.
+ - **FEAT**: Enhance VooFormField and VooField with actions parameter.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

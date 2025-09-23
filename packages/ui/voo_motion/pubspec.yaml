@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   vector_math: ^2.1.4
-  voo_ui_core: ^0.1.1
+  voo_ui_core: ^0.1.2
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,10 @@
+## 0.1.2
+
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Add All VooLists Showcase Preview.
+ - **FEAT**: Add list previews and responsive previews; remove unused list components.
+ - **FEAT**: Add responsive design system with breakpoints and responsive widgets.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

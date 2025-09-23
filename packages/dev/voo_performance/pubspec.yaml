@@ -1,6 +1,6 @@
 name: voo_performance
 description: 'Local performance monitoring toolkit for Flutter apps with network metrics and trace tracking.'
-version: 0.4.1
+version: 0.4.2
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_performance
 issue_tracker: https://github.com/voostack/voo_flutter/issues
@@ -24,7 +24,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  voo_core: ^0.4.1
+  voo_core: ^0.4.2
   json_annotation: ^4.9.0
   equatable: ^2.0.5
   dio: ^5.2.0
