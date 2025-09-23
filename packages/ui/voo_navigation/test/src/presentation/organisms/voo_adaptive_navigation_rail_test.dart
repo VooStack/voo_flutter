@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
+import '../../../helpers/test_helpers.dart';
+
 void main() {
   group('VooAdaptiveNavigationRail', () {
     late List<VooNavigationItem> navigationItems;
@@ -44,8 +46,8 @@ void main() {
 
     testWidgets('should render navigation rail with items', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -68,8 +70,8 @@ void main() {
 
     testWidgets('should show extended rail with labels', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -97,8 +99,8 @@ void main() {
       String? selectedId;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -124,8 +126,8 @@ void main() {
 
     testWidgets('should display badges correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -160,8 +162,8 @@ void main() {
       String selectedId = 'dashboard';
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: StatefulBuilder(
+        createTestApp(
+          child: StatefulBuilder(
             builder: (context, setState) => Scaffold(
               body: Row(
                 children: [
@@ -201,8 +203,8 @@ void main() {
 
     testWidgets('should apply custom background color', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -232,8 +234,8 @@ void main() {
 
     testWidgets('should apply border radius', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -262,8 +264,8 @@ void main() {
 
     testWidgets('should handle hover states on desktop', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -323,8 +325,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Row(
               children: [
                 VooAdaptiveNavigationRail(
@@ -351,8 +353,8 @@ void main() {
       bool extended = false;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: StatefulBuilder(
+        createTestApp(
+          child: StatefulBuilder(
             builder: (context, setState) => Scaffold(
               body: Row(
                 children: [

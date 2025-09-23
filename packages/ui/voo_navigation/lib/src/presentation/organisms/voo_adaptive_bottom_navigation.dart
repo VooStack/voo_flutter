@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/molecules/voo_navigation_badge.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Adaptive bottom navigation bar for mobile layouts with Material 3 design
 /// Features smooth animations, haptic feedback, and beautiful visual transitions
@@ -204,7 +205,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       height: widget.height,
       backgroundColor: widget.backgroundColor ?? 
           widget.config.navigationBackgroundColor,
-      elevation: widget.elevation ?? widget.config.elevation,
+      elevation: widget.elevation ?? widget.config.elevation ?? context.vooElevation.level2,
       labelBehavior: widget.showLabels
           ? (widget.showSelectedLabels 
               ? NavigationDestinationLabelBehavior.onlyShowSelected
@@ -248,7 +249,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
       },
       backgroundColor: widget.backgroundColor ?? 
           widget.config.navigationBackgroundColor,
-      elevation: widget.elevation ?? widget.config.elevation ?? 8,
+      elevation: widget.elevation ?? widget.config.elevation ?? context.vooElevation.level4,
       selectedItemColor: widget.config.selectedItemColor,
       unselectedItemColor: widget.config.unselectedItemColor,
       showSelectedLabels: widget.showSelectedLabels,
@@ -333,13 +334,19 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
         }
         widget.onNavigationItemSelected(item.id);
       } : null,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(context.vooRadius.lg),
       child: AnimatedContainer(
         duration: widget.config.animationDuration,
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-        margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 4),
+        padding: EdgeInsets.symmetric(
+          vertical: context.vooSpacing.xs,
+          horizontal: context.vooSpacing.sm + context.vooSpacing.xxs,
+        ),
+        margin: EdgeInsets.symmetric(
+          horizontal: context.vooSpacing.xs - context.vooSpacing.xxs,
+          vertical: context.vooSpacing.xs,
+        ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(context.vooRadius.md + context.vooSpacing.xxs),
           color: isSelected
               ? theme.colorScheme.primary.withValues(alpha: 0.12)
               : Colors.transparent,
@@ -386,7 +393,7 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
                   fontSize: 11,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 2),
+                  padding: EdgeInsets.only(top: context.vooSpacing.xxs),
                   child: Text(
                     item.label,
                     overflow: TextOverflow.ellipsis,
@@ -458,12 +465,15 @@ class _VooAdaptiveBottomNavigationState extends State<VooAdaptiveBottomNavigatio
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.vooSpacing.sm - context.vooSpacing.xxs,
+        vertical: context.vooSpacing.xxs,
+      ),
       decoration: BoxDecoration(
         color: isSelected
             ? (item.badgeColor ?? primaryColor)
             : Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(context.vooRadius.lg),
       ),
       constraints: const BoxConstraints(minWidth: 18),
       child: Text(

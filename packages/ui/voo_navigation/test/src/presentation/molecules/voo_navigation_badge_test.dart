@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
+import '../../../helpers/test_helpers.dart';
+
 void main() {
   group('VooNavigationBadge', () {
     testWidgets('should show count badge', (WidgetTester tester) async {
@@ -19,8 +21,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -50,8 +52,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -80,8 +82,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -120,8 +122,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -149,8 +151,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -181,8 +183,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -232,8 +234,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,
@@ -264,8 +266,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
+        createTestApp(
+          child: Scaffold(
             body: Center(
               child: VooNavigationBadge(
                 item: item,

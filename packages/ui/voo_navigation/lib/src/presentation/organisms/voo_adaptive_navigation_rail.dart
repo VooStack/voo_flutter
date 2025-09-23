@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Adaptive navigation rail for tablet and desktop layouts with Material 3 design
 /// Features smooth animations, hover effects, and beautiful visual transitions
@@ -118,8 +119,8 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
                 child: ListView(
                   controller: widget.config.drawerScrollController,
                   padding: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: widget.extended ? 12 : 8,
+                    vertical: context.vooSpacing.sm,
+                    horizontal: widget.extended ? context.vooSpacing.sm + context.vooSpacing.xs : context.vooSpacing.sm,
                   ),
                   physics: const ClampingScrollPhysics(),
                   children: _buildNavigationItems(context),
@@ -129,7 +130,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
               // Leading widget for FAB or other actions
               if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(context.vooSpacing.md),
                   child: widget.config.floatingActionButton,
                 ),
 
@@ -145,8 +146,11 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
   Widget _buildDefaultHeader(BuildContext context) {
     final theme = Theme.of(context);
 
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      padding: EdgeInsets.fromLTRB(spacing.md, spacing.lg, spacing.md, spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -155,7 +159,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
             height: 32,
             decoration: BoxDecoration(
               color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(radius.md),
             ),
             child: Icon(
               Icons.dashboard,
@@ -163,9 +167,11 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
               size: 20,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: spacing.sm),
           Text(
-            widget.config.appBarTitle is Text ? (widget.config.appBarTitle as Text).data ?? 'Navigation' : 'Navigation',
+            (widget.config.appBarTitle != null && widget.config.appBarTitle is Text)
+                ? ((widget.config.appBarTitle! as Text).data ?? 'Navigation')
+                : 'Navigation',
             style: theme.textTheme.titleSmall?.copyWith(
               color: theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
@@ -198,7 +204,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
 
       // Add spacing between items
       if (i < visibleItems.length - 1) {
-        widgets.add(const SizedBox(height: 4));
+        widgets.add(SizedBox(height: context.vooSpacing.xs));
       }
     }
 
@@ -258,10 +264,13 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
       _itemAnimationControllers[item.id]!.reverse();
     }
 
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
+
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: widget.extended ? 0 : 4,
-        vertical: 2,
+        horizontal: widget.extended ? 0 : spacing.xs,
+        vertical: spacing.xxs,
       ),
       child: MouseRegion(
         onEnter: (_) => setState(() => _hoveredItems[item.id] = true),
@@ -269,16 +278,16 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
         cursor: item.isEnabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
         child: InkWell(
           onTap: item.isEnabled ? () => widget.onNavigationItemSelected(item.id) : null,
-          borderRadius: BorderRadius.circular(widget.extended ? 12 : 28),
+          borderRadius: BorderRadius.circular(widget.extended ? radius.lg : radius.full),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             height: widget.extended ? 48 : 56,
             padding: EdgeInsets.symmetric(
-              horizontal: widget.extended ? 16 : 4,
-              vertical: widget.extended ? 8 : 4,
+              horizontal: widget.extended ? spacing.md : spacing.xs,
+              vertical: widget.extended ? spacing.sm : spacing.xs,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(widget.extended ? 10 : 24),
+              borderRadius: BorderRadius.circular(widget.extended ? radius.md + spacing.xxs : radius.full),
               color: isSelected
                   ? theme.colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.08)
                   : isHovered
@@ -298,7 +307,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
                           size: 20,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: spacing.sm + spacing.xs),
                       Expanded(
                         child: Text(
                           item.label,
@@ -312,7 +321,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
                       ),
                       // Badge
                       if (item.hasBadge) ...[
-                        const SizedBox(width: 8),
+                        SizedBox(width: spacing.sm),
                         _buildModernBadge(item, isSelected),
                       ],
                     ],
@@ -373,12 +382,12 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: widget.extended ? 8 : 6,
-        vertical: 2,
+        horizontal: widget.extended ? context.vooSpacing.sm : context.vooSpacing.sm - context.vooSpacing.xxs,
+        vertical: context.vooSpacing.xxs,
       ),
       decoration: BoxDecoration(
         color: item.badgeColor ?? theme.colorScheme.error,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(context.vooRadius.lg),
       ),
       child: Text(
         badgeText,

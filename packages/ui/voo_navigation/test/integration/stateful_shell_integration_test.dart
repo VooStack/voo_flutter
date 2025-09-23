@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
+import '../helpers/test_helpers.dart';
+
 void main() {
   group('StatefulNavigationShell Integration', () {
     late GoRouter router;
@@ -94,7 +96,7 @@ void main() {
 
     testWidgets('renders VooAdaptiveScaffold with StatefulNavigationShell', (tester) async {
       await tester.pumpWidget(
-        MaterialApp.router(
+        createTestRouterApp(
           routerConfig: router,
         ),
       );
@@ -109,7 +111,7 @@ void main() {
 
     testWidgets('navigation between branches works correctly', (tester) async {
       await tester.pumpWidget(
-        MaterialApp.router(
+        createTestRouterApp(
           routerConfig: router,
         ),
       );
@@ -141,7 +143,7 @@ void main() {
 
     testWidgets('maintains state when switching branches', (tester) async {
       await tester.pumpWidget(
-        MaterialApp.router(
+        createTestRouterApp(
           routerConfig: router,
         ),
       );
@@ -169,7 +171,7 @@ void main() {
 
     testWidgets('navigates to nested routes within branches', (tester) async {
       await tester.pumpWidget(
-        MaterialApp.router(
+        createTestRouterApp(
           routerConfig: router,
         ),
       );
@@ -263,8 +265,8 @@ void main() {
 
       // Create a custom test scaffold that handles sections properly
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: VooNavigationConfig(
               items: itemsWithSections,
               selectedId: 'home',
@@ -292,11 +294,8 @@ void main() {
 
       // Test mobile layout (bottom navigation)
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(size: Size(400, 800)),
-          child: MaterialApp.router(
-            routerConfig: _createTestRouter(navigationItems),
-          ),
+        createTestRouterApp(
+          routerConfig: _createTestRouter(navigationItems),
         ),
       );
       await tester.pumpAndSettle();
@@ -310,11 +309,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(size: Size(800, 1200)),
-          child: MaterialApp.router(
-            routerConfig: _createTestRouter(navigationItems),
-          ),
+        createTestRouterApp(
+          routerConfig: _createTestRouter(navigationItems),
         ),
       );
       await tester.pumpAndSettle();
@@ -328,11 +324,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(size: Size(1400, 900)),
-          child: MaterialApp.router(
-            routerConfig: _createTestRouter(navigationItems),
-          ),
+        createTestRouterApp(
+          routerConfig: _createTestRouter(navigationItems),
         ),
       );
       await tester.pumpAndSettle();

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
+import '../../../helpers/test_helpers.dart';
+
 void main() {
   group('VooAdaptiveScaffold', () {
     late List<VooNavigationItem> navigationItems;
@@ -38,8 +40,8 @@ void main() {
 
     testWidgets('should build scaffold with body', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: config,
             body: const Center(child: Text('Test Body')),
           ),
@@ -56,8 +58,8 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: config,
             body: const Center(child: Text('Mobile')),
           ),
@@ -76,8 +78,8 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: config,
             body: const Center(child: Text('Tablet')),
           ),
@@ -96,8 +98,8 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: config,
             body: const Center(child: Text('Desktop')),
           ),
@@ -116,8 +118,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: configWithAppBar,
             body: const Center(child: Text('Test')),
           ),
@@ -137,8 +139,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: configWithFab,
             body: const Center(child: Text('Test')),
           ),
@@ -160,8 +162,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: forcedConfig,
             body: const Center(child: Text('Forced Rail')),
           ),
@@ -211,8 +213,8 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: interactiveConfig,
             body: const Center(child: Text('Test')),
           ),
@@ -232,8 +234,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: coloredConfig,
             body: const Center(child: Text('Test')),
           ),
@@ -257,8 +259,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: VooAdaptiveScaffold(
+        createTestApp(
+          child: VooAdaptiveScaffold(
             config: extendedConfig,
             body: const Center(child: Text('Extended')),
           ),

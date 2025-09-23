@@ -8,6 +8,7 @@ import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_navigatio
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_navigation_rail.dart';
 import 'package:voo_navigation/src/presentation/utils/voo_navigation_inherited.dart';
 import 'package:voo_responsive/voo_responsive.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Adaptive scaffold that automatically adjusts navigation based on screen size
 class VooAdaptiveScaffold extends StatefulWidget {
@@ -196,11 +197,12 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
 
     // Wrap in card if requested
     if (widget.useBodyCard && navigationType != VooNavigationType.bottomNavigation) {
+      final tokens = context.vooTokens;
       final cardColor = widget.bodyCardColor ?? (theme.brightness == Brightness.light ? Colors.white : theme.colorScheme.surface);
-      final borderRadius = widget.bodyCardBorderRadius ?? BorderRadius.circular(screenInfo.width < 600 ? 12 : 16);
+      final borderRadius = widget.bodyCardBorderRadius ?? tokens.radius.card;
 
       body = Material(
-        elevation: widget.bodyCardElevation,
+        elevation: widget.bodyCardElevation == 0 ? tokens.elevation.card : widget.bodyCardElevation,
         borderRadius: borderRadius,
         color: cardColor,
         child: ClipRRect(borderRadius: borderRadius, child: body),
@@ -334,6 +336,8 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
 
   /// Get default body padding based on navigation type and screen size
   EdgeInsetsGeometry _getDefaultBodyPadding(VooNavigationType navigationType, ScreenInfo screenInfo) {
+    final tokens = context.vooTokens;
+    final spacing = tokens.spacing;
     final screenWidth = screenInfo.width;
 
     // Responsive padding based on screen size
@@ -342,16 +346,16 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold> with SingleTi
 
     if (screenWidth < 600) {
       // Mobile: smaller padding
-      horizontalPadding = 16;
-      verticalPadding = 16;
+      horizontalPadding = spacing.md;
+      verticalPadding = spacing.md;
     } else if (screenWidth < 1240) {
       // Tablet: medium padding
-      horizontalPadding = 24;
-      verticalPadding = 20;
+      horizontalPadding = spacing.lg;
+      verticalPadding = spacing.lg;
     } else {
       // Desktop: larger padding for spacious feel
-      horizontalPadding = 32;
-      verticalPadding = 24;
+      horizontalPadding = spacing.xl;
+      verticalPadding = spacing.lg;
     }
 
     // Adjust for navigation type

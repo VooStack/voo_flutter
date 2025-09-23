@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
+import '../../../helpers/test_helpers.dart';
+
 void main() {
   group('VooNavigationBuilder', () {
     test('creates empty builder', () {
@@ -212,8 +214,8 @@ void main() {
 
     testWidgets('creates MaterialYou themed builder', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
+        createTestApp(
+          child: Builder(
             builder: (context) {
               final builder = VooNavigationBuilder.materialYou(
                 context: context,
