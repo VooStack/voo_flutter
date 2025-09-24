@@ -1,3 +1,82 @@
+## 0.0.9 (Unreleased)
+
+### Changed
+- **Major Refactoring**: Complete refactoring to comply with clean architecture and atomic design patterns
+  - Extracted all `_buildXXX` methods into proper widget classes following rules.md requirements
+  - Created 36 new widget classes organized by atomic design principles
+  - Improved code organization and maintainability
+  - Better separation of concerns and single responsibility principle
+
+### Added
+- **New Atom Widgets** (14 total):
+  - `VooBackgroundIndicator` - Background style indicator for navigation items
+  - `VooLineIndicator` - Line indicator with customizable position (top/bottom/left/right)
+  - `VooPillIndicator` - Pill-shaped selection indicator
+  - `VooCustomIndicator` - Customizable indicator widget
+  - `VooDotBadge` - Simple dot badge for notifications
+  - `VooTextBadge` - Text-based badge with count or label
+  - `VooModernIcon` - Modern styled navigation icon
+  - `VooModernBadge` - Modern styled badge widget
+  - `VooAnimatedIcon` - Icon with animated transitions
+  - `VooIconWithBadge` - Composite icon and badge component
+  - `VooRailModernBadge` - Badge specific to rail navigation
+  - Additional navigation-specific atom widgets
+
+- **New Molecule Widgets** (18 total):
+  - `VooDropdownHeader` - Header for dropdown sections
+  - `VooDropdownChildren` - Container for dropdown child items
+  - `VooDropdownChildItem` - Individual dropdown child item
+  - `VooAppBarLeading` - Leading widget for app bar
+  - `VooAppBarTitle` - Title widget for app bar with animations
+  - `VooAppBarActions` - Actions section for app bar
+  - `VooCustomNavigationItem` - Custom styled navigation item
+  - `VooRailDefaultHeader` - Default header for navigation rail
+  - `VooRailNavigationItem` - Rail-specific navigation item
+  - `VooRailSectionHeader` - Section header for rail navigation
+  - `VooDrawerDefaultHeader` - Default header for navigation drawer
+  - `VooDrawerNavigationItems` - Container for drawer items
+  - `VooDrawerExpandableSection` - Expandable section in drawer
+  - `VooDrawerNavigationItem` - Drawer-specific navigation item
+  - `VooDrawerChildNavigationItem` - Child item in drawer
+  - `VooDrawerModernBadge` - Modern badge for drawer items
+  - Additional navigation molecule widgets
+
+- **New Organism Widgets** (4 total):
+  - `VooMaterial3NavigationBar` - Material 3 compliant navigation bar
+  - `VooMaterial2BottomNavigation` - Material 2 style bottom navigation
+  - `VooCustomNavigationBar` - Customizable navigation bar
+  - `VooRailNavigationItems` - Container for rail navigation items
+  - `VooScaffoldBuilder` - Builder for adaptive scaffold
+  - `VooMobileScaffold` - Mobile-specific scaffold
+  - `VooTabletScaffold` - Tablet-specific scaffold
+  - `VooDesktopScaffold` - Desktop-specific scaffold
+  - `VooRouterShell` - Router shell wrapper for go_router integration
+
+- **Test Coverage**:
+  - Added comprehensive tests for atom widgets
+  - 21 new test cases for VooDotBadge, VooTextBadge, and VooLineIndicator
+  - All new tests passing
+
+### Fixed
+- Fixed RenderFlex overflow in navigation rail items
+- Fixed test failures related to structural changes from refactoring
+- Updated tests to work with new widget architecture
+- Fixed deprecated API usage (opacity → a)
+
+### Improved
+- **Code Quality**:
+  - 100% compliance with rules.md for production code
+  - Eliminated all `_buildXXX` methods from production widgets
+  - Each widget now has single responsibility
+  - Better testability with isolated widget classes
+  - Improved reusability of UI components
+
+- **Architecture**:
+  - Clean separation between atoms, molecules, and organisms
+  - Proper file organization following naming conventions
+  - No relative imports used
+  - Consistent widget patterns throughout
+
 ## 0.0.8
 
  - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
