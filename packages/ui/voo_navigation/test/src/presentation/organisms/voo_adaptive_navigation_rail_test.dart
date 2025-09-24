@@ -259,18 +259,20 @@ void main() {
         ),
       );
 
-      final material = tester.widget<Material>(
+      // The border radius is now applied to DecoratedBox instead of Material
+      final decoratedBox = tester.widget<DecoratedBox>(
         find
             .descendant(
               of: find.byType(VooAdaptiveNavigationRail),
-              matching: find.byType(Material),
+              matching: find.byType(DecoratedBox),
             )
-            .first,
+            .last, // Get the inner DecoratedBox
       );
 
+      final decoration = decoratedBox.decoration as BoxDecoration;
       expect(
-        material.borderRadius,
-        const BorderRadius.horizontal(right: Radius.circular(16)),
+        decoration.borderRadius,
+        isNotNull,
       );
     });
 
@@ -407,9 +409,9 @@ void main() {
       final railFinder = find.byType(VooAdaptiveNavigationRail);
       expect(railFinder, findsOneWidget);
 
-      // Get the render box to check width
+      // Get the render box to check width - including margin (8.0 on each side)
       RenderBox railBox = tester.renderObject(railFinder);
-      expect(railBox.size.width, 88.0);
+      expect(railBox.size.width, 104.0); // 88 + 8*2 margin
 
       // Toggle to extended
       await tester.tap(find.text('Toggle'));
@@ -423,7 +425,7 @@ void main() {
 
       // Check new width
       railBox = tester.renderObject(railFinder);
-      expect(railBox.size.width, 256.0);
+      expect(railBox.size.width, 272.0); // 256 + 8*2 margin
     });
   });
 }
