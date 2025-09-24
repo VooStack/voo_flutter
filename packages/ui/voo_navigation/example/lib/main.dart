@@ -356,9 +356,10 @@ class _NavigationExampleState extends State<NavigationExample> {
           end: Alignment.bottomCenter,
         ),
       ),
-      child: Center(
+      child: Container(
+        alignment: Alignment.center,
+        color: Colors.purple,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

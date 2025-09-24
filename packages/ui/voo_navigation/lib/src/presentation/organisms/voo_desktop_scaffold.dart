@@ -84,13 +84,8 @@ class VooDesktopScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final navigationDrawer = ClipRect(
-      child: VooAdaptiveNavigationDrawer(
-        config: config,
-        selectedId: selectedId,
-        onNavigationItemSelected: onNavigationItemSelected,
-      ),
+      child: VooAdaptiveNavigationDrawer(config: config, selectedId: selectedId, onNavigationItemSelected: onNavigationItemSelected),
     );
 
     // When app bar is alongside drawer, wrap the content area with its own scaffold
@@ -102,40 +97,15 @@ class VooDesktopScaffold extends StatelessWidget {
           children: [
             navigationDrawer,
             Expanded(
-              child: Container(
-                margin: EdgeInsets.only(
-                  top: config.navigationRailMargin,
-                  right: config.navigationRailMargin,
-                  bottom: config.navigationRailMargin,
-                  // No left margin to avoid double spacing with navigation
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.04),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  child: Scaffold(
-                    backgroundColor: backgroundColor,
-                    appBar: appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                    body: body,
-                    floatingActionButton: config.showFloatingActionButton
-                        ? config.floatingActionButton
-                        : null,
-                    floatingActionButtonLocation: config.floatingActionButtonLocation,
-                    floatingActionButtonAnimator: config.floatingActionButtonAnimator,
-                  ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(context.vooRadius.lg),
+                child: Scaffold(
+                  backgroundColor: backgroundColor,
+                  appBar: appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
+                  body: body,
+                  floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
+                  floatingActionButtonLocation: config.floatingActionButtonLocation,
+                  floatingActionButtonAnimator: config.floatingActionButtonAnimator,
                 ),
               ),
             ),
@@ -158,18 +128,14 @@ class VooDesktopScaffold extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: showAppBar
-          ? (appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
-          : null,
+      appBar: showAppBar ? (appBar ?? const VooAdaptiveAppBar(showMenuButton: false)) : null,
       body: Row(
         children: [
           navigationDrawer,
           Expanded(child: body),
         ],
       ),
-      floatingActionButton: config.showFloatingActionButton
-          ? config.floatingActionButton
-          : null,
+      floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
       floatingActionButtonLocation: config.floatingActionButtonLocation,
       floatingActionButtonAnimator: config.floatingActionButtonAnimator,
       endDrawer: endDrawer,

@@ -128,13 +128,9 @@ class VooScaffoldBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveBackgroundColor = backgroundColor ??
-        config.backgroundColor ??
-        theme.scaffoldBackgroundColor;
+    final effectiveBackgroundColor = backgroundColor ?? config.backgroundColor ?? theme.scaffoldBackgroundColor;
 
     // Apply body padding based on navigation type and screen size
-    final defaultPadding = _getDefaultBodyPadding(context, navigationType, screenInfo);
-    final effectiveBodyPadding = bodyPadding ?? defaultPadding;
 
     // Prepare the body with optional card wrapper
     Widget processedBody = body;
@@ -142,40 +138,21 @@ class VooScaffoldBuilder extends StatelessWidget {
     // Wrap in card if requested
     if (useBodyCard && navigationType != VooNavigationType.bottomNavigation) {
       final tokens = context.vooTokens;
-      final cardColor = bodyCardColor ??
-          (theme.brightness == Brightness.light
-              ? Colors.white
-              : theme.colorScheme.surface);
+      final cardColor = bodyCardColor ?? (theme.brightness == Brightness.light ? Colors.white : theme.colorScheme.surface);
       final borderRadius = bodyCardBorderRadius ?? tokens.radius.card;
 
       processedBody = Material(
-        elevation: bodyCardElevation == 0
-            ? tokens.elevation.card
-            : bodyCardElevation,
+        elevation: bodyCardElevation == 0 ? tokens.elevation.card : bodyCardElevation,
         borderRadius: borderRadius,
         color: cardColor,
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: processedBody,
-        ),
-      );
-    }
-
-    // Apply padding
-    if (effectiveBodyPadding != EdgeInsets.zero) {
-      processedBody = Padding(
-        padding: effectiveBodyPadding,
-        child: processedBody,
+        child: ClipRRect(borderRadius: borderRadius, child: processedBody),
       );
     }
 
     if (config.enableAnimations) {
       processedBody = FadeTransition(
         opacity: fadeAnimation,
-        child: SlideTransition(
-          position: slideAnimation,
-          child: processedBody,
-        ),
+        child: SlideTransition(position: slideAnimation, child: processedBody),
       );
     }
 
@@ -211,8 +188,7 @@ class VooScaffoldBuilder extends StatelessWidget {
       case VooNavigationType.navigationRail:
       case VooNavigationType.extendedNavigationRail:
         // Only show extended rail if config allows it AND we're in the right width range
-        final shouldExtend = config.useExtendedRail &&
-            navigationType == VooNavigationType.extendedNavigationRail;
+        final shouldExtend = config.useExtendedRail && navigationType == VooNavigationType.extendedNavigationRail;
         scaffold = KeyedSubtree(
           key: ValueKey('tablet_scaffold_$navigationType'),
           child: VooTabletScaffold(
@@ -270,56 +246,7 @@ class VooScaffoldBuilder extends StatelessWidget {
     return AnimatedSwitcher(
       duration: config.animationDuration,
       child: scaffold,
-      transitionBuilder: (child, animation) =>
-          FadeTransition(opacity: animation, child: child),
+      transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
     );
-  }
-
-  /// Get default body padding based on navigation type and screen size
-  EdgeInsetsGeometry _getDefaultBodyPadding(
-    BuildContext context,
-    VooNavigationType navigationType,
-    ScreenInfo screenInfo,
-  ) {
-    final tokens = context.vooTokens;
-    final spacing = tokens.spacing;
-    final screenWidth = screenInfo.width;
-
-    // Responsive padding based on screen size
-    double horizontalPadding;
-    double verticalPadding;
-
-    if (screenWidth < 600) {
-      // Mobile: smaller padding
-      horizontalPadding = spacing.md;
-      verticalPadding = spacing.md;
-    } else if (screenWidth < 1240) {
-      // Tablet: medium padding
-      horizontalPadding = spacing.lg;
-      verticalPadding = spacing.lg;
-    } else {
-      // Desktop: larger padding for spacious feel
-      horizontalPadding = spacing.xl;
-      verticalPadding = spacing.lg;
-    }
-
-    // Adjust for navigation type
-    switch (navigationType) {
-      case VooNavigationType.bottomNavigation:
-        // Mobile: padding on all sides
-        return EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: verticalPadding,
-        );
-      case VooNavigationType.navigationRail:
-      case VooNavigationType.extendedNavigationRail:
-      case VooNavigationType.navigationDrawer:
-        // Desktop/Tablet: no left padding since navigation is there
-        return EdgeInsets.only(
-          right: horizontalPadding,
-          top: verticalPadding,
-          bottom: verticalPadding,
-        );
-    }
   }
 }
