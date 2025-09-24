@@ -102,7 +102,10 @@ class VooDesktopScaffold extends StatelessWidget {
                 child: Scaffold(
                   backgroundColor: backgroundColor,
                   appBar: appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                  body: body,
+                  body: Padding(
+                    padding: EdgeInsets.all(context.vooTokens.spacing.lg),
+                    child: body,
+                  ),
                   floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
                   floatingActionButtonLocation: config.floatingActionButtonLocation,
                   floatingActionButtonAnimator: config.floatingActionButtonAnimator,
@@ -132,7 +135,12 @@ class VooDesktopScaffold extends StatelessWidget {
       body: Row(
         children: [
           navigationDrawer,
-          Expanded(child: body),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(context.vooTokens.spacing.lg),
+              child: body,
+            ),
+          ),
         ],
       ),
       floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,

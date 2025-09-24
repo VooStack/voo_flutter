@@ -48,7 +48,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
           onTap: item.isEnabled ? () => onItemTap(item) : null,
           borderRadius: BorderRadius.circular(context.vooRadius.lg),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: context.vooAnimation.durationFast,
             padding: EdgeInsets.symmetric(
               horizontal: context.vooSpacing.md,
               vertical: context.vooSpacing.sm + context.vooSpacing.xs,
@@ -62,7 +62,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
               border: isSelected
                   ? Border.all(
                       color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                      width: 1,
+                      width: context.vooSize.borderThin,
                     )
                   : null,
               borderRadius: BorderRadius.circular(context.vooRadius.lg),
@@ -80,14 +80,14 @@ class VooDrawerNavigationItem extends StatelessWidget {
               children: [
                 // Icon
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: context.vooAnimation.durationFast,
                   child: Icon(
                     isSelected ? item.effectiveSelectedIcon : item.icon,
                     key: ValueKey(isSelected),
                     color: isSelected
                         ? theme.colorScheme.primary
                         : Colors.white.withValues(alpha: 0.8),
-                    size: 20,
+                    size: context.vooSize.checkboxSize,
                   ),
                 ),
 
@@ -102,7 +102,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
                           ? theme.colorScheme.primary
                           : Colors.white.withValues(alpha: 0.85),
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      fontSize: 14,
+                      fontSize: context.vooTypography.bodyMedium.fontSize,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),

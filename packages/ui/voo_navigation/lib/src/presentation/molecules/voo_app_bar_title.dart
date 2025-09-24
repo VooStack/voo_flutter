@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 
@@ -25,7 +26,7 @@ class VooAppBarTitle extends StatelessWidget {
     }
 
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
+      duration: context.vooAnimation.durationNormal,
       transitionBuilder: (child, animation) => FadeTransition(
         opacity: animation,
         child: SlideTransition(

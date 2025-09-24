@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/presentation/atoms/voo_background_indicator.dart';
 import 'package:voo_navigation/src/presentation/atoms/voo_custom_indicator.dart';
 import 'package:voo_navigation/src/presentation/atoms/voo_line_indicator.dart';
@@ -25,10 +26,10 @@ class VooNavigationIndicator extends StatelessWidget {
   final double? width;
 
   /// Padding around the indicator
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// Animation duration
-  final Duration duration;
+  final Duration? duration;
 
   /// Animation curve
   final Curve curve;
@@ -50,8 +51,8 @@ class VooNavigationIndicator extends StatelessWidget {
     this.shape,
     this.height,
     this.width,
-    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-    this.duration = const Duration(milliseconds: 200),
+    this.padding,
+    this.duration,
     this.curve = Curves.easeInOut,
     this.animate = true,
     this.type = VooIndicatorType.background,
@@ -63,6 +64,11 @@ class VooNavigationIndicator extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final effectiveColor = color ?? colorScheme.primaryContainer;
+    final effectivePadding = padding ?? EdgeInsets.symmetric(
+      horizontal: context.vooSpacing.sm + context.vooSpacing.xs,
+      vertical: context.vooSpacing.xs,
+    );
+    final effectiveDuration = duration ?? context.vooAnimation.durationFast;
 
     switch (type) {
       case VooIndicatorType.background:
@@ -70,8 +76,8 @@ class VooNavigationIndicator extends StatelessWidget {
           isSelected: isSelected,
           color: effectiveColor,
           shape: shape,
-          padding: padding,
-          duration: duration,
+          padding: effectivePadding,
+          duration: effectiveDuration,
           curve: curve,
           animate: animate,
           child: child,
@@ -82,8 +88,8 @@ class VooNavigationIndicator extends StatelessWidget {
           color: effectiveColor,
           height: height,
           width: width,
-          padding: padding,
-          duration: duration,
+          padding: effectivePadding,
+          duration: effectiveDuration,
           curve: curve,
           animate: animate,
           position: _mapToLineIndicatorPosition(position),
@@ -94,8 +100,8 @@ class VooNavigationIndicator extends StatelessWidget {
           isSelected: isSelected,
           color: effectiveColor,
           borderRadius: height ?? 20,
-          padding: padding,
-          duration: duration,
+          padding: effectivePadding,
+          duration: effectiveDuration,
           curve: curve,
           animate: animate,
           child: child,
@@ -103,8 +109,8 @@ class VooNavigationIndicator extends StatelessWidget {
       case VooIndicatorType.custom:
         return VooCustomIndicator(
           isSelected: isSelected,
-          padding: padding,
-          duration: duration,
+          padding: effectivePadding,
+          duration: effectiveDuration,
           curve: curve,
           animate: animate,
           child: child,

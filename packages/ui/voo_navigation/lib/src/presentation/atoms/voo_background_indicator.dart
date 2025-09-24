@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Background indicator widget for navigation items
 class VooBackgroundIndicator extends StatelessWidget {
@@ -41,7 +42,7 @@ class VooBackgroundIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveShape = shape ??
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
+        RoundedRectangleBorder(borderRadius: context.vooRadius.card);
 
     if (!animate) {
       return Container(

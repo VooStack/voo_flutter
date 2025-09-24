@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/molecules/voo_navigation_badge.dart';
@@ -49,72 +50,44 @@ class VooDropdownHeader extends StatelessWidget {
 
     return InkWell(
       onTap: item.isEnabled ? onTap : null,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: context.vooTokens.radius.button,
       child: Padding(
-        padding:
-            tilePadding ??
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: tilePadding ?? EdgeInsets.symmetric(horizontal: context.vooSpacing.md, vertical: context.vooSpacing.sm + context.vooSpacing.xs),
         child: Row(
           children: [
             // Icon
             AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
+              duration: context.vooAnimation.durationFast,
               child: Icon(
                 isExpanded ? item.effectiveSelectedIcon : item.icon,
                 key: ValueKey('${item.id}_icon_$isExpanded'),
                 color: isHighlighted
-                    ? (item.selectedIconColor ??
-                          config.selectedItemColor ??
-                          colorScheme.primary)
-                    : (item.iconColor ??
-                          config.unselectedItemColor ??
-                          colorScheme.onSurfaceVariant),
+                    ? (item.selectedIconColor ?? config.selectedItemColor ?? colorScheme.primary)
+                    : (item.iconColor ?? config.unselectedItemColor ?? colorScheme.onSurfaceVariant),
               ),
             ),
 
-            const SizedBox(width: 12),
+            SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
 
             // Label
             Expanded(
               child: AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
+                duration: context.vooAnimation.durationFast,
                 style: isHighlighted
-                    ? (item.selectedLabelStyle ??
-                          theme.textTheme.bodyLarge!.copyWith(
-                            color:
-                                config.selectedItemColor ?? colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ))
-                    : (item.labelStyle ??
-                          theme.textTheme.bodyLarge!.copyWith(
-                            color:
-                                config.unselectedItemColor ??
-                                colorScheme.onSurfaceVariant,
-                          )),
+                    ? (item.selectedLabelStyle ?? theme.textTheme.bodyLarge!.copyWith(color: config.selectedItemColor ?? colorScheme.primary, fontWeight: FontWeight.w600))
+                    : (item.labelStyle ?? theme.textTheme.bodyLarge!.copyWith(color: config.unselectedItemColor ?? colorScheme.onSurfaceVariant)),
                 child: Text(item.label, overflow: TextOverflow.ellipsis),
               ),
             ),
 
             // Badge if present
-            if (item.hasBadge) ...[
-              const SizedBox(width: 8),
-              VooNavigationBadge(
-                item: item,
-                config: config,
-                size: 16,
-                animate: config.enableAnimations,
-              ),
-            ],
+            if (item.hasBadge) ...[SizedBox(width: context.vooSpacing.sm), VooNavigationBadge(item: item, config: config, size: context.vooSize.iconXSmall, animate: config.enableAnimations)],
 
             // Expand icon
-            const SizedBox(width: 8),
+            SizedBox(width: context.vooSpacing.sm),
             RotationTransition(
               turns: rotationAnimation,
-              child: Icon(
-                Icons.expand_more,
-                color: colorScheme.onSurfaceVariant,
-                size: 20,
-              ),
+              child: Icon(Icons.expand_more, color: colorScheme.onSurfaceVariant, size: context.vooSize.checkboxSize),
             ),
           ],
         ),

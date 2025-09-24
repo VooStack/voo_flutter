@@ -55,7 +55,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
     super.initState();
     _animationController = AnimationController(duration: widget.config.animationDuration, vsync: this);
 
-    _hoverController = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
+    _hoverController = AnimationController(duration: const Duration(milliseconds: 113), vsync: this);
 
     if (widget.extended) {
       _animationController.forward();
@@ -117,7 +117,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
               decoration: BoxDecoration(
                 color: effectiveBackgroundColor,
                 borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
-                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1), width: 1),
+                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1), width: context.vooSize.borderThin),
               ),
               child: Material(
                 color: Colors.transparent,

@@ -31,8 +31,8 @@ class VooRailModernBadge extends StatelessWidget {
       badgeText = item.badgeText!;
     } else if (item.showDot) {
       return Container(
-        width: 8,
-        height: 8,
+        width: context.vooSize.badgeMedium,
+        height: context.vooSize.badgeMedium,
         decoration: BoxDecoration(
           color: item.badgeColor ?? Colors.red,
           shape: BoxShape.circle,

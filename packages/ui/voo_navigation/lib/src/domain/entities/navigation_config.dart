@@ -3,9 +3,14 @@ import 'package:voo_navigation/src/domain/entities/breakpoint.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_navigation.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Configuration for the adaptive navigation system
 class VooNavigationConfig {
+  /// Default animation tokens for the navigation
+  static const _animationTokens = VooAnimationTokens();
+  static const _spacingTokens = VooSpacingTokens();
+
   /// List of navigation items to display
   final List<VooNavigationItem> items;
 
@@ -146,12 +151,12 @@ class VooNavigationConfig {
   final Widget? loadingWidget;
 
   /// Type of bottom navigation bar to use
-  final NavigationBarType bottomNavigationType;
+  final VooNavigationBarType bottomNavigationType;
 
-  const VooNavigationConfig({
+  VooNavigationConfig({
     required this.items,
     this.selectedId,
-    this.breakpoints = VooBreakpoint.material3Breakpoints,
+    List<VooBreakpoint>? breakpoints,
     this.isAdaptive = true,
     this.forcedNavigationType,
     this.theme,
@@ -179,8 +184,8 @@ class VooNavigationConfig {
     this.navigationRailWidth,
     this.extendedNavigationRailWidth,
     this.navigationDrawerWidth,
-    this.animationDuration = const Duration(milliseconds: 300),
-    this.animationCurve = Curves.easeInOut,
+    Duration? animationDuration,
+    Curve? animationCurve,
     this.enableHapticFeedback = true,
     this.enableAnimations = true,
     this.transitionBuilder,
@@ -188,15 +193,19 @@ class VooNavigationConfig {
     this.persistNavigationState = true,
     this.drawerScrollController,
     this.showNotificationBadges = true,
-    this.badgeAnimationDuration = const Duration(milliseconds: 200),
+    Duration? badgeAnimationDuration,
     this.groupItemsBySections = false,
     this.allowItemReordering = false,
     this.emptyStateWidget,
     this.errorBuilder,
     this.loadingWidget,
-    this.bottomNavigationType = NavigationBarType.custom,
-    this.navigationRailMargin = 8.0,
-  });
+    this.bottomNavigationType = VooNavigationBarType.custom,
+    double? navigationRailMargin,
+  }) : breakpoints = breakpoints ?? VooBreakpoint.material3Breakpoints,
+        animationDuration = animationDuration ?? _animationTokens.durationNormal,
+        animationCurve = animationCurve ?? _animationTokens.curveEaseInOut,
+        badgeAnimationDuration = badgeAnimationDuration ?? _animationTokens.durationFast,
+        navigationRailMargin = navigationRailMargin ?? _spacingTokens.sm;
 
   /// Creates a copy of this configuration with the given fields replaced
   VooNavigationConfig copyWith({
@@ -245,7 +254,7 @@ class VooNavigationConfig {
     Widget? emptyStateWidget,
     Widget Function(Object error)? errorBuilder,
     Widget? loadingWidget,
-    NavigationBarType? bottomNavigationType,
+    VooNavigationBarType? bottomNavigationType,
     double? navigationRailMargin,
   }) => VooNavigationConfig(
     items: items ?? this.items,

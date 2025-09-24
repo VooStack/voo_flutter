@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Navigation animation utilities
 class VooNavigationAnimations {
@@ -20,14 +21,14 @@ class VooNavigationAnimations {
   static Route<T> pageRoute<T>({
     required Widget page,
     RouteSettings? settings,
-    Duration duration = defaultDuration,
+    Duration? duration,
     Curve curve = defaultCurve,
     VooTransitionType type = VooTransitionType.fadeScale,
   }) => PageRouteBuilder<T>(
     pageBuilder: (context, animation, secondaryAnimation) => page,
     settings: settings,
-    transitionDuration: duration,
-    reverseTransitionDuration: duration,
+    transitionDuration: duration ?? defaultDuration,
+    reverseTransitionDuration: duration ?? defaultDuration,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       switch (type) {
         case VooTransitionType.fade:
@@ -126,7 +127,7 @@ class VooNavigationAnimations {
   static Widget itemAnimation({
     required Widget child,
     required bool isSelected,
-    Duration duration = defaultDuration,
+    Duration? duration,
     Curve curve = defaultCurve,
     bool enableScale = true,
     bool enableFade = false,
@@ -140,7 +141,7 @@ class VooNavigationAnimations {
     if (enableScale) {
       result = AnimatedScale(
         scale: isSelected ? 1.0 : 0.95,
-        duration: duration,
+        duration: duration ?? defaultDuration,
         curve: curve,
         child: result,
       );
@@ -149,7 +150,7 @@ class VooNavigationAnimations {
     if (enableFade) {
       result = AnimatedOpacity(
         opacity: isSelected ? 1.0 : 0.7,
-        duration: duration,
+        duration: duration ?? defaultDuration,
         curve: curve,
         child: result,
       );
@@ -162,15 +163,15 @@ class VooNavigationAnimations {
   static Widget badgeAnimation({
     required Widget child,
     required bool show,
-    Duration duration = fastDuration,
+    Duration? duration,
     Curve curve = Curves.elasticOut,
   }) => AnimatedScale(
     scale: show ? 1.0 : 0.0,
-    duration: duration,
+    duration: duration ?? fastDuration,
     curve: curve,
     child: AnimatedOpacity(
       opacity: show ? 1.0 : 0.0,
-      duration: duration,
+      duration: duration ?? fastDuration,
       child: child,
     ),
   );
@@ -180,12 +181,14 @@ class VooNavigationAnimations {
     required Widget child,
     required int index,
     required int itemCount,
-    Duration baseDuration = defaultDuration,
-    Duration staggerDelay = const Duration(milliseconds: 50),
+    Duration? baseDuration,
+    Duration? staggerDelay,
     Curve curve = defaultCurve,
   }) {
-    final delay = staggerDelay * index;
-    final totalDuration = baseDuration + delay;
+    final effectiveBaseDuration = baseDuration ?? defaultDuration;
+    final effectiveStaggerDelay = staggerDelay ?? Duration(milliseconds: (fastDuration.inMilliseconds * 0.33).round());
+    final delay = effectiveStaggerDelay * index;
+    final totalDuration = effectiveBaseDuration + delay;
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
@@ -213,11 +216,12 @@ class VooNavigationAnimations {
     BorderRadius? borderRadius,
     Color? splashColor,
     Color? highlightColor,
+    required BuildContext context,
   }) => Material(
     color: Colors.transparent,
     child: InkWell(
       onTap: onTap,
-      borderRadius: borderRadius ?? BorderRadius.circular(8),
+      borderRadius: borderRadius ?? context.vooRadius.button,
       splashColor: splashColor,
       highlightColor: highlightColor,
       child: child,
@@ -228,12 +232,12 @@ class VooNavigationAnimations {
   static Widget drawerSlideAnimation({
     required Widget child,
     required bool isOpen,
-    Duration duration = defaultDuration,
+    Duration? duration,
     Curve curve = defaultCurve,
     double slideDistance = 250,
   }) => AnimatedSlide(
     offset: isOpen ? Offset.zero : Offset(-slideDistance, 0),
-    duration: duration,
+    duration: duration ?? defaultDuration,
     curve: curve,
     child: child,
   );
@@ -242,10 +246,10 @@ class VooNavigationAnimations {
   static Widget railExpandAnimation({
     required Widget child,
     required bool isExpanded,
-    Duration duration = defaultDuration,
+    Duration? duration,
     Curve curve = defaultCurve,
   }) => AnimatedContainer(
-    duration: duration,
+    duration: duration ?? defaultDuration,
     curve: curve,
     width: isExpanded ? 256 : 80,
     child: child,
@@ -254,11 +258,11 @@ class VooNavigationAnimations {
   /// FAB entrance animation
   static Widget fabEntranceAnimation({
     required Widget child,
-    Duration duration = slowDuration,
+    Duration? duration,
     Curve curve = Curves.elasticOut,
   }) => TweenAnimationBuilder<double>(
     tween: Tween(begin: 0.0, end: 1.0),
-    duration: duration,
+    duration: duration ?? slowDuration,
     curve: curve,
     builder: (context, value, child) => Transform.scale(
       scale: value,
@@ -271,9 +275,9 @@ class VooNavigationAnimations {
   static Widget navigationTypeTransition({
     required Widget child,
     required String transitionKey,
-    Duration duration = defaultDuration,
+    Duration? duration,
   }) => AnimatedSwitcher(
-    duration: duration,
+    duration: duration ?? defaultDuration,
     switchInCurve: Curves.easeInOut,
     switchOutCurve: Curves.easeInOut,
     transitionBuilder: (child, animation) => FadeTransition(

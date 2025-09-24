@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/molecules/voo_navigation_badge.dart';
@@ -36,17 +37,21 @@ class VooDropdownChildItem extends StatelessWidget {
 
     return InkWell(
       onTap: item.isEnabled ? onTap : null,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: context.vooRadius.button,
       child: Container(
         padding:
             childrenPadding ??
-            const EdgeInsets.only(left: 48, right: 16, top: 8, bottom: 8),
+            EdgeInsets.only(
+                left: context.vooSpacing.xxl * 2,
+                right: context.vooSpacing.md,
+                top: context.vooSpacing.sm,
+                bottom: context.vooSpacing.sm),
         decoration: isSelected && config.indicatorShape == null
             ? BoxDecoration(
                 border: Border(
                   left: BorderSide(
                     color: config.selectedItemColor ?? colorScheme.primary,
-                    width: 3,
+                    width: context.vooSize.borderThick,
                   ),
                 ),
               )
@@ -56,7 +61,7 @@ class VooDropdownChildItem extends StatelessWidget {
             // Icon
             Icon(
               isSelected ? item.effectiveSelectedIcon : item.icon,
-              size: 20,
+              size: context.vooSize.checkboxSize,
               color: isSelected
                   ? (item.selectedIconColor ??
                         config.selectedItemColor ??
@@ -66,7 +71,7 @@ class VooDropdownChildItem extends StatelessWidget {
                         colorScheme.onSurfaceVariant),
             ),
 
-            const SizedBox(width: 12),
+            SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
 
             // Label
             Expanded(
@@ -91,18 +96,18 @@ class VooDropdownChildItem extends StatelessWidget {
 
             // Badge if present
             if (item.hasBadge) ...[
-              const SizedBox(width: 8),
+              SizedBox(width: context.vooSpacing.sm),
               VooNavigationBadge(
                 item: item,
                 config: config,
-                size: 14,
+                size: context.vooSize.iconXSmall,
                 animate: config.enableAnimations,
               ),
             ],
 
             // Trailing widget if present
             if (item.trailingWidget != null) ...[
-              const SizedBox(width: 8),
+              SizedBox(width: context.vooSpacing.sm),
               item.trailingWidget!,
             ],
           ],

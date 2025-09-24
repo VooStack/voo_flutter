@@ -7,10 +7,7 @@ class VooDrawerDefaultHeader extends StatelessWidget {
   /// Navigation configuration
   final VooNavigationConfig config;
 
-  const VooDrawerDefaultHeader({
-    super.key,
-    required this.config,
-  });
+  const VooDrawerDefaultHeader({super.key, required this.config});
 
   @override
   Widget build(BuildContext context) {
@@ -18,29 +15,17 @@ class VooDrawerDefaultHeader extends StatelessWidget {
     final spacing = context.vooSpacing;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        spacing.lg - spacing.xs,
-        spacing.xxl,
-        spacing.lg - spacing.xs,
-        spacing.lg - spacing.xs
-      ),
+      padding: EdgeInsets.fromLTRB(spacing.lg - spacing.xs, spacing.xxl, spacing.lg - spacing.xs, spacing.lg - spacing.xs),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(context.vooRadius.md)
-                ),
-                child: const Icon(
-                  Icons.dashboard,
-                  color: Colors.white,
-                  size: 22
-                ),
+                width: context.vooSize.avatarMedium,
+                height: context.vooSize.avatarMedium,
+                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(context.vooRadius.md)),
+                child: Icon(Icons.dashboard, color: Colors.white, size: context.vooSize.checkboxSize + 2),
               ),
               SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
               Expanded(
@@ -48,21 +33,10 @@ class VooDrawerDefaultHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (config.appBarTitle != null && config.appBarTitle is Text)
-                        ? ((config.appBarTitle! as Text).data ?? 'Navigation')
-                        : 'Navigation',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600
-                      ),
+                      (config.appBarTitle != null && config.appBarTitle is Text) ? ((config.appBarTitle! as Text).data ?? 'Navigation') : 'Navigation',
+                      style: theme.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                     ),
-                    if (config.drawerHeader == null)
-                      Text(
-                        'Welcome back',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.8)
-                        )
-                      ),
+                    if (config.drawerHeader == null) Text('Welcome back', style: theme.textTheme.bodySmall?.copyWith(color: Colors.white.withValues(alpha: 0.8))),
                   ],
                 ),
               ),

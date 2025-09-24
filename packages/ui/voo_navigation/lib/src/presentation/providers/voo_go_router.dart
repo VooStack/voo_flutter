@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_route.dart';
@@ -7,6 +8,7 @@ import 'package:voo_navigation/src/presentation/organisms/voo_router_shell.dart'
 
 /// Provider for creating a GoRouter with VooNavigation integration
 class VooGoRouter {
+  static const _animationTokens = VooAnimationTokens();
   /// Creates a GoRouter configured with VooNavigation
   static GoRouter create({
     required VooNavigationConfig config,
@@ -68,14 +70,14 @@ class VooGoRouter {
     bool debugLogDiagnostics = false,
     bool requestFocus = true,
     bool useAnimatedTransitions = true,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
   }) {
     // Generate routes from navigation items
     final routes = _generateRoutesFromItems(
       config.items,
       pageBuilder,
       useAnimatedTransitions,
-      transitionDuration,
+      transitionDuration ?? _animationTokens.durationNormal,
     );
 
     return create(
@@ -100,7 +102,7 @@ class VooGoRouter {
     required Map<String, Widget> pages,
     String? initialLocation,
     bool useAnimatedTransitions = true,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     String? Function(BuildContext, GoRouterState)? redirect,
     Widget? errorPage,
     NavigatorObserver? observer,

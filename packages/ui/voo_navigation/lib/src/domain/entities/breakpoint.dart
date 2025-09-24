@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Defines responsive breakpoints for adaptive layouts
 class VooBreakpoint {
+  /// Default tokens for spacing
+  static const _spacingTokens = VooSpacingTokens();
   /// The minimum width for this breakpoint
   final double minWidth;
 
@@ -21,7 +24,7 @@ class VooBreakpoint {
   /// The gutter spacing between items
   final double gutter;
 
-  const VooBreakpoint({
+  VooBreakpoint({
     required this.minWidth,
     this.maxWidth,
     required this.navigationType,
@@ -39,56 +42,56 @@ class VooBreakpoint {
   }
 
   /// Material 3 compact breakpoint (phones)
-  static const compact = VooBreakpoint(
+  static final compact = VooBreakpoint(
     minWidth: 0,
     maxWidth: 600,
     navigationType: VooNavigationType.bottomNavigation,
     columns: 4,
-    margin: EdgeInsets.symmetric(horizontal: 16),
-    gutter: 8,
+    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.md),
+    gutter: _spacingTokens.sm,
   );
 
   /// Material 3 medium breakpoint (tablets)
-  static const medium = VooBreakpoint(
+  static final medium = VooBreakpoint(
     minWidth: 600,
     maxWidth: 840,
     navigationType: VooNavigationType.navigationRail,
     columns: 8,
-    margin: EdgeInsets.symmetric(horizontal: 32),
-    gutter: 12,
+    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.xl),
+    gutter: _spacingTokens.sm + _spacingTokens.xs,
   );
 
   /// Material 3 expanded breakpoint (small laptops)
-  static const expanded = VooBreakpoint(
+  static final expanded = VooBreakpoint(
     minWidth: 840,
     maxWidth: 1240,
     navigationType: VooNavigationType.extendedNavigationRail,
     columns: 12,
-    margin: EdgeInsets.symmetric(horizontal: 32),
-    gutter: 12,
+    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.xl),
+    gutter: _spacingTokens.sm + _spacingTokens.xs,
   );
 
   /// Material 3 large breakpoint (desktops)
-  static const large = VooBreakpoint(
+  static final large = VooBreakpoint(
     minWidth: 1240,
     maxWidth: 1440,
     navigationType: VooNavigationType.navigationDrawer,
     columns: 12,
-    margin: EdgeInsets.symmetric(horizontal: 200),
-    gutter: 12,
+    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.xxxl * 3 + _spacingTokens.sm),
+    gutter: _spacingTokens.sm + _spacingTokens.xs,
   );
 
   /// Material 3 extra large breakpoint (large desktops)
-  static const extraLarge = VooBreakpoint(
+  static final extraLarge = VooBreakpoint(
     minWidth: 1440,
     navigationType: VooNavigationType.navigationDrawer,
     columns: 12,
-    margin: EdgeInsets.symmetric(horizontal: 200),
-    gutter: 12,
+    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.xxxl * 3 + _spacingTokens.sm),
+    gutter: _spacingTokens.sm + _spacingTokens.xs,
   );
 
   /// Default Material 3 breakpoints
-  static const List<VooBreakpoint> material3Breakpoints = [
+  static final List<VooBreakpoint> material3Breakpoints = [
     compact,
     medium,
     expanded,

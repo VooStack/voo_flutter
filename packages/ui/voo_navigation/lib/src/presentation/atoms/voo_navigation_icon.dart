@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Animated navigation icon with selected state transitions
 class VooNavigationIcon extends StatelessWidget {
@@ -21,7 +22,7 @@ class VooNavigationIcon extends StatelessWidget {
   final Color? selectedColor;
 
   /// Animation duration
-  final Duration duration;
+  final Duration? duration;
 
   /// Animation curve
   final Curve curve;
@@ -40,7 +41,7 @@ class VooNavigationIcon extends StatelessWidget {
     this.size = 24.0,
     this.color,
     this.selectedColor,
-    this.duration = const Duration(milliseconds: 200),
+    this.duration,
     this.curve = Curves.easeInOut,
     this.animate = true,
     this.semanticLabel,
@@ -50,6 +51,7 @@ class VooNavigationIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final effectiveDuration = duration ?? context.vooAnimation.durationFast;
 
     final effectiveIcon = isSelected && selectedIcon != null
         ? selectedIcon!
@@ -68,7 +70,7 @@ class VooNavigationIcon extends StatelessWidget {
     }
 
     return AnimatedSwitcher(
-      duration: duration,
+      duration: effectiveDuration,
       switchInCurve: curve,
       switchOutCurve: curve,
       transitionBuilder: (child, animation) => ScaleTransition(

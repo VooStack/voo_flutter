@@ -27,8 +27,8 @@ class VooModernBadge extends StatelessWidget {
     // Handle dot badge
     if (item.showDot) {
       return Container(
-        width: 8,
-        height: 8,
+        width: context.vooSize.badgeMedium,
+        height: context.vooSize.badgeMedium,
         decoration: BoxDecoration(
           color: item.badgeColor ?? Colors.red,
           shape: BoxShape.circle,
@@ -66,7 +66,7 @@ class VooModernBadge extends StatelessWidget {
               ? Colors.white
               : Colors.white.withValues(alpha: 0.9),
           fontWeight: FontWeight.w600,
-          fontSize: 10,
+          fontSize: context.vooTypography.bodySmall.fontSize,
         ),
         textAlign: TextAlign.center,
       ),

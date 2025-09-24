@@ -76,7 +76,7 @@ class VooDrawerExpandableSection extends StatelessWidget {
                         ? item.selectedIcon ?? item.icon
                         : item.icon,
                     color: Colors.white,
-                    size: 20,
+                    size: context.vooSize.checkboxSize,
                   ),
                   SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
                   Expanded(
@@ -91,10 +91,10 @@ class VooDrawerExpandableSection extends StatelessWidget {
                   AnimatedRotation(
                     duration: const Duration(milliseconds: 200),
                     turns: isExpanded ? 0.25 : 0,
-                    child: const Icon(
+                    child: Icon(
                       Icons.chevron_right,
                       color: Colors.white,
-                      size: 20,
+                      size: context.vooSize.checkboxSize,
                     ),
                   ),
                 ],

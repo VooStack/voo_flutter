@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 
 /// App bar actions widget that handles notifications, search, and more options
@@ -63,7 +64,7 @@ class VooAppBarActions extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.all(2),
+                  padding: EdgeInsets.all(context.vooSpacing.xxs),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.error,
                     shape: BoxShape.circle,
@@ -77,7 +78,7 @@ class VooAppBarActions extends StatelessWidget {
                       totalBadgeCount > 99 ? '99+' : totalBadgeCount.toString(),
                       style: theme.textTheme.labelSmall!.copyWith(
                         color: theme.colorScheme.onError,
-                        fontSize: 10,
+                        fontSize: context.vooTypography.bodySmall.fontSize,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,

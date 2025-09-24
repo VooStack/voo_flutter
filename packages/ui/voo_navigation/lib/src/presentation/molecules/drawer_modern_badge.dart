@@ -27,8 +27,8 @@ class VooDrawerModernBadge extends StatelessWidget {
       badgeText = item.badgeText!;
     } else if (item.showDot) {
       return Container(
-        width: 8,
-        height: 8,
+        width: context.vooSize.badgeMedium,
+        height: context.vooSize.badgeMedium,
         decoration: BoxDecoration(
           color: item.badgeColor ?? Colors.red,
           shape: BoxShape.circle,
@@ -47,7 +47,7 @@ class VooDrawerModernBadge extends StatelessWidget {
         color: isSelected
             ? (item.badgeColor ?? theme.colorScheme.primary)
             : Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: context.vooRadius.card,
       ),
       child: Text(
         badgeText,

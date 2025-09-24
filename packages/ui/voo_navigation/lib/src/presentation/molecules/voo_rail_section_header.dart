@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Section header with expansion tile for navigation rail
 class VooRailSectionHeader extends StatelessWidget {
@@ -40,7 +41,7 @@ class VooRailSectionHeader extends StatelessWidget {
         leading: Icon(
           item.isExpanded ? item.selectedIcon ?? item.icon : item.icon,
           color: theme.colorScheme.onSurfaceVariant,
-          size: 20,
+          size: context.vooSize.checkboxSize,
         ),
         initiallyExpanded: item.isExpanded,
         children: children,

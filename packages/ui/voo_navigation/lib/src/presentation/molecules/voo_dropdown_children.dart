@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/molecules/voo_dropdown_child_item.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Dropdown children widget that displays child navigation items
 class VooDropdownChildren extends StatelessWidget {
@@ -43,7 +44,7 @@ class VooDropdownChildren extends StatelessWidget {
       final isSelected = child.id == selectedId;
 
       if (showDividers && i > 0) {
-        children.add(const Divider(height: 1, thickness: 0.5, indent: 48));
+        children.add(Divider(height: context.vooSize.borderThin, thickness: 0.5, indent: 48));
       }
 
       children.add(

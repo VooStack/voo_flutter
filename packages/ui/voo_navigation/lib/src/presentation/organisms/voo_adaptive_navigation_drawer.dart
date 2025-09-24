@@ -128,16 +128,8 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.vooRadius.lg),
           boxShadow: [
-            BoxShadow(
-              color: theme.shadowColor.withValues(alpha: 0.08),
-              blurRadius: 10,
-              offset: const Offset(2, 0),
-            ),
-            BoxShadow(
-              color: theme.shadowColor.withValues(alpha: 0.04),
-              blurRadius: 20,
-              offset: const Offset(4, 0),
-            ),
+            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(2, 0)),
+            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(4, 0)),
           ],
         ),
         child: ClipRRect(
@@ -147,54 +139,47 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: effectiveBackgroundColor,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(context.vooRadius.lg),
-                  bottomRight: Radius.circular(context.vooRadius.lg),
-                ),
-                border: Border.all(
-                  color: theme.dividerColor.withValues(alpha: 0.1),
-                  width: 1,
+                borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
+                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1), width: context.vooSize.borderThin),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Custom header or default modern header
+                    widget.config.drawerHeader ?? VooDrawerDefaultHeader(config: widget.config),
+
+                    // Navigation items
+                    Expanded(
+                      child: ListView(
+                        controller: _scrollController,
+                        padding: EdgeInsets.symmetric(horizontal: context.vooSpacing.sm + context.vooSpacing.xs, vertical: context.vooSpacing.sm),
+                        children: [
+                          VooDrawerNavigationItems(
+                            config: widget.config,
+                            selectedId: widget.selectedId,
+                            onItemTap: _handleItemTap,
+                            hoveredItems: _hoveredItems,
+                            expansionControllers: _expansionControllers,
+                            expansionAnimations: _expansionAnimations,
+                            onHoverChanged: (itemId, isHovered) {
+                              setState(() => _hoveredItems[itemId] = isHovered);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Footer
+                    if (widget.config.drawerFooter != null) Padding(padding: EdgeInsets.all(context.vooSpacing.sm + context.vooSpacing.xs), child: widget.config.drawerFooter!),
+                  ],
                 ),
               ),
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Custom header or default modern header
-                widget.config.drawerHeader ?? VooDrawerDefaultHeader(config: widget.config),
-
-                // Navigation items
-                Expanded(
-                  child: ListView(
-                    controller: _scrollController,
-                    padding: EdgeInsets.symmetric(horizontal: context.vooSpacing.sm + context.vooSpacing.xs, vertical: context.vooSpacing.sm),
-                    children: [
-                      VooDrawerNavigationItems(
-                        config: widget.config,
-                        selectedId: widget.selectedId,
-                        onItemTap: _handleItemTap,
-                        hoveredItems: _hoveredItems,
-                        expansionControllers: _expansionControllers,
-                        expansionAnimations: _expansionAnimations,
-                        onHoverChanged: (itemId, isHovered) {
-                          setState(() => _hoveredItems[itemId] = isHovered);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Footer
-                if (widget.config.drawerFooter != null) Padding(padding: EdgeInsets.all(context.vooSpacing.sm + context.vooSpacing.xs), child: widget.config.drawerFooter!),
-              ],
-            ),
-          ),
             ),
           ),
         ),
       ),
     );
   }
-
 }

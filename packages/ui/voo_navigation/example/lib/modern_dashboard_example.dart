@@ -154,7 +154,7 @@ class _ModernDashboardState extends State<ModernDashboard> {
       items: _navigationItems,
       selectedId: _selectedId,
       selectedItemColor: const Color(0xFF5B8DEE),
-      bottomNavigationType: NavigationBarType.custom,
+      bottomNavigationType: VooNavigationBarType.custom,
       enableAnimations: true,
       enableHapticFeedback: true,
       showNotificationBadges: true,

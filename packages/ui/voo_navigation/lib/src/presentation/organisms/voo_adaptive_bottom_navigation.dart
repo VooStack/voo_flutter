@@ -26,7 +26,7 @@ class VooAdaptiveBottomNavigation extends StatefulWidget {
   final bool showSelectedLabels;
 
   /// Type of bottom navigation bar
-  final NavigationBarType type;
+  final VooNavigationBarType type;
 
   /// Custom background color
   final Color? backgroundColor;
@@ -45,7 +45,7 @@ class VooAdaptiveBottomNavigation extends StatefulWidget {
     this.height,
     this.showLabels = true,
     this.showSelectedLabels = true,
-    this.type = NavigationBarType.material3,
+    this.type = VooNavigationBarType.material3,
     this.backgroundColor,
     this.elevation,
     this.enableFeedback = true,
@@ -98,7 +98,7 @@ class _VooAdaptiveBottomNavigationState
         .toList();
 
     _rippleController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
@@ -174,7 +174,7 @@ class _VooAdaptiveBottomNavigationState
     final selectedIndex = _getSelectedIndex() ?? 0;
 
     switch (widget.type) {
-      case NavigationBarType.material3:
+      case VooNavigationBarType.material3:
         return VooMaterial3NavigationBar(
           items: items,
           selectedIndex: selectedIndex,
@@ -188,7 +188,7 @@ class _VooAdaptiveBottomNavigationState
           enableFeedback: widget.enableFeedback,
           onItemSelected: widget.onNavigationItemSelected,
         );
-      case NavigationBarType.material2:
+      case VooNavigationBarType.material2:
         return VooMaterial2BottomNavigation(
           items: items,
           selectedIndex: selectedIndex,
@@ -200,7 +200,7 @@ class _VooAdaptiveBottomNavigationState
           enableFeedback: widget.enableFeedback,
           onItemSelected: widget.onNavigationItemSelected,
         );
-      case NavigationBarType.custom:
+      case VooNavigationBarType.custom:
         return VooCustomNavigationBar(
           items: items,
           selectedIndex: selectedIndex,
@@ -218,7 +218,7 @@ class _VooAdaptiveBottomNavigationState
 }
 
 /// Type of bottom navigation bar
-enum NavigationBarType {
+enum VooNavigationBarType {
   /// Material 3 NavigationBar
   material3,
 

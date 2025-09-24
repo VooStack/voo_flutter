@@ -97,9 +97,9 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
           ),
           child: AnimatedScale(
             scale: _isHovered ? 1.02 : 1.0,
-            duration: const Duration(milliseconds: 150),
+            duration: Duration(milliseconds: (context.vooAnimation.durationFast.inMilliseconds * 0.75).round()),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+              duration: context.vooAnimation.durationFast,
               height: widget.extended ? 48 : 56,
               padding: EdgeInsets.symmetric(
                 horizontal: widget.extended ? spacing.md : spacing.xs,
@@ -152,7 +152,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
     return Row(
       children: [
         AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
+          duration: context.vooAnimation.durationFast,
           child: Icon(
             widget.isSelected
                 ? widget.item.effectiveSelectedIcon
@@ -161,7 +161,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
             color: widget.isSelected
                 ? theme.colorScheme.primary
                 : theme.colorScheme.onSurfaceVariant,
-            size: 20,
+            size: context.vooSize.checkboxSize,
           ),
         ),
         SizedBox(width: spacing.sm + spacing.xs),
@@ -177,7 +177,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                         : theme.colorScheme.onSurface,
                     fontWeight:
                         widget.isSelected ? FontWeight.w600 : FontWeight.w400,
-                    fontSize: 14,
+                    fontSize: context.vooTypography.bodyMedium.fontSize,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -206,7 +206,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
             clipBehavior: Clip.none,
             children: [
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: context.vooAnimation.durationFast,
                 child: Icon(
                   widget.isSelected
                       ? widget.item.effectiveSelectedIcon
@@ -215,7 +215,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                   color: widget.isSelected
                       ? theme.colorScheme.primary
                       : theme.colorScheme.onSurfaceVariant,
-                  size: 24,
+                  size: context.vooSize.iconMedium,
                 ),
               ),
               if (widget.item.hasBadge)

@@ -22,6 +22,13 @@ class VooSizeTokens {
   final double switchHeight;
   final double checkboxSize;
   final double radioSize;
+  final double badgeSmall;
+  final double badgeMedium;
+  final double borderThin;
+  final double borderMedium;
+  final double borderThick;
+  final double iconXSmall;
+  final double avatarXLarge;
 
   const VooSizeTokens({
     this.iconSmall = 16.0,
@@ -44,6 +51,13 @@ class VooSizeTokens {
     this.switchHeight = 24.0,
     this.checkboxSize = 20.0,
     this.radioSize = 20.0,
+    this.badgeSmall = 6.0,
+    this.badgeMedium = 8.0,
+    this.borderThin = 1.0,
+    this.borderMedium = 2.0,
+    this.borderThick = 3.0,
+    this.iconXSmall = 14.0,
+    this.avatarXLarge = 80.0,
   });
 
   VooSizeTokens scale(double scaleFactor) => VooSizeTokens(
@@ -67,5 +81,12 @@ class VooSizeTokens {
     switchHeight: switchHeight * scaleFactor,
     checkboxSize: checkboxSize * scaleFactor,
     radioSize: radioSize * scaleFactor,
+    badgeSmall: badgeSmall * scaleFactor,
+    badgeMedium: badgeMedium * scaleFactor,
+    borderThin: borderThin * scaleFactor,
+    borderMedium: borderMedium * scaleFactor,
+    borderThick: borderThick * scaleFactor,
+    iconXSmall: iconXSmall * scaleFactor,
+    avatarXLarge: avatarXLarge * scaleFactor,
   );
 }

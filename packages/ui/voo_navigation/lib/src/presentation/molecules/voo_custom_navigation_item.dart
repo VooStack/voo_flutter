@@ -86,7 +86,7 @@ class VooCustomNavigationItem extends StatelessWidget {
           border: isSelected
               ? Border.all(
                   color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                  width: 1,
+                  width: context.vooSize.borderThin,
                 )
               : null,
         ),
@@ -113,13 +113,13 @@ class VooCustomNavigationItem extends StatelessWidget {
             // Animated label
             if (showLabels && (!showSelectedLabels || isSelected))
               AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
+                duration: context.vooAnimation.durationFast,
                 style: theme.textTheme.labelSmall!.copyWith(
                   color: isSelected
                       ? theme.colorScheme.primary
                       : Colors.white.withValues(alpha: 0.85),
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  fontSize: 11,
+                  fontSize: context.vooTypography.bodySmall.fontSize,
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(top: context.vooSpacing.xxs),

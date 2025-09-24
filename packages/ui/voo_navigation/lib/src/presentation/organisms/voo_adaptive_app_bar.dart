@@ -154,7 +154,7 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
-            height: 1,
+            height: context.vooSize.borderThin,
             color: theme.dividerColor.withValues(alpha: 0.08),
           ),
         ),

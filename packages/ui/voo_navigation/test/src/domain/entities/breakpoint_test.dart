@@ -5,7 +5,7 @@ import 'package:voo_navigation/voo_navigation.dart';
 void main() {
   group('VooBreakpoint', () {
     test('should create breakpoint with required parameters', () {
-      const breakpoint = VooBreakpoint.medium;
+      var breakpoint = VooBreakpoint.medium;
 
       expect(breakpoint.minWidth, 600);
       expect(breakpoint.maxWidth, 840);
@@ -16,7 +16,7 @@ void main() {
     });
 
     test('contains should correctly identify width ranges', () {
-      const breakpoint = VooBreakpoint.medium;
+      var breakpoint = VooBreakpoint.medium;
 
       expect(breakpoint.contains(599), isFalse);
       expect(breakpoint.contains(600), isTrue);
@@ -27,13 +27,7 @@ void main() {
     });
 
     test('contains should handle null maxWidth', () {
-      const breakpoint = VooBreakpoint(
-        minWidth: 1240,
-        navigationType: VooNavigationType.navigationDrawer,
-        columns: 12,
-        margin: EdgeInsets.symmetric(horizontal: 200),
-        gutter: 12,
-      );
+      var breakpoint = VooBreakpoint(minWidth: 1240, navigationType: VooNavigationType.navigationDrawer, columns: 12, margin: EdgeInsets.symmetric(horizontal: 200), gutter: 12);
 
       expect(breakpoint.contains(1239), isFalse);
       expect(breakpoint.contains(1240), isTrue);
@@ -44,75 +38,45 @@ void main() {
     test('compact breakpoint should have correct values', () {
       expect(VooBreakpoint.compact.minWidth, 0);
       expect(VooBreakpoint.compact.maxWidth, 600);
-      expect(
-        VooBreakpoint.compact.navigationType,
-        VooNavigationType.bottomNavigation,
-      );
+      expect(VooBreakpoint.compact.navigationType, VooNavigationType.bottomNavigation);
       expect(VooBreakpoint.compact.columns, 4);
-      expect(
-        VooBreakpoint.compact.margin,
-        const EdgeInsets.symmetric(horizontal: 16),
-      );
+      expect(VooBreakpoint.compact.margin, const EdgeInsets.symmetric(horizontal: 16));
       expect(VooBreakpoint.compact.gutter, 8);
     });
 
     test('medium breakpoint should have correct values', () {
       expect(VooBreakpoint.medium.minWidth, 600);
       expect(VooBreakpoint.medium.maxWidth, 840);
-      expect(
-        VooBreakpoint.medium.navigationType,
-        VooNavigationType.navigationRail,
-      );
+      expect(VooBreakpoint.medium.navigationType, VooNavigationType.navigationRail);
       expect(VooBreakpoint.medium.columns, 8);
-      expect(
-        VooBreakpoint.medium.margin,
-        const EdgeInsets.symmetric(horizontal: 32),
-      );
+      expect(VooBreakpoint.medium.margin, const EdgeInsets.symmetric(horizontal: 32));
       expect(VooBreakpoint.medium.gutter, 12);
     });
 
     test('expanded breakpoint should have correct values', () {
       expect(VooBreakpoint.expanded.minWidth, 840);
       expect(VooBreakpoint.expanded.maxWidth, 1240);
-      expect(
-        VooBreakpoint.expanded.navigationType,
-        VooNavigationType.extendedNavigationRail,
-      );
+      expect(VooBreakpoint.expanded.navigationType, VooNavigationType.extendedNavigationRail);
       expect(VooBreakpoint.expanded.columns, 12);
-      expect(
-        VooBreakpoint.expanded.margin,
-        const EdgeInsets.symmetric(horizontal: 32),
-      );
+      expect(VooBreakpoint.expanded.margin, const EdgeInsets.symmetric(horizontal: 32));
       expect(VooBreakpoint.expanded.gutter, 12);
     });
 
     test('large breakpoint should have correct values', () {
       expect(VooBreakpoint.large.minWidth, 1240);
       expect(VooBreakpoint.large.maxWidth, 1440);
-      expect(
-        VooBreakpoint.large.navigationType,
-        VooNavigationType.navigationDrawer,
-      );
+      expect(VooBreakpoint.large.navigationType, VooNavigationType.navigationDrawer);
       expect(VooBreakpoint.large.columns, 12);
-      expect(
-        VooBreakpoint.large.margin,
-        const EdgeInsets.symmetric(horizontal: 200),
-      );
+      expect(VooBreakpoint.large.margin, const EdgeInsets.symmetric(horizontal: 200));
       expect(VooBreakpoint.large.gutter, 12);
     });
 
     test('extraLarge breakpoint should have correct values', () {
       expect(VooBreakpoint.extraLarge.minWidth, 1440);
       expect(VooBreakpoint.extraLarge.maxWidth, isNull);
-      expect(
-        VooBreakpoint.extraLarge.navigationType,
-        VooNavigationType.navigationDrawer,
-      );
+      expect(VooBreakpoint.extraLarge.navigationType, VooNavigationType.navigationDrawer);
       expect(VooBreakpoint.extraLarge.columns, 12);
-      expect(
-        VooBreakpoint.extraLarge.margin,
-        const EdgeInsets.symmetric(horizontal: 200),
-      );
+      expect(VooBreakpoint.extraLarge.margin, const EdgeInsets.symmetric(horizontal: 200));
       expect(VooBreakpoint.extraLarge.gutter, 12);
     });
 
@@ -140,52 +104,17 @@ void main() {
     });
 
     test('fromWidth should work with custom breakpoints', () {
-      const customBreakpoints = [
-        VooBreakpoint(
-          minWidth: 0,
-          maxWidth: 500,
-          navigationType: VooNavigationType.bottomNavigation,
-          columns: 4,
-          margin: EdgeInsets.all(8),
-          gutter: 4,
-        ),
-        VooBreakpoint(
-          minWidth: 500,
-          maxWidth: 1000,
-          navigationType: VooNavigationType.navigationRail,
-          columns: 6,
-          margin: EdgeInsets.all(16),
-          gutter: 8,
-        ),
-        VooBreakpoint(
-          minWidth: 1000,
-          navigationType: VooNavigationType.navigationDrawer,
-          columns: 12,
-          margin: EdgeInsets.all(32),
-          gutter: 16,
-        ),
+      var customBreakpoints = [
+        VooBreakpoint(minWidth: 0, maxWidth: 500, navigationType: VooNavigationType.bottomNavigation, columns: 4, margin: EdgeInsets.all(8), gutter: 4),
+        VooBreakpoint(minWidth: 500, maxWidth: 1000, navigationType: VooNavigationType.navigationRail, columns: 6, margin: EdgeInsets.all(16), gutter: 8),
+        VooBreakpoint(minWidth: 1000, navigationType: VooNavigationType.navigationDrawer, columns: 12, margin: EdgeInsets.all(32), gutter: 16),
       ];
 
-      expect(
-        VooBreakpoint.fromWidth(250, customBreakpoints),
-        customBreakpoints[0],
-      );
-      expect(
-        VooBreakpoint.fromWidth(500, customBreakpoints),
-        customBreakpoints[1],
-      );
-      expect(
-        VooBreakpoint.fromWidth(750, customBreakpoints),
-        customBreakpoints[1],
-      );
-      expect(
-        VooBreakpoint.fromWidth(1000, customBreakpoints),
-        customBreakpoints[2],
-      );
-      expect(
-        VooBreakpoint.fromWidth(1500, customBreakpoints),
-        customBreakpoints[2],
-      );
+      expect(VooBreakpoint.fromWidth(250, customBreakpoints), customBreakpoints[0]);
+      expect(VooBreakpoint.fromWidth(500, customBreakpoints), customBreakpoints[1]);
+      expect(VooBreakpoint.fromWidth(750, customBreakpoints), customBreakpoints[1]);
+      expect(VooBreakpoint.fromWidth(1000, customBreakpoints), customBreakpoints[2]);
+      expect(VooBreakpoint.fromWidth(1500, customBreakpoints), customBreakpoints[2]);
     });
   });
 }

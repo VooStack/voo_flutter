@@ -29,8 +29,8 @@ class VooRailDefaultHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: context.vooSize.avatarSmall,
+            height: context.vooSize.avatarSmall,
             decoration: BoxDecoration(
               color: theme.colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(radius.md),
@@ -38,7 +38,7 @@ class VooRailDefaultHeader extends StatelessWidget {
             child: Icon(
               Icons.dashboard,
               color: theme.colorScheme.primary,
-              size: 20,
+              size: context.vooSize.checkboxSize,
             ),
           ),
           SizedBox(height: spacing.sm),

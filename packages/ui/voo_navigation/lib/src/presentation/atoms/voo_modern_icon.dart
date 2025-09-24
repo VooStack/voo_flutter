@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/presentation/atoms/voo_modern_badge.dart';
 
@@ -25,7 +26,7 @@ class VooModernIcon extends StatelessWidget {
     final theme = Theme.of(context);
 
     final icon = AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
+      duration: context.vooAnimation.durationFast,
       child: Icon(
         isSelected ? item.effectiveSelectedIcon : item.icon,
         key: ValueKey(isSelected),

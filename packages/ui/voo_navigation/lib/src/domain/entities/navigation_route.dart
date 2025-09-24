@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Represents a route in the navigation system with go_router integration
 class VooNavigationRoute {
+  /// Default animation tokens for the navigation
+  static const _animationTokens = VooAnimationTokens();
   /// Unique identifier for the route
   final String id;
 
@@ -49,7 +52,7 @@ class VooNavigationRoute {
   /// Route metadata
   final Map<String, dynamic>? metadata;
 
-  const VooNavigationRoute({
+  VooNavigationRoute({
     required this.id,
     required this.path,
     required this.builder,
@@ -59,11 +62,11 @@ class VooNavigationRoute {
     this.redirect,
     this.guard,
     this.transitionBuilder,
-    this.transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     this.fullScreenDialog = false,
     this.maintainState = true,
     this.metadata,
-  });
+  }) : transitionDuration = transitionDuration ?? _animationTokens.durationNormal;
 
   /// Factory constructor for creating a route with Material page transition
   factory VooNavigationRoute.material({
@@ -74,7 +77,7 @@ class VooNavigationRoute {
     List<VooNavigationRoute> routes = const [],
     String? Function(BuildContext context, GoRouterState state)? redirect,
     Future<bool> Function(BuildContext context, GoRouterState state)? guard,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     bool fullScreenDialog = false,
     bool maintainState = true,
     Map<String, dynamic>? metadata,
@@ -116,7 +119,7 @@ class VooNavigationRoute {
     List<VooNavigationRoute> routes = const [],
     String? Function(BuildContext context, GoRouterState state)? redirect,
     Future<bool> Function(BuildContext context, GoRouterState state)? guard,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     bool fullScreenDialog = false,
     bool maintainState = true,
     Map<String, dynamic>? metadata,
@@ -137,7 +140,7 @@ class VooNavigationRoute {
       pageBuilder: (context, state) => CustomTransitionPage<void>(
         key: state.pageKey,
         child: builder(context, state),
-        transitionDuration: transitionDuration,
+        transitionDuration: transitionDuration ?? _animationTokens.durationNormal,
         transitionsBuilder: transitionBuilder,
         fullscreenDialog: fullScreenDialog,
         maintainState: maintainState,
@@ -154,7 +157,7 @@ class VooNavigationRoute {
     List<VooNavigationRoute> routes = const [],
     String? Function(BuildContext context, GoRouterState state)? redirect,
     Future<bool> Function(BuildContext context, GoRouterState state)? guard,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     bool fullScreenDialog = false,
     bool maintainState = true,
     Map<String, dynamic>? metadata,
@@ -189,7 +192,7 @@ class VooNavigationRoute {
     List<VooNavigationRoute> routes = const [],
     String? Function(BuildContext context, GoRouterState state)? redirect,
     Future<bool> Function(BuildContext context, GoRouterState state)? guard,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     bool fullScreenDialog = false,
     bool maintainState = true,
     Map<String, dynamic>? metadata,
@@ -234,7 +237,7 @@ class VooNavigationRoute {
     List<VooNavigationRoute> routes = const [],
     String? Function(BuildContext context, GoRouterState state)? redirect,
     Future<bool> Function(BuildContext context, GoRouterState state)? guard,
-    Duration transitionDuration = const Duration(milliseconds: 300),
+    Duration? transitionDuration,
     bool fullScreenDialog = false,
     bool maintainState = true,
     Map<String, dynamic>? metadata,

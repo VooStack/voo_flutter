@@ -4,6 +4,7 @@ import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_route.dart';
 import 'package:voo_navigation/src/presentation/providers/voo_go_router.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Builder class for creating navigation configurations with fluent API
 class VooNavigationBuilder {
@@ -37,7 +38,7 @@ class VooNavigationBuilder {
   bool _enableAnimations = true;
   bool _persistNavigationState = true;
   bool _showNotificationBadges = true;
-  Duration _badgeAnimationDuration = const Duration(milliseconds: 200);
+  Duration _badgeAnimationDuration = const Duration(milliseconds: 150);
   void Function(String itemId)? _onNavigationItemSelected;
 
   /// Creates a new navigation builder
@@ -70,7 +71,7 @@ class VooNavigationBuilder {
       ..indicatorColor(colorScheme.primaryContainer)
       ..navigationBackgroundColor(colorScheme.surface)
       ..indicatorShape(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.vooRadius.xl)),
       );
   }
 
@@ -436,17 +437,17 @@ class _DefaultNavigationPage extends StatelessWidget {
           children: [
             Icon(
               item.effectiveSelectedIcon,
-              size: 80,
+              size: context.vooSize.avatarXLarge,
               color: theme.colorScheme.primary,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: context.vooSpacing.lg),
             Text(
               item.label,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: context.vooSpacing.sm),
             Text(
               'Page for ${item.label}',
               style: theme.textTheme.bodyLarge?.copyWith(

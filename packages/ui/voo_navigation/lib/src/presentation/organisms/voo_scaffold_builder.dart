@@ -130,9 +130,8 @@ class VooScaffoldBuilder extends StatelessWidget {
     final theme = Theme.of(context);
     final effectiveBackgroundColor = backgroundColor ?? config.backgroundColor ?? theme.scaffoldBackgroundColor;
 
-    // Apply body padding based on navigation type and screen size
-
-    // Prepare the body with optional card wrapper
+    // Prepare the body - let each scaffold type handle its own padding
+    // This follows the KISS principle - each scaffold knows best how to position its content
     Widget processedBody = body;
 
     // Wrap in card if requested

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Navigation label with text scaling and truncation
 class VooNavigationLabel extends StatelessWidget {
@@ -30,7 +31,7 @@ class VooNavigationLabel extends StatelessWidget {
   final TextAlign textAlign;
 
   /// Animation duration for style transitions
-  final Duration duration;
+  final Duration? duration;
 
   /// Animation curve
   final Curve curve;
@@ -55,7 +56,7 @@ class VooNavigationLabel extends StatelessWidget {
     this.maxLines = 1,
     this.overflow = TextOverflow.ellipsis,
     this.textAlign = TextAlign.center,
-    this.duration = const Duration(milliseconds: 200),
+    this.duration,
     this.curve = Curves.easeInOut,
     this.animate = true,
     this.semanticsLabel,
@@ -67,6 +68,7 @@ class VooNavigationLabel extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final defaultStyle = theme.textTheme.labelMedium ?? const TextStyle();
+    final effectiveDuration = duration ?? context.vooAnimation.durationFast;
 
     // Determine effective styles
     final baseStyle = isSelected
@@ -100,7 +102,7 @@ class VooNavigationLabel extends StatelessWidget {
     }
 
     return AnimatedDefaultTextStyle(
-      duration: duration,
+      duration: effectiveDuration,
       curve: curve,
       style: effectiveStyle,
       child: Text(

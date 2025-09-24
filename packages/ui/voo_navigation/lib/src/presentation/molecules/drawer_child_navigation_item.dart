@@ -51,7 +51,7 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
           onTap: item.isEnabled ? () => onItemTap(item) : null,
           borderRadius: BorderRadius.circular(context.vooRadius.md),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: context.vooAnimation.durationFast,
             padding: EdgeInsets.symmetric(
               horizontal: context.vooSpacing.sm + context.vooSpacing.xs,
               vertical: context.vooSpacing.sm,
@@ -68,8 +68,8 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
               children: [
                 // Dot indicator for child items
                 Container(
-                  width: 6,
-                  height: 6,
+                  width: context.vooSize.badgeSmall,
+                  height: context.vooSize.badgeSmall,
                   decoration: BoxDecoration(
                     color: isSelected
                         ? config.selectedItemColor ?? theme.colorScheme.primary

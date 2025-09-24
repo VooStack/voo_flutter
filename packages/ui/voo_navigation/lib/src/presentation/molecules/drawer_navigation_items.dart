@@ -54,7 +54,7 @@ class VooDrawerNavigationItems extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: context.vooSpacing.sm),
             child: Divider(
               color: Colors.white.withValues(alpha: 0.2),
-              height: 1,
+              height: context.vooSize.borderThin,
             ),
           ),
         );

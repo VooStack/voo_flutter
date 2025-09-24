@@ -164,7 +164,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       // Set to false to make app bar span full width above the rail
       appBarAlongsideRail: true,
       selectedItemColor: const Color(0xFF4F75FF),
-      bottomNavigationType: NavigationBarType.custom,
+      bottomNavigationType: VooNavigationBarType.custom,
       indicatorShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/breakpoint.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
@@ -125,9 +126,9 @@ class VooNavigationHelper {
   /// Get platform-specific padding
   static EdgeInsets getPlatformPadding(BuildContext context) {
     if (isMobilePlatform(context)) {
-      return const EdgeInsets.all(8.0);
+      return EdgeInsets.all(context.vooSpacing.sm);
     }
-    return const EdgeInsets.all(16.0);
+    return EdgeInsets.all(context.vooSpacing.md);
   }
 
   /// Get safe area padding for navigation
