@@ -50,6 +50,9 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Custom scroll behavior
   final ScrollNotificationPredicate notificationPredicate;
 
+  /// Optional margin around the app bar
+  final EdgeInsets? margin;
+
   const VooAdaptiveAppBar({
     super.key,
     this.config,
@@ -65,6 +68,7 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.elevation,
     this.toolbarHeight,
     this.showBottomBorder = false,
+    this.margin,
     this.notificationPredicate = defaultScrollNotificationPredicate,
   });
 
@@ -97,7 +101,7 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
     final effectiveForegroundColor = foregroundColor ?? colorScheme.onSurface;
 
     return Container(
-      margin: EdgeInsets.only(top: context.vooSpacing.sm, right: context.vooSpacing.sm),
+      margin: margin,
       decoration: BoxDecoration(
         color: effectiveBackgroundColor,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(context.vooRadius.lg), topRight: Radius.circular(context.vooRadius.lg)),

@@ -1,3 +1,10 @@
+## 0.0.11
+
+### Fixed
+- **Margin**: Added configurable margin parameter to VooAdaptiveAppBar for better layout control
+- **Spacing**: Improved spacing consistency across tablet and desktop scaffolds
+- **Polish**: Removed debug banner from example app for cleaner demo experience
+
 ## 0.0.10
 
 ### Changed
@@ -123,7 +130,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.7] - 2025-01-23
+## [0.0.7]
 
 ### Fixed
 - **Breaking**: Removed duplicate breakpoint system - now properly uses Material 3 standard breakpoint values
@@ -140,14 +147,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Large: 1240-1440px (desktops)
   - Extra Large: 1440px+ (large desktops)
 
-## [0.0.6] - 2025-01-22
+## [0.0.6]
 
 ### Changed
 - **Dependencies**:
   - Updated go_router from ^14.0.0 to ^16.2.2 for latest features and bug fixes
   - Ensures compatibility with latest Flutter SDK and routing improvements
 
-## [0.0.5] - 2025-01-22
+## [0.0.5]
 
 ### Changed
 - **Visual Design Overhaul**:
@@ -185,7 +192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Consistent use of theme colors instead of hardcoded values
   - Better separation of concerns in color management
 
-## [0.0.4] - 2025-01-22
+## [0.0.4]
 
 ### Added
 - **go_router Integration**:
@@ -226,13 +233,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proper handling of nested route navigation
 - Badge display in navigation items
 
-## [0.0.3] - 2025-01-10
+## [0.0.3]
 
 ### Changed
 - Minor version bump for package registry update
 - Package maintenance and dependency alignment
 
-## [0.0.2] - 2025-01-09
+## [0.0.2]
 
 ### Enhanced
 - **Visual Design Improvements**:
@@ -292,7 +299,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Better memory management for hover state tracking
   - Improved transition performance with KeyedSubtree
 
-## [0.0.1] - 2025-01-01
+## [0.0.1]
 
 ### Added
 - Initial release of VooNavigation package

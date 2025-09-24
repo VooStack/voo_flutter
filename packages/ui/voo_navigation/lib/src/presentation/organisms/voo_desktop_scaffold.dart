@@ -98,12 +98,12 @@ class VooDesktopScaffold extends StatelessWidget {
             navigationDrawer,
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(bottom: context.vooTokens.spacing.sm, right: context.vooRadius.sm),
+                padding: EdgeInsets.only(bottom: context.vooTokens.spacing.sm, right: context.vooRadius.md),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(context.vooRadius.lg),
                   child: Scaffold(
                     backgroundColor: backgroundColor,
-                    appBar: appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
+                    appBar: appBar ?? VooAdaptiveAppBar(showMenuButton: false, margin: EdgeInsets.only(top: context.vooTokens.spacing.sm)),
                     body: body,
                     floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
                     floatingActionButtonLocation: config.floatingActionButtonLocation,
