@@ -18,20 +18,20 @@ class VooTokensTheme extends ThemeExtension<VooTokensTheme> {
   const VooTokensTheme({required this.tokens});
 
   factory VooTokensTheme.standard({double scaleFactor = 1.0}) => VooTokensTheme(
-        tokens: ResponsiveTokens(
-          scaleFactor: scaleFactor,
-          spacing: const VooSpacingTokens().scale(scaleFactor),
-          typography: const VooTypographyTokens().scale(scaleFactor),
-          radius: VooRadiusTokens().scale(scaleFactor),
-          elevation: const VooElevationTokens(),
-          animation: const VooAnimationTokens(),
-          margin: const VooMarginTokens().scale(scaleFactor),
-          padding: const VooPaddingTokens().scale(scaleFactor),
-          gap: const VooGapTokens().scale(scaleFactor),
-          componentRadius: const VooComponentRadiusTokens().scale(scaleFactor),
-          size: const VooSizeTokens().scale(scaleFactor),
-        ),
-      );
+    tokens: ResponsiveTokens(
+      scaleFactor: scaleFactor,
+      spacing: const VooSpacingTokens().scale(scaleFactor),
+      typography: const VooTypographyTokens().scale(scaleFactor),
+      radius: VooRadiusTokens().scale(scaleFactor),
+      elevation: const VooElevationTokens(),
+      animation: const VooAnimationTokens(),
+      margin: const VooMarginTokens().scale(scaleFactor),
+      padding: const VooPaddingTokens().scale(scaleFactor),
+      gap: const VooGapTokens().scale(scaleFactor),
+      componentRadius: const VooComponentRadiusTokens().scale(scaleFactor),
+      size: const VooSizeTokens().scale(scaleFactor),
+    ),
+  );
 
   factory VooTokensTheme.responsive({required double screenWidth, bool isDark = false}) =>
       VooTokensTheme(tokens: ResponsiveTokens.forScreenWidth(screenWidth, isDark: isDark));

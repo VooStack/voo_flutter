@@ -101,15 +101,18 @@ class VooTabletScaffold extends StatelessWidget {
           children: [
             navigationRail,
             Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                child: Scaffold(
-                  backgroundColor: backgroundColor,
-                  appBar: appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                  body: body,
-                  floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
-                  floatingActionButtonLocation: config.floatingActionButtonLocation,
-                  floatingActionButtonAnimator: config.floatingActionButtonAnimator,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: context.vooTokens.spacing.sm, right: context.vooRadius.sm),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
+                  child: Scaffold(
+                    backgroundColor: backgroundColor,
+                    appBar: appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
+                    body: body,
+                    floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
+                    floatingActionButtonLocation: config.floatingActionButtonLocation,
+                    floatingActionButtonAnimator: config.floatingActionButtonAnimator,
+                  ),
                 ),
               ),
             ),
