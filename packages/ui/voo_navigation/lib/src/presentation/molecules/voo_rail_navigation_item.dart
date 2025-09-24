@@ -166,27 +166,33 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
         ),
         SizedBox(width: spacing.sm + spacing.xs),
         Expanded(
-          child: Text(
-            widget.item.label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: widget.isSelected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface,
-              fontWeight:
-                  widget.isSelected ? FontWeight.w600 : FontWeight.w400,
-              fontSize: 14,
-            ),
-            overflow: TextOverflow.ellipsis,
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  widget.item.label,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: widget.isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
+                    fontWeight:
+                        widget.isSelected ? FontWeight.w600 : FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (widget.item.hasBadge) ...[
+                SizedBox(width: spacing.sm),
+                VooRailModernBadge(
+                  item: widget.item,
+                  isSelected: widget.isSelected,
+                  extended: widget.extended,
+                ),
+              ],
+            ],
           ),
         ),
-        if (widget.item.hasBadge) ...[
-          SizedBox(width: spacing.sm),
-          VooRailModernBadge(
-            item: widget.item,
-            isSelected: widget.isSelected,
-            extended: widget.extended,
-          ),
-        ],
       ],
     );
   }

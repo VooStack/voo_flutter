@@ -135,7 +135,8 @@ void main() {
       );
 
       expect(find.byType(VooAdaptiveAppBar), findsOneWidget);
-      expect(find.text('Test Title'), findsOneWidget);
+      // The title is now wrapped in VooAppBarTitle widget
+      expect(find.byType(VooAppBarTitle), findsOneWidget);
     });
 
     testWidgets('should show floating action button when provided', (
