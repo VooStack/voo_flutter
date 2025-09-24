@@ -1,3 +1,16 @@
+## 0.0.8
+
+### Added
+- **FEAT**: Added additional design tokens to support enhanced UI consistency:
+  - Extended color palette with more nuanced shades
+  - Additional spacing and sizing tokens for improved flexibility
+  - Enhanced typography scale with more granular text styles
+  - New elevation tokens for consistent shadow effects
+
+### Changed
+- **IMPROVEMENT**: Refined token values for better visual hierarchy
+- **IMPROVEMENT**: Updated responsive scaling factors for improved mobile experience
+
 ## 0.0.7
 
  - **FEAT**: Update CHANGELOG and bump version to 0.0.6 with new token types and improvements.

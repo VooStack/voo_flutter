@@ -1,3 +1,20 @@
+## 0.0.10
+
+### Changed
+- **REFACTOR**: Integrated VooTokens design system throughout all navigation components
+  - Replaced hardcoded values with VooTokens for consistent spacing, padding, and margins
+  - Updated all navigation scaffolds (mobile, tablet, desktop) to use token-based styling
+  - Applied VooTokens to app bars for consistent padding and elevation
+  - Updated navigation items to use token-based spacing and sizing
+
+### Improved
+- **CONSISTENCY**: Enhanced UI consistency across all navigation components with standardized tokens
+- **MAINTAINABILITY**: Simplified style updates through centralized token system
+- **SCALABILITY**: Better responsive behavior with token-based responsive scaling
+
+### Dependencies
+- Updated voo_tokens from ^0.0.7 to ^0.0.8 to access additional design tokens
+
 ## 0.0.9
 
  - **FIX**: Improve navigation rail border radius test.
