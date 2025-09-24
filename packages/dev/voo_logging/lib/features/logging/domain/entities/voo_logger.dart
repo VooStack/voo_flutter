@@ -16,16 +16,6 @@ class VooLogger {
 
   static LoggingConfig get config => instance._config ?? const LoggingConfig();
 
-  /// Check if a toast should be shown for the given log level
-  static bool _shouldShowToast(LogLevel level) {
-    if (instance._config?.shouldNotify != true) return false;
-
-    // Never show toasts for verbose or debug logs - they're too low-level
-    if (level == LogLevel.verbose || level == LogLevel.debug) return false;
-
-    // Only show toasts for logs at or above the configured minimum level
-    return level.priority >= (instance._config?.minimumLevel.priority ?? LogLevel.info.priority);
-  }
 
   static Future<void> initialize({
     String? appName,
@@ -33,16 +23,15 @@ class VooLogger {
     String? userId,
     LogLevel minimumLevel = LogLevel.verbose,
     LoggingConfig? config,
-    bool shouldNotify = false,
   }) async {
     if (instance._initialized) {
       // If already initialized, just update the config
-      instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel, shouldNotify: shouldNotify);
+      instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel);
       return;
     }
 
     instance._initialized = true;
-    instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel, shouldNotify: shouldNotify);
+    instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel);
 
     await instance._repository.initialize(
       appName: appName,
@@ -57,7 +46,7 @@ class VooLogger {
     instance._config = newConfig;
   }
 
-  static Future<void> verbose(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
+  static Future<void> verbose(String message, {String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
@@ -67,7 +56,7 @@ class VooLogger {
     // Verbose logs are primarily for detailed debugging
   }
 
-  static Future<void> debug(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
+  static Future<void> debug(String message, {String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
@@ -77,50 +66,48 @@ class VooLogger {
     // Debug logs are primarily for development debugging
   }
 
-  static Future<void> info(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
+  static Future<void> info(String message, {String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
     await instance._repository.info(message, category: category, tag: tag, metadata: metadata);
 
-    if (_shouldShowToast(LogLevel.info)) {
+    if (shouldNotify) {
       VooToast.showInfo(message: message, title: category ?? 'Info');
     }
   }
 
-  static Future<void> warning(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
+  static Future<void> warning(String message, {String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
     await instance._repository.warning(message, category: category, tag: tag, metadata: metadata);
 
-    if (_shouldShowToast(LogLevel.warning)) {
+    if (shouldNotify) {
       VooToast.showWarning(message: message, title: category ?? 'Warning');
     }
   }
 
-  static Future<void> error(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata}) async {
+  static Future<void> error(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
     await instance._repository.error(message, error: error, stackTrace: stackTrace, category: category, tag: tag, metadata: metadata);
 
-    if (_shouldShowToast(LogLevel.error)) {
-      final errorMessage = error != null ? '$message: $error' : message;
-      VooToast.showError(message: errorMessage, title: category ?? 'Error');
+    if (shouldNotify) {
+      VooToast.showError(message: message, title: category ?? 'Error');
     }
   }
 
-  static Future<void> fatal(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata}) async {
+  static Future<void> fatal(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
     await instance._repository.fatal(message, error: error, stackTrace: stackTrace, category: category, tag: tag, metadata: metadata);
 
-    if (_shouldShowToast(LogLevel.fatal)) {
-      final errorMessage = error != null ? '$message: $error' : message;
+    if (shouldNotify) {
       VooToast.showError(
-        message: errorMessage,
+        message: message,
         title: category ?? 'Fatal Error',
         duration: const Duration(seconds: 10), // Longer duration for fatal errors
       );

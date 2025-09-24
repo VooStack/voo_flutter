@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
-import 'package:voo_navigation/src/presentation/molecules/voo_navigation_badge.dart';
+import 'package:voo_navigation/src/presentation/molecules/voo_dropdown_children.dart';
+import 'package:voo_navigation/src/presentation/molecules/voo_dropdown_header.dart';
 
 /// Dropdown navigation component for expandable menu items
 class VooNavigationDropdown extends StatefulWidget {
@@ -99,8 +100,6 @@ class _VooNavigationDropdownState extends State<VooNavigationDropdown>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     if (!widget.item.hasChildren) {
       return const SizedBox.shrink();
     }
@@ -112,199 +111,28 @@ class _VooNavigationDropdownState extends State<VooNavigationDropdown>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(theme, hasSelectedChild),
+        VooDropdownHeader(
+          item: widget.item,
+          config: widget.config,
+          hasSelectedChild: hasSelectedChild,
+          selectedId: widget.selectedId,
+          isExpanded: _isExpanded,
+          rotationAnimation: _rotationAnimation,
+          onTap: _handleTap,
+          tilePadding: widget.tilePadding,
+        ),
         SizeTransition(
           sizeFactor: _expandAnimation,
-          child: Column(children: _buildChildren(theme)),
+          child: VooDropdownChildren(
+            parentItem: widget.item,
+            config: widget.config,
+            selectedId: widget.selectedId,
+            onItemSelected: widget.onItemSelected,
+            showDividers: widget.showDividers,
+            childrenPadding: widget.childrenPadding,
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHeader(ThemeData theme, bool hasSelectedChild) {
-    final colorScheme = theme.colorScheme;
-    final isHighlighted =
-        hasSelectedChild || widget.item.id == widget.selectedId;
-
-    return InkWell(
-      onTap: widget.item.isEnabled ? _handleTap : null,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding:
-            widget.tilePadding ??
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            // Icon
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Icon(
-                _isExpanded
-                    ? widget.item.effectiveSelectedIcon
-                    : widget.item.icon,
-                key: ValueKey('${widget.item.id}_icon_$_isExpanded'),
-                color: isHighlighted
-                    ? (widget.item.selectedIconColor ??
-                          widget.config.selectedItemColor ??
-                          colorScheme.primary)
-                    : (widget.item.iconColor ??
-                          widget.config.unselectedItemColor ??
-                          colorScheme.onSurfaceVariant),
-              ),
-            ),
-
-            const SizedBox(width: 12),
-
-            // Label
-            Expanded(
-              child: AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
-                style: isHighlighted
-                    ? (widget.item.selectedLabelStyle ??
-                          theme.textTheme.bodyLarge!.copyWith(
-                            color:
-                                widget.config.selectedItemColor ??
-                                colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ))
-                    : (widget.item.labelStyle ??
-                          theme.textTheme.bodyLarge!.copyWith(
-                            color:
-                                widget.config.unselectedItemColor ??
-                                colorScheme.onSurfaceVariant,
-                          )),
-                child: Text(widget.item.label, overflow: TextOverflow.ellipsis),
-              ),
-            ),
-
-            // Badge if present
-            if (widget.item.hasBadge) ...[
-              const SizedBox(width: 8),
-              VooNavigationBadge(
-                item: widget.item,
-                config: widget.config,
-                size: 16,
-                animate: widget.config.enableAnimations,
-              ),
-            ],
-
-            // Expand icon
-            const SizedBox(width: 8),
-            RotationTransition(
-              turns: _rotationAnimation,
-              child: Icon(
-                Icons.expand_more,
-                color: colorScheme.onSurfaceVariant,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildChildren(ThemeData theme) {
-    final children = <Widget>[];
-    final items = widget.item.children ?? [];
-
-    for (int i = 0; i < items.length; i++) {
-      final child = items[i];
-      final isSelected = child.id == widget.selectedId;
-
-      if (widget.showDividers && i > 0) {
-        children.add(const Divider(height: 1, thickness: 0.5, indent: 48));
-      }
-
-      children.add(_buildChildItem(child, isSelected, theme));
-    }
-
-    return children;
-  }
-
-  Widget _buildChildItem(
-    VooNavigationItem item,
-    bool isSelected,
-    ThemeData theme,
-  ) {
-    final colorScheme = theme.colorScheme;
-
-    return InkWell(
-      onTap: item.isEnabled ? () => widget.onItemSelected(item.id) : null,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding:
-            widget.childrenPadding ??
-            const EdgeInsets.only(left: 48, right: 16, top: 8, bottom: 8),
-        decoration: isSelected && widget.config.indicatorShape == null
-            ? BoxDecoration(
-                border: Border(
-                  left: BorderSide(
-                    color:
-                        widget.config.selectedItemColor ?? colorScheme.primary,
-                    width: 3,
-                  ),
-                ),
-              )
-            : null,
-        child: Row(
-          children: [
-            // Icon
-            Icon(
-              isSelected ? item.effectiveSelectedIcon : item.icon,
-              size: 20,
-              color: isSelected
-                  ? (item.selectedIconColor ??
-                        widget.config.selectedItemColor ??
-                        colorScheme.primary)
-                  : (item.iconColor ??
-                        widget.config.unselectedItemColor ??
-                        colorScheme.onSurfaceVariant),
-            ),
-
-            const SizedBox(width: 12),
-
-            // Label
-            Expanded(
-              child: Text(
-                item.label,
-                style: isSelected
-                    ? (item.selectedLabelStyle ??
-                          theme.textTheme.bodyMedium!.copyWith(
-                            color:
-                                widget.config.selectedItemColor ??
-                                colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ))
-                    : (item.labelStyle ??
-                          theme.textTheme.bodyMedium!.copyWith(
-                            color:
-                                widget.config.unselectedItemColor ??
-                                colorScheme.onSurfaceVariant,
-                          )),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-
-            // Badge if present
-            if (item.hasBadge) ...[
-              const SizedBox(width: 8),
-              VooNavigationBadge(
-                item: item,
-                config: widget.config,
-                size: 14,
-                animate: widget.config.enableAnimations,
-              ),
-            ],
-
-            // Trailing widget if present
-            if (item.trailingWidget != null) ...[
-              const SizedBox(width: 8),
-              item.trailingWidget!,
-            ],
-          ],
-        ),
-      ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_route.dart';
-import 'package:voo_navigation/src/presentation/organisms/voo_navigation_shell.dart';
+import 'package:voo_navigation/src/presentation/organisms/voo_router_shell.dart';
 
 /// Provider for creating a GoRouter with VooNavigation integration
 class VooGoRouter {
@@ -40,12 +40,11 @@ class VooGoRouter {
       requestFocus: requestFocus,
       routes: [
         ShellRoute(
-          builder: (context, state, child) => _buildShell(
-            context: context,
-            state: state,
+          builder: (context, state, child) => VooRouterShell(
             config: config,
-            child: child,
+            state: state,
             customBuilder: builder,
+            child: child,
           ),
           routes: shellRoutes,
         ),
@@ -211,42 +210,6 @@ class VooGoRouter {
     return routes;
   }
 
-  /// Builds the shell with VooNavigationShell
-  static Widget _buildShell({
-    required BuildContext context,
-    required GoRouterState state,
-    required VooNavigationConfig config,
-    required Widget child,
-    Widget Function(BuildContext, Widget)? customBuilder,
-  }) {
-    // Update selected ID based on current route
-    final currentPath = state.uri.toString();
-    String? selectedId;
-
-    // Find matching navigation item by route
-    for (final item in config.items) {
-      if (item.route != null && currentPath.startsWith(item.route!)) {
-        selectedId = item.id;
-        break;
-      }
-      // Check children
-      if (item.children != null) {
-        for (final childItem in item.children!) {
-          if (childItem.route != null &&
-              currentPath.startsWith(childItem.route!)) {
-            selectedId = childItem.id;
-            break;
-          }
-        }
-      }
-    }
-
-    final updatedConfig = config.copyWith(selectedId: selectedId);
-
-    final shell = VooNavigationShell(config: updatedConfig, child: child);
-
-    return customBuilder != null ? customBuilder(context, shell) : shell;
-  }
 }
 
 /// Navigation observer for VooNavigation

@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
-import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_app_bar.dart';
-import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_navigation.dart';
-import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_navigation_drawer.dart';
-import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_navigation_rail.dart';
+import 'package:voo_navigation/src/presentation/organisms/voo_scaffold_builder.dart';
 import 'package:voo_navigation/src/presentation/utils/voo_navigation_inherited.dart';
 import 'package:voo_responsive/voo_responsive.dart';
-import 'package:voo_tokens/voo_tokens.dart';
 
 /// Adaptive scaffold that automatically adjusts navigation based on screen size
 class VooAdaptiveScaffold extends StatefulWidget {
@@ -193,399 +189,38 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
         _previousNavigationType = navigationType;
 
         // Build appropriate scaffold based on navigation type
-        return _buildScaffold(context, navigationType, screenInfo);
+        return VooScaffoldBuilder(
+          config: widget.config,
+          navigationType: navigationType,
+          screenInfo: screenInfo,
+          body: widget.body,
+          selectedId: _selectedId,
+          onNavigationItemSelected: _onNavigationItemSelected,
+          animationController: _animationController,
+          fadeAnimation: _fadeAnimation,
+          slideAnimation: _slideAnimation,
+          appBar: widget.appBar,
+          showAppBar: widget.showAppBar,
+          endDrawer: widget.endDrawer,
+          drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+          drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+          endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
+          scaffoldKey: widget.scaffoldKey,
+          backgroundColor: widget.backgroundColor,
+          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+          extendBody: widget.extendBody,
+          extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+          bottomSheet: widget.bottomSheet,
+          persistentFooterButtons: widget.persistentFooterButtons,
+          restorationId: widget.restorationId,
+          bodyPadding: widget.bodyPadding,
+          useBodyCard: widget.useBodyCard,
+          bodyCardElevation: widget.bodyCardElevation,
+          bodyCardBorderRadius: widget.bodyCardBorderRadius,
+          bodyCardColor: widget.bodyCardColor,
+        );
       },
     ),
   );
 
-  Widget _buildScaffold(
-    BuildContext context,
-    VooNavigationType navigationType,
-    ScreenInfo screenInfo,
-  ) {
-    final theme = Theme.of(context);
-    final effectiveBackgroundColor =
-        widget.backgroundColor ??
-        widget.config.backgroundColor ??
-        theme.scaffoldBackgroundColor;
-
-    // Apply body padding based on navigation type and screen size
-    final defaultPadding = _getDefaultBodyPadding(navigationType, screenInfo);
-    final effectiveBodyPadding = widget.bodyPadding ?? defaultPadding;
-
-    // Prepare the body with optional card wrapper
-    Widget body = widget.body;
-
-    // Wrap in card if requested
-    if (widget.useBodyCard &&
-        navigationType != VooNavigationType.bottomNavigation) {
-      final tokens = context.vooTokens;
-      final cardColor =
-          widget.bodyCardColor ??
-          (theme.brightness == Brightness.light
-              ? Colors.white
-              : theme.colorScheme.surface);
-      final borderRadius = widget.bodyCardBorderRadius ?? tokens.radius.card;
-
-      body = Material(
-        elevation: widget.bodyCardElevation == 0
-            ? tokens.elevation.card
-            : widget.bodyCardElevation,
-        borderRadius: borderRadius,
-        color: cardColor,
-        child: ClipRRect(borderRadius: borderRadius, child: body),
-      );
-    }
-
-    // Apply padding
-    if (effectiveBodyPadding != EdgeInsets.zero) {
-      body = Padding(padding: effectiveBodyPadding, child: body);
-    }
-
-    if (widget.config.enableAnimations) {
-      body = FadeTransition(
-        opacity: _fadeAnimation,
-        child: SlideTransition(position: _slideAnimation, child: body),
-      );
-    }
-
-    // Build the scaffold based on navigation type with animation
-    Widget scaffold;
-    switch (navigationType) {
-      case VooNavigationType.bottomNavigation:
-        scaffold = KeyedSubtree(
-          key: const ValueKey('mobile_scaffold'),
-          child: _buildMobileScaffold(context, body, effectiveBackgroundColor),
-        );
-        break;
-
-      case VooNavigationType.navigationRail:
-      case VooNavigationType.extendedNavigationRail:
-        // Only show extended rail if config allows it AND we're in the right width range
-        final shouldExtend = widget.config.useExtendedRail &&
-            navigationType == VooNavigationType.extendedNavigationRail;
-        scaffold = KeyedSubtree(
-          key: ValueKey('tablet_scaffold_$navigationType'),
-          child: _buildTabletScaffold(
-            context,
-            body,
-            effectiveBackgroundColor,
-            shouldExtend,
-          ),
-        );
-        break;
-
-      case VooNavigationType.navigationDrawer:
-        scaffold = KeyedSubtree(
-          key: const ValueKey('desktop_scaffold'),
-          child: _buildDesktopScaffold(context, body, effectiveBackgroundColor),
-        );
-        break;
-    }
-
-    // Wrap in AnimatedSwitcher to handle transitions smoothly
-    return AnimatedSwitcher(
-      duration: widget.config.animationDuration,
-      child: scaffold,
-      transitionBuilder: (child, animation) =>
-          FadeTransition(opacity: animation, child: child),
-    );
-  }
-
-  Widget _buildMobileScaffold(
-    BuildContext context,
-    Widget body,
-    Color backgroundColor,
-  ) => Scaffold(
-    key: widget.scaffoldKey,
-    backgroundColor: backgroundColor,
-    appBar: widget.showAppBar
-        ? (widget.appBar ?? const VooAdaptiveAppBar())
-        : null,
-    body: body,
-    bottomNavigationBar: VooAdaptiveBottomNavigation(
-      config: widget.config,
-      selectedId: _selectedId,
-      onNavigationItemSelected: _onNavigationItemSelected,
-      type: widget.config.bottomNavigationType,
-    ),
-    floatingActionButton: widget.config.showFloatingActionButton
-        ? widget.config.floatingActionButton
-        : null,
-    floatingActionButtonLocation:
-        widget.config.floatingActionButtonLocation ??
-        FloatingActionButtonLocation.centerDocked,
-    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-    endDrawer: widget.endDrawer,
-    drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-    drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-    endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-    resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-    extendBody: widget.extendBody,
-    extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-    bottomSheet: widget.bottomSheet,
-    persistentFooterButtons: widget.persistentFooterButtons,
-    restorationId: widget.restorationId,
-  );
-
-  Widget _buildTabletScaffold(
-    BuildContext context,
-    Widget body,
-    Color backgroundColor,
-    bool extended,
-  ) {
-    final theme = Theme.of(context);
-    final navigationRail = ClipRect(
-      child: VooAdaptiveNavigationRail(
-        config: widget.config,
-        selectedId: _selectedId,
-        onNavigationItemSelected: _onNavigationItemSelected,
-        extended: extended,
-      ),
-    );
-
-    // When app bar is alongside rail, wrap the content area with its own scaffold
-    if (widget.config.appBarAlongsideRail && widget.showAppBar) {
-      return Scaffold(
-        key: widget.scaffoldKey,
-        backgroundColor: backgroundColor,
-        body: Row(
-          children: [
-            navigationRail,
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(
-                  top: widget.config.navigationRailMargin,
-                  right: widget.config.navigationRailMargin,
-                  bottom: widget.config.navigationRailMargin,
-                  // No left margin to avoid double spacing with navigation
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.04),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  child: Scaffold(
-                    backgroundColor: backgroundColor,
-                    appBar: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                    body: body,
-                    floatingActionButton: widget.config.showFloatingActionButton
-                        ? widget.config.floatingActionButton
-                        : null,
-                    floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
-                    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        endDrawer: widget.endDrawer,
-        drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-        drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-        endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-        extendBody: widget.extendBody,
-        extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-        bottomSheet: widget.bottomSheet,
-        persistentFooterButtons: widget.persistentFooterButtons,
-        restorationId: widget.restorationId,
-      );
-    }
-
-    // Original behavior: app bar spans full width
-    return Scaffold(
-      key: widget.scaffoldKey,
-      backgroundColor: backgroundColor,
-      appBar: widget.showAppBar
-          ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
-          : null,
-      body: Row(
-        children: [
-          navigationRail,
-          Expanded(child: body),
-        ],
-      ),
-      floatingActionButton: widget.config.showFloatingActionButton
-          ? widget.config.floatingActionButton
-          : null,
-      floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
-      floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-      endDrawer: widget.endDrawer,
-      drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-      drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-      endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-      extendBody: widget.extendBody,
-      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-      bottomSheet: widget.bottomSheet,
-      persistentFooterButtons: widget.persistentFooterButtons,
-      restorationId: widget.restorationId,
-    );
-  }
-
-  Widget _buildDesktopScaffold(
-    BuildContext context,
-    Widget body,
-    Color backgroundColor,
-  ) {
-    final theme = Theme.of(context);
-    final navigationDrawer = ClipRect(
-      child: VooAdaptiveNavigationDrawer(
-        config: widget.config,
-        selectedId: _selectedId,
-        onNavigationItemSelected: _onNavigationItemSelected,
-      ),
-    );
-
-    // When app bar is alongside drawer, wrap the content area with its own scaffold
-    if (widget.config.appBarAlongsideRail && widget.showAppBar) {
-      return Scaffold(
-        key: widget.scaffoldKey,
-        backgroundColor: backgroundColor,
-        body: Row(
-          children: [
-            navigationDrawer,
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(
-                  top: widget.config.navigationRailMargin,
-                  right: widget.config.navigationRailMargin,
-                  bottom: widget.config.navigationRailMargin,
-                  // No left margin to avoid double spacing with navigation
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.04),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  child: Scaffold(
-                    backgroundColor: backgroundColor,
-                    appBar: widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false),
-                    body: body,
-                    floatingActionButton: widget.config.showFloatingActionButton
-                        ? widget.config.floatingActionButton
-                        : null,
-                    floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
-                    floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        endDrawer: widget.endDrawer,
-        drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-        drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-        endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-        resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-        extendBody: widget.extendBody,
-        extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-        bottomSheet: widget.bottomSheet,
-        persistentFooterButtons: widget.persistentFooterButtons,
-        restorationId: widget.restorationId,
-      );
-    }
-
-    // Original behavior: app bar spans full width
-    return Scaffold(
-      key: widget.scaffoldKey,
-      backgroundColor: backgroundColor,
-      appBar: widget.showAppBar
-          ? (widget.appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
-          : null,
-      body: Row(
-        children: [
-          navigationDrawer,
-          Expanded(child: body),
-        ],
-      ),
-      floatingActionButton: widget.config.showFloatingActionButton
-          ? widget.config.floatingActionButton
-          : null,
-      floatingActionButtonLocation: widget.config.floatingActionButtonLocation,
-      floatingActionButtonAnimator: widget.config.floatingActionButtonAnimator,
-      endDrawer: widget.endDrawer,
-      drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
-      drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
-      endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
-      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-      extendBody: widget.extendBody,
-      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-      bottomSheet: widget.bottomSheet,
-      persistentFooterButtons: widget.persistentFooterButtons,
-      restorationId: widget.restorationId,
-    );
-  }
-
-  /// Get default body padding based on navigation type and screen size
-  EdgeInsetsGeometry _getDefaultBodyPadding(
-    VooNavigationType navigationType,
-    ScreenInfo screenInfo,
-  ) {
-    final tokens = context.vooTokens;
-    final spacing = tokens.spacing;
-    final screenWidth = screenInfo.width;
-
-    // Responsive padding based on screen size
-    double horizontalPadding;
-    double verticalPadding;
-
-    if (screenWidth < 600) {
-      // Mobile: smaller padding
-      horizontalPadding = spacing.md;
-      verticalPadding = spacing.md;
-    } else if (screenWidth < 1240) {
-      // Tablet: medium padding
-      horizontalPadding = spacing.lg;
-      verticalPadding = spacing.lg;
-    } else {
-      // Desktop: larger padding for spacious feel
-      horizontalPadding = spacing.xl;
-      verticalPadding = spacing.lg;
-    }
-
-    // Adjust for navigation type
-    switch (navigationType) {
-      case VooNavigationType.bottomNavigation:
-        // Mobile: padding on all sides
-        return EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: verticalPadding,
-        );
-      case VooNavigationType.navigationRail:
-      case VooNavigationType.extendedNavigationRail:
-      case VooNavigationType.navigationDrawer:
-        // Desktop/Tablet: no left padding since navigation is there
-        return EdgeInsets.only(
-          right: horizontalPadding,
-          top: verticalPadding,
-          bottom: verticalPadding,
-        );
-    }
-  }
 }

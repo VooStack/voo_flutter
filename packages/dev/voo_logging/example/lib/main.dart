@@ -15,7 +15,7 @@ void main() async {
     ),
   );
 
-  // Initialize VooLogging with toast notifications
+  // Initialize VooLogging
   await VooLogger.initialize(
     appName: 'VooLoggingExample',
     minimumLevel: LogLevel.verbose,
@@ -25,7 +25,6 @@ void main() async {
       showTimestamp: true,
       showColors: true,
       enabled: true,
-      shouldNotify: true, // Enable toast notifications
     ),
   );
 
@@ -90,19 +89,19 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
   }
 
   void _logVerbose() {
-    VooLogger.verbose('This is a verbose message');
+    VooLogger.verbose('This is a verbose message', shouldNotify: toastEnabled);
   }
 
   void _logDebug() {
-    VooLogger.debug('This is a debug message');
+    VooLogger.debug('This is a debug message', shouldNotify: toastEnabled);
   }
 
   void _logInfo() {
-    VooLogger.info('This is an info message');
+    VooLogger.info('This is an info message', shouldNotify: toastEnabled);
   }
 
   void _logWarning() {
-    VooLogger.warning('This is a warning message');
+    VooLogger.warning('This is a warning message', shouldNotify: toastEnabled);
   }
 
   void _logError() {
@@ -110,15 +109,16 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
       'This is an error message',
       error: Exception('Sample exception'),
       stackTrace: StackTrace.current,
+      shouldNotify: toastEnabled,
     );
   }
 
   Future<void> _makeNetworkRequest() async {
     try {
       await dio.get('https://jsonplaceholder.typicode.com/posts/1');
-      VooLogger.info('Network request completed successfully');
+      VooLogger.info('Network request completed successfully', shouldNotify: toastEnabled);
     } catch (e) {
-      VooLogger.error('Network request failed', error: e);
+      VooLogger.error('Network request failed', error: e, shouldNotify: toastEnabled);
     }
   }
 
@@ -180,15 +180,7 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
               setState(() {
                 toastEnabled = !toastEnabled;
               });
-              // Update config without reinitializing
-              VooLogger.config = LoggingConfig(
-                enablePrettyLogs: true,
-                showEmojis: true,
-                showTimestamp: true,
-                showColors: true,
-                enabled: true,
-                shouldNotify: toastEnabled,
-              );
+              // Toast notifications are now controlled by shouldNotify parameter in each log call
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

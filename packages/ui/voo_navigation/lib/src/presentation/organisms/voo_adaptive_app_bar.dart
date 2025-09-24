@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_tokens/voo_tokens.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
-import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
+import 'package:voo_navigation/src/presentation/molecules/voo_app_bar_leading.dart';
+import 'package:voo_navigation/src/presentation/molecules/voo_app_bar_title.dart';
 import 'package:voo_navigation/src/presentation/utils/voo_navigation_inherited.dart';
 
 /// Adaptive app bar that adjusts based on screen size and navigation type
@@ -91,12 +92,13 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
     final effectiveTitle =
         title ??
         (selectedItem != null
-            ? _buildTitle(selectedItem, theme, effectiveConfig)
+            ? VooAppBarTitle(item: selectedItem, config: effectiveConfig)
             : const Text(''));
     final effectiveLeading =
-        leading ?? _buildLeading(context, theme, effectiveConfig);
-    final effectiveActions =
-        actions ?? _buildActions(context, theme, effectiveConfig);
+        leading ?? (showMenuButton
+            ? VooAppBarLeading(showMenuButton: showMenuButton, config: effectiveConfig)
+            : null);
+    final effectiveActions = actions;
     final effectiveCenterTitle =
         centerTitle ?? effectiveConfig?.centerAppBarTitle ?? false;
     // Use same subtle surface color variation as navigation components
@@ -133,9 +135,9 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: effectiveTitle,
         ),
         leading: effectiveLeading,
-        actions: effectiveActions.isNotEmpty
+        actions: effectiveActions?.isNotEmpty == true
             ? [
-                ...effectiveActions,
+                ...effectiveActions!,
                 SizedBox(width: context.vooSpacing.md),
               ]
             : null,
@@ -173,193 +175,6 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   String? _getSelectedIdFromScaffold(BuildContext context) =>
       VooNavigationInherited.maybeOf(context)?.selectedId;
-
-  Widget? _buildLeading(
-    BuildContext context,
-    ThemeData theme,
-    VooNavigationConfig? config,
-  ) {
-    if (!showMenuButton) return null;
-
-    if (config?.appBarLeading != null) {
-      return config!.appBarLeading!;
-    }
-
-    // Show menu button for drawer on mobile
-    if (Scaffold.of(context).hasDrawer) {
-      return IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          Scaffold.of(context).openDrawer();
-          if (config?.enableHapticFeedback ?? true) {
-            HapticFeedback.lightImpact();
-          }
-        },
-        tooltip: 'Open navigation menu',
-      );
-    }
-
-    // Show back button if can pop
-    if (Navigator.of(context).canPop()) {
-      return IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.of(context).pop();
-          if (config?.enableHapticFeedback ?? true) {
-            HapticFeedback.lightImpact();
-          }
-        },
-        tooltip: 'Go back',
-      );
-    }
-
-    return null;
-  }
-
-  Widget _buildTitle(
-    VooNavigationItem item,
-    ThemeData theme,
-    VooNavigationConfig? config,
-  ) {
-    if (config?.appBarTitle != null) {
-      return config!.appBarTitle!;
-    }
-
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      transitionBuilder: (child, animation) => FadeTransition(
-        opacity: animation,
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 0.1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        ),
-      ),
-      child: Text(
-        item.label,
-        key: ValueKey(item.id),
-        style: theme.appBarTheme.titleTextStyle ?? theme.textTheme.titleLarge,
-      ),
-    );
-  }
-
-  List<Widget> _buildActions(
-    BuildContext context,
-    ThemeData theme,
-    VooNavigationConfig? config,
-  ) {
-    final actions = <Widget>[];
-
-    // Add custom actions from config
-    if (config?.appBarActions != null) {
-      actions.addAll(config!.appBarActions!);
-    }
-
-    // Add notification bell if there are any badges
-    if (config?.showNotificationBadges ?? false) {
-      final totalBadgeCount = config?.items
-          .where((item) => item.badgeCount != null)
-          .fold<int>(0, (sum, item) => sum + item.badgeCount!);
-
-      if (totalBadgeCount != null && totalBadgeCount > 0) {
-        actions.add(
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined),
-                onPressed: () {
-                  // Handle notification tap
-                  if (config?.enableHapticFeedback ?? true) {
-                    HapticFeedback.lightImpact();
-                  }
-                },
-                tooltip: 'Notifications',
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.error,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: Center(
-                    child: Text(
-                      totalBadgeCount > 99 ? '99+' : totalBadgeCount.toString(),
-                      style: theme.textTheme.labelSmall!.copyWith(
-                        color: theme.colorScheme.onError,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-
-    // Add search action if configured
-    if (actions.isEmpty && MediaQuery.of(context).size.width > 600) {
-      actions.add(
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            // Handle search
-            if (config?.enableHapticFeedback ?? true) {
-              HapticFeedback.lightImpact();
-            }
-          },
-          tooltip: 'Search',
-        ),
-      );
-    }
-
-    // Add more options menu
-    if (actions.isNotEmpty) {
-      actions.add(
-        PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert),
-          onSelected: (value) {
-            if (config?.enableHapticFeedback ?? true) {
-              HapticFeedback.lightImpact();
-            }
-            // Handle menu item selection
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'settings',
-              child: ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'help',
-              child: ListTile(
-                leading: Icon(Icons.help_outline),
-                title: Text('Help & Feedback'),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return actions;
-  }
 }
 
 /// Function to determine if a notification should be handled

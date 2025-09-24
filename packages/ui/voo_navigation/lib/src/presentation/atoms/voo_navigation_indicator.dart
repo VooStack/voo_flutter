@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voo_navigation/src/presentation/atoms/voo_background_indicator.dart';
+import 'package:voo_navigation/src/presentation/atoms/voo_custom_indicator.dart';
+import 'package:voo_navigation/src/presentation/atoms/voo_line_indicator.dart';
+import 'package:voo_navigation/src/presentation/atoms/voo_pill_indicator.dart';
 
 /// Selection indicator for navigation items
 class VooNavigationIndicator extends StatelessWidget {
@@ -62,146 +66,64 @@ class VooNavigationIndicator extends StatelessWidget {
 
     switch (type) {
       case VooIndicatorType.background:
-        return _buildBackgroundIndicator(effectiveColor);
+        return VooBackgroundIndicator(
+          isSelected: isSelected,
+          color: effectiveColor,
+          shape: shape,
+          padding: padding,
+          duration: duration,
+          curve: curve,
+          animate: animate,
+          child: child,
+        );
       case VooIndicatorType.line:
-        return _buildLineIndicator(effectiveColor);
+        return VooLineIndicator(
+          isSelected: isSelected,
+          color: effectiveColor,
+          height: height,
+          width: width,
+          padding: padding,
+          duration: duration,
+          curve: curve,
+          animate: animate,
+          position: _mapToLineIndicatorPosition(position),
+          child: child,
+        );
       case VooIndicatorType.pill:
-        return _buildPillIndicator(effectiveColor);
+        return VooPillIndicator(
+          isSelected: isSelected,
+          color: effectiveColor,
+          borderRadius: height ?? 20,
+          padding: padding,
+          duration: duration,
+          curve: curve,
+          animate: animate,
+          child: child,
+        );
       case VooIndicatorType.custom:
-        return _buildCustomIndicator(effectiveColor);
+        return VooCustomIndicator(
+          isSelected: isSelected,
+          padding: padding,
+          duration: duration,
+          curve: curve,
+          animate: animate,
+          child: child,
+        );
     }
   }
 
-  Widget _buildBackgroundIndicator(Color color) {
-    final indicator = Container(
-      padding: padding,
-      decoration: ShapeDecoration(
-        color: isSelected ? color : Colors.transparent,
-        shape:
-            shape ??
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      child: child,
-    );
-
-    if (!animate) {
-      return indicator;
-    }
-
-    return AnimatedContainer(
-      duration: duration,
-      curve: curve,
-      padding: padding,
-      decoration: ShapeDecoration(
-        color: isSelected ? color : Colors.transparent,
-        shape:
-            shape ??
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      child: child,
-    );
-  }
-
-  Widget _buildLineIndicator(Color color) {
-    final Widget line = AnimatedContainer(
-      duration: animate ? duration : Duration.zero,
-      curve: curve,
-      height:
-          position == VooIndicatorPosition.bottom ||
-              position == VooIndicatorPosition.top
-          ? (height ?? 3)
-          : null,
-      width:
-          position == VooIndicatorPosition.left ||
-              position == VooIndicatorPosition.right
-          ? (width ?? 3)
-          : null,
-      decoration: BoxDecoration(
-        color: isSelected ? color : Colors.transparent,
-        borderRadius: BorderRadius.circular(1.5),
-      ),
-    );
-
-    final Widget content = child;
-
+  VooLineIndicatorPosition _mapToLineIndicatorPosition(
+      VooIndicatorPosition position) {
     switch (position) {
-      case VooIndicatorPosition.bottom:
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(padding: padding, child: content),
-            line,
-          ],
-        );
       case VooIndicatorPosition.top:
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            line,
-            Padding(padding: padding, child: content),
-          ],
-        );
+        return VooLineIndicatorPosition.top;
+      case VooIndicatorPosition.bottom:
+        return VooLineIndicatorPosition.bottom;
       case VooIndicatorPosition.left:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            line,
-            Padding(padding: padding, child: content),
-          ],
-        );
+        return VooLineIndicatorPosition.left;
       case VooIndicatorPosition.right:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(padding: padding, child: content),
-            line,
-          ],
-        );
+        return VooLineIndicatorPosition.right;
     }
-  }
-
-  Widget _buildPillIndicator(Color color) {
-    final indicator = Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: isSelected ? color : Colors.transparent,
-        borderRadius: BorderRadius.circular(height ?? 20),
-      ),
-      child: child,
-    );
-
-    if (!animate) {
-      return indicator;
-    }
-
-    return AnimatedContainer(
-      duration: duration,
-      curve: curve,
-      padding: padding,
-      decoration: BoxDecoration(
-        color: isSelected ? color : Colors.transparent,
-        borderRadius: BorderRadius.circular(height ?? 20),
-      ),
-      child: child,
-    );
-  }
-
-  Widget _buildCustomIndicator(Color color) {
-    // For custom indicators, just wrap the child with animation
-    if (!animate || !isSelected) {
-      return Padding(padding: padding, child: child);
-    }
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: isSelected ? 1 : 0),
-      duration: duration,
-      curve: curve,
-      builder: (context, value, child) => Transform.scale(
-        scale: 1 + (value * 0.05),
-        child: Padding(padding: padding, child: child),
-      ),
-      child: child,
-    );
   }
 }
 

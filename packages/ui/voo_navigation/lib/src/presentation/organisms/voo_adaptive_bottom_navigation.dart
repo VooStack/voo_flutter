@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
-import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
-import 'package:voo_navigation/src/presentation/molecules/voo_navigation_badge.dart';
-import 'package:voo_tokens/voo_tokens.dart';
+import 'package:voo_navigation/src/presentation/organisms/voo_custom_navigation_bar.dart';
+import 'package:voo_navigation/src/presentation/organisms/voo_material2_bottom_navigation.dart';
+import 'package:voo_navigation/src/presentation/organisms/voo_material3_navigation_bar.dart';
 
 /// Adaptive bottom navigation bar for mobile layouts with Material 3 design
 /// Features smooth animations, haptic feedback, and beautiful visual transitions
@@ -166,418 +165,55 @@ class _VooAdaptiveBottomNavigationState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final items = widget.config.visibleItems;
 
     if (items.isEmpty) {
       return const SizedBox.shrink();
     }
 
+    final selectedIndex = _getSelectedIndex() ?? 0;
+
     switch (widget.type) {
       case NavigationBarType.material3:
-        return _buildMaterial3NavigationBar(context, theme, items);
+        return VooMaterial3NavigationBar(
+          items: items,
+          selectedIndex: selectedIndex,
+          config: widget.config,
+          scaleAnimations: _scaleAnimations,
+          height: widget.height,
+          backgroundColor: widget.backgroundColor,
+          elevation: widget.elevation,
+          showLabels: widget.showLabels,
+          showSelectedLabels: widget.showSelectedLabels,
+          enableFeedback: widget.enableFeedback,
+          onItemSelected: widget.onNavigationItemSelected,
+        );
       case NavigationBarType.material2:
-        return _buildMaterial2BottomNavigation(context, theme, items);
+        return VooMaterial2BottomNavigation(
+          items: items,
+          selectedIndex: selectedIndex,
+          config: widget.config,
+          backgroundColor: widget.backgroundColor,
+          elevation: widget.elevation,
+          showLabels: widget.showLabels,
+          showSelectedLabels: widget.showSelectedLabels,
+          enableFeedback: widget.enableFeedback,
+          onItemSelected: widget.onNavigationItemSelected,
+        );
       case NavigationBarType.custom:
-        return _buildCustomNavigationBar(context, theme, items);
-    }
-  }
-
-  Widget _buildMaterial3NavigationBar(
-    BuildContext context,
-    ThemeData theme,
-    List<VooNavigationItem> items,
-  ) {
-    final selectedIndex = _getSelectedIndex() ?? 0;
-
-    return NavigationBar(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: (index) {
-        if (widget.enableFeedback) {
-          HapticFeedback.lightImpact();
-        }
-        final item = items[index];
-        if (item.isEnabled) {
-          widget.onNavigationItemSelected(item.id);
-        }
-      },
-      height: widget.height,
-      backgroundColor:
-          widget.backgroundColor ?? widget.config.navigationBackgroundColor,
-      elevation:
-          widget.elevation ??
-          widget.config.elevation ??
-          context.vooElevation.level2,
-      labelBehavior: widget.showLabels
-          ? (widget.showSelectedLabels
-                ? NavigationDestinationLabelBehavior.onlyShowSelected
-                : NavigationDestinationLabelBehavior.alwaysShow)
-          : NavigationDestinationLabelBehavior.alwaysHide,
-      indicatorColor: widget.config.indicatorColor,
-      indicatorShape: widget.config.indicatorShape,
-      destinations: items.asMap().entries.map((entry) {
-        final index = entry.key;
-        final item = entry.value;
-        final isSelected = index == selectedIndex;
-
-        return NavigationDestination(
-          icon: _buildAnimatedIcon(item, isSelected, index),
-          selectedIcon: _buildAnimatedIcon(
-            item,
-            isSelected,
-            index,
-            useSelected: true,
-          ),
-          label: item.label,
-          tooltip: item.effectiveTooltip,
-          enabled: item.isEnabled,
+        return VooCustomNavigationBar(
+          items: items,
+          selectedIndex: selectedIndex,
+          config: widget.config,
+          scaleAnimations: _scaleAnimations,
+          rotationAnimations: _rotationAnimations,
+          height: widget.height,
+          showLabels: widget.showLabels,
+          showSelectedLabels: widget.showSelectedLabels,
+          enableFeedback: widget.enableFeedback,
+          onItemSelected: widget.onNavigationItemSelected,
         );
-      }).toList(),
-    );
-  }
-
-  Widget _buildMaterial2BottomNavigation(
-    BuildContext context,
-    ThemeData theme,
-    List<VooNavigationItem> items,
-  ) {
-    final selectedIndex = _getSelectedIndex() ?? 0;
-
-    return BottomNavigationBar(
-      currentIndex: selectedIndex,
-      onTap: (index) {
-        if (widget.enableFeedback) {
-          HapticFeedback.lightImpact();
-        }
-        final item = items[index];
-        if (item.isEnabled) {
-          widget.onNavigationItemSelected(item.id);
-        }
-      },
-      backgroundColor:
-          widget.backgroundColor ?? widget.config.navigationBackgroundColor,
-      elevation:
-          widget.elevation ??
-          widget.config.elevation ??
-          context.vooElevation.level4,
-      selectedItemColor: widget.config.selectedItemColor,
-      unselectedItemColor: widget.config.unselectedItemColor,
-      showSelectedLabels: widget.showSelectedLabels,
-      showUnselectedLabels: widget.showLabels,
-      type: items.length > 3
-          ? BottomNavigationBarType.fixed
-          : BottomNavigationBarType.shifting,
-      items: items.asMap().entries.map((entry) {
-        final index = entry.key;
-        final item = entry.value;
-        final isSelected = index == selectedIndex;
-
-        return BottomNavigationBarItem(
-          icon: _buildIconWithBadge(item, isSelected, index),
-          activeIcon: _buildIconWithBadge(
-            item,
-            isSelected,
-            index,
-            useSelected: true,
-          ),
-          label: item.label,
-          tooltip: item.effectiveTooltip,
-          backgroundColor: item.iconColor?.withAlpha((0.1 * 255).round()),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildCustomNavigationBar(
-    BuildContext context,
-    ThemeData theme,
-    List<VooNavigationItem> items,
-  ) {
-    final selectedIndex = _getSelectedIndex() ?? 0;
-
-    // Sophisticated bottom bar design
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final bottomBarColor = isDark
-        ? const Color(0xFF1A1D23) // Dark mode: very dark blue-gray
-        : const Color(0xFF1F2937); // Light mode: professional dark gray
-
-    return Container(
-      height: widget.height ?? 65,
-      decoration: BoxDecoration(
-        color: bottomBarColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, -1),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
-          final isSelected = index == selectedIndex;
-
-          return Expanded(
-            child: _buildCustomNavigationItem(
-              item: item,
-              isSelected: isSelected,
-              index: index,
-              theme: theme,
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildCustomNavigationItem({
-    required VooNavigationItem item,
-    required bool isSelected,
-    required int index,
-    required ThemeData theme,
-  }) {
-    final primaryColor =
-        widget.config.selectedItemColor ?? theme.colorScheme.primary;
-
-    return InkWell(
-      onTap: item.isEnabled
-          ? () {
-              if (widget.enableFeedback) {
-                HapticFeedback.lightImpact();
-              }
-              widget.onNavigationItemSelected(item.id);
-            }
-          : null,
-      borderRadius: BorderRadius.circular(context.vooRadius.lg),
-      child: AnimatedContainer(
-        duration: widget.config.animationDuration,
-        padding: EdgeInsets.symmetric(
-          vertical: context.vooSpacing.xs,
-          horizontal: context.vooSpacing.sm + context.vooSpacing.xxs,
-        ),
-        margin: EdgeInsets.symmetric(
-          horizontal: context.vooSpacing.xs - context.vooSpacing.xxs,
-          vertical: context.vooSpacing.xs,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            context.vooRadius.md + context.vooSpacing.xxs,
-          ),
-          color: isSelected
-              ? theme.colorScheme.primary.withValues(alpha: 0.12)
-              : Colors.transparent,
-          border: isSelected
-              ? Border.all(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                  width: 1,
-                )
-              : null,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Animated icon
-            AnimatedBuilder(
-              animation: Listenable.merge([
-                _scaleAnimations[index],
-                _rotationAnimations[index],
-              ]),
-              builder: (context, child) => Transform.scale(
-                scale: _scaleAnimations[index].value,
-                child: Transform.rotate(
-                  angle: _rotationAnimations[index].value,
-                  child: _buildModernIcon(
-                    item,
-                    isSelected,
-                    index,
-                    primaryColor,
-                  ),
-                ),
-              ),
-            ),
-
-            // Animated label
-            if (widget.showLabels && (!widget.showSelectedLabels || isSelected))
-              AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
-                style: theme.textTheme.labelSmall!.copyWith(
-                  color: isSelected
-                      ? theme.colorScheme.primary
-                      : Colors.white.withValues(alpha: 0.85),
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  fontSize: 11,
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: context.vooSpacing.xxs),
-                  child: Text(
-                    item.label,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModernIcon(
-    VooNavigationItem item,
-    bool isSelected,
-    int index,
-    Color primaryColor,
-  ) {
-    final theme = Theme.of(context);
-    final icon = AnimatedSwitcher(
-      duration: const Duration(milliseconds: 200),
-      child: Icon(
-        isSelected ? item.effectiveSelectedIcon : item.icon,
-        key: ValueKey(isSelected),
-        color: isSelected
-            ? theme.colorScheme.primary
-            : Colors.white.withValues(alpha: 0.8),
-        size: isSelected ? 22 : 20,
-      ),
-    );
-
-    if (item.hasBadge) {
-      return Stack(
-        clipBehavior: Clip.none,
-        children: [
-          icon,
-          Positioned(
-            top: -4,
-            right: -4,
-            child: _buildModernBadge(item, isSelected, primaryColor),
-          ),
-        ],
-      );
     }
-
-    return icon;
-  }
-
-  Widget _buildModernBadge(
-    VooNavigationItem item,
-    bool isSelected,
-    Color primaryColor,
-  ) {
-    final theme = Theme.of(context);
-
-    String badgeText;
-    if (item.badgeCount != null) {
-      badgeText = item.badgeCount! > 99 ? '99+' : item.badgeCount.toString();
-    } else if (item.badgeText != null) {
-      badgeText = item.badgeText!;
-    } else if (item.showDot) {
-      return Container(
-        width: 8,
-        height: 8,
-        decoration: BoxDecoration(
-          color: item.badgeColor ?? Colors.red,
-          shape: BoxShape.circle,
-        ),
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.vooSpacing.sm - context.vooSpacing.xxs,
-        vertical: context.vooSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? (item.badgeColor ?? primaryColor)
-            : Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(context.vooRadius.lg),
-      ),
-      constraints: const BoxConstraints(minWidth: 18),
-      child: Text(
-        badgeText,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: isSelected
-              ? Colors.white
-              : Colors.white.withValues(alpha: 0.9),
-          fontWeight: FontWeight.w600,
-          fontSize: 10,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buildAnimatedIcon(
-    VooNavigationItem item,
-    bool isSelected,
-    int index, {
-    bool useSelected = false,
-  }) => AnimatedBuilder(
-    animation: _scaleAnimations[index],
-    builder: (context, child) => Transform.scale(
-      scale: _scaleAnimations[index].value,
-      child: _buildIconWithBadge(
-        item,
-        isSelected,
-        index,
-        useSelected: useSelected,
-      ),
-    ),
-  );
-
-  Widget _buildIconWithBadge(
-    VooNavigationItem item,
-    bool isSelected,
-    int index, {
-    bool useSelected = false,
-  }) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final selectedColor =
-        widget.config.selectedItemColor ?? colorScheme.primary;
-    final unselectedColor =
-        widget.config.unselectedItemColor ?? colorScheme.onSurfaceVariant;
-
-    final Widget icon = AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      transitionBuilder: (child, animation) => FadeTransition(
-        opacity: animation,
-        child: ScaleTransition(scale: animation, child: child),
-      ),
-      child:
-          item.leadingWidget ??
-          Icon(
-            useSelected ? item.effectiveSelectedIcon : item.icon,
-            key: ValueKey('${item.id}_${useSelected}_$isSelected'),
-            color: isSelected
-                ? (item.selectedIconColor ?? selectedColor)
-                : (item.iconColor ?? unselectedColor),
-            size: isSelected ? 28 : 24,
-          ),
-    );
-
-    if (item.hasBadge) {
-      return Stack(
-        clipBehavior: Clip.none,
-        children: [
-          icon,
-          Positioned(
-            top: -4,
-            right: -4,
-            child: VooNavigationBadge(item: item, config: widget.config),
-          ),
-        ],
-      );
-    }
-
-    return icon;
   }
 }
 

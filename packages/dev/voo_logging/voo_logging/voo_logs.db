@@ -1,0 +1,7 @@
+{"version":1,"sembast":1}
+{"key":"created_at","store":"metadata","value":{"timestamp":"2025-09-24T11:22:33.711002"}}
+{"key":"schema_version","store":"metadata","value":{"version":1}}
+{"key":1758730953933684,"store":"logs","value":{"id":"1758730953933_25_159","timestamp":"2025-09-24T11:22:33.933684","message":"Log to be cleared","level":"info","category":null,"tag":null,"metadata":{"appName":"TestApp","timestamp":"2025-09-24T11:22:33.933685"},"error":null,"stackTrace":null,"userId":null,"sessionId":"1758730953672_112"}}
+{"key":1758730953934352,"store":"logs","value":{"id":"1758730953934_26_96","timestamp":"2025-09-24T11:22:33.934352","message":"Another log to be cleared","level":"warning","category":null,"tag":null,"metadata":{"appName":"TestApp","timestamp":"2025-09-24T11:22:33.934354"},"error":null,"stackTrace":null,"userId":null,"sessionId":"1758730953672_112"}}
+{"key":1758730953933684,"deleted":true,"store":"logs"}
+{"key":1758730953934352,"deleted":true,"store":"logs"}
