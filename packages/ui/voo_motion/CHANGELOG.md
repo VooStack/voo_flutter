@@ -1,3 +1,14 @@
+## 0.0.2
+
+ - **FIX**: Add vector_math dependency to pubspec.yaml.
+ - **FIX**: Update voo_ui_core dependency to use version instead of path.
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+ - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.
+ - **FEAT**: Remove DEVELOPER_GUIDE.md and update validation rule exports.
+ - **FEAT**: Add MIT License to the VooMotion package.
+ - **FEAT**: Update CHANGELOG and add voo_ui_core dependency path in pubspec.yaml.
+ - **FEAT**: Add VooMotion package with enhanced animation widgets and configurations.
+
 ## 0.0.1
 
 * Initial release of voo_motion - A powerful and simple animation package for Flutter

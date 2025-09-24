@@ -1,3 +1,15 @@
+## 0.0.9
+
+ - **FIX**: Improve navigation rail border radius test.
+ - **FIX**: Update tests and fix overflow issue after refactoring.
+ - **FEAT**: Update version in pubspec.yaml and adjust VooAdaptiveNavigationRail test for border radius and width changes.
+ - **FEAT**: Add various scaffold and navigation components for improved UI structure.
+ - **FEAT**: Enhance VooAdaptive components with improved styling and shadow effects.
+ - **FEAT**: Enhance VooAdaptive components with improved styling and functionality.
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+ - **FEAT**: Integrate voo_tokens package and update navigation components for improved theming and spacing.
+ - **DOCS**: Add comprehensive changelog for v0.0.9 refactoring.
+
 ## 0.0.9 (Unreleased)
 
 ### Changed

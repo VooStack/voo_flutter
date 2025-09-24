@@ -1,3 +1,7 @@
+## 0.7.7
+
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+
 ## 0.7.6
 
  - **REFACTOR**: remove unused field widgets and clean up code.

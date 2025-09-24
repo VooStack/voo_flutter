@@ -1,3 +1,7 @@
+## 0.1.2
+
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+
 ## 0.1.1
 
  - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.

@@ -1,6 +1,6 @@
 name: voo_telemetry
 description: OpenTelemetry integration for VooFlutter with support for traces, metrics, and logs.
-version: 0.2.2
+version: 0.2.3
 homepage: https://voostack.com
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/voo_telemetry
 topics:
@@ -13,12 +13,12 @@ resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  voo_core: ^0.4.2
+  voo_core: ^0.4.3
   http: ^1.2.0
   dio: ^5.2.0
   uuid: ^4.0.0

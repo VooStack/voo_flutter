@@ -1,3 +1,9 @@
+## 0.0.7
+
+ - **FEAT**: Update CHANGELOG and bump version to 0.0.6 with new token types and improvements.
+ - **FEAT**: Enhance VooTokens with additional token categories and responsive design.
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+
 ## 0.0.6
 
 ### Added

@@ -1,3 +1,7 @@
+## 0.1.4
+
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+
 ## 0.1.3
  - **FIX**: Dependencies incorrectly importing voo_core 
 

@@ -8,13 +8,13 @@ resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  voo_core: ^0.4.2
-  voo_responsive: ^0.1.2
+  voo_core: ^0.4.3
+  voo_responsive: ^0.1.4
   equatable: ^2.0.5
   flutter_bloc: ^9.1.1
   collection: ^1.17.0

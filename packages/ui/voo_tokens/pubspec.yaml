@@ -1,11 +1,11 @@
 name: voo_tokens
 description: Design token system for VooFlutter with responsive adaptations
-version: 0.0.6
+version: 0.0.7
 resolution: workspace
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: '>=3.0.0 <4.0.0'
+  flutter: '>=3.0.0'
 
 dependencies:
   flutter:

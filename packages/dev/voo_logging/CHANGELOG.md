@@ -1,3 +1,9 @@
+## 0.4.4
+
+ - **FEAT**: Update version in pubspec.yaml and adjust VooAdaptiveNavigationRail test for border radius and width changes.
+ - **FEAT**: Add various scaffold and navigation components for improved UI structure.
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+
 ## 0.4.3
 
  - **FIX**: ensure proper disposal of scroll controllers in VooDataGridController.

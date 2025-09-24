@@ -1,3 +1,7 @@
+## 0.0.6
+
+ - **FEAT**: add example modules and run configurations for VooFlutter packages.
+
 ## 0.0.5
 
  - **FEAT**: Introduce voo_tokens package for design tokens and responsive utilities.

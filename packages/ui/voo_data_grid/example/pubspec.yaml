@@ -39,7 +39,7 @@ dependencies:
   # Local packages
   voo_data_grid:
     path: ../
-  voo_ui_core: ^0.1.1
+  voo_ui_core: ^0.1.3
 
 dev_dependencies:
   flutter_test:
