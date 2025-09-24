@@ -259,21 +259,19 @@ void main() {
         ),
       );
 
-      // The border radius is now applied to DecoratedBox instead of Material
-      final decoratedBox = tester.widget<DecoratedBox>(
+      // The border radius is now applied to Container with BoxDecoration
+      final container = tester.widget<Container>(
         find
             .descendant(
               of: find.byType(VooAdaptiveNavigationRail),
-              matching: find.byType(DecoratedBox),
+              matching: find.byType(Container),
             )
-            .last, // Get the inner DecoratedBox
+            .at(1), // Get the second Container which has the decoration
       );
 
-      final decoration = decoratedBox.decoration as BoxDecoration;
-      expect(
-        decoration.borderRadius,
-        isNotNull,
-      );
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration, isNotNull);
+      expect(decoration?.borderRadius, isNotNull);
     });
 
     testWidgets('should handle hover states on desktop', (
