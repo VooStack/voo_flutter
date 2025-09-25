@@ -1,3 +1,10 @@
+## 0.7.9
+
+* **Export functionality enhancements**
+  * Added `showExportButton` parameter to VooDataGridStateless widget
+  * Added export configuration parameters (exportConfig, companyLogo, onExportComplete) to VooDataGridStateless
+  * Improved export feature accessibility across different data grid implementations
+
 ## 0.7.8
 
 * **Export to PDF and Excel Functionality**
