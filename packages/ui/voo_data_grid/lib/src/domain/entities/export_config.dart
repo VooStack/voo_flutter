@@ -8,6 +8,21 @@ enum ExportFormat {
   excel,
 }
 
+/// Enumeration for PDF layout types
+enum PdfLayoutType {
+  /// Traditional grid/table layout - best for small to medium datasets
+  grid,
+
+  /// List layout - each record displayed as a card, best for large datasets
+  list,
+
+  /// Report layout - detailed view with headers and grouped data
+  report,
+
+  /// Compact layout - minimal spacing, maximum data density
+  compact,
+}
+
 /// Configuration for data grid export
 class ExportConfig {
   /// The export format
@@ -77,6 +92,18 @@ class ExportConfig {
   /// Number format for numeric columns
   final String? numberFormat;
 
+  /// PDF layout type
+  final PdfLayoutType pdfLayoutType;
+
+  /// Selected columns to export (null means all visible columns)
+  final List<String>? selectedColumns;
+
+  /// Whether to auto-size columns based on content
+  final bool autoSizeColumns;
+
+  /// Maximum column width for auto-sizing (in PDF units)
+  final double? maxColumnWidth;
+
   const ExportConfig({
     required this.format,
     this.title,
@@ -101,6 +128,10 @@ class ExportConfig {
     this.maxRows,
     this.dateFormat = 'yyyy-MM-dd HH:mm',
     this.numberFormat,
+    this.pdfLayoutType = PdfLayoutType.grid,
+    this.selectedColumns,
+    this.autoSizeColumns = true,
+    this.maxColumnWidth,
   });
 
   /// Creates a copy with modified fields
@@ -128,6 +159,10 @@ class ExportConfig {
     int? maxRows,
     String? dateFormat,
     String? numberFormat,
+    PdfLayoutType? pdfLayoutType,
+    List<String>? selectedColumns,
+    bool? autoSizeColumns,
+    double? maxColumnWidth,
   }) => ExportConfig(
       format: format ?? this.format,
       title: title ?? this.title,
@@ -152,5 +187,9 @@ class ExportConfig {
       maxRows: maxRows ?? this.maxRows,
       dateFormat: dateFormat ?? this.dateFormat,
       numberFormat: numberFormat ?? this.numberFormat,
+      pdfLayoutType: pdfLayoutType ?? this.pdfLayoutType,
+      selectedColumns: selectedColumns ?? this.selectedColumns,
+      autoSizeColumns: autoSizeColumns ?? this.autoSizeColumns,
+      maxColumnWidth: maxColumnWidth ?? this.maxColumnWidth,
     );
 }

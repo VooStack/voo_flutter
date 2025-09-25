@@ -24,6 +24,7 @@ class ExportDialog<T> extends StatefulWidget {
 
 class _ExportDialogState<T> extends State<ExportDialog<T>> {
   late ExportFormat _selectedFormat;
+  late PdfLayoutType _selectedPdfLayout;
   late TextEditingController _titleController;
   late TextEditingController _subtitleController;
   late TextEditingController _companyNameController;
@@ -34,12 +35,15 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
   bool _isLandscape = true;
   int? _maxRows;
   bool _isExporting = false;
+  List<String> _selectedColumns = [];
+  bool _selectAllColumns = true;
 
   @override
   void initState() {
     super.initState();
     final config = widget.initialConfig;
     _selectedFormat = config?.format ?? ExportFormat.pdf;
+    _selectedPdfLayout = config?.pdfLayoutType ?? PdfLayoutType.grid;
     _titleController = TextEditingController(text: config?.title ?? 'Data Export');
     _subtitleController = TextEditingController(text: config?.subtitle ?? '');
     _companyNameController = TextEditingController(text: config?.companyName ?? '');
@@ -49,6 +53,13 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
     _showRowNumbers = config?.showRowNumbers ?? false;
     _isLandscape = config?.isLandscape ?? true;
     _maxRows = config?.maxRows;
+
+    // Initialize selected columns with all visible columns
+    _selectedColumns = widget.controller.columns
+        .where((col) => col.visible)
+        .map((col) => col.field)
+        .toList();
+    _selectAllColumns = true;
   }
 
   @override
@@ -63,12 +74,13 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
   @override
   Widget build(BuildContext context) => Dialog(
     child: Container(
-      constraints: const BoxConstraints(maxWidth: 500),
+      constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
       padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Row(
             children: [
               const Icon(Icons.download, size: 28),
@@ -89,6 +101,74 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
               const SizedBox(width: 12),
               _buildFormatChip(ExportFormat.excel, Icons.table_chart, 'Excel'),
             ],
+          ),
+          const SizedBox(height: 16),
+
+          // PDF Layout selection (only for PDF format)
+          if (_selectedFormat == ExportFormat.pdf) ...[
+            const Text('PDF Layout', style: TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+            _buildPdfLayoutSelector(),
+            const SizedBox(height: 16),
+          ],
+
+          // Column Selection
+          const Text('Select Columns to Export', style: TextStyle(fontWeight: FontWeight.w500)),
+          const SizedBox(height: 8),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Column(
+              children: [
+                CheckboxListTile(
+                  value: _selectAllColumns,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectAllColumns = value ?? true;
+                      if (_selectAllColumns) {
+                        _selectedColumns = widget.controller.columns
+                            .where((col) => col.visible)
+                            .map((col) => col.field)
+                            .toList();
+                      } else {
+                        _selectedColumns.clear();
+                      }
+                    });
+                  },
+                  title: const Text('Select All', style: TextStyle(fontWeight: FontWeight.bold)),
+                  dense: true,
+                ),
+                const Divider(height: 1),
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 150),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget.controller.columns.where((col) => col.visible).length,
+                    itemBuilder: (context, index) {
+                      final column = widget.controller.columns.where((col) => col.visible).toList()[index];
+                      return CheckboxListTile(
+                        value: _selectedColumns.contains(column.field),
+                        onChanged: (value) {
+                          setState(() {
+                            if (value == true) {
+                              _selectedColumns.add(column.field);
+                            } else {
+                              _selectedColumns.remove(column.field);
+                            }
+                            _selectAllColumns = _selectedColumns.length ==
+                                widget.controller.columns.where((col) => col.visible).length;
+                          });
+                        },
+                        title: Text(column.label),
+                        dense: true,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
 
@@ -183,6 +263,7 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
           ),
         ],
       ),
+      ),
     ),
   );
 
@@ -200,6 +281,56 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
     );
   }
 
+  Widget _buildPdfLayoutSelector() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _buildLayoutChip(
+          PdfLayoutType.grid,
+          Icons.grid_on,
+          'Grid',
+          'Traditional table layout',
+        ),
+        _buildLayoutChip(
+          PdfLayoutType.list,
+          Icons.view_list,
+          'List',
+          'Card-based for large datasets',
+        ),
+        _buildLayoutChip(
+          PdfLayoutType.compact,
+          Icons.compress,
+          'Compact',
+          'Maximum data density',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLayoutChip(PdfLayoutType layout, IconData icon, String label, String tooltip) {
+    final isSelected = _selectedPdfLayout == layout;
+    return Tooltip(
+      message: tooltip,
+      child: ChoiceChip(
+        selected: isSelected,
+        onSelected: (selected) {
+          if (selected) {
+            setState(() {
+              _selectedPdfLayout = layout;
+              // Auto-adjust orientation based on layout
+              if (layout == PdfLayoutType.compact) {
+                _isLandscape = true;
+              }
+            });
+          }
+        },
+        avatar: Icon(icon, size: 18),
+        label: Text(label),
+      ),
+    );
+  }
+
   Future<void> _handleExport() async {
     setState(() => _isExporting = true);
 
@@ -212,6 +343,8 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
       // Create export configuration
       final config = ExportConfig(
         format: _selectedFormat,
+        pdfLayoutType: _selectedPdfLayout,
+        selectedColumns: _selectedColumns.isEmpty ? null : _selectedColumns,
         title: _titleController.text.isNotEmpty ? _titleController.text : null,
         subtitle: _subtitleController.text.isNotEmpty ? _subtitleController.text : null,
         companyName: _companyNameController.text.isNotEmpty ? _companyNameController.text : null,

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:voo_data_grid/src/data/services/excel_export_service.dart';
+import 'package:voo_data_grid/src/data/services/export_helper.dart';
 import 'package:voo_data_grid/src/data/services/pdf_export_service.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/export_config.dart';
@@ -72,22 +73,20 @@ class DataGridExportService<T> extends ExportService<T> {
       );
     } else {
       // For Excel files, we need to save and share differently
-      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-        // On mobile, save to temp and share
+      if (kIsWeb) {
+        // On web, trigger download using proper web download method
+        downloadFile(bytes: data, filename: filename);
+      } else if (Platform.isAndroid || Platform.isIOS) {
+        // On mobile, save to temp and share using a different method
+        // Note: Printing.sharePdf doesn't work well for Excel files
         final directory = await getTemporaryDirectory();
         final file = File('${directory.path}/$filename');
         await file.writeAsBytes(data);
-        await Printing.sharePdf(
-          bytes: data,
-          filename: filename,
-        );
-      } else if (kIsWeb) {
-        // On web, trigger download
-        // This would typically use dart:html
-        await Printing.sharePdf(
-          bytes: data,
-          filename: filename,
-        );
+        // For Excel files on mobile, we'd need a different sharing mechanism
+        // For now, just save the file
+        if (kDebugMode) {
+          print('Excel file saved to: ${file.path}');
+        }
       } else {
         // On desktop, save to documents
         final path = await saveToFile(

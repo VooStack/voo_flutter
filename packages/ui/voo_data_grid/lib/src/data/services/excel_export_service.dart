@@ -19,16 +19,24 @@ class ExcelExportService<T> extends ExportService<T> {
   }) async {
     final excel = Excel.createExcel();
 
-    // Remove default sheet and create new one
-    excel.delete('Sheet1');
+    // Create new sheet with desired name
     final sheetName = config.title ?? 'Data Export';
     final sheet = excel[sheetName];
 
-    // Filter visible and non-excluded columns
-    final visibleColumns = columns.where((col) =>
-      col.visible &&
-      !(config.excludeColumns?.contains(col.field) ?? false)
-    ).toList();
+    // Remove default Sheet1 if it exists and it's not our sheet
+    if (sheetName != 'Sheet1' && excel.tables.containsKey('Sheet1')) {
+      excel.delete('Sheet1');
+    }
+
+    // Filter columns based on selection and visibility
+    List<VooDataColumn> columnsToExport;
+    if (config.selectedColumns != null && config.selectedColumns!.isNotEmpty) {
+      columnsToExport = columns
+          .where((col) => config.selectedColumns!.contains(col.field) && col.visible && !(config.excludeColumns?.contains(col.field) ?? false))
+          .toList();
+    } else {
+      columnsToExport = columns.where((col) => col.visible && !(config.excludeColumns?.contains(col.field) ?? false)).toList();
+    }
 
     var currentRow = 0;
 
@@ -36,29 +44,22 @@ class ExcelExportService<T> extends ExportService<T> {
     if (config.title != null) {
       sheet.merge(
         CellIndex.indexByString('A${currentRow + 1}'),
-        CellIndex.indexByString('${_getColumnLetter(visibleColumns.length + (config.showRowNumbers ? 1 : 0) - 1)}${currentRow + 1}'),
+        CellIndex.indexByString('${_getColumnLetter(columnsToExport.length + (config.showRowNumbers ? 1 : 0) - 1)}${currentRow + 1}'),
       );
       final titleCell = sheet.cell(CellIndex.indexByString('A${currentRow + 1}'));
       titleCell.value = TextCellValue(config.title!);
-      titleCell.cellStyle = CellStyle(
-        fontSize: 16,
-        bold: true,
-        horizontalAlign: HorizontalAlign.Center,
-      );
+      titleCell.cellStyle = CellStyle(fontSize: 16, bold: true, horizontalAlign: HorizontalAlign.Center);
       currentRow += 2;
     }
 
     if (config.subtitle != null) {
       sheet.merge(
         CellIndex.indexByString('A${currentRow + 1}'),
-        CellIndex.indexByString('${_getColumnLetter(visibleColumns.length + (config.showRowNumbers ? 1 : 0) - 1)}${currentRow + 1}'),
+        CellIndex.indexByString('${_getColumnLetter(columnsToExport.length + (config.showRowNumbers ? 1 : 0) - 1)}${currentRow + 1}'),
       );
       final subtitleCell = sheet.cell(CellIndex.indexByString('A${currentRow + 1}'));
       subtitleCell.value = TextCellValue(config.subtitle!);
-      subtitleCell.cellStyle = CellStyle(
-        fontSize: 12,
-        horizontalAlign: HorizontalAlign.Center,
-      );
+      subtitleCell.cellStyle = CellStyle(fontSize: 12, horizontalAlign: HorizontalAlign.Center);
       currentRow += 2;
     }
 
@@ -95,7 +96,7 @@ class ExcelExportService<T> extends ExportService<T> {
       colIndex++;
     }
 
-    for (final column in visibleColumns) {
+    for (final column in columnsToExport) {
       final cell = sheet.cell(CellIndex.indexByString('${_getColumnLetter(colIndex)}${currentRow + 1}'));
       cell.value = TextCellValue(column.label);
       cell.cellStyle = _getHeaderStyle(config);
@@ -108,30 +109,85 @@ class ExcelExportService<T> extends ExportService<T> {
     for (var rowIndex = 0; rowIndex < dataToExport.length; rowIndex++) {
       colIndex = 0;
 
+      // Determine if this row should have alternate coloring
+      final shouldApplyAlternateColor = rowIndex % 2 == 1;
+      ExcelColor? rowBackgroundColor;
+      if (shouldApplyAlternateColor) {
+        // Use a light gray for alternating rows
+        rowBackgroundColor = ExcelColor.fromHexString('#F5F5F5');
+      }
+
       if (config.showRowNumbers) {
         final cell = sheet.cell(CellIndex.indexByString('${_getColumnLetter(colIndex)}${currentRow + 1}'));
         cell.value = IntCellValue(rowIndex + 1);
+        if (shouldApplyAlternateColor && rowBackgroundColor != null) {
+          cell.cellStyle = CellStyle(backgroundColorHex: rowBackgroundColor);
+        }
         colIndex++;
       }
 
-      for (final column in visibleColumns) {
+      for (final column in columnsToExport) {
         final value = _getCellValue(dataToExport[rowIndex], column);
         final cell = sheet.cell(CellIndex.indexByString('${_getColumnLetter(colIndex)}${currentRow + 1}'));
         _setCellValue(cell, value, column, config);
+
+        // Apply alternating row colors for better readability
+        // Create new style with background color if needed
+        if (shouldApplyAlternateColor && rowBackgroundColor != null) {
+          // The excel package's CellStyle doesn't support copying styles
+          // So we just set a basic style with background color
+          cell.cellStyle = CellStyle(backgroundColorHex: rowBackgroundColor);
+        }
+
         colIndex++;
       }
       currentRow++;
     }
 
-    // Auto-fit columns (approximate)
-    for (var i = 0; i < colIndex; i++) {
-      sheet.setColumnWidth(i, 15);
+    // Calculate optimal column widths based on content
+    final columnMaxWidths = <int, double>{};
+
+    // Start with header widths
+    colIndex = 0;
+    if (config.showRowNumbers) {
+      columnMaxWidths[colIndex] = 3.0; // Width for row numbers
+      colIndex++;
     }
+
+    for (final column in columnsToExport) {
+      columnMaxWidths[colIndex] = column.label.length * 1.2;
+      colIndex++;
+    }
+
+    // Check data widths
+    for (var rowIndex = 0; rowIndex < dataToExport.length && rowIndex < 100; rowIndex++) {
+      colIndex = 0;
+
+      if (config.showRowNumbers) {
+        final numWidth = (rowIndex + 1).toString().length * 1.5;
+        columnMaxWidths[colIndex] = columnMaxWidths[colIndex]!.clamp(numWidth, 50);
+        colIndex++;
+      }
+
+      for (final column in columnsToExport) {
+        final value = _getCellValue(dataToExport[rowIndex], column);
+        final stringValue = value?.toString() ?? '';
+        final cellWidth = stringValue.length * 1.1;
+
+        if (columnMaxWidths[colIndex] == null || cellWidth > columnMaxWidths[colIndex]!) {
+          columnMaxWidths[colIndex] = cellWidth.clamp(10, 50); // Min 10, Max 50
+        }
+        colIndex++;
+      }
+    }
+
+    // Apply calculated widths
+    columnMaxWidths.forEach(sheet.setColumnWidth);
 
     // Set column widths if specified
     if (config.columnWidths != null) {
-      for (var i = 0; i < visibleColumns.length; i++) {
-        final column = visibleColumns[i];
+      for (var i = 0; i < columnsToExport.length; i++) {
+        final column = columnsToExport[i];
         final width = config.columnWidths![column.field];
         if (width != null) {
           sheet.setColumnWidth(config.showRowNumbers ? i + 1 : i, width / 7);
@@ -144,14 +200,11 @@ class ExcelExportService<T> extends ExportService<T> {
       currentRow++;
       sheet.merge(
         CellIndex.indexByString('A${currentRow + 1}'),
-        CellIndex.indexByString('${_getColumnLetter(visibleColumns.length + (config.showRowNumbers ? 1 : 0) - 1)}${currentRow + 1}'),
+        CellIndex.indexByString('${_getColumnLetter(columnsToExport.length + (config.showRowNumbers ? 1 : 0) - 1)}${currentRow + 1}'),
       );
       final footerCell = sheet.cell(CellIndex.indexByString('A${currentRow + 1}'));
       footerCell.value = TextCellValue(config.footerText!);
-      footerCell.cellStyle = CellStyle(
-        italic: true,
-        horizontalAlign: HorizontalAlign.Center,
-      );
+      footerCell.cellStyle = CellStyle(italic: true, horizontalAlign: HorizontalAlign.Center);
     }
 
     // Convert to bytes
@@ -171,19 +224,47 @@ class ExcelExportService<T> extends ExportService<T> {
   }
 
   CellStyle _getHeaderStyle(ExportConfig config) {
-    final bgColor = config.primaryColor != null
-        ? ExcelColor.fromHexString(_colorToHex(config.primaryColor!))
-        : ExcelColor.blue200;
+    // Use primary color if available, fallback to accent color, then default blue
+    ExcelColor bgColor;
+    if (config.primaryColor != null) {
+      bgColor = ExcelColor.fromHexString(_colorToHex(config.primaryColor!));
+    } else if (config.accentColor != null) {
+      bgColor = ExcelColor.fromHexString(_colorToHex(config.accentColor!));
+    } else {
+      bgColor = ExcelColor.fromHexString('#4A90E2'); // Default blue
+    }
+
+    // Determine text color based on background luminance
+    final textColor = _getContrastingTextColor(config.primaryColor ?? config.accentColor);
 
     return CellStyle(
       bold: true,
       backgroundColorHex: bgColor,
+      fontColorHex: textColor,
       horizontalAlign: HorizontalAlign.Center,
+      verticalAlign: VerticalAlign.Center,
     );
   }
 
-  String _colorToHex(Color color) =>
-      '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+  String _colorToHex(Color color) => '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+
+  /// Get contrasting text color for better readability
+  ExcelColor _getContrastingTextColor(Color? backgroundColor) {
+    if (backgroundColor == null) {
+      return ExcelColor.fromHexString('#000000'); // Default to black
+    }
+
+    // Calculate luminance
+    final argb = backgroundColor.toARGB32();
+    final r = ((argb >> 16) & 0xFF) / 255.0;
+    final g = ((argb >> 8) & 0xFF) / 255.0;
+    final b = (argb & 0xFF) / 255.0;
+
+    final luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+    // Return white for dark backgrounds, black for light backgrounds
+    return luminance > 0.5 ? ExcelColor.fromHexString('#000000') : ExcelColor.fromHexString('#FFFFFF');
+  }
 
   dynamic _getCellValue<R>(R row, VooDataColumn column) {
     // Try to use valueGetter if available
@@ -252,22 +333,14 @@ class ExcelExportService<T> extends ExportService<T> {
   }
 
   @override
-  Future<String> saveToFile({
-    required Uint8List data,
-    required String filename,
-    required ExportFormat format,
-  }) async {
+  Future<String> saveToFile({required Uint8List data, required String filename, required ExportFormat format}) async {
     // This would typically save to device storage
     // Implementation depends on platform (mobile vs web)
     throw UnimplementedError('Save to file not implemented in base service');
   }
 
   @override
-  Future<void> shareOrPrint({
-    required Uint8List data,
-    required String filename,
-    required ExportFormat format,
-  }) async {
+  Future<void> shareOrPrint({required Uint8List data, required String filename, required ExportFormat format}) async {
     // This would typically use share_plus or similar package
     // Implementation depends on platform
     throw UnimplementedError('Share not implemented in base service');

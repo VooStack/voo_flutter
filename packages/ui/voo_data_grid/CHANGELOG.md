@@ -1,3 +1,35 @@
+## 0.7.11
+
+* **Enhanced PDF Export with Multiple Layout Strategies**
+  * Added three PDF layout strategies for different data sizes:
+    - Grid Layout: Traditional table format for small to medium datasets
+    - List Layout: Card-based layout for large datasets with many columns
+    - Compact Layout: Maximum data density for large datasets
+  * Implemented automatic layout selection based on dataset size
+  * Fixed empty cards issue in list PDF layout
+  * Improved column width calculations for better readability
+  * Added theme color support throughout PDF exports
+
+* **Excel Export Improvements**
+  * Fixed double file generation issue on web platforms
+  * Implemented auto-fit column widths based on content
+  * Fixed alternating row colors for better readability
+  * Resolved empty Sheet1 issue when creating named sheets
+  * Added proper web export handler for Excel downloads
+
+* **Column Selection for Exports**
+  * Added column selection capability in export dialog
+  * Implemented "Select All" checkbox for easy column management
+  * Columns now maintain visibility settings during export
+  * Support for selective column export based on user preference
+
+* **Bug Fixes**
+  * Fixed backgroundColorHex undefined parameter error in Excel export
+  * Fixed deprecated API usage (withOpacity replaced with withValues)
+  * Fixed color.value deprecated usage with toARGB32()
+  * Improved empty row detection in PDF list layout
+  * Fixed DecoratedBox usage in export dialog
+
 ## 0.7.10
 
 * **Critical bug fix for TypedVooDataColumn export**

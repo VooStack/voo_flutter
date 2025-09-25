@@ -4,13 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:voo_data_grid/src/data/pdf_layouts/compact_pdf_layout.dart';
+import 'package:voo_data_grid/src/data/pdf_layouts/grid_pdf_layout.dart';
+import 'package:voo_data_grid/src/data/pdf_layouts/list_pdf_layout.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/export_config.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/domain/services/export_service.dart';
+import 'package:voo_data_grid/src/domain/strategies/pdf_layout_strategy.dart';
 
 /// PDF export service implementation
 class PdfExportService<T> extends ExportService<T> {
+  /// Get the appropriate layout strategy based on config
+  PdfLayoutStrategy _getLayoutStrategy(ExportConfig config) {
+    switch (config.pdfLayoutType) {
+      case PdfLayoutType.grid:
+        return GridPdfLayout();
+      case PdfLayoutType.list:
+        return ListPdfLayout();
+      case PdfLayoutType.compact:
+        return CompactPdfLayout();
+      case PdfLayoutType.report:
+        // Report layout not yet implemented, fallback to list
+        return ListPdfLayout();
+    }
+  }
+
   @override
   Future<Uint8List> export({
     required List<T> data,
@@ -28,15 +47,29 @@ class PdfExportService<T> extends ExportService<T> {
 
     final theme = pw.ThemeData.withFont(base: await PdfGoogleFonts.nunitoRegular(), bold: await PdfGoogleFonts.nunitoBold());
 
-    final pageFormat = config.isLandscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;
+    // Get the appropriate layout strategy
+    final layoutStrategy = _getLayoutStrategy(config);
+    final pageFormat = layoutStrategy.getPageFormat(config);
 
-    // Filter visible and non-excluded columns
-    final visibleColumns = columns.where((col) => col.visible && !(config.excludeColumns?.contains(col.field) ?? false)).toList();
+    // Filter columns based on selection and visibility
+    List<VooDataColumn> columnsToExport;
+    if (config.selectedColumns != null && config.selectedColumns!.isNotEmpty) {
+      columnsToExport = columns.where((col) =>
+        config.selectedColumns!.contains(col.field) &&
+        col.visible &&
+        !(config.excludeColumns?.contains(col.field) ?? false)
+      ).toList();
+    } else {
+      columnsToExport = columns.where((col) =>
+        col.visible &&
+        !(config.excludeColumns?.contains(col.field) ?? false)
+      ).toList();
+    }
 
     // Prepare headers
     final headers = <String>[];
     if (config.showRowNumbers) headers.add('#');
-    headers.addAll(visibleColumns.map((col) => col.label));
+    headers.addAll(columnsToExport.map((col) => col.label));
 
     // Prepare rows
     final rows = <List<String>>[];
@@ -46,12 +79,21 @@ class PdfExportService<T> extends ExportService<T> {
       final row = <String>[];
       if (config.showRowNumbers) row.add((i + 1).toString());
 
-      for (final column in visibleColumns) {
+      for (final column in columnsToExport) {
         final value = _getCellValue(dataToExport[i], column);
         row.add(_formatValue(value, column, config));
       }
       rows.add(row);
     }
+
+    // Build content using the layout strategy
+    final content = layoutStrategy.buildContent(
+      headers: headers,
+      rows: rows,
+      columns: columnsToExport,
+      config: config,
+      activeFilters: activeFilters,
+    );
 
     // Build PDF pages
     pdf.addPage(
@@ -61,11 +103,7 @@ class PdfExportService<T> extends ExportService<T> {
         margin: const pw.EdgeInsets.all(20),
         header: (context) => _buildHeader(config, context),
         footer: (context) => _buildFooter(config, context),
-        build: (context) => [
-          if (config.includeFilters && activeFilters != null && activeFilters.isNotEmpty) _buildFilterInfo(activeFilters),
-          pw.SizedBox(height: 20),
-          _buildTable(headers, rows, config),
-        ],
+        build: (context) => content,
       ),
     );
 
@@ -104,8 +142,12 @@ class PdfExportService<T> extends ExportService<T> {
 
     return pw.Container(
       padding: const pw.EdgeInsets.only(bottom: 20),
-      decoration: const pw.BoxDecoration(
-        border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey300)),
+      decoration: pw.BoxDecoration(
+        border: pw.Border(
+          bottom: pw.BorderSide(
+            color: _pdfColorFromFlutter(config.accentColor)?.shade(0.3) ?? PdfColors.grey400,
+          ),
+        ),
       ),
       child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: widgets),
     );
@@ -122,85 +164,17 @@ class PdfExportService<T> extends ExportService<T> {
 
     return pw.Container(
       padding: const pw.EdgeInsets.only(top: 10),
-      decoration: const pw.BoxDecoration(
-        border: pw.Border(top: pw.BorderSide(color: PdfColors.grey300)),
+      decoration: pw.BoxDecoration(
+        border: pw.Border(
+          top: pw.BorderSide(
+            color: _pdfColorFromFlutter(config.accentColor)?.shade(0.3) ?? PdfColors.grey400,
+          ),
+        ),
       ),
       child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: widgets),
     );
   }
 
-  pw.Widget _buildFilterInfo(Map<String, VooDataFilter> filters) {
-    final filterTexts = filters.entries.map((entry) {
-      final filter = entry.value;
-      final operator = filter.operator.name;
-      final value = filter.value?.toString() ?? '';
-      return '${entry.key}: $operator $value';
-    }).toList();
-
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(10),
-      decoration: pw.BoxDecoration(color: PdfColors.grey100, borderRadius: pw.BorderRadius.circular(4)),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text('Active Filters:', style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
-          pw.SizedBox(height: 5),
-          ...filterTexts.map((text) => pw.Text(text, style: const pw.TextStyle(fontSize: 10))),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildTable(List<String> headers, List<List<String>> rows, ExportConfig config) {
-    // Calculate column widths
-    final columnCount = headers.length;
-    final columnWidths = <int, pw.TableColumnWidth>{};
-
-    if (config.showRowNumbers) {
-      columnWidths[0] = const pw.FixedColumnWidth(40);
-    }
-
-    // Distribute remaining width among columns
-    final dataColumnStart = config.showRowNumbers ? 1 : 0;
-    for (var i = dataColumnStart; i < columnCount; i++) {
-      columnWidths[i] = const pw.FlexColumnWidth();
-    }
-
-    return pw.Table(
-      columnWidths: columnWidths,
-      border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-      children: [
-        // Header row
-        pw.TableRow(
-          decoration: pw.BoxDecoration(color: _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue50),
-          children: headers
-              .map(
-                (header) => pw.Container(
-                  padding: const pw.EdgeInsets.all(8),
-                  child: pw.Text(header, style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
-                ),
-              )
-              .toList(),
-        ),
-        // Data rows
-        ...rows.asMap().entries.map((entry) {
-          final index = entry.key;
-          final row = entry.value;
-          return pw.TableRow(
-            decoration: pw.BoxDecoration(color: index % 2 == 0 ? PdfColors.white : PdfColors.grey50),
-            children: row
-                .map(
-                  (cell) => pw.Container(
-                    padding: const pw.EdgeInsets.all(8),
-                    child: pw.Text(cell, style: const pw.TextStyle(fontSize: 9)),
-                  ),
-                )
-                .toList(),
-          );
-        }),
-      ],
-    );
-  }
 
   dynamic _getCellValue<R>(R row, VooDataColumn column) {
     // Try to use valueGetter if available
@@ -265,6 +239,7 @@ class PdfExportService<T> extends ExportService<T> {
     if (color == null) return null;
     return PdfColor.fromInt(color.toARGB32());
   }
+
 
   @override
   Future<String> saveToFile({required Uint8List data, required String filename, required ExportFormat format}) async {

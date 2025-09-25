@@ -47,12 +47,17 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
     _controller = VooDataGridController(
       dataSource: _dataSource,
       columns: [
-        const VooDataColumn(field: 'siteNumber', label: 'Site Number', sortable: true, filterable: true, width: 120),
-        const VooDataColumn(field: 'siteName', label: 'Site Name', sortable: true, filterable: true, width: 200),
-        const VooDataColumn(field: 'clientCompanyName', label: 'Client', sortable: true, filterable: true, width: 200),
-        const VooDataColumn(field: 'orderStatus', label: 'Status', sortable: true, filterable: true, width: 120),
-        const VooDataColumn(field: 'orderDate', label: 'Order Date', sortable: true, filterable: true, width: 150),
-        const VooDataColumn(field: 'orderCost', label: 'Cost', sortable: true, filterable: true, width: 120, textAlign: TextAlign.right),
+        const VooDataColumn(field: 'siteNumber', label: 'Site #', sortable: true, filterable: true, width: 80),
+        const VooDataColumn(field: 'siteName', label: 'Site Name', sortable: true, filterable: true, width: 250),
+        const VooDataColumn(field: 'siteAddress', label: 'Address', sortable: true, filterable: true, width: 200),
+        const VooDataColumn(field: 'clientCompanyName', label: 'Client Company', sortable: true, filterable: true, width: 250),
+        const VooDataColumn(field: 'projectManager', label: 'PM', sortable: true, filterable: true, width: 120),
+        const VooDataColumn(field: 'orderStatus', label: 'Status', sortable: true, filterable: true, width: 100),
+        const VooDataColumn(field: 'priority', label: 'Priority', sortable: true, filterable: true, width: 80),
+        const VooDataColumn(field: 'orderDate', label: 'Order Date', sortable: true, filterable: true, width: 120),
+        const VooDataColumn(field: 'dueDate', label: 'Due Date', sortable: true, filterable: true, width: 120),
+        const VooDataColumn(field: 'orderCost', label: 'Cost', sortable: true, filterable: true, width: 100, textAlign: TextAlign.right),
+        const VooDataColumn(field: 'notes', label: 'Notes', sortable: false, filterable: true, width: 200),
       ],
     );
   }
@@ -63,18 +68,106 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
 
     // Generate mock data based on filters
     final random = Random();
-    final statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Hold'];
-    final clients = ['Tech Solutions Inc', 'Summit Medical Properties', 'Global Logistics Corp', 'Innovation Labs LLC', 'Digital Services Group'];
+    final statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Hold', 'Cancelled', 'Refunded'];
+    final clients = [
+      'Tech Solutions Inc',
+      'Summit Medical Properties',
+      'Global Logistics Corp',
+      'Innovation Labs LLC',
+      'Digital Services Group',
+      'Enterprise Resource Planning Solutions International Corp',
+      'Advanced Manufacturing Systems & Technologies Ltd',
+      'Healthcare Management Consulting Partners',
+      'Financial Advisory Services LLC',
+      'Real Estate Development & Investment Group',
+      'Environmental Solutions & Sustainability Consulting',
+      'Telecommunications Infrastructure Management Inc',
+      'Data Analytics & Business Intelligence Solutions',
+      'Supply Chain Optimization Specialists',
+      'Cloud Computing & Infrastructure Services',
+    ];
 
-    final data = List.generate(20, (index) {
-      final siteNumber = 1000 + random.nextInt(100);
+    final siteNames = [
+      'Main Distribution Center',
+      'Regional Office Complex Building A',
+      'Manufacturing Plant #3',
+      'Research & Development Facility',
+      'Corporate Headquarters',
+      'Warehouse Facility North',
+      'Customer Service Center',
+      'Technical Support Hub',
+      'Data Processing Center',
+      'Quality Assurance Laboratory',
+      'International Operations Center',
+      'Emergency Response Facility',
+      'Training & Development Campus',
+      'Innovation Lab & Testing Facility',
+      'Logistics Hub - East Coast Operations',
+    ];
+
+    final addresses = [
+      '123 Main Street, Boston, MA 02101',
+      '456 Commerce Blvd, Suite 200, New York, NY 10001',
+      '789 Industrial Way, Los Angeles, CA 90001',
+      '321 Technology Drive, Austin, TX 78701',
+      '654 Business Park Lane, Chicago, IL 60601',
+      '987 Corporate Center, Atlanta, GA 30301',
+      '147 Market Street, San Francisco, CA 94102',
+      '258 Innovation Avenue, Seattle, WA 98101',
+      '369 Enterprise Road, Miami, FL 33101',
+      '741 Development Plaza, Denver, CO 80201',
+    ];
+
+    final projectManagers = [
+      'John Smith',
+      'Jane Doe',
+      'Michael Johnson',
+      'Emily Williams',
+      'Robert Brown',
+      'Sarah Davis',
+      'William Miller',
+      'Jennifer Wilson',
+      'David Garcia',
+      'Lisa Anderson',
+    ];
+
+    final priorities = ['Low', 'Medium', 'High', 'Urgent', 'Critical'];
+
+    final notes = [
+      'Standard processing required',
+      'Expedited shipping requested by client',
+      'Requires additional quality checks before shipment',
+      'Special handling instructions: Fragile equipment',
+      'Customer requested delivery confirmation',
+      'Bulk order - coordinate with warehouse team',
+      'Pending approval from management',
+      'Follow-up required with supplier',
+      'Documentation needs to be updated',
+      'Priority customer - handle with care',
+      '',
+      '',
+      '', // Some empty notes for variety
+    ];
+
+    // Generate larger dataset for testing PDF export
+    final dataCount = 500; // Increase to 500 rows for better testing
+    final data = List.generate(dataCount, (index) {
+      final siteNumber = 68000 + index;
+      final orderDate = DateTime.now().subtract(Duration(days: random.nextInt(365)));
+      final dueDate = orderDate.add(Duration(days: 7 + random.nextInt(21)));
+
       return {
         'siteNumber': siteNumber,
-        'siteName': 'Site ${siteNumber % 10 + 1}',
+        'siteName': '${siteNames[random.nextInt(siteNames.length)]} - Unit ${index % 20 + 1}',
+        'siteAddress': addresses[random.nextInt(addresses.length)],
         'clientCompanyName': clients[random.nextInt(clients.length)],
+        'projectManager': projectManagers[random.nextInt(projectManagers.length)],
         'orderStatus': statuses[random.nextInt(statuses.length)],
-        'orderDate': DateTime.now().subtract(Duration(days: random.nextInt(365))).toIso8601String(),
-        'orderCost': (random.nextDouble() * 10000).toStringAsFixed(2),
+        'priority': priorities[random.nextInt(priorities.length)],
+        'orderDate': orderDate.toIso8601String(),
+        'dueDate': dueDate.toIso8601String(),
+        'orderCost': (random.nextDouble() * 50000).toStringAsFixed(2),
+        'notes': notes[random.nextInt(notes.length)],
       };
     });
 
@@ -168,17 +261,22 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
       }
     }
 
-    return {'data': filteredData, 'total': filteredData.length, 'page': body['pageNumber'] ?? 1, 'pageSize': body['pageSize'] ?? 20};
+    return {'data': filteredData, 'total': filteredData.length, 'page': body['pageNumber'] ?? 1, 'pageSize': body['pageSize'] ?? 50};
   }
 
   String _fieldNameToKey(String fieldName) {
     // Convert field names like "Site.Name" to "siteName"
     if (fieldName == 'Name' || fieldName == 'SiteName') return 'siteName';
     if (fieldName == 'SiteNumber') return 'siteNumber';
+    if (fieldName == 'SiteAddress') return 'siteAddress';
     if (fieldName == 'CompanyName') return 'clientCompanyName';
+    if (fieldName == 'ProjectManager') return 'projectManager';
     if (fieldName == 'OrderStatus') return 'orderStatus';
+    if (fieldName == 'Priority') return 'priority';
     if (fieldName == 'OrderDate') return 'orderDate';
+    if (fieldName == 'DueDate') return 'dueDate';
     if (fieldName == 'OrderCost') return 'orderCost';
+    if (fieldName == 'Notes') return 'notes';
     return fieldName;
   }
 
@@ -250,10 +348,15 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                 fields: const [
                   FilterFieldConfig(fieldName: 'Site.SiteNumber', displayName: 'Site Number', type: FilterType.int),
                   FilterFieldConfig(fieldName: 'Site.Name', displayName: 'Site Name', type: FilterType.string),
+                  FilterFieldConfig(fieldName: 'Site.Address', displayName: 'Site Address', type: FilterType.string),
                   FilterFieldConfig(fieldName: 'Client.CompanyName', displayName: 'Client Company', type: FilterType.string),
+                  FilterFieldConfig(fieldName: 'ProjectManager', displayName: 'Project Manager', type: FilterType.string),
                   FilterFieldConfig(fieldName: 'OrderStatus', displayName: 'Order Status', type: FilterType.string),
+                  FilterFieldConfig(fieldName: 'Priority', displayName: 'Priority', type: FilterType.string),
                   FilterFieldConfig(fieldName: 'OrderDate', displayName: 'Order Date', type: FilterType.date),
+                  FilterFieldConfig(fieldName: 'DueDate', displayName: 'Due Date', type: FilterType.date),
                   FilterFieldConfig(fieldName: 'OrderCost', displayName: 'Order Cost', type: FilterType.decimal),
+                  FilterFieldConfig(fieldName: 'Notes', displayName: 'Notes', type: FilterType.string),
                 ],
                 onFilterApplied: (request) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Applied ${request.hasFilters ? "filters" : "no filters"}')));
