@@ -1,3 +1,12 @@
+## 0.7.10
+
+* **Critical bug fix for TypedVooDataColumn export**
+  * Fixed type casting error when exporting grids with TypedVooDataColumn
+  * Resolved "type '(T) => V' is not a subtype of type '(dynamic) => dynamic?'" errors
+  * Improved type handling in PDF and Excel export services to support strongly typed columns
+  * Added comprehensive test suite for TypedVooDataColumn export functionality
+  * Export now handles mixed regular and typed columns gracefully
+
 ## 0.7.9
 
 * **Export functionality enhancements**

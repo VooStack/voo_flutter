@@ -203,12 +203,32 @@ class PdfExportService<T> extends ExportService<T> {
   }
 
   dynamic _getCellValue<R>(R row, VooDataColumn column) {
-    if (column.valueGetter != null) {
-      return column.valueGetter!(row);
+    // Try to use valueGetter if available
+    try {
+      // Access valueGetter through dynamic to avoid type checking issues
+      final dynamicColumn = column as dynamic;
+      if (dynamicColumn.valueGetter != null) {
+        try {
+          // Try to call the getter with the row
+          return dynamicColumn.valueGetter(row);
+        } catch (_) {
+          // If that fails, try with dynamic row
+          try {
+            return dynamicColumn.valueGetter(row as dynamic);
+          } catch (_) {
+            // Continue to fallback methods
+          }
+        }
+      }
+    } catch (_) {
+      // valueGetter access failed, continue with fallbacks
     }
+
+    // Fallback to Map access
     if (row is Map) {
       return row[column.field];
     }
+
     // For other object types, try reflection
     try {
       final mirror = row as dynamic;
