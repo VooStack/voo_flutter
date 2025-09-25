@@ -1,3 +1,7 @@
+## 0.3.47
+
+ - Patch version bump for package maintenance
+
 ## 0.3.46
 
  - **FEAT**: add example modules and run configurations for VooFlutter packages.
