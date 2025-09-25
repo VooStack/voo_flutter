@@ -52,10 +52,7 @@ class VooCustomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final bottomBarColor = isDark
-        ? const Color(0xFF1A1D23) // Dark mode: very dark blue-gray
-        : const Color(0xFF1F2937); // Light mode: professional dark gray
+    final bottomBarColor = theme.colorScheme.surfaceContainer;
 
     return Container(
       height: height ?? 65,
@@ -63,7 +60,7 @@ class VooCustomNavigationBar extends StatelessWidget {
         color: bottomBarColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: theme.colorScheme.shadow.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, -1),
           ),

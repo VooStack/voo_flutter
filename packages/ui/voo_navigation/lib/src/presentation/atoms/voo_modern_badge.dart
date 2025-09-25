@@ -30,7 +30,7 @@ class VooModernBadge extends StatelessWidget {
         width: context.vooSize.badgeMedium,
         height: context.vooSize.badgeMedium,
         decoration: BoxDecoration(
-          color: item.badgeColor ?? Colors.red,
+          color: item.badgeColor ?? theme.colorScheme.error,
           shape: BoxShape.circle,
         ),
       );
@@ -55,7 +55,7 @@ class VooModernBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: isSelected
             ? (item.badgeColor ?? primaryColor)
-            : Colors.white.withValues(alpha: 0.2),
+            : theme.colorScheme.onSurface.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(context.vooRadius.lg),
       ),
       constraints: const BoxConstraints(minWidth: 18),
@@ -63,8 +63,8 @@ class VooModernBadge extends StatelessWidget {
         badgeText,
         style: theme.textTheme.labelSmall?.copyWith(
           color: isSelected
-              ? Colors.white
-              : Colors.white.withValues(alpha: 0.9),
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.onSurface.withValues(alpha: 0.9),
           fontWeight: FontWeight.w600,
           fontSize: context.vooTypography.bodySmall.fontSize,
         ),

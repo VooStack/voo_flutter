@@ -58,9 +58,9 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: isSelected
-                  ? Colors.white.withValues(alpha: 0.12)
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
                   : isHovered
-                      ? Colors.white.withValues(alpha: 0.06)
+                      ? theme.colorScheme.onSurface.withValues(alpha: 0.06)
                       : Colors.transparent,
               borderRadius: BorderRadius.circular(context.vooRadius.md),
             ),
@@ -73,7 +73,7 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? config.selectedItemColor ?? theme.colorScheme.primary
-                        : Colors.white.withValues(alpha: 0.6),
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -87,7 +87,7 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isSelected
                           ? config.selectedItemColor ?? theme.colorScheme.primary
-                          : Colors.white.withValues(alpha: 0.9),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.9),
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                     ),
                     overflow: TextOverflow.ellipsis,

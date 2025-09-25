@@ -65,7 +65,7 @@ class VooDrawerExpandableSection extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isHovered
-                    ? Colors.white.withValues(alpha: 0.05)
+                    ? theme.colorScheme.onSurface.withValues(alpha: 0.05)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(context.vooRadius.lg),
               ),
@@ -75,7 +75,7 @@ class VooDrawerExpandableSection extends StatelessWidget {
                     isExpanded
                         ? item.selectedIcon ?? item.icon
                         : item.icon,
-                    color: Colors.white,
+                    color: theme.colorScheme.onSurface,
                     size: context.vooSize.checkboxSize,
                   ),
                   SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
@@ -83,7 +83,7 @@ class VooDrawerExpandableSection extends StatelessWidget {
                     child: Text(
                       item.label,
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.white,
+                        color: theme.colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -93,7 +93,7 @@ class VooDrawerExpandableSection extends StatelessWidget {
                     turns: isExpanded ? 0.25 : 0,
                     child: Icon(
                       Icons.chevron_right,
-                      color: Colors.white,
+                      color: theme.colorScheme.onSurface,
                       size: context.vooSize.checkboxSize,
                     ),
                   ),

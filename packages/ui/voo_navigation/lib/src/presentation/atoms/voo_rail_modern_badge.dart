@@ -34,7 +34,7 @@ class VooRailModernBadge extends StatelessWidget {
         width: context.vooSize.badgeMedium,
         height: context.vooSize.badgeMedium,
         decoration: BoxDecoration(
-          color: item.badgeColor ?? Colors.red,
+          color: item.badgeColor ?? theme.colorScheme.error,
           shape: BoxShape.circle,
         ),
       );
@@ -56,7 +56,7 @@ class VooRailModernBadge extends StatelessWidget {
       child: Text(
         badgeText,
         style: theme.textTheme.labelSmall?.copyWith(
-          color: Colors.white,
+          color: theme.colorScheme.onError,
           fontWeight: FontWeight.w600,
           fontSize: extended ? 11 : 10,
         ),

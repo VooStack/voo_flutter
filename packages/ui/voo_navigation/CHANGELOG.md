@@ -1,3 +1,13 @@
+## 0.0.12
+
+### Fixed
+- **Theme Compliance**: Replaced all hardcoded colors with Theme.of(context) throughout the package
+  - Updated all atom components to use theme colors (voo_modern_icon, voo_modern_badge, voo_rail_modern_badge)
+  - Fixed molecule components to properly use theme.colorScheme colors
+  - Updated organism components (voo_custom_navigation_bar, voo_scaffold_builder) to use theme colors
+  - Removed hardcoded hex colors in favor of theme.colorScheme.surfaceContainer
+  - Ensured proper color usage: onSurface, onPrimary, error, shadow based on context
+
 ## 0.0.11
 
 ### Fixed

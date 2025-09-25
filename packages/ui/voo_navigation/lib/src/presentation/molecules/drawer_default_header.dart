@@ -24,8 +24,8 @@ class VooDrawerDefaultHeader extends StatelessWidget {
               Container(
                 width: context.vooSize.avatarMedium,
                 height: context.vooSize.avatarMedium,
-                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(context.vooRadius.md)),
-                child: Icon(Icons.dashboard, color: Colors.white, size: context.vooSize.checkboxSize + 2),
+                decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(context.vooRadius.md)),
+                child: Icon(Icons.dashboard, color: theme.colorScheme.onSurface, size: context.vooSize.checkboxSize + 2),
               ),
               SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
               Expanded(
@@ -34,9 +34,9 @@ class VooDrawerDefaultHeader extends StatelessWidget {
                   children: [
                     Text(
                       (config.appBarTitle != null && config.appBarTitle is Text) ? ((config.appBarTitle! as Text).data ?? 'Navigation') : 'Navigation',
-                      style: theme.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                      style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurface, fontWeight: FontWeight.w600),
                     ),
-                    if (config.drawerHeader == null) Text('Welcome back', style: theme.textTheme.bodySmall?.copyWith(color: Colors.white.withValues(alpha: 0.8))),
+                    if (config.drawerHeader == null) Text('Welcome back', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.8))),
                   ],
                 ),
               ),

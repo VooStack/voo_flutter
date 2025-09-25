@@ -30,7 +30,7 @@ class VooDrawerModernBadge extends StatelessWidget {
         width: context.vooSize.badgeMedium,
         height: context.vooSize.badgeMedium,
         decoration: BoxDecoration(
-          color: item.badgeColor ?? Colors.red,
+          color: item.badgeColor ?? theme.colorScheme.error,
           shape: BoxShape.circle,
         ),
       );
@@ -46,15 +46,15 @@ class VooDrawerModernBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: isSelected
             ? (item.badgeColor ?? theme.colorScheme.primary)
-            : Colors.white.withValues(alpha: 0.2),
+            : theme.colorScheme.onSurface.withValues(alpha: 0.2),
         borderRadius: context.vooRadius.card,
       ),
       child: Text(
         badgeText,
         style: theme.textTheme.labelSmall?.copyWith(
           color: isSelected
-              ? Colors.white
-              : Colors.white.withValues(alpha: 0.9),
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.onSurface.withValues(alpha: 0.9),
           fontWeight: FontWeight.w600,
         ),
       ),

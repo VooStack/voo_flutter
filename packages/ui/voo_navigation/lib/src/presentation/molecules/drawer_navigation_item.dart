@@ -57,7 +57,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
               color: isSelected
                   ? theme.colorScheme.primary.withValues(alpha: 0.12)
                   : isHovered
-                      ? Colors.white.withValues(alpha: 0.05)
+                      ? theme.colorScheme.onSurface.withValues(alpha: 0.05)
                       : Colors.transparent,
               border: isSelected
                   ? Border.all(
@@ -69,7 +69,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
+                        color: theme.colorScheme.shadow.withValues(alpha: 0.06),
                         blurRadius: 3,
                         offset: const Offset(0, 1),
                       )
@@ -86,7 +86,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
                     key: ValueKey(isSelected),
                     color: isSelected
                         ? theme.colorScheme.primary
-                        : Colors.white.withValues(alpha: 0.8),
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.8),
                     size: context.vooSize.checkboxSize,
                   ),
                 ),
@@ -100,7 +100,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isSelected
                           ? theme.colorScheme.primary
-                          : Colors.white.withValues(alpha: 0.85),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.85),
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                       fontSize: context.vooTypography.bodyMedium.fontSize,
                     ),

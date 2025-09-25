@@ -41,6 +41,7 @@ class VooDrawerNavigationItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final visibleItems = config.visibleItems;
     final widgets = <Widget>[];
 
@@ -53,7 +54,7 @@ class VooDrawerNavigationItems extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: context.vooSpacing.sm),
             child: Divider(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
               height: context.vooSize.borderThin,
             ),
           ),

@@ -32,7 +32,7 @@ class VooModernIcon extends StatelessWidget {
         key: ValueKey(isSelected),
         color: isSelected
             ? theme.colorScheme.primary
-            : Colors.white.withValues(alpha: 0.8),
+            : theme.colorScheme.onSurface.withValues(alpha: 0.8),
         size: isSelected ? 22 : 20,
       ),
     );

@@ -117,7 +117,7 @@ class VooCustomNavigationItem extends StatelessWidget {
                 style: theme.textTheme.labelSmall!.copyWith(
                   color: isSelected
                       ? theme.colorScheme.primary
-                      : Colors.white.withValues(alpha: 0.85),
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.85),
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   fontSize: context.vooTypography.bodySmall.fontSize,
                 ),

@@ -137,7 +137,7 @@ class VooScaffoldBuilder extends StatelessWidget {
     // Wrap in card if requested
     if (useBodyCard && navigationType != VooNavigationType.bottomNavigation) {
       final tokens = context.vooTokens;
-      final cardColor = bodyCardColor ?? (theme.brightness == Brightness.light ? Colors.white : theme.colorScheme.surface);
+      final cardColor = bodyCardColor ?? theme.colorScheme.surface;
       final borderRadius = bodyCardBorderRadius ?? tokens.radius.card;
 
       processedBody = Material(
