@@ -16,10 +16,7 @@ class MyApp extends StatelessWidget {
       data: VooDesignSystemData.defaultSystem,
       child: MaterialApp(
         title: 'VooDataGrid Advanced Filtering Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), useMaterial3: true),
         home: const DataGridExamplePage(),
       ),
     );
@@ -44,81 +41,30 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
     super.initState();
 
     // Initialize data source with mock API
-    _dataSource = AdvancedRemoteDataSource(
-      apiEndpoint: '/api/orders',
-      httpClient: _mockHttpClient,
-      useAdvancedFilters: true,
-    );
+    _dataSource = AdvancedRemoteDataSource(apiEndpoint: '/api/orders', httpClient: _mockHttpClient, useAdvancedFilters: true);
 
     // Initialize controller with columns
     _controller = VooDataGridController(
       dataSource: _dataSource,
       columns: [
-        const VooDataColumn(
-          field: 'siteNumber',
-          label: 'Site Number',
-          sortable: true,
-          filterable: true,
-          width: 120,
-        ),
-        const VooDataColumn(
-          field: 'siteName',
-          label: 'Site Name',
-          sortable: true,
-          filterable: true,
-          width: 200,
-        ),
-        const VooDataColumn(
-          field: 'clientCompanyName',
-          label: 'Client',
-          sortable: true,
-          filterable: true,
-          width: 200,
-        ),
-        const VooDataColumn(
-          field: 'orderStatus',
-          label: 'Status',
-          sortable: true,
-          filterable: true,
-          width: 120,
-        ),
-        const VooDataColumn(
-          field: 'orderDate',
-          label: 'Order Date',
-          sortable: true,
-          filterable: true,
-          width: 150,
-        ),
-        const VooDataColumn(
-          field: 'orderCost',
-          label: 'Cost',
-          sortable: true,
-          filterable: true,
-          width: 120,
-          textAlign: TextAlign.right,
-        ),
+        const VooDataColumn(field: 'siteNumber', label: 'Site Number', sortable: true, filterable: true, width: 120),
+        const VooDataColumn(field: 'siteName', label: 'Site Name', sortable: true, filterable: true, width: 200),
+        const VooDataColumn(field: 'clientCompanyName', label: 'Client', sortable: true, filterable: true, width: 200),
+        const VooDataColumn(field: 'orderStatus', label: 'Status', sortable: true, filterable: true, width: 120),
+        const VooDataColumn(field: 'orderDate', label: 'Order Date', sortable: true, filterable: true, width: 150),
+        const VooDataColumn(field: 'orderCost', label: 'Cost', sortable: true, filterable: true, width: 120, textAlign: TextAlign.right),
       ],
     );
   }
 
   // Mock HTTP client for demonstration
-  Future<Map<String, dynamic>> _mockHttpClient(
-    String url,
-    Map<String, dynamic> body,
-    Map<String, String>? headers,
-  ) async {
+  Future<Map<String, dynamic>> _mockHttpClient(String url, Map<String, dynamic> body, Map<String, String>? headers) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // Generate mock data based on filters
     final random = Random();
     final statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Hold'];
-    final clients = [
-      'Tech Solutions Inc',
-      'Summit Medical Properties',
-      'Global Logistics Corp',
-      'Innovation Labs LLC',
-      'Digital Services Group',
-    ];
+    final clients = ['Tech Solutions Inc', 'Summit Medical Properties', 'Global Logistics Corp', 'Innovation Labs LLC', 'Digital Services Group'];
 
     final data = List.generate(20, (index) {
       final siteNumber = 1000 + random.nextInt(100);
@@ -127,9 +73,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
         'siteName': 'Site ${siteNumber % 10 + 1}',
         'clientCompanyName': clients[random.nextInt(clients.length)],
         'orderStatus': statuses[random.nextInt(statuses.length)],
-        'orderDate': DateTime.now()
-            .subtract(Duration(days: random.nextInt(365)))
-            .toIso8601String(),
+        'orderDate': DateTime.now().subtract(Duration(days: random.nextInt(365))).toIso8601String(),
         'orderCost': (random.nextDouble() * 10000).toStringAsFixed(2),
       };
     });
@@ -146,8 +90,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
         final operator = filter['operator'];
 
         filteredData = filteredData.where((item) {
-          final itemValue =
-              item[_fieldNameToKey(field)]?.toString().toLowerCase() ?? '';
+          final itemValue = item[_fieldNameToKey(field)]?.toString().toLowerCase() ?? '';
 
           switch (operator) {
             case 'Contains':
@@ -225,12 +168,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
       }
     }
 
-    return {
-      'data': filteredData,
-      'total': filteredData.length,
-      'page': body['pageNumber'] ?? 1,
-      'pageSize': body['pageSize'] ?? 20,
-    };
+    return {'data': filteredData, 'total': filteredData.length, 'page': body['pageNumber'] ?? 1, 'pageSize': body['pageSize'] ?? 20};
   }
 
   String _fieldNameToKey(String fieldName) {
@@ -249,10 +187,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
     final design = context.vooDesign;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('VooDataGrid Advanced Filtering'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      appBar: AppBar(title: const Text('VooDataGrid Advanced Filtering'), backgroundColor: Theme.of(context).colorScheme.inversePrimary),
       body: Padding(
         padding: EdgeInsets.all(design.spacingMd),
         child: Column(
@@ -264,10 +199,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Demo Controls',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    Text('Demo Controls', style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(height: design.spacingSm),
                     Wrap(
                       spacing: design.spacingSm,
@@ -316,45 +248,15 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
               AdvancedFilterWidget(
                 dataSource: _dataSource,
                 fields: const [
-                  FilterFieldConfig(
-                    fieldName: 'Site.SiteNumber',
-                    displayName: 'Site Number',
-                    type: FilterType.int,
-                  ),
-                  FilterFieldConfig(
-                    fieldName: 'Site.Name',
-                    displayName: 'Site Name',
-                    type: FilterType.string,
-                  ),
-                  FilterFieldConfig(
-                    fieldName: 'Client.CompanyName',
-                    displayName: 'Client Company',
-                    type: FilterType.string,
-                  ),
-                  FilterFieldConfig(
-                    fieldName: 'OrderStatus',
-                    displayName: 'Order Status',
-                    type: FilterType.string,
-                  ),
-                  FilterFieldConfig(
-                    fieldName: 'OrderDate',
-                    displayName: 'Order Date',
-                    type: FilterType.date,
-                  ),
-                  FilterFieldConfig(
-                    fieldName: 'OrderCost',
-                    displayName: 'Order Cost',
-                    type: FilterType.decimal,
-                  ),
+                  FilterFieldConfig(fieldName: 'Site.SiteNumber', displayName: 'Site Number', type: FilterType.int),
+                  FilterFieldConfig(fieldName: 'Site.Name', displayName: 'Site Name', type: FilterType.string),
+                  FilterFieldConfig(fieldName: 'Client.CompanyName', displayName: 'Client Company', type: FilterType.string),
+                  FilterFieldConfig(fieldName: 'OrderStatus', displayName: 'Order Status', type: FilterType.string),
+                  FilterFieldConfig(fieldName: 'OrderDate', displayName: 'Order Date', type: FilterType.date),
+                  FilterFieldConfig(fieldName: 'OrderCost', displayName: 'Order Cost', type: FilterType.decimal),
                 ],
                 onFilterApplied: (request) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Applied ${request.hasFilters ? "filters" : "no filters"}',
-                      ),
-                    ),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Applied ${request.hasFilters ? "filters" : "no filters"}')));
                 },
               ),
               SizedBox(height: design.spacingMd),
@@ -363,6 +265,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
             // Data grid
             Expanded(
               child: VooDataGrid(
+                showExportButton: true,
                 controller: _controller,
                 showToolbar: true,
                 showPagination: true,
@@ -373,50 +276,35 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                     label: 'Pending',
                     icon: Icons.pending_outlined,
                     count: 12,
-                    filter: const VooDataFilter(
-                      operator: VooFilterOperator.equals,
-                      value: 'Pending',
-                    ),
+                    filter: const VooDataFilter(operator: VooFilterOperator.equals, value: 'Pending'),
                   ),
                   PrimaryFilter(
                     field: 'orderStatus',
                     label: 'Processing',
                     icon: Icons.settings,
                     count: 5,
-                    filter: const VooDataFilter(
-                      operator: VooFilterOperator.equals,
-                      value: 'Processing',
-                    ),
+                    filter: const VooDataFilter(operator: VooFilterOperator.equals, value: 'Processing'),
                   ),
                   PrimaryFilter(
                     field: 'orderStatus',
                     label: 'Shipped',
                     icon: Icons.local_shipping,
                     count: 23,
-                    filter: const VooDataFilter(
-                      operator: VooFilterOperator.equals,
-                      value: 'Shipped',
-                    ),
+                    filter: const VooDataFilter(operator: VooFilterOperator.equals, value: 'Shipped'),
                   ),
                   PrimaryFilter(
                     field: 'orderStatus',
                     label: 'Delivered',
                     icon: Icons.check_circle,
                     count: 45,
-                    filter: const VooDataFilter(
-                      operator: VooFilterOperator.equals,
-                      value: 'Delivered',
-                    ),
+                    filter: const VooDataFilter(operator: VooFilterOperator.equals, value: 'Delivered'),
                   ),
                   PrimaryFilter(
                     field: 'orderStatus',
                     label: 'On Hold',
                     icon: Icons.pause_circle,
                     count: 3,
-                    filter: const VooDataFilter(
-                      operator: VooFilterOperator.equals,
-                      value: 'Hold',
-                    ),
+                    filter: const VooDataFilter(operator: VooFilterOperator.equals, value: 'Hold'),
                   ),
                 ],
                 selectedPrimaryFilter: _selectedPrimaryFilter,
@@ -429,17 +317,9 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
                   _dataSource.applyFilter(field, filter);
                 },
                 theme: VooDataGridTheme.fromContext(context),
-                emptyStateWidget: const VooEmptyState(
-                  icon: Icons.table_rows_outlined,
-                  title: 'No Data',
-                  message: 'Apply filters to see results',
-                ),
+                emptyStateWidget: const VooEmptyState(icon: Icons.table_rows_outlined, title: 'No Data', message: 'Apply filters to see results'),
                 onRowTap: (row) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Tapped: Site ${row['siteNumber']}'),
-                    ),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tapped: Site ${row['siteNumber']}')));
                 },
               ),
             ),
@@ -457,11 +337,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
           fieldName: 'Site.SiteNumber',
           value: 1006,
           operator: 'GreaterThan',
-          secondaryFilter: const SecondaryFilter(
-            logic: FilterLogic.and,
-            value: 1011,
-            operator: 'LessThan',
-          ),
+          secondaryFilter: const SecondaryFilter(logic: FilterLogic.and, value: 1011, operator: 'LessThan'),
         ),
       ],
       pageNumber: 1,
@@ -469,9 +345,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
     );
 
     _dataSource.setAdvancedFilterRequest(request);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Applied: Site Number > 1006 AND < 1011')),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Applied: Site Number > 1006 AND < 1011')));
   }
 
   void _applyExampleFilter2() {
@@ -482,11 +356,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
           fieldName: 'Site.Name',
           value: 'Tech',
           operator: 'Contains',
-          secondaryFilter: const SecondaryFilter(
-            logic: FilterLogic.and,
-            value: 'Park',
-            operator: 'NotContains',
-          ),
+          secondaryFilter: const SecondaryFilter(logic: FilterLogic.and, value: 'Park', operator: 'NotContains'),
         ),
       ],
       pageNumber: 1,
@@ -494,11 +364,7 @@ class _DataGridExamplePageState extends State<DataGridExamplePage> {
     );
 
     _dataSource.setAdvancedFilterRequest(request);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Applied: Site Name contains "Tech" AND not "Park"'),
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Applied: Site Name contains "Tech" AND not "Park"')));
   }
 
   @override

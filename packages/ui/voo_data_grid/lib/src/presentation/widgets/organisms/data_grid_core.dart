@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/data_grid_content_section.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/data_grid_filter_chips_section.dart';
@@ -84,6 +86,18 @@ class DataGridCore<T> extends StatefulWidget {
   /// Callback for refresh action
   final VoidCallback? onRefresh;
 
+  /// Whether to show export button
+  final bool showExportButton;
+
+  /// Export configuration
+  final ExportConfig? exportConfig;
+
+  /// Company logo for PDF export
+  final Uint8List? companyLogo;
+
+  /// Callback when export completes
+  final void Function(Uint8List data, String filename)? onExportComplete;
+
   const DataGridCore({
     super.key,
     required this.controller,
@@ -110,6 +124,10 @@ class DataGridCore<T> extends StatefulWidget {
     this.showPrimaryFilters = false,
     this.combineFiltersAndPrimaryFilters = true,
     this.onRefresh,
+    this.showExportButton = false,
+    this.exportConfig,
+    this.companyLogo,
+    this.onExportComplete,
   });
 
   @override
@@ -141,6 +159,39 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
   }
 
   bool _isMobile(double width) => width < VooDataGridBreakpoints.mobile;
+
+  List<Widget>? _buildToolbarActions() {
+    final actions = <Widget>[];
+
+    // Add export button if enabled
+    if (widget.showExportButton) {
+      actions.add(
+        IconButton(
+          icon: const Icon(Icons.download),
+          tooltip: 'Export data',
+          onPressed: () => _showExportDialog(context),
+        ),
+      );
+    }
+
+    // Add any additional custom actions
+    if (widget.toolbarActions != null) {
+      actions.addAll(widget.toolbarActions!);
+    }
+
+    return actions.isEmpty ? null : actions;
+  }
+
+  void _showExportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => ExportDialog<T>(
+        controller: widget.controller,
+        initialConfig: widget.exportConfig,
+        companyLogo: widget.companyLogo,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +240,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
                         displayMode: _effectiveDisplayMode,
                         onDisplayModeChanged: _isMobile(constraints.maxWidth) ? (mode) => setState(() => _userSelectedMode = mode) : null,
                         showViewModeToggle: _isMobile(constraints.maxWidth) && _effectiveDisplayMode == VooDataGridDisplayMode.table,
-                        additionalActions: widget.toolbarActions,
+                        additionalActions: _buildToolbarActions(),
                         backgroundColor: _theme.headerBackgroundColor,
                         borderColor: _theme.borderColor,
                         isMobile: _isMobile(constraints.maxWidth),

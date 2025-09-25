@@ -9,9 +9,14 @@ export 'src/data/datasources/voo_local_data_source.dart'; // Local data source i
 export 'src/data/models/advanced_filters.dart';
 export 'src/data/models/data_grid_constraints.dart';
 export 'src/data/models/filter_entry.dart';
+// Data Layer - Services
+export 'src/data/services/data_grid_export_service.dart';
+export 'src/data/services/excel_export_service.dart';
+export 'src/data/services/pdf_export_service.dart';
 // Domain Layer - Entities
 export 'src/domain/entities/data_grid_column.dart';
 export 'src/domain/entities/data_grid_types.dart';
+export 'src/domain/entities/export_config.dart';
 export 'src/domain/entities/filter_field_config.dart';
 export 'src/domain/entities/filter_type_extensions.dart';
 export 'src/domain/entities/typed_data_column.dart';
@@ -27,15 +32,19 @@ export 'src/domain/entities/voo_filter_operator.dart';
 export 'src/domain/entities/voo_filter_option.dart';
 export 'src/domain/entities/voo_filter_widget_type.dart';
 export 'src/domain/entities/voo_sort_direction.dart';
+// Domain Layer - Services
+export 'src/domain/services/export_service.dart';
 // Presentation Layer
 export 'src/presentation/controllers/data_grid_controller.dart';
 export 'src/presentation/controllers/voo_data_grid_controller.dart' show VooDataGridStateController; // For Provider users
+export 'src/presentation/widgets/atoms/export_button.dart';
 export 'src/presentation/widgets/atoms/primary_filter_button.dart';
 export 'src/presentation/widgets/data_grid.dart';
 export 'src/presentation/widgets/data_grid_filter_row.dart';
 export 'src/presentation/widgets/data_grid_header.dart';
 export 'src/presentation/widgets/data_grid_pagination.dart';
 export 'src/presentation/widgets/data_grid_row.dart';
+export 'src/presentation/widgets/molecules/export_dialog.dart';
 export 'src/presentation/widgets/molecules/primary_filter.dart';
 export 'src/presentation/widgets/molecules/primary_filters_bar.dart';
 export 'src/presentation/widgets/organisms/advanced_filter_widget.dart';

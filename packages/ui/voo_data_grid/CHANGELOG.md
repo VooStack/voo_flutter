@@ -1,3 +1,25 @@
+## 0.7.8
+
+* **Export to PDF and Excel Functionality**
+  * Added comprehensive export capabilities for data grid content
+  * PDF export with company branding and logo support
+  * Excel export with formatted spreadsheets and column styling
+  * New ExportButton widget with format selection dropdown
+  * Advanced ExportDialog for configuring export options
+  * Export configuration entity with extensive customization:
+    - Company logo and branding support
+    - Title, subtitle, and company information
+    - Row numbering and timestamp inclusion
+    - Filter summary and metadata
+    - Custom header/footer text
+    - Page orientation control (portrait/landscape)
+    - Maximum row limits
+  * Export service architecture following clean architecture patterns
+  * Comprehensive test coverage with 36 tests for export services
+  * Support for custom cell formatters during export
+  * Automatic filename generation with timestamps
+  * Integration with printing and sharing capabilities
+
 ## 0.7.7
 
  - **FEAT**: add example modules and run configurations for VooFlutter packages.

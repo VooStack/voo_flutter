@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/organisms/data_grid_core.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
@@ -85,6 +87,18 @@ class VooDataGrid<T> extends StatelessWidget {
   /// Callback for refresh action
   final VoidCallback? onRefresh;
 
+  /// Whether to show export button
+  final bool showExportButton;
+
+  /// Export configuration
+  final ExportConfig? exportConfig;
+
+  /// Company logo for PDF export
+  final Uint8List? companyLogo;
+
+  /// Callback when export completes
+  final void Function(Uint8List data, String filename)? onExportComplete;
+
   const VooDataGrid({
     super.key,
     required this.controller,
@@ -111,6 +125,10 @@ class VooDataGrid<T> extends StatelessWidget {
     this.showPrimaryFilters = false,
     this.combineFiltersAndPrimaryFilters = true,
     this.onRefresh,
+    this.showExportButton = false,
+    this.exportConfig,
+    this.companyLogo,
+    this.onExportComplete,
   });
 
   @override
@@ -139,5 +157,9 @@ class VooDataGrid<T> extends StatelessWidget {
     showPrimaryFilters: showPrimaryFilters,
     combineFiltersAndPrimaryFilters: combineFiltersAndPrimaryFilters,
     onRefresh: onRefresh,
+    showExportButton: showExportButton,
+    exportConfig: exportConfig,
+    companyLogo: companyLogo,
+    onExportComplete: onExportComplete,
   );
 }
