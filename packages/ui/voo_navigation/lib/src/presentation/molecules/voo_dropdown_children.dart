@@ -44,7 +44,13 @@ class VooDropdownChildren extends StatelessWidget {
       final isSelected = child.id == selectedId;
 
       if (showDividers && i > 0) {
-        children.add(Divider(height: context.vooSize.borderThin, thickness: 0.5, indent: 48));
+        children.add(
+          Divider(
+            height: context.vooSize.borderThin,
+            thickness: 0.5,
+            indent: 48,
+          ),
+        );
       }
 
       children.add(

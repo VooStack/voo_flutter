@@ -86,9 +86,7 @@ class VooMobileScaffold extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: showAppBar
-          ? (appBar ?? const VooAdaptiveAppBar())
-          : null,
+      appBar: showAppBar ? (appBar ?? const VooAdaptiveAppBar()) : null,
       body: body,
       bottomNavigationBar: VooAdaptiveBottomNavigation(
         config: config,

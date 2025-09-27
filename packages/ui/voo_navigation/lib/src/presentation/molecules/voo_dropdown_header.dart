@@ -52,7 +52,12 @@ class VooDropdownHeader extends StatelessWidget {
       onTap: item.isEnabled ? onTap : null,
       borderRadius: context.vooTokens.radius.button,
       child: Padding(
-        padding: tilePadding ?? EdgeInsets.symmetric(horizontal: context.vooSpacing.md, vertical: context.vooSpacing.sm + context.vooSpacing.xs),
+        padding:
+            tilePadding ??
+            EdgeInsets.symmetric(
+              horizontal: context.vooSpacing.md,
+              vertical: context.vooSpacing.sm + context.vooSpacing.xs,
+            ),
         child: Row(
           children: [
             // Icon
@@ -62,8 +67,12 @@ class VooDropdownHeader extends StatelessWidget {
                 isExpanded ? item.effectiveSelectedIcon : item.icon,
                 key: ValueKey('${item.id}_icon_$isExpanded'),
                 color: isHighlighted
-                    ? (item.selectedIconColor ?? config.selectedItemColor ?? colorScheme.primary)
-                    : (item.iconColor ?? config.unselectedItemColor ?? colorScheme.onSurfaceVariant),
+                    ? (item.selectedIconColor ??
+                          config.selectedItemColor ??
+                          colorScheme.primary)
+                    : (item.iconColor ??
+                          config.unselectedItemColor ??
+                          colorScheme.onSurfaceVariant),
               ),
             ),
 
@@ -74,20 +83,42 @@ class VooDropdownHeader extends StatelessWidget {
               child: AnimatedDefaultTextStyle(
                 duration: context.vooAnimation.durationFast,
                 style: isHighlighted
-                    ? (item.selectedLabelStyle ?? theme.textTheme.bodyLarge!.copyWith(color: config.selectedItemColor ?? colorScheme.primary, fontWeight: FontWeight.w600))
-                    : (item.labelStyle ?? theme.textTheme.bodyLarge!.copyWith(color: config.unselectedItemColor ?? colorScheme.onSurfaceVariant)),
+                    ? (item.selectedLabelStyle ??
+                          theme.textTheme.bodyLarge!.copyWith(
+                            color:
+                                config.selectedItemColor ?? colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ))
+                    : (item.labelStyle ??
+                          theme.textTheme.bodyLarge!.copyWith(
+                            color:
+                                config.unselectedItemColor ??
+                                colorScheme.onSurfaceVariant,
+                          )),
                 child: Text(item.label, overflow: TextOverflow.ellipsis),
               ),
             ),
 
             // Badge if present
-            if (item.hasBadge) ...[SizedBox(width: context.vooSpacing.sm), VooNavigationBadge(item: item, config: config, size: context.vooSize.iconXSmall, animate: config.enableAnimations)],
+            if (item.hasBadge) ...[
+              SizedBox(width: context.vooSpacing.sm),
+              VooNavigationBadge(
+                item: item,
+                config: config,
+                size: context.vooSize.iconXSmall,
+                animate: config.enableAnimations,
+              ),
+            ],
 
             // Expand icon
             SizedBox(width: context.vooSpacing.sm),
             RotationTransition(
               turns: rotationAnimation,
-              child: Icon(Icons.expand_more, color: colorScheme.onSurfaceVariant, size: context.vooSize.checkboxSize),
+              child: Icon(
+                Icons.expand_more,
+                color: colorScheme.onSurfaceVariant,
+                size: context.vooSize.checkboxSize,
+              ),
             ),
           ],
         ),

@@ -72,13 +72,13 @@ class VooDrawerExpandableSection extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    isExpanded
-                        ? item.selectedIcon ?? item.icon
-                        : item.icon,
+                    isExpanded ? item.selectedIcon ?? item.icon : item.icon,
                     color: theme.colorScheme.onSurface,
                     size: context.vooSize.checkboxSize,
                   ),
-                  SizedBox(width: context.vooSpacing.sm + context.vooSpacing.xs),
+                  SizedBox(
+                    width: context.vooSpacing.sm + context.vooSpacing.xs,
+                  ),
                   Expanded(
                     child: Text(
                       item.label,
@@ -108,16 +108,19 @@ class VooDrawerExpandableSection extends StatelessWidget {
           SizeTransition(
             sizeFactor: expansionAnimation!,
             child: Column(
-              children: item.children!.map((child) =>
-                VooDrawerChildNavigationItem(
-                  item: child,
-                  config: config,
-                  selectedId: selectedId,
-                  onItemTap: onItemTap,
-                  isHovered: hoveredItems[child.id] == true,
-                  onHoverChanged: (isHovered) => onHoverChanged(child.id, isHovered),
-                ),
-              ).toList(),
+              children: item.children!
+                  .map(
+                    (child) => VooDrawerChildNavigationItem(
+                      item: child,
+                      config: config,
+                      selectedId: selectedId,
+                      onItemTap: onItemTap,
+                      isHovered: hoveredItems[child.id] == true,
+                      onHoverChanged: (isHovered) =>
+                          onHoverChanged(child.id, isHovered),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
       ],

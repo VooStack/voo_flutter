@@ -16,22 +16,22 @@ class VooLogger {
 
   static LoggingConfig get config => instance._config ?? const LoggingConfig();
 
+  static Future<void> initialize({String? appName, String? appVersion, String? userId, LoggingConfig? config}) async {
+    instance._config = config ?? const LoggingConfig();
 
-  static Future<void> initialize({
-    String? appName,
-    String? appVersion,
-    String? userId,
-    LogLevel minimumLevel = LogLevel.verbose,
-    LoggingConfig? config,
-  }) async {
     if (instance._initialized) {
-      // If already initialized, just update the config
-      instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel);
+      // If already initialized, update the repository with new config
+      await instance._repository.initialize(
+        appName: appName,
+        appVersion: appVersion,
+        userId: userId,
+        minimumLevel: instance._config!.minimumLevel,
+        config: instance._config,
+      );
       return;
     }
 
     instance._initialized = true;
-    instance._config = config ?? LoggingConfig(minimumLevel: minimumLevel);
 
     await instance._repository.initialize(
       appName: appName,
@@ -88,7 +88,15 @@ class VooLogger {
     }
   }
 
-  static Future<void> error(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
+  static Future<void> error(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+    bool shouldNotify = false,
+  }) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
@@ -99,7 +107,15 @@ class VooLogger {
     }
   }
 
-  static Future<void> fatal(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata, bool shouldNotify = false}) async {
+  static Future<void> fatal(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+    bool shouldNotify = false,
+  }) async {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }

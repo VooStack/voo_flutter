@@ -12,6 +12,7 @@ class LogEntryModel {
   final String? category;
   final String? tag;
   final Map<String, dynamic>? metadata;
+  @JsonKey(toJson: _errorToJson, fromJson: _errorFromJson)
   final Object? error;
   final String? stackTrace;
   final String? userId;
@@ -33,4 +34,12 @@ class LogEntryModel {
   factory LogEntryModel.fromJson(Map<String, dynamic> json) => _$LogEntryModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogEntryModelToJson(this);
+
+  static String? _errorToJson(Object? error) {
+    return error?.toString();
+  }
+
+  static Object? _errorFromJson(dynamic json) {
+    return json;
+  }
 }

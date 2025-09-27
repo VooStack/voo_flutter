@@ -55,12 +55,7 @@ class VooRailNavigationItems extends StatelessWidget {
           }
         }
 
-        widgets.add(
-          VooRailSectionHeader(
-            item: item,
-            children: childWidgets,
-          ),
-        );
+        widgets.add(VooRailSectionHeader(item: item, children: childWidgets));
       } else {
         widgets.add(
           VooRailNavigationItem(

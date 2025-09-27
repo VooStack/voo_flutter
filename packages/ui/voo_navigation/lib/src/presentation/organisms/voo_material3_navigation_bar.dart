@@ -73,8 +73,8 @@ class VooMaterial3NavigationBar extends StatelessWidget {
       elevation: elevation ?? config.elevation ?? context.vooElevation.level2,
       labelBehavior: showLabels
           ? (showSelectedLabels
-              ? NavigationDestinationLabelBehavior.onlyShowSelected
-              : NavigationDestinationLabelBehavior.alwaysShow)
+                ? NavigationDestinationLabelBehavior.onlyShowSelected
+                : NavigationDestinationLabelBehavior.alwaysShow)
           : NavigationDestinationLabelBehavior.alwaysHide,
       indicatorColor: config.indicatorColor,
       indicatorShape: config.indicatorShape,

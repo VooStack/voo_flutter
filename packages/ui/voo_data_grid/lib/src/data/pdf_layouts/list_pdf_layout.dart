@@ -80,10 +80,7 @@ class ListPdfLayout extends PdfLayoutStrategy {
 
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey200,
-        borderRadius: pw.BorderRadius.circular(4),
-      ),
+      decoration: pw.BoxDecoration(color: PdfColors.grey200, borderRadius: pw.BorderRadius.circular(4)),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -103,18 +100,13 @@ class ListPdfLayout extends PdfLayoutStrategy {
       cardContent.add(
         pw.Container(
           padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: pw.BoxDecoration(
-            color: _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100,
-            borderRadius: pw.BorderRadius.circular(4),
-          ),
+          decoration: pw.BoxDecoration(color: _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100, borderRadius: pw.BorderRadius.circular(4)),
           child: pw.Text(
             'Record #$recordNumber',
             style: pw.TextStyle(
               fontSize: 11,
               fontWeight: pw.FontWeight.bold,
-              color: _getContrastingTextColor(
-                _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100
-              ),
+              color: _getContrastingTextColor(_pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100),
             ),
           ),
         ),
@@ -144,20 +136,11 @@ class ListPdfLayout extends PdfLayoutStrategy {
                 width: 120,
                 child: pw.Text(
                   '$header:',
-                  style: pw.TextStyle(
-                    fontSize: 9,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.grey700,
-                  ),
+                  style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: PdfColors.grey700),
                 ),
               ),
               pw.Expanded(
-                child: pw.Text(
-                  value,
-                  style: const pw.TextStyle(fontSize: 9),
-                  maxLines: 3,
-                  overflow: pw.TextOverflow.clip,
-                ),
+                child: pw.Text(value, style: const pw.TextStyle(fontSize: 9), maxLines: 3, overflow: pw.TextOverflow.clip),
               ),
             ],
           ),
@@ -181,17 +164,11 @@ class ListPdfLayout extends PdfLayoutStrategy {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Expanded(
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: leftColumn,
-              ),
+              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: leftColumn),
             ),
             pw.SizedBox(width: 20),
             pw.Expanded(
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: rightColumn,
-              ),
+              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: rightColumn),
             ),
           ],
         ),
@@ -203,17 +180,11 @@ class ListPdfLayout extends PdfLayoutStrategy {
     return pw.Container(
       padding: const pw.EdgeInsets.all(12),
       decoration: pw.BoxDecoration(
-        border: pw.Border.all(
-          color: _pdfColorFromFlutter(config.accentColor) ?? PdfColors.grey400,
-          width: 0.5,
-        ),
+        border: pw.Border.all(color: _pdfColorFromFlutter(config.accentColor) ?? PdfColors.grey400, width: 0.5),
         borderRadius: pw.BorderRadius.circular(4),
         color: PdfColors.white,
       ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: cardContent,
-      ),
+      child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: cardContent),
     );
   }
 
@@ -223,9 +194,7 @@ class ListPdfLayout extends PdfLayoutStrategy {
   }
 
   PdfColor _getContrastingTextColor(PdfColor backgroundColor) {
-    final luminance = 0.299 * backgroundColor.red +
-                      0.587 * backgroundColor.green +
-                      0.114 * backgroundColor.blue;
+    final luminance = 0.299 * backgroundColor.red + 0.587 * backgroundColor.green + 0.114 * backgroundColor.blue;
     return luminance > 0.5 ? PdfColors.black : PdfColors.white;
   }
 

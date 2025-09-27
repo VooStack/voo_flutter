@@ -48,10 +48,7 @@ class CompactPdfLayout extends PdfLayoutStrategy {
 
   pw.Widget _buildCompactFilterInfo(Map<String, dynamic> filters) {
     final filterText = filters.entries.map((e) => '${e.key}: ${e.value}').join(' | ');
-    return pw.Text(
-      'Filters: $filterText',
-      style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
-    );
+    return pw.Text('Filters: $filterText', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700));
   }
 
   pw.Widget _buildCompactTable(List<String> headers, List<List<String>> rows, List<VooDataColumn> columns, ExportConfig config) {
@@ -89,10 +86,7 @@ class CompactPdfLayout extends PdfLayoutStrategy {
             final header = entry.value;
             return pw.Container(
               padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-              child: pw.Text(
-                _abbreviateHeader(header, index == 0 && config.showRowNumbers),
-                style: const pw.TextStyle(fontSize: 7, color: PdfColors.black),
-              ),
+              child: pw.Text(_abbreviateHeader(header, index == 0 && config.showRowNumbers), style: const pw.TextStyle(fontSize: 7, color: PdfColors.black)),
             );
           }).toList(),
         ),
@@ -101,20 +95,13 @@ class CompactPdfLayout extends PdfLayoutStrategy {
           final rowIndex = entry.key;
           final row = entry.value;
           return pw.TableRow(
-            decoration: pw.BoxDecoration(
-              color: rowIndex % 2 == 0 ? PdfColors.white : PdfColors.grey50,
-            ),
+            decoration: pw.BoxDecoration(color: rowIndex % 2 == 0 ? PdfColors.white : PdfColors.grey50),
             children: row.asMap().entries.map((cellEntry) {
               final cellIndex = cellEntry.key;
               final cell = cellEntry.value;
               return pw.Container(
                 padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                child: pw.Text(
-                  _truncateText(cell, cellIndex),
-                  style: const pw.TextStyle(fontSize: 7),
-                  maxLines: 1,
-                  overflow: pw.TextOverflow.clip,
-                ),
+                child: pw.Text(_truncateText(cell, cellIndex), style: const pw.TextStyle(fontSize: 7), maxLines: 1, overflow: pw.TextOverflow.clip),
               );
             }).toList(),
           );
@@ -168,17 +155,17 @@ class CompactPdfLayout extends PdfLayoutStrategy {
   String _truncateText(String text, int columnIndex) {
     // Different truncation lengths based on column
     const maxLengths = [
-      5,   // Row number
-      15,  // First data column
-      20,  // Second data column
-      15,  // Third data column
-      10,  // Fourth data column
-      8,   // Fifth data column
-      8,   // Sixth data column
-      10,  // Seventh data column
-      10,  // Eighth data column
-      8,   // Ninth data column
-      20,  // Tenth+ columns
+      5, // Row number
+      15, // First data column
+      20, // Second data column
+      15, // Third data column
+      10, // Fourth data column
+      8, // Fifth data column
+      8, // Sixth data column
+      10, // Seventh data column
+      10, // Eighth data column
+      8, // Ninth data column
+      20, // Tenth+ columns
     ];
 
     final maxLength = columnIndex < maxLengths.length ? maxLengths[columnIndex] : 15;

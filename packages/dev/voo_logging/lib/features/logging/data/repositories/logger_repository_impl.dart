@@ -22,56 +22,40 @@ class LoggerRepositoryImpl extends LoggerRepository {
   final _random = Random();
 
   final StreamController<LogEntry> _logStreamController = StreamController<LogEntry>.broadcast();
+  Stream<LogEntry>? _cachedStream;
 
   @override
-  Stream<LogEntry> get stream async* {
-    try {
-      // Send initial log to indicate stream is active
-      yield LogEntry(
-        id: 'stream_init_${DateTime.now().millisecondsSinceEpoch}',
-        timestamp: DateTime.now(),
-        message: 'VooLogger stream initialized successfully',
-        level: LogLevel.info,
-        category: 'System',
-        tag: 'Stream',
+  Stream<LogEntry> get stream {
+    // Return cached stream if it exists
+    _cachedStream ??= _createStream();
+    return _cachedStream!;
+  }
+
+  Stream<LogEntry> _createStream() {
+    // Return the broadcast stream directly, without any initial messages
+    // This ensures all subscribers get all logs after subscription
+    return _logStreamController.stream.handleError((Object error, StackTrace stackTrace) {
+      // Log the error internally if possible
+      developer.log(
+        'VooLogger stream error: $error',
+        name: 'VooLogger',
+        error: error,
+        stackTrace: stackTrace,
+        level: 800, // Warning level
       );
 
-      // Handle stream errors gracefully
-      yield* _logStreamController.stream.handleError((Object error, StackTrace stackTrace) {
-        // Log the error internally if possible
-        developer.log(
-          'VooLogger stream error: $error',
-          name: 'VooLogger',
-          error: error,
-          stackTrace: stackTrace,
-          level: 800, // Warning level
-        );
-
-        // Create an error log entry
-        return LogEntry(
-          id: 'stream_error_${DateTime.now().millisecondsSinceEpoch}',
-          timestamp: DateTime.now(),
-          message: 'Stream error occurred: ${error.toString()}',
-          level: LogLevel.error,
-          category: 'System',
-          tag: 'StreamError',
-          error: error,
-          stackTrace: stackTrace.toString(),
-        );
-      });
-    } catch (e, stackTrace) {
-      // If stream initialization fails completely, yield an error entry
-      yield LogEntry(
-        id: 'stream_init_error_${DateTime.now().millisecondsSinceEpoch}',
+      // Create an error log entry
+      return LogEntry(
+        id: 'stream_error_${DateTime.now().millisecondsSinceEpoch}',
         timestamp: DateTime.now(),
-        message: 'Failed to initialize VooLogger stream: ${e.toString()}',
+        message: 'Stream error occurred: ${error.toString()}',
         level: LogLevel.error,
         category: 'System',
-        tag: 'StreamInitError',
-        error: e,
+        tag: 'StreamError',
+        error: error,
         stackTrace: stackTrace.toString(),
       );
-    }
+    });
   }
 
   @override
@@ -134,9 +118,29 @@ class LoggerRepositoryImpl extends LoggerRepository {
     String? userId,
     String? sessionId,
   }) async {
-    if (!_enabled || level.priority < _minimumLevel.priority) {
+    if (!_enabled) {
       return;
     }
+
+    // Get type-specific configuration
+    final logType = LoggingConfig.mapCategoryToLogType(category);
+    final hasTypeConfig = _config.logTypeConfigs.containsKey(logType);
+
+    if (hasTypeConfig) {
+      // Type-specific config exists, use its minimum level
+      final typeConfig = _config.logTypeConfigs[logType]!;
+      if (level.priority < typeConfig.minimumLevel.priority) {
+        return;
+      }
+    } else {
+      // No type-specific config, use global minimum
+      if (level.priority < _minimumLevel.priority) {
+        return;
+      }
+    }
+
+    // Get the effective config for console/devtools/storage settings
+    final typeConfig = _config.getConfigForCategory(category);
 
     final entry = LogEntry(
       id: _generateLogId(),
@@ -152,8 +156,15 @@ class LoggerRepositoryImpl extends LoggerRepository {
       sessionId: sessionId ?? _currentSessionId,
     );
 
-    _logToDevTools(entry);
-    _sendStructuredLogToDevTools(entry);
+    // Only log to console if enabled for this log type
+    if (typeConfig.enableConsoleOutput) {
+      _logToDevTools(entry);
+    }
+
+    // Only send to DevTools if enabled for this log type
+    if (typeConfig.enableDevToolsOutput) {
+      _sendStructuredLogToDevTools(entry);
+    }
 
     // Safely add to stream controller with error handling
     if (!_logStreamController.isClosed) {
@@ -177,7 +188,10 @@ class LoggerRepositoryImpl extends LoggerRepository {
       );
     }
 
-    await _storage?.insertLog(entry).catchError((_) => null);
+    // Only store if storage is enabled for this log type
+    if (typeConfig.enableStorage) {
+      await _storage?.insertLog(entry).catchError((_) => null);
+    }
   }
 
   Map<String, dynamic>? _enrichMetadata(Map<String, dynamic>? userMetadata) {
@@ -388,7 +402,28 @@ class LoggerRepositoryImpl extends LoggerRepository {
   }
 
   @override
-  Future<List<LogEntry>> getLogs({LogFilter? filter}) async => [];
+  Future<List<LogEntry>> getLogs({LogFilter? filter}) async {
+    if (_storage == null) return [];
+
+    if (filter != null) {
+      return _storage!.queryLogs(
+        levels: filter.levels,
+        categories: filter.categories,
+        tags: filter.tags,
+        messagePattern: filter.searchQuery,
+        startTime: filter.startTime,
+        endTime: filter.endTime,
+        userId: filter.userId,
+        sessionId: filter.sessionId,
+        limit: 1000,
+        offset: 0,
+        ascending: false,
+      );
+    } else {
+      // Return all logs if no filter provided
+      return _storage!.queryLogs(limit: 1000);
+    }
+  }
 
   @override
   Future<List<Map<String, dynamic>>> exportLogs() async {

@@ -11,11 +11,7 @@ class VooAppBarActions extends StatelessWidget {
   /// Screen width for responsive behavior
   final double screenWidth;
 
-  const VooAppBarActions({
-    super.key,
-    this.config,
-    required this.screenWidth,
-  });
+  const VooAppBarActions({super.key, this.config, required this.screenWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +21,7 @@ class VooAppBarActions extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: actions,
-    );
+    return Row(mainAxisSize: MainAxisSize.min, children: actions);
   }
 
   List<Widget> _buildActionsList(BuildContext context) {

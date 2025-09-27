@@ -9,6 +9,7 @@ import 'package:voo_navigation/src/presentation/organisms/voo_router_shell.dart'
 /// Provider for creating a GoRouter with VooNavigation integration
 class VooGoRouter {
   static const _animationTokens = VooAnimationTokens();
+
   /// Creates a GoRouter configured with VooNavigation
   static GoRouter create({
     required VooNavigationConfig config,
@@ -211,7 +212,6 @@ class VooGoRouter {
 
     return routes;
   }
-
 }
 
 /// Navigation observer for VooNavigation

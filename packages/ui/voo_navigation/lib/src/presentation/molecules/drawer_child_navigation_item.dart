@@ -60,8 +60,8 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
               color: isSelected
                   ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
                   : isHovered
-                      ? theme.colorScheme.onSurface.withValues(alpha: 0.06)
-                      : Colors.transparent,
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.06)
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(context.vooRadius.md),
             ),
             child: Row(
@@ -86,9 +86,12 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
                     item.label,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isSelected
-                          ? config.selectedItemColor ?? theme.colorScheme.primary
+                          ? config.selectedItemColor ??
+                                theme.colorScheme.primary
                           : theme.colorScheme.onSurface.withValues(alpha: 0.9),
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -97,10 +100,7 @@ class VooDrawerChildNavigationItem extends StatelessWidget {
                 // Badge
                 if (item.hasBadge) ...[
                   SizedBox(width: context.vooSpacing.sm),
-                  VooDrawerModernBadge(
-                    item: item,
-                    isSelected: isSelected,
-                  ),
+                  VooDrawerModernBadge(item: item, isSelected: isSelected),
                 ],
               ],
             ),

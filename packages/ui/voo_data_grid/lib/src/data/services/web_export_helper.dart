@@ -3,10 +3,7 @@ import 'dart:html' as html;
 import 'dart:typed_data';
 
 /// Web-specific implementation for file downloads
-void downloadFile({
-  required Uint8List bytes,
-  required String filename,
-}) {
+void downloadFile({required Uint8List bytes, required String filename}) {
   final blob = html.Blob([bytes]);
   final url = html.Url.createObjectUrlFromBlob(blob);
   final anchor = html.AnchorElement()

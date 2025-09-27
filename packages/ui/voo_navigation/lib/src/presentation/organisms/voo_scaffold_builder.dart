@@ -128,7 +128,10 @@ class VooScaffoldBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveBackgroundColor = backgroundColor ?? config.backgroundColor ?? theme.scaffoldBackgroundColor;
+    final effectiveBackgroundColor =
+        backgroundColor ??
+        config.backgroundColor ??
+        theme.scaffoldBackgroundColor;
 
     // Prepare the body - let each scaffold type handle its own padding
     // This follows the KISS principle - each scaffold knows best how to position its content
@@ -141,7 +144,9 @@ class VooScaffoldBuilder extends StatelessWidget {
       final borderRadius = bodyCardBorderRadius ?? tokens.radius.card;
 
       processedBody = Material(
-        elevation: bodyCardElevation == 0 ? tokens.elevation.card : bodyCardElevation,
+        elevation: bodyCardElevation == 0
+            ? tokens.elevation.card
+            : bodyCardElevation,
         borderRadius: borderRadius,
         color: cardColor,
         child: ClipRRect(borderRadius: borderRadius, child: processedBody),
@@ -187,7 +192,9 @@ class VooScaffoldBuilder extends StatelessWidget {
       case VooNavigationType.navigationRail:
       case VooNavigationType.extendedNavigationRail:
         // Only show extended rail if config allows it AND we're in the right width range
-        final shouldExtend = config.useExtendedRail && navigationType == VooNavigationType.extendedNavigationRail;
+        final shouldExtend =
+            config.useExtendedRail &&
+            navigationType == VooNavigationType.extendedNavigationRail;
         scaffold = KeyedSubtree(
           key: ValueKey('tablet_scaffold_$navigationType'),
           child: VooTabletScaffold(
@@ -245,7 +252,8 @@ class VooScaffoldBuilder extends StatelessWidget {
     return AnimatedSwitcher(
       duration: config.animationDuration,
       child: scaffold,
-      transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+      transitionBuilder: (child, animation) =>
+          FadeTransition(opacity: animation, child: child),
     );
   }
 }

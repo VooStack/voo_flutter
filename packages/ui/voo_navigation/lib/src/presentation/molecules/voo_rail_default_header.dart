@@ -7,10 +7,7 @@ class VooRailDefaultHeader extends StatelessWidget {
   /// Navigation configuration
   final VooNavigationConfig config;
 
-  const VooRailDefaultHeader({
-    super.key,
-    required this.config,
-  });
+  const VooRailDefaultHeader({super.key, required this.config});
 
   @override
   Widget build(BuildContext context) {

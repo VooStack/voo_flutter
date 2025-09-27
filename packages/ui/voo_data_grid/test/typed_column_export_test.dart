@@ -24,23 +24,16 @@ class TestEntity {
   final bool isActive;
   final double? amount;
 
-  TestEntity({
-    required this.id,
-    required this.name,
-    this.state,
-    this.createdAt,
-    required this.isActive,
-    this.amount,
-  });
+  TestEntity({required this.id, required this.name, this.state, this.createdAt, required this.isActive, this.amount});
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'state': state?.name,
-        'createdAt': createdAt?.toIso8601String(),
-        'isActive': isActive,
-        'amount': amount,
-      };
+    'id': id,
+    'name': name,
+    'state': state?.name,
+    'createdAt': createdAt?.toIso8601String(),
+    'isActive': isActive,
+    'amount': amount,
+  };
 }
 
 void main() {
@@ -51,40 +44,14 @@ void main() {
 
     setUp(() {
       testData = [
-        TestEntity(
-          id: 1,
-          name: 'Test Item 1',
-          state: TestState.active,
-          createdAt: DateTime(2024, 1, 1),
-          isActive: true,
-          amount: 100.50,
-        ),
-        TestEntity(
-          id: 2,
-          name: 'Test Item 2',
-          state: TestState.inactive,
-          createdAt: DateTime(2024, 1, 2),
-          isActive: false,
-          amount: 200.75,
-        ),
-        TestEntity(
-          id: 3,
-          name: 'Test Item 3',
-          isActive: true,
-        ),
+        TestEntity(id: 1, name: 'Test Item 1', state: TestState.active, createdAt: DateTime(2024, 1, 1), isActive: true, amount: 100.50),
+        TestEntity(id: 2, name: 'Test Item 2', state: TestState.inactive, createdAt: DateTime(2024, 1, 2), isActive: false, amount: 200.75),
+        TestEntity(id: 3, name: 'Test Item 3', isActive: true),
       ];
 
       columns = [
-        VooDataColumn<TestEntity>(
-          field: 'id',
-          label: 'ID',
-          valueGetter: (row) => row.id.toString(),
-        ),
-        VooDataColumn<TestEntity>(
-          field: 'name',
-          label: 'Name',
-          valueGetter: (row) => row.name,
-        ),
+        VooDataColumn<TestEntity>(field: 'id', label: 'ID', valueGetter: (row) => row.id.toString()),
+        VooDataColumn<TestEntity>(field: 'name', label: 'Name', valueGetter: (row) => row.name),
         // This is the problematic TypedVooDataColumn that was causing type errors
         TypedVooDataColumn<TestEntity, TestState?>(
           field: 'state',
@@ -112,12 +79,7 @@ void main() {
         ),
       ];
 
-      config = const ExportConfig(
-        title: 'Test Export',
-        format: ExportFormat.pdf,
-        includeTimestamp: false,
-        showRowNumbers: true,
-      );
+      config = const ExportConfig(title: 'Test Export', format: ExportFormat.pdf, includeTimestamp: false, showRowNumbers: true);
     });
 
     group('PDF Export', () {
@@ -132,22 +94,9 @@ void main() {
         // and doesn't throw type casting errors like:
         // "Instance of '(TestEntity) => TestState?' is not a subtype of type '(dynamic) => dynamic?'"
 
-        expect(
-          () async => pdfService.export(
-            data: testData,
-            columns: columns,
-            config: config,
-            activeFilters: null,
-          ),
-          returnsNormally,
-        );
+        expect(() async => pdfService.export(data: testData, columns: columns, config: config, activeFilters: null), returnsNormally);
 
-        final result = await pdfService.export(
-          data: testData,
-          columns: columns,
-          config: config,
-          activeFilters: null,
-        );
+        final result = await pdfService.export(data: testData, columns: columns, config: config, activeFilters: null);
 
         expect(result, isNotNull);
         expect(result, isNotEmpty);
@@ -155,12 +104,7 @@ void main() {
 
       test('should correctly handle null values in TypedVooDataColumn', () async {
         // Test that null values are handled gracefully
-        final result = await pdfService.export(
-          data: testData,
-          columns: columns,
-          config: config,
-          activeFilters: null,
-        );
+        final result = await pdfService.export(data: testData, columns: columns, config: config, activeFilters: null);
 
         expect(result, isNotNull);
         // The third item has null state and createdAt, should not cause errors
@@ -169,12 +113,7 @@ void main() {
 
       test('should apply TypedVooDataColumn formatters correctly', () async {
         // Test that the typed formatters are applied correctly
-        final result = await pdfService.export(
-          data: testData,
-          columns: columns,
-          config: config,
-          activeFilters: null,
-        );
+        final result = await pdfService.export(data: testData, columns: columns, config: config, activeFilters: null);
 
         // The PDF should contain formatted values like 'ACT', 'INA', 'Yes', 'No', etc.
         expect(result, isNotNull);
@@ -184,11 +123,7 @@ void main() {
       test('should handle mixed regular and typed columns', () async {
         // Test that mixing VooDataColumn and TypedVooDataColumn works
         final mixedColumns = [
-          VooDataColumn<TestEntity>(
-            field: 'id',
-            label: 'ID',
-            valueGetter: (row) => row.id,
-          ),
+          VooDataColumn<TestEntity>(field: 'id', label: 'ID', valueGetter: (row) => row.id),
           TypedVooDataColumn<TestEntity, String>(
             field: 'name',
             label: 'Name',
@@ -197,15 +132,7 @@ void main() {
           ),
         ];
 
-        expect(
-          () async => pdfService.export(
-            data: testData,
-            columns: mixedColumns,
-            config: config,
-            activeFilters: null,
-          ),
-          returnsNormally,
-        );
+        expect(() async => pdfService.export(data: testData, columns: mixedColumns, config: config, activeFilters: null), returnsNormally);
       });
     });
 
@@ -214,56 +141,28 @@ void main() {
 
       setUp(() {
         excelService = ExcelExportService<TestEntity>();
-        config = const ExportConfig(
-          title: 'Test Export',
-          format: ExportFormat.excel,
-          includeTimestamp: false,
-          showRowNumbers: true,
-        );
+        config = const ExportConfig(title: 'Test Export', format: ExportFormat.excel, includeTimestamp: false, showRowNumbers: true);
       });
 
       test('should export data with TypedVooDataColumn without type errors', () async {
         // This test ensures that TypedVooDataColumn works correctly with Excel export
-        expect(
-          () async => excelService.export(
-            data: testData,
-            columns: columns,
-            config: config,
-            activeFilters: null,
-          ),
-          returnsNormally,
-        );
+        expect(() async => excelService.export(data: testData, columns: columns, config: config, activeFilters: null), returnsNormally);
 
-        final result = await excelService.export(
-          data: testData,
-          columns: columns,
-          config: config,
-          activeFilters: null,
-        );
+        final result = await excelService.export(data: testData, columns: columns, config: config, activeFilters: null);
 
         expect(result, isNotNull);
         expect(result, isNotEmpty);
       });
 
       test('should correctly handle null values in TypedVooDataColumn', () async {
-        final result = await excelService.export(
-          data: testData,
-          columns: columns,
-          config: config,
-          activeFilters: null,
-        );
+        final result = await excelService.export(data: testData, columns: columns, config: config, activeFilters: null);
 
         expect(result, isNotNull);
         expect(result, isNotEmpty);
       });
 
       test('should apply TypedVooDataColumn formatters correctly', () async {
-        final result = await excelService.export(
-          data: testData,
-          columns: columns,
-          config: config,
-          activeFilters: null,
-        );
+        final result = await excelService.export(data: testData, columns: columns, config: config, activeFilters: null);
 
         expect(result, isNotNull);
         expect(result.length, greaterThan(0));
@@ -281,20 +180,9 @@ void main() {
           },
         );
 
-        final complexColumns = [
-          VooDataColumn<TestEntity>(field: 'id', label: 'ID', valueGetter: (row) => row.id),
-          complexColumn,
-        ];
+        final complexColumns = [VooDataColumn<TestEntity>(field: 'id', label: 'ID', valueGetter: (row) => row.id), complexColumn];
 
-        expect(
-          () async => excelService.export(
-            data: testData,
-            columns: complexColumns,
-            config: config,
-            activeFilters: null,
-          ),
-          returnsNormally,
-        );
+        expect(() async => excelService.export(data: testData, columns: complexColumns, config: config, activeFilters: null), returnsNormally);
       });
     });
 
@@ -353,15 +241,7 @@ void main() {
         final pdfService = PdfExportService<TestEntity>();
 
         // This should not throw
-        expect(
-          () async => pdfService.export(
-            data: testData,
-            columns: [problematicColumn],
-            config: config,
-            activeFilters: null,
-          ),
-          returnsNormally,
-        );
+        expect(() async => pdfService.export(data: testData, columns: [problematicColumn], config: config, activeFilters: null), returnsNormally);
       });
 
       test('should handle type casting with dynamic row types', () async {
@@ -369,15 +249,7 @@ void main() {
         final dynamicData = testData.cast<dynamic>().toList();
         final pdfService = PdfExportService<dynamic>();
 
-        expect(
-          () async => pdfService.export(
-            data: dynamicData,
-            columns: columns,
-            config: config,
-            activeFilters: null,
-          ),
-          returnsNormally,
-        );
+        expect(() async => pdfService.export(data: dynamicData, columns: columns, config: config, activeFilters: null), returnsNormally);
       });
     });
   });

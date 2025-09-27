@@ -54,30 +54,15 @@ class VooPaddingTokens {
     containerLarge: containerLarge * scaleFactor,
   );
 
-  EdgeInsets get button => EdgeInsets.symmetric(
-    horizontal: buttonHorizontal,
-    vertical: buttonVertical,
-  );
+  EdgeInsets get button => EdgeInsets.symmetric(horizontal: buttonHorizontal, vertical: buttonVertical);
 
   EdgeInsets get card => EdgeInsets.all(cardInner);
 
-  EdgeInsets get input => EdgeInsets.symmetric(
-    horizontal: inputHorizontal,
-    vertical: inputVertical,
-  );
+  EdgeInsets get input => EdgeInsets.symmetric(horizontal: inputHorizontal, vertical: inputVertical);
 
-  EdgeInsets get chip => EdgeInsets.symmetric(
-    horizontal: chipHorizontal,
-    vertical: chipVertical,
-  );
+  EdgeInsets get chip => EdgeInsets.symmetric(horizontal: chipHorizontal, vertical: chipVertical);
 
-  EdgeInsets get tab => EdgeInsets.symmetric(
-    horizontal: tabHorizontal,
-    vertical: tabVertical,
-  );
+  EdgeInsets get tab => EdgeInsets.symmetric(horizontal: tabHorizontal, vertical: tabVertical);
 
-  EdgeInsets get listTile => EdgeInsets.symmetric(
-    horizontal: listTileHorizontal,
-    vertical: listTileVertical,
-  );
+  EdgeInsets get listTile => EdgeInsets.symmetric(horizontal: listTileHorizontal, vertical: listTileVertical);
 }

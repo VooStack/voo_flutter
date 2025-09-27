@@ -64,10 +64,12 @@ class VooNavigationIndicator extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final effectiveColor = color ?? colorScheme.primaryContainer;
-    final effectivePadding = padding ?? EdgeInsets.symmetric(
-      horizontal: context.vooSpacing.sm + context.vooSpacing.xs,
-      vertical: context.vooSpacing.xs,
-    );
+    final effectivePadding =
+        padding ??
+        EdgeInsets.symmetric(
+          horizontal: context.vooSpacing.sm + context.vooSpacing.xs,
+          vertical: context.vooSpacing.xs,
+        );
     final effectiveDuration = duration ?? context.vooAnimation.durationFast;
 
     switch (type) {
@@ -119,7 +121,8 @@ class VooNavigationIndicator extends StatelessWidget {
   }
 
   VooLineIndicatorPosition _mapToLineIndicatorPosition(
-      VooIndicatorPosition position) {
+    VooIndicatorPosition position,
+  ) {
     switch (position) {
       case VooIndicatorPosition.top:
         return VooLineIndicatorPosition.top;

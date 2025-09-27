@@ -6,6 +6,7 @@ import 'package:voo_tokens/voo_tokens.dart';
 class VooNavigationRoute {
   /// Default animation tokens for the navigation
   static const _animationTokens = VooAnimationTokens();
+
   /// Unique identifier for the route
   final String id;
 
@@ -66,7 +67,8 @@ class VooNavigationRoute {
     this.fullScreenDialog = false,
     this.maintainState = true,
     this.metadata,
-  }) : transitionDuration = transitionDuration ?? _animationTokens.durationNormal;
+  }) : transitionDuration =
+           transitionDuration ?? _animationTokens.durationNormal;
 
   /// Factory constructor for creating a route with Material page transition
   factory VooNavigationRoute.material({
@@ -140,7 +142,8 @@ class VooNavigationRoute {
       pageBuilder: (context, state) => CustomTransitionPage<void>(
         key: state.pageKey,
         child: builder(context, state),
-        transitionDuration: transitionDuration ?? _animationTokens.durationNormal,
+        transitionDuration:
+            transitionDuration ?? _animationTokens.durationNormal,
         transitionsBuilder: transitionBuilder,
         fullscreenDialog: fullScreenDialog,
         maintainState: maintainState,

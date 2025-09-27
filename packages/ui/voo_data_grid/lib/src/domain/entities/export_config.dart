@@ -3,10 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 /// Enumeration for export formats
-enum ExportFormat {
-  pdf,
-  excel,
-}
+enum ExportFormat { pdf, excel }
 
 /// Enumeration for PDF layout types
 enum PdfLayoutType {
@@ -164,32 +161,32 @@ class ExportConfig {
     bool? autoSizeColumns,
     double? maxColumnWidth,
   }) => ExportConfig(
-      format: format ?? this.format,
-      title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
-      companyName: companyName ?? this.companyName,
-      companyLogo: companyLogo ?? this.companyLogo,
-      author: author ?? this.author,
-      subject: subject ?? this.subject,
-      keywords: keywords ?? this.keywords,
-      creator: creator ?? this.creator,
-      includeFilters: includeFilters ?? this.includeFilters,
-      includeTimestamp: includeTimestamp ?? this.includeTimestamp,
-      headerText: headerText ?? this.headerText,
-      footerText: footerText ?? this.footerText,
-      isLandscape: isLandscape ?? this.isLandscape,
-      primaryColor: primaryColor ?? this.primaryColor,
-      accentColor: accentColor ?? this.accentColor,
-      columnWidths: columnWidths ?? this.columnWidths,
-      excludeColumns: excludeColumns ?? this.excludeColumns,
-      filename: filename ?? this.filename,
-      showRowNumbers: showRowNumbers ?? this.showRowNumbers,
-      maxRows: maxRows ?? this.maxRows,
-      dateFormat: dateFormat ?? this.dateFormat,
-      numberFormat: numberFormat ?? this.numberFormat,
-      pdfLayoutType: pdfLayoutType ?? this.pdfLayoutType,
-      selectedColumns: selectedColumns ?? this.selectedColumns,
-      autoSizeColumns: autoSizeColumns ?? this.autoSizeColumns,
-      maxColumnWidth: maxColumnWidth ?? this.maxColumnWidth,
-    );
+    format: format ?? this.format,
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    companyName: companyName ?? this.companyName,
+    companyLogo: companyLogo ?? this.companyLogo,
+    author: author ?? this.author,
+    subject: subject ?? this.subject,
+    keywords: keywords ?? this.keywords,
+    creator: creator ?? this.creator,
+    includeFilters: includeFilters ?? this.includeFilters,
+    includeTimestamp: includeTimestamp ?? this.includeTimestamp,
+    headerText: headerText ?? this.headerText,
+    footerText: footerText ?? this.footerText,
+    isLandscape: isLandscape ?? this.isLandscape,
+    primaryColor: primaryColor ?? this.primaryColor,
+    accentColor: accentColor ?? this.accentColor,
+    columnWidths: columnWidths ?? this.columnWidths,
+    excludeColumns: excludeColumns ?? this.excludeColumns,
+    filename: filename ?? this.filename,
+    showRowNumbers: showRowNumbers ?? this.showRowNumbers,
+    maxRows: maxRows ?? this.maxRows,
+    dateFormat: dateFormat ?? this.dateFormat,
+    numberFormat: numberFormat ?? this.numberFormat,
+    pdfLayoutType: pdfLayoutType ?? this.pdfLayoutType,
+    selectedColumns: selectedColumns ?? this.selectedColumns,
+    autoSizeColumns: autoSizeColumns ?? this.autoSizeColumns,
+    maxColumnWidth: maxColumnWidth ?? this.maxColumnWidth,
+  );
 }

@@ -71,7 +71,9 @@ class VooNavigationBuilder {
       ..indicatorColor(colorScheme.primaryContainer)
       ..navigationBackgroundColor(colorScheme.surface)
       ..indicatorShape(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.vooRadius.xl)),
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(context.vooRadius.xl),
+        ),
       );
   }
 

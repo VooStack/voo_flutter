@@ -89,7 +89,12 @@ class VooTabletScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigationRail = ClipRect(
-      child: VooAdaptiveNavigationRail(config: config, selectedId: selectedId, onNavigationItemSelected: onNavigationItemSelected, extended: extended),
+      child: VooAdaptiveNavigationRail(
+        config: config,
+        selectedId: selectedId,
+        onNavigationItemSelected: onNavigationItemSelected,
+        extended: extended,
+      ),
     );
 
     // When app bar is alongside rail, wrap the content area with its own scaffold
@@ -102,7 +107,10 @@ class VooTabletScaffold extends StatelessWidget {
             navigationRail,
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(bottom: context.vooTokens.spacing.sm, right: context.vooRadius.md),
+                padding: EdgeInsets.only(
+                  bottom: context.vooTokens.spacing.sm,
+                  right: context.vooRadius.md,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(context.vooRadius.lg),
                   child: Scaffold(
@@ -111,12 +119,19 @@ class VooTabletScaffold extends StatelessWidget {
                         appBar ??
                         VooAdaptiveAppBar(
                           showMenuButton: false,
-                          margin: EdgeInsets.only(right: context.vooRadius.sm, top: context.vooTokens.spacing.sm),
+                          margin: EdgeInsets.only(
+                            right: context.vooRadius.sm,
+                            top: context.vooTokens.spacing.sm,
+                          ),
                         ),
                     body: body,
-                    floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
-                    floatingActionButtonLocation: config.floatingActionButtonLocation,
-                    floatingActionButtonAnimator: config.floatingActionButtonAnimator,
+                    floatingActionButton: config.showFloatingActionButton
+                        ? config.floatingActionButton
+                        : null,
+                    floatingActionButtonLocation:
+                        config.floatingActionButtonLocation,
+                    floatingActionButtonAnimator:
+                        config.floatingActionButtonAnimator,
                   ),
                 ),
               ),
@@ -140,14 +155,18 @@ class VooTabletScaffold extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: showAppBar ? (appBar ?? const VooAdaptiveAppBar(showMenuButton: false)) : null,
+      appBar: showAppBar
+          ? (appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
+          : null,
       body: Row(
         children: [
           navigationRail,
           Expanded(child: body),
         ],
       ),
-      floatingActionButton: config.showFloatingActionButton ? config.floatingActionButton : null,
+      floatingActionButton: config.showFloatingActionButton
+          ? config.floatingActionButton
+          : null,
       floatingActionButtonLocation: config.floatingActionButtonLocation,
       floatingActionButtonAnimator: config.floatingActionButtonAnimator,
       endDrawer: endDrawer,

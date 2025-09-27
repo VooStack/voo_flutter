@@ -51,11 +51,13 @@ class VooLineIndicator extends StatelessWidget {
     final line = AnimatedContainer(
       duration: animate ? duration : Duration.zero,
       curve: curve,
-      height: position == VooLineIndicatorPosition.bottom ||
+      height:
+          position == VooLineIndicatorPosition.bottom ||
               position == VooLineIndicatorPosition.top
           ? (height ?? 3)
           : null,
-      width: position == VooLineIndicatorPosition.left ||
+      width:
+          position == VooLineIndicatorPosition.left ||
               position == VooLineIndicatorPosition.right
           ? (width ?? 3)
           : null,
@@ -79,15 +81,9 @@ class VooLineIndicator extends StatelessWidget {
           children: [line, content],
         );
       case VooLineIndicatorPosition.left:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [line, content],
-        );
+        return Row(mainAxisSize: MainAxisSize.min, children: [line, content]);
       case VooLineIndicatorPosition.right:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [content, line],
-        );
+        return Row(mainAxisSize: MainAxisSize.min, children: [content, line]);
     }
   }
 }

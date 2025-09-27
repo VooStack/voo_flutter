@@ -6,7 +6,9 @@ import '../../../helpers/test_helpers.dart';
 
 void main() {
   group('VooLineIndicator', () {
-    testWidgets('should show indicator when selected', (WidgetTester tester) async {
+    testWidgets('should show indicator when selected', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: VooLineIndicator(
@@ -31,7 +33,9 @@ void main() {
       expect(containers, findsWidgets);
     });
 
-    testWidgets('should hide indicator when not selected', (WidgetTester tester) async {
+    testWidgets('should hide indicator when not selected', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: VooLineIndicator(
@@ -66,7 +70,9 @@ void main() {
       }
     });
 
-    testWidgets('should animate when animate is true', (WidgetTester tester) async {
+    testWidgets('should animate when animate is true', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: VooLineIndicator(
@@ -159,7 +165,9 @@ void main() {
       expect(find.byType(Row), findsWidgets);
     });
 
-    testWidgets('should apply correct color when selected', (WidgetTester tester) async {
+    testWidgets('should apply correct color when selected', (
+      WidgetTester tester,
+    ) async {
       const testColor = Colors.indigo;
 
       await tester.pumpWidget(

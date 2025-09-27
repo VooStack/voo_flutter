@@ -11,11 +11,7 @@ class VooAppBarTitle extends StatelessWidget {
   /// Navigation configuration
   final VooNavigationConfig? config;
 
-  const VooAppBarTitle({
-    super.key,
-    required this.item,
-    this.config,
-  });
+  const VooAppBarTitle({super.key, required this.item, this.config});
 
   @override
   Widget build(BuildContext context) {

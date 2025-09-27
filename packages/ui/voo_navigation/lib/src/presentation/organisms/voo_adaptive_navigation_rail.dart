@@ -42,10 +42,12 @@ class VooAdaptiveNavigationRail extends StatefulWidget {
   });
 
   @override
-  State<VooAdaptiveNavigationRail> createState() => _VooAdaptiveNavigationRailState();
+  State<VooAdaptiveNavigationRail> createState() =>
+      _VooAdaptiveNavigationRailState();
 }
 
-class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> with TickerProviderStateMixin {
+class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _hoverController;
   final Map<String, AnimationController> _itemAnimationControllers = {};
@@ -53,9 +55,15 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(duration: widget.config.animationDuration, vsync: this);
+    _animationController = AnimationController(
+      duration: widget.config.animationDuration,
+      vsync: this,
+    );
 
-    _hoverController = AnimationController(duration: const Duration(milliseconds: 113), vsync: this);
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 113),
+      vsync: this,
+    );
 
     if (widget.extended) {
       _animationController.forward();
@@ -88,13 +96,19 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final effectiveWidth = widget.width ?? (widget.extended ? (widget.config.extendedNavigationRailWidth ?? 256) : (widget.config.navigationRailWidth ?? 88));
+    final effectiveWidth =
+        widget.width ??
+        (widget.extended
+            ? (widget.config.extendedNavigationRailWidth ?? 256)
+            : (widget.config.navigationRailWidth ?? 88));
 
     // Use a subtle surface color variation for better visual distinction
     final effectiveBackgroundColor =
         widget.backgroundColor ??
         widget.config.navigationBackgroundColor ??
-        (theme.brightness == Brightness.light ? theme.colorScheme.surface.withValues(alpha: 0.95) : theme.colorScheme.surfaceContainerLow);
+        (theme.brightness == Brightness.light
+            ? theme.colorScheme.surface.withValues(alpha: 0.95)
+            : theme.colorScheme.surfaceContainerLow);
 
     return AnimatedContainer(
       duration: widget.config.animationDuration,
@@ -105,8 +119,16 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.vooRadius.lg),
           boxShadow: [
-            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(2, 0)),
-            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(4, 0)),
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(2, 0),
+            ),
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.04),
+              blurRadius: 20,
+              offset: const Offset(4, 0),
+            ),
           ],
         ),
         child: ClipRRect(
@@ -116,15 +138,23 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: effectiveBackgroundColor,
-                borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
-                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1), width: context.vooSize.borderThin),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(context.vooRadius.lg),
+                  bottomRight: Radius.circular(context.vooRadius.lg),
+                ),
+                border: Border.all(
+                  color: theme.dividerColor.withValues(alpha: 0.1),
+                  width: context.vooSize.borderThin,
+                ),
               ),
               child: Material(
                 color: Colors.transparent,
                 child: Column(
                   children: [
                     // Custom header or default header
-                    if (widget.extended) widget.config.drawerHeader ?? VooRailDefaultHeader(config: widget.config),
+                    if (widget.extended)
+                      widget.config.drawerHeader ??
+                          VooRailDefaultHeader(config: widget.config),
 
                     // Navigation items
                     Expanded(
@@ -132,7 +162,9 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
                         controller: widget.config.drawerScrollController,
                         padding: EdgeInsets.symmetric(
                           vertical: context.vooSpacing.sm,
-                          horizontal: widget.extended ? context.vooSpacing.sm + context.vooSpacing.xs : context.vooSpacing.sm,
+                          horizontal: widget.extended
+                              ? context.vooSpacing.sm + context.vooSpacing.xs
+                              : context.vooSpacing.sm,
                         ),
                         physics: const ClampingScrollPhysics(),
                         children: [
@@ -148,11 +180,16 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
                     ),
 
                     // Leading widget for FAB or other actions
-                    if (widget.config.floatingActionButton != null && widget.config.showFloatingActionButton)
-                      Padding(padding: EdgeInsets.all(context.vooSpacing.md), child: widget.config.floatingActionButton),
+                    if (widget.config.floatingActionButton != null &&
+                        widget.config.showFloatingActionButton)
+                      Padding(
+                        padding: EdgeInsets.all(context.vooSpacing.md),
+                        child: widget.config.floatingActionButton,
+                      ),
 
                     // Custom footer if provided
-                    if (widget.config.drawerFooter != null) widget.config.drawerFooter!,
+                    if (widget.config.drawerFooter != null)
+                      widget.config.drawerFooter!,
                   ],
                 ),
               ),
@@ -162,5 +199,4 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail> w
       ),
     );
   }
-
 }

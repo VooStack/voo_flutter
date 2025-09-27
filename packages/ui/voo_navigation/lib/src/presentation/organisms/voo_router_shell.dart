@@ -51,10 +51,7 @@ class VooRouterShell extends StatelessWidget {
 
     final updatedConfig = config.copyWith(selectedId: selectedId);
 
-    final shell = VooNavigationShell(
-      config: updatedConfig,
-      child: child,
-    );
+    final shell = VooNavigationShell(config: updatedConfig, child: child);
 
     return customBuilder != null ? customBuilder!(context, shell) : shell;
   }

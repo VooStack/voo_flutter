@@ -158,7 +158,8 @@ class _NavigationExampleState extends State<NavigationExample> {
       animationCurve: Curves.easeInOutCubic,
       railLabelType: NavigationRailLabelType.selected,
       // Only extend rail when width > 840px, respecting responsive breakpoints
-      useExtendedRail: true, // This allows extended rail, but width determines actual state
+      useExtendedRail:
+          true, // This allows extended rail, but width determines actual state
       showNavigationRailDivider: true,
       centerAppBarTitle: true,
       // App bar positioned alongside navigation rail (default behavior)
@@ -202,7 +203,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               Text(
                 'Adaptive Navigation System',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimary.withAlpha((0.8 * 255).round()),
+                  color: theme.colorScheme.onPrimary
+                      .withAlpha((0.8 * 255).round()),
                 ),
               ),
             ],

@@ -118,7 +118,8 @@ class VooNavigationConfig {
   final bool enableAnimations;
 
   /// Custom transition builder for navigation animations
-  final Widget Function(Widget child, Animation<double> animation)? transitionBuilder;
+  final Widget Function(Widget child, Animation<double> animation)?
+  transitionBuilder;
 
   /// Callback when navigation item is selected
   final void Function(String itemId)? onNavigationItemSelected;
@@ -202,10 +203,11 @@ class VooNavigationConfig {
     this.bottomNavigationType = VooNavigationBarType.custom,
     double? navigationRailMargin,
   }) : breakpoints = breakpoints ?? VooBreakpoint.material3Breakpoints,
-        animationDuration = animationDuration ?? _animationTokens.durationNormal,
-        animationCurve = animationCurve ?? _animationTokens.curveEaseInOut,
-        badgeAnimationDuration = badgeAnimationDuration ?? _animationTokens.durationFast,
-        navigationRailMargin = navigationRailMargin ?? _spacingTokens.sm;
+       animationDuration = animationDuration ?? _animationTokens.durationNormal,
+       animationCurve = animationCurve ?? _animationTokens.curveEaseInOut,
+       badgeAnimationDuration =
+           badgeAnimationDuration ?? _animationTokens.durationFast,
+       navigationRailMargin = navigationRailMargin ?? _spacingTokens.sm;
 
   /// Creates a copy of this configuration with the given fields replaced
   VooNavigationConfig copyWith({
@@ -243,7 +245,8 @@ class VooNavigationConfig {
     Curve? animationCurve,
     bool? enableHapticFeedback,
     bool? enableAnimations,
-    Widget Function(Widget child, Animation<double> animation)? transitionBuilder,
+    Widget Function(Widget child, Animation<double> animation)?
+    transitionBuilder,
     void Function(String itemId)? onNavigationItemSelected,
     bool? persistNavigationState,
     ScrollController? drawerScrollController,
@@ -273,30 +276,41 @@ class VooNavigationConfig {
     centerAppBarTitle: centerAppBarTitle ?? this.centerAppBarTitle,
     appBarAlongsideRail: appBarAlongsideRail ?? this.appBarAlongsideRail,
     floatingActionButton: floatingActionButton ?? this.floatingActionButton,
-    floatingActionButtonLocation: floatingActionButtonLocation ?? this.floatingActionButtonLocation,
-    floatingActionButtonAnimator: floatingActionButtonAnimator ?? this.floatingActionButtonAnimator,
-    showFloatingActionButton: showFloatingActionButton ?? this.showFloatingActionButton,
+    floatingActionButtonLocation:
+        floatingActionButtonLocation ?? this.floatingActionButtonLocation,
+    floatingActionButtonAnimator:
+        floatingActionButtonAnimator ?? this.floatingActionButtonAnimator,
+    showFloatingActionButton:
+        showFloatingActionButton ?? this.showFloatingActionButton,
     backgroundColor: backgroundColor ?? this.backgroundColor,
-    navigationBackgroundColor: navigationBackgroundColor ?? this.navigationBackgroundColor,
+    navigationBackgroundColor:
+        navigationBackgroundColor ?? this.navigationBackgroundColor,
     selectedItemColor: selectedItemColor ?? this.selectedItemColor,
     unselectedItemColor: unselectedItemColor ?? this.unselectedItemColor,
     indicatorColor: indicatorColor ?? this.indicatorColor,
     indicatorShape: indicatorShape ?? this.indicatorShape,
     elevation: elevation ?? this.elevation,
-    showNavigationRailDivider: showNavigationRailDivider ?? this.showNavigationRailDivider,
+    showNavigationRailDivider:
+        showNavigationRailDivider ?? this.showNavigationRailDivider,
     navigationRailWidth: navigationRailWidth ?? this.navigationRailWidth,
-    extendedNavigationRailWidth: extendedNavigationRailWidth ?? this.extendedNavigationRailWidth,
+    extendedNavigationRailWidth:
+        extendedNavigationRailWidth ?? this.extendedNavigationRailWidth,
     navigationDrawerWidth: navigationDrawerWidth ?? this.navigationDrawerWidth,
     animationDuration: animationDuration ?? this.animationDuration,
     animationCurve: animationCurve ?? this.animationCurve,
     enableHapticFeedback: enableHapticFeedback ?? this.enableHapticFeedback,
     enableAnimations: enableAnimations ?? this.enableAnimations,
     transitionBuilder: transitionBuilder ?? this.transitionBuilder,
-    onNavigationItemSelected: onNavigationItemSelected ?? this.onNavigationItemSelected,
-    persistNavigationState: persistNavigationState ?? this.persistNavigationState,
-    drawerScrollController: drawerScrollController ?? this.drawerScrollController,
-    showNotificationBadges: showNotificationBadges ?? this.showNotificationBadges,
-    badgeAnimationDuration: badgeAnimationDuration ?? this.badgeAnimationDuration,
+    onNavigationItemSelected:
+        onNavigationItemSelected ?? this.onNavigationItemSelected,
+    persistNavigationState:
+        persistNavigationState ?? this.persistNavigationState,
+    drawerScrollController:
+        drawerScrollController ?? this.drawerScrollController,
+    showNotificationBadges:
+        showNotificationBadges ?? this.showNotificationBadges,
+    badgeAnimationDuration:
+        badgeAnimationDuration ?? this.badgeAnimationDuration,
     groupItemsBySections: groupItemsBySections ?? this.groupItemsBySections,
     allowItemReordering: allowItemReordering ?? this.allowItemReordering,
     emptyStateWidget: emptyStateWidget ?? this.emptyStateWidget,
@@ -317,7 +331,9 @@ class VooNavigationConfig {
   }
 
   /// Gets visible navigation items
-  List<VooNavigationItem> get visibleItems => items.where((item) => item.isVisible).toList()..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+  List<VooNavigationItem> get visibleItems =>
+      items.where((item) => item.isVisible).toList()
+        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
   /// Gets the selected navigation item
   VooNavigationItem? get selectedItem {

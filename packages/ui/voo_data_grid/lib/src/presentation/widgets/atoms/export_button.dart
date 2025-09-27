@@ -60,42 +60,28 @@ class ExportButton<T> extends StatelessWidget {
     }
   }
 
-  Widget _buildDropdownButton(BuildContext context) =>
-      PopupMenuButton<ExportFormat>(
-      tooltip: 'Export data',
-      icon: icon ?? const Icon(Icons.download),
-      itemBuilder: (context) => availableFormats.map((format) =>
-        PopupMenuItem<ExportFormat>(
-          value: format,
-          child: Row(
-            children: [
-              Icon(_getFormatIcon(format), size: 20),
-              const SizedBox(width: 12),
-              Text(_getFormatLabel(format)),
-            ],
+  Widget _buildDropdownButton(BuildContext context) => PopupMenuButton<ExportFormat>(
+    tooltip: 'Export data',
+    icon: icon ?? const Icon(Icons.download),
+    itemBuilder: (context) => availableFormats
+        .map(
+          (format) => PopupMenuItem<ExportFormat>(
+            value: format,
+            child: Row(children: [Icon(_getFormatIcon(format), size: 20), const SizedBox(width: 12), Text(_getFormatLabel(format))]),
           ),
         )
-      ).toList(),
-      onSelected: (format) => _handleExport(context, format),
-    );
+        .toList(),
+    onSelected: (format) => _handleExport(context, format),
+  );
 
   Widget _buildSingleButton(BuildContext context, ExportFormat format) {
     final buttonIcon = icon ?? Icon(_getFormatIcon(format));
     final buttonLabel = label ?? _getFormatLabel(format);
 
     if (label != null) {
-      return ElevatedButton.icon(
-        onPressed: () => _handleExport(context, format),
-        icon: buttonIcon,
-        label: Text(buttonLabel),
-        style: style,
-      );
+      return ElevatedButton.icon(onPressed: () => _handleExport(context, format), icon: buttonIcon, label: Text(buttonLabel), style: style);
     } else {
-      return IconButton(
-        onPressed: () => _handleExport(context, format),
-        icon: buttonIcon,
-        tooltip: 'Export as ${_getFormatLabel(format)}',
-      );
+      return IconButton(onPressed: () => _handleExport(context, format), icon: buttonIcon, tooltip: 'Export as ${_getFormatLabel(format)}');
     }
   }
 
@@ -109,20 +95,13 @@ class ExportButton<T> extends StatelessWidget {
       final filters = controller.dataSource.filters;
 
       // Create export configuration
-      final config = (defaultConfig ?? ExportConfig(format: format)).copyWith(
-        format: format,
-      );
+      final config = (defaultConfig ?? ExportConfig(format: format)).copyWith(format: format);
 
       // Create export service
       final exportService = DataGridExportService<T>();
 
       // Export data
-      final exportedData = await exportService.export(
-        data: data,
-        columns: columns,
-        config: config,
-        activeFilters: filters.isNotEmpty ? filters : null,
-      );
+      final exportedData = await exportService.export(data: data, columns: columns, config: config, activeFilters: filters.isNotEmpty ? filters : null);
 
       // Get filename
       final filename = exportService.getSuggestedFilename(config);
@@ -132,44 +111,32 @@ class ExportButton<T> extends StatelessWidget {
         onExportComplete!(exportedData, filename);
       } else {
         // Default behavior: share or print
-        await exportService.shareOrPrint(
-          data: exportedData,
-          filename: filename,
-          format: format,
-        );
+        await exportService.shareOrPrint(data: exportedData, filename: filename, format: format);
       }
 
       // Show success message
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Successfully exported as ${_getFormatLabel(format)}'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Successfully exported as ${_getFormatLabel(format)}'), backgroundColor: Colors.green));
       }
     } catch (error) {
       onExportError?.call(error);
 
       // Show error message
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Export failed: $error'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export failed: $error'), backgroundColor: Colors.red));
       }
     }
   }
 
   IconData _getFormatIcon(ExportFormat format) => switch (format) {
-        ExportFormat.pdf => Icons.picture_as_pdf,
-        ExportFormat.excel => Icons.table_chart,
-      };
+    ExportFormat.pdf => Icons.picture_as_pdf,
+    ExportFormat.excel => Icons.table_chart,
+  };
 
   String _getFormatLabel(ExportFormat format) => switch (format) {
-        ExportFormat.pdf => 'Export as PDF',
-        ExportFormat.excel => 'Export as Excel',
-      };
+    ExportFormat.pdf => 'Export as PDF',
+    ExportFormat.excel => 'Export as Excel',
+  };
 }

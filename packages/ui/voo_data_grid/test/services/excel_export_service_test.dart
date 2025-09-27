@@ -18,26 +18,11 @@ void main() {
       service = ExcelExportService<Map<String, dynamic>>();
 
       columns = [
-        const VooDataColumn(
-          field: 'id',
-          label: 'ID',
-        ),
-        const VooDataColumn(
-          field: 'name',
-          label: 'Name',
-        ),
-        const VooDataColumn(
-          field: 'email',
-          label: 'Email',
-        ),
-        const VooDataColumn(
-          field: 'age',
-          label: 'Age',
-        ),
-        const VooDataColumn(
-          field: 'active',
-          label: 'Active',
-        ),
+        const VooDataColumn(field: 'id', label: 'ID'),
+        const VooDataColumn(field: 'name', label: 'Name'),
+        const VooDataColumn(field: 'email', label: 'Email'),
+        const VooDataColumn(field: 'age', label: 'Age'),
+        const VooDataColumn(field: 'active', label: 'Active'),
       ];
 
       testData = [
@@ -48,17 +33,9 @@ void main() {
     });
 
     test('should export data to Excel bytes', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Test Export',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Test Export');
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
@@ -66,166 +43,83 @@ void main() {
     });
 
     test('should include title and subtitle in Excel', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Sales Report',
-        subtitle: 'Q4 2024',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Sales Report', subtitle: 'Q4 2024');
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should handle filters in export', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Filtered Data',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Filtered Data');
 
-      final filters = {
-        'age': const VooDataFilter(
-          operator: VooFilterOperator.greaterThan,
-          value: 25,
-        ),
-      };
+      final filters = {'age': const VooDataFilter(operator: VooFilterOperator.greaterThan, value: 25)};
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: filters,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: filters);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should respect maxRows configuration', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Limited Export',
-        maxRows: 2,
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Limited Export', maxRows: 2);
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should show row numbers when configured', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Numbered Rows',
-        showRowNumbers: true,
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Numbered Rows', showRowNumbers: true);
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should include timestamp when configured', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Timestamped Report',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Timestamped Report');
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should exclude specified columns', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Selective Export',
-        excludeColumns: ['email', 'active'],
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Selective Export', excludeColumns: ['email', 'active']);
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should handle footer text', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Report with Footer',
-        footerText: 'Custom Footer Text',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Report with Footer', footerText: 'Custom Footer Text');
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should handle primary color configuration', () async {
-      final config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Colored Report',
-        primaryColor: Colors.blue[700],
-      );
+      final config = ExportConfig(format: ExportFormat.excel, title: 'Colored Report', primaryColor: Colors.blue[700]);
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should handle empty data', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Empty Report',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Empty Report');
 
-      final result = await service.export(
-        data: [],
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: [], columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
@@ -237,17 +131,9 @@ void main() {
         {'id': 2, 'name': 'Jane Smith', 'email': null, 'age': null, 'active': false},
       ];
 
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Report with Nulls',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Report with Nulls');
 
-      final result = await service.export(
-        data: dataWithNulls,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: dataWithNulls, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
@@ -255,59 +141,29 @@ void main() {
 
     test('should use value formatter when available', () async {
       final columnsWithFormatter = [
-        const VooDataColumn<Map<String, dynamic>>(
-          field: 'id',
-          label: 'ID',
-        ),
-        VooDataColumn<Map<String, dynamic>>(
-          field: 'age',
-          label: 'Age',
-          valueFormatter: (value) => '$value years',
-        ),
+        const VooDataColumn<Map<String, dynamic>>(field: 'id', label: 'ID'),
+        VooDataColumn<Map<String, dynamic>>(field: 'age', label: 'Age', valueFormatter: (value) => '$value years'),
       ];
 
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Formatted Export',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Formatted Export');
 
-      final result = await service.export(
-        data: testData,
-        columns: columnsWithFormatter,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columnsWithFormatter, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should handle column widths configuration', () async {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Custom Width Report',
-        columnWidths: {
-          'name': 150,
-          'email': 200,
-        },
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Custom Width Report', columnWidths: {'name': 150, 'email': 200});
 
-      final result = await service.export(
-        data: testData,
-        columns: columns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: testData, columns: columns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
     });
 
     test('should generate suggested filename', () {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Test Report',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Test Report');
 
       final filename = service.getSuggestedFilename(config);
 
@@ -317,10 +173,7 @@ void main() {
     });
 
     test('should generate suggested filename with custom name', () {
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        filename: 'custom_report',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, filename: 'custom_report');
 
       final filename = service.getSuggestedFilename(config);
 
@@ -347,17 +200,9 @@ void main() {
         const VooDataColumn<Map<String, dynamic>>(field: 'count', label: 'Count'),
       ];
 
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Numeric Report',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Numeric Report');
 
-      final result = await service.export(
-        data: numericData,
-        columns: numericColumns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: numericData, columns: numericColumns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());
@@ -375,17 +220,9 @@ void main() {
         const VooDataColumn<Map<String, dynamic>>(field: 'verified', label: 'Verified'),
       ];
 
-      const config = ExportConfig(
-        format: ExportFormat.excel,
-        title: 'Boolean Report',
-      );
+      const config = ExportConfig(format: ExportFormat.excel, title: 'Boolean Report');
 
-      final result = await service.export(
-        data: booleanData,
-        columns: booleanColumns,
-        config: config,
-        activeFilters: null,
-      );
+      final result = await service.export(data: booleanData, columns: booleanColumns, config: config, activeFilters: null);
 
       expect(result, isNotNull);
       expect(result, isA<Uint8List>());

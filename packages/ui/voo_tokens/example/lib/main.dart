@@ -93,7 +93,8 @@ class TokensDemoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSpacingBox(BuildContext context, String label, double value) => Padding(
+  Widget _buildSpacingBox(BuildContext context, String label, double value) =>
+      Padding(
         padding: EdgeInsets.symmetric(vertical: context.vooSpacing.xs),
         child: Row(
           children: [
@@ -107,7 +108,8 @@ class TokensDemoPage extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
             SizedBox(width: context.vooSpacing.sm),
-            Text('${value.toStringAsFixed(0)}px', style: context.vooTypography.caption),
+            Text('${value.toStringAsFixed(0)}px',
+                style: context.vooTypography.caption),
           ],
         ),
       );
@@ -174,7 +176,8 @@ class TokensDemoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRadiusBox(BuildContext context, String label, double value) => Column(
+  Widget _buildRadiusBox(BuildContext context, String label, double value) =>
+      Column(
         children: [
           Container(
             width: 80,
@@ -186,7 +189,8 @@ class TokensDemoPage extends StatelessWidget {
           ),
           SizedBox(height: context.vooSpacing.xs),
           Text(label, style: context.vooTypography.labelSmall),
-          Text('${value.toStringAsFixed(0)}px', style: context.vooTypography.caption),
+          Text('${value.toStringAsFixed(0)}px',
+              style: context.vooTypography.caption),
         ],
       );
 
@@ -205,19 +209,27 @@ class TokensDemoPage extends StatelessWidget {
           spacing: context.vooSpacing.md,
           runSpacing: context.vooSpacing.md,
           children: [
-            _buildElevationBox(context, 'Level 0', elevation.level0, elevation.shadow0()),
-            _buildElevationBox(context, 'Level 1', elevation.level1, elevation.shadow1()),
-            _buildElevationBox(context, 'Level 2', elevation.level2, elevation.shadow2()),
-            _buildElevationBox(context, 'Level 3', elevation.level3, elevation.shadow3()),
-            _buildElevationBox(context, 'Level 4', elevation.level4, elevation.shadow4()),
-            _buildElevationBox(context, 'Level 5', elevation.level5, elevation.shadow5()),
+            _buildElevationBox(
+                context, 'Level 0', elevation.level0, elevation.shadow0()),
+            _buildElevationBox(
+                context, 'Level 1', elevation.level1, elevation.shadow1()),
+            _buildElevationBox(
+                context, 'Level 2', elevation.level2, elevation.shadow2()),
+            _buildElevationBox(
+                context, 'Level 3', elevation.level3, elevation.shadow3()),
+            _buildElevationBox(
+                context, 'Level 4', elevation.level4, elevation.shadow4()),
+            _buildElevationBox(
+                context, 'Level 5', elevation.level5, elevation.shadow5()),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildElevationBox(BuildContext context, String label, double value, List<BoxShadow> shadows) => Column(
+  Widget _buildElevationBox(BuildContext context, String label, double value,
+          List<BoxShadow> shadows) =>
+      Column(
         children: [
           Container(
             width: 100,
@@ -247,16 +259,22 @@ class TokensDemoPage extends StatelessWidget {
           style: context.vooTypography.headlineSmall,
         ),
         SizedBox(height: context.vooSpacing.md),
-        _buildAnimationInfo(context, 'Instant', animation.durationInstant.inMilliseconds),
-        _buildAnimationInfo(context, 'Fast', animation.durationFast.inMilliseconds),
-        _buildAnimationInfo(context, 'Normal', animation.durationNormal.inMilliseconds),
-        _buildAnimationInfo(context, 'Slow', animation.durationSlow.inMilliseconds),
-        _buildAnimationInfo(context, 'Slowest', animation.durationSlowest.inMilliseconds),
+        _buildAnimationInfo(
+            context, 'Instant', animation.durationInstant.inMilliseconds),
+        _buildAnimationInfo(
+            context, 'Fast', animation.durationFast.inMilliseconds),
+        _buildAnimationInfo(
+            context, 'Normal', animation.durationNormal.inMilliseconds),
+        _buildAnimationInfo(
+            context, 'Slow', animation.durationSlow.inMilliseconds),
+        _buildAnimationInfo(
+            context, 'Slowest', animation.durationSlowest.inMilliseconds),
       ],
     );
   }
 
-  Widget _buildAnimationInfo(BuildContext context, String label, int ms) => Padding(
+  Widget _buildAnimationInfo(BuildContext context, String label, int ms) =>
+      Padding(
         padding: EdgeInsets.symmetric(vertical: context.vooSpacing.xs),
         child: Row(
           children: [
@@ -284,7 +302,8 @@ class TokensDemoPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Card with Card Padding', style: context.vooTypography.labelLarge),
+                Text('Card with Card Padding',
+                    style: context.vooTypography.labelLarge),
                 SizedBox(height: context.vooGap.inlineElements),
                 Text(
                   'This card uses context.vooPadding.card for consistent padding.',

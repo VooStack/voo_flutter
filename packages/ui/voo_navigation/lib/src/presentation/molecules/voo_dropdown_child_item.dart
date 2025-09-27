@@ -42,10 +42,11 @@ class VooDropdownChildItem extends StatelessWidget {
         padding:
             childrenPadding ??
             EdgeInsets.only(
-                left: context.vooSpacing.xxl * 2,
-                right: context.vooSpacing.md,
-                top: context.vooSpacing.sm,
-                bottom: context.vooSpacing.sm),
+              left: context.vooSpacing.xxl * 2,
+              right: context.vooSpacing.md,
+              top: context.vooSpacing.sm,
+              bottom: context.vooSpacing.sm,
+            ),
         decoration: isSelected && config.indicatorShape == null
             ? BoxDecoration(
                 border: Border(

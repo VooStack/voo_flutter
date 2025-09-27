@@ -25,28 +25,14 @@ class DataGridExportService<T> extends ExportService<T> {
   }) async {
     switch (config.format) {
       case ExportFormat.pdf:
-        return _pdfService.export(
-          data: data,
-          columns: columns,
-          config: config,
-          activeFilters: activeFilters,
-        );
+        return _pdfService.export(data: data, columns: columns, config: config, activeFilters: activeFilters);
       case ExportFormat.excel:
-        return _excelService.export(
-          data: data,
-          columns: columns,
-          config: config,
-          activeFilters: activeFilters,
-        );
+        return _excelService.export(data: data, columns: columns, config: config, activeFilters: activeFilters);
     }
   }
 
   @override
-  Future<String> saveToFile({
-    required Uint8List data,
-    required String filename,
-    required ExportFormat format,
-  }) async {
+  Future<String> saveToFile({required Uint8List data, required String filename, required ExportFormat format}) async {
     if (kIsWeb) {
       // On web, we can't save to file system directly
       // Instead, trigger a download
@@ -61,16 +47,9 @@ class DataGridExportService<T> extends ExportService<T> {
   }
 
   @override
-  Future<void> shareOrPrint({
-    required Uint8List data,
-    required String filename,
-    required ExportFormat format,
-  }) async {
+  Future<void> shareOrPrint({required Uint8List data, required String filename, required ExportFormat format}) async {
     if (format == ExportFormat.pdf) {
-      await Printing.sharePdf(
-        bytes: data,
-        filename: filename,
-      );
+      await Printing.sharePdf(bytes: data, filename: filename);
     } else {
       // For Excel files, we need to save and share differently
       if (kIsWeb) {
@@ -89,11 +68,7 @@ class DataGridExportService<T> extends ExportService<T> {
         }
       } else {
         // On desktop, save to documents
-        final path = await saveToFile(
-          data: data,
-          filename: filename,
-          format: format,
-        );
+        final path = await saveToFile(data: data, filename: filename, format: format);
         if (kDebugMode) {
           print('File saved to: $path');
         }

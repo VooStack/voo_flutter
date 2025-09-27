@@ -19,18 +19,10 @@ abstract class ExportService<T> {
   /// Save exported data to a file
   ///
   /// Returns the file path where it was saved
-  Future<String> saveToFile({
-    required Uint8List data,
-    required String filename,
-    required ExportFormat format,
-  });
+  Future<String> saveToFile({required Uint8List data, required String filename, required ExportFormat format});
 
   /// Share or print the exported document
-  Future<void> shareOrPrint({
-    required Uint8List data,
-    required String filename,
-    required ExportFormat format,
-  });
+  Future<void> shareOrPrint({required Uint8List data, required String filename, required ExportFormat format});
 
   /// Check if export is available on the current platform
   bool isExportAvailable();

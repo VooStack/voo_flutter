@@ -6,6 +6,7 @@ import 'package:voo_tokens/voo_tokens.dart';
 class VooBreakpoint {
   /// Default tokens for spacing
   static const _spacingTokens = VooSpacingTokens();
+
   /// The minimum width for this breakpoint
   final double minWidth;
 
@@ -77,7 +78,9 @@ class VooBreakpoint {
     maxWidth: 1440,
     navigationType: VooNavigationType.navigationDrawer,
     columns: 12,
-    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.xxxl * 3 + _spacingTokens.sm),
+    margin: EdgeInsets.symmetric(
+      horizontal: _spacingTokens.xxxl * 3 + _spacingTokens.sm,
+    ),
     gutter: _spacingTokens.sm + _spacingTokens.xs,
   );
 
@@ -86,7 +89,9 @@ class VooBreakpoint {
     minWidth: 1440,
     navigationType: VooNavigationType.navigationDrawer,
     columns: 12,
-    margin: EdgeInsets.symmetric(horizontal: _spacingTokens.xxxl * 3 + _spacingTokens.sm),
+    margin: EdgeInsets.symmetric(
+      horizontal: _spacingTokens.xxxl * 3 + _spacingTokens.sm,
+    ),
     gutter: _spacingTokens.sm + _spacingTokens.xs,
   );
 

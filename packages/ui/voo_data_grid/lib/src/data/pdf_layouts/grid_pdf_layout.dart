@@ -53,10 +53,7 @@ class GridPdfLayout extends PdfLayoutStrategy {
 
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey200,
-        borderRadius: pw.BorderRadius.circular(4),
-      ),
+      decoration: pw.BoxDecoration(color: PdfColors.grey200, borderRadius: pw.BorderRadius.circular(4)),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -95,16 +92,11 @@ class GridPdfLayout extends PdfLayoutStrategy {
 
     return pw.Table(
       columnWidths: columnWidths,
-      border: pw.TableBorder.all(
-        color: _pdfColorFromFlutter(config.accentColor) ?? PdfColors.grey400,
-        width: 0.5,
-      ),
+      border: pw.TableBorder.all(color: _pdfColorFromFlutter(config.accentColor) ?? PdfColors.grey400, width: 0.5),
       children: [
         // Header row
         pw.TableRow(
-          decoration: pw.BoxDecoration(
-            color: _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100,
-          ),
+          decoration: pw.BoxDecoration(color: _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100),
           children: headers
               .map(
                 (header) => pw.Container(
@@ -114,9 +106,7 @@ class GridPdfLayout extends PdfLayoutStrategy {
                     style: pw.TextStyle(
                       fontSize: 10,
                       fontWeight: pw.FontWeight.bold,
-                      color: _getContrastingTextColor(
-                        _pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100
-                      ),
+                      color: _getContrastingTextColor(_pdfColorFromFlutter(config.primaryColor) ?? PdfColors.blue100),
                     ),
                   ),
                 ),
@@ -128,21 +118,12 @@ class GridPdfLayout extends PdfLayoutStrategy {
           final index = entry.key;
           final row = entry.value;
           return pw.TableRow(
-            decoration: pw.BoxDecoration(
-              color: index % 2 == 0
-                ? PdfColors.white
-                : _pdfColorFromFlutter(config.accentColor)?.shade(0.1) ?? PdfColors.grey100,
-            ),
+            decoration: pw.BoxDecoration(color: index % 2 == 0 ? PdfColors.white : _pdfColorFromFlutter(config.accentColor)?.shade(0.1) ?? PdfColors.grey100),
             children: row
                 .map(
                   (cell) => pw.Container(
                     padding: const pw.EdgeInsets.all(8),
-                    child: pw.Text(
-                      cell,
-                      style: const pw.TextStyle(fontSize: 9),
-                      maxLines: 3,
-                      overflow: pw.TextOverflow.clip,
-                    ),
+                    child: pw.Text(cell, style: const pw.TextStyle(fontSize: 9), maxLines: 3, overflow: pw.TextOverflow.clip),
                   ),
                 )
                 .toList(),
@@ -152,12 +133,7 @@ class GridPdfLayout extends PdfLayoutStrategy {
     );
   }
 
-  List<double> _calculateColumnWidths(
-    List<String> headers,
-    List<List<String>> rows,
-    int dataColumnStart,
-    ExportConfig config,
-  ) {
+  List<double> _calculateColumnWidths(List<String> headers, List<List<String>> rows, int dataColumnStart, ExportConfig config) {
     final columnCount = headers.length - dataColumnStart;
     final maxWidths = List<double>.filled(columnCount, 1.0);
 
@@ -199,9 +175,7 @@ class GridPdfLayout extends PdfLayoutStrategy {
   }
 
   PdfColor _getContrastingTextColor(PdfColor backgroundColor) {
-    final luminance = 0.299 * backgroundColor.red +
-                      0.587 * backgroundColor.green +
-                      0.114 * backgroundColor.blue;
+    final luminance = 0.299 * backgroundColor.red + 0.587 * backgroundColor.green + 0.114 * backgroundColor.blue;
     return luminance > 0.5 ? PdfColors.black : PdfColors.white;
   }
 }

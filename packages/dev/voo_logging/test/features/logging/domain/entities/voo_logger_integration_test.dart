@@ -5,13 +5,7 @@ void main() {
   group('VooLogger Integration Tests', () {
     test('shouldNotify parameter works correctly for each log level', () async {
       // Initialize VooLogger
-      await VooLogger.initialize(
-        appName: 'TestApp',
-        minimumLevel: LogLevel.verbose,
-        config: const LoggingConfig(
-          enablePrettyLogs: false,
-        ),
-      );
+      await VooLogger.initialize(appName: 'TestApp', config: const LoggingConfig(enablePrettyLogs: false));
 
       // Test verbose - shouldNotify defaults to false
       await VooLogger.verbose('Verbose message');
@@ -65,11 +59,7 @@ void main() {
 
     test('VooLogger.initialize no longer accepts shouldNotify parameter', () async {
       // This should compile and run without shouldNotify
-      await VooLogger.initialize(
-        appName: 'TestApp',
-        minimumLevel: LogLevel.verbose,
-        config: const LoggingConfig(),
-      );
+      await VooLogger.initialize(appName: 'TestApp', config: const LoggingConfig());
 
       // Verify initialization succeeded
       expect(VooLogger.config, isNotNull);

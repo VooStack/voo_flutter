@@ -54,16 +54,11 @@ class PdfExportService<T> extends ExportService<T> {
     // Filter columns based on selection and visibility
     List<VooDataColumn> columnsToExport;
     if (config.selectedColumns != null && config.selectedColumns!.isNotEmpty) {
-      columnsToExport = columns.where((col) =>
-        config.selectedColumns!.contains(col.field) &&
-        col.visible &&
-        !(config.excludeColumns?.contains(col.field) ?? false)
-      ).toList();
+      columnsToExport = columns
+          .where((col) => config.selectedColumns!.contains(col.field) && col.visible && !(config.excludeColumns?.contains(col.field) ?? false))
+          .toList();
     } else {
-      columnsToExport = columns.where((col) =>
-        col.visible &&
-        !(config.excludeColumns?.contains(col.field) ?? false)
-      ).toList();
+      columnsToExport = columns.where((col) => col.visible && !(config.excludeColumns?.contains(col.field) ?? false)).toList();
     }
 
     // Prepare headers
@@ -87,13 +82,7 @@ class PdfExportService<T> extends ExportService<T> {
     }
 
     // Build content using the layout strategy
-    final content = layoutStrategy.buildContent(
-      headers: headers,
-      rows: rows,
-      columns: columnsToExport,
-      config: config,
-      activeFilters: activeFilters,
-    );
+    final content = layoutStrategy.buildContent(headers: headers, rows: rows, columns: columnsToExport, config: config, activeFilters: activeFilters);
 
     // Build PDF pages
     pdf.addPage(
@@ -143,11 +132,7 @@ class PdfExportService<T> extends ExportService<T> {
     return pw.Container(
       padding: const pw.EdgeInsets.only(bottom: 20),
       decoration: pw.BoxDecoration(
-        border: pw.Border(
-          bottom: pw.BorderSide(
-            color: _pdfColorFromFlutter(config.accentColor)?.shade(0.3) ?? PdfColors.grey400,
-          ),
-        ),
+        border: pw.Border(bottom: pw.BorderSide(color: _pdfColorFromFlutter(config.accentColor)?.shade(0.3) ?? PdfColors.grey400)),
       ),
       child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: widgets),
     );
@@ -165,16 +150,11 @@ class PdfExportService<T> extends ExportService<T> {
     return pw.Container(
       padding: const pw.EdgeInsets.only(top: 10),
       decoration: pw.BoxDecoration(
-        border: pw.Border(
-          top: pw.BorderSide(
-            color: _pdfColorFromFlutter(config.accentColor)?.shade(0.3) ?? PdfColors.grey400,
-          ),
-        ),
+        border: pw.Border(top: pw.BorderSide(color: _pdfColorFromFlutter(config.accentColor)?.shade(0.3) ?? PdfColors.grey400)),
       ),
       child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: widgets),
     );
   }
-
 
   dynamic _getCellValue<R>(R row, VooDataColumn column) {
     // Try to use valueGetter if available
@@ -239,7 +219,6 @@ class PdfExportService<T> extends ExportService<T> {
     if (color == null) return null;
     return PdfColor.fromInt(color.toARGB32());
   }
-
 
   @override
   Future<String> saveToFile({required Uint8List data, required String filename, required ExportFormat format}) async {

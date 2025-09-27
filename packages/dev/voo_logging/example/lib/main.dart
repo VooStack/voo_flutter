@@ -18,7 +18,6 @@ void main() async {
   // Initialize VooLogging
   await VooLogger.initialize(
     appName: 'VooLoggingExample',
-    minimumLevel: LogLevel.verbose,
     config: const LoggingConfig(
       enablePrettyLogs: true,
       showEmojis: true,
@@ -116,9 +115,16 @@ class _LoggingDemoScreenState extends State<LoggingDemoScreen> {
   Future<void> _makeNetworkRequest() async {
     try {
       await dio.get('https://jsonplaceholder.typicode.com/posts/1');
-      VooLogger.info('Network request completed successfully', shouldNotify: toastEnabled);
+      VooLogger.info(
+        'Network request completed successfully',
+        shouldNotify: toastEnabled,
+      );
     } catch (e) {
-      VooLogger.error('Network request failed', error: e, shouldNotify: toastEnabled);
+      VooLogger.error(
+        'Network request failed',
+        error: e,
+        shouldNotify: toastEnabled,
+      );
     }
   }
 

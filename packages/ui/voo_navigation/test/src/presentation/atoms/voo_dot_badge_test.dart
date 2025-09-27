@@ -6,7 +6,9 @@ import '../../../helpers/test_helpers.dart';
 
 void main() {
   group('VooDotBadge', () {
-    testWidgets('should render dot badge with correct color', (WidgetTester tester) async {
+    testWidgets('should render dot badge with correct color', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooDotBadge(
@@ -52,7 +54,9 @@ void main() {
       expect(container.constraints?.maxHeight ?? testSize, testSize);
     });
 
-    testWidgets('should animate when animate is true', (WidgetTester tester) async {
+    testWidgets('should animate when animate is true', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooDotBadge(
@@ -74,7 +78,9 @@ void main() {
       expect(find.byType(Container), findsOneWidget);
     });
 
-    testWidgets('should not animate when animate is false', (WidgetTester tester) async {
+    testWidgets('should not animate when animate is false', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooDotBadge(

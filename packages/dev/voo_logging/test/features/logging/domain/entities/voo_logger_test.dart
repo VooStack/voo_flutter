@@ -9,13 +9,7 @@ void main() {
     });
 
     setUp(() async {
-      await VooLogger.initialize(
-        appName: 'TestApp',
-        minimumLevel: LogLevel.verbose,
-        config: const LoggingConfig(
-          enablePrettyLogs: false,
-        ),
-      );
+      await VooLogger.initialize(appName: 'TestApp', config: const LoggingConfig(enablePrettyLogs: false));
     });
 
     tearDown(() async {
@@ -60,10 +54,7 @@ void main() {
       });
 
       test('error should accept shouldNotify parameter', () async {
-        await VooLogger.error(
-          'Test error message',
-          error: Exception('Test exception'),
-        );
+        await VooLogger.error('Test error message', error: Exception('Test exception'));
 
         final logs = await VooLogger.instance.getLogs();
         expect(logs.length, greaterThan(0));
@@ -73,10 +64,7 @@ void main() {
       });
 
       test('fatal should accept shouldNotify parameter', () async {
-        await VooLogger.fatal(
-          'Test fatal message',
-          error: Exception('Fatal exception'),
-        );
+        await VooLogger.fatal('Test fatal message', error: Exception('Fatal exception'));
 
         final logs = await VooLogger.instance.getLogs();
         expect(logs.length, greaterThan(0));
@@ -88,14 +76,7 @@ void main() {
 
     group('initialization', () {
       test('should not have shouldNotify in initialize method', () {
-        expect(
-          () => VooLogger.initialize(
-            appName: 'TestApp',
-            minimumLevel: LogLevel.verbose,
-            config: const LoggingConfig(),
-          ),
-          returnsNormally,
-        );
+        expect(() => VooLogger.initialize(appName: 'TestApp', config: const LoggingConfig()), returnsNormally);
       });
 
       test('LoggingConfig should not have shouldNotify field', () {
@@ -111,12 +92,7 @@ void main() {
 
     group('logging with metadata', () {
       test('should log with category and tag', () async {
-        await VooLogger.info(
-          'Test message with metadata',
-          category: 'TestCategory',
-          tag: 'TestTag',
-          metadata: {'key': 'value'},
-        );
+        await VooLogger.info('Test message with metadata', category: 'TestCategory', tag: 'TestTag', metadata: {'key': 'value'});
 
         final logs = await VooLogger.instance.getLogs();
         expect(logs.length, greaterThan(0));
@@ -156,11 +132,7 @@ void main() {
         const filter = LogFilter(levels: [LogLevel.warning, LogLevel.error, LogLevel.fatal]);
         final logs = await VooLogger.instance.getLogs(filter: filter);
 
-        expect(logs.every((log) =>
-          log.level == LogLevel.warning ||
-          log.level == LogLevel.error ||
-          log.level == LogLevel.fatal
-        ), isTrue);
+        expect(logs.every((log) => log.level == LogLevel.warning || log.level == LogLevel.error || log.level == LogLevel.fatal), isTrue);
       });
 
       test('should filter logs by category', () async {
@@ -181,11 +153,7 @@ void main() {
         final error = Exception('Test exception');
         final stackTrace = StackTrace.current;
 
-        await VooLogger.error(
-          'Error with stack trace',
-          error: error,
-          stackTrace: stackTrace,
-        );
+        await VooLogger.error('Error with stack trace', error: error, stackTrace: stackTrace);
 
         final logs = await VooLogger.instance.getLogs();
         expect(logs.length, greaterThan(0));

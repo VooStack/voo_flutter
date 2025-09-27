@@ -55,10 +55,7 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
     _maxRows = config?.maxRows;
 
     // Initialize selected columns with all visible columns
-    _selectedColumns = widget.controller.columns
-        .where((col) => col.visible)
-        .map((col) => col.field)
-        .toList();
+    _selectedColumns = widget.controller.columns.where((col) => col.visible).map((col) => col.field).toList();
     _selectAllColumns = true;
   }
 
@@ -81,188 +78,188 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Row(
-            children: [
-              const Icon(Icons.download, size: 28),
-              const SizedBox(width: 12),
-              const Text('Export Data', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const Spacer(),
-              IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
-            ],
-          ),
-          const Divider(height: 24),
-
-          // Format selection
-          const Text('Export Format', style: TextStyle(fontWeight: FontWeight.w500)),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              _buildFormatChip(ExportFormat.pdf, Icons.picture_as_pdf, 'PDF'),
-              const SizedBox(width: 12),
-              _buildFormatChip(ExportFormat.excel, Icons.table_chart, 'Excel'),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // PDF Layout selection (only for PDF format)
-          if (_selectedFormat == ExportFormat.pdf) ...[
-            const Text('PDF Layout', style: TextStyle(fontWeight: FontWeight.w500)),
-            const SizedBox(height: 8),
-            _buildPdfLayoutSelector(),
-            const SizedBox(height: 16),
-          ],
-
-          // Column Selection
-          const Text('Select Columns to Export', style: TextStyle(fontWeight: FontWeight.w500)),
-          const SizedBox(height: 8),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Column(
+            Row(
               children: [
-                CheckboxListTile(
-                  value: _selectAllColumns,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectAllColumns = value ?? true;
-                      if (_selectAllColumns) {
-                        _selectedColumns = widget.controller.columns
-                            .where((col) => col.visible)
-                            .map((col) => col.field)
-                            .toList();
-                      } else {
-                        _selectedColumns.clear();
-                      }
-                    });
-                  },
-                  title: const Text('Select All', style: TextStyle(fontWeight: FontWeight.bold)),
-                  dense: true,
-                ),
-                const Divider(height: 1),
-                Container(
-                  constraints: const BoxConstraints(maxHeight: 150),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: widget.controller.columns.where((col) => col.visible).length,
-                    itemBuilder: (context, index) {
-                      final column = widget.controller.columns.where((col) => col.visible).toList()[index];
-                      return CheckboxListTile(
-                        value: _selectedColumns.contains(column.field),
-                        onChanged: (value) {
-                          setState(() {
-                            if (value == true) {
-                              _selectedColumns.add(column.field);
-                            } else {
-                              _selectedColumns.remove(column.field);
-                            }
-                            _selectAllColumns = _selectedColumns.length ==
-                                widget.controller.columns.where((col) => col.visible).length;
-                          });
-                        },
-                        title: Text(column.label),
-                        dense: true,
-                      );
+                const Icon(Icons.download, size: 28),
+                const SizedBox(width: 12),
+                const Text('Export Data', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const Spacer(),
+                IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+              ],
+            ),
+            const Divider(height: 24),
+
+            // Format selection
+            const Text('Export Format', style: TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _buildFormatChip(ExportFormat.pdf, Icons.picture_as_pdf, 'PDF'),
+                const SizedBox(width: 12),
+                _buildFormatChip(ExportFormat.excel, Icons.table_chart, 'Excel'),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // PDF Layout selection (only for PDF format)
+            if (_selectedFormat == ExportFormat.pdf) ...[
+              const Text('PDF Layout', style: TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8),
+              _buildPdfLayoutSelector(),
+              const SizedBox(height: 16),
+            ],
+
+            // Column Selection
+            const Text('Select Columns to Export', style: TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Column(
+                children: [
+                  CheckboxListTile(
+                    value: _selectAllColumns,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectAllColumns = value ?? true;
+                        if (_selectAllColumns) {
+                          _selectedColumns = widget.controller.columns.where((col) => col.visible).map((col) => col.field).toList();
+                        } else {
+                          _selectedColumns.clear();
+                        }
+                      });
+                    },
+                    title: const Text('Select All', style: TextStyle(fontWeight: FontWeight.bold)),
+                    dense: true,
+                  ),
+                  const Divider(height: 1),
+                  Container(
+                    constraints: const BoxConstraints(maxHeight: 150),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.controller.columns.where((col) => col.visible).length,
+                      itemBuilder: (context, index) {
+                        final column = widget.controller.columns.where((col) => col.visible).toList()[index];
+                        return CheckboxListTile(
+                          value: _selectedColumns.contains(column.field),
+                          onChanged: (value) {
+                            setState(() {
+                              if (value == true) {
+                                _selectedColumns.add(column.field);
+                              } else {
+                                _selectedColumns.remove(column.field);
+                              }
+                              _selectAllColumns = _selectedColumns.length == widget.controller.columns.where((col) => col.visible).length;
+                            });
+                          },
+                          title: Text(column.label),
+                          dense: true,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Document details
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(labelText: 'Document Title', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _subtitleController,
+              decoration: const InputDecoration(labelText: 'Subtitle (Optional)', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _companyNameController,
+              decoration: const InputDecoration(labelText: 'Company Name (Optional)', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _filenameController,
+              decoration: const InputDecoration(
+                labelText: 'Filename (Optional)',
+                border: OutlineInputBorder(),
+                hintText: 'Leave empty for auto-generated name',
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Options
+            const Text('Options', style: TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              value: _includeFilters,
+              onChanged: (value) => setState(() => _includeFilters = value ?? true),
+              title: const Text('Include active filters'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
+            CheckboxListTile(
+              value: _includeTimestamp,
+              onChanged: (value) => setState(() => _includeTimestamp = value ?? true),
+              title: const Text('Include timestamp'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
+            CheckboxListTile(
+              value: _showRowNumbers,
+              onChanged: (value) => setState(() => _showRowNumbers = value ?? false),
+              title: const Text('Show row numbers'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
+            if (_selectedFormat == ExportFormat.pdf)
+              CheckboxListTile(
+                value: _isLandscape,
+                onChanged: (value) => setState(() => _isLandscape = value ?? true),
+                title: const Text('Landscape orientation'),
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+              ),
+
+            // Row limit
+            Row(
+              children: [
+                const Text('Max rows to export: '),
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 100,
+                  child: TextField(
+                    decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'All'),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        _maxRows = value.isEmpty ? null : int.tryParse(value);
+                      });
                     },
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
-          // Document details
-          TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(labelText: 'Document Title', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _subtitleController,
-            decoration: const InputDecoration(labelText: 'Subtitle (Optional)', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _companyNameController,
-            decoration: const InputDecoration(labelText: 'Company Name (Optional)', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _filenameController,
-            decoration: const InputDecoration(labelText: 'Filename (Optional)', border: OutlineInputBorder(), hintText: 'Leave empty for auto-generated name'),
-          ),
-          const SizedBox(height: 16),
-
-          // Options
-          const Text('Options', style: TextStyle(fontWeight: FontWeight.w500)),
-          const SizedBox(height: 8),
-          CheckboxListTile(
-            value: _includeFilters,
-            onChanged: (value) => setState(() => _includeFilters = value ?? true),
-            title: const Text('Include active filters'),
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-          ),
-          CheckboxListTile(
-            value: _includeTimestamp,
-            onChanged: (value) => setState(() => _includeTimestamp = value ?? true),
-            title: const Text('Include timestamp'),
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-          ),
-          CheckboxListTile(
-            value: _showRowNumbers,
-            onChanged: (value) => setState(() => _showRowNumbers = value ?? false),
-            title: const Text('Show row numbers'),
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-          ),
-          if (_selectedFormat == ExportFormat.pdf)
-            CheckboxListTile(
-              value: _isLandscape,
-              onChanged: (value) => setState(() => _isLandscape = value ?? true),
-              title: const Text('Landscape orientation'),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            ),
-
-          // Row limit
-          Row(
-            children: [
-              const Text('Max rows to export: '),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 100,
-                child: TextField(
-                  decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'All'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      _maxRows = value.isEmpty ? null : int.tryParse(value);
-                    });
-                  },
+            // Actions
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(onPressed: _isExporting ? null : () => Navigator.of(context).pop(), child: const Text('Cancel')),
+                const SizedBox(width: 12),
+                ElevatedButton.icon(
+                  onPressed: _isExporting ? null : _handleExport,
+                  icon: _isExporting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.download),
+                  label: Text(_isExporting ? 'Exporting...' : 'Export'),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Actions
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(onPressed: _isExporting ? null : () => Navigator.of(context).pop(), child: const Text('Cancel')),
-              const SizedBox(width: 12),
-              ElevatedButton.icon(
-                onPressed: _isExporting ? null : _handleExport,
-                icon: _isExporting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.download),
-                label: Text(_isExporting ? 'Exporting...' : 'Export'),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -286,24 +283,9 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
       spacing: 8,
       runSpacing: 8,
       children: [
-        _buildLayoutChip(
-          PdfLayoutType.grid,
-          Icons.grid_on,
-          'Grid',
-          'Traditional table layout',
-        ),
-        _buildLayoutChip(
-          PdfLayoutType.list,
-          Icons.view_list,
-          'List',
-          'Card-based for large datasets',
-        ),
-        _buildLayoutChip(
-          PdfLayoutType.compact,
-          Icons.compress,
-          'Compact',
-          'Maximum data density',
-        ),
+        _buildLayoutChip(PdfLayoutType.grid, Icons.grid_on, 'Grid', 'Traditional table layout'),
+        _buildLayoutChip(PdfLayoutType.list, Icons.view_list, 'List', 'Card-based for large datasets'),
+        _buildLayoutChip(PdfLayoutType.compact, Icons.compress, 'Compact', 'Maximum data density'),
       ],
     );
   }

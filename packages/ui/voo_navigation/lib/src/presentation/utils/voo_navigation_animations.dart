@@ -186,7 +186,9 @@ class VooNavigationAnimations {
     Curve curve = defaultCurve,
   }) {
     final effectiveBaseDuration = baseDuration ?? defaultDuration;
-    final effectiveStaggerDelay = staggerDelay ?? Duration(milliseconds: (fastDuration.inMilliseconds * 0.33).round());
+    final effectiveStaggerDelay =
+        staggerDelay ??
+        Duration(milliseconds: (fastDuration.inMilliseconds * 0.33).round());
     final delay = effectiveStaggerDelay * index;
     final totalDuration = effectiveBaseDuration + delay;
 

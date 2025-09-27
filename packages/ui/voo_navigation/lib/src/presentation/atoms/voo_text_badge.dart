@@ -58,7 +58,8 @@ class VooTextBadge extends StatelessWidget {
       child: Center(
         child: Text(
           text,
-          style: textStyle ??
+          style:
+              textStyle ??
               theme.textTheme.labelSmall!.copyWith(
                 color: textColor,
                 fontSize: size * 0.55,

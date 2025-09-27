@@ -6,7 +6,9 @@ import '../../../helpers/test_helpers.dart';
 
 void main() {
   group('VooTextBadge', () {
-    testWidgets('should render text badge with correct text', (WidgetTester tester) async {
+    testWidgets('should render text badge with correct text', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooTextBadge(
@@ -52,7 +54,9 @@ void main() {
       expect(text.style?.color, Colors.white);
     });
 
-    testWidgets('should animate when animate is true', (WidgetTester tester) async {
+    testWidgets('should animate when animate is true', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooTextBadge(
@@ -76,7 +80,9 @@ void main() {
       expect(find.text('10'), findsOneWidget);
     });
 
-    testWidgets('should not animate when animate is false', (WidgetTester tester) async {
+    testWidgets('should not animate when animate is false', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooTextBadge(
@@ -165,10 +171,15 @@ void main() {
 
       // Container should have appropriate padding for multi-character text
       final container = tester.widget<Container>(find.byType(Container));
-      expect(container.padding, const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+      expect(
+        container.padding,
+        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      );
     });
 
-    testWidgets('should use different padding for single character', (WidgetTester tester) async {
+    testWidgets('should use different padding for single character', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: const VooTextBadge(
@@ -184,7 +195,10 @@ void main() {
 
       // Container should have different padding for single character
       final container = tester.widget<Container>(find.byType(Container));
-      expect(container.padding, const EdgeInsets.symmetric(horizontal: 6, vertical: 2));
+      expect(
+        container.padding,
+        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      );
     });
   });
 }

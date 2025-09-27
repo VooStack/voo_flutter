@@ -43,10 +43,13 @@ class VooAdaptiveNavigationDrawer extends StatefulWidget {
   });
 
   @override
-  State<VooAdaptiveNavigationDrawer> createState() => _VooAdaptiveNavigationDrawerState();
+  State<VooAdaptiveNavigationDrawer> createState() =>
+      _VooAdaptiveNavigationDrawerState();
 }
 
-class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawer> with TickerProviderStateMixin {
+class _VooAdaptiveNavigationDrawerState
+    extends State<VooAdaptiveNavigationDrawer>
+    with TickerProviderStateMixin {
   final Map<String, AnimationController> _expansionControllers = {};
   final Map<String, Animation<double>> _expansionAnimations = {};
   final Map<String, bool> _hoveredItems = {};
@@ -55,15 +58,22 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
   @override
   void initState() {
     super.initState();
-    _scrollController = widget.config.drawerScrollController ?? ScrollController();
+    _scrollController =
+        widget.config.drawerScrollController ?? ScrollController();
     _initializeExpansionAnimations();
   }
 
   void _initializeExpansionAnimations() {
     for (final item in widget.config.items) {
       if (item.hasChildren) {
-        _expansionControllers[item.id] = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
-        _expansionAnimations[item.id] = CurvedAnimation(parent: _expansionControllers[item.id]!, curve: Curves.easeInOutCubic);
+        _expansionControllers[item.id] = AnimationController(
+          duration: const Duration(milliseconds: 300),
+          vsync: this,
+        );
+        _expansionAnimations[item.id] = CurvedAnimation(
+          parent: _expansionControllers[item.id]!,
+          curve: Curves.easeInOutCubic,
+        );
 
         if (item.isExpanded) {
           _expansionControllers[item.id]!.value = 1.0;
@@ -111,13 +121,16 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final effectiveWidth = widget.width ?? widget.config.navigationDrawerWidth ?? 300;
+    final effectiveWidth =
+        widget.width ?? widget.config.navigationDrawerWidth ?? 300;
 
     // Use a subtle surface color variation for better visual distinction
     final effectiveBackgroundColor =
         widget.backgroundColor ??
         widget.config.navigationBackgroundColor ??
-        (theme.brightness == Brightness.light ? theme.colorScheme.surface.withValues(alpha: 0.95) : theme.colorScheme.surfaceContainerLow);
+        (theme.brightness == Brightness.light
+            ? theme.colorScheme.surface.withValues(alpha: 0.95)
+            : theme.colorScheme.surfaceContainerLow);
 
     return AnimatedContainer(
       duration: widget.config.animationDuration,
@@ -128,8 +141,16 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.vooRadius.lg),
           boxShadow: [
-            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(2, 0)),
-            BoxShadow(color: theme.shadowColor.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(4, 0)),
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(2, 0),
+            ),
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.04),
+              blurRadius: 20,
+              offset: const Offset(4, 0),
+            ),
           ],
         ),
         child: ClipRRect(
@@ -139,8 +160,14 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: effectiveBackgroundColor,
-                borderRadius: BorderRadius.only(topRight: Radius.circular(context.vooRadius.lg), bottomRight: Radius.circular(context.vooRadius.lg)),
-                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1), width: context.vooSize.borderThin),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(context.vooRadius.lg),
+                  bottomRight: Radius.circular(context.vooRadius.lg),
+                ),
+                border: Border.all(
+                  color: theme.dividerColor.withValues(alpha: 0.1),
+                  width: context.vooSize.borderThin,
+                ),
               ),
               child: Material(
                 color: Colors.transparent,
@@ -148,13 +175,18 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Custom header or default modern header
-                    widget.config.drawerHeader ?? VooDrawerDefaultHeader(config: widget.config),
+                    widget.config.drawerHeader ??
+                        VooDrawerDefaultHeader(config: widget.config),
 
                     // Navigation items
                     Expanded(
                       child: ListView(
                         controller: _scrollController,
-                        padding: EdgeInsets.symmetric(horizontal: context.vooSpacing.sm + context.vooSpacing.xs, vertical: context.vooSpacing.sm),
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.vooSpacing.sm + context.vooSpacing.xs,
+                          vertical: context.vooSpacing.sm,
+                        ),
                         children: [
                           VooDrawerNavigationItems(
                             config: widget.config,
@@ -172,7 +204,13 @@ class _VooAdaptiveNavigationDrawerState extends State<VooAdaptiveNavigationDrawe
                     ),
 
                     // Footer
-                    if (widget.config.drawerFooter != null) Padding(padding: EdgeInsets.all(context.vooSpacing.sm + context.vooSpacing.xs), child: widget.config.drawerFooter!),
+                    if (widget.config.drawerFooter != null)
+                      Padding(
+                        padding: EdgeInsets.all(
+                          context.vooSpacing.sm + context.vooSpacing.xs,
+                        ),
+                        child: widget.config.drawerFooter!,
+                      ),
                   ],
                 ),
               ),

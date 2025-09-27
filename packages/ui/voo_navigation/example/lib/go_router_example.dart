@@ -382,7 +382,10 @@ class DashboardPage extends StatelessWidget {
         final metric = metrics[index];
         return Card(
           elevation: 0,
-          color: Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.5),
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainer
+              .withValues(alpha: 0.5),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -408,14 +411,16 @@ class DashboardPage extends StatelessWidget {
                   children: [
                     Text(
                       metric.$2,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                     Text(
                       metric.$1,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                     ),
                   ],

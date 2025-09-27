@@ -36,11 +36,7 @@ void main() {
     testWidgets('should use custom tokens when registered in theme', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [
-              VooTokensTheme.standard(scaleFactor: 2.0),
-            ],
-          ),
+          theme: ThemeData(extensions: [VooTokensTheme.standard(scaleFactor: 2.0)]),
           home: Builder(
             builder: (context) {
               final tokens = context.vooTokens;

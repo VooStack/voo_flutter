@@ -165,13 +165,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
 
     // Add export button if enabled
     if (widget.showExportButton) {
-      actions.add(
-        IconButton(
-          icon: const Icon(Icons.download),
-          tooltip: 'Export data',
-          onPressed: () => _showExportDialog(context),
-        ),
-      );
+      actions.add(IconButton(icon: const Icon(Icons.download), tooltip: 'Export data', onPressed: () => _showExportDialog(context)));
     }
 
     // Add any additional custom actions
@@ -185,11 +179,7 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
   void _showExportDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => ExportDialog<T>(
-        controller: widget.controller,
-        initialConfig: widget.exportConfig,
-        companyLogo: widget.companyLogo,
-      ),
+      builder: (context) => ExportDialog<T>(controller: widget.controller, initialConfig: widget.exportConfig, companyLogo: widget.companyLogo),
     );
   }
 

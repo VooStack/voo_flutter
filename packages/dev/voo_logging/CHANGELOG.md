@@ -1,3 +1,16 @@
+## 0.4.5
+
+ - **FEAT**: Add per-type logging configuration for granular control over different log categories
+ - **FEAT**: Separate console and DevTools output configuration for each log type
+ - **FEAT**: Add LogTypeConfig entity for configuring network, analytics, error, and other log types independently
+ - **FEAT**: Add production and development factory configurations with sensible defaults
+ - **FEAT**: Enable storage control per log type to optimize database usage
+ - **FIX**: Remove redundant minimumLevel parameter from VooLogger.initialize()
+ - **FIX**: Fix repository re-initialization when config changes to properly update minimum log levels
+ - **ENHANCEMENT**: Add LogType enum (general, network, analytics, performance, error, system)
+ - **ENHANCEMENT**: Add withLogTypeConfig method to easily update specific log type configurations
+ - **ENHANCEMENT**: Map log categories to LogType automatically for consistent configuration
+
 ## 0.4.4
 
  - **FEAT**: Update version in pubspec.yaml and adjust VooAdaptiveNavigationRail test for border radius and width changes.

@@ -41,7 +41,8 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
   @override
   void initState() {
     super.initState();
-    _animationController = widget.animationController ??
+    _animationController =
+        widget.animationController ??
         AnimationController(
           duration: const Duration(milliseconds: 300),
           vsync: this,
@@ -97,7 +98,11 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
           ),
           child: AnimatedScale(
             scale: _isHovered ? 1.02 : 1.0,
-            duration: Duration(milliseconds: (context.vooAnimation.durationFast.inMilliseconds * 0.75).round()),
+            duration: Duration(
+              milliseconds:
+                  (context.vooAnimation.durationFast.inMilliseconds * 0.75)
+                      .round(),
+            ),
             child: AnimatedContainer(
               duration: context.vooAnimation.durationFast,
               height: widget.extended ? 48 : 56,
@@ -113,9 +118,11 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                     ? LinearGradient(
                         colors: [
                           theme.colorScheme.primary.withValues(
-                              alpha: isDark ? 0.2 : 0.12),
+                            alpha: isDark ? 0.2 : 0.12,
+                          ),
                           theme.colorScheme.primary.withValues(
-                              alpha: isDark ? 0.15 : 0.08),
+                            alpha: isDark ? 0.15 : 0.08,
+                          ),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -123,18 +130,20 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                     : null,
                 color: !widget.isSelected
                     ? (_isHovered
-                        ? theme.colorScheme.onSurface.withValues(
-                            alpha: isDark ? 0.08 : 0.04)
-                        : Colors.transparent)
+                          ? theme.colorScheme.onSurface.withValues(
+                              alpha: isDark ? 0.08 : 0.04,
+                            )
+                          : Colors.transparent)
                     : null,
                 boxShadow: widget.isSelected
                     ? [
                         BoxShadow(
-                          color: theme.colorScheme.primary
-                              .withValues(alpha: 0.1),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.1,
+                          ),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
-                        )
+                        ),
                       ]
                     : null,
               ),
@@ -175,8 +184,9 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                     color: widget.isSelected
                         ? theme.colorScheme.primary
                         : theme.colorScheme.onSurface,
-                    fontWeight:
-                        widget.isSelected ? FontWeight.w600 : FontWeight.w400,
+                    fontWeight: widget.isSelected
+                        ? FontWeight.w600
+                        : FontWeight.w400,
                     fontSize: context.vooTypography.bodyMedium.fontSize,
                   ),
                   overflow: TextOverflow.ellipsis,

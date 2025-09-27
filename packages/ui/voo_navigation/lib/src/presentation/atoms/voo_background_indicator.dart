@@ -41,8 +41,8 @@ class VooBackgroundIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveShape = shape ??
-        RoundedRectangleBorder(borderRadius: context.vooRadius.card);
+    final effectiveShape =
+        shape ?? RoundedRectangleBorder(borderRadius: context.vooRadius.card);
 
     if (!animate) {
       return Container(

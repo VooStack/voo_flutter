@@ -39,20 +39,11 @@ class VooMarginTokens {
     betweenSections: betweenSections * scaleFactor,
   );
 
-  EdgeInsets get page => EdgeInsets.symmetric(
-    horizontal: pageHorizontal,
-    vertical: pageVertical,
-  );
+  EdgeInsets get page => EdgeInsets.symmetric(horizontal: pageHorizontal, vertical: pageVertical);
 
   EdgeInsets get card => EdgeInsets.all(cardOuter);
 
-  EdgeInsets get listItem => EdgeInsets.symmetric(
-    horizontal: listItemHorizontal,
-    vertical: listItemVertical,
-  );
+  EdgeInsets get listItem => EdgeInsets.symmetric(horizontal: listItemHorizontal, vertical: listItemVertical);
 
-  EdgeInsets get dialog => EdgeInsets.symmetric(
-    horizontal: dialogHorizontal,
-    vertical: dialogVertical,
-  );
+  EdgeInsets get dialog => EdgeInsets.symmetric(horizontal: dialogHorizontal, vertical: dialogVertical);
 }

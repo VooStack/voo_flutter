@@ -37,10 +37,12 @@ class VooIconWithBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final effectiveSelectedColor = selectedColor ??
-        config.selectedItemColor ?? colorScheme.primary;
-    final effectiveUnselectedColor = unselectedColor ??
-        config.unselectedItemColor ?? colorScheme.onSurfaceVariant;
+    final effectiveSelectedColor =
+        selectedColor ?? config.selectedItemColor ?? colorScheme.primary;
+    final effectiveUnselectedColor =
+        unselectedColor ??
+        config.unselectedItemColor ??
+        colorScheme.onSurfaceVariant;
 
     final icon = AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
@@ -48,7 +50,8 @@ class VooIconWithBadge extends StatelessWidget {
         opacity: animation,
         child: ScaleTransition(scale: animation, child: child),
       ),
-      child: item.leadingWidget ??
+      child:
+          item.leadingWidget ??
           Icon(
             useSelectedIcon ? item.effectiveSelectedIcon : item.icon,
             key: ValueKey('${item.id}_${useSelectedIcon}_$isSelected'),

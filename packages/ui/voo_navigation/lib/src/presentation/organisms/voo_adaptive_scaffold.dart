@@ -222,5 +222,4 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
       },
     ),
   );
-
 }

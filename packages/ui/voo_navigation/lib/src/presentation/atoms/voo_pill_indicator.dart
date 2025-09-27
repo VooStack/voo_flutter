@@ -46,11 +46,7 @@ class VooPillIndicator extends StatelessWidget {
     );
 
     if (!animate) {
-      return Container(
-        padding: padding,
-        decoration: decoration,
-        child: child,
-      );
+      return Container(padding: padding, decoration: decoration, child: child);
     }
 
     return AnimatedContainer(

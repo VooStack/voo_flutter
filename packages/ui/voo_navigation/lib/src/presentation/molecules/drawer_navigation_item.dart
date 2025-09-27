@@ -57,8 +57,8 @@ class VooDrawerNavigationItem extends StatelessWidget {
               color: isSelected
                   ? theme.colorScheme.primary.withValues(alpha: 0.12)
                   : isHovered
-                      ? theme.colorScheme.onSurface.withValues(alpha: 0.05)
-                      : Colors.transparent,
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.05)
+                  : Colors.transparent,
               border: isSelected
                   ? Border.all(
                       color: theme.colorScheme.primary.withValues(alpha: 0.2),
@@ -72,7 +72,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
                         color: theme.colorScheme.shadow.withValues(alpha: 0.06),
                         blurRadius: 3,
                         offset: const Offset(0, 1),
-                      )
+                      ),
                     ]
                   : null,
             ),
@@ -101,7 +101,9 @@ class VooDrawerNavigationItem extends StatelessWidget {
                       color: isSelected
                           ? theme.colorScheme.primary
                           : theme.colorScheme.onSurface.withValues(alpha: 0.85),
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                       fontSize: context.vooTypography.bodyMedium.fontSize,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -111,10 +113,7 @@ class VooDrawerNavigationItem extends StatelessWidget {
                 // Modern badge
                 if (item.hasBadge) ...[
                   SizedBox(width: context.vooSpacing.sm),
-                  VooDrawerModernBadge(
-                    item: item,
-                    isSelected: isSelected,
-                  ),
+                  VooDrawerModernBadge(item: item, isSelected: isSelected),
                 ],
 
                 // Trailing widget

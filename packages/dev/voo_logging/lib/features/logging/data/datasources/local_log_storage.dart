@@ -267,7 +267,7 @@ class LocalLogStorage {
       }
 
       // Date range
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(data['timestamp']! as int);
+      final timestamp = DateTime.parse(data['timestamp']! as String);
       if (earliestLog == null || timestamp.isBefore(earliestLog)) {
         earliestLog = timestamp;
       }
