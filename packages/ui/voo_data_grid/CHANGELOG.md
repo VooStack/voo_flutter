@@ -1,3 +1,34 @@
+## 0.7.19
+
+* **Made VooUnsetValue Public for State Extension**
+  * Renamed `_Unset` to `VooUnsetValue` and made it public
+  * Fixes type errors when extending `VooDataGridState` and overriding `copyWith`
+  * Resolves "The argument type 'Object?' can't be assigned to the parameter type 'String?'" errors
+  * Users can now properly implement nullable parameter handling in custom state classes
+  * Added comprehensive documentation with usage example
+  * Example usage when extending VooDataGridState:
+    ```dart
+    @override
+    MyState copyWith({
+      Object? error = const VooUnsetValue(),
+    }) {
+      return MyState(
+        error: error is VooUnsetValue ? this.error : error as String?,
+      );
+    }
+    ```
+
+## 0.7.18
+
+* **Added UTC Offset DateTime Format for OData Filters**
+  * Added `ODataDateTimeFormat.utcOffset` enum value for explicit timezone offset formatting
+  * Formats DateTime values as `2024-09-30T15:15:30.000+00:00` instead of `2024-09-30T15:15:30.000Z`
+  * Solves compatibility issues with .NET OData DateTimeOffset + PostgreSQL timestamptz configurations
+  * Works around "Cannot write DateTime with Kind=Unspecified to PostgreSQL" and "DateTimeOffset text should be in format..." errors
+  * String dates are also formatted consistently with explicit UTC offset
+  * Added comprehensive test suite with 14 tests covering all DateTime format scenarios
+  * Updated both DateTime object and string date parsing to handle utcOffset format
+
 ## 0.7.17
 
 * **Fixed VooDataGridState.copyWith for Nullable Fields**

@@ -108,14 +108,14 @@ class VooDataGridState<T> {
     int? currentPage,
     int? pageSize,
     bool? isLoading,
-    Object? error = const _Unset(),
+    Object? error = const VooUnsetValue(),
     Map<String, VooDataFilter>? filters,
     List<VooColumnSort>? sorts,
     Set<T>? selectedRows,
     VooSelectionMode? selectionMode,
     bool? filtersVisible,
-    Object? primaryFilterField = const _Unset(),
-    Object? primaryFilter = const _Unset(),
+    Object? primaryFilterField = const VooUnsetValue(),
+    Object? primaryFilter = const VooUnsetValue(),
   }) => VooDataGridState<T>(
     mode: mode ?? this.mode,
     allRows: allRows ?? this.allRows,
@@ -124,14 +124,14 @@ class VooDataGridState<T> {
     currentPage: currentPage ?? this.currentPage,
     pageSize: pageSize ?? this.pageSize,
     isLoading: isLoading ?? this.isLoading,
-    error: error is _Unset ? this.error : error as String?,
+    error: error is VooUnsetValue ? this.error : error as String?,
     filters: filters ?? this.filters,
     sorts: sorts ?? this.sorts,
     selectedRows: selectedRows ?? this.selectedRows,
     selectionMode: selectionMode ?? this.selectionMode,
     filtersVisible: filtersVisible ?? this.filtersVisible,
-    primaryFilterField: primaryFilterField is _Unset ? this.primaryFilterField : primaryFilterField as String?,
-    primaryFilter: primaryFilter is _Unset ? this.primaryFilter : primaryFilter as VooDataFilter?,
+    primaryFilterField: primaryFilterField is VooUnsetValue ? this.primaryFilterField : primaryFilterField as String?,
+    primaryFilter: primaryFilter is VooUnsetValue ? this.primaryFilter : primaryFilter as VooDataFilter?,
   );
 
   /// Convenience method to clear the error state
@@ -142,6 +142,23 @@ class VooDataGridState<T> {
 }
 
 /// Sentinel class to detect unset optional parameters in copyWith
-class _Unset {
-  const _Unset();
+///
+/// Use this as the default value for nullable parameters in copyWith methods
+/// when extending VooDataGridState to distinguish between:
+/// - Parameter not provided (keeps current value)
+/// - Parameter explicitly set to null (clears the value)
+///
+/// Example:
+/// ```dart
+/// @override
+/// MyState copyWith({
+///   String? error = const VooUnsetValue(),
+/// }) {
+///   return MyState(
+///     error: error is VooUnsetValue ? this.error : error as String?,
+///   );
+/// }
+/// ```
+class VooUnsetValue {
+  const VooUnsetValue();
 }

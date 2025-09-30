@@ -34,6 +34,11 @@ enum ODataDateTimeFormat {
   /// Use this for .NET backends that don't properly handle UTC strings
   /// or when your DateTime columns don't use 'timestamp with time zone'
   unspecified,
+
+  /// ISO 8601 with explicit UTC offset: 2024-09-30T15:15:30.000+00:00
+  /// Use for .NET OData with DateTimeOffset that requires explicit timezone
+  /// Works with both PostgreSQL timestamptz and .NET DateTimeOffset
+  utcOffset,
 }
 
 /// Utility class for building JSON requests for remote data grid operations
@@ -610,18 +615,25 @@ class DataGridRequestBuilder {
       final isoString = utcDateTime.toIso8601String();
 
       // Handle different DateTime format requirements based on backend
-      if (odataDateTimeFormat == ODataDateTimeFormat.utc) {
-        // UTC format with Z suffix (default): 2024-09-30T15:15:30.000Z
-        // Works with PostgreSQL 'timestamp with time zone' and most OData implementations
-        if (!isoString.endsWith('Z')) {
-          return '${isoString}Z';
-        }
-        return isoString;
-      } else {
-        // Unspecified format without Z suffix: 2024-09-30T15:15:30.000
-        // For .NET backends that don't properly handle UTC strings
-        // or DateTime columns without timezone support
-        return isoString.replaceAll('Z', '');
+      switch (odataDateTimeFormat) {
+        case ODataDateTimeFormat.utc:
+          // UTC format with Z suffix (default): 2024-09-30T15:15:30.000Z
+          // Works with PostgreSQL 'timestamp with time zone' and most OData implementations
+          if (!isoString.endsWith('Z')) {
+            return '${isoString}Z';
+          }
+          return isoString;
+
+        case ODataDateTimeFormat.unspecified:
+          // Unspecified format without Z suffix: 2024-09-30T15:15:30.000
+          // For .NET backends that don't properly handle UTC strings
+          // or DateTime columns without timezone support
+          return isoString.replaceAll('Z', '');
+
+        case ODataDateTimeFormat.utcOffset:
+          // UTC with explicit offset: 2024-09-30T15:15:30.000+00:00
+          // For .NET OData with DateTimeOffset that requires explicit timezone
+          return isoString.replaceAll('Z', '+00:00');
       }
     } else if (value is String) {
       // Check if the string is a GUID (unquoted in OData)
@@ -657,15 +669,21 @@ class DataGridRequestBuilder {
           final isoString = dateTime.toIso8601String();
 
           // Apply the same DateTime format configuration as DateTime objects
-          if (odataDateTimeFormat == ODataDateTimeFormat.utc) {
-            // Ensure 'Z' suffix for UTC
-            if (!isoString.endsWith('Z')) {
-              return '${isoString}Z';
-            }
-            return isoString;
-          } else {
-            // Remove 'Z' suffix for unspecified format
-            return isoString.replaceAll('Z', '');
+          switch (odataDateTimeFormat) {
+            case ODataDateTimeFormat.utc:
+              // Ensure 'Z' suffix for UTC
+              if (!isoString.endsWith('Z')) {
+                return '${isoString}Z';
+              }
+              return isoString;
+
+            case ODataDateTimeFormat.unspecified:
+              // Remove 'Z' suffix for unspecified format
+              return isoString.replaceAll('Z', '');
+
+            case ODataDateTimeFormat.utcOffset:
+              // UTC with explicit offset: 2024-09-30T15:15:30.000+00:00
+              return isoString.replaceAll('Z', '+00:00');
           }
         } catch (e) {
           // If parsing fails, treat as regular string
