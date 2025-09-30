@@ -588,9 +588,55 @@ class DataGridRequestBuilder {
     } else if (value is bool) {
       return value.toString();
     } else if (value is DateTime) {
-      // OData v4 uses ISO 8601 format for dates
-      return value.toUtc().toIso8601String();
+      // OData v4 uses ISO 8601 format for dates in UTC
+      // Always convert to UTC to avoid PostgreSQL "DateTime with Kind=Unspecified" errors
+      final utcDateTime = value.toUtc();
+      final isoString = utcDateTime.toIso8601String();
+
+      // Ensure the 'Z' suffix is present for UTC timezone
+      // This is critical for backend systems like PostgreSQL that require UTC timestamps
+      if (!isoString.endsWith('Z')) {
+        return '${isoString}Z';
+      }
+      return isoString;
     } else if (value is String) {
+      // Check if the string looks like a date/datetime (ISO 8601 format)
+      // Examples: "2024-01-15", "2024-01-15T10:30:00", "2024-01-15T10:30:00.000"
+      if (_isDateTimeString(value)) {
+        try {
+          // Parse as UTC to ensure consistent timezone handling
+          // Check if string has timezone info (Z suffix or +/- offset after T)
+          final hasTimezone = value.endsWith('Z') ||
+              (value.contains('T') && (value.indexOf('+') > value.indexOf('T') ||
+               value.lastIndexOf('-') > value.indexOf('T')));
+
+          String dateString = value;
+          if (!hasTimezone) {
+            // No timezone info - treat as UTC
+            if (!value.contains('T')) {
+              // Date-only format (e.g., "2024-01-15") - add time component and Z
+              dateString = '${value}T00:00:00Z';
+            } else {
+              // Datetime without timezone (e.g., "2024-01-15T14:30:00") - append Z
+              dateString = '${value}Z';
+            }
+          }
+
+          final dateTime = DateTime.parse(dateString).toUtc();
+          final isoString = dateTime.toIso8601String();
+
+          // Ensure 'Z' suffix for UTC
+          if (!isoString.endsWith('Z')) {
+            return '${isoString}Z';
+          }
+          return isoString;
+        } catch (e) {
+          // If parsing fails, treat as regular string
+          final escaped = value.replaceAll("'", "''");
+          return "'$escaped'";
+        }
+      }
+
       // Escape single quotes by doubling them (OData v4 standard)
       final escaped = value.replaceAll("'", "''");
       return "'$escaped'";
@@ -599,6 +645,16 @@ class DataGridRequestBuilder {
       final escaped = value.toString().replaceAll("'", "''");
       return "'$escaped'";
     }
+  }
+
+  /// Check if a string looks like a date/datetime in ISO 8601 format
+  bool _isDateTimeString(String value) {
+    // Match ISO 8601 date/datetime patterns
+    // Examples: 2024-01-15, 2024-01-15T10:30:00, 2024-01-15T10:30:00.000Z
+    final dateTimePattern = RegExp(
+      r'^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})?)?$',
+    );
+    return dateTimePattern.hasMatch(value);
   }
 
   /// Build OData lambda expression for collection navigation properties
