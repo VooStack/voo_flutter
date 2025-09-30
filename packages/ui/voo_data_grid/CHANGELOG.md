@@ -1,3 +1,14 @@
+## 0.7.17
+
+* **Fixed VooDataGridState.copyWith for Nullable Fields**
+  * Fixed `copyWith` method to properly handle nullable fields (error, primaryFilterField, primaryFilter)
+  * Uses sentinel value pattern to distinguish between "parameter not provided" and "parameter explicitly set to null"
+  * Added convenient `clearError()` method to clear error state without lint warnings
+  * Now `state.copyWith()` keeps current error while `state.copyWith(error: null)` or `state.clearError()` clears it
+  * Fixes lint warning "avoid_redundant_argument_values" when clearing errors
+  * Added 9 comprehensive tests covering all copyWith scenarios
+  * Improves state management for BLoC and other state management patterns
+
 ## 0.7.16
 
 * **Error Callback Functionality**

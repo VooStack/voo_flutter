@@ -95,6 +95,11 @@ class VooDataGridState<T> {
   });
 
   /// Create a copy with updated values
+  ///
+  /// For nullable fields (error, primaryFilterField, primaryFilter):
+  /// - Not passing the parameter keeps the current value
+  /// - Passing null explicitly will set it to null
+  /// - Use [clearError] as a convenience method to clear the error
   VooDataGridState<T> copyWith({
     VooDataGridMode? mode,
     List<T>? allRows,
@@ -103,14 +108,14 @@ class VooDataGridState<T> {
     int? currentPage,
     int? pageSize,
     bool? isLoading,
-    String? error,
+    Object? error = const _Unset(),
     Map<String, VooDataFilter>? filters,
     List<VooColumnSort>? sorts,
     Set<T>? selectedRows,
     VooSelectionMode? selectionMode,
     bool? filtersVisible,
-    String? primaryFilterField,
-    VooDataFilter? primaryFilter,
+    Object? primaryFilterField = const _Unset(),
+    Object? primaryFilter = const _Unset(),
   }) => VooDataGridState<T>(
     mode: mode ?? this.mode,
     allRows: allRows ?? this.allRows,
@@ -119,16 +124,24 @@ class VooDataGridState<T> {
     currentPage: currentPage ?? this.currentPage,
     pageSize: pageSize ?? this.pageSize,
     isLoading: isLoading ?? this.isLoading,
-    error: error,
+    error: error is _Unset ? this.error : error as String?,
     filters: filters ?? this.filters,
     sorts: sorts ?? this.sorts,
     selectedRows: selectedRows ?? this.selectedRows,
     selectionMode: selectionMode ?? this.selectionMode,
     filtersVisible: filtersVisible ?? this.filtersVisible,
-    primaryFilterField: primaryFilterField ?? this.primaryFilterField,
-    primaryFilter: primaryFilter ?? this.primaryFilter,
+    primaryFilterField: primaryFilterField is _Unset ? this.primaryFilterField : primaryFilterField as String?,
+    primaryFilter: primaryFilter is _Unset ? this.primaryFilter : primaryFilter as VooDataFilter?,
   );
+
+  /// Convenience method to clear the error state
+  VooDataGridState<T> clearError() => copyWith(error: null);
 
   /// Get total number of pages
   int get totalPages => pageSize > 0 ? (totalRows / pageSize).ceil() : 0;
+}
+
+/// Sentinel class to detect unset optional parameters in copyWith
+class _Unset {
+  const _Unset();
 }
