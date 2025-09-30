@@ -1,3 +1,19 @@
+## 0.7.15
+
+* **Configurable DateTime Format for OData Filters**
+  * Added `ODataDateTimeFormat` enum to control DateTime formatting in OData queries
+  * Added `odataDateTimeFormat` parameter to `DataGridRequestBuilder` constructor
+  * **ODataDateTimeFormat.utc** (default): ISO 8601 with 'Z' suffix (e.g., `2024-09-30T15:15:30.000Z`)
+    - Best for PostgreSQL `timestamp with time zone` columns
+    - Works with most OData implementations that properly handle UTC
+  * **ODataDateTimeFormat.unspecified**: ISO 8601 without 'Z' suffix (e.g., `2024-09-30T15:15:30.000`)
+    - Use for .NET backends where OData creates `DateTime.Kind=Unspecified`
+    - Compatible with SQL Server `datetime` and other non-timezone-aware columns
+    - Prevents "DateTime with Kind=Unspecified" errors when backend doesn't handle UTC strings properly
+  * DateTime values are still converted to UTC internally, only the 'Z' suffix is affected
+  * String date parsing respects the configured format
+  * Added 13 comprehensive tests covering unspecified format, comparisons, and .NET compatibility
+
 ## 0.7.14
 
 * **GUID Type Compatibility for OData Filters**

@@ -24,13 +24,30 @@ enum ApiFilterStandard {
   custom,
 }
 
+/// DateTime format options for OData filters
+enum ODataDateTimeFormat {
+  /// ISO 8601 with Z suffix (UTC): 2024-09-30T15:15:30.000Z
+  /// Default format, works with most OData implementations
+  utc,
+
+  /// ISO 8601 without Z suffix (local/unspecified): 2024-09-30T15:15:30.000
+  /// Use this for .NET backends that don't properly handle UTC strings
+  /// or when your DateTime columns don't use 'timestamp with time zone'
+  unspecified,
+}
+
 /// Utility class for building JSON requests for remote data grid operations
 /// Supporting multiple API standards for different backend systems
 class DataGridRequestBuilder {
   final ApiFilterStandard standard;
   final String? fieldPrefix;
+  final ODataDateTimeFormat odataDateTimeFormat;
 
-  const DataGridRequestBuilder({this.standard = ApiFilterStandard.custom, this.fieldPrefix});
+  const DataGridRequestBuilder({
+    this.standard = ApiFilterStandard.custom,
+    this.fieldPrefix,
+    this.odataDateTimeFormat = ODataDateTimeFormat.utc,
+  });
 
   /// Apply field prefix to field name if prefix is set
   String _applyFieldPrefix(String field, {bool pascalCaseField = false}) {
@@ -588,17 +605,24 @@ class DataGridRequestBuilder {
     } else if (value is bool) {
       return value.toString();
     } else if (value is DateTime) {
-      // OData v4 uses ISO 8601 format for dates in UTC
-      // Always convert to UTC to avoid PostgreSQL "DateTime with Kind=Unspecified" errors
+      // OData v4 uses ISO 8601 format for dates
       final utcDateTime = value.toUtc();
       final isoString = utcDateTime.toIso8601String();
 
-      // Ensure the 'Z' suffix is present for UTC timezone
-      // This is critical for backend systems like PostgreSQL that require UTC timestamps
-      if (!isoString.endsWith('Z')) {
-        return '${isoString}Z';
+      // Handle different DateTime format requirements based on backend
+      if (odataDateTimeFormat == ODataDateTimeFormat.utc) {
+        // UTC format with Z suffix (default): 2024-09-30T15:15:30.000Z
+        // Works with PostgreSQL 'timestamp with time zone' and most OData implementations
+        if (!isoString.endsWith('Z')) {
+          return '${isoString}Z';
+        }
+        return isoString;
+      } else {
+        // Unspecified format without Z suffix: 2024-09-30T15:15:30.000
+        // For .NET backends that don't properly handle UTC strings
+        // or DateTime columns without timezone support
+        return isoString.replaceAll('Z', '');
       }
-      return isoString;
     } else if (value is String) {
       // Check if the string is a GUID (unquoted in OData)
       // Format: 8-4-4-4-12 hexadecimal digits
@@ -632,11 +656,17 @@ class DataGridRequestBuilder {
           final dateTime = DateTime.parse(dateString).toUtc();
           final isoString = dateTime.toIso8601String();
 
-          // Ensure 'Z' suffix for UTC
-          if (!isoString.endsWith('Z')) {
-            return '${isoString}Z';
+          // Apply the same DateTime format configuration as DateTime objects
+          if (odataDateTimeFormat == ODataDateTimeFormat.utc) {
+            // Ensure 'Z' suffix for UTC
+            if (!isoString.endsWith('Z')) {
+              return '${isoString}Z';
+            }
+            return isoString;
+          } else {
+            // Remove 'Z' suffix for unspecified format
+            return isoString.replaceAll('Z', '');
           }
-          return isoString;
         } catch (e) {
           // If parsing fails, treat as regular string
           final escaped = value.replaceAll("'", "''");
