@@ -33,6 +33,11 @@ class DataGridCore<T> extends StatefulWidget {
   /// Error widget builder
   final Widget Function(String error)? errorBuilder;
 
+  /// Callback when an error occurs
+  /// Called when the error state transitions from null to non-null
+  /// or when the error message changes
+  final void Function(String error)? onError;
+
   /// Row tap callback
   final void Function(T row)? onRowTap;
 
@@ -107,6 +112,7 @@ class DataGridCore<T> extends StatefulWidget {
     this.emptyStateWidget,
     this.loadingWidget,
     this.errorBuilder,
+    this.onError,
     this.onRowTap,
     this.onRowDoubleTap,
     this.onRowHover,
@@ -138,11 +144,46 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
   late VooDataGridTheme _theme;
   late VooDataGridDisplayMode _effectiveDisplayMode;
   VooDataGridDisplayMode? _userSelectedMode;
+  String? _lastError;
 
   @override
   void initState() {
     super.initState();
     widget.controller.dataSource.loadData();
+    // Listen to data source changes to detect errors
+    widget.controller.dataSource.addListener(_handleDataSourceChange);
+    // Check for initial error state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndNotifyError();
+    });
+  }
+
+  @override
+  void didUpdateWidget(DataGridCore<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check for error changes when widget updates (for VooDataGridStateless)
+    _checkAndNotifyError();
+  }
+
+  @override
+  void dispose() {
+    widget.controller.dataSource.removeListener(_handleDataSourceChange);
+    super.dispose();
+  }
+
+  void _handleDataSourceChange() {
+    _checkAndNotifyError();
+  }
+
+  void _checkAndNotifyError() {
+    final currentError = widget.controller.dataSource.error;
+    // Call onError callback when error state changes
+    if (currentError != null && currentError != _lastError) {
+      widget.onError?.call(currentError);
+      _lastError = currentError;
+    } else if (currentError == null) {
+      _lastError = null;
+    }
   }
 
   VooDataGridDisplayMode _getEffectiveDisplayMode(double width) {

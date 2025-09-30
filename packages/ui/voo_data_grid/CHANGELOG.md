@@ -1,3 +1,16 @@
+## 0.7.16
+
+* **Error Callback Functionality**
+  * Added `onError` callback parameter to `VooDataGrid`, `VooDataGridStateless`, and `DataGridCore`
+  * Callback is triggered when error state transitions from null to non-null or when error message changes
+  * Prevents loading indicator from persisting indefinitely when errors occur
+  * Works alongside existing `errorBuilder` for comprehensive error handling
+  * Allows users to show snackbars, log errors, or take custom actions when errors occur
+  * Implemented error detection in `DataGridCore` state using listener and lifecycle methods
+  * Error tracking prevents duplicate callbacks for the same error
+  * Added 5 comprehensive tests covering initial errors, error changes, and integration scenarios
+  * Fixes issue where users had no programmatic way to respond to data fetching errors
+
 ## 0.7.15
 
 * **Configurable DateTime Format for OData Filters**

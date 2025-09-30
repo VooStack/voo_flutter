@@ -30,6 +30,11 @@ class VooDataGrid<T> extends StatelessWidget {
   /// Error widget builder
   final Widget Function(String error)? errorBuilder;
 
+  /// Callback when an error occurs
+  /// Called when the error state transitions from null to non-null
+  /// or when the error message changes
+  final void Function(String error)? onError;
+
   /// Row tap callback
   final void Function(T row)? onRowTap;
 
@@ -108,6 +113,7 @@ class VooDataGrid<T> extends StatelessWidget {
     this.emptyStateWidget,
     this.loadingWidget,
     this.errorBuilder,
+    this.onError,
     this.onRowTap,
     this.onRowDoubleTap,
     this.onRowHover,
@@ -140,6 +146,7 @@ class VooDataGrid<T> extends StatelessWidget {
     emptyStateWidget: emptyStateWidget,
     loadingWidget: loadingWidget,
     errorBuilder: errorBuilder,
+    onError: onError,
     onRowTap: onRowTap,
     onRowDoubleTap: onRowDoubleTap,
     onRowHover: onRowHover,
