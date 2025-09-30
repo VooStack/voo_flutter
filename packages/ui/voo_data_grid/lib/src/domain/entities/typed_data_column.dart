@@ -58,6 +58,7 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     super.flex,
     super.showFilterOperator,
     super.excludeFromApi,
+    super.odataCollectionProperty,
   }) : super(
          // Convert typed functions to dynamic versions
          valueGetter: typedValueGetter,
@@ -116,6 +117,7 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     bool? showFilterOperator,
     bool? excludeFromApi,
     void Function(BuildContext context, T row, dynamic value)? onCellTap,
+    String? odataCollectionProperty,
     // Typed versions
     V Function(T row)? typedValueGetter,
     String Function(V value)? typedValueFormatter,
@@ -147,5 +149,6 @@ class TypedVooDataColumn<T, V> extends VooDataColumn<T> {
     flex: flex ?? this.flex,
     showFilterOperator: showFilterOperator ?? this.showFilterOperator,
     excludeFromApi: excludeFromApi ?? this.excludeFromApi,
+    odataCollectionProperty: odataCollectionProperty ?? this.odataCollectionProperty,
   );
 }

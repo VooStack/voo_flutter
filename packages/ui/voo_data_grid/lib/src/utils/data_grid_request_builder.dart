@@ -601,7 +601,88 @@ class DataGridRequestBuilder {
     }
   }
 
+  /// Build OData lambda expression for collection navigation properties
+  /// Example: roles/any(r: r/id in ('guid1', 'guid2'))
+  String _buildODataCollectionExpression(String field, VooDataFilter filter) {
+    final collectionProperty = filter.odataCollectionProperty!;
+    final values = filter.value is List ? filter.value as List : [filter.value];
+
+    switch (filter.operator) {
+      case VooFilterOperator.contains:
+      case VooFilterOperator.inList:
+        // Generate: field/any(x: x/property in ('value1', 'value2', ...))
+        if (values.isEmpty) {
+          return '';
+        }
+        if (values.length == 1) {
+          // For single value: field/any(x: x/property eq 'value')
+          return '$field/any(x: x/$collectionProperty eq ${_formatODataValue(values.first)})';
+        }
+        // For multiple values: field/any(x: x/property in ('value1', 'value2', ...))
+        final formattedValues = values.map(_formatODataValue).join(', ');
+        return '$field/any(x: x/$collectionProperty in ($formattedValues))';
+
+      case VooFilterOperator.notContains:
+      case VooFilterOperator.notInList:
+        // Generate: not field/any(x: x/property in ('value1', 'value2', ...))
+        if (values.isEmpty) {
+          return '';
+        }
+        if (values.length == 1) {
+          return 'not $field/any(x: x/$collectionProperty eq ${_formatODataValue(values.first)})';
+        }
+        final formattedValues = values.map(_formatODataValue).join(', ');
+        return 'not $field/any(x: x/$collectionProperty in ($formattedValues))';
+
+      case VooFilterOperator.equals:
+        // For equals on collection: field/any(x: x/property eq 'value')
+        return '$field/any(x: x/$collectionProperty eq ${_formatODataValue(filter.value)})';
+
+      case VooFilterOperator.notEquals:
+        // For not equals on collection: not field/any(x: x/property eq 'value')
+        return 'not $field/any(x: x/$collectionProperty eq ${_formatODataValue(filter.value)})';
+
+      case VooFilterOperator.isNull:
+        // Check if collection has no items
+        return 'not $field/any()';
+
+      case VooFilterOperator.isNotNull:
+        // Check if collection has items
+        return '$field/any()';
+
+      default:
+        // For other operators, use standard logic with any()
+        final op = _getODataOperator(filter.operator);
+        return '$field/any(x: x/$collectionProperty $op ${_formatODataValue(filter.value)})';
+    }
+  }
+
+  /// Get OData operator string from VooFilterOperator
+  String _getODataOperator(VooFilterOperator operator) {
+    switch (operator) {
+      case VooFilterOperator.equals:
+        return 'eq';
+      case VooFilterOperator.notEquals:
+        return 'ne';
+      case VooFilterOperator.greaterThan:
+        return 'gt';
+      case VooFilterOperator.lessThan:
+        return 'lt';
+      case VooFilterOperator.greaterThanOrEqual:
+        return 'ge';
+      case VooFilterOperator.lessThanOrEqual:
+        return 'le';
+      default:
+        return 'eq';
+    }
+  }
+
   String _buildODataFilterExpression(String field, VooDataFilter filter) {
+    // Handle OData collection navigation properties
+    if (filter.odataCollectionProperty != null) {
+      return _buildODataCollectionExpression(field, filter);
+    }
+
     switch (filter.operator) {
       case VooFilterOperator.equals:
         return '$field eq ${_formatODataValue(filter.value)}';

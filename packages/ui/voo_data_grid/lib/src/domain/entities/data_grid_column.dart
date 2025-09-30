@@ -87,6 +87,11 @@ class VooDataColumn<T> {
   /// Callback when a cell is tapped
   final void Function(BuildContext context, T row, dynamic value)? onCellTap;
 
+  /// For OData collection navigation properties, specify the property to filter on
+  /// Example: 'id' will generate roles/any(r: r/id in (...)) for a 'roles' field
+  /// Leave null for non-collection properties
+  final String? odataCollectionProperty;
+
   const VooDataColumn({
     required this.field,
     required this.label,
@@ -113,6 +118,7 @@ class VooDataColumn<T> {
     this.showFilterOperator = false,
     this.excludeFromApi = false,
     this.onCellTap,
+    this.odataCollectionProperty,
   });
 
   /// Get the effective filter widget type
@@ -224,6 +230,7 @@ class VooDataColumn<T> {
     bool? showFilterOperator,
     bool? excludeFromApi,
     void Function(BuildContext context, T row, dynamic value)? onCellTap,
+    String? odataCollectionProperty,
   }) => VooDataColumn<T>(
     field: field ?? this.field,
     label: label ?? this.label,
@@ -250,5 +257,6 @@ class VooDataColumn<T> {
     showFilterOperator: showFilterOperator ?? this.showFilterOperator,
     excludeFromApi: excludeFromApi ?? this.excludeFromApi,
     onCellTap: onCellTap ?? this.onCellTap,
+    odataCollectionProperty: odataCollectionProperty ?? this.odataCollectionProperty,
   );
 }

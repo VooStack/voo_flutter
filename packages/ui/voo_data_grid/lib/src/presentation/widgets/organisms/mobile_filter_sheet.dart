@@ -128,8 +128,12 @@ class _MobileFilterSheetState extends State<MobileFilterSheet> {
                     onPressed: () {
                       // Apply filters
                       for (final entry in _tempFilters.entries) {
+                        final column = widget.controller.columns.firstWhere((col) => col.field == entry.key);
                         if (entry.value != null) {
-                          widget.controller.dataSource.applyFilter(entry.key, VooDataFilter(value: entry.value, operator: VooFilterOperator.equals));
+                          widget.controller.dataSource.applyFilter(
+                            entry.key,
+                            VooDataFilter(value: entry.value, operator: VooFilterOperator.equals, odataCollectionProperty: column.odataCollectionProperty),
+                          );
                         } else {
                           widget.controller.dataSource.applyFilter(entry.key, null);
                         }

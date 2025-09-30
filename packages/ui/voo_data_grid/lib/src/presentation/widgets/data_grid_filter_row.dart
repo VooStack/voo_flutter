@@ -176,13 +176,19 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
     // Handle complex filter objects from molecular components
     if (value is Map && value.containsKey('operator')) {
       final operator = value['operator'] as VooFilterOperator? ?? column.effectiveDefaultFilterOperator;
-      widget.controller.dataSource.applyFilter(column.field, VooDataFilter(operator: operator, value: value['value'], valueTo: value['valueTo']));
+      widget.controller.dataSource.applyFilter(
+        column.field,
+        VooDataFilter(operator: operator, value: value['value'], valueTo: value['valueTo'], odataCollectionProperty: column.odataCollectionProperty),
+      );
       return;
     }
 
     final operator = widget.controller.dataSource.filters[column.field]?.operator ?? column.effectiveDefaultFilterOperator;
 
-    widget.controller.dataSource.applyFilter(column.field, VooDataFilter(operator: operator, value: value));
+    widget.controller.dataSource.applyFilter(
+      column.field,
+      VooDataFilter(operator: operator, value: value, odataCollectionProperty: column.odataCollectionProperty),
+    );
   }
 
   void _clearFilter(VooDataColumn column) {

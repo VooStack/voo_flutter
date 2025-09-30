@@ -4,7 +4,7 @@ import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
 
 /// A molecule component for multi-select filter input
-class MultiSelectFilter<T> extends StatelessWidget {
+class MultiSelectFilter<T> extends StatefulWidget {
   /// The column configuration
   final VooDataColumn<T> column;
 
@@ -20,9 +20,30 @@ class MultiSelectFilter<T> extends StatelessWidget {
   const MultiSelectFilter({super.key, required this.column, this.currentFilter, required this.onFilterChanged, required this.getFilterOptions});
 
   @override
+  State<MultiSelectFilter<T>> createState() => _MultiSelectFilterState<T>();
+}
+
+class _MultiSelectFilterState<T> extends State<MultiSelectFilter<T>> {
+  late List<dynamic> selectedValues;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValues = widget.currentFilter?.value is List ? List<dynamic>.from(widget.currentFilter!.value as List) : <dynamic>[];
+  }
+
+  @override
+  void didUpdateWidget(MultiSelectFilter<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update selectedValues when currentFilter changes from outside
+    if (widget.currentFilter != oldWidget.currentFilter) {
+      selectedValues = widget.currentFilter?.value is List ? List<dynamic>.from(widget.currentFilter!.value as List) : <dynamic>[];
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final options = getFilterOptions(column);
-    final selectedValues = currentFilter?.value is List ? List<dynamic>.from(currentFilter!.value as List) : <dynamic>[];
+    final options = widget.getFilterOptions(widget.column);
     final theme = Theme.of(context);
 
     return Container(
@@ -39,7 +60,7 @@ class MultiSelectFilter<T> extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  selectedValues.isEmpty ? column.filterHint ?? 'Select...' : '${selectedValues.length} selected',
+                  selectedValues.isEmpty ? widget.column.filterHint ?? 'Select...' : '${selectedValues.length} selected',
                   style: TextStyle(fontSize: 12, color: selectedValues.isEmpty ? theme.hintColor : theme.textTheme.bodyMedium?.color),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -48,29 +69,38 @@ class MultiSelectFilter<T> extends StatelessWidget {
             ],
           ),
         ),
-        itemBuilder: (context) => options.map((option) {
-          final isSelected = selectedValues.contains(option.value);
-          return PopupMenuItem<dynamic>(
-            child: StatefulBuilder(
-              builder: (context, setState) => CheckboxListTile(
-                value: isSelected,
-                onChanged: (checked) {
-                  setState(() {
-                    if (checked == true) {
-                      selectedValues.add(option.value);
-                    } else {
-                      selectedValues.remove(option.value);
-                    }
-                  });
-                  onFilterChanged(selectedValues.isEmpty ? null : selectedValues);
+        itemBuilder: (context) => options
+            .map(
+              (option) => PopupMenuItem<dynamic>(
+                onTap: () {
+                  // Prevent menu from closing
+                  // We handle the state change manually
                 },
-                title: Text(option.label, style: const TextStyle(fontSize: 12)),
-                dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
+                child: StatefulBuilder(
+                  builder: (context, setMenuState) {
+                    final isSelected = selectedValues.contains(option.value);
+                    return CheckboxListTile(
+                      value: isSelected,
+                      onChanged: (checked) {
+                        setState(() {
+                          if (checked == true) {
+                            selectedValues.add(option.value);
+                          } else {
+                            selectedValues.remove(option.value);
+                          }
+                        });
+                        setMenuState(() {}); // Update checkbox in menu
+                        widget.onFilterChanged(selectedValues.isEmpty ? null : selectedValues);
+                      },
+                      title: Text(option.label, style: const TextStyle(fontSize: 12)),
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                    );
+                  },
+                ),
               ),
-            ),
-          );
-        }).toList(),
+            )
+            .toList(),
       ),
     );
   }

@@ -11,5 +11,10 @@ class VooDataFilter {
   /// Optional second value for range filters (e.g., between operator)
   final dynamic valueTo;
 
-  const VooDataFilter({required this.operator, required this.value, this.valueTo});
+  /// For OData collection navigation properties, specify the property to filter on
+  /// Example: 'id' will generate roles/any(r: r/id in (...)) for a 'roles' field
+  /// Leave null for non-collection properties
+  final String? odataCollectionProperty;
+
+  const VooDataFilter({required this.operator, required this.value, this.valueTo, this.odataCollectionProperty});
 }

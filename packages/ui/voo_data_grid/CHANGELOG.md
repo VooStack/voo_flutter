@@ -1,3 +1,31 @@
+## 0.7.12
+
+* **OData Collection Navigation Property Support**
+  * Added `odataCollectionProperty` field to `VooDataColumn` for filtering on collection navigation properties
+  * Implemented lambda expression generation using `any()` for OData v4 collection filters
+  * Added support for single and multiple value collection filters with proper `eq` and `in` operators
+  * Added support for negation filters using `not any()` for `notContains`, `notInList`, and `notEquals`
+  * Added null check support for collections using `any()` and `not any()`
+  * Fixed OData query generation to properly handle nested property names in collections
+  * Updated filter creation throughout the codebase to include `odataCollectionProperty` from column configuration
+
+* **Multi-Select Filter Widget Improvements**
+  * Fixed checkbox state management in multi-select filter widget
+  * Converted `MultiSelectFilter` to `StatefulWidget` for proper state tracking
+  * Fixed checkbox selection persistence across menu interactions
+  * Improved state updates when external filter changes occur via `didUpdateWidget`
+  * Added proper state synchronization between widget state and callback notifications
+
+* **TypedVooDataColumn Compatibility**
+  * Added `odataCollectionProperty` parameter to `TypedVooDataColumn` constructor and `copyWith` method
+  * Ensured typed columns maintain compatibility with base `VooDataColumn` interface
+
+* **Comprehensive Testing**
+  * Added 24 new tests for OData collection navigation property filters
+  * Added 13 new tests for multi-select filter state management
+  * Tests cover single/multiple values, negation, null checks, edge cases, and mixed filters
+  * All tests passing with 100% coverage for new features
+
 ## 0.7.11
 
 * **Enhanced PDF Export with Multiple Layout Strategies**
