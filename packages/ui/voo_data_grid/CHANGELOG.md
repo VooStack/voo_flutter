@@ -1,3 +1,16 @@
+## 0.7.14
+
+* **GUID Type Compatibility for OData Filters**
+  * Fixed PostgreSQL/OData "A binary operator with incompatible types was detected. Found operand types 'Edm.Guid' and 'Edm.String'" error
+  * Implemented smart GUID detection using regex pattern matching (8-4-4-4-12 hexadecimal format)
+  * GUID values are now sent unquoted in OData queries to maintain Edm.Guid type compatibility
+  * Added support for uppercase, lowercase, and mixed-case GUID formats
+  * Added `_isGuidString()` helper method to distinguish GUIDs from regular strings
+  * Fixed GUID handling in collection navigation properties (e.g., `roles/any(x: x/Id in (guid1, guid2))`)
+  * Added proper differentiation between GUIDs, dates, and regular strings in value formatting
+  * Added 18 comprehensive tests covering GUID formatting, operators, collections, edge cases, and PostgreSQL compatibility
+  * Tests verify nil UUID, max UUID, invalid GUID formats, and integration with other filter types
+
 ## 0.7.13
 
 * **DateTime UTC Conversion for OData Filters**

@@ -600,6 +600,13 @@ class DataGridRequestBuilder {
       }
       return isoString;
     } else if (value is String) {
+      // Check if the string is a GUID (unquoted in OData)
+      // Format: 8-4-4-4-12 hexadecimal digits
+      // Example: 8dd1484c-290c-41b2-918a-0135b8519e1c
+      if (_isGuidString(value)) {
+        return value; // GUIDs are unquoted in OData
+      }
+
       // Check if the string looks like a date/datetime (ISO 8601 format)
       // Examples: "2024-01-15", "2024-01-15T10:30:00", "2024-01-15T10:30:00.000"
       if (_isDateTimeString(value)) {
@@ -655,6 +662,17 @@ class DataGridRequestBuilder {
       r'^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})?)?$',
     );
     return dateTimePattern.hasMatch(value);
+  }
+
+  /// Check if a string is a GUID (UUID) in standard format
+  /// GUIDs are unquoted in OData to maintain Edm.Guid type compatibility
+  bool _isGuidString(String value) {
+    // GUID format: 8-4-4-4-12 hexadecimal digits
+    // Example: 8dd1484c-290c-41b2-918a-0135b8519e1c
+    final guidPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    );
+    return guidPattern.hasMatch(value);
   }
 
   /// Build OData lambda expression for collection navigation properties
