@@ -84,12 +84,10 @@ class VooDesktopScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final navigationDrawer = ClipRect(
-      child: VooAdaptiveNavigationDrawer(
-        config: config,
-        selectedId: selectedId,
-        onNavigationItemSelected: onNavigationItemSelected,
-      ),
+    final navigationDrawer = VooAdaptiveNavigationDrawer(
+      config: config,
+      selectedId: selectedId,
+      onNavigationItemSelected: onNavigationItemSelected,
     );
 
     // When app bar is alongside drawer, wrap the content area with its own scaffold
@@ -101,31 +99,33 @@ class VooDesktopScaffold extends StatelessWidget {
           children: [
             navigationDrawer,
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: context.vooTokens.spacing.sm,
-                  right: context.vooRadius.md,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  child: Scaffold(
-                    backgroundColor: backgroundColor,
-                    appBar:
-                        appBar ??
-                        VooAdaptiveAppBar(
-                          showMenuButton: false,
-                          margin: EdgeInsets.only(
-                            top: context.vooTokens.spacing.sm,
+              child: LayoutBuilder(
+                builder: (context, constraints) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: context.vooTokens.spacing.sm,
+                    right: context.vooRadius.md,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(context.vooRadius.lg),
+                    child: Scaffold(
+                      backgroundColor: backgroundColor,
+                      appBar:
+                          appBar ??
+                          VooAdaptiveAppBar(
+                            showMenuButton: false,
+                            margin: EdgeInsets.only(
+                              top: context.vooTokens.spacing.sm,
+                            ),
                           ),
-                        ),
-                    body: body,
-                    floatingActionButton: config.showFloatingActionButton
-                        ? config.floatingActionButton
-                        : null,
-                    floatingActionButtonLocation:
-                        config.floatingActionButtonLocation,
-                    floatingActionButtonAnimator:
-                        config.floatingActionButtonAnimator,
+                      body: body,
+                      floatingActionButton: config.showFloatingActionButton
+                          ? config.floatingActionButton
+                          : null,
+                      floatingActionButtonLocation:
+                          config.floatingActionButtonLocation,
+                      floatingActionButtonAnimator:
+                          config.floatingActionButtonAnimator,
+                    ),
                   ),
                 ),
               ),

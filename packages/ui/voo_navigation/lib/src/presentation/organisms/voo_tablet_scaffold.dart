@@ -88,13 +88,11 @@ class VooTabletScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final navigationRail = ClipRect(
-      child: VooAdaptiveNavigationRail(
-        config: config,
-        selectedId: selectedId,
-        onNavigationItemSelected: onNavigationItemSelected,
-        extended: extended,
-      ),
+    final navigationRail = VooAdaptiveNavigationRail(
+      config: config,
+      selectedId: selectedId,
+      onNavigationItemSelected: onNavigationItemSelected,
+      extended: extended,
     );
 
     // When app bar is alongside rail, wrap the content area with its own scaffold
@@ -106,32 +104,34 @@ class VooTabletScaffold extends StatelessWidget {
           children: [
             navigationRail,
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: context.vooTokens.spacing.sm,
-                  right: context.vooRadius.md,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(context.vooRadius.lg),
-                  child: Scaffold(
-                    backgroundColor: backgroundColor,
-                    appBar:
-                        appBar ??
-                        VooAdaptiveAppBar(
-                          showMenuButton: false,
-                          margin: EdgeInsets.only(
-                            right: context.vooRadius.sm,
-                            top: context.vooTokens.spacing.sm,
+              child: LayoutBuilder(
+                builder: (context, constraints) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: context.vooTokens.spacing.sm,
+                    right: context.vooRadius.md,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(context.vooRadius.lg),
+                    child: Scaffold(
+                      backgroundColor: backgroundColor,
+                      appBar:
+                          appBar ??
+                          VooAdaptiveAppBar(
+                            showMenuButton: false,
+                            margin: EdgeInsets.only(
+                              right: context.vooRadius.sm,
+                              top: context.vooTokens.spacing.sm,
+                            ),
                           ),
-                        ),
-                    body: body,
-                    floatingActionButton: config.showFloatingActionButton
-                        ? config.floatingActionButton
-                        : null,
-                    floatingActionButtonLocation:
-                        config.floatingActionButtonLocation,
-                    floatingActionButtonAnimator:
-                        config.floatingActionButtonAnimator,
+                      body: body,
+                      floatingActionButton: config.showFloatingActionButton
+                          ? config.floatingActionButton
+                          : null,
+                      floatingActionButtonLocation:
+                          config.floatingActionButtonLocation,
+                      floatingActionButtonAnimator:
+                          config.floatingActionButtonAnimator,
+                    ),
                   ),
                 ),
               ),

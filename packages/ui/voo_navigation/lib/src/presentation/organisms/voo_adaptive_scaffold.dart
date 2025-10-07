@@ -180,11 +180,15 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
         final screenWidth = screenInfo.width;
         final navigationType = widget.config.getNavigationType(screenWidth);
 
-        // Animate navigation type changes
+        // Animate navigation type changes - defer to post-frame to avoid layout during build
         if (_previousNavigationType != null &&
             _previousNavigationType != navigationType &&
             widget.config.enableAnimations) {
-          _animationController.forward(from: 0);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _animationController.forward(from: 0);
+            }
+          });
         }
         _previousNavigationType = navigationType;
 

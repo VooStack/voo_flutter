@@ -1,3 +1,15 @@
+## 0.0.14
+
+### Fixed
+- **Layout Cycle Errors**: Fixed "!_debugDoingThisLayout" assertion failures in VooAdaptiveScaffold
+  - Moved animation controller trigger to post-frame callback to prevent layout-during-build violations
+  - Animation now properly deferred to after the build phase using `WidgetsBinding.instance.addPostFrameCallback`
+- **Nested Scaffold Layout Constraints**: Fixed "RenderBox was not laid out" errors in tablet and desktop layouts
+  - Added `LayoutBuilder` wrapper around nested scaffolds in `VooTabletScaffold` and `VooDesktopScaffold`
+  - Ensures proper constraint propagation through the widget tree when using `appBarAlongsideRail` mode
+  - Removed `ClipRect` wrappers from navigation rail and drawer that were interfering with layout
+- **Production Stability**: Resolved rendering pipeline errors that caused blank screens and gesture issues in production
+
 ## 0.0.13
 
 ### Added
