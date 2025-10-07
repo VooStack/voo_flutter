@@ -32,6 +32,7 @@ export 'src/presentation/molecules/voo_app_bar_actions.dart';
 export 'src/presentation/molecules/voo_app_bar_leading.dart';
 export 'src/presentation/molecules/voo_app_bar_title.dart';
 export 'src/presentation/molecules/voo_custom_navigation_item.dart';
+export 'src/presentation/molecules/voo_mobile_app_bar.dart';
 export 'src/presentation/molecules/voo_dropdown_child_item.dart';
 export 'src/presentation/molecules/voo_dropdown_children.dart';
 export 'src/presentation/molecules/voo_dropdown_header.dart';

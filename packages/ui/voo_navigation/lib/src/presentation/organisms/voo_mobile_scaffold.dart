@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
-import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_app_bar.dart';
+import 'package:voo_navigation/src/presentation/molecules/voo_mobile_app_bar.dart';
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_navigation.dart';
 
 /// Mobile scaffold with bottom navigation
@@ -83,10 +83,24 @@ class VooMobileScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the selected item from the config
+    final selectedItem = config.items.firstWhere(
+      (item) => item.id == selectedId,
+      orElse: () => config.items.first,
+    );
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: showAppBar ? (appBar ?? const VooAdaptiveAppBar()) : null,
+      appBar:
+          showAppBar
+              ? (appBar ??
+                  VooMobileAppBar(
+                    config: config,
+                    selectedItem: selectedItem,
+                    showMenuButton: false,
+                  ))
+              : null,
       body: body,
       bottomNavigationBar: VooAdaptiveBottomNavigation(
         config: config,

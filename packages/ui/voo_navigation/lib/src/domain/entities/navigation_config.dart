@@ -335,6 +335,32 @@ class VooNavigationConfig {
       items.where((item) => item.isVisible).toList()
         ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
+  /// Gets mobile priority navigation items (max 4 items for bottom navigation)
+  /// Includes both direct items and children of sections marked with mobilePriority
+  List<VooNavigationItem> get mobilePriorityItems {
+    final priorityItems = <VooNavigationItem>[];
+
+    for (final item in items) {
+      // Check direct item mobilePriority
+      if (item.isVisible && item.mobilePriority) {
+        priorityItems.add(item);
+      }
+
+      // Check children mobilePriority (for sections)
+      if (item.hasChildren && item.children != null) {
+        for (final child in item.children!) {
+          if (child.isVisible && child.mobilePriority) {
+            priorityItems.add(child);
+          }
+        }
+      }
+    }
+
+    // Sort by sortOrder and take first 4
+    priorityItems.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    return priorityItems.take(4).toList();
+  }
+
   /// Gets the selected navigation item
   VooNavigationItem? get selectedItem {
     if (selectedId == null) return null;

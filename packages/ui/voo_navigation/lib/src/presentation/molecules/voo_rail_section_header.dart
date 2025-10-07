@@ -10,42 +10,77 @@ class VooRailSectionHeader extends StatelessWidget {
   /// Child widgets for the expanded section
   final List<Widget> children;
 
+  /// Whether the rail is in extended mode
+  final bool extended;
+
   const VooRailSectionHeader({
     super.key,
     required this.item,
     required this.children,
+    this.extended = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
 
-    return Theme(
-      data: theme.copyWith(
-        dividerColor: Colors.transparent,
-        expansionTileTheme: ExpansionTileThemeData(
-          iconColor: theme.colorScheme.onSurfaceVariant,
-          collapsedIconColor: theme.colorScheme.onSurfaceVariant,
-          textColor: theme.colorScheme.onSurface,
-          collapsedTextColor: theme.colorScheme.onSurfaceVariant,
+    if (extended) {
+      // Extended mode: Show label with children
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: spacing.xs,
+          horizontal: spacing.sm,
         ),
-      ),
-      child: ExpansionTile(
-        title: Text(
-          item.label,
-          style: theme.textTheme.titleSmall?.copyWith(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.w500,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section header with label
+            Padding(
+              padding: EdgeInsets.only(
+                left: spacing.xs,
+                bottom: spacing.xxs,
+                top: spacing.xs,
+              ),
+              child: Text(
+                item.label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            // Children items
+            if (item.isExpanded) ...children,
+          ],
         ),
-        leading: Icon(
-          item.isExpanded ? item.selectedIcon ?? item.icon : item.icon,
-          color: theme.colorScheme.onSurfaceVariant,
-          size: context.vooSize.checkboxSize,
+      );
+    } else {
+      // Compact mode: Icon-only with tooltip
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: spacing.xs,
+          horizontal: spacing.sm,
         ),
-        initiallyExpanded: item.isExpanded,
-        children: children,
-      ),
-    );
+        child: Column(
+          children: [
+            // Icon-only header with tooltip
+            Tooltip(
+              message: item.label,
+              child: Icon(
+                item.isExpanded ? item.selectedIcon ?? item.icon : item.icon,
+                color: theme.colorScheme.onSurfaceVariant,
+                size: 24,
+              ),
+            ),
+            if (item.isExpanded) ...[
+              SizedBox(height: spacing.xs),
+              ...children,
+            ],
+          ],
+        ),
+      );
+    }
   }
 }

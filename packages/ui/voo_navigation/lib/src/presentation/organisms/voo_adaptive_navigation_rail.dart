@@ -100,7 +100,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
         widget.width ??
         (widget.extended
             ? (widget.config.extendedNavigationRailWidth ?? 256)
-            : (widget.config.navigationRailWidth ?? 88));
+            : (widget.config.navigationRailWidth ?? 80));
 
     // Use a subtle surface color variation for better visual distinction
     final effectiveBackgroundColor =
@@ -162,9 +162,7 @@ class _VooAdaptiveNavigationRailState extends State<VooAdaptiveNavigationRail>
                         controller: widget.config.drawerScrollController,
                         padding: EdgeInsets.symmetric(
                           vertical: context.vooSpacing.sm,
-                          horizontal: widget.extended
-                              ? context.vooSpacing.sm + context.vooSpacing.xs
-                              : context.vooSpacing.sm,
+                          horizontal: context.vooSpacing.xs,
                         ),
                         physics: const ClampingScrollPhysics(),
                         children: [

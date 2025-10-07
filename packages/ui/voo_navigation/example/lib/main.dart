@@ -48,6 +48,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     VooNavigationItem(
       id: 'dashboard',
       label: 'Dashboard',
+      mobilePriority: true,
       icon: Icons.dashboard_outlined,
       selectedIcon: Icons.dashboard,
       route: '/dashboard',
@@ -57,6 +58,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     VooNavigationItem(
       id: 'analytics',
       label: 'Analytics',
+      mobilePriority: true,
       icon: Icons.analytics_outlined,
       selectedIcon: Icons.analytics,
       route: '/analytics',
@@ -67,6 +69,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     VooNavigationItem(
       id: 'projects',
       label: 'Projects',
+      mobilePriority: true,
       icon: Icons.folder_outlined,
       selectedIcon: Icons.folder,
       route: '/projects',
@@ -82,6 +85,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         VooNavigationItem(
           id: 'messages',
           label: 'Messages',
+          mobilePriority: true,
           icon: Icons.message_outlined,
           selectedIcon: Icons.message,
           route: '/messages',
@@ -158,15 +162,12 @@ class _NavigationExampleState extends State<NavigationExample> {
       animationCurve: Curves.easeInOutCubic,
       railLabelType: NavigationRailLabelType.selected,
       // Only extend rail when width > 840px, respecting responsive breakpoints
-      useExtendedRail:
-          true, // This allows extended rail, but width determines actual state
+      useExtendedRail: true, // This allows extended rail, but width determines actual state
       showNavigationRailDivider: true,
-      centerAppBarTitle: true,
       // App bar positioned alongside navigation rail (default behavior)
       // Set to false to make app bar span full width above the rail
       appBarAlongsideRail: true,
       selectedItemColor: const Color(0xFF4F75FF),
-      bottomNavigationType: VooNavigationBarType.custom,
       indicatorShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -203,8 +204,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               Text(
                 'Adaptive Navigation System',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimary
-                      .withAlpha((0.8 * 255).round()),
+                  color: theme.colorScheme.onPrimary.withAlpha((0.8 * 255).round()),
                 ),
               ),
             ],

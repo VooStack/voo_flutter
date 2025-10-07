@@ -1,3 +1,50 @@
+## 0.0.13
+
+### Added
+- **Mobile Priority Navigation**: Added `mobilePriority` field to `VooNavigationItem` for controlling which items appear in bottom navigation (max 4)
+  - New `mobilePriorityItems` getter in `VooNavigationConfig` that filters and returns up to 4 priority items
+  - Supports both direct items and children within sections (e.g., items inside `VooNavigationItem.section()`)
+  - Bottom navigation now uses `mobilePriorityItems` instead of all visible items
+- **VooMobileAppBar Molecule**: Created dedicated mobile app bar component for simpler, focused mobile UI
+  - Proper atomic design - molecule-level component for mobile layouts
+  - Uses existing molecules (`VooAppBarLeading`, `VooAppBarTitle`) following composition pattern
+  - Integrated into `VooMobileScaffold` for consistent mobile experience
+
+### Improved
+- **Adaptive Navigation Rail UI/UX**:
+  - **Compact mode** (< 840px): Icon-only display with optimized spacing and sizing
+    - Item size: 48x48px (down from 56px) for better density
+    - Icon size: 24px (up from ~20px) for better visibility
+    - Reduced vertical spacing by ~50% for more items on screen
+    - Border radius: Changed from full pill to `radius.md` for cleaner look
+    - Rail width: Reduced from 88px to 80px for better space efficiency
+  - **Extended mode** (≥ 840px): Icon + label display with proper hierarchy
+    - Shows icon (22px) with label horizontally
+    - Proper text sizing (14px) and weights (600 for selected)
+    - Maintains visual consistency with other navigation elements
+  - **Adaptive Section Headers**:
+    - Compact mode: Icon-only with tooltip
+    - Extended mode: Text label header with proper Material 3 styling
+    - No more floating icons in extended mode
+
+### Fixed
+- **App Bar Leading Width**: Fixed title positioning when no back button is present
+  - Removed explicit `leadingWidth` property that caused awkward spacing
+  - Added `automaticallyImplyLeading` to prevent Flutter from adding unwanted back buttons
+  - Title now displays correctly with natural spacing in both `VooAdaptiveAppBar` and `VooMobileAppBar`
+- **Section Children Mobile Priority**: Fixed detection of `mobilePriority` flag on items nested inside sections
+  - Now properly flattens and includes section children marked with `mobilePriority: true`
+  - Example: Messages item inside Communication section now correctly appears in bottom nav
+
+### Changed
+- **Navigation Rail Spacing**: Updated spacing tokens for better density
+  - List view padding: Reduced horizontal padding to `spacing.xs` (was `spacing.sm`)
+  - Item vertical padding: Reduced to `spacing.xxs / 2` for tighter packing
+  - Between items: Reduced to `spacing.xxs / 2` (was `spacing.xs`)
+- **Navigation Rail Items**: Made adaptive based on `extended` property
+  - Compact: 48x48px square, icon-only, rounded corners
+  - Extended: Variable width, icon + label, proper padding
+
 ## 0.0.12
 
 ### Fixed

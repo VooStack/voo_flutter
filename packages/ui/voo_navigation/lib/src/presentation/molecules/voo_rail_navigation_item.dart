@@ -82,8 +82,8 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: widget.extended ? 0 : spacing.xs,
-        vertical: spacing.xxs,
+        horizontal: spacing.sm,
+        vertical: spacing.xxs / 2,
       ),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
@@ -93,9 +93,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
             : SystemMouseCursors.basic,
         child: InkWell(
           onTap: widget.item.isEnabled ? widget.onTap : null,
-          borderRadius: BorderRadius.circular(
-            widget.extended ? radius.lg : radius.full,
-          ),
+          borderRadius: BorderRadius.circular(radius.md),
           child: AnimatedScale(
             scale: _isHovered ? 1.02 : 1.0,
             duration: Duration(
@@ -105,14 +103,17 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
             ),
             child: AnimatedContainer(
               duration: context.vooAnimation.durationFast,
-              height: widget.extended ? 48 : 56,
-              padding: EdgeInsets.symmetric(
-                horizontal: widget.extended ? spacing.md : spacing.xs,
-                vertical: widget.extended ? spacing.sm : spacing.xs,
-              ),
+              height: 48,
+              width: widget.extended ? null : 48,
+              padding: widget.extended
+                  ? EdgeInsets.symmetric(
+                      horizontal: spacing.md,
+                      vertical: spacing.sm,
+                    )
+                  : EdgeInsets.all(spacing.xs),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
-                  widget.extended ? radius.md + spacing.xxs : radius.full,
+                  widget.extended ? radius.md : radius.md,
                 ),
                 gradient: widget.isSelected
                     ? LinearGradient(
@@ -170,10 +171,10 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
             color: widget.isSelected
                 ? theme.colorScheme.primary
                 : theme.colorScheme.onSurfaceVariant,
-            size: context.vooSize.checkboxSize,
+            size: 22,
           ),
         ),
-        SizedBox(width: spacing.sm + spacing.xs),
+        SizedBox(width: spacing.sm),
         Expanded(
           child: Row(
             children: [
@@ -187,13 +188,13 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                     fontWeight: widget.isSelected
                         ? FontWeight.w600
                         : FontWeight.w400,
-                    fontSize: context.vooTypography.bodyMedium.fontSize,
+                    fontSize: 14,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (widget.item.hasBadge) ...[
-                SizedBox(width: spacing.sm),
+                SizedBox(width: spacing.xs),
                 VooRailModernBadge(
                   item: widget.item,
                   isSelected: widget.isSelected,
@@ -225,7 +226,7 @@ class _VooRailNavigationItemState extends State<VooRailNavigationItem>
                   color: widget.isSelected
                       ? theme.colorScheme.primary
                       : theme.colorScheme.onSurfaceVariant,
-                  size: context.vooSize.iconMedium,
+                  size: 24,
                 ),
               ),
               if (widget.item.hasBadge)

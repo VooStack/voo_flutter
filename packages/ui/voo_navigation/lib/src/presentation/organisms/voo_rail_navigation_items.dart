@@ -55,7 +55,11 @@ class VooRailNavigationItems extends StatelessWidget {
           }
         }
 
-        widgets.add(VooRailSectionHeader(item: item, children: childWidgets));
+        widgets.add(VooRailSectionHeader(
+          item: item,
+          extended: extended,
+          children: childWidgets,
+        ));
       } else {
         widgets.add(
           VooRailNavigationItem(
@@ -68,9 +72,9 @@ class VooRailNavigationItems extends StatelessWidget {
         );
       }
 
-      // Add spacing between items
+      // Add minimal spacing between items
       if (i < visibleItems.length - 1) {
-        widgets.add(SizedBox(height: context.vooSpacing.xs));
+        widgets.add(SizedBox(height: context.vooSpacing.xxs / 2));
       }
     }
 

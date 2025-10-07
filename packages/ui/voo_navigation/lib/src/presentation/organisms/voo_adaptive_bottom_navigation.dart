@@ -72,7 +72,7 @@ class _VooAdaptiveBottomNavigationState
   }
 
   void _initializeAnimations() {
-    final itemCount = widget.config.visibleItems.length;
+    final itemCount = widget.config.mobilePriorityItems.length;
     _itemAnimations = List.generate(
       itemCount,
       (index) => AnimationController(
@@ -114,8 +114,8 @@ class _VooAdaptiveBottomNavigationState
   void didUpdateWidget(VooAdaptiveBottomNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.config.visibleItems.length !=
-        oldWidget.config.visibleItems.length) {
+    if (widget.config.mobilePriorityItems.length !=
+        oldWidget.config.mobilePriorityItems.length) {
       _disposeAnimations();
       _initializeAnimations();
     }
@@ -141,7 +141,7 @@ class _VooAdaptiveBottomNavigationState
   }
 
   int? _getSelectedIndex() {
-    final items = widget.config.visibleItems;
+    final items = widget.config.mobilePriorityItems;
     for (int i = 0; i < items.length; i++) {
       if (items[i].id == widget.selectedId) {
         return i;
@@ -165,7 +165,7 @@ class _VooAdaptiveBottomNavigationState
 
   @override
   Widget build(BuildContext context) {
-    final items = widget.config.visibleItems;
+    final items = widget.config.mobilePriorityItems;
 
     if (items.isEmpty) {
       return const SizedBox.shrink();

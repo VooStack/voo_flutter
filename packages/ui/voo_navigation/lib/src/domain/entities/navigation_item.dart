@@ -75,6 +75,9 @@ class VooNavigationItem extends Equatable {
   /// Sort order for the item (lower values appear first)
   final int sortOrder;
 
+  /// Whether this item should be shown in mobile bottom navigation (max 4 items)
+  final bool mobilePriority;
+
   /// Custom key for the widget
   final Key? key;
 
@@ -103,6 +106,7 @@ class VooNavigationItem extends Equatable {
     this.selectedLabelStyle,
     this.semanticLabel,
     this.sortOrder = 0,
+    this.mobilePriority = false,
     this.key,
   }) : assert(
          route != null ||
@@ -131,6 +135,7 @@ class VooNavigationItem extends Equatable {
     iconColor,
     selectedIconColor,
     sortOrder,
+    mobilePriority,
   ];
 
   /// Creates a copy of this item with the given fields replaced
@@ -159,6 +164,7 @@ class VooNavigationItem extends Equatable {
     TextStyle? selectedLabelStyle,
     String? semanticLabel,
     int? sortOrder,
+    bool? mobilePriority,
     Key? key,
   }) => VooNavigationItem(
     id: id ?? this.id,
@@ -185,6 +191,7 @@ class VooNavigationItem extends Equatable {
     selectedLabelStyle: selectedLabelStyle ?? this.selectedLabelStyle,
     semanticLabel: semanticLabel ?? this.semanticLabel,
     sortOrder: sortOrder ?? this.sortOrder,
+    mobilePriority: mobilePriority ?? this.mobilePriority,
     key: key ?? this.key,
   );
 
