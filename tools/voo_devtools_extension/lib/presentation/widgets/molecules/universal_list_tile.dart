@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/modern_list_tile.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/modern_list_tile.dart';
 
 /// Universal list tile that can display any type of data with consistent styling
 class UniversalListTile extends StatelessWidget {

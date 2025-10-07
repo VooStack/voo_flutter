@@ -1,6 +1,6 @@
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/app_wrapper.dart';
+import 'package:voo_devtools_extension/presentation/widgets/app_wrapper.dart';
 
 Future<void> main() async {
   runApp(const VooDevToolsExtension());

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
-import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_state.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_devtools_extension/domain/repositories/devtools_log_repository.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_state.dart';
 
 class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
   final DevToolsLogRepository repository;

@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
-import 'package:voo_ui/voo_ui.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/method_badge.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 class NetworkDetailsPanel extends StatelessWidget {
   final LogEntryModel? log;

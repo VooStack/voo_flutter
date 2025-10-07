@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_state.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/domain/repositories/devtools_log_repository.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_state.dart';
 
 class PerformanceBloc extends Bloc<PerformanceEvent, PerformanceState> {
   final DevToolsLogRepository repository;

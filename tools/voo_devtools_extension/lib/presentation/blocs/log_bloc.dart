@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_statistics.dart';
-import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/core/models/log_statistics.dart';
+import 'package:voo_devtools_extension/domain/repositories/devtools_log_repository.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_state.dart';
 
 class LogBloc extends Bloc<LogEvent, LogState> {
   final DevToolsLogRepository repository;

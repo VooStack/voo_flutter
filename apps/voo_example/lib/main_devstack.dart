@@ -68,7 +68,6 @@ void main() async {
     appName: 'VooExample-DevStack',
     appVersion: '1.0.0',
     userId: 'test_user_123',
-    minimumLevel: LogLevel.verbose,
     config: const LoggingConfig(
       enablePrettyLogs: true,
       showEmojis: true,

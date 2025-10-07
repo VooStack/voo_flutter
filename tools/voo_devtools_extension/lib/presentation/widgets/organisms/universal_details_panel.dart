@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 /// Section configuration for the details panel
 class DetailSection {

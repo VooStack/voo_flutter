@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_statistics.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_row.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/stat_item.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/stat_row.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/stat_card.dart';
+import 'package:voo_devtools_extension/core/models/log_level.dart';
+import 'package:voo_devtools_extension/core/models/log_statistics.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/log_level_row.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/stat_item.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/stat_row.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/stat_card.dart';
 
 class LogStatisticsCard extends StatelessWidget {
   final LogStatistics statistics;

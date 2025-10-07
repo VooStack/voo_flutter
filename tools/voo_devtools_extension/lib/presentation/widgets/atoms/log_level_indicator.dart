@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
+import 'package:voo_devtools_extension/core/models/log_level.dart';
 
 /// Atomic widget for displaying a log level color indicator
 class LogLevelIndicator extends StatelessWidget {

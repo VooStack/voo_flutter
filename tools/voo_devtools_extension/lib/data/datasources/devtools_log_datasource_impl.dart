@@ -3,9 +3,9 @@ import 'dart:convert';
 
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:vm_service/vm_service.dart' as vm;
-import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/domain/datasources/devtools_log_datasource.dart';
+import 'package:voo_devtools_extension/core/models/log_level.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/domain/datasources/devtools_log_datasource.dart';
 
 /// Implementation of DevTools log data source that connects to VM Service
 class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {

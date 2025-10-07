@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/duration_badge.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/method_badge.dart';
-import 'package:voo_ui/voo_ui.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/modern_list_tile.dart';
+import 'package:voo_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/duration_badge.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/method_badge.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/modern_list_tile.dart';
 
 class NetworkRequestTile extends StatelessWidget {
   final NetworkRequestModel request;

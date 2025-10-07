@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 /// Configuration for a filter option
 class FilterOption {

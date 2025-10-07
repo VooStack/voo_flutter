@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_devtools_extension/core/models/network_request_model.dart';
 
 class NetworkState extends Equatable {
   final List<NetworkRequestModel> networkRequests;

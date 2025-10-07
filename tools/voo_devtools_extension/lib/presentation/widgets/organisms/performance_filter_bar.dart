@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_filter_bar.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_state.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/universal_filter_bar.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 class PerformanceFilterBar extends StatefulWidget {
   const PerformanceFilterBar({super.key});

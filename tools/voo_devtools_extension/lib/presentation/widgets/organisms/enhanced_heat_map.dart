@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 /// Enhanced heat map point with additional metadata
 class HeatMapPoint {

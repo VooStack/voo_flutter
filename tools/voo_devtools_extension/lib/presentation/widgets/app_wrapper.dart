@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/core/services/package_detection_service.dart';
-import 'package:voo_logging_devtools_extension/data/datasources/devtools_log_datasource_impl.dart';
-import 'package:voo_logging_devtools_extension/data/repositories/devtools_log_repository_impl.dart';
-import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/adaptive_voo_page.dart';
+import 'package:voo_devtools_extension/core/services/package_detection_service.dart';
+import 'package:voo_devtools_extension/data/datasources/devtools_log_datasource_impl.dart';
+import 'package:voo_devtools_extension/data/repositories/devtools_log_repository_impl.dart';
+import 'package:voo_devtools_extension/domain/repositories/devtools_log_repository.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_event.dart';
+import 'package:voo_devtools_extension/presentation/pages/adaptive_voo_page.dart';
 
 /// Wrapper widget that initializes dependencies after DevToolsExtension
 class AppWrapper extends StatefulWidget {

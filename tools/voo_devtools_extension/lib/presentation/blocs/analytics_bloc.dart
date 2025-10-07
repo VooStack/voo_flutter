@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/domain/repositories/devtools_log_repository.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_state.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/domain/repositories/devtools_log_repository.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_state.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
 
 class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState> {
   final DevToolsLogRepository repository;

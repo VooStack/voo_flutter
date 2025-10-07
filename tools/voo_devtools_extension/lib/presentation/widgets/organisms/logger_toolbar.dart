@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_export_dialog.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/log_rate_indicator.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_statistics_card.dart';
+import 'package:voo_devtools_extension/core/models/log_level.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/log_export_dialog.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/log_rate_indicator.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/log_statistics_card.dart';
 
 class LoggerToolbar extends StatelessWidget {
   const LoggerToolbar({super.key});

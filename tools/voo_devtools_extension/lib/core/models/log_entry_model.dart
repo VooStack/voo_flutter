@@ -1,4 +1,4 @@
-import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
+import 'package:voo_devtools_extension/core/models/log_level.dart';
 
 /// Model representing a log entry
 class LogEntryModel {

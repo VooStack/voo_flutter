@@ -3,7 +3,6 @@ import 'package:voo_core/voo_core.dart';
 import 'package:voo_logging/voo_logging.dart';
 import 'package:voo_analytics/voo_analytics.dart';
 import 'package:voo_performance/voo_performance.dart';
-import 'package:voo_example/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,7 +107,7 @@ class VooExampleApp extends StatelessWidget {
           useMaterial3: true,
         ),
         navigatorObservers: [VooAnalyticsPlugin.instance.routeObserver],
-        home: const HomePage(),
+        home: const SizedBox(),
       ),
     );
   }

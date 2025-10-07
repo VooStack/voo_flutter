@@ -1,5 +1,5 @@
-import 'package:voo_logging_devtools_extension/core/models/log_level.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/core/models/log_level.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
 
 abstract class DevToolsLogRepository {
   Stream<LogEntryModel> get logStream;

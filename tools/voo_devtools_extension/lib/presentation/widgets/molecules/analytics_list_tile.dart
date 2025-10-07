@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/universal_list_tile.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/universal_list_tile.dart';
 
 /// Analytics event tile using the universal list tile component
 class AnalyticsListTile extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/atoms/category_chip.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/universal_details_panel.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
+import 'package:voo_devtools_extension/presentation/widgets/atoms/category_chip.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 class LogDetailsPanel extends StatelessWidget {
   final LogEntryModel log;

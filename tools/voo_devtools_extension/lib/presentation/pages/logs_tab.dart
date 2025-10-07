@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_ui/voo_ui.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logs_list.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_state.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/logs_list.dart';
 
 class LogsTab extends StatefulWidget {
   const LogsTab({super.key});

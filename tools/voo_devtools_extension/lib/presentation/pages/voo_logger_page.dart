@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/logs_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/network_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/performance_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/analytics_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logger_tab_bar.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/logger_toolbar.dart';
+import 'package:voo_devtools_extension/presentation/pages/logs_tab.dart';
+import 'package:voo_devtools_extension/presentation/pages/network_tab.dart';
+import 'package:voo_devtools_extension/presentation/pages/performance_tab.dart';
+import 'package:voo_devtools_extension/presentation/pages/analytics_tab.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/logger_tab_bar.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/logger_toolbar.dart';
 
 class VooLoggerPage extends StatefulWidget {
   const VooLoggerPage({super.key});

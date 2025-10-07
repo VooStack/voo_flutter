@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/core/models/network_request_model.dart';
 
 abstract class NetworkEvent extends Equatable {
   const NetworkEvent();

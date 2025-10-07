@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/core/services/plugin_detection_service.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/log_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/performance_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/logs_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/network_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/performance_tab.dart';
-import 'package:voo_logging_devtools_extension/presentation/pages/analytics_tab.dart';
-import 'package:voo_ui/voo_ui.dart';
+import 'package:voo_devtools_extension/core/services/plugin_detection_service.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/log_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/performance_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_event.dart';
+import 'package:voo_devtools_extension/presentation/pages/logs_tab.dart';
+import 'package:voo_devtools_extension/presentation/pages/network_tab.dart';
+import 'package:voo_devtools_extension/presentation/pages/performance_tab.dart';
+import 'package:voo_devtools_extension/presentation/pages/analytics_tab.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
 
 class AdaptiveVooPage extends StatefulWidget {
   final Map<String, bool> pluginStatus;

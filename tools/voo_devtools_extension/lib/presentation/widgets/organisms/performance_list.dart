@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voo_logging_devtools_extension/core/models/log_entry_model.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/performance_list_tile.dart';
-import 'package:voo_ui/voo_ui.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
+import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/performance_list_tile.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class PerformanceList extends StatelessWidget {
   final List<LogEntryModel> logs;

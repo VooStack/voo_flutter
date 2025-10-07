@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/analytics_state.dart';
-import 'package:voo_ui/voo_ui.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_filter_bar.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_list.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/analytics_details_panel.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/enhanced_heat_map.dart';
-import 'package:voo_logging_devtools_extension/presentation/theme/app_theme.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/analytics_state.dart';
+import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/analytics_filter_bar.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/analytics_list.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/analytics_details_panel.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/enhanced_heat_map.dart';
+import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 class AnalyticsTab extends StatefulWidget {
   const AnalyticsTab({super.key});

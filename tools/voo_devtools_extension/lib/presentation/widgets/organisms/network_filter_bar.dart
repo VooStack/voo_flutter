@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_bloc.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_event.dart';
-import 'package:voo_logging_devtools_extension/presentation/blocs/network_state.dart';
-import 'package:voo_logging_devtools_extension/presentation/widgets/organisms/universal_filter_bar.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_bloc.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_event.dart';
+import 'package:voo_devtools_extension/presentation/blocs/network_state.dart';
+import 'package:voo_devtools_extension/presentation/widgets/organisms/universal_filter_bar.dart';
 
 class NetworkFilterBar extends StatefulWidget {
   const NetworkFilterBar({super.key});

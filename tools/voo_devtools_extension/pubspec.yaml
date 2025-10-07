@@ -1,8 +1,7 @@
-name: voo_logging_devtools_extension
+name: voo_devtools_extension
 description: 'Unified DevTools extension for all Voo packages'
 homepage: https://github.com/your-org/VooFlutter/tree/main/tools/voo_devtools_extension
 repository: https://github.com/your-org/VooFlutter
-resolution: workspace
 
 publish_to: 'none'
 
@@ -20,8 +19,10 @@ dependencies:
   devtools_app_shared: ^0.4.0
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
-  voo_core: ^0.4.2
-  voo_ui:
+  voo_core:
+    path: ../../packages/dev/voo_core
+  voo_ui_core:
+    path: ../../packages/ui/voo_ui_core
 
   vm_service: any
 dev_dependencies:
