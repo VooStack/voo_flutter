@@ -10,18 +10,24 @@ class VooAppBarLeading extends StatelessWidget {
   /// Navigation configuration
   final VooNavigationConfig? config;
 
+  /// Currently selected navigation item ID
+  final String? selectedId;
+
   const VooAppBarLeading({
     super.key,
     required this.showMenuButton,
     this.config,
+    this.selectedId,
   });
 
   @override
   Widget build(BuildContext context) {
     if (!showMenuButton) return const SizedBox.shrink();
 
-    if (config?.appBarLeading != null) {
-      return config!.appBarLeading!;
+    // Try to get custom leading from builder
+    final customLeading = config?.appBarLeadingBuilder?.call(selectedId);
+    if (customLeading != null) {
+      return customLeading;
     }
 
     // Show menu button for drawer on mobile

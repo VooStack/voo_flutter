@@ -11,7 +11,15 @@ class VooAppBarActions extends StatelessWidget {
   /// Screen width for responsive behavior
   final double screenWidth;
 
-  const VooAppBarActions({super.key, this.config, required this.screenWidth});
+  /// Currently selected navigation item ID
+  final String? selectedId;
+
+  const VooAppBarActions({
+    super.key,
+    this.config,
+    required this.screenWidth,
+    this.selectedId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +36,10 @@ class VooAppBarActions extends StatelessWidget {
     final theme = Theme.of(context);
     final actions = <Widget>[];
 
-    // Add custom actions from config
-    if (config?.appBarActions != null) {
-      actions.addAll(config!.appBarActions!);
+    // Add custom actions from builder
+    final customActions = config?.appBarActionsBuilder?.call(selectedId);
+    if (customActions != null) {
+      actions.addAll(customActions);
     }
 
     // Add notification bell if there are any badges

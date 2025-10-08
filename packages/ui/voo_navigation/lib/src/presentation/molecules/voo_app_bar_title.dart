@@ -17,8 +17,10 @@ class VooAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (config?.appBarTitle != null) {
-      return config!.appBarTitle!;
+    // Try to get custom title from builder
+    final customTitle = config?.appBarTitleBuilder?.call(item.id);
+    if (customTitle != null) {
+      return customTitle;
     }
 
     return AnimatedSwitcher(

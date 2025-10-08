@@ -98,6 +98,7 @@ class VooMobileScaffold extends StatelessWidget {
                   VooMobileAppBar(
                     config: config,
                     selectedItem: selectedItem,
+                    selectedId: selectedId,
                     showMenuButton: false,
                   ))
               : null,

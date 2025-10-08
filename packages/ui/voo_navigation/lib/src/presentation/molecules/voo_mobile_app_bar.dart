@@ -14,6 +14,9 @@ class VooMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Currently selected navigation item
   final VooNavigationItem? selectedItem;
 
+  /// Currently selected navigation item ID
+  final String? selectedId;
+
   /// Custom title widget
   final Widget? title;
 
@@ -42,6 +45,7 @@ class VooMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.config,
     this.selectedItem,
+    this.selectedId,
     this.title,
     this.leading,
     this.actions,
@@ -61,19 +65,25 @@ class VooMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final effectiveSelectedId = selectedId ?? selectedItem?.id;
+
     final effectiveTitle =
         title ??
+        config?.appBarTitleBuilder?.call(effectiveSelectedId) ??
         (selectedItem != null
             ? VooAppBarTitle(item: selectedItem!, config: config)
             : const Text(''));
 
     final effectiveLeading =
         leading ??
+        config?.appBarLeadingBuilder?.call(effectiveSelectedId) ??
         (showMenuButton
             ? VooAppBarLeading(showMenuButton: true, config: config)
             : null);
 
     final effectiveCenterTitle = centerTitle ?? config?.centerAppBarTitle ?? false;
+
+    final effectiveActions = actions ?? config?.appBarActionsBuilder?.call(effectiveSelectedId);
 
     final effectiveBackgroundColor =
         backgroundColor ??
@@ -111,8 +121,8 @@ class VooMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           leading: effectiveLeading,
           automaticallyImplyLeading: effectiveLeading != null,
-          actions: actions?.isNotEmpty == true
-              ? [...actions!, SizedBox(width: context.vooSpacing.md)]
+          actions: effectiveActions?.isNotEmpty == true
+              ? [...effectiveActions!, SizedBox(width: context.vooSpacing.md)]
               : null,
           centerTitle: effectiveCenterTitle,
           backgroundColor: Colors.transparent,

@@ -40,7 +40,7 @@ class VooRailDefaultHeader extends StatelessWidget {
           ),
           SizedBox(height: spacing.sm),
           Text(
-            _getTitle(),
+            'Navigation',
             style: theme.textTheme.titleSmall?.copyWith(
               color: theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
@@ -49,12 +49,5 @@ class VooRailDefaultHeader extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _getTitle() {
-    if (config.appBarTitle != null && config.appBarTitle is Text) {
-      return ((config.appBarTitle! as Text).data ?? 'Navigation');
-    }
-    return 'Navigation';
   }
 }

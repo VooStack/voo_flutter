@@ -45,9 +45,7 @@ class VooDrawerDefaultHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (config.appBarTitle != null && config.appBarTitle is Text)
-                          ? ((config.appBarTitle! as Text).data ?? 'Navigation')
-                          : 'Navigation',
+                      'Navigation',
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: theme.colorScheme.onSurface,
                         fontWeight: FontWeight.w600,

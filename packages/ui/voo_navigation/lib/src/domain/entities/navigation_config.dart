@@ -41,14 +41,14 @@ class VooNavigationConfig {
   /// Custom footer widget for navigation drawer
   final Widget? drawerFooter;
 
-  /// Custom leading widget for app bar
-  final Widget? appBarLeading;
+  /// Custom leading widget builder for app bar
+  final Widget? Function(String? selectedId)? appBarLeadingBuilder;
 
-  /// Custom actions for app bar
-  final List<Widget>? appBarActions;
+  /// Custom actions builder for app bar
+  final List<Widget>? Function(String? selectedId)? appBarActionsBuilder;
 
-  /// App bar title
-  final Widget? appBarTitle;
+  /// App bar title builder
+  final Widget? Function(String? selectedId)? appBarTitleBuilder;
 
   /// Whether to center the app bar title
   final bool centerAppBarTitle;
@@ -165,9 +165,9 @@ class VooNavigationConfig {
     this.useExtendedRail = true,
     this.drawerHeader,
     this.drawerFooter,
-    this.appBarLeading,
-    this.appBarActions,
-    this.appBarTitle,
+    this.appBarLeadingBuilder,
+    this.appBarActionsBuilder,
+    this.appBarTitleBuilder,
     this.centerAppBarTitle = false,
     this.appBarAlongsideRail = true,
     this.floatingActionButton,
@@ -221,9 +221,9 @@ class VooNavigationConfig {
     bool? useExtendedRail,
     Widget? drawerHeader,
     Widget? drawerFooter,
-    Widget? appBarLeading,
-    List<Widget>? appBarActions,
-    Widget? appBarTitle,
+    Widget? Function(String? selectedId)? appBarLeadingBuilder,
+    List<Widget>? Function(String? selectedId)? appBarActionsBuilder,
+    Widget? Function(String? selectedId)? appBarTitleBuilder,
     bool? centerAppBarTitle,
     bool? appBarAlongsideRail,
     Widget? floatingActionButton,
@@ -270,9 +270,9 @@ class VooNavigationConfig {
     useExtendedRail: useExtendedRail ?? this.useExtendedRail,
     drawerHeader: drawerHeader ?? this.drawerHeader,
     drawerFooter: drawerFooter ?? this.drawerFooter,
-    appBarLeading: appBarLeading ?? this.appBarLeading,
-    appBarActions: appBarActions ?? this.appBarActions,
-    appBarTitle: appBarTitle ?? this.appBarTitle,
+    appBarLeadingBuilder: appBarLeadingBuilder ?? this.appBarLeadingBuilder,
+    appBarActionsBuilder: appBarActionsBuilder ?? this.appBarActionsBuilder,
+    appBarTitleBuilder: appBarTitleBuilder ?? this.appBarTitleBuilder,
     centerAppBarTitle: centerAppBarTitle ?? this.centerAppBarTitle,
     appBarAlongsideRail: appBarAlongsideRail ?? this.appBarAlongsideRail,
     floatingActionButton: floatingActionButton ?? this.floatingActionButton,

@@ -162,13 +162,13 @@ void main() {
     test('sets custom widgets', () {
       final drawerHeader = Container(height: 200);
       final drawerFooter = Container(height: 100);
-      final appBarTitle = const Text('App');
+      Widget appBarTitleBuilder(String? _) => const Text('App');
       final fab = FloatingActionButton(onPressed: () {});
 
       final builder = VooNavigationBuilder()
         ..drawerHeader(drawerHeader)
         ..drawerFooter(drawerFooter)
-        ..appBarTitle(appBarTitle)
+        ..appBarTitleBuilder(appBarTitleBuilder)
         ..floatingActionButton(fab)
         ..floatingActionButtonLocation(
           FloatingActionButtonLocation.centerFloat,
@@ -178,7 +178,7 @@ void main() {
 
       expect(config.drawerHeader, drawerHeader);
       expect(config.drawerFooter, drawerFooter);
-      expect(config.appBarTitle, appBarTitle);
+      expect(config.appBarTitleBuilder, appBarTitleBuilder);
       expect(config.floatingActionButton, fab);
       expect(
         config.floatingActionButtonLocation,

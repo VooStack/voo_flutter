@@ -1,3 +1,42 @@
+## 0.1.0
+
+### BREAKING CHANGES
+- **App Bar Builder Pattern**: Converted app bar configuration from static widgets to builder functions that receive `selectedId`
+  - `appBarActions` → `appBarActionsBuilder: List<Widget>? Function(String? selectedId)?`
+  - `appBarTitle` → `appBarTitleBuilder: Widget? Function(String? selectedId)?`
+  - `appBarLeading` → `appBarLeadingBuilder: Widget? Function(String? selectedId)?`
+  - This allows app bar content to dynamically change based on the currently selected navigation item
+  - **Migration**: Wrap your existing widgets in builder functions:
+    ```dart
+    // Before
+    appBarActions: [IconButton(...)],
+    appBarTitle: Text('My App'),
+
+    // After
+    appBarActionsBuilder: (selectedId) => [IconButton(...)],
+    appBarTitleBuilder: (selectedId) => Text('My App'),
+    ```
+
+### Added
+- **Dynamic App Bar Content**: App bar widgets can now react to navigation changes
+  - Builders receive the currently `selectedId` parameter
+  - Enables context-aware app bar actions, titles, and leading widgets
+  - Example: Show different actions based on which tab is selected
+
+### Updated
+- **VooMobileAppBar**: Now accepts `selectedId` parameter and calls builder functions
+- **VooAdaptiveAppBar**: Updated to use builder functions with `selectedId`
+- **VooNavigationBuilder**: Updated with new builder methods:
+  - `appBarTitleBuilder(Widget? Function(String?) builder)`
+  - `appBarActionsBuilder(List<Widget>? Function(String?) builder)`
+  - `appBarLeadingBuilder(Widget? Function(String?) builder)`
+- **All Scaffolds**: Updated to pass `selectedId` to app bar components
+  - `VooMobileScaffold`, `VooTabletScaffold`, `VooDesktopScaffold`
+
+### Fixed
+- **Test Coverage**: Updated test expectations for builder pattern
+  - Fixed "should show app bar when specified" test to check for Text widget instead of VooAppBarTitle
+
 ## 0.0.14
 
 ### Fixed

@@ -19,7 +19,9 @@ class VooNavigationBuilder {
   bool _useExtendedRail = true;
   Widget? _drawerHeader;
   Widget? _drawerFooter;
-  Widget? _appBarTitle;
+  Widget? Function(String? selectedId)? _appBarTitleBuilder;
+  Widget? Function(String? selectedId)? _appBarLeadingBuilder;
+  List<Widget>? Function(String? selectedId)? _appBarActionsBuilder;
   bool _centerAppBarTitle = false;
   Widget? _floatingActionButton;
   FloatingActionButtonLocation? _floatingActionButtonLocation;
@@ -210,9 +212,27 @@ class VooNavigationBuilder {
     return this;
   }
 
-  /// Sets the app bar title
-  VooNavigationBuilder appBarTitle(Widget? title) {
-    _appBarTitle = title;
+  /// Sets the app bar title builder
+  VooNavigationBuilder appBarTitleBuilder(
+    Widget? Function(String? selectedId)? builder,
+  ) {
+    _appBarTitleBuilder = builder;
+    return this;
+  }
+
+  /// Sets the app bar leading builder
+  VooNavigationBuilder appBarLeadingBuilder(
+    Widget? Function(String? selectedId)? builder,
+  ) {
+    _appBarLeadingBuilder = builder;
+    return this;
+  }
+
+  /// Sets the app bar actions builder
+  VooNavigationBuilder appBarActionsBuilder(
+    List<Widget>? Function(String? selectedId)? builder,
+  ) {
+    _appBarActionsBuilder = builder;
     return this;
   }
 
@@ -350,7 +370,9 @@ class VooNavigationBuilder {
       useExtendedRail: _useExtendedRail,
       drawerHeader: _drawerHeader,
       drawerFooter: _drawerFooter,
-      appBarTitle: _appBarTitle,
+      appBarTitleBuilder: _appBarTitleBuilder,
+      appBarLeadingBuilder: _appBarLeadingBuilder,
+      appBarActionsBuilder: _appBarActionsBuilder,
       centerAppBarTitle: _centerAppBarTitle,
       floatingActionButton: _floatingActionButton,
       floatingActionButtonLocation: _floatingActionButtonLocation,

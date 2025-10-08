@@ -122,7 +122,7 @@ void main() {
       WidgetTester tester,
     ) async {
       final configWithAppBar = config.copyWith(
-        appBarTitle: const Text('Test Title'),
+        appBarTitleBuilder: (_) => const Text('Test Title'),
       );
 
       await tester.pumpWidget(
@@ -135,8 +135,8 @@ void main() {
       );
 
       expect(find.byType(VooAdaptiveAppBar), findsOneWidget);
-      // The title is now wrapped in VooAppBarTitle widget
-      expect(find.byType(VooAppBarTitle), findsOneWidget);
+      // The title builder returns a Text widget directly
+      expect(find.text('Test Title'), findsOneWidget);
     });
 
     testWidgets('should show floating action button when provided', (

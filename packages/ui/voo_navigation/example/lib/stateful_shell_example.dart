@@ -247,7 +247,7 @@ class _ScaffoldWithNavigationState extends State<ScaffoldWithNavigation> {
             );
           }
         },
-        appBarTitle:
+        appBarTitleBuilder: (_) =>
             Text(_navigationItems[widget.navigationShell.currentIndex].label),
         enableAnimations: true,
         enableHapticFeedback: true,

@@ -112,6 +112,8 @@ class VooDesktopScaffold extends StatelessWidget {
                       appBar:
                           appBar ??
                           VooAdaptiveAppBar(
+                            config: config,
+                            selectedId: selectedId,
                             showMenuButton: false,
                             margin: EdgeInsets.only(
                               top: context.vooTokens.spacing.sm,
@@ -150,7 +152,7 @@ class VooDesktopScaffold extends StatelessWidget {
       key: scaffoldKey,
       backgroundColor: backgroundColor,
       appBar: showAppBar
-          ? (appBar ?? const VooAdaptiveAppBar(showMenuButton: false))
+          ? (appBar ?? VooAdaptiveAppBar(config: config, selectedId: selectedId, showMenuButton: false))
           : null,
       body: Row(
         children: [

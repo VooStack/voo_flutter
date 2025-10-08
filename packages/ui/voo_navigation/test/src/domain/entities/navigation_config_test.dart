@@ -65,8 +65,8 @@ void main() {
         elevation: 4.0,
         drawerHeader: const Text('Header'),
         drawerFooter: const Text('Footer'),
-        appBarLeading: const Icon(Icons.menu),
-        appBarActions: [const Icon(Icons.search)],
+        appBarLeadingBuilder: (_) => const Icon(Icons.menu),
+        appBarActionsBuilder: (_) => [const Icon(Icons.search)],
         floatingActionButton: const FloatingActionButton(
           onPressed: null,
           child: Icon(Icons.add),
@@ -100,8 +100,8 @@ void main() {
       expect(config.elevation, 4.0);
       expect(config.drawerHeader, isNotNull);
       expect(config.drawerFooter, isNotNull);
-      expect(config.appBarLeading, isNotNull);
-      expect(config.appBarActions?.length, 1);
+      expect(config.appBarLeadingBuilder, isNotNull);
+      expect(config.appBarActionsBuilder, isNotNull);
       expect(config.floatingActionButton, isNotNull);
       expect(
         config.floatingActionButtonAnimator,

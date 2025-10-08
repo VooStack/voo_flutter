@@ -89,9 +89,17 @@ class VooAdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? effectiveConfig.items.firstWhere((item) => item.id == effectiveSelectedId, orElse: () => effectiveConfig.items.first)
         : null;
 
-    final effectiveTitle = title ?? (selectedItem != null ? VooAppBarTitle(item: selectedItem, config: effectiveConfig) : const Text(''));
-    final effectiveLeading = leading ?? (showMenuButton ? VooAppBarLeading(showMenuButton: showMenuButton, config: effectiveConfig) : null);
-    final effectiveActions = actions;
+    final effectiveTitle =
+        title ??
+        effectiveConfig?.appBarTitleBuilder?.call(effectiveSelectedId) ??
+        (selectedItem != null ? VooAppBarTitle(item: selectedItem, config: effectiveConfig) : const Text(''));
+
+    final effectiveLeading =
+        leading ??
+        effectiveConfig?.appBarLeadingBuilder?.call(effectiveSelectedId) ??
+        (showMenuButton ? VooAppBarLeading(showMenuButton: showMenuButton, config: effectiveConfig) : null);
+
+    final effectiveActions = actions ?? effectiveConfig?.appBarActionsBuilder?.call(effectiveSelectedId);
     final effectiveCenterTitle = centerTitle ?? effectiveConfig?.centerAppBarTitle ?? false;
     // Use same subtle surface color variation as navigation components
     final effectiveBackgroundColor =

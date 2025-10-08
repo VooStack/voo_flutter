@@ -163,7 +163,7 @@ class _ModernDashboardState extends State<ModernDashboard> {
       useExtendedRail: true,
       animationDuration: const Duration(milliseconds: 300),
       animationCurve: Curves.easeInOutCubic,
-      appBarTitle: const Text('Untitled UI'),
+      appBarTitleBuilder: (_) => const Text('Untitled UI'),
       onNavigationItemSelected: (itemId) {
         setState(() {
           _selectedId = itemId;
