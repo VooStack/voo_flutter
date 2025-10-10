@@ -480,6 +480,12 @@ class VooCalendar extends StatefulWidget {
   /// Gesture configuration for advanced selection
   final VooCalendarGestureConfig? gestureConfig;
 
+  /// Builder for trailing widgets on hour lines in day view
+  final Widget Function(BuildContext context, int hour)? dayViewHourLineTrailingBuilder;
+
+  /// Show only hours that have events in day view
+  final bool dayViewShowOnlyHoursWithEvents;
+
   const VooCalendar({
     super.key,
     this.controller,
@@ -509,6 +515,8 @@ class VooCalendar extends StatefulWidget {
     this.compact = false,
     this.enableSwipeNavigation = true,
     this.gestureConfig,
+    this.dayViewHourLineTrailingBuilder,
+    this.dayViewShowOnlyHoursWithEvents = false,
   });
 
   @override
@@ -678,10 +686,10 @@ class _VooCalendarState extends State<VooCalendar> {
           bottom: BorderSide(color: _theme.borderColor, width: 0.5),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SegmentedButton<VooCalendarView>(
+      child: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SegmentedButton<VooCalendarView>(
             segments: widget.availableViews.map((view) {
               IconData icon;
               String label;
@@ -719,7 +727,7 @@ class _VooCalendarState extends State<VooCalendar> {
               widget.onViewChanged?.call(selection.first);
             },
           ),
-        ],
+        ),
       ),
     );
   }
@@ -769,6 +777,8 @@ class _VooCalendarState extends State<VooCalendar> {
         eventBuilder: widget.eventBuilder,
         onEventTap: widget.onEventTap,
         compact: compact,
+        hourLineTrailingBuilder: widget.dayViewHourLineTrailingBuilder,
+        showOnlyHoursWithEvents: widget.dayViewShowOnlyHoursWithEvents,
       ),
       VooCalendarView.year => VooCalendarYearView(
         controller: _controller,

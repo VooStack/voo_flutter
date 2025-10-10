@@ -656,6 +656,12 @@ class VooCalendarDayView extends StatefulWidget {
   eventBuilder;
   final bool compact;
 
+  /// Builder for trailing widgets on hour lines
+  final Widget Function(BuildContext context, int hour)? hourLineTrailingBuilder;
+
+  /// Show only hours that have events
+  final bool showOnlyHoursWithEvents;
+
   const VooCalendarDayView({
     super.key,
     required this.controller,
@@ -663,6 +669,8 @@ class VooCalendarDayView extends StatefulWidget {
     this.onEventTap,
     this.eventBuilder,
     required this.compact,
+    this.hourLineTrailingBuilder,
+    this.showOnlyHoursWithEvents = false,
   });
 
   @override
@@ -701,16 +709,32 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     final theme = widget.theme;
     final focusedDate = widget.controller.focusedDate;
     final events = widget.controller.getEventsForDate(focusedDate);
-    final hours = List.generate(24, (i) => i);
+
+    // Filter hours based on showOnlyHoursWithEvents
+    List<int> hours;
+    if (widget.showOnlyHoursWithEvents) {
+      // Get unique hours that have events
+      final hoursWithEvents = events
+          .map((e) => e.startTime.hour)
+          .toSet()
+          .toList()
+        ..sort();
+      hours = hoursWithEvents.isNotEmpty ? hoursWithEvents : [0]; // Show at least one hour if no events
+    } else {
+      hours = List.generate(24, (i) => i);
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final timeColumnWidth = widget.compact ? 50.0 : 60.0;
+        final totalHeight = widget.showOnlyHoursWithEvents
+            ? hours.length * _hourHeight
+            : 24 * _hourHeight;
 
         return SingleChildScrollView(
           controller: _scrollController,
           child: SizedBox(
-            height: 24 * _hourHeight,
+            height: totalHeight,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -742,25 +766,45 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                     children: [
                       // Hour grid
                       Column(
-                        children: List.generate(24, (hour) {
+                        children: hours.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final hour = entry.value;
                           return Container(
                             height: _hourHeight,
                             decoration: BoxDecoration(
                               border: Border(
                                 bottom: BorderSide(
                                   color: theme.gridLineColor,
-                                  width: hour == 23 ? 0 : 0.5,
+                                  width: index == hours.length - 1 ? 0 : 0.5,
                                 ),
                               ),
                             ),
+                            child: widget.hourLineTrailingBuilder != null
+                                ? Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: design.spacingXs),
+                                      child: widget.hourLineTrailingBuilder!(context, hour),
+                                    ),
+                                  )
+                                : null,
                           );
-                        }),
+                        }).toList(),
                       ),
                       // Events
                       ...events.map((event) {
+                        // Calculate position based on visible hours
+                        final eventHour = event.startTime.hour;
+                        final hourIndex = hours.indexOf(eventHour);
+                        if (hourIndex == -1) return const SizedBox.shrink();
+
+                        final topOffset = widget.showOnlyHoursWithEvents
+                            ? hourIndex * _hourHeight + (event.startTime.minute / 60) * _hourHeight
+                            : _getEventTop(event);
+
                         if (widget.eventBuilder != null) {
                           return Positioned(
-                            top: _getEventTop(event),
+                            top: topOffset,
                             left: design.spacingXs,
                             right: design.spacingXs,
                             height: _getEventHeight(event),
@@ -768,7 +812,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                           );
                         }
                         return Positioned(
-                          top: _getEventTop(event),
+                          top: topOffset,
                           left: design.spacingXs,
                           right: design.spacingXs,
                           height: _getEventHeight(event),
