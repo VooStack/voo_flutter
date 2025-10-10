@@ -659,8 +659,47 @@ class VooCalendarDayView extends StatefulWidget {
   /// Builder for trailing widgets on hour lines
   final Widget Function(BuildContext context, int hour)? hourLineTrailingBuilder;
 
+  /// Builder for leading widgets on hour lines (before time label)
+  final Widget Function(BuildContext context, int hour)? hourLineLeadingBuilder;
+
   /// Show only hours that have events
   final bool showOnlyHoursWithEvents;
+
+  /// Custom hour height (default: 60.0)
+  final double? hourHeight;
+
+  /// Time label formatter
+  final String Function(int hour)? timeLabelFormatter;
+
+  /// Initial hour to scroll to (default: current hour)
+  final int? initialScrollHour;
+
+  /// Custom scroll physics
+  final ScrollPhysics? scrollPhysics;
+
+  /// Show/hide time labels
+  final bool showTimeLabels;
+
+  /// Time column width (overrides compact mode width)
+  final double? timeColumnWidth;
+
+  /// First hour to display (0-23)
+  final int firstHour;
+
+  /// Last hour to display (0-23)
+  final int lastHour;
+
+  /// Hour line color
+  final Color? hourLineColor;
+
+  /// Hour line thickness
+  final double? hourLineThickness;
+
+  /// Show half-hour lines
+  final bool showHalfHourLines;
+
+  /// Callback when hour line is tapped
+  final void Function(int hour)? onHourLineTap;
 
   const VooCalendarDayView({
     super.key,
@@ -670,7 +709,20 @@ class VooCalendarDayView extends StatefulWidget {
     this.eventBuilder,
     required this.compact,
     this.hourLineTrailingBuilder,
+    this.hourLineLeadingBuilder,
     this.showOnlyHoursWithEvents = false,
+    this.hourHeight,
+    this.timeLabelFormatter,
+    this.initialScrollHour,
+    this.scrollPhysics,
+    this.showTimeLabels = true,
+    this.timeColumnWidth,
+    this.firstHour = 0,
+    this.lastHour = 23,
+    this.hourLineColor,
+    this.hourLineThickness,
+    this.showHalfHourLines = false,
+    this.onHourLineTap,
   });
 
   @override
@@ -679,17 +731,18 @@ class VooCalendarDayView extends StatefulWidget {
 
 class _VooCalendarDayViewState extends State<VooCalendarDayView> {
   final ScrollController _scrollController = ScrollController();
-  static const double _hourHeight = 60.0;
+  static const double _defaultHourHeight = 60.0;
 
   @override
   void initState() {
     super.initState();
-    // Scroll to current hour on init
+    // Scroll to initial hour on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final now = DateTime.now();
+      final scrollHour = widget.initialScrollHour ?? DateTime.now().hour;
+      final hourHeight = widget.hourHeight ?? _defaultHourHeight;
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
-          now.hour * _hourHeight,
+          scrollHour * hourHeight,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOutCubic,
         );
@@ -703,14 +756,20 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     super.dispose();
   }
 
+  String _defaultTimeFormatter(int hour) {
+    return '${hour.toString().padLeft(2, '0')}:00';
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
     final theme = widget.theme;
     final focusedDate = widget.controller.focusedDate;
     final events = widget.controller.getEventsForDate(focusedDate);
+    final hourHeight = widget.hourHeight ?? _defaultHourHeight;
+    final timeFormatter = widget.timeLabelFormatter ?? _defaultTimeFormatter;
 
-    // Filter hours based on showOnlyHoursWithEvents
+    // Filter hours based on showOnlyHoursWithEvents or hour range
     List<int> hours;
     if (widget.showOnlyHoursWithEvents) {
       // Get unique hours that have events
@@ -719,47 +778,61 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
           .toSet()
           .toList()
         ..sort();
-      hours = hoursWithEvents.isNotEmpty ? hoursWithEvents : [0]; // Show at least one hour if no events
+      hours = hoursWithEvents.isNotEmpty ? hoursWithEvents : [widget.firstHour];
     } else {
-      hours = List.generate(24, (i) => i);
+      hours = List.generate(
+        widget.lastHour - widget.firstHour + 1,
+        (i) => widget.firstHour + i,
+      );
     }
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final timeColumnWidth = widget.compact ? 50.0 : 60.0;
-        final totalHeight = widget.showOnlyHoursWithEvents
-            ? hours.length * _hourHeight
-            : 24 * _hourHeight;
+        final timeColumnWidth = widget.timeColumnWidth ??
+            (widget.compact ? 50.0 : 60.0);
+        final totalHeight = hours.length * hourHeight +
+            (widget.showHalfHourLines ? hours.length * (hourHeight / 2) : 0);
 
         return SingleChildScrollView(
           controller: _scrollController,
+          physics: widget.scrollPhysics,
           child: SizedBox(
             height: totalHeight,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Time column
-                SizedBox(
-                  width: timeColumnWidth,
-                  child: Column(
-                    children: hours.map((hour) {
-                      return Container(
-                        height: _hourHeight,
-                        padding: EdgeInsets.only(
-                          right: design.spacingXs,
-                          top: design.spacingXs,
-                        ),
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          '${hour.toString().padLeft(2, '0')}:00',
-                          style: widget.theme.timeTextStyle.copyWith(
-                            fontSize: widget.compact ? 10 : 11,
+                // Time column with leading builders
+                if (widget.showTimeLabels)
+                  SizedBox(
+                    width: timeColumnWidth,
+                    child: Column(
+                      children: hours.map((hour) {
+                        return Container(
+                          height: hourHeight,
+                          padding: EdgeInsets.only(
+                            right: design.spacingXs,
                           ),
-                        ),
-                      );
-                    }).toList(),
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (widget.hourLineLeadingBuilder != null)
+                                Padding(
+                                  padding: EdgeInsets.only(right: design.spacingXs),
+                                  child: widget.hourLineLeadingBuilder!(context, hour),
+                                ),
+                              Text(
+                                timeFormatter(hour),
+                                style: widget.theme.timeTextStyle.copyWith(
+                                  fontSize: widget.compact ? 10 : 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
                 // Day content
                 Expanded(
                   child: Stack(
@@ -769,25 +842,33 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                         children: hours.asMap().entries.map((entry) {
                           final index = entry.key;
                           final hour = entry.value;
-                          return Container(
-                            height: _hourHeight,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: theme.gridLineColor,
-                                  width: index == hours.length - 1 ? 0 : 0.5,
+                          final lineColor = widget.hourLineColor ?? theme.gridLineColor;
+                          final lineThickness = widget.hourLineThickness ?? 0.5;
+
+                          return InkWell(
+                            onTap: widget.onHourLineTap != null
+                                ? () => widget.onHourLineTap!(hour)
+                                : null,
+                            child: Container(
+                              height: hourHeight,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: lineColor,
+                                    width: index == hours.length - 1 ? 0 : lineThickness,
+                                  ),
                                 ),
                               ),
+                              child: widget.hourLineTrailingBuilder != null
+                                  ? Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: design.spacingXs),
+                                        child: widget.hourLineTrailingBuilder!(context, hour),
+                                      ),
+                                    )
+                                  : null,
                             ),
-                            child: widget.hourLineTrailingBuilder != null
-                                ? Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: design.spacingXs),
-                                      child: widget.hourLineTrailingBuilder!(context, hour),
-                                    ),
-                                  )
-                                : null,
                           );
                         }).toList(),
                       ),
@@ -799,15 +880,15 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                         if (hourIndex == -1) return const SizedBox.shrink();
 
                         final topOffset = widget.showOnlyHoursWithEvents
-                            ? hourIndex * _hourHeight + (event.startTime.minute / 60) * _hourHeight
-                            : _getEventTop(event);
+                            ? hourIndex * hourHeight + (event.startTime.minute / 60) * hourHeight
+                            : _getEventTop(event, hourHeight);
 
                         if (widget.eventBuilder != null) {
                           return Positioned(
                             top: topOffset,
                             left: design.spacingXs,
                             right: design.spacingXs,
-                            height: _getEventHeight(event),
+                            height: _getEventHeight(event, hourHeight),
                             child: widget.eventBuilder!(context, event),
                           );
                         }
@@ -815,8 +896,8 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                           top: topOffset,
                           left: design.spacingXs,
                           right: design.spacingXs,
-                          height: _getEventHeight(event),
-                          child: _buildEvent(event, design),
+                          height: _getEventHeight(event, hourHeight),
+                          child: _buildEvent(event, design, hourHeight),
                         );
                       }),
                     ],
@@ -830,7 +911,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     );
   }
 
-  Widget _buildEvent(VooCalendarEvent event, VooDesignSystemData design) {
+  Widget _buildEvent(VooCalendarEvent event, VooDesignSystemData design, double hourHeight) {
     return InkWell(
       onTap: () => widget.onEventTap?.call(event),
       child: Container(
@@ -871,7 +952,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
             ),
             if (event.description != null &&
                 !widget.compact &&
-                _getEventHeight(event) > 40) ...[
+                _getEventHeight(event, hourHeight) > 40) ...[
               SizedBox(height: design.spacingXs),
               Text(
                 event.description!,
@@ -882,7 +963,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                 overflow: TextOverflow.ellipsis,
               ),
             ],
-            if (_getEventHeight(event) > 30)
+            if (_getEventHeight(event, hourHeight) > 30)
               Text(
                 DateFormat('HH:mm').format(event.startTime),
                 style: widget.theme.eventTimeTextStyle.copyWith(fontSize: 9),
@@ -893,15 +974,15 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     );
   }
 
-  double _getEventTop(VooCalendarEvent event) {
+  double _getEventTop(VooCalendarEvent event, double hourHeight) {
     final hour = event.startTime.hour;
     final minute = event.startTime.minute;
-    return (hour + minute / 60) * 80;
+    return (hour + minute / 60) * hourHeight;
   }
 
-  double _getEventHeight(VooCalendarEvent event) {
+  double _getEventHeight(VooCalendarEvent event, double hourHeight) {
     final duration = event.duration.inMinutes;
-    return (duration / 60) * 80;
+    return (duration / 60) * hourHeight;
   }
 }
 

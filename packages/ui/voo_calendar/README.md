@@ -123,6 +123,26 @@ Displays a single week with hourly time slots for detailed scheduling.
 ### Day View
 Shows a single day with hourly breakdown for precise event planning.
 
+**Customization Options:**
+- Add trailing widgets to hour lines for quick actions
+- Show only hours with events for a compact view
+
+```dart
+VooCalendar(
+  initialView: VooCalendarView.day,
+  // Add action buttons to each hour line
+  dayViewHourLineTrailingBuilder: (context, hour) {
+    return IconButton(
+      icon: const Icon(Icons.add_circle_outline),
+      onPressed: () => addEventAt(hour),
+      tooltip: 'Add event',
+    );
+  },
+  // Show only hours that have events
+  dayViewShowOnlyHoursWithEvents: true,
+)
+```
+
 ### Year View
 Provides an overview of the entire year with month grids.
 
