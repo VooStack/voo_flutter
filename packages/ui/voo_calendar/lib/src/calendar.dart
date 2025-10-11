@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 import 'calendar_theme.dart';
 import 'calendar_views.dart';
+import 'calendar_config.dart';
 
 /// Calendar view types
 enum VooCalendarView {
@@ -480,11 +481,20 @@ class VooCalendar extends StatefulWidget {
   /// Gesture configuration for advanced selection
   final VooCalendarGestureConfig? gestureConfig;
 
-  /// Builder for trailing widgets on hour lines in day view
-  final Widget Function(BuildContext context, int hour)? dayViewHourLineTrailingBuilder;
+  /// Configuration for day view customization
+  final VooDayViewConfig? dayViewConfig;
 
-  /// Show only hours that have events in day view
-  final bool dayViewShowOnlyHoursWithEvents;
+  /// Configuration for week view customization
+  final VooWeekViewConfig? weekViewConfig;
+
+  /// Configuration for month view customization
+  final VooMonthViewConfig? monthViewConfig;
+
+  /// Configuration for year view customization
+  final VooYearViewConfig? yearViewConfig;
+
+  /// Configuration for schedule view customization
+  final VooScheduleViewConfig? scheduleViewConfig;
 
   const VooCalendar({
     super.key,
@@ -515,8 +525,11 @@ class VooCalendar extends StatefulWidget {
     this.compact = false,
     this.enableSwipeNavigation = true,
     this.gestureConfig,
-    this.dayViewHourLineTrailingBuilder,
-    this.dayViewShowOnlyHoursWithEvents = false,
+    this.dayViewConfig,
+    this.weekViewConfig,
+    this.monthViewConfig,
+    this.yearViewConfig,
+    this.scheduleViewConfig,
   });
 
   @override
@@ -741,8 +754,8 @@ class _VooCalendarState extends State<VooCalendar> {
       VooCalendarView.month => VooCalendarMonthView(
         controller: _controller,
         theme: _theme,
-        firstDayOfWeek: widget.firstDayOfWeek,
-        showWeekNumbers: widget.showWeekNumbers,
+        firstDayOfWeek: widget.monthViewConfig?.firstDayOfWeek ?? widget.firstDayOfWeek,
+        showWeekNumbers: widget.monthViewConfig?.showWeekNumbers ?? widget.showWeekNumbers,
         dayBuilder: widget.dayBuilder,
         eventBuilder: widget.eventBuilder,
         onDateSelected: (date) {
@@ -758,6 +771,7 @@ class _VooCalendarState extends State<VooCalendar> {
         onEventTap: widget.onEventTap,
         compact: compact,
         gestureConfig: widget.gestureConfig,
+        config: widget.monthViewConfig ?? const VooMonthViewConfig(),
       ),
       VooCalendarView.week => VooCalendarWeekView(
         controller: _controller,
@@ -777,8 +791,7 @@ class _VooCalendarState extends State<VooCalendar> {
         eventBuilder: widget.eventBuilder,
         onEventTap: widget.onEventTap,
         compact: compact,
-        hourLineTrailingBuilder: widget.dayViewHourLineTrailingBuilder,
-        showOnlyHoursWithEvents: widget.dayViewShowOnlyHoursWithEvents,
+        config: widget.dayViewConfig ?? const VooDayViewConfig(),
       ),
       VooCalendarView.year => VooCalendarYearView(
         controller: _controller,

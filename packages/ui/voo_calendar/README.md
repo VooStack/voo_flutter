@@ -18,7 +18,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  voo_calendar: ^0.1.0
+  voo_calendar: ^0.2.0
   voo_ui_core: ^0.1.0
 ```
 
@@ -126,20 +126,35 @@ Shows a single day with hourly breakdown for precise event planning.
 **Customization Options:**
 - Add trailing widgets to hour lines for quick actions
 - Show only hours with events for a compact view
+- Dynamic height adjustment for overlapping events
+- Column-based layout for side-by-side events (Google Calendar style)
+- Comprehensive spacing and positioning controls
 
 ```dart
 VooCalendar(
   initialView: VooCalendarView.day,
-  // Add action buttons to each hour line
-  dayViewHourLineTrailingBuilder: (context, hour) {
-    return IconButton(
-      icon: const Icon(Icons.add_circle_outline),
-      onPressed: () => addEventAt(hour),
-      tooltip: 'Add event',
-    );
-  },
-  // Show only hours that have events
-  dayViewShowOnlyHoursWithEvents: true,
+  dayViewConfig: VooDayViewConfig(
+    // Add action buttons to each hour line
+    hourLineTrailingBuilder: (context, hour) {
+      return IconButton(
+        icon: const Icon(Icons.add_circle_outline),
+        onPressed: () => addEventAt(hour),
+        tooltip: 'Add event',
+      );
+    },
+    // Show only hours that have events
+    showOnlyHoursWithEvents: true,
+    // Enable dynamic height for overlapping events
+    enableDynamicHeight: true,
+    // Enable column layout for side-by-side events
+    enableColumnLayout: true,
+    // Customize spacing and positioning
+    minEventHeight: 60.0,
+    eventSpacing: 8.0,
+    eventLeftPadding: 8.0,
+    eventRightPadding: 8.0,
+    trailingBuilderWidth: 48, // Reserve space for trailing widgets
+  ),
 )
 ```
 
@@ -151,15 +166,25 @@ Lists events in a chronological list format.
 
 ## Components
 
+### Main Components
 - `VooCalendar` - Main calendar widget
 - `VooCalendarController` - Calendar controller for programmatic control
 - `VooCalendarTheme` - Theme configuration
 - `VooCalendarEvent` - Event data model
+
+### View Implementations
 - `VooCalendarMonthView` - Month view implementation
 - `VooCalendarWeekView` - Week view implementation
 - `VooCalendarDayView` - Day view implementation
 - `VooCalendarYearView` - Year view implementation
 - `VooCalendarScheduleView` - Schedule view implementation
+
+### Configuration Classes
+- `VooDayViewConfig` - Day view configuration with 20+ customization options
+- `VooWeekViewConfig` - Week view configuration
+- `VooMonthViewConfig` - Month view configuration
+- `VooYearViewConfig` - Year view configuration
+- `VooScheduleViewConfig` - Schedule view configuration
 
 ## Selection Modes
 

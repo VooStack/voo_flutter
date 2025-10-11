@@ -1,3 +1,138 @@
+## 0.2.0
+
+### 🚀 Major Refactoring - Production-Grade Calendar
+
+**Configuration-Based Architecture** - Complete refactoring to use configuration objects for better maintainability and scalability:
+
+#### 💥 Breaking Changes:
+- **BREAKING**: Removed individual day view parameters from `VooCalendar` constructor
+  - ❌ `dayViewHourLineTrailingBuilder` → Use `dayViewConfig.hourLineTrailingBuilder`
+  - ❌ `dayViewShowOnlyHoursWithEvents` → Use `dayViewConfig.showOnlyHoursWithEvents`
+  - ❌ `dayViewEnableDynamicHeight` → Use `dayViewConfig.enableDynamicHeight`
+  - ❌ `dayViewMinEventHeight` → Use `dayViewConfig.minEventHeight`
+  - ❌ `dayViewEventSpacing` → Use `dayViewConfig.eventSpacing`
+
+#### ✨ New Configuration Classes:
+- **FEAT**: `VooDayViewConfig` - Comprehensive day view configuration with 20+ options
+- **FEAT**: `VooWeekViewConfig` - Week view configuration for consistent customization
+- **FEAT**: `VooMonthViewConfig` - Month view configuration with grid options
+- **FEAT**: `VooYearViewConfig` - Year view layout configuration
+- **FEAT**: `VooScheduleViewConfig` - Schedule view customization options
+
+#### 🎨 Advanced Event Layout System:
+- **FEAT**: Google Calendar-style column layout for overlapping events (`enableColumnLayout`)
+- **FEAT**: Events can now be displayed side-by-side instead of just stacked
+- **FEAT**: Intelligent overlap detection and grouping algorithm
+- **FEAT**: Automatic column width calculation based on concurrent events
+- **FEAT**: Configurable horizontal gaps between adjacent events (`eventHorizontalGap`)
+
+#### 📐 Enhanced Spacing & Positioning:
+- **FEAT**: `eventLeftPadding` - Left padding for events to prevent overlap with time labels (default: 8.0)
+- **FEAT**: `eventRightPadding` - Right padding for events to prevent overlap with trailing builders (default: 8.0)
+- **FEAT**: `eventTopPadding` - Top padding within hour slots (default: 4.0)
+- **FEAT**: `eventBottomPadding` - Bottom padding within hour slots (default: 4.0)
+- **FEAT**: `trailingBuilderWidth` - Reserved width for trailing builders to prevent event overlap (default: 0)
+
+#### 🔧 Improved Dynamic Height:
+- **FIX**: Dynamic height now properly calculates space for all overlapping events
+- **FIX**: Events no longer overlap with `hourLineTrailingBuilder` widgets
+- **FIX**: Better spacing calculation includes padding buffers for visual breathing room
+- **IMPROVE**: `minEventHeight` default increased from 40.0 to 60.0 for better readability
+- **IMPROVE**: `eventSpacing` default increased from 4.0 to 8.0 for improved visual hierarchy
+
+#### 🎯 Production-Ready Features:
+- **IMPROVE**: Cleaner API with grouped configuration objects
+- **IMPROVE**: Better separation of concerns between calendar and view configurations
+- **IMPROVE**: More intuitive parameter naming and organization
+- **IMPROVE**: Enhanced documentation with clear examples
+- **IMPROVE**: TypeScript-style config objects with `copyWith` methods
+
+### Migration Guide
+
+**Before (0.1.x):**
+```dart
+VooCalendar(
+  dayViewHourLineTrailingBuilder: (context, hour) => Icon(Icons.add),
+  dayViewShowOnlyHoursWithEvents: true,
+  dayViewEnableDynamicHeight: true,
+  dayViewMinEventHeight: 40.0,
+  dayViewEventSpacing: 4.0,
+)
+```
+
+**After (0.2.0):**
+```dart
+VooCalendar(
+  dayViewConfig: VooDayViewConfig(
+    hourLineTrailingBuilder: (context, hour) => Icon(Icons.add),
+    showOnlyHoursWithEvents: true,
+    enableDynamicHeight: true,
+    enableColumnLayout: true,  // NEW: Google Calendar-style layout
+    minEventHeight: 60.0,
+    eventSpacing: 8.0,
+    eventLeftPadding: 8.0,     // NEW: Prevent overlap with time labels
+    eventRightPadding: 8.0,    // NEW: Prevent overlap with trailing builders
+    trailingBuilderWidth: 48,  // NEW: Reserve space for trailing widgets
+  ),
+)
+```
+
+### Technical Improvements
+- Implemented proper event layout algorithm using column-based positioning
+- Added comprehensive padding system to prevent UI element overlaps
+- Improved dynamic height calculation with proper spacing buffers
+- Enhanced code organization with dedicated configuration classes
+- Better type safety with structured configuration objects
+- Reduced parameter pollution in main widget constructor
+
+## 0.1.5
+
+### 🐛 Bug Fixes
+
+**Day View Time Label Alignment** - Fixed visual misalignment between time labels and events:
+
+#### Fixed Issues:
+- **FIX**: Corrected time label vertical alignment - Changed from `Alignment.centerRight` to `Alignment.topRight` to align labels with hour line boundaries
+- **FIX**: Removed extra font line spacing by setting `height: 1.0` on time labels
+- **FIX**: Added 2px upward offset using `Transform.translate` to compensate for font baseline positioning
+- **FIX**: Time labels now perfectly align with event start positions
+
+#### Visual Impact:
+- Events starting at 09:00 now visually align exactly with the "09:00" label
+- Eliminates the perception that events start 10 minutes before their actual time
+- Matches standard calendar app conventions (Google Calendar, Apple Calendar, etc.)
+- Consistent alignment between day view and week view time labels
+
+### Technical Details
+The fix addresses font rendering characteristics where Text widgets have intrinsic line height and baseline offsets that were causing time labels to appear centered in hour slots rather than aligned with the hour boundaries where events actually start.
+
+## 0.1.4
+
+### ✨ Dynamic Height for Day View
+
+**Day View Dynamic Height** - Added intelligent height adjustment for overlapping events:
+
+#### New Features:
+- **FEAT**: `enableDynamicHeight` - Automatically expand hour slots to fit all overlapping events without cutting off content
+- **FEAT**: `minEventHeight` - Set minimum height for events when using dynamic height mode (default: 40.0)
+- **FEAT**: `eventSpacing` - Configure spacing between vertically stacked events (default: 4.0)
+- **FEAT**: Smart overlap detection - Calculates maximum overlapping events per hour for optimal layout
+- **FEAT**: Automatic event stacking - Events are intelligently positioned to avoid overlap
+
+#### Implementation:
+- Hour slots automatically expand based on the number of overlapping events
+- Events are vertically stacked with customizable spacing
+- Maintains minimum event height for readability
+- Seamlessly integrates with existing day view customization options
+
+#### VooCalendar Parameters:
+- `dayViewEnableDynamicHeight` - Enable dynamic height adjustment
+- `dayViewMinEventHeight` - Minimum height for each event
+- `dayViewEventSpacing` - Spacing between stacked events
+
+### Use Case
+Perfect for busy schedules with multiple events in the same time slot. The view automatically adjusts to display all events clearly without overlapping or cutting off content.
+
 ## 0.1.3
 
 ### ✨ Major Customization Update

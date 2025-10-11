@@ -283,23 +283,28 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
           showViewSwitcher: true,
           showHeader: true,
           enableSwipeNavigation: true,
-          dayViewShowOnlyHoursWithEvents: _showOnlyHoursWithEvents,
-          dayViewHourLineTrailingBuilder: _showHourLineActions
-              ? (context, hour) {
-                  return IconButton(
-                    icon: const Icon(Icons.add_circle_outline, size: 20),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Add event at ${hour.toString().padLeft(2, '0')}:00'),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    tooltip: 'Add event',
-                  );
-                }
-              : null,
+          dayViewConfig: VooDayViewConfig(
+            showOnlyHoursWithEvents: _showOnlyHoursWithEvents,
+            enableDynamicHeight: true,
+            enableColumnLayout: true,
+            hourLineTrailingBuilder: _showHourLineActions
+                ? (context, hour) {
+                    return IconButton(
+                      icon: const Icon(Icons.add_circle_outline, size: 20),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Add event at ${hour.toString().padLeft(2, '0')}:00'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      tooltip: 'Add event',
+                    );
+                  }
+                : null,
+            trailingBuilderWidth: _showHourLineActions ? 48 : 0,
+          ),
           onDateSelected: (date) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

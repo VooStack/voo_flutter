@@ -16,9 +16,7 @@ class _EventsPageState extends State<EventsPage> {
   @override
   void initState() {
     super.initState();
-    _controller = VooCalendarController(
-      initialDate: DateTime.now(),
-    );
+    _controller = VooCalendarController(initialDate: DateTime.now());
     _generateSampleEvents();
   }
 
@@ -129,26 +127,16 @@ class _EventsPageState extends State<EventsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Events Management',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+                      Text('Events Management', style: Theme.of(context).textTheme.headlineMedium),
                       const SizedBox(height: 8),
                       Text(
                         'Create, view, and manage calendar events with rich details.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color:
-                                  Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ],
                   ),
                 ),
-                FilledButton.icon(
-                  onPressed: _addEvent,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Event'),
-                ),
+                FilledButton.icon(onPressed: _addEvent, icon: const Icon(Icons.add), label: const Text('Add Event')),
               ],
             ),
             const SizedBox(height: 24),
@@ -191,23 +179,11 @@ class _EventsPageState extends State<EventsPage> {
           child: Center(
             child: Column(
               children: [
-                Icon(
-                  Icons.event_busy,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                Icon(Icons.event_busy, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 const SizedBox(height: 16),
-                Text(
-                  'No Events',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text('No Events', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 8),
-                Text(
-                  'Add your first event to get started',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                ),
+                Text('Add your first event to get started', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
@@ -215,8 +191,7 @@ class _EventsPageState extends State<EventsPage> {
       );
     }
 
-    final sortedEvents = List<VooCalendarEvent>.from(_events)
-      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+    final sortedEvents = List<VooCalendarEvent>.from(_events)..sort((a, b) => a.startTime.compareTo(b.startTime));
 
     return Card(
       child: Column(
@@ -227,10 +202,7 @@ class _EventsPageState extends State<EventsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'All Events (${_events.length})',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text('All Events (${_events.length})', style: Theme.of(context).textTheme.titleLarge),
                 if (_events.isNotEmpty)
                   TextButton.icon(
                     onPressed: () {
@@ -258,10 +230,7 @@ class _EventsPageState extends State<EventsPage> {
               return ListTile(
                 leading: CircleAvatar(
                   backgroundColor: event.color?.withValues(alpha: 0.2),
-                  child: Icon(
-                    event.icon ?? Icons.event,
-                    color: event.color,
-                  ),
+                  child: Icon(event.icon ?? Icons.event, color: event.color),
                 ),
                 title: Text(event.title),
                 subtitle: Text(
@@ -270,10 +239,7 @@ class _EventsPageState extends State<EventsPage> {
                       : '${DateFormat('MMM d, yyyy h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () => _removeEvent(event.id),
-                ),
+                trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => _removeEvent(event.id)),
                 onTap: () => _showEventDetails(event),
               );
             },
@@ -289,8 +255,7 @@ class _EventsPageState extends State<EventsPage> {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            if (event.icon != null)
-              Icon(event.icon, color: event.color, size: 24),
+            if (event.icon != null) Icon(event.icon, color: event.color, size: 24),
             if (event.icon != null) const SizedBox(width: 8),
             Expanded(child: Text(event.title)),
           ],
@@ -299,39 +264,20 @@ class _EventsPageState extends State<EventsPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (event.description != null) ...[
-              Text(
-                event.description!,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 16),
-            ],
+            if (event.description != null) ...[Text(event.description!, style: Theme.of(context).textTheme.bodyMedium), const SizedBox(height: 16)],
             _buildEventDetailRow(
               Icons.access_time,
               'Time',
-              event.isAllDay
-                  ? 'All day'
-                  : '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}',
+              event.isAllDay ? 'All day' : '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}',
             ),
             const SizedBox(height: 8),
-            _buildEventDetailRow(
-              Icons.calendar_today,
-              'Date',
-              DateFormat('EEEE, MMMM d, yyyy').format(event.startTime),
-            ),
+            _buildEventDetailRow(Icons.calendar_today, 'Date', DateFormat('EEEE, MMMM d, yyyy').format(event.startTime)),
             const SizedBox(height: 8),
-            _buildEventDetailRow(
-              Icons.timelapse,
-              'Duration',
-              _formatDuration(event.duration),
-            ),
+            _buildEventDetailRow(Icons.timelapse, 'Duration', _formatDuration(event.duration)),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
           FilledButton.icon(
             onPressed: () {
               Navigator.of(context).pop();
@@ -355,16 +301,8 @@ class _EventsPageState extends State<EventsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
-              Text(
-                value,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+              Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+              Text(value, style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         ),
@@ -376,9 +314,7 @@ class _EventsPageState extends State<EventsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
-          'Events on ${DateFormat('MMM d, yyyy').format(date)}',
-        ),
+        title: Text('Events on ${DateFormat('MMM d, yyyy').format(date)}'),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.separated(
@@ -391,11 +327,7 @@ class _EventsPageState extends State<EventsPage> {
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(event.icon ?? Icons.event, color: event.color),
                 title: Text(event.title),
-                subtitle: Text(
-                  event.isAllDay
-                      ? 'All day'
-                      : '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}',
-                ),
+                subtitle: Text(event.isAllDay ? 'All day' : '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime)}'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _showEventDetails(event);
@@ -404,12 +336,7 @@ class _EventsPageState extends State<EventsPage> {
             },
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
     );
   }
@@ -439,33 +366,15 @@ class _AddEventDialog extends StatefulWidget {
 class _AddEventDialogState extends State<_AddEventDialog> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  DateTime _startTime = DateTime.now();
-  DateTime _endTime = DateTime.now().add(const Duration(hours: 1));
+  final DateTime _startTime = DateTime.now();
+  final DateTime _endTime = DateTime.now().add(const Duration(hours: 1));
   Color _selectedColor = Colors.blue;
   IconData _selectedIcon = Icons.event;
   bool _isAllDay = false;
 
-  final List<Color> _availableColors = [
-    Colors.blue,
-    Colors.green,
-    Colors.orange,
-    Colors.red,
-    Colors.purple,
-    Colors.teal,
-    Colors.pink,
-    Colors.indigo,
-  ];
+  final List<Color> _availableColors = [Colors.blue, Colors.green, Colors.orange, Colors.red, Colors.purple, Colors.teal, Colors.pink, Colors.indigo];
 
-  final List<IconData> _availableIcons = [
-    Icons.event,
-    Icons.people,
-    Icons.work,
-    Icons.restaurant,
-    Icons.celebration,
-    Icons.school,
-    Icons.flight,
-    Icons.sports,
-  ];
+  final List<IconData> _availableIcons = [Icons.event, Icons.people, Icons.work, Icons.restaurant, Icons.celebration, Icons.school, Icons.flight, Icons.sports];
 
   @override
   void dispose() {
@@ -485,19 +394,13 @@ class _AddEventDialogState extends State<_AddEventDialog> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Title', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _descriptionController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Description', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
@@ -510,10 +413,7 @@ class _AddEventDialogState extends State<_AddEventDialog> {
               },
             ),
             const SizedBox(height: 16),
-            Text(
-              'Color',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            Text('Color', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -532,25 +432,15 @@ class _AddEventDialogState extends State<_AddEventDialog> {
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,
-                      border: isSelected
-                          ? Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 3,
-                            )
-                          : null,
+                      border: isSelected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 3) : null,
                     ),
-                    child: isSelected
-                        ? const Icon(Icons.check, color: Colors.white)
-                        : null,
+                    child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
                   ),
                 );
               }).toList(),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Icon',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            Text('Icon', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -567,22 +457,11 @@ class _AddEventDialogState extends State<_AddEventDialog> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : null,
-                      border: Border.all(
-                        color: isSelected
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.outline,
-                      ),
+                      color: isSelected ? Theme.of(context).colorScheme.primaryContainer : null,
+                      border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(
-                      icon,
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.onPrimaryContainer
-                          : null,
-                    ),
+                    child: Icon(icon, color: isSelected ? Theme.of(context).colorScheme.onPrimaryContainer : null),
                   ),
                 );
               }).toList(),
@@ -591,19 +470,14 @@ class _AddEventDialogState extends State<_AddEventDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
         FilledButton(
           onPressed: () {
             if (_titleController.text.isNotEmpty) {
               final event = VooCalendarEvent(
                 id: DateTime.now().millisecondsSinceEpoch.toString(),
                 title: _titleController.text,
-                description: _descriptionController.text.isNotEmpty
-                    ? _descriptionController.text
-                    : null,
+                description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
                 startTime: _startTime,
                 endTime: _endTime,
                 color: _selectedColor,
