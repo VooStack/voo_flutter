@@ -49,9 +49,14 @@ class VooDayViewConfig {
 
   /// Enable dynamic height adjustment based on number of events
   /// When true, hour slots will expand to fit all events without overlapping
+  ///
+  /// Note: When both `enableDynamicHeight` and `enableColumnLayout` are true,
+  /// events will be positioned at the top of their hour slot and arranged side-by-side.
+  /// For better visual results, consider using `enableColumnLayout: false` with dynamic height
+  /// to vertically stack events with proper spacing.
   final bool enableDynamicHeight;
 
-  /// Minimum height for each event when using dynamic height (default: 60.0)
+  /// Minimum height for each event when using dynamic height (default: 80.0)
   final double minEventHeight;
 
   /// Spacing between stacked events when using dynamic height (default: 8.0)
@@ -73,7 +78,17 @@ class VooDayViewConfig {
   final double eventHorizontalGap;
 
   /// Enable column layout for overlapping events (like Google Calendar)
-  /// When true, overlapping events will be laid out side-by-side
+  /// When true, overlapping events will be laid out side-by-side on desktop/tablet
+  ///
+  /// **Responsive Behavior:**
+  /// - Mobile (< 600px): Automatically uses vertical stacking regardless of this setting
+  /// - Tablet/Desktop (≥ 600px): Uses column layout when enabled
+  ///
+  /// This ensures optimal space utilization on all screen sizes.
+  ///
+  /// Note: Column layout works best when `enableDynamicHeight` is false.
+  /// When both are enabled, events are positioned at the top of the hour and arranged horizontally.
+  /// For cleaner layouts with dynamic height, consider setting this to false.
   final bool enableColumnLayout;
 
   /// Width reserved for trailing builder content to prevent event overlap (default: 0)
@@ -96,7 +111,7 @@ class VooDayViewConfig {
     this.showHalfHourLines = false,
     this.onHourLineTap,
     this.enableDynamicHeight = false,
-    this.minEventHeight = 60.0,
+    this.minEventHeight = 80.0,
     this.eventSpacing = 8.0,
     this.eventLeftPadding = 8.0,
     this.eventRightPadding = 8.0,

@@ -17,10 +17,7 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
   @override
   void initState() {
     super.initState();
-    _controller = VooCalendarController(
-      initialDate: DateTime.now(),
-      initialView: _selectedView,
-    );
+    _controller = VooCalendarController(initialDate: DateTime.now(), initialView: _selectedView);
 
     // Add sample events for day view demonstration
     final now = DateTime.now();
@@ -64,6 +61,42 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
         color: Colors.green,
         icon: Icons.fitness_center,
       ),
+      VooCalendarEvent(
+        id: '4',
+        title: 'Gym Time',
+        description: 'Workout session',
+        startTime: today.add(const Duration(hours: 18)),
+        endTime: today.add(const Duration(hours: 19)),
+        color: Colors.green,
+        icon: Icons.fitness_center,
+      ),
+      VooCalendarEvent(
+        id: '4',
+        title: 'Gym Time',
+        description: 'Workout session',
+        startTime: today.add(const Duration(hours: 18)),
+        endTime: today.add(const Duration(hours: 19)),
+        color: Colors.green,
+        icon: Icons.fitness_center,
+      ),
+      VooCalendarEvent(
+        id: '4',
+        title: 'Gym Time',
+        description: 'Workout session',
+        startTime: today.add(const Duration(hours: 18)),
+        endTime: today.add(const Duration(hours: 19)),
+        color: Colors.green,
+        icon: Icons.fitness_center,
+      ),
+      VooCalendarEvent(
+        id: '4',
+        title: 'Gym Time',
+        description: 'Workout session',
+        startTime: today.add(const Duration(hours: 18, minutes: 30)),
+        endTime: today.add(const Duration(hours: 19, minutes: 30)),
+        color: Colors.green,
+        icon: Icons.fitness_center,
+      ),
     ]);
   }
 
@@ -81,24 +114,16 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Calendar Views',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('Calendar Views', style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 8),
             Text(
               'Explore different calendar view modes: Month, Week, Day, Year, and Schedule.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 24),
             _buildViewSelector(),
             const SizedBox(height: 24),
-            if (_selectedView == VooCalendarView.day) ...[
-              _buildDayViewCustomization(),
-              const SizedBox(height: 24),
-            ],
+            if (_selectedView == VooCalendarView.day) ...[_buildDayViewCustomization(), const SizedBox(height: 24)],
             _buildCalendarCard(),
             const SizedBox(height: 24),
             _buildViewDescription(),
@@ -115,40 +140,17 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Select View Mode',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Select View Mode', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: [
-                _buildViewChip(
-                  VooCalendarView.month,
-                  'Month',
-                  Icons.calendar_view_month,
-                ),
-                _buildViewChip(
-                  VooCalendarView.week,
-                  'Week',
-                  Icons.calendar_view_week,
-                ),
-                _buildViewChip(
-                  VooCalendarView.day,
-                  'Day',
-                  Icons.calendar_view_day,
-                ),
-                _buildViewChip(
-                  VooCalendarView.year,
-                  'Year',
-                  Icons.calendar_today,
-                ),
-                _buildViewChip(
-                  VooCalendarView.schedule,
-                  'Schedule',
-                  Icons.schedule,
-                ),
+                _buildViewChip(VooCalendarView.month, 'Month', Icons.calendar_view_month),
+                _buildViewChip(VooCalendarView.week, 'Week', Icons.calendar_view_week),
+                _buildViewChip(VooCalendarView.day, 'Day', Icons.calendar_view_day),
+                _buildViewChip(VooCalendarView.year, 'Year', Icons.calendar_today),
+                _buildViewChip(VooCalendarView.schedule, 'Schedule', Icons.schedule),
               ],
             ),
           ],
@@ -161,14 +163,7 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
     final isSelected = _selectedView == view;
     return FilterChip(
       selected: isSelected,
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18),
-          const SizedBox(width: 8),
-          Text(label),
-        ],
-      ),
+      label: Row(mainAxisSize: MainAxisSize.min, children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(label)]),
       onSelected: (selected) {
         if (selected) {
           setState(() {
@@ -190,23 +185,15 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.tune,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                Icon(Icons.tune, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 8),
-                Text(
-                  'Day View Customization',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text('Day View Customization', style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              'Toggle these options to customize the day view appearance and behavior.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+              'Responsive Layout: On mobile (< 600px), events stack vertically. On tablet/desktop (≥ 600px), overlapping events use column layout (like Google Calendar) with side-by-side arrangement.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 16),
             SwitchListTile(
@@ -236,28 +223,19 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.primaryContainer, borderRadius: BorderRadius.circular(8)),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.lightbulb_outline,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
+                    Icon(Icons.lightbulb_outline, size: 20, color: Theme.of(context).colorScheme.onPrimaryContainer),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         _showOnlyHoursWithEvents && _showHourLineActions
-                            ? 'Viewing compact schedule with quick actions'
+                            ? 'Responsive: Mobile uses vertical stacking, Desktop uses side-by-side columns. Resize the window to see it adapt!'
                             : _showOnlyHoursWithEvents
-                                ? 'Compact view: Showing only hours 9:00, 12:00, 14:00, and 18:00 (hours with events)'
-                                : 'Quick actions: Click + button to add events to specific hours',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            ),
+                            ? 'Showing only hours with events (9:00, 12:00, 14:00, 18:00). Try resizing to mobile width (<600px) to see vertical stacking!'
+                            : 'Quick actions: Click + button to add events to specific hours',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
                       ),
                     ),
                   ],
@@ -285,19 +263,17 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
           enableSwipeNavigation: true,
           dayViewConfig: VooDayViewConfig(
             showOnlyHoursWithEvents: _showOnlyHoursWithEvents,
-            enableDynamicHeight: true,
-            enableColumnLayout: true,
+            enableDynamicHeight: false, // Disable for production-grade layout
+            enableColumnLayout: true, // Enable column layout (like Google Calendar)
+            hourHeight: 80.0, // Taller hours for better visibility
             hourLineTrailingBuilder: _showHourLineActions
                 ? (context, hour) {
                     return IconButton(
                       icon: const Icon(Icons.add_circle_outline, size: 20),
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Add event at ${hour.toString().padLeft(2, '0')}:00'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text('Add event at ${hour.toString().padLeft(2, '0')}:00'), duration: const Duration(seconds: 2)));
                       },
                       tooltip: 'Add event',
                     );
@@ -306,12 +282,7 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
             trailingBuilderWidth: _showHourLineActions ? 48 : 0,
           ),
           onDateSelected: (date) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Selected: ${date.toString().split(' ')[0]}'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Selected: ${date.toString().split(' ')[0]}'), duration: const Duration(seconds: 1)));
           },
           onViewChanged: (view) {
             setState(() {
@@ -327,58 +298,28 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
     final descriptions = {
       VooCalendarView.month: ViewDescription(
         title: 'Month View',
-        description:
-            'The classic monthly calendar grid showing all days of the month. Perfect for getting a high-level overview of the entire month.',
-        features: [
-          'Shows all days in a month grid',
-          'Highlights today and selected dates',
-          'Supports drag selection',
-          'Swipe left/right to navigate months',
-        ],
+        description: 'The classic monthly calendar grid showing all days of the month. Perfect for getting a high-level overview of the entire month.',
+        features: ['Shows all days in a month grid', 'Highlights today and selected dates', 'Supports drag selection', 'Swipe left/right to navigate months'],
       ),
       VooCalendarView.week: ViewDescription(
         title: 'Week View',
-        description:
-            'Displays a single week with hourly time slots. Ideal for detailed weekly planning and scheduling.',
-        features: [
-          'Shows 7 days horizontally',
-          'Hourly time slots for events',
-          'Perfect for weekly planning',
-          'Swipe to navigate weeks',
-        ],
+        description: 'Displays a single week with hourly time slots. Ideal for detailed weekly planning and scheduling.',
+        features: ['Shows 7 days horizontally', 'Hourly time slots for events', 'Perfect for weekly planning', 'Swipe to navigate weeks'],
       ),
       VooCalendarView.day: ViewDescription(
         title: 'Day View',
-        description:
-            'Focuses on a single day with detailed hourly breakdown. Great for precise day planning and time management.',
-        features: [
-          'Single day with hourly slots',
-          'Detailed time management',
-          'Clear event visualization',
-          'Swipe to navigate days',
-        ],
+        description: 'Focuses on a single day with detailed hourly breakdown. Great for precise day planning and time management.',
+        features: ['Single day with hourly slots', 'Detailed time management', 'Clear event visualization', 'Swipe to navigate days'],
       ),
       VooCalendarView.year: ViewDescription(
         title: 'Year View',
-        description:
-            'Shows all 12 months in a grid layout. Perfect for long-term planning and getting a bird\'s-eye view of the year.',
-        features: [
-          'All 12 months visible',
-          'Great for long-term planning',
-          'Tap month to view details',
-          'Navigate years easily',
-        ],
+        description: 'Shows all 12 months in a grid layout. Perfect for long-term planning and getting a bird\'s-eye view of the year.',
+        features: ['All 12 months visible', 'Great for long-term planning', 'Tap month to view details', 'Navigate years easily'],
       ),
       VooCalendarView.schedule: ViewDescription(
         title: 'Schedule View',
-        description:
-            'Lists events chronologically in a list format. Ideal for viewing upcoming events and appointments.',
-        features: [
-          'Chronological event list',
-          'Easy to scan upcoming events',
-          'Compact and efficient',
-          'Perfect for event-heavy calendars',
-        ],
+        description: 'Lists events chronologically in a list format. Ideal for viewing upcoming events and appointments.',
+        features: ['Chronological event list', 'Easy to scan upcoming events', 'Compact and efficient', 'Perfect for event-heavy calendars'],
       ),
     };
 
@@ -392,29 +333,15 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.info_outline,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 8),
-                Text(
-                  desc.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(desc.title, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              desc.description,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text(desc.description, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16),
-            Text(
-              'Features:',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
+            Text('Features:', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             ...desc.features.map(
               (feature) => Padding(
@@ -422,18 +349,9 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.check_circle,
-                      size: 16,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    Icon(Icons.check_circle, size: 16, color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        feature,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
+                    Expanded(child: Text(feature, style: Theme.of(context).textTheme.bodySmall)),
                   ],
                 ),
               ),
@@ -450,9 +368,5 @@ class ViewDescription {
   final String description;
   final List<String> features;
 
-  ViewDescription({
-    required this.title,
-    required this.description,
-    required this.features,
-  });
+  ViewDescription({required this.title, required this.description, required this.features});
 }

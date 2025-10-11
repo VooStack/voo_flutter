@@ -1,3 +1,42 @@
+## 0.3.0
+
+### 📱 Responsive Day View
+
+**Intelligent Responsive Layout** - Day view now automatically adapts to screen size for optimal user experience:
+
+#### ✨ New Features:
+- **FEAT**: Automatic responsive layout detection using `voo_responsive` package
+- **FEAT**: Mobile-optimized vertical stacking with dynamic height expansion (<600px width)
+- **FEAT**: Desktop/tablet column layout with fixed hour heights (≥600px width)
+- **FEAT**: Seamless transition between layout modes based on screen width
+
+#### 📐 Mobile Behavior (<600px):
+- Events stack vertically within their hour slots
+- Hour slots automatically expand to fit all events without overlapping
+- Dynamic height ensures all events are fully visible
+- Perfect for touch interfaces with limited horizontal space
+
+#### 💻 Desktop/Tablet Behavior (≥600px):
+- Google Calendar-style column layout for overlapping events
+- Events display side-by-side for better space utilization
+- Fixed 80px hour heights for consistent visual rhythm
+- Optimal for mouse/trackpad interaction with more screen real estate
+
+#### 🔧 Implementation Details:
+- Uses `context.isMobile` from `voo_responsive` for breakpoint detection
+- Automatically enables dynamic height on mobile devices
+- Column layout intelligently disabled on mobile to prevent cramped UI
+- Minute-precise event positioning works across both layout modes
+
+#### 🎯 Developer Experience:
+- Zero configuration required - works automatically out of the box
+- `enableColumnLayout` setting respected on desktop/tablet only
+- Dynamic height expansion automatically enabled on mobile
+- Consistent API across all screen sizes
+
+### Use Case
+Perfect for building responsive calendar applications that work seamlessly across all device types. The calendar automatically provides the best layout for each screen size without requiring conditional logic in your code.
+
 ## 0.2.0
 
 ### 🚀 Major Refactoring - Production-Grade Calendar

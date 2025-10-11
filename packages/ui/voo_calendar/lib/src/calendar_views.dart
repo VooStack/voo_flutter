@@ -951,15 +951,23 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     double eventHeight,
     double eventSpacing,
   ) {
-    final overlapping = _getOverlappingEvents(event, allEvents);
-    if (overlapping.isEmpty) return 0;
+    // Only stack events that start at the SAME minute
+    // Events starting at different minutes will use minute offsets instead
+    final sameStartTimeEvents = allEvents.where((other) {
+      return other.startTime.hour == event.startTime.hour &&
+          other.startTime.minute == event.startTime.minute;
+    }).toList();
 
-    // Sort overlapping events by start time
-    final sortedOverlapping = [event, ...overlapping]
-      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+    if (sameStartTimeEvents.length <= 1) return 0;
 
-    final index = sortedOverlapping.indexOf(event);
-    return index * (eventHeight + eventSpacing);
+    // Sort by original list index for stable ordering
+    sameStartTimeEvents.sort((a, b) {
+      return allEvents.indexOf(a).compareTo(allEvents.indexOf(b));
+    });
+
+    // Use indexWhere with identical() for object identity comparison
+    final index = sameStartTimeEvents.indexWhere((e) => identical(e, event));
+    return index >= 0 ? index * (eventHeight + eventSpacing) : 0;
   }
 
   @override
@@ -972,9 +980,16 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     final hourHeight = config.hourHeight ?? _defaultHourHeight;
     final timeFormatter = config.timeLabelFormatter ?? _defaultTimeFormatter;
 
-    // Calculate column layout for events if enabled
+    // Responsive column layout: Enable on desktop/tablet, disable on mobile
+    // Mobile (< 600px): Vertical stacking with dynamic height expansion
+    // Desktop (≥ 600px): Column layout (Google Calendar style)
+    final isMobile = context.isMobile;
+    final shouldUseColumnLayout = config.enableColumnLayout && !isMobile;
+    final shouldUseDynamicHeight = isMobile; // Always use dynamic height on mobile
+
+    // Calculate column layout for events if enabled and not on mobile
     final Map<VooCalendarEvent, _DayViewEventLayout>? eventLayouts =
-        config.enableColumnLayout ? _calculateColumnLayout(events) : null;
+        shouldUseColumnLayout ? _calculateColumnLayout(events) : null;
 
     // Filter hours based on showOnlyHoursWithEvents or hour range
     List<int> hours;
@@ -993,8 +1008,8 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
       );
     }
 
-    // Calculate dynamic heights if enabled
-    final Map<int, double> hourHeights = config.enableDynamicHeight
+    // Calculate dynamic heights if enabled OR if on mobile
+    final Map<int, double> hourHeights = (config.enableDynamicHeight || shouldUseDynamicHeight)
         ? _calculateDynamicHeights(
             hours,
             events,
@@ -1008,7 +1023,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
       builder: (context, constraints) {
         final timeColumnWidth = config.timeColumnWidth ??
             (widget.compact ? 50.0 : 60.0);
-        final totalHeight = config.enableDynamicHeight
+        final totalHeight = (config.enableDynamicHeight || shouldUseDynamicHeight)
             ? hourHeights.values.reduce((a, b) => a + b)
             : (hours.length * hourHeight +
                 (config.showHalfHourLines ? hours.length * (hourHeight / 2) : 0));
@@ -1108,25 +1123,29 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                         double topOffset;
                         double eventHeight;
 
-                        if (config.enableDynamicHeight) {
+                        if (config.enableDynamicHeight || shouldUseDynamicHeight) {
                           // Calculate cumulative offset for dynamic heights
                           topOffset = 0;
                           for (int i = 0; i < hourIndex; i++) {
                             topOffset += hourHeights[hours[i]] ?? hourHeight;
                           }
-                          // Add offset for minutes within the hour
-                          final minuteOffset = (event.startTime.minute / 60) *
-                              (hourHeights[eventHour] ?? hourHeight);
-                          topOffset += minuteOffset;
 
-                          // Add stacking offset for overlapping events
-                          final stackOffset = _calculateStackedEventOffset(
-                            event,
-                            events,
-                            config.minEventHeight,
-                            config.eventSpacing,
-                          );
-                          topOffset += stackOffset;
+                          // When column layout is enabled (and not on mobile), don't add vertical stacking
+                          // Events will be arranged horizontally in columns instead
+                          if (shouldUseColumnLayout) {
+                            // Position all events at the top of the hour
+                            // Column layout will arrange them side-by-side
+                            // No minute offset or stack offset needed
+                          } else {
+                            // On mobile with dynamic height: stack ALL events in the hour vertically
+                            // Don't use minute offsets - just stack from top to bottom
+                            // Get all events in this hour and find this event's index
+                            final eventsInHour = events.where((e) => e.startTime.hour == eventHour).toList();
+                            final eventIndex = eventsInHour.indexWhere((e) => identical(e, event));
+                            if (eventIndex >= 0) {
+                              topOffset += eventIndex * (config.minEventHeight + config.eventSpacing);
+                            }
+                          }
 
                           // Use minimum event height when dynamic
                           eventHeight = config.minEventHeight;
@@ -1178,13 +1197,14 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                             child: widget.eventBuilder!(context, event),
                           );
                         }
+                        final allocatedHeight = eventHeight - config.eventTopPadding - config.eventBottomPadding;
                         return Positioned(
                           top: topOffset + config.eventTopPadding,
                           left: leftPadding,
                           right: width == null ? rightPadding : null,
                           width: width,
-                          height: eventHeight - config.eventTopPadding - config.eventBottomPadding,
-                          child: _buildEvent(event, design, hourHeight),
+                          height: allocatedHeight,
+                          child: _buildEvent(event, design, allocatedHeight),
                         );
                       }),
                     ],
@@ -1198,7 +1218,12 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     );
   }
 
-  Widget _buildEvent(VooCalendarEvent event, VooDesignSystemData design, double hourHeight) {
+  Widget _buildEvent(VooCalendarEvent event, VooDesignSystemData design, double allocatedHeight) {
+    // Use allocated height instead of calculated height to determine what content to show
+    // This fixes overflow issues when enableDynamicHeight is true
+    final showDescription = event.description != null && !widget.compact && allocatedHeight > 40;
+    final showTime = allocatedHeight > 30;
+
     return InkWell(
       onTap: () => widget.onEventTap?.call(event),
       child: Container(
@@ -1237,9 +1262,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                 ),
               ],
             ),
-            if (event.description != null &&
-                !widget.compact &&
-                _getEventHeight(event, hourHeight) > 40) ...[
+            if (showDescription) ...[
               SizedBox(height: design.spacingXs),
               Text(
                 event.description!,
@@ -1250,7 +1273,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                 overflow: TextOverflow.ellipsis,
               ),
             ],
-            if (_getEventHeight(event, hourHeight) > 30)
+            if (showTime)
               Text(
                 DateFormat('HH:mm').format(event.startTime),
                 style: widget.theme.eventTimeTextStyle.copyWith(fontSize: 9),
