@@ -160,83 +160,21 @@ VooCalendar(
 
 ### Custom Event Widgets
 
-For custom event rendering with proper dimension handling (recommended for day view), extend `VooCalendarEventWidget` or use `eventBuilderWithInfo`.
+For custom event rendering with proper dimension handling (recommended for day view), use `VooCalendarEventWidget` to wrap your custom widgets.
 
-#### Why Use Custom Event Widgets?
+#### Why Use VooCalendarEventWidget?
 
-When using custom widgets (like domain-specific UI for meals, workouts, product logs, etc.), you need to ensure they respect the calendar's allocated dimensions. This is especially important for:
-- ✅ Dynamic height layouts (overlapping events stacking correctly)
-- ✅ Column layouts (side-by-side events on desktop)
-- ✅ Mobile vs desktop responsiveness
+`VooCalendarEventWidget` follows Flutter's composition pattern (like `AnimatedBuilder`) and automatically handles dimension constraints for your custom widgets:
 
-#### Approach 1: Extending `VooCalendarEventWidget` (Recommended)
+- ✅ **No manual sizing** - Automatic SizedBox wrapping
+- ✅ **Overflow protection** - Prevents bleeding into other hours
+- ✅ **Dynamic height support** - Works with overlapping event stacking
+- ✅ **Column layout support** - Side-by-side events on desktop
+- ✅ **Composition over inheritance** - Flutter best practice
 
-Create a reusable custom event widget class by extending `VooCalendarEventWidget`:
+#### Approach 1: Builder Pattern (Recommended)
 
-```dart
-import 'package:voo_calendar/voo_calendar.dart';
-
-/// Custom event widget for product logs in a nutrition tracking app
-class ProductLogEventWidget extends VooCalendarEventWidget {
-  final ProductLog productLog;
-
-  const ProductLogEventWidget({
-    super.key,
-    required super.event,
-    required super.renderInfo,
-    required this.productLog,
-  });
-
-  @override
-  Widget buildContent(BuildContext context) {
-    // VooCalendarEventWidget automatically handles sizing and overflow protection
-    // You just build your content here
-    return Container(
-      decoration: BoxDecoration(
-        color: event.color?.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: event.color ?? Colors.grey),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              if (event.icon != null) ...[
-                Icon(event.icon, size: 16),
-                const SizedBox(width: 4),
-              ],
-              Expanded(
-                child: Text(
-                  productLog.productName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${productLog.servings} servings • ${productLog.calories} cal',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[700],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-```
-
-Then use your custom widget in the calendar:
+Use the `builder` parameter when you need access to event data:
 
 ```dart
 VooCalendar(
@@ -246,10 +184,17 @@ VooCalendar(
     final productLog = event.metadata?['productLog'] as ProductLog?;
     if (productLog == null) return const SizedBox.shrink();
 
-    return ProductLogEventWidget(
+    // Use VooCalendarEventWidget with builder
+    return VooCalendarEventWidget(
       event: event,
       renderInfo: renderInfo,
-      productLog: productLog,
+      builder: (context, event, renderInfo) {
+        return ProductLogListTile(
+          productLog: productLog,
+          // Access event data here
+          onTap: () => print('Tapped: ${event.title}'),
+        );
+      },
     );
   },
   dayViewConfig: const VooDayViewConfig(
@@ -260,31 +205,19 @@ VooCalendar(
 )
 ```
 
-#### Approach 2: Using `eventBuilderWithInfo` (Quick & Simple)
+#### Approach 2: Child Pattern (Simple)
 
-If you don't want to create a widget class, use `eventBuilderWithInfo` directly:
+Use the `child` parameter when you don't need event data:
 
 ```dart
 VooCalendar(
-  initialView: VooCalendarView.day,
   eventBuilderWithInfo: (context, event, renderInfo) {
-    // renderInfo provides:
-    // - allocatedHeight: exact height for this event
-    // - allocatedWidth: exact width (or null for full width)
-    // - isMobile: whether it's mobile layout (<600px)
-    // - isCompact: whether compact mode is enabled
-    // - hourHeight: current hour slot height
-
-    return SizedBox(
-      height: renderInfo.allocatedHeight,
-      width: renderInfo.allocatedWidth,
-      child: YourCustomEventWidget(event: event),
+    // Use VooCalendarEventWidget with child
+    return VooCalendarEventWidget(
+      renderInfo: renderInfo,
+      child: ProductLogListTile(productLog: myProductLog),
     );
   },
-  dayViewConfig: const VooDayViewConfig(
-    enableDynamicHeight: true, // Events auto-stack without overlap
-    enableColumnLayout: true,  // Side-by-side on desktop
-  ),
 )
 ```
 
@@ -342,16 +275,20 @@ class _DiaryPageState extends State<DiaryPage> {
           controller: _calendarController,
           initialView: VooCalendarView.day,
 
-          // Use VooCalendarEventWidget for automatic dimension handling
+          // Use VooCalendarEventWidget with builder pattern
           eventBuilderWithInfo: (context, event, renderInfo) {
             final productLog = event.metadata?['productLog'] as ProductLog?;
             if (productLog == null) return const SizedBox.shrink();
 
-            return ProductLogEventWidget(
+            return VooCalendarEventWidget(
               event: event,
               renderInfo: renderInfo,
-              productLog: productLog,
-              onTap: () => _editProductLog(productLog),
+              builder: (context, event, renderInfo) {
+                return ProductLogListTile(
+                  productLog: productLog,
+                  onTap: () => _editProductLog(productLog),
+                );
+              },
             );
           },
 
@@ -371,11 +308,11 @@ class _DiaryPageState extends State<DiaryPage> {
 
 #### Key Benefits
 
-- ✅ **Automatic Sizing**: Your widgets always fit properly
-- ✅ **No Overlap**: Events stack correctly on mobile
-- ✅ **Responsive**: Auto-adapts to mobile vs desktop layouts
-- ✅ **Type-Safe**: Access your domain objects via metadata
-- ✅ **Reusable**: Create widget classes for different event types
+- ✅ **Composition over inheritance** - No need to extend classes
+- ✅ **Automatic sizing** - No manual SizedBox wrapping
+- ✅ **Overflow protection** - Built-in ClipRect behavior
+- ✅ **Flexible** - Use builder or child based on your needs
+- ✅ **Type-safe** - Access domain objects via metadata
 
 ### Year View
 Provides an overview of the entire year with month grids.

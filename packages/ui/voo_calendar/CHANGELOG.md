@@ -1,3 +1,103 @@
+## 0.4.1
+
+### 🐛 Code Quality Improvements
+
+**Linter Formatting** - Applied automatic code formatting for consistency:
+
+#### Improvements:
+- **IMPROVE**: Applied linter formatting to VooCalendarEventWidget
+- **IMPROVE**: Condensed constructor parameters to single line for better readability
+- **IMPROVE**: Improved code consistency across the package
+
+No functional changes - purely formatting improvements.
+
+## 0.4.0
+
+### 🔄 Major API Refactor - Composition Over Inheritance
+
+**VooCalendarEventWidget Refactored to Composition Pattern** - Following Flutter best practices and rules.md principles:
+
+#### Breaking Changes:
+- **BREAKING**: `VooCalendarEventWidget` is no longer an abstract class
+  - **Old** (inheritance): Extend class and override `buildContent()`
+  - **New** (composition): Use `child` or `builder` parameters
+  - Migration is simple - see guide below
+
+#### Why This Change:
+- ✅ **Composition over inheritance** - Core principle from rules.md
+- ✅ **Flutter best practice** - Follows pattern of AnimatedBuilder, ValueListenableBuilder
+- ✅ **Less boilerplate** - No need to create classes for simple wrappers
+- ✅ **More flexible** - Choose between child or builder based on needs
+- ✅ **Better DX** - Cleaner, more intuitive API
+
+####New API:
+
+**Approach 1: Builder (when you need event data)**
+```dart
+VooCalendarEventWidget(
+  event: event,
+  renderInfo: renderInfo,
+  builder: (context, event, renderInfo) {
+    return ProductLogListTile(productLog: event.metadata['productLog']);
+  },
+)
+```
+
+**Approach 2: Child (when you don't need event data)**
+```dart
+VooCalendarEventWidget(
+  renderInfo: renderInfo,
+  child: ProductLogListTile(productLog: productLog),
+)
+```
+
+### Migration Guide:
+
+**Before (0.3.x):**
+```dart
+class ProductEventWidget extends VooCalendarEventWidget {
+  final ProductLog productLog;
+
+  const ProductEventWidget({
+    super.key,
+    required super.event,
+    required super.renderInfo,
+    required this.productLog,
+  });
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return ProductLogListTile(productLog: productLog);
+  }
+}
+
+// Usage
+return ProductEventWidget(
+  event: event,
+  renderInfo: renderInfo,
+  productLog: productLog,
+);
+```
+
+**After (0.4.0):**
+```dart
+// No class needed! Use builder directly
+return VooCalendarEventWidget(
+  event: event,
+  renderInfo: renderInfo,
+  builder: (context, event, renderInfo) {
+    final productLog = event.metadata?['productLog'] as ProductLog;
+    return ProductLogListTile(productLog: productLog);
+  },
+);
+```
+
+### Benefits:
+- Less code to maintain
+- No inheritance hierarchies
+- Follows Flutter conventions
+- Easier to understand and use
+
 ## 0.3.4
 
 ### 📚 Documentation & Example Improvements

@@ -167,9 +167,13 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
       headerBuilder: (context, date) => const SizedBox(),
       availableViews: const [VooCalendarView.day],
 
-      // ✅ SOLUTION: Use VooCalendarEventWidget for automatic dimension handling
+      // ✅ SOLUTION: Use VooCalendarEventWidget with builder for automatic dimension handling
       eventBuilderWithInfo: (context, event, renderInfo) {
-        return ProductEventWidget(event: event, renderInfo: renderInfo);
+        return VooCalendarEventWidget(
+          event: event,
+          renderInfo: renderInfo,
+          builder: (context, event, renderInfo) => _buildProductCard(event),
+        );
       },
 
       dayViewConfig: const VooDayViewConfig(
@@ -188,69 +192,6 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(color: Colors.green.shade700, borderRadius: BorderRadius.circular(8)),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.restaurant, size: 14, color: Colors.white),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    event.metadata?['productName'] ?? event.title,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 2),
-            Text(
-              event.metadata?['brand'] ?? '',
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 10),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              '${event.metadata?['servings']} servings • ${event.metadata?['calories']} cal',
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 10),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// ✅ RECOMMENDED: Extend VooCalendarEventWidget for custom event rendering
-///
-/// This is the cleanest and most efficient approach for custom event widgets.
-/// VooCalendarEventWidget automatically handles:
-/// - Sizing (allocatedHeight, allocatedWidth)
-/// - Overflow protection (built-in ClipRect)
-/// - Layout constraints
-class ProductEventWidget extends VooCalendarEventWidget {
-  const ProductEventWidget({super.key, required super.event, required super.renderInfo});
-
-  @override
-  Widget buildContent(BuildContext context) {
-    // VooCalendarEventWidget automatically wraps this with proper dimensions
-    // Just build your content here - no manual sizing needed!
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.green.shade700,
-        borderRadius: BorderRadius.circular(8),
-        // Add debug border to show the allocated space
-        border: Border.all(color: Colors.blue.withValues(alpha: 0.3), width: 2),
-      ),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
