@@ -252,7 +252,7 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
-        height: 600,
+        height: 900,
         child: VooCalendar(
           controller: _controller,
           initialDate: DateTime.now(),
@@ -263,8 +263,8 @@ class _CalendarViewsPageState extends State<CalendarViewsPage> {
           enableSwipeNavigation: true,
           dayViewConfig: VooDayViewConfig(
             showOnlyHoursWithEvents: _showOnlyHoursWithEvents,
-            enableDynamicHeight: false, // Disable for production-grade layout
-            enableColumnLayout: true, // Enable column layout (like Google Calendar)
+            enableDynamicHeight: false,
+            enableColumnLayout: true,
             hourHeight: 80.0, // Taller hours for better visibility
             hourLineTrailingBuilder: _showHourLineActions
                 ? (context, hour) {

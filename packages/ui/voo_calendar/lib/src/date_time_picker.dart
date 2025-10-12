@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'calendar.dart';
-import 'calendar_theme.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
+
+import 'package:voo_calendar/src/calendar.dart';
+import 'package:voo_calendar/src/calendar_theme.dart';
 
 /// Date and time picker mode
 enum VooDateTimePickerMode {

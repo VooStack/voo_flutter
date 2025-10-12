@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
-import 'calendar_theme.dart';
-import 'calendar_views.dart';
-import 'calendar_config.dart';
+
+import 'package:voo_calendar/src/calendar_config.dart';
+import 'package:voo_calendar/src/calendar_theme.dart';
+import 'package:voo_calendar/src/calendar_views.dart';
+import 'package:voo_calendar/src/presentation/molecules/calendar_header_widget.dart';
+import 'package:voo_calendar/src/presentation/molecules/calendar_view_switcher_widget.dart';
 
 /// Calendar view types
 enum VooCalendarView {
@@ -629,119 +631,27 @@ class _VooCalendarState extends State<VooCalendar> {
       return widget.headerBuilder!(context, _controller.focusedDate);
     }
 
-    final formatString = switch (_controller.currentView) {
-      VooCalendarView.month => 'MMMM yyyy',
-      VooCalendarView.week => 'MMM d - ',
-      VooCalendarView.day => 'EEEE, MMMM d, yyyy',
-      VooCalendarView.year => 'yyyy',
-      VooCalendarView.schedule => 'MMMM yyyy',
-    };
-
-    String headerText = DateFormat(
-      formatString,
-    ).format(_controller.focusedDate);
-
-    if (_controller.currentView == VooCalendarView.week) {
-      final weekEnd = _controller.focusedDate.add(const Duration(days: 6));
-      if (_controller.focusedDate.month != weekEnd.month) {
-        headerText += DateFormat('MMM d, yyyy').format(weekEnd);
-      } else {
-        headerText += DateFormat('d, yyyy').format(weekEnd);
-      }
-    }
-
-    return Container(
-      padding: EdgeInsets.all(design.spacingMd),
-      decoration: BoxDecoration(
-        color: _theme.headerBackgroundColor,
-        border: Border(bottom: BorderSide(color: _theme.borderColor)),
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: _controller.previousPeriod,
-            tooltip: 'Previous',
-          ),
-          Expanded(
-            child: Text(
-              headerText,
-              style: _theme.headerTextStyle,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: _controller.nextPeriod,
-            tooltip: 'Next',
-          ),
-          if (!widget.compact) ...[
-            SizedBox(width: design.spacingMd),
-            OutlinedButton(
-              onPressed: _controller.goToToday,
-              child: const Text('Today'),
-            ),
-          ],
-        ],
-      ),
+    return CalendarHeaderWidget(
+      focusedDate: _controller.focusedDate,
+      currentView: _controller.currentView,
+      theme: _theme,
+      onPreviousPeriod: _controller.previousPeriod,
+      onNextPeriod: _controller.nextPeriod,
+      onTodayTap: _controller.goToToday,
+      compact: widget.compact,
     );
   }
 
   Widget _buildViewSwitcher(VooDesignSystemData design) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacingMd,
-        vertical: design.spacingSm,
-      ),
-      decoration: BoxDecoration(
-        color: _theme.headerBackgroundColor.withValues(alpha: 0.5),
-        border: Border(
-          bottom: BorderSide(color: _theme.borderColor, width: 0.5),
-        ),
-      ),
-      child: Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SegmentedButton<VooCalendarView>(
-            segments: widget.availableViews.map((view) {
-              IconData icon;
-              String label;
-              switch (view) {
-                case VooCalendarView.month:
-                  icon = Icons.calendar_view_month;
-                  label = 'Month';
-                  break;
-                case VooCalendarView.week:
-                  icon = Icons.calendar_view_week;
-                  label = 'Week';
-                  break;
-                case VooCalendarView.day:
-                  icon = Icons.calendar_view_day;
-                  label = 'Day';
-                  break;
-                case VooCalendarView.year:
-                  icon = Icons.calendar_today;
-                  label = 'Year';
-                  break;
-                case VooCalendarView.schedule:
-                  icon = Icons.schedule;
-                  label = 'Schedule';
-                  break;
-              }
-              return ButtonSegment(
-                value: view,
-                icon: Icon(icon, size: widget.compact ? 18 : null),
-                label: widget.compact ? null : Text(label),
-              );
-            }).toList(),
-            selected: {_controller.currentView},
-            onSelectionChanged: (selection) {
-              _controller.setView(selection.first);
-              widget.onViewChanged?.call(selection.first);
-            },
-          ),
-        ),
-      ),
+    return CalendarViewSwitcherWidget(
+      availableViews: widget.availableViews,
+      currentView: _controller.currentView,
+      theme: _theme,
+      onViewChanged: (view) {
+        _controller.setView(view);
+        widget.onViewChanged?.call(view);
+      },
+      compact: widget.compact,
     );
   }
 

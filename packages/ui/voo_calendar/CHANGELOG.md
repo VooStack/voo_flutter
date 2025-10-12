@@ -1,3 +1,56 @@
+## 0.3.1
+
+### 🐛 Critical Bug Fixes & Architecture Improvements
+
+**Mobile Day View Event Stacking** - Fixed critical bug where overlapping events were not displaying correctly on mobile:
+
+#### Fixed Issues:
+- **FIX**: Fixed mobile day view event stacking bug where duplicate events with identical times overlapped instead of stacking
+  - **Root Cause**: `indexWhere()` was returning the same index (0) for all events with matching time+title, causing them to render at the same position
+  - **Solution**: Implemented pre-calculated stack positions using `Map<VooCalendarEvent, int>` based on sort order
+  - **Impact**: All overlapping events now display correctly without overlap on mobile devices
+- **FIX**: Events with identical start times now stack vertically with proper spacing
+- **FIX**: Each event receives a unique vertical position based on its index in the sorted events list
+
+#### Code Quality & Architecture:
+- **IMPROVE**: Refactored calendar views to follow rules.md one-class-per-file principle
+  - Split `calendar_views.dart` (6 classes) into individual files
+  - Each view now in dedicated file: `voo_calendar_month_view.dart`, `voo_calendar_week_view.dart`, etc.
+- **IMPROVE**: Split `EventCardWidget` and `ScheduleEventCardWidget` into separate files
+- **IMPROVE**: Organized files following atomic design pattern in `presentation/organisms/`
+- **IMPROVE**: Updated `calendar_views.dart` to barrel export file for all view widgets
+- **IMPROVE**: Created comprehensive test infrastructure following atomic design
+  - Added `test/helpers/test_helpers.dart` for shared test utilities
+  - Created `test/presentation/organisms/` structure for view tests
+  - Test helpers support multiple screen sizes (mobile/tablet/desktop)
+
+#### File Structure Changes:
+```
+lib/src/presentation/
+├── atoms/
+│   ├── event_card_widget.dart (cleaned)
+│   └── schedule_event_card_widget.dart (NEW)
+└── organisms/
+    ├── voo_calendar_day_view.dart (NEW - with bug fix)
+    ├── voo_calendar_month_view.dart (NEW)
+    ├── voo_calendar_schedule_view.dart (NEW)
+    ├── voo_calendar_week_view.dart (NEW)
+    └── voo_calendar_year_view.dart (NEW)
+```
+
+#### Technical Details:
+- Event stack positions are pre-calculated before rendering to ensure consistent positioning
+- Sort order based on `startTime` comparison ensures deterministic event ordering
+- Mobile detection uses `context.isMobile` for responsive behavior
+- All changes maintain backward compatibility with existing API
+
+### Verification:
+- ✅ All tests pass
+- ✅ Zero lint/analyze issues
+- ✅ Follows rules.md conventions
+- ✅ Mobile day view displays all 5 overlapping events correctly
+- ✅ Events stack without overlap on all screen sizes
+
 ## 0.3.0
 
 ### 📱 Responsive Day View

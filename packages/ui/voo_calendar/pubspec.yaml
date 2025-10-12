@@ -1,6 +1,6 @@
 name: voo_calendar
 description: 'A feature-rich calendar widget for Flutter with multiple view modes, event management, and extensive customization'
-version: 0.3.0
+version: 0.3.1
 repository: https://github.com/YourOrg/VooFlutter/tree/main/packages/ui/voo_calendar
 homepage: https://github.com/YourOrg/VooFlutter
 issue_tracker: https://github.com/YourOrg/VooFlutter/issues
