@@ -13,6 +13,10 @@ import 'package:voo_calendar/voo_calendar.dart';
 /// 2. Or use eventBuilderWithInfo with ClipRect (alternative)
 /// 3. Configure minEventHeight to match your widget's minimum size
 /// 4. Enable dynamic height for proper stacking
+///
+/// NOTE: This example also demonstrates using the `child` parameter on VooCalendarEvent
+/// to provide inline custom widgets. The blue-styled widgets are from the child parameter,
+/// while the green widgets are rendered via eventBuilder/eventBuilderWithInfo.
 class CustomEventHeightExample extends StatefulWidget {
   const CustomEventHeightExample({super.key});
 
@@ -42,6 +46,7 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         startTime: today.add(const Duration(hours: 9)),
         endTime: today.add(const Duration(hours: 9, minutes: 30)),
         metadata: {'productName': 'Creamy Peanut Butter', 'brand': 'Jif', 'servings': 1.5, 'calories': 285},
+        child: _buildInlineProductWidget('Creamy Peanut Butter', 'Jif', 1.5, 285),
       ),
       VooCalendarEvent(
         id: '2',
@@ -50,6 +55,7 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         startTime: today.add(const Duration(hours: 9)),
         endTime: today.add(const Duration(hours: 9, minutes: 30)),
         metadata: {'productName': 'Whole Wheat Bread', 'brand': 'Nature\'s Own', 'servings': 2.0, 'calories': 140},
+        child: _buildInlineProductWidget('Whole Wheat Bread', 'Nature\'s Own', 2.0, 140),
       ),
       VooCalendarEvent(
         id: '3',
@@ -58,6 +64,7 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         startTime: today.add(const Duration(hours: 9)),
         endTime: today.add(const Duration(hours: 9, minutes: 30)),
         metadata: {'productName': 'Orange Juice', 'brand': 'Tropicana', 'servings': 1.0, 'calories': 110},
+        child: _buildInlineProductWidget('Orange Juice', 'Tropicana', 1.0, 110),
       ),
       // Lunch - 12:00 PM
       VooCalendarEvent(
@@ -67,6 +74,7 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         startTime: today.add(const Duration(hours: 12)),
         endTime: today.add(const Duration(hours: 12, minutes: 30)),
         metadata: {'productName': 'Classic Potato Chips', 'brand': "Lay's", 'servings': 2.5, 'calories': 400},
+        child: _buildInlineProductWidget('Classic Potato Chips', "Lay's", 2.5, 400),
       ),
       // Snack - 3:00 PM (multiple items at same time)
       VooCalendarEvent(
@@ -76,6 +84,7 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         startTime: today.add(const Duration(hours: 15)),
         endTime: today.add(const Duration(hours: 15, minutes: 30)),
         metadata: {'productName': 'Greek Yogurt', 'brand': 'Chobani', 'servings': 1.0, 'calories': 150},
+        child: _buildInlineProductWidget('Greek Yogurt', 'Chobani', 1.0, 150),
       ),
       VooCalendarEvent(
         id: '6',
@@ -84,6 +93,7 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         startTime: today.add(const Duration(hours: 15)),
         endTime: today.add(const Duration(hours: 15, minutes: 30)),
         metadata: {'productName': 'Mixed Berries', 'brand': 'Dole', 'servings': 0.5, 'calories': 40},
+        child: _buildInlineProductWidget('Mixed Berries', 'Dole', 0.5, 40),
       ),
     ]);
   }
@@ -143,8 +153,9 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
       availableViews: const [VooCalendarView.day],
 
       // ❌ PROBLEM: eventBuilder doesn't provide allocated dimensions
+      // If event has child (blue widget), use it - otherwise build from metadata (green widget)
       eventBuilder: (context, event) {
-        return _buildProductCard(event);
+        return event.child ?? _buildProductCard(event);
       },
 
       dayViewConfig: const VooDayViewConfig(
@@ -168,12 +179,9 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
       availableViews: const [VooCalendarView.day],
 
       // ✅ SOLUTION: Use VooCalendarEventWidget with builder for automatic dimension handling
+      // If event has child (blue widget), use it - otherwise build from metadata (green widget)
       eventBuilderWithInfo: (context, event, renderInfo) {
-        return VooCalendarEventWidget(
-          event: event,
-          renderInfo: renderInfo,
-          builder: (context, event, renderInfo) => _buildProductCard(event),
-        );
+        return VooCalendarEventWidget(event: event, renderInfo: renderInfo, builder: (context, event, renderInfo) => event.child ?? _buildProductCard(event));
       },
 
       dayViewConfig: const VooDayViewConfig(
@@ -227,6 +235,53 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Inline custom widget builder (used with child parameter)
+  Widget _buildInlineProductWidget(String productName, String brand, double servings, int calories) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade700,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.shade900, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.restaurant, size: 14, color: Colors.white),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  productName,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            brand,
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 10),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            '$servings servings • $calories cal',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 10),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

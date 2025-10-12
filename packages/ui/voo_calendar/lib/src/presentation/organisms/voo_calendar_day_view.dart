@@ -6,6 +6,7 @@ import 'package:voo_calendar/src/calendar_config.dart';
 import 'package:voo_calendar/src/calendar_theme.dart';
 import 'package:voo_calendar/src/domain/entities/voo_calendar_event_render_info.dart';
 import 'package:voo_calendar/src/presentation/atoms/event_card_widget.dart';
+import 'package:voo_calendar/src/presentation/atoms/voo_calendar_event_widget.dart';
 
 /// Day view for VooCalendar
 class VooCalendarDayView extends StatefulWidget {
@@ -274,7 +275,24 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     // Desktop (≥ 600px): Column layout (Google Calendar style)
     final isMobile = context.isMobile;
     final shouldUseColumnLayout = config.enableColumnLayout && !isMobile;
-    final shouldUseDynamicHeight = isMobile; // Always use dynamic height on mobile
+
+    // ✨ AUTO-DETECT: Check if any hour has overlapping events
+    bool hasOverlappingEvents = false;
+    if (!config.enableDynamicHeight) {
+      for (final event in events) {
+        final overlapping = _getOverlappingEvents(event, events);
+        if (overlapping.isNotEmpty) {
+          hasOverlappingEvents = true;
+          break;
+        }
+      }
+    }
+
+    // Enable dynamic height if:
+    // 1. Explicitly enabled via config
+    // 2. On mobile (always)
+    // 3. Overlapping events detected (automatic)
+    final shouldUseDynamicHeight = config.enableDynamicHeight || isMobile || hasOverlappingEvents;
 
     // Calculate column layout for events if enabled and not on mobile
     final Map<VooCalendarEvent, _DayViewEventLayout>? eventLayouts = shouldUseColumnLayout ? _calculateColumnLayout(events) : null;
@@ -347,7 +365,13 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                                     padding: EdgeInsets.only(right: design.spacingXs),
                                     child: config.hourLineLeadingBuilder!(context, hour),
                                   ),
-                                Text(timeFormatter(hour), style: widget.theme.timeTextStyle.copyWith(fontSize: widget.compact ? 10 : 11, height: 1.0)),
+                                Flexible(
+                                  child: Text(
+                                    timeFormatter(hour),
+                                    style: widget.theme.timeTextStyle.copyWith(fontSize: widget.compact ? 10 : 11, height: 1.0),
+                                    overflow: TextOverflow.clip,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -407,15 +431,28 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                             topOffset += hourHeights[hours[i]] ?? hourHeight;
                           }
 
+                          // Calculate the current hour's allocated height
+                          final currentHourHeight = hourHeights[eventHour] ?? hourHeight;
+
                           // Use pre-calculated stack position for mobile
                           if (!shouldUseColumnLayout) {
                             // On mobile: use the pre-calculated stack position
                             final stackPosition = eventStackPositions[event] ?? 0;
-                            topOffset += stackPosition * (config.minEventHeight + config.eventSpacing);
-                          }
+                            final stackOffset = stackPosition * (config.minEventHeight + config.eventSpacing);
+                            topOffset += stackOffset;
 
-                          // Use minimum event height when dynamic
-                          eventHeight = config.minEventHeight;
+                            // Calculate remaining space in this hour slot for this event
+                            // Account for space used by events stacked above this one
+                            final remainingHeight = currentHourHeight - stackOffset;
+
+                            // Constrain event height to fit within the hour boundary
+                            // Ensure events don't extend beyond the hour line by leaving buffer space
+                            final maxHeightInSlot = remainingHeight - config.eventSpacing;
+                            eventHeight = config.minEventHeight < maxHeightInSlot ? config.minEventHeight : (maxHeightInSlot > 30 ? maxHeightInSlot : 30);
+                          } else {
+                            // Column layout: use minimum event height
+                            eventHeight = config.minEventHeight;
+                          }
                         } else {
                           topOffset = config.showOnlyHoursWithEvents ? hourIndex * hourHeight + (event.startTime.minute / 60) * hourHeight : _getEventTop(event, hourHeight);
                           eventHeight = _getEventHeight(event, hourHeight);
@@ -459,13 +496,23 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                           hourHeight: hourHeight,
                         );
 
-                        // Use eventBuilderWithInfo if provided (recommended), otherwise fall back to eventBuilder
+                        // Automatically detect and handle custom child widgets
                         Widget eventWidget;
                         if (widget.eventBuilderWithInfo != null) {
+                          // User provided custom builder with render info
                           eventWidget = widget.eventBuilderWithInfo!(context, event, renderInfo);
                         } else if (widget.eventBuilder != null) {
+                          // User provided simple custom builder
                           eventWidget = widget.eventBuilder!(context, event);
+                        } else if (event.child != null) {
+                          // ✨ AUTO-MAGIC: Event has custom child widget - wrap it with proper constraints
+                          eventWidget = VooCalendarEventWidget(
+                            event: event,
+                            renderInfo: renderInfo,
+                            builder: (context, event, renderInfo) => event.child!,
+                          );
                         } else {
+                          // Default: Use standard event card
                           eventWidget = EventCardWidget(
                             event: event,
                             theme: widget.theme,

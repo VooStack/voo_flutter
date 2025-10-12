@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../examples/custom_event_height_example.dart';
+import '../examples/custom_event_widget_example.dart';
 
 class AdvancedExamplesPage extends StatelessWidget {
   const AdvancedExamplesPage({super.key});
@@ -17,6 +18,17 @@ class AdvancedExamplesPage extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 24),
+          _buildExampleCard(
+            context,
+            icon: Icons.widgets,
+            title: 'VooCalendarEvent.custom Constructor',
+            description:
+                'Learn how to use VooCalendarEvent.custom to create events with completely custom widgets. Perfect for logs, products, workouts, and notifications.',
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CustomEventWidgetExample()));
+            },
+          ),
+          const SizedBox(height: 12),
           _buildExampleCard(
             context,
             icon: Icons.height,

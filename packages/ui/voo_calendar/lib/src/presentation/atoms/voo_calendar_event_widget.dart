@@ -58,6 +58,13 @@ class VooCalendarEventWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(height: renderInfo.allocatedHeight, width: renderInfo.allocatedWidth, child: child ?? builder!(context, event!, renderInfo));
+    return SizedBox(
+      height: renderInfo.allocatedHeight,
+      width: renderInfo.allocatedWidth,
+      child: ClipRect(
+        // Prevent custom widgets from overflowing their allocated space
+        child: child ?? builder!(context, event!, renderInfo),
+      ),
+    );
   }
 }
