@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_calendar/src/domain/entities/voo_calendar_event.dart';
 
 /// Configuration for Day View
 class VooDayViewConfig {
@@ -47,16 +48,25 @@ class VooDayViewConfig {
   /// Callback when hour line is tapped
   final void Function(int hour)? onHourLineTap;
 
-  /// Enable dynamic height adjustment based on number of events
-  /// When true, hour slots will expand to fit all events without overlapping
+  /// Builder to determine height for each event.
+  /// Receives the event and returns the height in pixels.
+  /// If not provided, uses minEventHeight for all events.
   ///
-  /// Note: When both `enableDynamicHeight` and `enableColumnLayout` are true,
-  /// events will be positioned at the top of their hour slot and arranged side-by-side.
-  /// For better visual results, consider using `enableColumnLayout: false` with dynamic height
-  /// to vertically stack events with proper spacing.
-  final bool enableDynamicHeight;
+  /// Example:
+  /// ```dart
+  /// eventHeightBuilder: (event) {
+  ///   // Custom widgets get taller heights
+  ///   if (event.child != null) return 120.0;
+  ///   // Error logs get medium height
+  ///   if (event.metadata?['type'] == 'error') return 100.0;
+  ///   // Default events use minimum height
+  ///   return 80.0;
+  /// }
+  /// ```
+  final double Function(VooCalendarEvent event)? eventHeightBuilder;
 
   /// Minimum height for each event when using dynamic height (default: 80.0)
+  /// Used as fallback when eventHeightBuilder is not provided
   final double minEventHeight;
 
   /// Spacing between stacked events when using dynamic height (default: 8.0)
@@ -86,9 +96,8 @@ class VooDayViewConfig {
   ///
   /// This ensures optimal space utilization on all screen sizes.
   ///
-  /// Note: Column layout works best when `enableDynamicHeight` is false.
-  /// When both are enabled, events are positioned at the top of the hour and arranged horizontally.
-  /// For cleaner layouts with dynamic height, consider setting this to false.
+  /// Note: Dynamic height is always enabled. Events are automatically sized using
+  /// eventHeightBuilder or minEventHeight.
   final bool enableColumnLayout;
 
   /// Width reserved for trailing builder content to prevent event overlap (default: 0)
@@ -110,7 +119,7 @@ class VooDayViewConfig {
     this.hourLineThickness,
     this.showHalfHourLines = false,
     this.onHourLineTap,
-    this.enableDynamicHeight = false,
+    this.eventHeightBuilder,
     this.minEventHeight = 80.0,
     this.eventSpacing = 8.0,
     this.eventLeftPadding = 8.0,
@@ -139,7 +148,7 @@ class VooDayViewConfig {
     double? hourLineThickness,
     bool? showHalfHourLines,
     void Function(int hour)? onHourLineTap,
-    bool? enableDynamicHeight,
+    double Function(VooCalendarEvent event)? eventHeightBuilder,
     double? minEventHeight,
     double? eventSpacing,
     double? eventLeftPadding,
@@ -166,7 +175,7 @@ class VooDayViewConfig {
       hourLineThickness: hourLineThickness ?? this.hourLineThickness,
       showHalfHourLines: showHalfHourLines ?? this.showHalfHourLines,
       onHourLineTap: onHourLineTap ?? this.onHourLineTap,
-      enableDynamicHeight: enableDynamicHeight ?? this.enableDynamicHeight,
+      eventHeightBuilder: eventHeightBuilder ?? this.eventHeightBuilder,
       minEventHeight: minEventHeight ?? this.minEventHeight,
       eventSpacing: eventSpacing ?? this.eventSpacing,
       eventLeftPadding: eventLeftPadding ?? this.eventLeftPadding,
@@ -200,6 +209,25 @@ class VooWeekViewConfig {
   /// Last hour to display (0-23)
   final int lastHour;
 
+  /// Builder to determine height for each event.
+  /// Receives the event and returns the height in pixels.
+  /// If not provided, uses minEventHeight for all events.
+  ///
+  /// Example:
+  /// ```dart
+  /// eventHeightBuilder: (event) {
+  ///   // Custom widgets get taller heights
+  ///   if (event.child != null) return 120.0;
+  ///   // Default events use minimum height
+  ///   return 80.0;
+  /// }
+  /// ```
+  final double Function(VooCalendarEvent event)? eventHeightBuilder;
+
+  /// Minimum height for each event (default: 80.0)
+  /// Used as fallback when eventHeightBuilder is not provided
+  final double minEventHeight;
+
   const VooWeekViewConfig({
     this.hourHeight,
     this.scrollPhysics,
@@ -207,6 +235,8 @@ class VooWeekViewConfig {
     this.timeColumnWidth,
     this.firstHour = 0,
     this.lastHour = 23,
+    this.eventHeightBuilder,
+    this.minEventHeight = 80.0,
   });
 
   /// Create a copy with modified properties
@@ -217,6 +247,8 @@ class VooWeekViewConfig {
     double? timeColumnWidth,
     int? firstHour,
     int? lastHour,
+    double Function(VooCalendarEvent event)? eventHeightBuilder,
+    double? minEventHeight,
   }) {
     return VooWeekViewConfig(
       hourHeight: hourHeight ?? this.hourHeight,
@@ -225,6 +257,8 @@ class VooWeekViewConfig {
       timeColumnWidth: timeColumnWidth ?? this.timeColumnWidth,
       firstHour: firstHour ?? this.firstHour,
       lastHour: lastHour ?? this.lastHour,
+      eventHeightBuilder: eventHeightBuilder ?? this.eventHeightBuilder,
+      minEventHeight: minEventHeight ?? this.minEventHeight,
     );
   }
 }
@@ -246,12 +280,33 @@ class VooMonthViewConfig {
   /// Maximum number of event indicators to show
   final int maxEventIndicators;
 
+  /// Builder to determine height for each event.
+  /// Receives the event and returns the height in pixels.
+  /// If not provided, uses minEventHeight for all events.
+  ///
+  /// Example:
+  /// ```dart
+  /// eventHeightBuilder: (event) {
+  ///   // Custom widgets get taller heights
+  ///   if (event.child != null) return 120.0;
+  ///   // Default events use minimum height
+  ///   return 80.0;
+  /// }
+  /// ```
+  final double Function(VooCalendarEvent event)? eventHeightBuilder;
+
+  /// Minimum height for each event (default: 80.0)
+  /// Used as fallback when eventHeightBuilder is not provided
+  final double minEventHeight;
+
   const VooMonthViewConfig({
     this.showWeekNumbers = false,
     this.firstDayOfWeek = 1,
     this.weeksToShow = 6,
     this.showEventIndicators = true,
     this.maxEventIndicators = 3,
+    this.eventHeightBuilder,
+    this.minEventHeight = 80.0,
   });
 
   /// Create a copy with modified properties
@@ -261,6 +316,8 @@ class VooMonthViewConfig {
     int? weeksToShow,
     bool? showEventIndicators,
     int? maxEventIndicators,
+    double Function(VooCalendarEvent event)? eventHeightBuilder,
+    double? minEventHeight,
   }) {
     return VooMonthViewConfig(
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
@@ -268,6 +325,8 @@ class VooMonthViewConfig {
       weeksToShow: weeksToShow ?? this.weeksToShow,
       showEventIndicators: showEventIndicators ?? this.showEventIndicators,
       maxEventIndicators: maxEventIndicators ?? this.maxEventIndicators,
+      eventHeightBuilder: eventHeightBuilder ?? this.eventHeightBuilder,
+      minEventHeight: minEventHeight ?? this.minEventHeight,
     );
   }
 }

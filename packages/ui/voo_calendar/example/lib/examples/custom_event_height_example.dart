@@ -163,9 +163,6 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         minEventHeight: 50.0,
         eventSpacing: 4.0,
         initialScrollHour: 8, // Scroll to 8 AM to see the 9 AM events
-        enableDynamicHeight: true,
-        // Even with dynamic height, custom widgets can overflow
-        // because they don't know their allocated size
       ),
     );
   }
@@ -189,7 +186,6 @@ class _CustomEventHeightExampleState extends State<CustomEventHeightExample> {
         minEventHeight: 70.0, // Minimum height for each event
         eventSpacing: 8.0,
         initialScrollHour: 8, // Scroll to 8 AM to see the 9 AM events
-        enableDynamicHeight: true, // Auto-expand for overlapping events
       ),
     );
   }

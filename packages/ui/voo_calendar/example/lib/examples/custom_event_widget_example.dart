@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voo_calendar/voo_calendar.dart';
 
-/// Example demonstrating VooCalendarEvent.custom constructor
-///
-/// This example shows how to use the .custom constructor when you want to
-/// provide your own custom widget for rendering events. This is perfect for
-/// events where you don't need title/description/icon and want full control
-/// over the rendering.
-///
-/// ✨ SIMPLIFIED: The calendar automatically detects events with custom widgets
-/// and handles them properly - no eventBuilder needed!
 class CustomEventWidgetExample extends StatefulWidget {
   const CustomEventWidgetExample({super.key});
 
@@ -28,9 +19,7 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    // Using VooCalendarEvent.custom for completely custom event rendering
     _controller.setEvents([
-      // Custom widget event - Log entry
       VooCalendarEvent.custom(
         id: 'log-1',
         startTime: today.add(const Duration(hours: 9)),
@@ -52,7 +41,21 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
         child: _buildCustomLogWidget(icon: Icons.bug_report, level: 'ERROR', message: 'Database connection timeout', color: Colors.red),
         metadata: {'type': 'log', 'level': 'error', 'timestamp': DateTime.now()},
       ),
-      // Custom widget event - Product consumption
+
+      VooCalendarEvent.custom(
+        id: 'product-1',
+        startTime: today.add(const Duration(hours: 12)),
+        endTime: today.add(const Duration(hours: 12, minutes: 45)),
+        child: _buildCustomProductWidget(productName: 'Organic Almonds', brand: 'Trader Joe\'s', servings: 2.0, calories: 340),
+        metadata: {'type': 'product', 'productId': 'prod-123'},
+      ),
+      VooCalendarEvent.custom(
+        id: 'product-1',
+        startTime: today.add(const Duration(hours: 12)),
+        endTime: today.add(const Duration(hours: 12, minutes: 45)),
+        child: _buildCustomProductWidget(productName: 'Organic Almonds', brand: 'Trader Joe\'s', servings: 2.0, calories: 340),
+        metadata: {'type': 'product', 'productId': 'prod-123'},
+      ),
       VooCalendarEvent.custom(
         id: 'product-1',
         startTime: today.add(const Duration(hours: 12)),
@@ -61,7 +64,6 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
         metadata: {'type': 'product', 'productId': 'prod-123'},
       ),
 
-      // Custom widget event - Workout session
       VooCalendarEvent.custom(
         id: 'workout-1',
         startTime: today.add(const Duration(hours: 15)),
@@ -70,7 +72,6 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
         metadata: {'type': 'workout', 'workoutId': 'workout-456'},
       ),
 
-      // Custom widget event - System notification
       VooCalendarEvent.custom(
         id: 'notification-1',
         startTime: today.add(const Duration(hours: 17)),
@@ -115,15 +116,22 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
               initialView: VooCalendarView.day,
               headerBuilder: (context, date) => const SizedBox(),
               availableViews: const [VooCalendarView.day],
-              // ✨ NO CONFIGURATION NEEDED! Calendar automatically:
-              // - Detects event.child and wraps with proper constraints
-              // - Expands hour slots when events overlap (automatic dynamic height)
-              dayViewConfig: const VooDayViewConfig(
-                hourHeight: 120.0,
-                minEventHeight: 80.0,
-                eventSpacing: 8.0,
+              // ✨ Use eventHeightBuilder to set heights based on event type
+              dayViewConfig: VooDayViewConfig(
                 initialScrollHour: 8,
-                // enableDynamicHeight: true, ← NO LONGER NEEDED! Auto-detected when events overlap
+                eventHeightBuilder: (event) {
+                  // Custom widgets with child get specific heights
+                  if (event.child != null) {
+                    // Check metadata to determine event type
+                    final type = event.metadata?['type'];
+                    if (type == 'log') return 100.0; // Error logs
+                    if (type == 'product') return 130.0; // Product widgets
+                    if (type == 'workout') return 120.0; // Workout widgets
+                    if (type == 'notification') return 90.0; // Notifications
+                  }
+                  // Default events use minimum height
+                  return 80.0;
+                },
               ),
             ),
           ),
@@ -132,7 +140,6 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
     );
   }
 
-  /// Custom log entry widget
   Widget _buildCustomLogWidget({required IconData icon, required String level, required String message, required Color color}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -170,9 +177,9 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
     );
   }
 
-  /// Custom product widget
   Widget _buildCustomProductWidget({required String productName, required String brand, required double servings, required int calories}) {
     return Container(
+      height: 130,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -209,7 +216,6 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
     );
   }
 
-  /// Custom workout widget
   Widget _buildCustomWorkoutWidget({required String exercise, required int duration, required int caloriesBurned, required String intensity}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -253,7 +259,6 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
     );
   }
 
-  /// Custom notification widget
   Widget _buildCustomNotificationWidget({required String title, required String message, required IconData icon, required Color color}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),

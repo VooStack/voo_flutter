@@ -17,7 +17,7 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('should NOT overflow when enableDynamicHeight is true and events have custom widgets', (tester) async {
+    testWidgets('should NOT overflow with custom event widgets (dynamic height is always enabled)', (tester) async {
       // Create events with tall custom widgets
       final now = DateTime(2025, 10, 12);
       controller.setEvents([
@@ -40,7 +40,6 @@ void main() {
               controller: controller,
               initialView: VooCalendarView.day,
               dayViewConfig: const VooDayViewConfig(
-                enableDynamicHeight: true,
                 hourHeight: 120.0,
                 minEventHeight: 80.0,
               ),
@@ -124,7 +123,6 @@ void main() {
               controller: controller,
               initialView: VooCalendarView.day,
               dayViewConfig: const VooDayViewConfig(
-                enableDynamicHeight: true,
                 hourHeight: 120.0,
                 minEventHeight: 80.0,
                 eventSpacing: 8.0,
@@ -168,7 +166,6 @@ void main() {
               initialView: VooCalendarView.day,
               // NO eventBuilder - calendar should auto-detect event.child
               dayViewConfig: const VooDayViewConfig(
-                enableDynamicHeight: true,
                 hourHeight: 120.0,
                 minEventHeight: 80.0,
               ),
@@ -216,7 +213,6 @@ void main() {
               controller: controller,
               initialView: VooCalendarView.day,
               dayViewConfig: const VooDayViewConfig(
-                enableDynamicHeight: true,
                 hourHeight: 120.0,
                 minEventHeight: 80.0,
               ),
@@ -256,7 +252,6 @@ void main() {
               controller: controller,
               initialView: VooCalendarView.day,
               dayViewConfig: const VooDayViewConfig(
-                enableDynamicHeight: true,
                 hourHeight: 120.0,
                 minEventHeight: 100.0, // Larger than widget height
               ),
@@ -298,7 +293,6 @@ void main() {
               controller: controller,
               initialView: VooCalendarView.day,
               dayViewConfig: const VooDayViewConfig(
-                enableDynamicHeight: true,
                 hourHeight: 120.0,
                 minEventHeight: 80.0,
               ),

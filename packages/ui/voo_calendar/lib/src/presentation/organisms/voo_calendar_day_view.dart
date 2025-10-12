@@ -55,7 +55,6 @@ class VooCalendarDayView extends StatefulWidget {
     double? hourLineThickness,
     bool showHalfHourLines = false,
     void Function(int hour)? onHourLineTap,
-    bool enableDynamicHeight = false,
     double? minEventHeight,
     double? eventSpacing,
   }) {
@@ -82,7 +81,6 @@ class VooCalendarDayView extends StatefulWidget {
         hourLineThickness: hourLineThickness,
         showHalfHourLines: showHalfHourLines,
         onHourLineTap: onHourLineTap,
-        enableDynamicHeight: enableDynamicHeight,
         minEventHeight: minEventHeight ?? 40.0,
         eventSpacing: eventSpacing ?? 4.0,
       ),
@@ -120,56 +118,35 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     return '${hour.toString().padLeft(2, '0')}:00';
   }
 
-  /// Calculate the number of overlapping events for a given hour
-  int _getMaxOverlappingEventsForHour(int hour, List<VooCalendarEvent> events) {
-    final eventsInHour = events.where((event) {
-      final eventStartHour = event.startTime.hour;
-      final eventEndHour = event.endTime.hour;
-      return hour >= eventStartHour && hour <= eventEndHour;
-    }).toList();
-
-    if (eventsInHour.isEmpty) return 0;
-
-    // Find the maximum number of events overlapping at any minute in this hour
-    int maxOverlap = 0;
-    for (int minute = 0; minute < 60; minute++) {
-      final checkTime = DateTime(widget.controller.focusedDate.year, widget.controller.focusedDate.month, widget.controller.focusedDate.day, hour, minute);
-
-      int overlapCount = 0;
-      for (final event in eventsInHour) {
-        if (checkTime.isAfter(event.startTime) && checkTime.isBefore(event.endTime)) {
-          overlapCount++;
-        } else if (checkTime.isAtSameMomentAs(event.startTime)) {
-          overlapCount++;
-        }
-      }
-
-      if (overlapCount > maxOverlap) {
-        maxOverlap = overlapCount;
-      }
-    }
-
-    return maxOverlap;
-  }
-
   /// Calculate dynamic height for each hour based on events
   Map<int, double> _calculateDynamicHeights(List<int> hours, List<VooCalendarEvent> events, double baseHourHeight, double minEventHeight, double eventSpacing) {
     final Map<int, double> hourHeights = {};
 
     for (final hour in hours) {
-      final maxOverlap = _getMaxOverlappingEventsForHour(hour, events);
+      // Get all events in this hour
+      final eventsInHour = events.where((event) {
+        final eventStartHour = event.startTime.hour;
+        final eventEndHour = event.endTime.hour;
+        return hour >= eventStartHour && hour <= eventEndHour;
+      }).toList();
 
-      if (maxOverlap == 0) {
+      if (eventsInHour.isEmpty) {
         // No events, use base height
         hourHeights[hour] = baseHourHeight;
       } else {
-        // Calculate height needed to fit all overlapping events with proper spacing
-        // Add top and bottom padding for each event
-        final totalEventHeight = (maxOverlap * minEventHeight);
-        final totalSpacing = ((maxOverlap - 1) * eventSpacing);
-        // Add extra padding for visual breathing room
+        // Calculate height needed for each event using eventHeightBuilder if provided
+        double totalHeight = 0;
+        for (final event in eventsInHour) {
+          // Use eventHeightBuilder if provided, otherwise use minEventHeight
+          final eventHeight = widget.config.eventHeightBuilder?.call(event) ?? minEventHeight;
+          totalHeight += eventHeight;
+        }
+
+        // Add spacing between events
+        final totalSpacing = ((eventsInHour.length - 1) * eventSpacing);
+        // Add padding buffer
         final paddingBuffer = widget.config.eventTopPadding + widget.config.eventBottomPadding;
-        final requiredHeight = totalEventHeight + totalSpacing + paddingBuffer;
+        final requiredHeight = totalHeight + totalSpacing + paddingBuffer;
 
         // Use the maximum of base height and required height
         hourHeights[hour] = requiredHeight > baseHourHeight ? requiredHeight : baseHourHeight;
@@ -276,24 +253,6 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     final isMobile = context.isMobile;
     final shouldUseColumnLayout = config.enableColumnLayout && !isMobile;
 
-    // ✨ AUTO-DETECT: Check if any hour has overlapping events
-    bool hasOverlappingEvents = false;
-    if (!config.enableDynamicHeight) {
-      for (final event in events) {
-        final overlapping = _getOverlappingEvents(event, events);
-        if (overlapping.isNotEmpty) {
-          hasOverlappingEvents = true;
-          break;
-        }
-      }
-    }
-
-    // Enable dynamic height if:
-    // 1. Explicitly enabled via config
-    // 2. On mobile (always)
-    // 3. Overlapping events detected (automatic)
-    final shouldUseDynamicHeight = config.enableDynamicHeight || isMobile || hasOverlappingEvents;
-
     // Calculate column layout for events if enabled and not on mobile
     final Map<VooCalendarEvent, _DayViewEventLayout>? eventLayouts = shouldUseColumnLayout ? _calculateColumnLayout(events) : null;
 
@@ -307,24 +266,36 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
       hours = List.generate(config.lastHour - config.firstHour + 1, (i) => config.firstHour + i);
     }
 
-    // Calculate dynamic heights if enabled OR if on mobile
-    final Map<int, double> hourHeights = (config.enableDynamicHeight || shouldUseDynamicHeight)
-        ? _calculateDynamicHeights(hours, events, hourHeight, config.minEventHeight, config.eventSpacing)
-        : {for (var hour in hours) hour: hourHeight};
+    // ✨ ALWAYS calculate dynamic heights for plug-and-play behavior
+    final Map<int, double> hourHeights = _calculateDynamicHeights(hours, events, hourHeight, config.minEventHeight, config.eventSpacing);
 
-    // Pre-calculate event positions for mobile stacking
-    // This fixes the bug where events with identical properties get the same position
+    // Pre-calculate event stack positions for ALL overlapping events in each hour
+    // This is critical for proper stacking - we must consider ALL events that overlap in an hour, not just ones that start there
     final Map<VooCalendarEvent, int> eventStackPositions = {};
     if (!shouldUseColumnLayout) {
-      // Group events by hour
       for (final hour in hours) {
-        final eventsInHour = events.where((e) => e.startTime.hour == hour).toList();
-        // Sort by start time to ensure consistent ordering
-        eventsInHour.sort((a, b) => a.startTime.compareTo(b.startTime));
+        // Get ALL events that overlap with this hour (not just ones that start in it)
+        final eventsInHour = events.where((event) {
+          final eventStartHour = event.startTime.hour;
+          final eventEndHour = event.endTime.hour;
+          return hour >= eventStartHour && hour <= eventEndHour;
+        }).toList();
 
-        // Assign stack positions based on their index in the sorted list
+        // Sort by start time, then by ID for consistent ordering
+        eventsInHour.sort((a, b) {
+          final startCompare = a.startTime.compareTo(b.startTime);
+          if (startCompare != 0) return startCompare;
+          return a.id.compareTo(b.id);
+        });
+
+        // Assign stack positions based on their sorted order
+        // Each event gets a unique position in the stack for this hour
         for (int i = 0; i < eventsInHour.length; i++) {
-          eventStackPositions[eventsInHour[i]] = i;
+          // If event doesn't have a position yet, or this hour requires a higher stack position, update it
+          final currentPosition = eventStackPositions[eventsInHour[i]] ?? -1;
+          if (i > currentPosition) {
+            eventStackPositions[eventsInHour[i]] = i;
+          }
         }
       }
     }
@@ -332,9 +303,8 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final timeColumnWidth = config.timeColumnWidth ?? (widget.compact ? 50.0 : 60.0);
-        final totalHeight = (config.enableDynamicHeight || shouldUseDynamicHeight)
-            ? hourHeights.values.reduce((a, b) => a + b)
-            : (hours.length * hourHeight + (config.showHalfHourLines ? hours.length * (hourHeight / 2) : 0));
+        // Always use dynamic heights for total calculation
+        final totalHeight = hourHeights.values.reduce((a, b) => a + b);
 
         return SingleChildScrollView(
           controller: _scrollController,
@@ -421,41 +391,28 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                         final hourIndex = hours.indexOf(eventHour);
                         if (hourIndex == -1) return const SizedBox.shrink();
 
-                        double topOffset;
+                        // ✨ Calculate position with automatic dynamic heights
+                        // Calculate cumulative offset for dynamic heights
+                        double topOffset = 0;
+                        for (int i = 0; i < hourIndex; i++) {
+                          topOffset += hourHeights[hours[i]] ?? hourHeight;
+                        }
+
+                        // ✨ Use eventHeightBuilder if provided, otherwise use minEventHeight
+                        final baseEventHeight = config.eventHeightBuilder?.call(event) ?? config.minEventHeight;
+
                         double eventHeight;
+                        if (!shouldUseColumnLayout) {
+                          // Vertical stacking: use pre-calculated stack position
+                          final stackPosition = eventStackPositions[event] ?? 0;
+                          final stackOffset = stackPosition * (baseEventHeight + config.eventSpacing);
+                          topOffset += stackOffset;
 
-                        if (config.enableDynamicHeight || shouldUseDynamicHeight) {
-                          // Calculate cumulative offset for dynamic heights
-                          topOffset = 0;
-                          for (int i = 0; i < hourIndex; i++) {
-                            topOffset += hourHeights[hours[i]] ?? hourHeight;
-                          }
-
-                          // Calculate the current hour's allocated height
-                          final currentHourHeight = hourHeights[eventHour] ?? hourHeight;
-
-                          // Use pre-calculated stack position for mobile
-                          if (!shouldUseColumnLayout) {
-                            // On mobile: use the pre-calculated stack position
-                            final stackPosition = eventStackPositions[event] ?? 0;
-                            final stackOffset = stackPosition * (config.minEventHeight + config.eventSpacing);
-                            topOffset += stackOffset;
-
-                            // Calculate remaining space in this hour slot for this event
-                            // Account for space used by events stacked above this one
-                            final remainingHeight = currentHourHeight - stackOffset;
-
-                            // Constrain event height to fit within the hour boundary
-                            // Ensure events don't extend beyond the hour line by leaving buffer space
-                            final maxHeightInSlot = remainingHeight - config.eventSpacing;
-                            eventHeight = config.minEventHeight < maxHeightInSlot ? config.minEventHeight : (maxHeightInSlot > 30 ? maxHeightInSlot : 30);
-                          } else {
-                            // Column layout: use minimum event height
-                            eventHeight = config.minEventHeight;
-                          }
+                          // Use the calculated height from builder or default
+                          eventHeight = baseEventHeight;
                         } else {
-                          topOffset = config.showOnlyHoursWithEvents ? hourIndex * hourHeight + (event.startTime.minute / 60) * hourHeight : _getEventTop(event, hourHeight);
-                          eventHeight = _getEventHeight(event, hourHeight);
+                          // Column layout: use calculated height from builder or minimum event height
+                          eventHeight = baseEventHeight;
                         }
 
                         // Calculate proper left and right padding to avoid overlaps
@@ -506,11 +463,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                           eventWidget = widget.eventBuilder!(context, event);
                         } else if (event.child != null) {
                           // ✨ AUTO-MAGIC: Event has custom child widget - wrap it with proper constraints
-                          eventWidget = VooCalendarEventWidget(
-                            event: event,
-                            renderInfo: renderInfo,
-                            builder: (context, event, renderInfo) => event.child!,
-                          );
+                          eventWidget = VooCalendarEventWidget(event: event, renderInfo: renderInfo, builder: (context, event, renderInfo) => event.child!);
                         } else {
                           // Default: Use standard event card
                           eventWidget = EventCardWidget(
@@ -540,21 +493,6 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
         );
       },
     );
-  }
-
-  double _getEventTop(VooCalendarEvent event, double hourHeight) {
-    // Don't subtract firstHour here - the hours list is already filtered
-    // so hour 0 in the visual grid is firstHour
-    final hour = event.startTime.hour - widget.config.firstHour;
-    final minute = event.startTime.minute;
-    return (hour + minute / 60) * hourHeight;
-  }
-
-  double _getEventHeight(VooCalendarEvent event, double hourHeight) {
-    final duration = event.duration.inMinutes;
-    // Subtract a small amount to prevent overlapping with hour line borders
-    final calculatedHeight = (duration / 60) * hourHeight;
-    return calculatedHeight > 4 ? calculatedHeight - 4 : calculatedHeight;
   }
 }
 
