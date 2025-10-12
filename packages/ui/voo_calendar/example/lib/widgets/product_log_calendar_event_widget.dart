@@ -6,7 +6,7 @@ import 'package:voo_calendar/voo_calendar.dart';
 ///
 /// This widget wraps your existing ProductLogListTile (or any widget) and
 /// ensures it works correctly with the calendar's layout system
-class ProductLogCalendarEventWidget extends BaseCalendarEventWidget {
+class ProductLogCalendarEventWidget extends VooCalendarEventWidget {
   /// Your custom content builder
   final Widget Function(BuildContext context, VooCalendarEvent event) contentBuilder;
 
@@ -19,13 +19,13 @@ class ProductLogCalendarEventWidget extends BaseCalendarEventWidget {
 
   @override
   Widget buildContent(BuildContext context) {
-    // The base class already wraps this in a SizedBox with proper dimensions
+    // VooCalendarEventWidget automatically wraps this in proper dimensions
     // Your content will automatically respect the allocated height/width
     return contentBuilder(context, event);
   }
 }
 
-/// Alternative: Direct function approach if you don't want to extend BaseCalendarEventWidget
+/// Alternative: Direct function approach if you don't want to extend VooCalendarEventWidget
 /// Use this in your VooCalendar's eventBuilderWithInfo parameter
 Widget buildProductLogEvent(
   BuildContext context,

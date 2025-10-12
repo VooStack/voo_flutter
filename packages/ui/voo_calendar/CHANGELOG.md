@@ -1,3 +1,66 @@
+## 0.3.4
+
+### 📚 Documentation & Example Improvements
+
+**Enhanced Custom Event Widget Examples** - Improved developer experience with better examples and navigation:
+
+#### New Features:
+- **FEAT**: Added "Advanced Examples" section to example app with dedicated navigation
+- **FEAT**: Interactive custom event height example showing problem vs solution side-by-side
+- **FEAT**: `ProductEventWidget` class demonstrating VooCalendarEventWidget extension pattern
+- **FEAT**: Example includes 6 events with overlapping times (breakfast & snack scenarios)
+- **FEAT**: Mobile-friendly drawer navigation for 6+ top-level destinations
+
+#### Improvements:
+- **IMPROVE**: Example app now uses drawer on mobile instead of bottom navigation (fixes overflow)
+- **IMPROVE**: Custom event height example starts at 8 AM to show events immediately
+- **IMPROVE**: Visual debugging borders show allocated space for events
+- **IMPROVE**: Compact widget sizing with scrollable content for better space utilization
+- **IMPROVE**: Clear documentation of VooCalendarEventWidget as the recommended approach
+
+#### Bug Fixes:
+- **FIX**: Navigation overflow on mobile devices with 6 tabs
+- **FIX**: Custom event content overflow in example
+- **FIX**: Events not visible on initial load in custom height example
+
+### Use Cases:
+Perfect for developers learning how to implement custom event widgets (ProductLogListTile, meal entries, workout cards, etc.) that properly respect calendar layout constraints and don't overflow into other hour slots.
+
+## 0.3.3
+
+### 🔄 API Improvements - Better Naming
+
+**Renamed `BaseCalendarEventWidget` → `VooCalendarEventWidget`** - Improved naming to follow package conventions:
+
+#### Breaking Changes:
+- **BREAKING**: `BaseCalendarEventWidget` renamed to `VooCalendarEventWidget`
+  - Migration: Simply rename `extends BaseCalendarEventWidget` to `extends VooCalendarEventWidget`
+  - All functionality remains identical
+
+#### Improvements:
+- **IMPROVE**: Better discoverability - follows `Voo*` naming pattern
+- **IMPROVE**: Enhanced documentation with usage examples in class docs
+- **IMPROVE**: README reorganized to show `VooCalendarEventWidget` as the primary approach
+- **IMPROVE**: Clearer API that communicates official widget for custom events
+
+#### Why This Change:
+- Follows package naming conventions (`VooCalendar`, `VooCalendarEvent`, `VooCalendarEventWidget`)
+- Makes it clear this is the official widget for extending calendar events
+- More developer-friendly and easier to discover
+
+### Migration Guide:
+```dart
+// Before (0.3.2)
+class MyEventWidget extends BaseCalendarEventWidget {
+  ...
+}
+
+// After (0.3.3)
+class MyEventWidget extends VooCalendarEventWidget {
+  ...
+}
+```
+
 ## 0.3.2
 
 ### ✨ Custom Event Widget Support with Proper Dimension Handling
@@ -7,7 +70,7 @@
 #### New Features:
 - **FEAT**: `eventBuilderWithInfo` - New event builder that provides render info (allocated dimensions, layout context)
 - **FEAT**: `VooCalendarEventRenderInfo` - Data class containing allocated height, width, and layout context
-- **FEAT**: `BaseCalendarEventWidget` - Abstract base class for creating custom event widgets
+- **FEAT**: `VooCalendarEventWidget` - Abstract base class for creating custom event widgets
 - **FEAT**: Automatic dimension handling for custom events in day view
 - **FEAT**: Support for custom widgets that properly respect dynamic height and column layouts
 
@@ -24,7 +87,7 @@ VooCalendar(
   eventBuilder: (context, event) => MyCustomWidget(event),
 )
 
-// NEW: eventBuilderWithInfo (recommended for day view)
+// NEW: eventBuilderWithInfo (quick approach)
 VooCalendar(
   eventBuilderWithInfo: (context, event, renderInfo) {
     return SizedBox(
@@ -35,8 +98,8 @@ VooCalendar(
   },
 )
 
-// BEST: Extend BaseCalendarEventWidget
-class MyEventWidget extends BaseCalendarEventWidget {
+// BEST: Extend VooCalendarEventWidget (recommended)
+class MyEventWidget extends VooCalendarEventWidget {
   @override
   Widget buildContent(BuildContext context) {
     return MyCustomWidget(event);
@@ -50,7 +113,7 @@ lib/src/
 ├── domain/entities/
 │   └── voo_calendar_event_render_info.dart (NEW)
 └── presentation/atoms/
-    └── base_calendar_event_widget.dart (NEW)
+    └── voo_calendar_event_widget.dart (NEW)
 ```
 
 #### Use Cases:

@@ -11,5 +11,5 @@ export 'src/advanced_date_time_picker.dart';
 // Domain Entities
 export 'src/domain/entities/voo_calendar_event_render_info.dart';
 
-// Base Widgets for Custom Events
-export 'src/presentation/atoms/base_calendar_event_widget.dart';
+// Custom Event Widgets
+export 'src/presentation/atoms/voo_calendar_event_widget.dart';

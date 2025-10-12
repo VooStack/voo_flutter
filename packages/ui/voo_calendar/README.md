@@ -158,6 +158,225 @@ VooCalendar(
 )
 ```
 
+### Custom Event Widgets
+
+For custom event rendering with proper dimension handling (recommended for day view), extend `VooCalendarEventWidget` or use `eventBuilderWithInfo`.
+
+#### Why Use Custom Event Widgets?
+
+When using custom widgets (like domain-specific UI for meals, workouts, product logs, etc.), you need to ensure they respect the calendar's allocated dimensions. This is especially important for:
+- ✅ Dynamic height layouts (overlapping events stacking correctly)
+- ✅ Column layouts (side-by-side events on desktop)
+- ✅ Mobile vs desktop responsiveness
+
+#### Approach 1: Extending `VooCalendarEventWidget` (Recommended)
+
+Create a reusable custom event widget class by extending `VooCalendarEventWidget`:
+
+```dart
+import 'package:voo_calendar/voo_calendar.dart';
+
+/// Custom event widget for product logs in a nutrition tracking app
+class ProductLogEventWidget extends VooCalendarEventWidget {
+  final ProductLog productLog;
+
+  const ProductLogEventWidget({
+    super.key,
+    required super.event,
+    required super.renderInfo,
+    required this.productLog,
+  });
+
+  @override
+  Widget buildContent(BuildContext context) {
+    // VooCalendarEventWidget automatically handles sizing and overflow protection
+    // You just build your content here
+    return Container(
+      decoration: BoxDecoration(
+        color: event.color?.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: event.color ?? Colors.grey),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              if (event.icon != null) ...[
+                Icon(event.icon, size: 16),
+                const SizedBox(width: 4),
+              ],
+              Expanded(
+                child: Text(
+                  productLog.productName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${productLog.servings} servings • ${productLog.calories} cal',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[700],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+Then use your custom widget in the calendar:
+
+```dart
+VooCalendar(
+  controller: controller,
+  initialView: VooCalendarView.day,
+  eventBuilderWithInfo: (context, event, renderInfo) {
+    final productLog = event.metadata?['productLog'] as ProductLog?;
+    if (productLog == null) return const SizedBox.shrink();
+
+    return ProductLogEventWidget(
+      event: event,
+      renderInfo: renderInfo,
+      productLog: productLog,
+    );
+  },
+  dayViewConfig: const VooDayViewConfig(
+    enableDynamicHeight: true,
+    minEventHeight: 60.0,
+    eventSpacing: 8.0,
+  ),
+)
+```
+
+#### Approach 2: Using `eventBuilderWithInfo` (Quick & Simple)
+
+If you don't want to create a widget class, use `eventBuilderWithInfo` directly:
+
+```dart
+VooCalendar(
+  initialView: VooCalendarView.day,
+  eventBuilderWithInfo: (context, event, renderInfo) {
+    // renderInfo provides:
+    // - allocatedHeight: exact height for this event
+    // - allocatedWidth: exact width (or null for full width)
+    // - isMobile: whether it's mobile layout (<600px)
+    // - isCompact: whether compact mode is enabled
+    // - hourHeight: current hour slot height
+
+    return SizedBox(
+      height: renderInfo.allocatedHeight,
+      width: renderInfo.allocatedWidth,
+      child: YourCustomEventWidget(event: event),
+    );
+  },
+  dayViewConfig: const VooDayViewConfig(
+    enableDynamicHeight: true, // Events auto-stack without overlap
+    enableColumnLayout: true,  // Side-by-side on desktop
+  ),
+)
+```
+
+#### Real-World Example: Nutrition Diary
+
+```dart
+class DiaryPage extends StatefulWidget {
+  const DiaryPage({super.key});
+
+  @override
+  State<DiaryPage> createState() => _DiaryPageState();
+}
+
+class _DiaryPageState extends State<DiaryPage> {
+  late final VooCalendarController _calendarController;
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarController = VooCalendarController(
+      initialDate: DateTime.now(),
+      initialView: VooCalendarView.day,
+    );
+  }
+
+  @override
+  void dispose() {
+    _calendarController.dispose();
+    super.dispose();
+  }
+
+  List<VooCalendarEvent> _convertLogsToEvents(List<ProductLog> logs) {
+    return logs.map((log) {
+      return VooCalendarEvent(
+        id: log.id,
+        title: log.productName,
+        description: '${log.servings} servings',
+        startTime: log.consumedAt,
+        endTime: log.consumedAt.add(const Duration(minutes: 30)),
+        color: _getColorForMealType(log.mealType),
+        icon: _getIconForMealType(log.mealType),
+        metadata: {'productLog': log}, // Store domain object
+      );
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DiaryBloc, DiaryState>(
+      builder: (context, state) {
+        final events = _convertLogsToEvents(state.productLogs);
+        _calendarController.setEvents(events);
+
+        return VooCalendar(
+          controller: _calendarController,
+          initialView: VooCalendarView.day,
+
+          // Use VooCalendarEventWidget for automatic dimension handling
+          eventBuilderWithInfo: (context, event, renderInfo) {
+            final productLog = event.metadata?['productLog'] as ProductLog?;
+            if (productLog == null) return const SizedBox.shrink();
+
+            return ProductLogEventWidget(
+              event: event,
+              renderInfo: renderInfo,
+              productLog: productLog,
+              onTap: () => _editProductLog(productLog),
+            );
+          },
+
+          dayViewConfig: const VooDayViewConfig(
+            hourHeight: 80.0,
+            enableDynamicHeight: true, // Auto-expand hours with multiple events
+            enableColumnLayout: true,  // Side-by-side on desktop
+            minEventHeight: 60.0,      // Minimum height per event
+            eventSpacing: 8.0,         // Space between stacked events
+          ),
+        );
+      },
+    );
+  }
+}
+```
+
+#### Key Benefits
+
+- ✅ **Automatic Sizing**: Your widgets always fit properly
+- ✅ **No Overlap**: Events stack correctly on mobile
+- ✅ **Responsive**: Auto-adapts to mobile vs desktop layouts
+- ✅ **Type-Safe**: Access your domain objects via metadata
+- ✅ **Reusable**: Create widget classes for different event types
+
 ### Year View
 Provides an overview of the entire year with month grids.
 
