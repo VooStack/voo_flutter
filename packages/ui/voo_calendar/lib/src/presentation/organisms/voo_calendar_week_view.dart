@@ -131,18 +131,12 @@ class _VooCalendarWeekViewState extends State<VooCalendarWeekView> {
 
     // Wrap with scrollbar if needed
     if (widget.config.showScrollbar) {
-      content = Scrollbar(
-        controller: _scrollController,
-        child: content,
-      );
+      content = Scrollbar(controller: _scrollController, child: content);
     }
 
     // Apply padding if provided
     if (widget.config.padding != null) {
-      content = Padding(
-        padding: widget.config.padding!,
-        child: content,
-      );
+      content = Padding(padding: widget.config.padding!, child: content);
     }
 
     return content;
