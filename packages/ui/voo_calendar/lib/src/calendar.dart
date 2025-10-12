@@ -4,6 +4,7 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 import 'package:voo_calendar/src/calendar_config.dart';
 import 'package:voo_calendar/src/calendar_theme.dart';
 import 'package:voo_calendar/src/calendar_views.dart';
+import 'package:voo_calendar/src/domain/entities/voo_calendar_event_render_info.dart';
 import 'package:voo_calendar/src/presentation/molecules/calendar_header_widget.dart';
 import 'package:voo_calendar/src/presentation/molecules/calendar_view_switcher_widget.dart';
 
@@ -464,9 +465,17 @@ class VooCalendar extends StatefulWidget {
   )?
   dayBuilder;
 
-  /// Custom event builder
+  /// Custom event builder (legacy - use eventBuilderWithInfo for better layout support)
   final Widget Function(BuildContext context, VooCalendarEvent event)?
   eventBuilder;
+
+  /// Event builder with render info (recommended for day view)
+  /// Provides allocated dimensions and layout context for proper rendering
+  final Widget Function(
+    BuildContext context,
+    VooCalendarEvent event,
+    VooCalendarEventRenderInfo renderInfo,
+  )? eventBuilderWithInfo;
 
   /// Calendar decoration
   final BoxDecoration? decoration;
@@ -522,6 +531,7 @@ class VooCalendar extends StatefulWidget {
     this.onEventTap,
     this.dayBuilder,
     this.eventBuilder,
+    this.eventBuilderWithInfo,
     this.decoration,
     this.theme,
     this.compact = false,
@@ -699,6 +709,7 @@ class _VooCalendarState extends State<VooCalendar> {
         controller: _controller,
         theme: _theme,
         eventBuilder: widget.eventBuilder,
+        eventBuilderWithInfo: widget.eventBuilderWithInfo,
         onEventTap: widget.onEventTap,
         compact: compact,
         config: widget.dayViewConfig ?? const VooDayViewConfig(),

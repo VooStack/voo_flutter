@@ -1,3 +1,71 @@
+## 0.3.2
+
+### ✨ Custom Event Widget Support with Proper Dimension Handling
+
+**New Builder API for Custom Events** - Added proper support for custom event widgets that respect calendar layout dimensions:
+
+#### New Features:
+- **FEAT**: `eventBuilderWithInfo` - New event builder that provides render info (allocated dimensions, layout context)
+- **FEAT**: `VooCalendarEventRenderInfo` - Data class containing allocated height, width, and layout context
+- **FEAT**: `BaseCalendarEventWidget` - Abstract base class for creating custom event widgets
+- **FEAT**: Automatic dimension handling for custom events in day view
+- **FEAT**: Support for custom widgets that properly respect dynamic height and column layouts
+
+#### Problem Solved:
+- **FIX**: Custom event widgets (like `ProductLogListTile`) now work correctly with dynamic height
+- **FIX**: Events with custom builders no longer ignore allocated dimensions
+- **FIX**: Overlapping custom events now stack properly on mobile without overlap
+- **FIX**: Custom widgets respect column layout widths on desktop
+
+#### API Changes:
+```dart
+// OLD: eventBuilder (still works, but doesn't provide dimensions)
+VooCalendar(
+  eventBuilder: (context, event) => MyCustomWidget(event),
+)
+
+// NEW: eventBuilderWithInfo (recommended for day view)
+VooCalendar(
+  eventBuilderWithInfo: (context, event, renderInfo) {
+    return SizedBox(
+      height: renderInfo.allocatedHeight,
+      width: renderInfo.allocatedWidth,
+      child: MyCustomWidget(event),
+    );
+  },
+)
+
+// BEST: Extend BaseCalendarEventWidget
+class MyEventWidget extends BaseCalendarEventWidget {
+  @override
+  Widget buildContent(BuildContext context) {
+    return MyCustomWidget(event);
+  }
+}
+```
+
+#### File Structure (Following Rules.md):
+```
+lib/src/
+├── domain/entities/
+│   └── voo_calendar_event_render_info.dart (NEW)
+└── presentation/atoms/
+    └── base_calendar_event_widget.dart (NEW)
+```
+
+#### Use Cases:
+- Custom event widgets that need proper sizing in day view
+- Product logs, meal entries, workout sessions, etc.
+- Any domain-specific event representation
+- Widgets that need to adapt to mobile vs desktop layouts
+
+### Verification:
+- ✅ All tests pass
+- ✅ Zero lint/analyze issues
+- ✅ Follows rules.md (one class per file, clean architecture)
+- ✅ Backward compatible (old `eventBuilder` still works)
+- ✅ Example implementation provided
+
 ## 0.3.1
 
 ### 🐛 Critical Bug Fixes & Architecture Improvements

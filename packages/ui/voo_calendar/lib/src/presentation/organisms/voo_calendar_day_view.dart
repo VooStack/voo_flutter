@@ -4,6 +4,7 @@ import 'package:voo_ui_core/voo_ui_core.dart';
 import 'package:voo_calendar/src/calendar.dart';
 import 'package:voo_calendar/src/calendar_config.dart';
 import 'package:voo_calendar/src/calendar_theme.dart';
+import 'package:voo_calendar/src/domain/entities/voo_calendar_event_render_info.dart';
 import 'package:voo_calendar/src/presentation/atoms/event_card_widget.dart';
 
 /// Day view for VooCalendar
@@ -12,6 +13,7 @@ class VooCalendarDayView extends StatefulWidget {
   final VooCalendarTheme theme;
   final void Function(VooCalendarEvent event)? onEventTap;
   final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
+  final Widget Function(BuildContext context, VooCalendarEvent event, VooCalendarEventRenderInfo renderInfo)? eventBuilderWithInfo;
   final bool compact;
 
   /// Configuration for day view customization
@@ -23,6 +25,7 @@ class VooCalendarDayView extends StatefulWidget {
     required this.theme,
     this.onEventTap,
     this.eventBuilder,
+    this.eventBuilderWithInfo,
     required this.compact,
     this.config = const VooDayViewConfig(),
   });
@@ -444,30 +447,41 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                           rightPadding = 0; // Right padding is handled by width
                         }
 
-                        if (widget.eventBuilder != null) {
-                          return Positioned(
-                            top: topOffset + config.eventTopPadding,
-                            left: leftPadding,
-                            right: width == null ? rightPadding : null,
-                            width: width,
-                            height: eventHeight - config.eventTopPadding - config.eventBottomPadding,
-                            child: widget.eventBuilder!(context, event),
+                        final allocatedHeight = eventHeight - config.eventTopPadding - config.eventBottomPadding;
+                        final allocatedWidth = width;
+
+                        // Create render info for the event
+                        final renderInfo = VooCalendarEventRenderInfo(
+                          allocatedHeight: allocatedHeight,
+                          allocatedWidth: allocatedWidth,
+                          isCompact: widget.compact,
+                          isMobile: isMobile,
+                          hourHeight: hourHeight,
+                        );
+
+                        // Use eventBuilderWithInfo if provided (recommended), otherwise fall back to eventBuilder
+                        Widget eventWidget;
+                        if (widget.eventBuilderWithInfo != null) {
+                          eventWidget = widget.eventBuilderWithInfo!(context, event, renderInfo);
+                        } else if (widget.eventBuilder != null) {
+                          eventWidget = widget.eventBuilder!(context, event);
+                        } else {
+                          eventWidget = EventCardWidget(
+                            event: event,
+                            theme: widget.theme,
+                            onTap: () => widget.onEventTap?.call(event),
+                            compact: widget.compact,
+                            allocatedHeight: allocatedHeight,
                           );
                         }
-                        final allocatedHeight = eventHeight - config.eventTopPadding - config.eventBottomPadding;
+
                         return Positioned(
                           top: topOffset + config.eventTopPadding,
                           left: leftPadding,
                           right: width == null ? rightPadding : null,
                           width: width,
                           height: allocatedHeight,
-                          child: EventCardWidget(
-                            event: event,
-                            theme: widget.theme,
-                            onTap: () => widget.onEventTap?.call(event),
-                            compact: widget.compact,
-                            allocatedHeight: allocatedHeight,
-                          ),
+                          child: eventWidget,
                         );
                       }),
                     ],
