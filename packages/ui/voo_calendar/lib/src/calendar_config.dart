@@ -72,17 +72,9 @@ class VooDayViewConfig {
   /// Spacing between stacked events when using dynamic height (default: 8.0)
   final double eventSpacing;
 
-  /// Left padding for events to prevent overlap with time labels (default: 8.0)
-  final double eventLeftPadding;
-
-  /// Right padding for events to prevent overlap with trailing builders (default: 8.0)
-  final double eventRightPadding;
-
-  /// Top padding for events within hour slots (default: 4.0)
-  final double eventTopPadding;
-
-  /// Bottom padding for events within hour slots (default: 4.0)
-  final double eventBottomPadding;
+  /// Padding for events within hour slots
+  /// Default: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0)
+  final EdgeInsets eventPadding;
 
   /// Minimum gap between events when multiple events are in the same hour (default: 4.0)
   final double eventHorizontalGap;
@@ -113,6 +105,10 @@ class VooDayViewConfig {
   /// Padding around the day view content
   final EdgeInsetsGeometry? padding;
 
+  /// Scroll padding for the scrollable area
+  /// Adds padding to the scroll viewport edges
+  final EdgeInsets? scrollPadding;
+
   const VooDayViewConfig({
     this.hourLineTrailingBuilder,
     this.hourLineLeadingBuilder,
@@ -132,16 +128,14 @@ class VooDayViewConfig {
     this.eventHeightBuilder,
     this.minEventHeight = 80.0,
     this.eventSpacing = 8.0,
-    this.eventLeftPadding = 8.0,
-    this.eventRightPadding = 8.0,
-    this.eventTopPadding = 4.0,
-    this.eventBottomPadding = 4.0,
+    this.eventPadding = const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
     this.eventHorizontalGap = 4.0,
     this.enableColumnLayout = true,
     this.trailingBuilderWidth = 0.0,
     this.scrollController,
     this.showScrollbar = false,
     this.padding,
+    this.scrollPadding,
   });
 
   /// Create a copy with modified properties
@@ -164,16 +158,14 @@ class VooDayViewConfig {
     double Function(VooCalendarEvent event)? eventHeightBuilder,
     double? minEventHeight,
     double? eventSpacing,
-    double? eventLeftPadding,
-    double? eventRightPadding,
-    double? eventTopPadding,
-    double? eventBottomPadding,
+    EdgeInsets? eventPadding,
     double? eventHorizontalGap,
     bool? enableColumnLayout,
     double? trailingBuilderWidth,
     ScrollController? scrollController,
     bool? showScrollbar,
     EdgeInsetsGeometry? padding,
+    EdgeInsets? scrollPadding,
   }) {
     return VooDayViewConfig(
       hourLineTrailingBuilder: hourLineTrailingBuilder ?? this.hourLineTrailingBuilder,
@@ -194,16 +186,14 @@ class VooDayViewConfig {
       eventHeightBuilder: eventHeightBuilder ?? this.eventHeightBuilder,
       minEventHeight: minEventHeight ?? this.minEventHeight,
       eventSpacing: eventSpacing ?? this.eventSpacing,
-      eventLeftPadding: eventLeftPadding ?? this.eventLeftPadding,
-      eventRightPadding: eventRightPadding ?? this.eventRightPadding,
-      eventTopPadding: eventTopPadding ?? this.eventTopPadding,
-      eventBottomPadding: eventBottomPadding ?? this.eventBottomPadding,
+      eventPadding: eventPadding ?? this.eventPadding,
       eventHorizontalGap: eventHorizontalGap ?? this.eventHorizontalGap,
       enableColumnLayout: enableColumnLayout ?? this.enableColumnLayout,
       trailingBuilderWidth: trailingBuilderWidth ?? this.trailingBuilderWidth,
       scrollController: scrollController ?? this.scrollController,
       showScrollbar: showScrollbar ?? this.showScrollbar,
       padding: padding ?? this.padding,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
     );
   }
 }
@@ -257,6 +247,10 @@ class VooWeekViewConfig {
   /// Padding around the week view content
   final EdgeInsetsGeometry? padding;
 
+  /// Scroll padding for the scrollable area
+  /// Adds padding to the scroll viewport edges
+  final EdgeInsets? scrollPadding;
+
   const VooWeekViewConfig({
     this.hourHeight,
     this.scrollPhysics,
@@ -269,6 +263,7 @@ class VooWeekViewConfig {
     this.scrollController,
     this.showScrollbar = false,
     this.padding,
+    this.scrollPadding,
   });
 
   /// Create a copy with modified properties
@@ -284,6 +279,7 @@ class VooWeekViewConfig {
     ScrollController? scrollController,
     bool? showScrollbar,
     EdgeInsetsGeometry? padding,
+    EdgeInsets? scrollPadding,
   }) {
     return VooWeekViewConfig(
       hourHeight: hourHeight ?? this.hourHeight,
@@ -297,6 +293,7 @@ class VooWeekViewConfig {
       scrollController: scrollController ?? this.scrollController,
       showScrollbar: showScrollbar ?? this.showScrollbar,
       padding: padding ?? this.padding,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
     );
   }
 }
@@ -347,6 +344,10 @@ class VooMonthViewConfig {
   /// Padding around the month view content
   final EdgeInsetsGeometry? padding;
 
+  /// Scroll padding for the scrollable area
+  /// Adds padding to the scroll viewport edges
+  final EdgeInsets? scrollPadding;
+
   const VooMonthViewConfig({
     this.showWeekNumbers = false,
     this.firstDayOfWeek = 1,
@@ -358,6 +359,7 @@ class VooMonthViewConfig {
     this.scrollController,
     this.showScrollbar = false,
     this.padding,
+    this.scrollPadding,
   });
 
   /// Create a copy with modified properties
@@ -372,6 +374,7 @@ class VooMonthViewConfig {
     ScrollController? scrollController,
     bool? showScrollbar,
     EdgeInsetsGeometry? padding,
+    EdgeInsets? scrollPadding,
   }) {
     return VooMonthViewConfig(
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
@@ -384,6 +387,7 @@ class VooMonthViewConfig {
       scrollController: scrollController ?? this.scrollController,
       showScrollbar: showScrollbar ?? this.showScrollbar,
       padding: padding ?? this.padding,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
     );
   }
 }
@@ -406,12 +410,17 @@ class VooYearViewConfig {
   /// Padding around the year view content
   final EdgeInsetsGeometry? padding;
 
+  /// Scroll padding for the scrollable area
+  /// Adds padding to the scroll viewport edges
+  final EdgeInsets? scrollPadding;
+
   const VooYearViewConfig({
     this.columns = 4,
     this.showEventIndicators = true,
     this.scrollController,
     this.showScrollbar = false,
     this.padding,
+    this.scrollPadding,
   });
 
   /// Create a copy with modified properties
@@ -421,6 +430,7 @@ class VooYearViewConfig {
     ScrollController? scrollController,
     bool? showScrollbar,
     EdgeInsetsGeometry? padding,
+    EdgeInsets? scrollPadding,
   }) {
     return VooYearViewConfig(
       columns: columns ?? this.columns,
@@ -428,6 +438,7 @@ class VooYearViewConfig {
       scrollController: scrollController ?? this.scrollController,
       showScrollbar: showScrollbar ?? this.showScrollbar,
       padding: padding ?? this.padding,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
     );
   }
 }
@@ -453,6 +464,10 @@ class VooScheduleViewConfig {
   /// Padding around the schedule view content
   final EdgeInsetsGeometry? padding;
 
+  /// Scroll padding for the scrollable area
+  /// Adds padding to the scroll viewport edges
+  final EdgeInsets? scrollPadding;
+
   const VooScheduleViewConfig({
     this.showDateHeaders = true,
     this.showEventIcons = true,
@@ -460,6 +475,7 @@ class VooScheduleViewConfig {
     this.scrollController,
     this.showScrollbar = false,
     this.padding,
+    this.scrollPadding,
   });
 
   /// Create a copy with modified properties
@@ -470,6 +486,7 @@ class VooScheduleViewConfig {
     ScrollController? scrollController,
     bool? showScrollbar,
     EdgeInsetsGeometry? padding,
+    EdgeInsets? scrollPadding,
   }) {
     return VooScheduleViewConfig(
       showDateHeaders: showDateHeaders ?? this.showDateHeaders,
@@ -478,6 +495,7 @@ class VooScheduleViewConfig {
       scrollController: scrollController ?? this.scrollController,
       showScrollbar: showScrollbar ?? this.showScrollbar,
       padding: padding ?? this.padding,
+      scrollPadding: scrollPadding ?? this.scrollPadding,
     );
   }
 }

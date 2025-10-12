@@ -161,6 +161,21 @@ class _VooCalendarScheduleViewState extends State<VooCalendarScheduleView> {
       );
     }
 
+    // Apply scroll padding if provided
+    if (widget.config.scrollPadding != null) {
+      listView = MediaQuery.removePadding(
+        context: context,
+        removeTop: false,
+        removeBottom: false,
+        removeLeft: false,
+        removeRight: false,
+        child: Padding(
+          padding: widget.config.scrollPadding!,
+          child: listView,
+        ),
+      );
+    }
+
     return listView;
   }
 

@@ -139,6 +139,21 @@ class _VooCalendarWeekViewState extends State<VooCalendarWeekView> {
       content = Padding(padding: widget.config.padding!, child: content);
     }
 
+    // Apply scroll padding if provided
+    if (widget.config.scrollPadding != null) {
+      content = MediaQuery.removePadding(
+        context: context,
+        removeTop: false,
+        removeBottom: false,
+        removeLeft: false,
+        removeRight: false,
+        child: Padding(
+          padding: widget.config.scrollPadding!,
+          child: content,
+        ),
+      );
+    }
+
     return content;
   }
 

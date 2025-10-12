@@ -205,6 +205,21 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
       );
     }
 
+    // Apply scroll padding if provided
+    if (widget.config.scrollPadding != null) {
+      scrollableGrid = MediaQuery.removePadding(
+        context: context,
+        removeTop: false,
+        removeBottom: false,
+        removeLeft: false,
+        removeRight: false,
+        child: Padding(
+          padding: widget.config.scrollPadding!,
+          child: scrollableGrid,
+        ),
+      );
+    }
+
     return Column(
       children: [
         // Weekday headers

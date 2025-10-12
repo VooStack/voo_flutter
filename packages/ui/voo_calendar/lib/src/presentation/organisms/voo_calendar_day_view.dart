@@ -161,7 +161,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
         // Add spacing between events
         final totalSpacing = ((eventsInHour.length - 1) * eventSpacing);
         // Add padding buffer
-        final paddingBuffer = widget.config.eventTopPadding + widget.config.eventBottomPadding;
+        final paddingBuffer = widget.config.eventPadding.top + widget.config.eventPadding.bottom;
         final requiredHeight = totalHeight + totalSpacing + paddingBuffer;
 
         // Use the maximum of base height and required height
@@ -432,8 +432,8 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                         }
 
                         // Calculate proper left and right padding to avoid overlaps
-                        double leftPadding = config.eventLeftPadding;
-                        double rightPadding = config.eventRightPadding + config.trailingBuilderWidth;
+                        double leftPadding = config.eventPadding.left;
+                        double rightPadding = config.eventPadding.right + config.trailingBuilderWidth;
                         double? width;
 
                         // Apply column layout if enabled
@@ -457,7 +457,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                           rightPadding = 0; // Right padding is handled by width
                         }
 
-                        final allocatedHeight = eventHeight - config.eventTopPadding - config.eventBottomPadding;
+                        final allocatedHeight = eventHeight - config.eventPadding.top - config.eventPadding.bottom;
                         final allocatedWidth = width;
 
                         // Create render info for the event
@@ -492,7 +492,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                         }
 
                         return Positioned(
-                          top: topOffset + config.eventTopPadding,
+                          top: topOffset + config.eventPadding.top,
                           left: leftPadding,
                           right: width == null ? rightPadding : null,
                           width: width,
@@ -521,6 +521,21 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
           scrollView = Padding(
             padding: config.padding!,
             child: scrollView,
+          );
+        }
+
+        // Apply scroll padding if provided
+        if (config.scrollPadding != null) {
+          scrollView = MediaQuery.removePadding(
+            context: context,
+            removeTop: false,
+            removeBottom: false,
+            removeLeft: false,
+            removeRight: false,
+            child: Padding(
+              padding: config.scrollPadding!,
+              child: scrollView,
+            ),
           );
         }
 
