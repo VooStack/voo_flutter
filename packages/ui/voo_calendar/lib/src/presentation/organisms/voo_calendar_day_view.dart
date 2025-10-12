@@ -118,16 +118,15 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
     return '${hour.toString().padLeft(2, '0')}:00';
   }
 
-  /// Calculate dynamic height for each hour based on events
+  /// Calculate dynamic height for each hour based on events that START in that hour
   Map<int, double> _calculateDynamicHeights(List<int> hours, List<VooCalendarEvent> events, double baseHourHeight, double minEventHeight, double eventSpacing) {
     final Map<int, double> hourHeights = {};
 
     for (final hour in hours) {
-      // Get all events in this hour
+      // Get all events that START in this hour (not just overlap with it)
       final eventsInHour = events.where((event) {
         final eventStartHour = event.startTime.hour;
-        final eventEndHour = event.endTime.hour;
-        return hour >= eventStartHour && hour <= eventEndHour;
+        return eventStartHour == hour;
       }).toList();
 
       if (eventsInHour.isEmpty) {

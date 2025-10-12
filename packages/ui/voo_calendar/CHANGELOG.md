@@ -1,3 +1,26 @@
+## 0.6.1
+
+### 🐛 Bug Fixes
+
+**Dynamic Height Calculation** - Fixed unnecessary hour expansion that created empty space:
+
+#### Fixed Issues:
+- **FIX**: Dynamic height now only expands hours where events START, not all hours events overlap with
+  - **Before**: An event from 12:00-12:45 would expand hours 12, 13, and 14
+  - **After**: Only hour 12 is expanded (where the event starts)
+  - **Result**: Eliminated unnecessary empty space in hours between events
+
+#### Technical Details:
+- Changed `_calculateDynamicHeights` to check `eventStartHour == hour` instead of `hour >= eventStartHour && hour <= eventEndHour`
+- Hours that events merely pass through are no longer expanded
+- Only hours with events starting in them receive dynamic height adjustment
+
+### Verification:
+- ✅ All 12 tests passing
+- ✅ Zero lint warnings
+- ✅ No more large gaps in empty hours
+- ✅ Events still stack correctly with proper spacing
+
 ## 0.6.0
 
 ### 🎨 Enhanced Event Height Customization
@@ -82,6 +105,7 @@ VooCalendar(
 - **FEAT**: Added `eventHeightBuilder` field to `VooDayViewConfig`, `VooWeekViewConfig`, and `VooMonthViewConfig` (calendar_config.dart:60-75, 225-237, 296-308)
 - **FEAT**: Day view now calls `config.eventHeightBuilder?.call(event) ?? config.minEventHeight` for height calculation (voo_calendar_day_view.dart:143, 150)
 - **REMOVE**: Removed `enableDynamicHeight` parameter from all config classes and legacy constructors
+- **FIX**: Changed `_calculateDynamicHeights` to check `eventStartHour == hour` instead of `hour >= eventStartHour && hour <= eventEndHour`
 - **IMPROVE**: Updated documentation with comprehensive examples showing type-based height decisions
 - **IMPROVE**: All tests updated to remove `enableDynamicHeight` parameter
 
