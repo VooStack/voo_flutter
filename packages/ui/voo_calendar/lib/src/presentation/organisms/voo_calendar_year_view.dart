@@ -60,11 +60,22 @@ class _VooCalendarYearViewState extends State<VooCalendarYearView> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
+    final textDirection = Directionality.of(context);
     final year = widget.controller.focusedDate.year;
+
+    // Merge padding with scrollPadding
+    final basePadding = (widget.config.padding ?? EdgeInsets.all(design.spacingLg)).resolve(textDirection);
+    final scrollPadding = (widget.config.scrollPadding ?? EdgeInsets.zero).resolve(textDirection);
+    final combinedPadding = EdgeInsets.only(
+      left: basePadding.left + scrollPadding.left,
+      right: basePadding.right + scrollPadding.right,
+      top: basePadding.top + scrollPadding.top,
+      bottom: basePadding.bottom + scrollPadding.bottom,
+    );
 
     Widget gridView = GridView.builder(
       controller: _scrollController,
-      padding: widget.config.padding ?? EdgeInsets.all(design.spacingLg),
+      padding: combinedPadding,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: widget.compact ? 3 : 4,
         mainAxisSpacing: design.spacingMd,
@@ -117,21 +128,6 @@ class _VooCalendarYearViewState extends State<VooCalendarYearView> {
       gridView = Scrollbar(
         controller: _scrollController,
         child: gridView,
-      );
-    }
-
-    // Apply scroll padding if provided
-    if (widget.config.scrollPadding != null) {
-      gridView = MediaQuery.removePadding(
-        context: context,
-        removeTop: false,
-        removeBottom: false,
-        removeLeft: false,
-        removeRight: false,
-        child: Padding(
-          padding: widget.config.scrollPadding!,
-          child: gridView,
-        ),
       );
     }
 

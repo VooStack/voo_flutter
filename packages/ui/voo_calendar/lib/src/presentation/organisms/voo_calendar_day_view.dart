@@ -322,221 +322,208 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
         // Always use dynamic heights for total calculation
         final totalHeight = hourHeights.values.reduce((a, b) => a + b);
 
+        // Add scroll padding to total height if provided
+        final scrollPaddingTop = config.scrollPadding?.top ?? 0.0;
+        final scrollPaddingBottom = config.scrollPadding?.bottom ?? 0.0;
+        // final totalHeightWithPadding = totalHeight + scrollPaddingTop + scrollPaddingBottom;
+
         Widget scrollView = SingleChildScrollView(
           controller: _scrollController,
           physics: config.scrollPhysics,
-          child: SizedBox(
-            height: totalHeight,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Time column with leading builders
-                if (config.showTimeLabels)
-                  SizedBox(
-                    width: timeColumnWidth,
-                    child: Column(
-                      children: hours.map((hour) {
-                        final height = hourHeights[hour] ?? hourHeight;
-                        return Container(
-                          height: height,
-                          padding: EdgeInsets.only(right: design.spacingXs),
-                          alignment: Alignment.topRight,
-                          child: Transform.translate(
-                            offset: const Offset(0, -2),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (config.hourLineLeadingBuilder != null)
-                                  Padding(
-                                    padding: EdgeInsets.only(right: design.spacingXs),
-                                    child: config.hourLineLeadingBuilder!(context, hour),
-                                  ),
-                                Flexible(
-                                  child: Text(
-                                    timeFormatter(hour),
-                                    style: widget.theme.timeTextStyle.copyWith(fontSize: widget.compact ? 10 : 11, height: 1.0),
-                                    overflow: TextOverflow.clip,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                // Day content
-                Expanded(
-                  child: Stack(
-                    children: [
-                      // Hour grid
-                      Column(
-                        children: hours.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final hour = entry.value;
+          child: Padding(
+            padding: EdgeInsets.only(top: scrollPaddingTop, bottom: scrollPaddingBottom),
+            child: SizedBox(
+              height: totalHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Time column with leading builders
+                  if (config.showTimeLabels)
+                    SizedBox(
+                      width: timeColumnWidth,
+                      child: Column(
+                        children: hours.map((hour) {
                           final height = hourHeights[hour] ?? hourHeight;
-                          final lineColor = config.hourLineColor ?? theme.gridLineColor;
-                          final lineThickness = config.hourLineThickness ?? 0.5;
-
-                          return InkWell(
-                            onTap: config.onHourLineTap != null ? () => config.onHourLineTap!(hour) : null,
-                            child: Container(
-                              height: height,
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(color: lineColor, width: index == hours.length - 1 ? 0 : lineThickness),
-                                ),
+                          return Container(
+                            height: height,
+                            padding: EdgeInsets.only(right: design.spacingXs),
+                            alignment: Alignment.topRight,
+                            child: Transform.translate(
+                              offset: const Offset(0, -2),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (config.hourLineLeadingBuilder != null)
+                                    Padding(
+                                      padding: EdgeInsets.only(right: design.spacingXs),
+                                      child: config.hourLineLeadingBuilder!(context, hour),
+                                    ),
+                                  Flexible(
+                                    child: Text(
+                                      timeFormatter(hour),
+                                      style: widget.theme.timeTextStyle.copyWith(fontSize: widget.compact ? 10 : 11, height: 1.0),
+                                      overflow: TextOverflow.clip,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: config.hourLineTrailingBuilder != null
-                                  ? Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(right: design.spacingXs),
-                                        child: config.hourLineTrailingBuilder!(context, hour),
-                                      ),
-                                    )
-                                  : null,
                             ),
                           );
                         }).toList(),
                       ),
-                      // Events
-                      ...events.map((event) {
-                        // Calculate position based on visible hours
-                        final eventHour = event.startTime.hour;
-                        final hourIndex = hours.indexOf(eventHour);
-                        if (hourIndex == -1) return const SizedBox.shrink();
+                    ),
+                  // Day content
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        // Hour grid
+                        Column(
+                          children: hours.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final hour = entry.value;
+                            final height = hourHeights[hour] ?? hourHeight;
+                            final lineColor = config.hourLineColor ?? theme.gridLineColor;
+                            final lineThickness = config.hourLineThickness ?? 0.5;
 
-                        // ✨ Calculate position with automatic dynamic heights
-                        // Calculate cumulative offset for dynamic heights
-                        double topOffset = 0;
-                        for (int i = 0; i < hourIndex; i++) {
-                          topOffset += hourHeights[hours[i]] ?? hourHeight;
-                        }
+                            return InkWell(
+                              onTap: config.onHourLineTap != null ? () => config.onHourLineTap!(hour) : null,
+                              child: Container(
+                                height: height,
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(color: lineColor, width: index == hours.length - 1 ? 0 : lineThickness),
+                                  ),
+                                ),
+                                child: config.hourLineTrailingBuilder != null
+                                    ? Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: design.spacingXs),
+                                          child: config.hourLineTrailingBuilder!(context, hour),
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        // Events
+                        ...events.map((event) {
+                          // Calculate position based on visible hours
+                          final eventHour = event.startTime.hour;
+                          final hourIndex = hours.indexOf(eventHour);
+                          if (hourIndex == -1) return const SizedBox.shrink();
 
-                        // ✨ Use eventHeightBuilder if provided, otherwise use minEventHeight
-                        final baseEventHeight = config.eventHeightBuilder?.call(event) ?? config.minEventHeight;
+                          // ✨ Calculate position with automatic dynamic heights
+                          // Calculate cumulative offset for dynamic heights
+                          double topOffset = 0;
+                          for (int i = 0; i < hourIndex; i++) {
+                            topOffset += hourHeights[hours[i]] ?? hourHeight;
+                          }
 
-                        double eventHeight;
-                        if (!shouldUseColumnLayout) {
-                          // Vertical stacking: use pre-calculated stack position
-                          final stackPosition = eventStackPositions[event] ?? 0;
-                          final stackOffset = stackPosition * (baseEventHeight + config.eventSpacing);
-                          topOffset += stackOffset;
+                          // ✨ Use eventHeightBuilder if provided, otherwise use minEventHeight
+                          final baseEventHeight = config.eventHeightBuilder?.call(event) ?? config.minEventHeight;
 
-                          // Use the calculated height from builder or default
-                          eventHeight = baseEventHeight;
-                        } else {
-                          // Column layout: use calculated height from builder or minimum event height
-                          eventHeight = baseEventHeight;
-                        }
+                          double eventHeight;
+                          if (!shouldUseColumnLayout) {
+                            // Vertical stacking: use pre-calculated stack position
+                            final stackPosition = eventStackPositions[event] ?? 0;
+                            final stackOffset = stackPosition * (baseEventHeight + config.eventSpacing);
+                            topOffset += stackOffset;
 
-                        // Calculate proper left and right padding to avoid overlaps
-                        double leftPadding = config.eventPadding.left;
-                        double rightPadding = config.eventPadding.right + config.trailingBuilderWidth;
-                        double? width;
+                            // Use the calculated height from builder or default
+                            eventHeight = baseEventHeight;
+                          } else {
+                            // Column layout: use calculated height from builder or minimum event height
+                            eventHeight = baseEventHeight;
+                          }
 
-                        // Apply column layout if enabled
-                        if (eventLayouts != null && eventLayouts.containsKey(event)) {
-                          final layout = eventLayouts[event]!;
-                          final totalColumns = layout.totalColumns;
-                          final column = layout.column;
+                          // Calculate proper left and right padding to avoid overlaps
+                          double leftPadding = config.eventPadding.left;
+                          double rightPadding = config.eventPadding.right + config.trailingBuilderWidth;
+                          double? width;
 
-                          // Calculate available width
-                          final availableWidth = constraints.maxWidth - (config.showTimeLabels ? (config.timeColumnWidth ?? (widget.compact ? 50.0 : 60.0)) : 0);
+                          // Apply column layout if enabled
+                          if (eventLayouts != null && eventLayouts.containsKey(event)) {
+                            final layout = eventLayouts[event]!;
+                            final totalColumns = layout.totalColumns;
+                            final column = layout.column;
 
-                          // Calculate column width (subtract padding and gaps)
-                          final totalHorizontalPadding = leftPadding + rightPadding;
-                          final totalGaps = (totalColumns - 1) * config.eventHorizontalGap;
-                          final usableWidth = availableWidth - totalHorizontalPadding - totalGaps;
-                          final columnWidth = usableWidth / totalColumns;
+                            // Calculate available width
+                            final availableWidth = constraints.maxWidth - (config.showTimeLabels ? (config.timeColumnWidth ?? (widget.compact ? 50.0 : 60.0)) : 0);
 
-                          // Calculate left position for this column
-                          leftPadding = leftPadding + (column * columnWidth) + (column * config.eventHorizontalGap);
-                          width = columnWidth;
-                          rightPadding = 0; // Right padding is handled by width
-                        }
+                            // Calculate column width (subtract padding and gaps)
+                            final totalHorizontalPadding = leftPadding + rightPadding;
+                            final totalGaps = (totalColumns - 1) * config.eventHorizontalGap;
+                            final usableWidth = availableWidth - totalHorizontalPadding - totalGaps;
+                            final columnWidth = usableWidth / totalColumns;
 
-                        final allocatedHeight = eventHeight - config.eventPadding.top - config.eventPadding.bottom;
-                        final allocatedWidth = width;
+                            // Calculate left position for this column
+                            leftPadding = leftPadding + (column * columnWidth) + (column * config.eventHorizontalGap);
+                            width = columnWidth;
+                            rightPadding = 0; // Right padding is handled by width
+                          }
 
-                        // Create render info for the event
-                        final renderInfo = VooCalendarEventRenderInfo(
-                          allocatedHeight: allocatedHeight,
-                          allocatedWidth: allocatedWidth,
-                          isCompact: widget.compact,
-                          isMobile: isMobile,
-                          hourHeight: hourHeight,
-                        );
+                          final allocatedHeight = eventHeight - config.eventPadding.top - config.eventPadding.bottom;
+                          final allocatedWidth = width;
 
-                        // Automatically detect and handle custom child widgets
-                        Widget eventWidget;
-                        if (widget.eventBuilderWithInfo != null) {
-                          // User provided custom builder with render info
-                          eventWidget = widget.eventBuilderWithInfo!(context, event, renderInfo);
-                        } else if (widget.eventBuilder != null) {
-                          // User provided simple custom builder
-                          eventWidget = widget.eventBuilder!(context, event);
-                        } else if (event.child != null) {
-                          // ✨ AUTO-MAGIC: Event has custom child widget - wrap it with proper constraints
-                          eventWidget = VooCalendarEventWidget(event: event, renderInfo: renderInfo, builder: (context, event, renderInfo) => event.child!);
-                        } else {
-                          // Default: Use standard event card
-                          eventWidget = EventCardWidget(
-                            event: event,
-                            theme: widget.theme,
-                            onTap: () => widget.onEventTap?.call(event),
-                            compact: widget.compact,
+                          // Create render info for the event
+                          final renderInfo = VooCalendarEventRenderInfo(
                             allocatedHeight: allocatedHeight,
+                            allocatedWidth: allocatedWidth,
+                            isCompact: widget.compact,
+                            isMobile: isMobile,
+                            hourHeight: hourHeight,
                           );
-                        }
 
-                        return Positioned(
-                          top: topOffset + config.eventPadding.top,
-                          left: leftPadding,
-                          right: width == null ? rightPadding : null,
-                          width: width,
-                          height: allocatedHeight,
-                          child: eventWidget,
-                        );
-                      }),
-                    ],
+                          // Automatically detect and handle custom child widgets
+                          Widget eventWidget;
+                          if (widget.eventBuilderWithInfo != null) {
+                            // User provided custom builder with render info
+                            eventWidget = widget.eventBuilderWithInfo!(context, event, renderInfo);
+                          } else if (widget.eventBuilder != null) {
+                            // User provided simple custom builder
+                            eventWidget = widget.eventBuilder!(context, event);
+                          } else if (event.child != null) {
+                            // ✨ AUTO-MAGIC: Event has custom child widget - wrap it with proper constraints
+                            eventWidget = VooCalendarEventWidget(event: event, renderInfo: renderInfo, builder: (context, event, renderInfo) => event.child!);
+                          } else {
+                            // Default: Use standard event card
+                            eventWidget = EventCardWidget(
+                              event: event,
+                              theme: widget.theme,
+                              onTap: () => widget.onEventTap?.call(event),
+                              compact: widget.compact,
+                              allocatedHeight: allocatedHeight,
+                            );
+                          }
+
+                          return Positioned(
+                            top: topOffset + config.eventPadding.top,
+                            left: leftPadding,
+                            right: width == null ? rightPadding : null,
+                            width: width,
+                            height: allocatedHeight,
+                            child: eventWidget,
+                          );
+                        }),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
 
         // Wrap with scrollbar if needed
         if (config.showScrollbar) {
-          scrollView = Scrollbar(
-            controller: _scrollController,
-            child: scrollView,
-          );
+          scrollView = Scrollbar(controller: _scrollController, child: scrollView);
         }
 
         // Apply padding if provided
         if (config.padding != null) {
-          scrollView = Padding(
-            padding: config.padding!,
-            child: scrollView,
-          );
-        }
-
-        // Apply scroll padding if provided
-        if (config.scrollPadding != null) {
-          scrollView = MediaQuery.removePadding(
-            context: context,
-            removeTop: false,
-            removeBottom: false,
-            removeLeft: false,
-            removeRight: false,
-            child: Padding(
-              padding: config.scrollPadding!,
-              child: scrollView,
-            ),
-          );
+          scrollView = Padding(padding: config.padding!, child: scrollView);
         }
 
         return scrollView;

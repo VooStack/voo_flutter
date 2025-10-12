@@ -65,6 +65,7 @@ class _VooCalendarScheduleViewState extends State<VooCalendarScheduleView> {
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
+    final textDirection = Directionality.of(context);
 
     // Group events by date
     final Map<DateTime, List<VooCalendarEvent>> eventsByDate = {};
@@ -88,9 +89,19 @@ class _VooCalendarScheduleViewState extends State<VooCalendarScheduleView> {
       );
     }
 
+    // Merge padding with scrollPadding
+    final basePadding = (widget.config.padding ?? EdgeInsets.all(design.spacingMd)).resolve(textDirection);
+    final scrollPadding = (widget.config.scrollPadding ?? EdgeInsets.zero).resolve(textDirection);
+    final combinedPadding = EdgeInsets.only(
+      left: basePadding.left + scrollPadding.left,
+      right: basePadding.right + scrollPadding.right,
+      top: basePadding.top + scrollPadding.top,
+      bottom: basePadding.bottom + scrollPadding.bottom,
+    );
+
     Widget listView = ListView.builder(
       controller: _scrollController,
-      padding: widget.config.padding ?? EdgeInsets.all(design.spacingMd),
+      padding: combinedPadding,
       itemCount: sortedDates.length,
       itemBuilder: (context, index) {
         final date = sortedDates[index];
@@ -158,21 +169,6 @@ class _VooCalendarScheduleViewState extends State<VooCalendarScheduleView> {
       listView = Scrollbar(
         controller: _scrollController,
         child: listView,
-      );
-    }
-
-    // Apply scroll padding if provided
-    if (widget.config.scrollPadding != null) {
-      listView = MediaQuery.removePadding(
-        context: context,
-        removeTop: false,
-        removeBottom: false,
-        removeLeft: false,
-        removeRight: false,
-        child: Padding(
-          padding: widget.config.scrollPadding!,
-          child: listView,
-        ),
       );
     }
 

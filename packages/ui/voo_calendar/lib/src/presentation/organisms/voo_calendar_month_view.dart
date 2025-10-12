@@ -118,63 +118,74 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
     }
 
     final gestureConfig = widget.gestureConfig ?? const VooCalendarGestureConfig();
+    final textDirection = Directionality.of(context);
+
+    // Merge padding with scrollPadding
+    final basePadding = (widget.config.padding ?? EdgeInsets.all(design.spacingMd)).resolve(textDirection);
+    final scrollPadding = (widget.config.scrollPadding ?? EdgeInsets.zero).resolve(textDirection);
+    final combinedPadding = EdgeInsets.only(
+      left: basePadding.left + scrollPadding.left,
+      right: basePadding.right + scrollPadding.right,
+      top: basePadding.top + scrollPadding.top,
+      bottom: basePadding.bottom + scrollPadding.bottom,
+    );
 
     Widget gridView = GridView.builder(
-              controller: _scrollController,
-              padding: widget.config.padding ?? EdgeInsets.all(design.spacingMd),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: widget.showWeekNumbers ? 8 : 7,
-                mainAxisSpacing: design.spacingXs,
-                crossAxisSpacing: design.spacingXs,
-                childAspectRatio: widget.compact ? 1.2 : 1.0,
-              ),
-              itemCount: daysToShow + (widget.showWeekNumbers ? weeksToShow : 0),
-              itemBuilder: (context, index) {
-                if (widget.showWeekNumbers && index % 8 == 0) {
-                  // Week number cell
-                  final weekIndex = index ~/ 8;
-                  final weekDate = firstDateToShow.add(Duration(days: weekIndex * 7));
-                  return WeekNumberWidget(weekNumber: _getWeekNumber(weekDate), theme: widget.theme);
-                }
+      controller: _scrollController,
+      padding: combinedPadding,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: widget.showWeekNumbers ? 8 : 7,
+        mainAxisSpacing: design.spacingXs,
+        crossAxisSpacing: design.spacingXs,
+        childAspectRatio: widget.compact ? 1.2 : 1.0,
+      ),
+      itemCount: daysToShow + (widget.showWeekNumbers ? weeksToShow : 0),
+      itemBuilder: (context, index) {
+        if (widget.showWeekNumbers && index % 8 == 0) {
+          // Week number cell
+          final weekIndex = index ~/ 8;
+          final weekDate = firstDateToShow.add(Duration(days: weekIndex * 7));
+          return WeekNumberWidget(weekNumber: _getWeekNumber(weekDate), theme: widget.theme);
+        }
 
-                final dayIndex = widget.showWeekNumbers ? index - (index ~/ 8) - 1 : index;
+        final dayIndex = widget.showWeekNumbers ? index - (index ~/ 8) - 1 : index;
 
-                if (dayIndex < 0 || dayIndex >= daysToShow) {
-                  return const SizedBox.shrink();
-                }
+        if (dayIndex < 0 || dayIndex >= daysToShow) {
+          return const SizedBox.shrink();
+        }
 
-                final date = firstDateToShow.add(Duration(days: dayIndex));
-                final isOutsideMonth = date.month != focusedDate.month;
-                final isToday = _isToday(date);
-                final isSelected = widget.controller.isDateSelected(date) || widget.controller.isDragSelecting(date);
-                final isRangeStart = widget.controller.isRangeStart(date);
-                final isRangeEnd = widget.controller.isRangeEnd(date);
-                final isInRange = widget.controller.isDateInRange(date);
-                final events = widget.controller.getEventsForDate(date);
+        final date = firstDateToShow.add(Duration(days: dayIndex));
+        final isOutsideMonth = date.month != focusedDate.month;
+        final isToday = _isToday(date);
+        final isSelected = widget.controller.isDateSelected(date) || widget.controller.isDragSelecting(date);
+        final isRangeStart = widget.controller.isRangeStart(date);
+        final isRangeEnd = widget.controller.isRangeEnd(date);
+        final isInRange = widget.controller.isDateInRange(date);
+        final events = widget.controller.getEventsForDate(date);
 
-                if (widget.dayBuilder != null) {
-                  return GestureDetector(
-                    onTap: () => widget.onDateSelected(date),
-                    onLongPress: gestureConfig.enableLongPressRange ? () => widget.controller.startDragSelection(date) : null,
-                    child: widget.dayBuilder!(context, date, isSelected, isToday, isOutsideMonth, events),
-                  );
-                }
+        if (widget.dayBuilder != null) {
+          return GestureDetector(
+            onTap: () => widget.onDateSelected(date),
+            onLongPress: gestureConfig.enableLongPressRange ? () => widget.controller.startDragSelection(date) : null,
+            child: widget.dayBuilder!(context, date, isSelected, isToday, isOutsideMonth, events),
+          );
+        }
 
-                return CalendarDayCellWidget(
-                  date: date,
-                  theme: widget.theme,
-                  isSelected: isSelected,
-                  isToday: isToday,
-                  isOutsideMonth: isOutsideMonth,
-                  isRangeStart: isRangeStart,
-                  isRangeEnd: isRangeEnd,
-                  isInRange: isInRange,
-                  events: events,
-                  onTap: () => widget.onDateSelected(date),
-                  compact: widget.compact,
-                );
-              },
-            );
+        return CalendarDayCellWidget(
+          date: date,
+          theme: widget.theme,
+          isSelected: isSelected,
+          isToday: isToday,
+          isOutsideMonth: isOutsideMonth,
+          isRangeStart: isRangeStart,
+          isRangeEnd: isRangeEnd,
+          isInRange: isInRange,
+          events: events,
+          onTap: () => widget.onDateSelected(date),
+          compact: widget.compact,
+        );
+      },
+    );
 
     // Wrap GridView with GestureDetector
     Widget gestureWrappedGrid = GestureDetector(
@@ -199,25 +210,7 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
     // Wrap with scrollbar if needed
     Widget scrollableGrid = gestureWrappedGrid;
     if (widget.config.showScrollbar) {
-      scrollableGrid = Scrollbar(
-        controller: _scrollController,
-        child: gestureWrappedGrid,
-      );
-    }
-
-    // Apply scroll padding if provided
-    if (widget.config.scrollPadding != null) {
-      scrollableGrid = MediaQuery.removePadding(
-        context: context,
-        removeTop: false,
-        removeBottom: false,
-        removeLeft: false,
-        removeRight: false,
-        child: Padding(
-          padding: widget.config.scrollPadding!,
-          child: scrollableGrid,
-        ),
-      );
+      scrollableGrid = Scrollbar(controller: _scrollController, child: gestureWrappedGrid);
     }
 
     return Column(
@@ -225,9 +218,7 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
         // Weekday headers
         WeekdayHeadersWidget(theme: widget.theme, firstDayOfWeek: widget.firstDayOfWeek, showWeekNumbers: widget.showWeekNumbers, compact: widget.compact),
         // Calendar grid with gesture detection
-        Expanded(
-          child: scrollableGrid,
-        ),
+        Expanded(child: scrollableGrid),
       ],
     );
   }

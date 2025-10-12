@@ -77,81 +77,76 @@ class _VooCalendarWeekViewState extends State<VooCalendarWeekView> {
 
     final hours = List.generate(24, (i) => i);
 
-    Widget content = Row(
-      children: [
-        // Time column
-        SizedBox(
-          width: widget.compact ? 40 : 60,
-          child: Column(
-            children: [
-              // Header spacer
-              Container(height: 60),
-              // Hour labels
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: hours.length,
-                  itemExtent: 60,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.only(right: design.spacingXs),
-                      alignment: Alignment.topRight,
-                      child: Text(widget.compact ? '${hours[index]}' : '${hours[index].toString().padLeft(2, '0')}:00', style: widget.theme.timeTextStyle),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Days columns
-        Expanded(
-          child: Column(
-            children: [
-              // Day headers
-              DayHeadersWidget(firstDay: firstDayOfWeekDate, theme: widget.theme, controller: widget.controller, onDateSelected: widget.onDateSelected),
-              // Day content
-              Expanded(
-                child: Row(
-                  children: List.generate(7, (dayIndex) {
-                    final date = firstDayOfWeekDate.add(Duration(days: dayIndex));
-                    final events = widget.controller.getEventsForDate(date);
-                    final isSelected = widget.controller.isDateSelected(date);
-                    final isToday = _isToday(date);
+    // Merge base padding with scrollPadding
+    final basePadding = widget.config.padding ?? EdgeInsets.zero;
+    final scrollPadding = widget.config.scrollPadding ?? EdgeInsets.zero;
+    final topPadding = basePadding.resolve(TextDirection.ltr).top + scrollPadding.top;
+    final bottomPadding = basePadding.resolve(TextDirection.ltr).bottom + scrollPadding.bottom;
+    final leftPadding = basePadding.resolve(TextDirection.ltr).left + scrollPadding.left;
+    final rightPadding = basePadding.resolve(TextDirection.ltr).right + scrollPadding.right;
 
-                    return Expanded(child: _buildDayColumn(context, date, events, isSelected, isToday, design));
-                  }),
+    Widget content = Padding(
+      padding: EdgeInsets.only(left: leftPadding, right: rightPadding),
+      child: Row(
+        children: [
+          // Time column
+          SizedBox(
+            width: widget.compact ? 40 : 60,
+            child: Column(
+              children: [
+                // Header spacer
+                Container(height: 60),
+                // Hour labels
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
+                    itemCount: hours.length,
+                    itemExtent: 60,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.only(right: design.spacingXs),
+                        alignment: Alignment.topRight,
+                        child: Text(widget.compact ? '${hours[index]}' : '${hours[index].toString().padLeft(2, '0')}:00', style: widget.theme.timeTextStyle),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+          // Days columns
+          Expanded(
+            child: Column(
+              children: [
+                // Day headers
+                DayHeadersWidget(firstDay: firstDayOfWeekDate, theme: widget.theme, controller: widget.controller, onDateSelected: widget.onDateSelected),
+                // Day content
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
+                    child: Row(
+                      children: List.generate(7, (dayIndex) {
+                        final date = firstDayOfWeekDate.add(Duration(days: dayIndex));
+                        final events = widget.controller.getEventsForDate(date);
+                        final isSelected = widget.controller.isDateSelected(date);
+                        final isToday = _isToday(date);
+
+                        return Expanded(child: _buildDayColumn(context, date, events, isSelected, isToday, design));
+                      }),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
 
     // Wrap with scrollbar if needed
     if (widget.config.showScrollbar) {
       content = Scrollbar(controller: _scrollController, child: content);
-    }
-
-    // Apply padding if provided
-    if (widget.config.padding != null) {
-      content = Padding(padding: widget.config.padding!, child: content);
-    }
-
-    // Apply scroll padding if provided
-    if (widget.config.scrollPadding != null) {
-      content = MediaQuery.removePadding(
-        context: context,
-        removeTop: false,
-        removeBottom: false,
-        removeLeft: false,
-        removeRight: false,
-        child: Padding(
-          padding: widget.config.scrollPadding!,
-          child: content,
-        ),
-      );
     }
 
     return content;
