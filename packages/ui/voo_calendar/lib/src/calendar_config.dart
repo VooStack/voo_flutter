@@ -103,6 +103,16 @@ class VooDayViewConfig {
   /// Width reserved for trailing builder content to prevent event overlap (default: 0)
   final double trailingBuilderWidth;
 
+  /// External scroll controller for programmatic scrolling
+  /// If not provided, an internal controller will be created
+  final ScrollController? scrollController;
+
+  /// Whether to show a scrollbar (default: false)
+  final bool showScrollbar;
+
+  /// Padding around the day view content
+  final EdgeInsetsGeometry? padding;
+
   const VooDayViewConfig({
     this.hourLineTrailingBuilder,
     this.hourLineLeadingBuilder,
@@ -129,6 +139,9 @@ class VooDayViewConfig {
     this.eventHorizontalGap = 4.0,
     this.enableColumnLayout = true,
     this.trailingBuilderWidth = 0.0,
+    this.scrollController,
+    this.showScrollbar = false,
+    this.padding,
   });
 
   /// Create a copy with modified properties
@@ -158,6 +171,9 @@ class VooDayViewConfig {
     double? eventHorizontalGap,
     bool? enableColumnLayout,
     double? trailingBuilderWidth,
+    ScrollController? scrollController,
+    bool? showScrollbar,
+    EdgeInsetsGeometry? padding,
   }) {
     return VooDayViewConfig(
       hourLineTrailingBuilder: hourLineTrailingBuilder ?? this.hourLineTrailingBuilder,
@@ -185,6 +201,9 @@ class VooDayViewConfig {
       eventHorizontalGap: eventHorizontalGap ?? this.eventHorizontalGap,
       enableColumnLayout: enableColumnLayout ?? this.enableColumnLayout,
       trailingBuilderWidth: trailingBuilderWidth ?? this.trailingBuilderWidth,
+      scrollController: scrollController ?? this.scrollController,
+      showScrollbar: showScrollbar ?? this.showScrollbar,
+      padding: padding ?? this.padding,
     );
   }
 }
@@ -228,6 +247,16 @@ class VooWeekViewConfig {
   /// Used as fallback when eventHeightBuilder is not provided
   final double minEventHeight;
 
+  /// External scroll controller for programmatic scrolling
+  /// If not provided, an internal controller will be created
+  final ScrollController? scrollController;
+
+  /// Whether to show a scrollbar (default: false)
+  final bool showScrollbar;
+
+  /// Padding around the week view content
+  final EdgeInsetsGeometry? padding;
+
   const VooWeekViewConfig({
     this.hourHeight,
     this.scrollPhysics,
@@ -237,6 +266,9 @@ class VooWeekViewConfig {
     this.lastHour = 23,
     this.eventHeightBuilder,
     this.minEventHeight = 80.0,
+    this.scrollController,
+    this.showScrollbar = false,
+    this.padding,
   });
 
   /// Create a copy with modified properties
@@ -249,6 +281,9 @@ class VooWeekViewConfig {
     int? lastHour,
     double Function(VooCalendarEvent event)? eventHeightBuilder,
     double? minEventHeight,
+    ScrollController? scrollController,
+    bool? showScrollbar,
+    EdgeInsetsGeometry? padding,
   }) {
     return VooWeekViewConfig(
       hourHeight: hourHeight ?? this.hourHeight,
@@ -259,6 +294,9 @@ class VooWeekViewConfig {
       lastHour: lastHour ?? this.lastHour,
       eventHeightBuilder: eventHeightBuilder ?? this.eventHeightBuilder,
       minEventHeight: minEventHeight ?? this.minEventHeight,
+      scrollController: scrollController ?? this.scrollController,
+      showScrollbar: showScrollbar ?? this.showScrollbar,
+      padding: padding ?? this.padding,
     );
   }
 }
@@ -299,6 +337,16 @@ class VooMonthViewConfig {
   /// Used as fallback when eventHeightBuilder is not provided
   final double minEventHeight;
 
+  /// External scroll controller for programmatic scrolling
+  /// If not provided, an internal controller will be created
+  final ScrollController? scrollController;
+
+  /// Whether to show a scrollbar (default: false)
+  final bool showScrollbar;
+
+  /// Padding around the month view content
+  final EdgeInsetsGeometry? padding;
+
   const VooMonthViewConfig({
     this.showWeekNumbers = false,
     this.firstDayOfWeek = 1,
@@ -307,6 +355,9 @@ class VooMonthViewConfig {
     this.maxEventIndicators = 3,
     this.eventHeightBuilder,
     this.minEventHeight = 80.0,
+    this.scrollController,
+    this.showScrollbar = false,
+    this.padding,
   });
 
   /// Create a copy with modified properties
@@ -318,6 +369,9 @@ class VooMonthViewConfig {
     int? maxEventIndicators,
     double Function(VooCalendarEvent event)? eventHeightBuilder,
     double? minEventHeight,
+    ScrollController? scrollController,
+    bool? showScrollbar,
+    EdgeInsetsGeometry? padding,
   }) {
     return VooMonthViewConfig(
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
@@ -327,6 +381,9 @@ class VooMonthViewConfig {
       maxEventIndicators: maxEventIndicators ?? this.maxEventIndicators,
       eventHeightBuilder: eventHeightBuilder ?? this.eventHeightBuilder,
       minEventHeight: minEventHeight ?? this.minEventHeight,
+      scrollController: scrollController ?? this.scrollController,
+      showScrollbar: showScrollbar ?? this.showScrollbar,
+      padding: padding ?? this.padding,
     );
   }
 }
@@ -339,19 +396,38 @@ class VooYearViewConfig {
   /// Show event indicators on months
   final bool showEventIndicators;
 
+  /// External scroll controller for programmatic scrolling
+  /// If not provided, an internal controller will be created
+  final ScrollController? scrollController;
+
+  /// Whether to show a scrollbar (default: false)
+  final bool showScrollbar;
+
+  /// Padding around the year view content
+  final EdgeInsetsGeometry? padding;
+
   const VooYearViewConfig({
     this.columns = 4,
     this.showEventIndicators = true,
+    this.scrollController,
+    this.showScrollbar = false,
+    this.padding,
   });
 
   /// Create a copy with modified properties
   VooYearViewConfig copyWith({
     int? columns,
     bool? showEventIndicators,
+    ScrollController? scrollController,
+    bool? showScrollbar,
+    EdgeInsetsGeometry? padding,
   }) {
     return VooYearViewConfig(
       columns: columns ?? this.columns,
       showEventIndicators: showEventIndicators ?? this.showEventIndicators,
+      scrollController: scrollController ?? this.scrollController,
+      showScrollbar: showScrollbar ?? this.showScrollbar,
+      padding: padding ?? this.padding,
     );
   }
 }
@@ -367,10 +443,23 @@ class VooScheduleViewConfig {
   /// Group events by date
   final bool groupByDate;
 
+  /// External scroll controller for programmatic scrolling
+  /// If not provided, an internal controller will be created
+  final ScrollController? scrollController;
+
+  /// Whether to show a scrollbar (default: false)
+  final bool showScrollbar;
+
+  /// Padding around the schedule view content
+  final EdgeInsetsGeometry? padding;
+
   const VooScheduleViewConfig({
     this.showDateHeaders = true,
     this.showEventIcons = true,
     this.groupByDate = true,
+    this.scrollController,
+    this.showScrollbar = false,
+    this.padding,
   });
 
   /// Create a copy with modified properties
@@ -378,11 +467,17 @@ class VooScheduleViewConfig {
     bool? showDateHeaders,
     bool? showEventIcons,
     bool? groupByDate,
+    ScrollController? scrollController,
+    bool? showScrollbar,
+    EdgeInsetsGeometry? padding,
   }) {
     return VooScheduleViewConfig(
       showDateHeaders: showDateHeaders ?? this.showDateHeaders,
       showEventIcons: showEventIcons ?? this.showEventIcons,
       groupByDate: groupByDate ?? this.groupByDate,
+      scrollController: scrollController ?? this.scrollController,
+      showScrollbar: showScrollbar ?? this.showScrollbar,
+      padding: padding ?? this.padding,
     );
   }
 }

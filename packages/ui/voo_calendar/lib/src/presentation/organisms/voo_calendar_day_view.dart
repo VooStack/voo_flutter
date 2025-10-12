@@ -92,12 +92,25 @@ class VooCalendarDayView extends StatefulWidget {
 }
 
 class _VooCalendarDayViewState extends State<VooCalendarDayView> {
-  final ScrollController _scrollController = ScrollController();
+  late ScrollController _scrollController;
+  bool _ownsScrollController = false;
   static const double _defaultHourHeight = 60.0;
 
   @override
   void initState() {
     super.initState();
+    // Use external controller if provided, otherwise create internal one
+    if (widget.config.scrollController != null) {
+      _scrollController = widget.config.scrollController!;
+      _ownsScrollController = false;
+    } else {
+      _scrollController = ScrollController();
+      _ownsScrollController = true;
+    }
+
+    // Attach scroll controller to calendar controller for programmatic access
+    widget.controller.attachDayViewScrollController(_scrollController);
+
     // Scroll to initial hour on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final scrollHour = widget.config.initialScrollHour ?? DateTime.now().hour;
@@ -110,7 +123,11 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    // Only dispose if we own the controller
+    if (_ownsScrollController) {
+      _scrollController.dispose();
+    }
+    widget.controller.detachDayViewScrollController();
     super.dispose();
   }
 
@@ -305,7 +322,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
         // Always use dynamic heights for total calculation
         final totalHeight = hourHeights.values.reduce((a, b) => a + b);
 
-        return SingleChildScrollView(
+        Widget scrollView = SingleChildScrollView(
           controller: _scrollController,
           physics: config.scrollPhysics,
           child: SizedBox(
@@ -490,6 +507,24 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
             ),
           ),
         );
+
+        // Wrap with scrollbar if needed
+        if (config.showScrollbar) {
+          scrollView = Scrollbar(
+            controller: _scrollController,
+            child: scrollView,
+          );
+        }
+
+        // Apply padding if provided
+        if (config.padding != null) {
+          scrollView = Padding(
+            padding: config.padding!,
+            child: scrollView,
+          );
+        }
+
+        return scrollView;
       },
     );
   }

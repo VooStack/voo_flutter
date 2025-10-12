@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:voo_calendar/src/domain/entities/voo_calendar_event.dart';
 import 'package:voo_calendar/src/domain/enums/voo_calendar_selection_mode.dart';
@@ -20,6 +20,13 @@ class VooCalendarController extends ChangeNotifier {
   DateTime? _dragEndDate;
   bool _isDragging = false;
   final Set<DateTime> _tempSelectedDates = {};
+
+  // Scroll controllers for different views
+  ScrollController? _dayViewScrollController;
+  ScrollController? _weekViewScrollController;
+  ScrollController? _scheduleViewScrollController;
+  ScrollController? _monthViewScrollController;
+  ScrollController? _yearViewScrollController;
 
   VooCalendarController({
     DateTime? initialDate,
@@ -290,5 +297,188 @@ class VooCalendarController extends ChangeNotifier {
   void goToToday() {
     _focusedDate = DateTime.now();
     notifyListeners();
+  }
+
+  // Scroll controller getters
+  ScrollController? get dayViewScrollController => _dayViewScrollController;
+  ScrollController? get weekViewScrollController => _weekViewScrollController;
+  ScrollController? get scheduleViewScrollController => _scheduleViewScrollController;
+  ScrollController? get monthViewScrollController => _monthViewScrollController;
+  ScrollController? get yearViewScrollController => _yearViewScrollController;
+
+  /// Attach scroll controllers to this calendar controller
+  /// This allows you to control scrolling programmatically
+  void attachDayViewScrollController(ScrollController controller) {
+    _dayViewScrollController = controller;
+  }
+
+  void attachWeekViewScrollController(ScrollController controller) {
+    _weekViewScrollController = controller;
+  }
+
+  void attachScheduleViewScrollController(ScrollController controller) {
+    _scheduleViewScrollController = controller;
+  }
+
+  void attachMonthViewScrollController(ScrollController controller) {
+    _monthViewScrollController = controller;
+  }
+
+  void attachYearViewScrollController(ScrollController controller) {
+    _yearViewScrollController = controller;
+  }
+
+  /// Detach scroll controllers
+  void detachDayViewScrollController() {
+    _dayViewScrollController = null;
+  }
+
+  void detachWeekViewScrollController() {
+    _weekViewScrollController = null;
+  }
+
+  void detachScheduleViewScrollController() {
+    _scheduleViewScrollController = null;
+  }
+
+  void detachMonthViewScrollController() {
+    _monthViewScrollController = null;
+  }
+
+  void detachYearViewScrollController() {
+    _yearViewScrollController = null;
+  }
+
+  /// Scroll to a specific hour in day view
+  /// [hour] - The hour to scroll to (0-23)
+  /// [hourHeight] - Height of each hour in pixels (default: 60.0)
+  /// [animated] - Whether to animate the scroll (default: true)
+  /// [duration] - Duration of animation (default: 300ms)
+  /// [curve] - Animation curve (default: Curves.easeOutCubic)
+  void scrollToHourInDayView({
+    required int hour,
+    double hourHeight = 60.0,
+    bool animated = true,
+    Duration duration = const Duration(milliseconds: 300),
+    Curve curve = Curves.easeOutCubic,
+  }) {
+    if (_dayViewScrollController == null || !_dayViewScrollController!.hasClients) {
+      return;
+    }
+
+    final offset = hour * hourHeight;
+    if (animated) {
+      _dayViewScrollController!.animateTo(
+        offset,
+        duration: duration,
+        curve: curve,
+      );
+    } else {
+      _dayViewScrollController!.jumpTo(offset);
+    }
+  }
+
+  /// Scroll to a specific event in day view
+  /// Calculates the scroll position based on the event's start time
+  /// [event] - The event to scroll to
+  /// [hourHeight] - Height of each hour in pixels (default: 60.0)
+  /// [animated] - Whether to animate the scroll (default: true)
+  /// [duration] - Duration of animation (default: 300ms)
+  /// [curve] - Animation curve (default: Curves.easeOutCubic)
+  void scrollToEventInDayView({
+    required VooCalendarEvent event,
+    double hourHeight = 60.0,
+    bool animated = true,
+    Duration duration = const Duration(milliseconds: 300),
+    Curve curve = Curves.easeOutCubic,
+  }) {
+    if (_dayViewScrollController == null || !_dayViewScrollController!.hasClients) {
+      return;
+    }
+
+    final hour = event.startTime.hour;
+    final minute = event.startTime.minute;
+    final offset = (hour + minute / 60) * hourHeight;
+
+    if (animated) {
+      _dayViewScrollController!.animateTo(
+        offset,
+        duration: duration,
+        curve: curve,
+      );
+    } else {
+      _dayViewScrollController!.jumpTo(offset);
+    }
+  }
+
+  /// Scroll to a specific date in schedule view
+  /// [date] - The date to scroll to
+  /// [animated] - Whether to animate the scroll (default: true)
+  /// [duration] - Duration of animation (default: 300ms)
+  /// [curve] - Animation curve (default: Curves.easeOutCubic)
+  void scrollToDateInScheduleView({
+    required DateTime date,
+    bool animated = true,
+    Duration duration = const Duration(milliseconds: 300),
+    Curve curve = Curves.easeOutCubic,
+  }) {
+    if (_scheduleViewScrollController == null || !_scheduleViewScrollController!.hasClients) {
+      return;
+    }
+
+    // Group events by date to find the index
+    final Map<DateTime, List<VooCalendarEvent>> eventsByDate = {};
+    for (final event in _events) {
+      final dateKey = DateTime(event.startTime.year, event.startTime.month, event.startTime.day);
+      eventsByDate.putIfAbsent(dateKey, () => []).add(event);
+    }
+
+    final sortedDates = eventsByDate.keys.toList()..sort();
+    final targetDate = DateTime(date.year, date.month, date.day);
+    final index = sortedDates.indexWhere((d) =>
+      d.year == targetDate.year && d.month == targetDate.month && d.day == targetDate.day
+    );
+
+    if (index == -1) return;
+
+    // Estimate offset (this is approximate - actual offset depends on item heights)
+    // Each date section is roughly 100px + events
+    final offset = index * 150.0;
+
+    if (animated) {
+      _scheduleViewScrollController!.animateTo(
+        offset,
+        duration: duration,
+        curve: curve,
+      );
+    } else {
+      _scheduleViewScrollController!.jumpTo(offset);
+    }
+  }
+
+  /// Scroll to a specific event in schedule view
+  /// [event] - The event to scroll to
+  /// [animated] - Whether to animate the scroll (default: true)
+  /// [duration] - Duration of animation (default: 300ms)
+  /// [curve] - Animation curve (default: Curves.easeOutCubic)
+  void scrollToEventInScheduleView({
+    required VooCalendarEvent event,
+    bool animated = true,
+    Duration duration = const Duration(milliseconds: 300),
+    Curve curve = Curves.easeOutCubic,
+  }) {
+    scrollToDateInScheduleView(
+      date: event.startTime,
+      animated: animated,
+      duration: duration,
+      curve: curve,
+    );
+  }
+
+  @override
+  void dispose() {
+    // Note: We don't dispose scroll controllers here because they may be managed externally
+    // Users should dispose their own controllers if they create them
+    super.dispose();
   }
 }

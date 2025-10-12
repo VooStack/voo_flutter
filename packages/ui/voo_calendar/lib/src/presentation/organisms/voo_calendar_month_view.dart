@@ -43,6 +43,34 @@ class VooCalendarMonthView extends StatefulWidget {
 
 class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
   final Map<int, DateTime> _indexToDate = {};
+  late ScrollController _scrollController;
+  bool _ownsScrollController = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Use external controller if provided, otherwise create internal one
+    if (widget.config.scrollController != null) {
+      _scrollController = widget.config.scrollController!;
+      _ownsScrollController = false;
+    } else {
+      _scrollController = ScrollController();
+      _ownsScrollController = true;
+    }
+
+    // Attach scroll controller to calendar controller for programmatic access
+    widget.controller.attachMonthViewScrollController(_scrollController);
+  }
+
+  @override
+  void dispose() {
+    // Only dispose if we own the controller
+    if (_ownsScrollController) {
+      _scrollController.dispose();
+    }
+    widget.controller.detachMonthViewScrollController();
+    super.dispose();
+  }
 
   void _handleDragStart(Offset position, VooDesignSystemData design) {
     // Find which cell was tapped based on position
@@ -91,30 +119,9 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
 
     final gestureConfig = widget.gestureConfig ?? const VooCalendarGestureConfig();
 
-    return Column(
-      children: [
-        // Weekday headers
-        WeekdayHeadersWidget(theme: widget.theme, firstDayOfWeek: widget.firstDayOfWeek, showWeekNumbers: widget.showWeekNumbers, compact: widget.compact),
-        // Calendar grid with gesture detection
-        Expanded(
-          child: GestureDetector(
-            onPanStart: gestureConfig.enableDragSelection
-                ? (details) {
-                    final RenderBox box = context.findRenderObject() as RenderBox;
-                    final localPosition = box.globalToLocal(details.globalPosition);
-                    _handleDragStart(localPosition, design);
-                  }
-                : null,
-            onPanUpdate: gestureConfig.enableDragSelection
-                ? (details) {
-                    final RenderBox box = context.findRenderObject() as RenderBox;
-                    final localPosition = box.globalToLocal(details.globalPosition);
-                    _handleDragUpdate(localPosition, design);
-                  }
-                : null,
-            onPanEnd: gestureConfig.enableDragSelection ? (_) => _handleDragEnd() : null,
-            child: GridView.builder(
-              padding: EdgeInsets.all(design.spacingMd),
+    Widget gridView = GridView.builder(
+              controller: _scrollController,
+              padding: widget.config.padding ?? EdgeInsets.all(design.spacingMd),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: widget.showWeekNumbers ? 8 : 7,
                 mainAxisSpacing: design.spacingXs,
@@ -167,8 +174,44 @@ class _VooCalendarMonthViewState extends State<VooCalendarMonthView> {
                   compact: widget.compact,
                 );
               },
-            ),
-          ),
+            );
+
+    // Wrap GridView with GestureDetector
+    Widget gestureWrappedGrid = GestureDetector(
+      onPanStart: gestureConfig.enableDragSelection
+          ? (details) {
+              final RenderBox box = context.findRenderObject() as RenderBox;
+              final localPosition = box.globalToLocal(details.globalPosition);
+              _handleDragStart(localPosition, design);
+            }
+          : null,
+      onPanUpdate: gestureConfig.enableDragSelection
+          ? (details) {
+              final RenderBox box = context.findRenderObject() as RenderBox;
+              final localPosition = box.globalToLocal(details.globalPosition);
+              _handleDragUpdate(localPosition, design);
+            }
+          : null,
+      onPanEnd: gestureConfig.enableDragSelection ? (_) => _handleDragEnd() : null,
+      child: gridView,
+    );
+
+    // Wrap with scrollbar if needed
+    Widget scrollableGrid = gestureWrappedGrid;
+    if (widget.config.showScrollbar) {
+      scrollableGrid = Scrollbar(
+        controller: _scrollController,
+        child: gestureWrappedGrid,
+      );
+    }
+
+    return Column(
+      children: [
+        // Weekday headers
+        WeekdayHeadersWidget(theme: widget.theme, firstDayOfWeek: widget.firstDayOfWeek, showWeekNumbers: widget.showWeekNumbers, compact: widget.compact),
+        // Calendar grid with gesture detection
+        Expanded(
+          child: scrollableGrid,
         ),
       ],
     );

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 import 'package:voo_calendar/src/calendar.dart';
+import 'package:voo_calendar/src/calendar_config.dart';
 import 'package:voo_calendar/src/calendar_theme.dart';
 import 'package:voo_calendar/src/presentation/atoms/event_card_widget.dart';
 import 'package:voo_calendar/src/presentation/molecules/day_headers_widget.dart';
 
 /// Week view for VooCalendar
-class VooCalendarWeekView extends StatelessWidget {
+class VooCalendarWeekView extends StatefulWidget {
   final VooCalendarController controller;
   final VooCalendarTheme theme;
   final int firstDayOfWeek;
@@ -15,6 +16,7 @@ class VooCalendarWeekView extends StatelessWidget {
   final void Function(VooCalendarEvent event)? onEventTap;
   final Widget Function(BuildContext context, VooCalendarEvent event)? eventBuilder;
   final bool compact;
+  final VooWeekViewConfig config;
 
   static const double _hourHeight = 60.0;
 
@@ -27,24 +29,59 @@ class VooCalendarWeekView extends StatelessWidget {
     this.onEventTap,
     this.eventBuilder,
     required this.compact,
+    this.config = const VooWeekViewConfig(),
   });
+
+  @override
+  State<VooCalendarWeekView> createState() => _VooCalendarWeekViewState();
+}
+
+class _VooCalendarWeekViewState extends State<VooCalendarWeekView> {
+  late ScrollController _scrollController;
+  bool _ownsScrollController = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Use external controller if provided, otherwise create internal one
+    if (widget.config.scrollController != null) {
+      _scrollController = widget.config.scrollController!;
+      _ownsScrollController = false;
+    } else {
+      _scrollController = ScrollController();
+      _ownsScrollController = true;
+    }
+
+    // Attach scroll controller to calendar controller for programmatic access
+    widget.controller.attachWeekViewScrollController(_scrollController);
+  }
+
+  @override
+  void dispose() {
+    // Only dispose if we own the controller
+    if (_ownsScrollController) {
+      _scrollController.dispose();
+    }
+    widget.controller.detachWeekViewScrollController();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final design = context.vooDesign;
-    final focusedDate = controller.focusedDate;
+    final focusedDate = widget.controller.focusedDate;
 
     // Calculate first day of week
-    int daysFromStartOfWeek = (focusedDate.weekday - firstDayOfWeek) % 7;
+    int daysFromStartOfWeek = (focusedDate.weekday - widget.firstDayOfWeek) % 7;
     final firstDayOfWeekDate = focusedDate.subtract(Duration(days: daysFromStartOfWeek));
 
     final hours = List.generate(24, (i) => i);
 
-    return Row(
+    Widget content = Row(
       children: [
         // Time column
         SizedBox(
-          width: compact ? 40 : 60,
+          width: widget.compact ? 40 : 60,
           child: Column(
             children: [
               // Header spacer
@@ -52,13 +89,14 @@ class VooCalendarWeekView extends StatelessWidget {
               // Hour labels
               Expanded(
                 child: ListView.builder(
+                  controller: _scrollController,
                   itemCount: hours.length,
                   itemExtent: 60,
                   itemBuilder: (context, index) {
                     return Container(
                       padding: EdgeInsets.only(right: design.spacingXs),
                       alignment: Alignment.topRight,
-                      child: Text(compact ? '${hours[index]}' : '${hours[index].toString().padLeft(2, '0')}:00', style: theme.timeTextStyle),
+                      child: Text(widget.compact ? '${hours[index]}' : '${hours[index].toString().padLeft(2, '0')}:00', style: widget.theme.timeTextStyle),
                     );
                   },
                 ),
@@ -71,14 +109,14 @@ class VooCalendarWeekView extends StatelessWidget {
           child: Column(
             children: [
               // Day headers
-              DayHeadersWidget(firstDay: firstDayOfWeekDate, theme: theme, controller: controller, onDateSelected: onDateSelected),
+              DayHeadersWidget(firstDay: firstDayOfWeekDate, theme: widget.theme, controller: widget.controller, onDateSelected: widget.onDateSelected),
               // Day content
               Expanded(
                 child: Row(
                   children: List.generate(7, (dayIndex) {
                     final date = firstDayOfWeekDate.add(Duration(days: dayIndex));
-                    final events = controller.getEventsForDate(date);
-                    final isSelected = controller.isDateSelected(date);
+                    final events = widget.controller.getEventsForDate(date);
+                    final isSelected = widget.controller.isDateSelected(date);
                     final isToday = _isToday(date);
 
                     return Expanded(child: _buildDayColumn(context, date, events, isSelected, isToday, design));
@@ -90,16 +128,34 @@ class VooCalendarWeekView extends StatelessWidget {
         ),
       ],
     );
+
+    // Wrap with scrollbar if needed
+    if (widget.config.showScrollbar) {
+      content = Scrollbar(
+        controller: _scrollController,
+        child: content,
+      );
+    }
+
+    // Apply padding if provided
+    if (widget.config.padding != null) {
+      content = Padding(
+        padding: widget.config.padding!,
+        child: content,
+      );
+    }
+
+    return content;
   }
 
   Widget _buildDayColumn(BuildContext context, DateTime date, List<VooCalendarEvent> events, bool isSelected, bool isToday, VooDesignSystemData design) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(right: BorderSide(color: theme.gridLineColor)),
+        border: Border(right: BorderSide(color: widget.theme.gridLineColor)),
         color: isSelected
-            ? theme.selectedDayBackgroundColor.withValues(alpha: 0.1)
+            ? widget.theme.selectedDayBackgroundColor.withValues(alpha: 0.1)
             : isToday
-            ? theme.todayBackgroundColor.withValues(alpha: 0.05)
+            ? widget.theme.todayBackgroundColor.withValues(alpha: 0.05)
             : null,
       ),
       child: Stack(
@@ -111,7 +167,7 @@ class VooCalendarWeekView extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: theme.gridLineColor, width: hour == 23 ? 0 : 0.5),
+                      bottom: BorderSide(color: widget.theme.gridLineColor, width: hour == 23 ? 0 : 0.5),
                     ),
                   ),
                 ),
@@ -120,15 +176,15 @@ class VooCalendarWeekView extends StatelessWidget {
           ),
           // Events
           ...events.map((event) {
-            if (eventBuilder != null) {
-              return Positioned(top: _getEventTop(event), left: 2, right: 2, height: _getEventHeight(event), child: eventBuilder!(context, event));
+            if (widget.eventBuilder != null) {
+              return Positioned(top: _getEventTop(event), left: 2, right: 2, height: _getEventHeight(event), child: widget.eventBuilder!(context, event));
             }
             return Positioned(
               top: _getEventTop(event),
               left: 2,
               right: 2,
               height: _getEventHeight(event),
-              child: EventCardWidget(event: event, theme: theme, onTap: () => onEventTap?.call(event), compact: compact),
+              child: EventCardWidget(event: event, theme: widget.theme, onTap: () => widget.onEventTap?.call(event), compact: widget.compact),
             );
           }),
         ],
@@ -139,12 +195,12 @@ class VooCalendarWeekView extends StatelessWidget {
   double _getEventTop(VooCalendarEvent event) {
     final hour = event.startTime.hour;
     final minute = event.startTime.minute;
-    return (hour + minute / 60) * _hourHeight;
+    return (hour + minute / 60) * VooCalendarWeekView._hourHeight;
   }
 
   double _getEventHeight(VooCalendarEvent event) {
     final duration = event.duration.inMinutes;
-    return (duration / 60) * _hourHeight;
+    return (duration / 60) * VooCalendarWeekView._hourHeight;
   }
 
   bool _isToday(DateTime date) {
