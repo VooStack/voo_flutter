@@ -116,9 +116,9 @@ class _CustomEventWidgetExampleState extends State<CustomEventWidgetExample> {
               initialView: VooCalendarView.day,
               headerBuilder: (context, date) => const SizedBox(),
               availableViews: const [VooCalendarView.day],
-              // ✨ Use eventHeightBuilder to set heights based on event type
               dayViewConfig: VooDayViewConfig(
                 initialScrollHour: 8,
+                scrollPadding: EdgeInsets.only(top: 16, bottom: 16),
                 eventHeightBuilder: (event) {
                   // Custom widgets with child get specific heights
                   if (event.child != null) {

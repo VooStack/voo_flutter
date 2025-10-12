@@ -323,9 +323,10 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
         final totalHeight = hourHeights.values.reduce((a, b) => a + b);
 
         // Add scroll padding to total height if provided
+        // Ensure at minimum 8px bottom padding so the last hour's border is clearly visible
         final scrollPaddingTop = config.scrollPadding?.top ?? 0.0;
-        final scrollPaddingBottom = config.scrollPadding?.bottom ?? 0.0;
-        // final totalHeightWithPadding = totalHeight + scrollPaddingTop + scrollPaddingBottom;
+        final defaultBottomPadding = config.scrollPadding?.bottom ?? 8.0;
+        final scrollPaddingBottom = defaultBottomPadding;
 
         Widget scrollView = SingleChildScrollView(
           controller: _scrollController,
@@ -378,9 +379,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                       children: [
                         // Hour grid
                         Column(
-                          children: hours.asMap().entries.map((entry) {
-                            final index = entry.key;
-                            final hour = entry.value;
+                          children: hours.map((hour) {
                             final height = hourHeights[hour] ?? hourHeight;
                             final lineColor = config.hourLineColor ?? theme.gridLineColor;
                             final lineThickness = config.hourLineThickness ?? 0.5;
@@ -391,7 +390,7 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
                                 height: height,
                                 decoration: BoxDecoration(
                                   border: Border(
-                                    bottom: BorderSide(color: lineColor, width: index == hours.length - 1 ? 0 : lineThickness),
+                                    bottom: BorderSide(color: lineColor, width: lineThickness),
                                   ),
                                 ),
                                 child: config.hourLineTrailingBuilder != null
