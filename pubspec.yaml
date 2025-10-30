@@ -9,6 +9,8 @@ workspace:
   - packages/dev/voo_analytics/example
   - packages/ui/voo_calendar
   - packages/ui/voo_calendar/example
+  - packages/ui/voo_circular_progress
+  - packages/ui/voo_circular_progress/example
   - packages/dev/voo_core
   - packages/dev/voo_core/example
   - packages/ui/voo_data_grid
