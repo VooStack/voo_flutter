@@ -1,3 +1,27 @@
+## 0.6.1+4
+
+### 🐛 Bug Fixes
+
+**24-Hour Display** - Fixed day view and week view to display complete 24-hour period:
+
+#### Fixed Issues:
+- **FIX**: Calendar now displays all 24 hours plus midnight of next day (00:00-00:00)
+  - **Before**: Calendar stopped at 23:00, missing the final hour slot
+  - **After**: Calendar displays hours 0-24, where hour 24 represents 00:00 of the next day
+  - **Result**: Complete 24-hour coverage as expected in calendar applications
+
+#### Technical Details:
+- Changed default `lastHour` from `23` to `24` in `VooDayViewConfig` and `VooWeekViewConfig`
+- Updated time formatters to display hour 24 as "00:00"
+- Updated documentation to clarify that hour 24 represents midnight of the next day
+- Applied changes to both day view and week view for consistency
+
+### Verification:
+- ✅ All 12 tests passing
+- ✅ Zero lint warnings
+- ✅ Consistent behavior across day and week views
+- ✅ Proper display of hour 24 as "00:00"
+
 ## 0.6.1
 
 ### 🐛 Bug Fixes

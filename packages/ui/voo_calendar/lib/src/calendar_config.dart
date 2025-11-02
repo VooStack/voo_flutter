@@ -33,7 +33,7 @@ class VooDayViewConfig {
   /// First hour to display (0-23)
   final int firstHour;
 
-  /// Last hour to display (0-23)
+  /// Last hour to display (0-24, where 24 represents 00:00 of the next day)
   final int lastHour;
 
   /// Hour line color
@@ -120,7 +120,7 @@ class VooDayViewConfig {
     this.showTimeLabels = true,
     this.timeColumnWidth,
     this.firstHour = 0,
-    this.lastHour = 23,
+    this.lastHour = 24,
     this.hourLineColor,
     this.hourLineThickness,
     this.showHalfHourLines = false,
@@ -215,7 +215,7 @@ class VooWeekViewConfig {
   /// First hour to display (0-23)
   final int firstHour;
 
-  /// Last hour to display (0-23)
+  /// Last hour to display (0-24, where 24 represents 00:00 of the next day)
   final int lastHour;
 
   /// Builder to determine height for each event.
@@ -257,7 +257,7 @@ class VooWeekViewConfig {
     this.showTimeLabels = true,
     this.timeColumnWidth,
     this.firstHour = 0,
-    this.lastHour = 23,
+    this.lastHour = 24,
     this.eventHeightBuilder,
     this.minEventHeight = 80.0,
     this.scrollController,

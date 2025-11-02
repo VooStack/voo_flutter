@@ -50,7 +50,7 @@ class VooCalendarDayView extends StatefulWidget {
     bool showTimeLabels = true,
     double? timeColumnWidth,
     int firstHour = 0,
-    int lastHour = 23,
+    int lastHour = 24,
     Color? hourLineColor,
     double? hourLineThickness,
     bool showHalfHourLines = false,
@@ -132,7 +132,9 @@ class _VooCalendarDayViewState extends State<VooCalendarDayView> {
   }
 
   String _defaultTimeFormatter(int hour) {
-    return '${hour.toString().padLeft(2, '0')}:00';
+    // Hour 24 represents midnight of the next day, display as 00:00
+    final displayHour = hour == 24 ? 0 : hour;
+    return '${displayHour.toString().padLeft(2, '0')}:00';
   }
 
   /// Calculate dynamic height for each hour based on events that START in that hour

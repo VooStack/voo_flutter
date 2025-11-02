@@ -75,7 +75,8 @@ class _VooCalendarWeekViewState extends State<VooCalendarWeekView> {
     int daysFromStartOfWeek = (focusedDate.weekday - widget.firstDayOfWeek) % 7;
     final firstDayOfWeekDate = focusedDate.subtract(Duration(days: daysFromStartOfWeek));
 
-    final hours = List.generate(24, (i) => i);
+    // Generate hours based on config (default 0-24)
+    final hours = List.generate(widget.config.lastHour - widget.config.firstHour + 1, (i) => widget.config.firstHour + i);
 
     // Merge base padding with scrollPadding
     final basePadding = widget.config.padding ?? EdgeInsets.zero;
@@ -104,10 +105,13 @@ class _VooCalendarWeekViewState extends State<VooCalendarWeekView> {
                     itemCount: hours.length,
                     itemExtent: 60,
                     itemBuilder: (context, index) {
+                      // Hour 24 represents midnight of the next day, display as 00:00
+                      final hour = hours[index];
+                      final displayHour = hour == 24 ? 0 : hour;
                       return Container(
                         padding: EdgeInsets.only(right: design.spacingXs),
                         alignment: Alignment.topRight,
-                        child: Text(widget.compact ? '${hours[index]}' : '${hours[index].toString().padLeft(2, '0')}:00', style: widget.theme.timeTextStyle),
+                        child: Text(widget.compact ? '$displayHour' : '${displayHour.toString().padLeft(2, '0')}:00', style: widget.theme.timeTextStyle),
                       );
                     },
                   ),
