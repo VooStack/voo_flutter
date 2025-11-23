@@ -9,6 +9,9 @@ A node-based canvas widget for creating visual node graphs in Flutter. Build flo
 - **Connection System**: Link nodes via input/output ports with smooth bezier curves
 - **Grid Background**: Visual alignment aid with optional snap-to-grid
 - **Selection**: Select and manipulate multiple nodes and connections
+- **Node Palette**: Drag-and-drop node templates with category organization
+- **Canvas Editor**: Ready-to-use editor widget with palette and toolbar
+- **JSON Serialization**: Export/import canvas state for persistence
 - **Customizable**: Extensive configuration options for appearance and behavior
 - **Responsive**: Works across all device sizes using voo_responsive
 
@@ -18,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  voo_node_canvas: ^0.0.1
+  voo_node_canvas: ^0.1.0
 ```
 
 ## Quick Start
@@ -173,6 +176,201 @@ controller.selectNode('nodeId', addToSelection: true);
 controller.selectConnection('connId');
 controller.clearSelection();
 controller.deleteSelected();
+```
+
+## Canvas Editor
+
+The `VooCanvasEditor` provides a complete editing experience with a palette, canvas, and toolbar:
+
+```dart
+VooCanvasEditor(
+  controller: controller,
+  templates: [
+    NodeTemplate(
+      type: 'start',
+      label: 'Start',
+      icon: Icons.play_circle,
+      color: Colors.green,
+      category: 'Triggers',
+      defaultPorts: const [
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+    NodeTemplate(
+      type: 'process',
+      label: 'Process',
+      icon: Icons.settings,
+      color: Colors.blue,
+      category: 'Processing',
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+  ],
+  nodeBuilder: (template, node) => MyNodeWidget(template: template),
+  palettePosition: PalettePosition.left,
+  paletteWidth: 220,
+  showToolbar: true,
+  onNodeCreated: (node, template) {
+    print('Created ${template.label}');
+  },
+)
+```
+
+### Node Templates
+
+Templates define blueprints for creating nodes:
+
+```dart
+NodeTemplate(
+  type: 'condition',           // Unique type identifier
+  label: 'Condition',          // Display name
+  description: 'Branch logic', // Optional description
+  icon: Icons.call_split,      // Icon for palette
+  color: Colors.orange,        // Theme color
+  category: 'Logic',           // Category for grouping
+  defaultSize: const Size(140, 100),
+  defaultPorts: const [
+    NodePort(id: 'in1', type: PortType.input),
+    NodePort(id: 'true', type: PortType.output, label: 'True'),
+    NodePort(id: 'false', type: PortType.output, label: 'False'),
+  ],
+  defaultMetadata: {'version': 1},
+)
+```
+
+### Node Palette
+
+Display templates in a draggable palette:
+
+```dart
+NodePalette(
+  templates: templates,
+  direction: Axis.vertical,
+  showCategories: true,
+  onTemplateTap: (template) => createNode(template),
+  onTemplateDragStarted: (template) => print('Dragging'),
+)
+```
+
+## JSON Serialization
+
+Export and import canvas state for persistence:
+
+```dart
+// Export to JSON
+final json = controller.toJson();
+final jsonString = jsonEncode(json);
+
+// Import from JSON
+controller.fromJson(
+  jsonDecode(jsonString),
+  nodeBuilder: (node) {
+    // Rebuild widget content from metadata
+    final type = node.metadata?['type'] as String?;
+    return node.copyWith(child: MyNodeWidget(type: type));
+  },
+);
+
+// Clear canvas
+controller.clear();
+```
+
+### Example JSON Export
+
+```json
+{
+  "nodes": [
+    {
+      "id": "node_1732345678901_1",
+      "position": {
+        "dx": 100.0,
+        "dy": 150.0
+      },
+      "size": {
+        "width": 120.0,
+        "height": 80.0
+      },
+      "ports": [
+        {
+          "id": "out1",
+          "type": "output"
+        }
+      ],
+      "metadata": {
+        "type": "start"
+      }
+    },
+    {
+      "id": "node_1732345678902_2",
+      "position": {
+        "dx": 300.0,
+        "dy": 130.0
+      },
+      "size": {
+        "width": 140.0,
+        "height": 100.0
+      },
+      "ports": [
+        {
+          "id": "in1",
+          "type": "input"
+        },
+        {
+          "id": "out1",
+          "type": "output"
+        }
+      ],
+      "metadata": {
+        "type": "process"
+      }
+    },
+    {
+      "id": "node_1732345678903_3",
+      "position": {
+        "dx": 520.0,
+        "dy": 150.0
+      },
+      "size": {
+        "width": 120.0,
+        "height": 80.0
+      },
+      "ports": [
+        {
+          "id": "in1",
+          "type": "input"
+        }
+      ],
+      "metadata": {
+        "type": "end"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "conn_1732345678904",
+      "sourceNodeId": "node_1732345678901_1",
+      "sourcePortId": "out1",
+      "targetNodeId": "node_1732345678902_2",
+      "targetPortId": "in1"
+    },
+    {
+      "id": "conn_1732345678905",
+      "sourceNodeId": "node_1732345678902_2",
+      "sourcePortId": "out1",
+      "targetNodeId": "node_1732345678903_3",
+      "targetPortId": "in1"
+    }
+  ],
+  "viewport": {
+    "offset": {
+      "dx": 0.0,
+      "dy": 0.0
+    },
+    "zoom": 1.0
+  }
+}
 ```
 
 ## Connection Styles
