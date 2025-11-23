@@ -1,0 +1,34 @@
+name: voo_node_canvas
+description: 'A node-based canvas widget for creating visual node graphs with draggable nodes and connections'
+version: 0.0.1
+repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_node_canvas
+homepage: https://voostack.com/packages/voo_node_canvas
+issue_tracker: https://github.com/VooStack/VooFlutter/issues
+documentation: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_node_canvas
+resolution: workspace
+
+topics:
+  - widgets
+  - canvas
+  - node-graph
+  - flutter-ui
+  - drag-and-drop
+
+environment:
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voo_tokens: ^0.0.8
+  voo_responsive: ^0.1.4
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

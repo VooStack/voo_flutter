@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_circular_progress/src/domain/entities/circular_progress_config.dart';
 
-import '../lib/voo_circular_progress.dart';
+import 'package:voo_circular_progress/voo_circular_progress.dart';
 
 void main() {
   group('CircularProgressConfig', () {
