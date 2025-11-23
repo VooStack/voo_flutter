@@ -72,6 +72,7 @@ export 'src/domain/entities/canvas_node.dart';
 export 'src/domain/entities/canvas_viewport.dart';
 export 'src/domain/entities/node_connection.dart';
 export 'src/domain/entities/node_port.dart';
+export 'src/domain/entities/node_template.dart';
 
 // Presentation - State
 export 'src/presentation/state/canvas_controller.dart';
@@ -79,5 +80,7 @@ export 'src/presentation/state/canvas_state.dart';
 
 // Presentation - Widgets
 export 'src/presentation/widgets/atoms/grid_painter.dart';
+export 'src/presentation/widgets/molecules/node_palette.dart';
 export 'src/presentation/widgets/molecules/node_widget.dart';
+export 'src/presentation/widgets/organisms/voo_canvas_editor.dart';
 export 'src/presentation/widgets/organisms/voo_node_canvas.dart';

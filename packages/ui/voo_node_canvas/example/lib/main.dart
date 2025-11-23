@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:voo_node_canvas/voo_node_canvas.dart';
@@ -33,7 +35,7 @@ class VooNodeCanvasExampleApp extends StatelessWidget {
   }
 }
 
-/// Main example screen showing the node canvas.
+/// Main example screen showing the node canvas editor.
 class NodeCanvasExample extends StatefulWidget {
   /// Creates the node canvas example.
   const NodeCanvasExample({super.key});
@@ -44,116 +46,137 @@ class NodeCanvasExample extends StatefulWidget {
 
 class _NodeCanvasExampleState extends State<NodeCanvasExample> {
   late final CanvasController _controller;
-  int _nodeCounter = 0;
+
+  /// Node templates available in the palette.
+  final List<NodeTemplate> _templates = [
+    // Triggers category
+    NodeTemplate(
+      type: 'start',
+      label: 'Start',
+      description: 'Entry point of the flow',
+      icon: Icons.play_circle_outline,
+      color: Colors.green,
+      category: 'Triggers',
+      defaultSize: const Size(120, 80),
+      defaultPorts: const [
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+    NodeTemplate(
+      type: 'timer',
+      label: 'Timer',
+      description: 'Triggers on schedule',
+      icon: Icons.timer_outlined,
+      color: Colors.green,
+      category: 'Triggers',
+      defaultSize: const Size(120, 80),
+      defaultPorts: const [
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+
+    // Processing category
+    NodeTemplate(
+      type: 'process',
+      label: 'Process',
+      description: 'Execute an action',
+      icon: Icons.settings_outlined,
+      color: Colors.blue,
+      category: 'Processing',
+      defaultSize: const Size(140, 100),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+    NodeTemplate(
+      type: 'transform',
+      label: 'Transform',
+      description: 'Transform data',
+      icon: Icons.transform,
+      color: Colors.blue,
+      category: 'Processing',
+      defaultSize: const Size(140, 100),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+    NodeTemplate(
+      type: 'filter',
+      label: 'Filter',
+      description: 'Filter items',
+      icon: Icons.filter_alt_outlined,
+      color: Colors.blue,
+      category: 'Processing',
+      defaultSize: const Size(140, 100),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+
+    // Logic category
+    NodeTemplate(
+      type: 'condition',
+      label: 'Condition',
+      description: 'Branch based on logic',
+      icon: Icons.call_split,
+      color: Colors.orange,
+      category: 'Logic',
+      defaultSize: const Size(140, 100),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+        NodePort(id: 'true', type: PortType.output, label: 'True'),
+        NodePort(id: 'false', type: PortType.output, label: 'False'),
+      ],
+    ),
+    NodeTemplate(
+      type: 'merge',
+      label: 'Merge',
+      description: 'Combine inputs',
+      icon: Icons.merge,
+      color: Colors.orange,
+      category: 'Logic',
+      defaultSize: const Size(120, 100),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+        NodePort(id: 'in2', type: PortType.input),
+        NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+
+    // Output category
+    NodeTemplate(
+      type: 'end',
+      label: 'End',
+      description: 'End of the flow',
+      icon: Icons.stop_circle_outlined,
+      color: Colors.red,
+      category: 'Output',
+      defaultSize: const Size(120, 80),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+      ],
+    ),
+    NodeTemplate(
+      type: 'log',
+      label: 'Log',
+      description: 'Log output',
+      icon: Icons.article_outlined,
+      color: Colors.red,
+      category: 'Output',
+      defaultSize: const Size(120, 80),
+      defaultPorts: const [
+        NodePort(id: 'in1', type: PortType.input),
+      ],
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
     _controller = CanvasController();
-    _addInitialNodes();
-  }
-
-  void _addInitialNodes() {
-    // Add a "Start" node
-    _controller.addNode(CanvasNode(
-      id: 'start',
-      position: const Offset(50, 150),
-      size: const Size(120, 80),
-      ports: const [
-        NodePort(id: 'out1', type: PortType.output),
-      ],
-      child: const _NodeContent(
-        title: 'Start',
-        color: Colors.green,
-      ),
-    ));
-
-    // Add a "Process" node
-    _controller.addNode(CanvasNode(
-      id: 'process1',
-      position: const Offset(250, 100),
-      size: const Size(140, 100),
-      ports: const [
-        NodePort(id: 'in1', type: PortType.input),
-        NodePort(id: 'out1', type: PortType.output),
-      ],
-      child: const _NodeContent(
-        title: 'Process A',
-        color: Colors.blue,
-      ),
-    ));
-
-    // Add another "Process" node
-    _controller.addNode(CanvasNode(
-      id: 'process2',
-      position: const Offset(250, 250),
-      size: const Size(140, 100),
-      ports: const [
-        NodePort(id: 'in1', type: PortType.input),
-        NodePort(id: 'out1', type: PortType.output),
-      ],
-      child: const _NodeContent(
-        title: 'Process B',
-        color: Colors.orange,
-      ),
-    ));
-
-    // Add an "End" node
-    _controller.addNode(CanvasNode(
-      id: 'end',
-      position: const Offset(480, 175),
-      size: const Size(120, 80),
-      ports: const [
-        NodePort(id: 'in1', type: PortType.input),
-        NodePort(id: 'in2', type: PortType.input),
-      ],
-      child: const _NodeContent(
-        title: 'End',
-        color: Colors.red,
-      ),
-    ));
-
-    // Add initial connections
-    _controller.addConnection(const NodeConnection(
-      id: 'conn1',
-      sourceNodeId: 'start',
-      sourcePortId: 'out1',
-      targetNodeId: 'process1',
-      targetPortId: 'in1',
-    ));
-
-    _nodeCounter = 4;
-  }
-
-  void _addNewNode() {
-    _nodeCounter++;
-    final viewport = _controller.state.viewport;
-
-    // Calculate position in the center of the visible area
-    final centerX = (-viewport.offset.dx + 200) / viewport.zoom;
-    final centerY = (-viewport.offset.dy + 200) / viewport.zoom;
-
-    _controller.addNode(CanvasNode(
-      id: 'node_$_nodeCounter',
-      position: Offset(centerX, centerY),
-      size: const Size(140, 100),
-      ports: const [
-        NodePort(id: 'in1', type: PortType.input),
-        NodePort(id: 'out1', type: PortType.output),
-      ],
-      child: _NodeContent(
-        title: 'Node $_nodeCounter',
-        color: Colors.purple,
-      ),
-    ));
-  }
-
-  void _deleteSelected() {
-    _controller.deleteSelected();
-  }
-
-  void _resetView() {
-    _controller.resetViewport();
   }
 
   @override
@@ -162,53 +185,127 @@ class _NodeCanvasExampleState extends State<NodeCanvasExample> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('VooNodeCanvas Example'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.center_focus_strong),
-            tooltip: 'Reset View',
-            onPressed: _resetView,
+  void _handleSave() {
+    final json = _controller.toJson();
+    final jsonString = const JsonEncoder.withIndent('  ').convert(json);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Canvas JSON'),
+        content: SingleChildScrollView(
+          child: SelectableText(
+            jsonString,
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 12,
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete Selected',
-            onPressed: _deleteSelected,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
           ),
         ],
       ),
-      body: VooNodeCanvas(
-        controller: _controller,
-        config: const CanvasConfig(
-          gridSize: 20,
-          showGrid: true,
-          snapToGrid: false, // Disabled for smoother dragging
-          minZoom: 0.25,
-          maxZoom: 2.0,
-        ),
-        onNodeTap: (node) {
-          _showSnackBar('Tapped: ${node.id}');
+    );
+  }
+
+  void _handleLoad() {
+    // Sample JSON to load
+    final sampleJson = {
+      'nodes': [
+        {
+          'id': 'loaded_start',
+          'position': {'dx': 50.0, 'dy': 150.0},
+          'size': {'width': 120.0, 'height': 80.0},
+          'ports': [
+            {'id': 'out1', 'type': 'output'},
+          ],
+          'metadata': {'type': 'start'},
         },
-        onNodeMoved: (nodeId, position) {
-          // Node moved - could save position here
+        {
+          'id': 'loaded_process',
+          'position': {'dx': 250.0, 'dy': 130.0},
+          'size': {'width': 140.0, 'height': 100.0},
+          'ports': [
+            {'id': 'in1', 'type': 'input'},
+            {'id': 'out1', 'type': 'output'},
+          ],
+          'metadata': {'type': 'process'},
         },
-        onConnectionCreated: (connection) {
-          _showSnackBar(
-            'Connected: ${connection.sourceNodeId} → ${connection.targetNodeId}',
-          );
+        {
+          'id': 'loaded_end',
+          'position': {'dx': 480.0, 'dy': 150.0},
+          'size': {'width': 120.0, 'height': 80.0},
+          'ports': [
+            {'id': 'in1', 'type': 'input'},
+          ],
+          'metadata': {'type': 'end'},
         },
-        onConnectionTap: (connection) {
-          _showSnackBar('Connection selected: ${connection.id}');
+      ],
+      'connections': [
+        {
+          'id': 'conn1',
+          'sourceNodeId': 'loaded_start',
+          'sourcePortId': 'out1',
+          'targetNodeId': 'loaded_process',
+          'targetPortId': 'in1',
         },
+        {
+          'id': 'conn2',
+          'sourceNodeId': 'loaded_process',
+          'sourcePortId': 'out1',
+          'targetNodeId': 'loaded_end',
+          'targetPortId': 'in1',
+        },
+      ],
+    };
+
+    _controller.fromJson(
+      sampleJson,
+      nodeBuilder: _rebuildNodeWidget,
+    );
+
+    _showSnackBar('Loaded sample canvas');
+  }
+
+  void _handleClear() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Canvas'),
+        content: const Text('Are you sure you want to clear all nodes and connections?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _controller.clear();
+              _showSnackBar('Canvas cleared');
+            },
+            child: const Text('Clear'),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNewNode,
-        tooltip: 'Add Node',
-        child: const Icon(Icons.add),
-      ),
+    );
+  }
+
+  /// Rebuilds a node's widget content from its metadata.
+  CanvasNode _rebuildNodeWidget(CanvasNode node) {
+    final nodeType = node.metadata?['type'] as String?;
+    if (nodeType == null) return node;
+
+    // Find the matching template
+    final template = _templates.where((t) => t.type == nodeType).firstOrNull;
+    if (template == null) return node;
+
+    return node.copyWith(
+      child: _NodeContent(template: template),
     );
   }
 
@@ -216,25 +313,78 @@ class _NodeCanvasExampleState extends State<NodeCanvasExample> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('VooNodeCanvas Editor'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.download),
+            tooltip: 'Load Sample',
+            onPressed: _handleLoad,
+          ),
+          IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Export JSON',
+            onPressed: _handleSave,
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_forever),
+            tooltip: 'Clear Canvas',
+            onPressed: _handleClear,
+          ),
+        ],
+      ),
+      body: VooCanvasEditor(
+        controller: _controller,
+        templates: _templates,
+        config: const CanvasConfig(
+          gridSize: 20,
+          showGrid: true,
+          snapToGrid: false,
+          minZoom: 0.25,
+          maxZoom: 2.0,
+        ),
+        palettePosition: PalettePosition.left,
+        paletteWidth: 220,
+        showToolbar: true,
+        toolbarPosition: ToolbarPosition.top,
+        nodeBuilder: (template, node) => _NodeContent(template: template),
+        onNodeTap: (node) {
+          _showSnackBar('Tapped: ${node.id}');
+        },
+        onNodeCreated: (node, template) {
+          _showSnackBar('Created: ${template.label}');
+        },
+        onConnectionCreated: (connection) {
+          _showSnackBar(
+            'Connected: ${connection.sourceNodeId} → ${connection.targetNodeId}',
+          );
+        },
+        onConnectionTap: (connection) {
+          _showSnackBar('Connection: ${connection.id}');
+        },
       ),
     );
   }
 }
 
-/// A simple node content widget.
+/// Custom node content widget.
 class _NodeContent extends StatelessWidget {
-  const _NodeContent({
-    required this.title,
-    required this.color,
-  });
+  const _NodeContent({required this.template});
 
-  final String title;
-  final Color color;
+  final NodeTemplate template;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final color = template.color ?? theme.colorScheme.primary;
 
     return Container(
       decoration: BoxDecoration(
@@ -242,28 +392,43 @@ class _NodeContent extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            color.withValues(alpha: 0.8),
-            color.withValues(alpha: 0.6),
+            color.withValues(alpha: 0.85),
+            color.withValues(alpha: 0.65),
           ],
         ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.widgets,
-            color: Colors.white.withValues(alpha: 0.9),
-            size: 24,
-          ),
+          if (template.icon != null)
+            Icon(
+              template.icon,
+              color: Colors.white.withValues(alpha: 0.9),
+              size: 24,
+            ),
           const SizedBox(height: 4),
           Text(
-            title,
+            template.label,
             style: theme.textTheme.titleSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
+          if (template.description != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                template.description!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  fontSize: 10,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
         ],
       ),
     );
