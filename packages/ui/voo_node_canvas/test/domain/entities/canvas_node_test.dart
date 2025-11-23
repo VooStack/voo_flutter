@@ -18,7 +18,7 @@ void main() {
       expect(node.child, isNull);
       expect(node.isSelected, false);
       expect(node.isDragging, false);
-      expect(node.data, isNull);
+      expect(node.metadata, isNull);
     });
 
     test('creates with all parameters', () {
@@ -34,7 +34,7 @@ void main() {
         ports: ports,
         isSelected: true,
         isDragging: true,
-        data: 'custom data',
+        metadata: {'value': 'custom data'},
       );
 
       expect(node.id, 'node2');
@@ -43,7 +43,7 @@ void main() {
       expect(node.ports, hasLength(2));
       expect(node.isSelected, true);
       expect(node.isDragging, true);
-      expect(node.data, 'custom data');
+      expect(node.metadata, {'value': 'custom data'});
     });
 
     test('center returns correct position', () {

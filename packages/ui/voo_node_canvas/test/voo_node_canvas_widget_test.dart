@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voo_node_canvas/src/presentation/widgets/atoms/grid_painter.dart';
-import 'package:voo_node_canvas/src/presentation/widgets/molecules/node_widget.dart';
-
 import 'package:voo_node_canvas/voo_node_canvas.dart';
 
 void main() {

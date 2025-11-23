@@ -134,65 +134,62 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
 
     return Listener(
       onPointerSignal: _handlePointerSignal,
-      child: ClipRect(
-        child: Container(
-          color: config.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
-          child: Stack(
-            children: [
-              // Grid background - use Positioned.fill to ensure it doesn't block gestures
-              if (config.showGrid)
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CanvasGrid(
-                      gridSize: config.gridSize,
-                      offset: viewport.offset,
-                      zoom: viewport.zoom,
-                      color: config.gridColor,
-                    ),
-                  ),
-                ),
-
-              // Canvas pan gesture layer - placed behind nodes
-              Positioned.fill(
-                child: GestureDetector(
-                  onTap: _handleCanvasTap,
-                  onPanStart: _handlePanStart,
-                  onPanUpdate: _handlePanUpdate,
-                  onPanEnd: _handlePanEnd,
-                  behavior: HitTestBehavior.translucent,
-                ),
-              ),
-
-              // Transform layer for pan/zoom
-              Transform(
-                transform: viewport.transformMatrix,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // Connection layer - doesn't block gestures
-                    IgnorePointer(
-                      child: ConnectionLayer(
-                        connections: state.connections,
-                        nodes: state.nodes,
-                        viewport: viewport.transformMatrix,
-                        selectedColor: config.selectedColor,
-                        onConnectionTap: _handleConnectionTap,
-                        pendingConnection: state.isConnecting
-                            ? (
-                                nodeId: state.connectingFromNodeId!,
-                                portId: state.connectingFromPortId!,
-                              )
-                            : null,
-                        pendingConnectionEnd: _pendingConnectionEnd,
+      onPointerDown: _handlePointerDown,
+      onPointerMove: _handlePointerMove,
+      onPointerUp: _handlePointerUp,
+      onPointerCancel: _handlePointerCancel,
+      child: GestureDetector(
+        onTap: _handleCanvasTap,
+        behavior: HitTestBehavior.translucent,
+        child: ClipRect(
+          child: Container(
+            color: config.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+            child: Stack(
+              children: [
+                // Grid background
+                if (config.showGrid)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CanvasGrid(
+                        gridSize: config.gridSize,
+                        offset: viewport.offset,
+                        zoom: viewport.zoom,
+                        color: config.gridColor,
                       ),
                     ),
+                  ),
 
-                    // Node widgets - these should capture their own gestures
-                    ...state.nodes.map(_buildNodeWidget),
-                  ],
+                // Transform layer for pan/zoom with nodes
+                Transform(
+                  transform: viewport.transformMatrix,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // Connection layer - doesn't block gestures
+                      IgnorePointer(
+                        child: ConnectionLayer(
+                          connections: state.connections,
+                          nodes: state.nodes,
+                          viewport: viewport.transformMatrix,
+                          selectedColor: config.selectedColor,
+                          onConnectionTap: _handleConnectionTap,
+                          pendingConnection: state.isConnecting
+                              ? (
+                                  nodeId: state.connectingFromNodeId!,
+                                  portId: state.connectingFromPortId!,
+                                )
+                              : null,
+                          pendingConnectionEnd: _pendingConnectionEnd,
+                        ),
+                      ),
+
+                      // Node widgets - these capture their own gestures
+                      ...state.nodes.map(_buildNodeWidget),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -259,29 +256,87 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
     widget.onCanvasTap?.call();
   }
 
-  void _handlePanStart(DragStartDetails details) {
+  // ---------------------------------------------------------------------------
+  // Pointer-based Canvas Panning (doesn't compete with node gestures)
+  // ---------------------------------------------------------------------------
+
+  void _handlePointerDown(PointerDownEvent event) {
     if (!widget.config.enablePan) return;
-    // Don't start canvas pan if a node is being dragged
-    if (widget.controller.state.draggingNodeId != null) return;
-    _lastPanPosition = details.localPosition;
+    // Only start panning if not already panning and no node is being dragged
+    if (_isPanning || widget.controller.state.draggingNodeId != null) return;
+
+    // Check if the pointer is over a node - if so, don't start canvas panning
+    // because the user likely intends to drag the node
+    if (_isPointerOverNode(event.localPosition)) return;
+
+    // Start tracking this pointer for potential panning
+    _panningPointerId = event.pointer;
+    _lastPanPosition = event.localPosition;
   }
 
-  void _handlePanUpdate(DragUpdateDetails details) {
-    if (!widget.config.enablePan) return;
-    if (_lastPanPosition == null) return;
-    // Don't pan canvas while dragging a node
-    if (widget.controller.state.draggingNodeId != null) return;
+  /// Checks if the given screen position is over any node.
+  bool _isPointerOverNode(Offset screenPosition) {
+    final viewport = widget.controller.state.viewport;
 
-    final delta = details.localPosition - _lastPanPosition!;
+    // Convert screen position to canvas coordinates
+    final canvasPosition = viewport.screenToCanvas(screenPosition);
+
+    // Check if the position is inside any node's bounds
+    for (final node in widget.controller.state.nodes) {
+      if (node.bounds.contains(canvasPosition)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void _handlePointerMove(PointerMoveEvent event) {
+    if (!widget.config.enablePan) return;
+    if (_panningPointerId != event.pointer) return;
+    if (_lastPanPosition == null) return;
+
+    // If a node drag started, stop canvas panning
+    if (widget.controller.state.draggingNodeId != null) {
+      _cancelPanning();
+      return;
+    }
+
+    // Check if we've moved enough to start panning
+    if (!_isPanning) {
+      final distance = (event.localPosition - _lastPanPosition!).distance;
+      if (distance > 5) {
+        // Threshold to distinguish from taps
+        _isPanning = true;
+      } else {
+        return;
+      }
+    }
+
+    // Perform canvas pan
+    final delta = event.localPosition - _lastPanPosition!;
     final currentOffset = widget.controller.state.viewport.offset;
     widget.controller.setViewportOffset(currentOffset + delta);
-    _lastPanPosition = details.localPosition;
+    _lastPanPosition = event.localPosition;
 
     final viewport = widget.controller.state.viewport;
     widget.onViewportChanged?.call(viewport.offset, viewport.zoom);
   }
 
-  void _handlePanEnd(DragEndDetails details) {
+  void _handlePointerUp(PointerUpEvent event) {
+    if (_panningPointerId == event.pointer) {
+      _cancelPanning();
+    }
+  }
+
+  void _handlePointerCancel(PointerCancelEvent event) {
+    if (_panningPointerId == event.pointer) {
+      _cancelPanning();
+    }
+  }
+
+  void _cancelPanning() {
+    _isPanning = false;
+    _panningPointerId = null;
     _lastPanPosition = null;
   }
 

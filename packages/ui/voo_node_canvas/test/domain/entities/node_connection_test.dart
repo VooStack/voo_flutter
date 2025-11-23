@@ -23,7 +23,7 @@ void main() {
       expect(connection.color, isNull);
       expect(connection.strokeWidth, 2.0);
       expect(connection.isSelected, false);
-      expect(connection.data, isNull);
+      expect(connection.metadata, isNull);
     });
 
     test('creates with all parameters', () {
@@ -37,7 +37,7 @@ void main() {
         color: Colors.red,
         strokeWidth: 3.0,
         isSelected: true,
-        data: {'key': 'value'},
+        metadata: {'key': 'value'},
       );
 
       expect(connection.id, 'conn2');
@@ -45,7 +45,7 @@ void main() {
       expect(connection.color, Colors.red);
       expect(connection.strokeWidth, 3.0);
       expect(connection.isSelected, true);
-      expect(connection.data, {'key': 'value'});
+      expect(connection.metadata, {'key': 'value'});
     });
 
     test('copyWith creates new instance with updated values', () {
