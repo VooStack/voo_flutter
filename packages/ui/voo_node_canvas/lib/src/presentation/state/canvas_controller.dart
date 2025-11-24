@@ -86,6 +86,34 @@ class CanvasController extends ChangeNotifier {
     updateNode(nodeId, (node) => node.copyWith(position: finalPosition));
   }
 
+  /// Moves a node by a delta offset.
+  ///
+  /// This method properly handles snap-to-grid by tracking the raw position
+  /// during drag operations, ensuring small movements accumulate correctly.
+  void moveNodeByDelta(String nodeId, Offset delta) {
+    final node = _state.getNodeById(nodeId);
+    if (node == null) return;
+
+    // Calculate new raw position from the tracked raw position (or current if not dragging)
+    final basePosition = _state.dragRawPosition ?? node.position;
+    final rawPosition = basePosition + delta;
+
+    Offset finalPosition = rawPosition;
+
+    // Snap to grid if enabled
+    if (_state.config.snapToGrid) {
+      final gridSize = _state.config.gridSize;
+      finalPosition = Offset(
+        (rawPosition.dx / gridSize).round() * gridSize,
+        (rawPosition.dy / gridSize).round() * gridSize,
+      );
+    }
+
+    // Update raw position tracking and node position
+    _updateState(_state.copyWith(dragRawPosition: rawPosition));
+    updateNode(nodeId, (node) => node.copyWith(position: finalPosition));
+  }
+
   /// Selects a node.
   void selectNode(String nodeId, {bool addToSelection = false}) {
     Set<String> newSelection;
@@ -121,8 +149,12 @@ class CanvasController extends ChangeNotifier {
 
   /// Starts dragging a node.
   void startDraggingNode(String nodeId) {
+    final node = _state.getNodeById(nodeId);
     updateNode(nodeId, (node) => node.copyWith(isDragging: true));
-    _updateState(_state.copyWith(draggingNodeId: nodeId));
+    _updateState(_state.copyWith(
+      draggingNodeId: nodeId,
+      dragRawPosition: node?.position,
+    ));
   }
 
   /// Ends dragging a node.

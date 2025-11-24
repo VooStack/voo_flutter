@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 import 'package:voo_node_canvas/src/domain/entities/canvas_config.dart';
 import 'package:voo_node_canvas/src/domain/entities/canvas_node.dart';
@@ -19,6 +20,7 @@ class CanvasState extends Equatable {
     this.selectedNodeIds = const {},
     this.selectedConnectionIds = const {},
     this.draggingNodeId,
+    this.dragRawPosition,
     this.connectingFromNodeId,
     this.connectingFromPortId,
   });
@@ -43,6 +45,13 @@ class CanvasState extends Equatable {
 
   /// The ID of the node currently being dragged, if any.
   final String? draggingNodeId;
+
+  /// The raw (unsnapped) position during drag operations.
+  ///
+  /// This tracks the actual accumulated position from drag deltas,
+  /// before snap-to-grid is applied. This ensures small movements
+  /// accumulate properly even when snap-to-grid rounds to the same position.
+  final Offset? dragRawPosition;
 
   /// The ID of the node being used to create a new connection, if any.
   final String? connectingFromNodeId;
@@ -85,6 +94,7 @@ class CanvasState extends Equatable {
     Set<String>? selectedNodeIds,
     Set<String>? selectedConnectionIds,
     String? draggingNodeId,
+    Offset? dragRawPosition,
     String? connectingFromNodeId,
     String? connectingFromPortId,
     bool clearDragging = false,
@@ -100,6 +110,8 @@ class CanvasState extends Equatable {
             selectedConnectionIds ?? this.selectedConnectionIds,
         draggingNodeId:
             clearDragging ? null : (draggingNodeId ?? this.draggingNodeId),
+        dragRawPosition:
+            clearDragging ? null : (dragRawPosition ?? this.dragRawPosition),
         connectingFromNodeId: clearConnecting
             ? null
             : (connectingFromNodeId ?? this.connectingFromNodeId),
@@ -117,6 +129,7 @@ class CanvasState extends Equatable {
         selectedNodeIds,
         selectedConnectionIds,
         draggingNodeId,
+        dragRawPosition,
         connectingFromNodeId,
         connectingFromPortId,
       ];

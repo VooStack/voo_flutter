@@ -372,10 +372,14 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
 
   void _handleNodeDragUpdate(CanvasNode node, DragUpdateDetails details) {
     if (!widget.config.enableNodeDrag) return;
-    final zoom = widget.controller.state.viewport.zoom;
-    final newPosition = node.position + (details.delta / zoom);
-    widget.controller.moveNode(node.id, newPosition);
-    widget.onNodeMoved?.call(node.id, newPosition);
+    // Note: details.delta is already in canvas coordinates because the
+    // GestureDetector is inside the Transform widget. No zoom conversion needed.
+    widget.controller.moveNodeByDelta(node.id, details.delta);
+    // Report the actual snapped position to the callback
+    final updatedNode = widget.controller.state.getNodeById(node.id);
+    if (updatedNode != null) {
+      widget.onNodeMoved?.call(node.id, updatedNode.position);
+    }
   }
 
   void _handleNodeDragEnd(CanvasNode node) {
@@ -415,10 +419,11 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
   ) {
     if (!widget.controller.state.isConnecting) return;
 
-    final zoom = widget.controller.state.viewport.zoom;
+    // Note: details.delta is already in canvas coordinates because the
+    // GestureDetector is inside the Transform widget. No zoom conversion needed.
     setState(() {
-      _pendingConnectionEnd = (_pendingConnectionEnd ?? Offset.zero) +
-          (details.delta / zoom);
+      _pendingConnectionEnd =
+          (_pendingConnectionEnd ?? Offset.zero) + details.delta;
     });
   }
 
