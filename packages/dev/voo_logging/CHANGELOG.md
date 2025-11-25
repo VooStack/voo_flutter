@@ -1,3 +1,9 @@
+## 0.4.7
+
+ - **FIX**: Add error handling for web IndexedDB cursor issues (idb_shim compatibility)
+ - **FIX**: Add missing `path_provider_platform_interface` dev dependency for tests
+ - **ENHANCEMENT**: Graceful degradation on web when IndexedDB operations fail
+
 ## 0.4.6
 
  - **FEAT**: Zero-config initialization - VooLogger now auto-initializes on first use with smart defaults
