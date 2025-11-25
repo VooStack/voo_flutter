@@ -16,6 +16,8 @@ workspace:
   - packages/ui/voo_data_grid
   - packages/ui/voo_data_grid/example
   - packages/ui/voo_forms
+  - packages/ui/voo_json_tree
+  - packages/ui/voo_json_tree/example
   - packages/ui/voo_lists
   - packages/dev/voo_logging
   - packages/dev/voo_logging/example

@@ -1,0 +1,25 @@
+name: voo_json_tree_example
+description: Example app demonstrating the voo_json_tree package.
+publish_to: 'none'
+resolution: workspace
+
+environment:
+  sdk: '>=3.8.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voo_json_tree:
+    path: ../
+  voo_tokens:
+    path: ../../voo_tokens
+  voo_responsive:
+    path: ../../voo_responsive
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
