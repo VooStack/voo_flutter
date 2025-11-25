@@ -41,6 +41,10 @@ class AnalyticsListTile extends StatelessWidget {
       subtitle = event.tag;
     }
 
+    // Build semantic hint based on event type
+    final semanticHint =
+        eventType != null ? '${_getEventTypeDisplayName(eventType)} event' : 'Analytics event';
+
     return UniversalListTile(
       id: event.id,
       title: event.message,
@@ -65,6 +69,7 @@ class AnalyticsListTile extends StatelessWidget {
       onTap: onTap,
       accentColor: color,
       showTimestamp: true,
+      semanticHint: semanticHint,
     );
   }
 

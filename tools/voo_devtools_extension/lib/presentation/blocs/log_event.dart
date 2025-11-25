@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:voo_devtools_extension/core/models/log_level.dart';
 import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
 
@@ -61,3 +62,27 @@ class StreamChanged extends LogEvent {
   @override
   List<Object?> get props => [stream];
 }
+
+class DateRangeChanged extends LogEvent {
+  final DateTimeRange? range;
+
+  const DateRangeChanged(this.range);
+
+  @override
+  List<Object?> get props => [range];
+}
+
+class ClearAllFilters extends LogEvent {}
+
+class ToggleFavorite extends LogEvent {
+  final String logId;
+
+  const ToggleFavorite(this.logId);
+
+  @override
+  List<Object?> get props => [logId];
+}
+
+class ToggleShowFavoritesOnly extends LogEvent {}
+
+class ClearAllFavorites extends LogEvent {}

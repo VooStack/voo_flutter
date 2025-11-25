@@ -22,6 +22,11 @@ class LogBloc extends Bloc<LogEvent, LogState> {
     on<ToggleAutoScroll>(_onToggleAutoScroll);
     on<SearchQueryChanged>(_onSearchQueryChanged);
     on<StreamChanged>(_onStreamChanged);
+    on<DateRangeChanged>(_onDateRangeChanged);
+    on<ClearAllFilters>(_onClearAllFilters);
+    on<ToggleFavorite>(_onToggleFavorite);
+    on<ToggleShowFavoritesOnly>(_onToggleShowFavoritesOnly);
+    on<ClearAllFavorites>(_onClearAllFavorites);
 
     add(LoadLogs());
     logStreamSubscription = repository.logStream.listen(
@@ -175,8 +180,63 @@ class LogBloc extends Bloc<LogEvent, LogState> {
     );
   }
 
+  void _onDateRangeChanged(DateRangeChanged event, Emitter<LogState> emit) {
+    final newState = event.range == null
+        ? state.copyWith(clearDateRange: true)
+        : state.copyWith(dateRange: event.range);
+    emit(
+      newState.copyWith(filteredLogs: _applyFilters(state.logs, newState)),
+    );
+  }
+
+  void _onClearAllFilters(ClearAllFilters event, Emitter<LogState> emit) {
+    final newState = state.copyWith(
+      selectedLevels: null,
+      selectedCategory: null,
+      searchQuery: '',
+      clearDateRange: true,
+      showFavoritesOnly: false,
+    );
+    emit(newState.copyWith(filteredLogs: _applyFilters(state.logs, newState)));
+  }
+
+  void _onToggleFavorite(ToggleFavorite event, Emitter<LogState> emit) {
+    final newFavorites = Set<String>.from(state.favoriteIds);
+    if (newFavorites.contains(event.logId)) {
+      newFavorites.remove(event.logId);
+    } else {
+      newFavorites.add(event.logId);
+    }
+
+    final newState = state.copyWith(favoriteIds: newFavorites);
+    emit(newState.copyWith(filteredLogs: _applyFilters(state.logs, newState)));
+  }
+
+  void _onToggleShowFavoritesOnly(
+    ToggleShowFavoritesOnly event,
+    Emitter<LogState> emit,
+  ) {
+    final newState = state.copyWith(showFavoritesOnly: !state.showFavoritesOnly);
+    emit(newState.copyWith(filteredLogs: _applyFilters(state.logs, newState)));
+  }
+
+  void _onClearAllFavorites(ClearAllFavorites event, Emitter<LogState> emit) {
+    final newState = state.copyWith(
+      favoriteIds: <String>{},
+      showFavoritesOnly: false,
+    );
+    emit(newState.copyWith(filteredLogs: _applyFilters(state.logs, newState)));
+  }
+
   List<LogEntryModel> _applyFilters(List<LogEntryModel> logs, LogState state) {
     var filtered = logs;
+
+    // Apply favorites filter first
+    if (state.showFavoritesOnly) {
+      filtered = filtered
+          .where((log) => state.favoriteIds.contains(log.id))
+          .toList();
+    }
 
     // Apply level filter
     if (state.selectedLevels != null && state.selectedLevels!.isNotEmpty) {
@@ -192,6 +252,14 @@ class LogBloc extends Bloc<LogEvent, LogState> {
       filtered = filtered
           .where((log) => log.category == state.selectedCategory)
           .toList();
+    }
+
+    // Apply date range filter
+    if (state.dateRange != null) {
+      filtered = filtered.where((log) {
+        return log.timestamp.isAfter(state.dateRange!.start) &&
+            log.timestamp.isBefore(state.dateRange!.end);
+      }).toList();
     }
 
     // Apply search filter

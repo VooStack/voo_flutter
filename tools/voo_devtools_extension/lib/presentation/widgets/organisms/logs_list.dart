@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/enhanced_empty_state.dart';
 import 'package:voo_devtools_extension/presentation/widgets/molecules/log_entry_tile.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
-import 'package:voo_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class LogsList extends StatelessWidget {
   final List<LogEntryModel> logs;
@@ -10,6 +9,9 @@ class LogsList extends StatelessWidget {
   final ScrollController scrollController;
   final bool isLoading;
   final String? error;
+  final bool hasActiveFilters;
+  final VoidCallback? onClearFilters;
+  final VoidCallback? onRetry;
   final Function(LogEntryModel) onLogTap;
 
   const LogsList({
@@ -19,24 +21,37 @@ class LogsList extends StatelessWidget {
     required this.scrollController,
     required this.isLoading,
     this.error,
+    this.hasActiveFilters = false,
+    this.onClearFilters,
+    this.onRetry,
     required this.onLogTap,
   });
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const EnhancedEmptyState(type: EmptyStateType.connecting);
     }
 
     if (error != null) {
-      return ErrorPlaceholder(error: error!);
+      return EnhancedEmptyState.error(
+        message: error,
+        onRetry: onRetry,
+      );
     }
 
     if (logs.isEmpty) {
-      return const VooEmptyState(
-        icon: Icons.list_alt_outlined,
+      if (hasActiveFilters) {
+        return EnhancedEmptyState.filteredEmpty(
+          title: 'No Matching Logs',
+          message: 'No logs match your current filters. Try adjusting your search criteria.',
+          onClearFilters: onClearFilters,
+        );
+      }
+      return EnhancedEmptyState.noData(
         title: 'No Logs Yet',
-        message: 'Logs will appear here as they are generated',
+        message: 'Logs will appear here in real-time as your app generates them.',
+        icon: Icons.article_outlined,
       );
     }
 

@@ -1,8 +1,11 @@
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:voo_devtools_extension/core/services/theme_service.dart';
 import 'package:voo_devtools_extension/presentation/widgets/app_wrapper.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ThemeService().initialize();
   runApp(const VooDevToolsExtension());
 }
 
@@ -11,12 +14,19 @@ class VooDevToolsExtension extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Voo DevTools',
-      theme: _buildLightTheme(),
-      darkTheme: _buildDarkTheme(),
-      themeMode: ThemeMode.dark,
-      home: DevToolsExtension(child: AppWrapper()),
+    final themeService = ThemeService();
+
+    return ListenableBuilder(
+      listenable: themeService,
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'Voo DevTools',
+          theme: _buildLightTheme(),
+          darkTheme: _buildDarkTheme(),
+          themeMode: themeService.themeMode,
+          home: DevToolsExtension(child: AppWrapper()),
+        );
+      },
     );
   }
 

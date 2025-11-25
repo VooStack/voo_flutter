@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/enhanced_empty_state.dart';
 import 'package:voo_devtools_extension/presentation/widgets/molecules/performance_list_tile.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
-import 'package:voo_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class PerformanceList extends StatelessWidget {
   final List<LogEntryModel> logs;
@@ -10,6 +9,9 @@ class PerformanceList extends StatelessWidget {
   final ScrollController scrollController;
   final bool isLoading;
   final String? error;
+  final bool hasActiveFilters;
+  final VoidCallback? onClearFilters;
+  final VoidCallback? onRetry;
   final Function(LogEntryModel) onLogTap;
 
   const PerformanceList({
@@ -19,24 +21,37 @@ class PerformanceList extends StatelessWidget {
     required this.scrollController,
     required this.isLoading,
     this.error,
+    this.hasActiveFilters = false,
+    this.onClearFilters,
+    this.onRetry,
     required this.onLogTap,
   });
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const EnhancedEmptyState(type: EmptyStateType.connecting);
     }
 
     if (error != null) {
-      return ErrorPlaceholder(error: 'Error loading performance logs\n$error');
+      return EnhancedEmptyState.error(
+        message: 'Error loading performance logs: $error',
+        onRetry: onRetry,
+      );
     }
 
     if (logs.isEmpty) {
-      return const VooEmptyState(
-        icon: Icons.speed_outlined,
+      if (hasActiveFilters) {
+        return EnhancedEmptyState.filteredEmpty(
+          title: 'No Matching Metrics',
+          message: 'No performance metrics match your current filters.',
+          onClearFilters: onClearFilters,
+        );
+      }
+      return EnhancedEmptyState.noData(
         title: 'No Performance Metrics',
-        message: 'Performance metrics will appear here when tracked',
+        message: 'Performance metrics will appear here as operations are tracked.',
+        icon: Icons.speed_outlined,
       );
     }
 

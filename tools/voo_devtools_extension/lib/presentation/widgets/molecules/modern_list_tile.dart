@@ -13,6 +13,12 @@ class ModernListTile extends StatefulWidget {
   final Color? selectedColor;
   final BorderRadius? borderRadius;
 
+  /// Semantic label for screen readers
+  final String? semanticLabel;
+
+  /// Whether this tile should be focusable for keyboard navigation
+  final bool focusable;
+
   const ModernListTile({
     super.key,
     this.leading,
@@ -25,6 +31,8 @@ class ModernListTile extends StatefulWidget {
     this.padding,
     this.selectedColor,
     this.borderRadius,
+    this.semanticLabel,
+    this.focusable = true,
   });
 
   @override
@@ -54,38 +62,45 @@ class _ModernListTileState extends State<ModernListTile> {
         ? theme.colorScheme.outline.withValues(alpha: 0.3)
         : theme.colorScheme.outline.withValues(alpha: 0.1);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-          border: Border.all(
-            color: borderColor,
-            width: widget.isSelected ? 1.5 : 1,
-          ),
-          boxShadow: _isHovered
-              ? [
-                  BoxShadow(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: widget.onTap,
-            onLongPress: widget.onLongPress,
+    return Semantics(
+      label: widget.semanticLabel,
+      button: widget.onTap != null,
+      selected: widget.isSelected,
+      enabled: widget.onTap != null,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: backgroundColor,
             borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-            highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
-            splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
-            child: Padding(
+            border: Border.all(
+              color: borderColor,
+              width: widget.isSelected ? 1.5 : 1,
+            ),
+            boxShadow: _isHovered
+                ? [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: widget.onTap,
+              onLongPress: widget.onLongPress,
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+              highlightColor: theme.colorScheme.primary.withValues(alpha: 0.05),
+              splashColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+              focusColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+              canRequestFocus: widget.focusable,
+              child: Padding(
               padding:
                   widget.padding ??
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -127,6 +142,7 @@ class _ModernListTileState extends State<ModernListTile> {
               ),
             ),
           ),
+        ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_devtools_extension/core/utils/debouncer.dart';
 import 'package:voo_devtools_extension/presentation/theme/app_theme.dart';
 
 /// Configuration for a filter option
@@ -17,7 +18,7 @@ class FilterOption {
 }
 
 /// Universal filter bar that can be configured for different tabs
-class UniversalFilterBar extends StatelessWidget {
+class UniversalFilterBar extends StatefulWidget {
   final String searchHint;
   final String? searchQuery;
   final ValueChanged<String?> onSearchChanged;
@@ -28,6 +29,9 @@ class UniversalFilterBar extends StatelessWidget {
   final VoidCallback? onClear;
   final bool showSearch;
   final bool showFilters;
+
+  /// Debounce delay for search input in milliseconds
+  final int searchDebounceMs;
 
   const UniversalFilterBar({
     super.key,
@@ -41,7 +45,54 @@ class UniversalFilterBar extends StatelessWidget {
     this.onClear,
     this.showSearch = true,
     this.showFilters = true,
+    this.searchDebounceMs = 300,
   });
+
+  @override
+  State<UniversalFilterBar> createState() => _UniversalFilterBarState();
+}
+
+class _UniversalFilterBarState extends State<UniversalFilterBar> {
+  late final Debouncer _searchDebouncer;
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchDebouncer = Debouncer(
+      delay: Duration(milliseconds: widget.searchDebounceMs),
+    );
+    _searchController = TextEditingController(text: widget.searchQuery);
+  }
+
+  @override
+  void didUpdateWidget(UniversalFilterBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update the controller if the external search query changed
+    if (widget.searchQuery != oldWidget.searchQuery &&
+        widget.searchQuery != _searchController.text) {
+      _searchController.text = widget.searchQuery ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchDebouncer.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebouncer.call(() {
+      widget.onSearchChanged(value.isEmpty ? null : value);
+    });
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    _searchDebouncer.cancel();
+    widget.onSearchChanged(null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +113,7 @@ class UniversalFilterBar extends StatelessWidget {
       child: Row(
         children: [
           // Search field
-          if (showSearch) ...[
+          if (widget.showSearch) ...[
             Expanded(
               flex: 2,
               child: Container(
@@ -77,10 +128,11 @@ class UniversalFilterBar extends StatelessWidget {
                   ),
                 ),
                 child: TextField(
-                  onChanged: onSearchChanged,
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
                   style: theme.textTheme.bodyMedium,
                   decoration: InputDecoration(
-                    hintText: searchHint,
+                    hintText: widget.searchHint,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant.withValues(
                         alpha: 0.5,
@@ -93,14 +145,14 @@ class UniversalFilterBar extends StatelessWidget {
                         alpha: 0.5,
                       ),
                     ),
-                    suffixIcon: searchQuery?.isNotEmpty == true
+                    suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: Icon(
                               Icons.clear,
                               size: 16,
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
-                            onPressed: () => onSearchChanged(null),
+                            onPressed: _clearSearch,
                             splashRadius: 16,
                           )
                         : null,
@@ -118,7 +170,7 @@ class UniversalFilterBar extends StatelessWidget {
           ],
 
           // Filter chips
-          if (showFilters && filterOptions.isNotEmpty) ...[
+          if (widget.showFilters && widget.filterOptions.isNotEmpty) ...[
             Expanded(
               flex: 3,
               child: SizedBox(
@@ -130,10 +182,10 @@ class UniversalFilterBar extends StatelessWidget {
                       context,
                       label: 'All',
                       value: null,
-                      isSelected: selectedFilter == null,
-                      onSelected: (_) => onFilterChanged(null),
+                      isSelected: widget.selectedFilter == null,
+                      onSelected: (_) => widget.onFilterChanged(null),
                     ),
-                    ...filterOptions.map(
+                    ...widget.filterOptions.map(
                       (option) => Padding(
                         padding: const EdgeInsets.only(
                           left: AppTheme.spacingSm,
@@ -144,8 +196,8 @@ class UniversalFilterBar extends StatelessWidget {
                           value: option.value,
                           icon: option.icon,
                           color: option.color,
-                          isSelected: selectedFilter == option.value,
-                          onSelected: (_) => onFilterChanged(option.value),
+                          isSelected: widget.selectedFilter == option.value,
+                          onSelected: (_) => widget.onFilterChanged(option.value),
                         ),
                       ),
                     ),
@@ -157,7 +209,7 @@ class UniversalFilterBar extends StatelessWidget {
           ],
 
           // Additional actions
-          ...additionalActions.map(
+          ...widget.additionalActions.map(
             (action) => Padding(
               padding: const EdgeInsets.only(left: AppTheme.spacingSm),
               child: action,
@@ -165,11 +217,11 @@ class UniversalFilterBar extends StatelessWidget {
           ),
 
           // Clear button
-          if (onClear != null) ...[
+          if (widget.onClear != null) ...[
             const SizedBox(width: AppTheme.spacingSm),
             IconButton(
               icon: const Icon(Icons.clear_all, size: 20),
-              onPressed: onClear,
+              onPressed: widget.onClear,
               tooltip: 'Clear all',
               splashRadius: 20,
             ),

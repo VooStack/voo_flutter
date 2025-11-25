@@ -19,6 +19,7 @@ dependencies:
   devtools_app_shared: ^0.4.0
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
+  web: ^1.0.0
   voo_core:
     path: ../../packages/dev/voo_core
   voo_ui_core:

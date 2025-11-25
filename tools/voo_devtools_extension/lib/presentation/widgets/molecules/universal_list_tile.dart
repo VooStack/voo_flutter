@@ -18,6 +18,12 @@ class UniversalListTile extends StatelessWidget {
   final IconData? icon;
   final bool showTimestamp;
 
+  /// Semantic label for screen readers. If not provided, uses title.
+  final String? semanticLabel;
+
+  /// Additional context for the semantic label (e.g., "Error log", "Warning log")
+  final String? semanticHint;
+
   const UniversalListTile({
     super.key,
     required this.id,
@@ -33,16 +39,22 @@ class UniversalListTile extends StatelessWidget {
     this.accentColor,
     this.icon,
     this.showTimestamp = true,
+    this.semanticLabel,
+    this.semanticHint,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // Build semantic label for accessibility
+    final effectiveSemanticLabel = semanticLabel ?? _buildSemanticLabel();
+
     return ModernListTile(
       isSelected: isSelected,
       selectedColor: accentColor,
       onTap: onTap,
+      semanticLabel: effectiveSemanticLabel,
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingMd,
         vertical: AppTheme.spacingSm,
@@ -214,5 +226,37 @@ class UniversalListTile extends StatelessWidget {
     } else {
       return '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
     }
+  }
+
+  String _buildSemanticLabel() {
+    final parts = <String>[];
+
+    // Add hint if provided
+    if (semanticHint != null) {
+      parts.add(semanticHint!);
+    }
+
+    // Add title
+    parts.add(title);
+
+    // Add subtitle if present
+    if (subtitle != null && subtitle!.isNotEmpty) {
+      parts.add(subtitle!);
+    }
+
+    // Add category if present
+    if (category != null && category!.isNotEmpty) {
+      parts.add('Category: $category');
+    }
+
+    // Add time
+    parts.add('Time: ${_formatTime(timestamp)}');
+
+    // Add selection state
+    if (isSelected) {
+      parts.add('Selected');
+    }
+
+    return parts.join('. ');
   }
 }

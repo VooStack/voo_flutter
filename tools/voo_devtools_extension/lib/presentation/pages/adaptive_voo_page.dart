@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voo_devtools_extension/core/models/keyboard_shortcut.dart';
+import 'package:voo_devtools_extension/core/services/keyboard_shortcuts_service.dart';
 import 'package:voo_devtools_extension/core/services/plugin_detection_service.dart';
+import 'package:voo_devtools_extension/core/services/preferences_service.dart';
+import 'package:voo_devtools_extension/core/services/theme_service.dart';
 import 'package:voo_devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_devtools_extension/presentation/blocs/network_bloc.dart';
@@ -13,6 +17,8 @@ import 'package:voo_devtools_extension/presentation/pages/logs_tab.dart';
 import 'package:voo_devtools_extension/presentation/pages/network_tab.dart';
 import 'package:voo_devtools_extension/presentation/pages/performance_tab.dart';
 import 'package:voo_devtools_extension/presentation/pages/analytics_tab.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/export_dialog.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/shortcuts_help_dialog.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
 class AdaptiveVooPage extends StatefulWidget {
@@ -31,20 +37,121 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
   final double _navMinWidth = 72.0;
   final double _navMaxWidth = 350.0;
 
+  final _focusNode = FocusNode();
+  final _shortcutsService = KeyboardShortcutsService();
+  final _preferencesService = PreferencesService();
+  final _themeService = ThemeService();
+  List<TabInfo> _availableTabs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _registerKeyboardShortcuts();
+    _loadPreferences();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _shortcutsService.unregisterAll();
+    super.dispose();
+  }
+
+  Future<void> _loadPreferences() async {
+    await _preferencesService.initialize();
+    final prefs = _preferencesService.preferences;
+    setState(() {
+      _navWidth = prefs.navPanelWidth;
+      _isNavCollapsed = prefs.isNavCollapsed;
+      _selectedIndex = prefs.lastSelectedTabIndex;
+    });
+  }
+
+  void _saveNavWidth() {
+    _preferencesService.setNavPanelWidth(_navWidth);
+  }
+
+  void _saveNavCollapsed() {
+    _preferencesService.setNavCollapsed(_isNavCollapsed);
+  }
+
+  void _saveSelectedIndex() {
+    _preferencesService.setLastSelectedTabIndex(_selectedIndex);
+  }
+
+  void _registerKeyboardShortcuts() {
+    // Tab navigation
+    _shortcutsService.register(AppShortcuts.tab1.id, () => _switchToTab(0));
+    _shortcutsService.register(AppShortcuts.tab2.id, () => _switchToTab(1));
+    _shortcutsService.register(AppShortcuts.tab3.id, () => _switchToTab(2));
+    _shortcutsService.register(AppShortcuts.tab4.id, () => _switchToTab(3));
+
+    // Actions
+    _shortcutsService.register(AppShortcuts.refresh.id, _handleRefresh);
+    _shortcutsService.register(AppShortcuts.clearData.id, _handleClear);
+    _shortcutsService.register(AppShortcuts.exportData.id, _handleExport);
+
+    // View
+    _shortcutsService.register(AppShortcuts.toggleTheme.id, () => _themeService.toggleTheme());
+
+    // Help
+    _shortcutsService.register(AppShortcuts.showHelp.id, _showShortcutsHelp);
+  }
+
+  void _switchToTab(int index) {
+    if (index < _availableTabs.length) {
+      setState(() => _selectedIndex = index);
+      _saveSelectedIndex();
+    }
+  }
+
+  void _handleRefresh() {
+    if (_availableTabs.isNotEmpty) {
+      _refreshCurrentTab(_availableTabs[_selectedIndex].pluginName);
+    }
+  }
+
+  void _handleClear() {
+    if (_availableTabs.isNotEmpty) {
+      _clearCurrentTab(_availableTabs[_selectedIndex].pluginName);
+    }
+  }
+
+  void _handleExport() {
+    if (_availableTabs.isNotEmpty) {
+      _exportCurrentTab(_availableTabs[_selectedIndex].pluginName);
+    }
+  }
+
+  void _showShortcutsHelp() {
+    ShortcutsHelpDialog.show(context);
+  }
+
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (_shortcutsService.handleKeyEvent(event)) {
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Build list of available tabs
-    final availableTabs = _buildAvailableTabs();
+    // Build list of available tabs and store for keyboard shortcuts
+    _availableTabs = _buildAvailableTabs();
 
-    if (availableTabs.isEmpty) {
+    if (_availableTabs.isEmpty) {
       return _buildNoPluginsView(context);
     }
 
-    // Use custom collapsible navigation drawer
-    return Scaffold(
+    // Wrap with Focus to capture keyboard shortcuts
+    return Focus(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKeyEvent: _handleKeyEvent,
+      child: Scaffold(
       body: Row(
         children: [
           // Collapsible Navigation Panel
@@ -98,6 +205,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                           setState(() {
                             _isNavCollapsed = !_isNavCollapsed;
                           });
+                          _saveNavCollapsed();
                         },
                         tooltip: _isNavCollapsed
                             ? 'Expand menu'
@@ -110,9 +218,9 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                 // Navigation Items
                 Expanded(
                   child: ListView.builder(
-                    itemCount: availableTabs.length,
+                    itemCount: _availableTabs.length,
                     itemBuilder: (context, index) {
-                      final tab = availableTabs[index];
+                      final tab = _availableTabs[index];
                       final info = PluginDetectionService.getPluginInfo(
                         tab.pluginName,
                       );
@@ -134,6 +242,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                           setState(() {
                             _selectedIndex = index;
                           });
+                          _saveSelectedIndex();
                         },
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: _isNavCollapsed ? 16 : 16,
@@ -161,6 +270,7 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
                     );
                   });
                 },
+                onHorizontalDragEnd: (_) => _saveNavWidth(),
                 child: Container(
                   width: 4,
                   color: Colors.transparent,
@@ -177,17 +287,18 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
           Expanded(
             child: Column(
               children: [
-                _buildHeader(availableTabs[_selectedIndex], theme),
+                _buildHeader(_availableTabs[_selectedIndex], theme),
                 Expanded(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
-                    child: availableTabs[_selectedIndex].content,
+                    child: _availableTabs[_selectedIndex].content,
                   ),
                 ),
               ],
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -230,17 +341,48 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
               IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: () => _refreshCurrentTab(tab.pluginName),
-                tooltip: 'Refresh',
+                tooltip: 'Refresh (${AppShortcuts.refresh.displayString})',
               ),
               IconButton(
                 icon: const Icon(Icons.clear_all),
                 onPressed: () => _clearCurrentTab(tab.pluginName),
-                tooltip: 'Clear',
+                tooltip: 'Clear (${AppShortcuts.clearData.displayString})',
               ),
               IconButton(
                 icon: const Icon(Icons.download),
                 onPressed: () => _exportCurrentTab(tab.pluginName),
-                tooltip: 'Export',
+                tooltip: 'Export (${AppShortcuts.exportData.displayString})',
+              ),
+              const SizedBox(width: 8),
+              const VerticalDivider(width: 1, indent: 8, endIndent: 8),
+              const SizedBox(width: 8),
+              ListenableBuilder(
+                listenable: _themeService,
+                builder: (context, _) {
+                  final isDark = _themeService.isDarkMode;
+                  return IconButton(
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (child, animation) {
+                        return RotationTransition(
+                          turns: animation,
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: Icon(
+                        isDark ? Icons.dark_mode : Icons.light_mode,
+                        key: ValueKey(isDark),
+                      ),
+                    ),
+                    onPressed: () => _themeService.toggleTheme(),
+                    tooltip: isDark ? 'Switch to light mode' : 'Switch to dark mode',
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.keyboard),
+                onPressed: _showShortcutsHelp,
+                tooltip: 'Keyboard Shortcuts (${AppShortcuts.showHelp.displayString})',
               ),
             ],
           ),
@@ -405,67 +547,31 @@ class _AdaptiveVooPageState extends State<AdaptiveVooPage> {
   }
 
   void _exportCurrentTab(String pluginName) {
-    final pluginInfo = PluginDetectionService.getPluginInfo(pluginName);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Export Data'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Export ${pluginInfo.name} data as:'),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _performExport(pluginName, 'json');
-                  },
-                  icon: const Icon(Icons.code),
-                  label: const Text('JSON'),
-                ),
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _performExport(pluginName, 'csv');
-                  },
-                  icon: const Icon(Icons.table_chart),
-                  label: const Text('CSV'),
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+    switch (pluginName) {
+      case 'voo_logging':
+        final state = context.read<LogBloc>().state;
+        ExportDialog.showForLogs(context, state.filteredLogs);
+        break;
+      case 'voo_network':
+        final state = context.read<NetworkBloc>().state;
+        ExportDialog.showForNetwork(context, state.filteredNetworkRequests);
+        break;
+      case 'voo_performance':
+        final state = context.read<PerformanceBloc>().state;
+        ExportDialog.showForPerformance(context, state.filteredPerformanceLogs);
+        break;
+      case 'voo_analytics':
+        final state = context.read<AnalyticsBloc>().state;
+        ExportDialog.showForAnalytics(context, state.filteredEvents);
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Export not available for this tab'),
+            behavior: SnackBarBehavior.floating,
           ),
-        ],
-      ),
-    );
-  }
-
-  void _performExport(String pluginName, String format) {
-    // TODO: Implement actual export functionality
-    // For now, just show success message
-    final pluginInfo = PluginDetectionService.getPluginInfo(pluginName);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${pluginInfo.name} data exported as ${format.toUpperCase()}',
-        ),
-        action: SnackBarAction(
-          label: 'Open',
-          onPressed: () {
-            // TODO: Open the exported file
-          },
-        ),
-      ),
-    );
+        );
+    }
   }
 }
 

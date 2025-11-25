@@ -34,10 +34,24 @@ class NetworkRequestTile extends StatelessWidget {
       selectedColor = Colors.blue;
     }
 
+    // Build semantic label for accessibility
+    final statusInfo = request.error != null
+        ? 'Error'
+        : request.statusCode != null
+            ? 'Status ${request.statusCode}'
+            : request.isInProgress
+                ? 'In progress'
+                : 'Pending';
+    final durationInfo =
+        request.duration != null ? ', ${request.duration}ms' : '';
+    final semanticLabel =
+        '${request.method} request to $path. $statusInfo$durationInfo. Host: $host';
+
     return ModernListTile(
       isSelected: selected,
       selectedColor: selectedColor,
       onTap: onTap,
+      semanticLabel: semanticLabel,
       leading: MethodBadge(method: request.method, compact: true),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

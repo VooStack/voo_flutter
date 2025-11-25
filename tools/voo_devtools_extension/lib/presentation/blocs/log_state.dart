@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:voo_devtools_extension/core/models/log_level.dart';
 import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_devtools_extension/core/models/log_statistics.dart';
@@ -17,6 +18,13 @@ class LogState extends Equatable {
   final List<String> tags;
   final List<String> sessions;
   final String searchQuery;
+  final DateTimeRange? dateRange;
+
+  /// Set of favorited log IDs
+  final Set<String> favoriteIds;
+
+  /// Whether to show only favorites
+  final bool showFavoritesOnly;
 
   const LogState({
     this.logs = const [],
@@ -32,6 +40,9 @@ class LogState extends Equatable {
     this.tags = const [],
     this.sessions = const [],
     this.searchQuery = '',
+    this.dateRange,
+    this.favoriteIds = const {},
+    this.showFavoritesOnly = false,
   });
 
   LogState copyWith({
@@ -50,6 +61,10 @@ class LogState extends Equatable {
     List<String>? tags,
     List<String>? sessions,
     String? searchQuery,
+    DateTimeRange? dateRange,
+    bool clearDateRange = false,
+    Set<String>? favoriteIds,
+    bool? showFavoritesOnly,
   }) => LogState(
     logs: logs ?? this.logs,
     filteredLogs: filteredLogs ?? this.filteredLogs,
@@ -64,7 +79,24 @@ class LogState extends Equatable {
     tags: tags ?? this.tags,
     sessions: sessions ?? this.sessions,
     searchQuery: searchQuery ?? this.searchQuery,
+    dateRange: clearDateRange ? null : (dateRange ?? this.dateRange),
+    favoriteIds: favoriteIds ?? this.favoriteIds,
+    showFavoritesOnly: showFavoritesOnly ?? this.showFavoritesOnly,
   );
+
+  /// Whether any filters are currently active
+  bool get hasActiveFilters =>
+      (selectedLevels != null && selectedLevels!.isNotEmpty) ||
+      (selectedCategory != null && selectedCategory!.isNotEmpty && selectedCategory != 'All') ||
+      searchQuery.isNotEmpty ||
+      dateRange != null ||
+      showFavoritesOnly;
+
+  /// Check if a log is favorited
+  bool isFavorite(String logId) => favoriteIds.contains(logId);
+
+  /// Get the count of favorites
+  int get favoriteCount => favoriteIds.length;
 
   @override
   List<Object?> get props => [
@@ -81,5 +113,8 @@ class LogState extends Equatable {
     tags,
     sessions,
     searchQuery,
+    dateRange,
+    favoriteIds,
+    showFavoritesOnly,
   ];
 }

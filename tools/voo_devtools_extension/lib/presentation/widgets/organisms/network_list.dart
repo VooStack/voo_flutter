@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_devtools_extension/core/models/log_entry_model.dart';
 import 'package:voo_devtools_extension/core/models/network_request_model.dart';
+import 'package:voo_devtools_extension/presentation/widgets/molecules/enhanced_empty_state.dart';
 import 'package:voo_devtools_extension/presentation/widgets/molecules/network_request_tile.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
-import 'package:voo_devtools_extension/presentation/widgets/molecules/error_placeholder.dart';
 
 class NetworkList extends StatelessWidget {
   // Support both old and new interfaces
@@ -14,6 +13,9 @@ class NetworkList extends StatelessWidget {
   final ScrollController scrollController;
   final bool isLoading;
   final String? error;
+  final bool hasActiveFilters;
+  final VoidCallback? onClearFilters;
+  final VoidCallback? onRetry;
   final Function(LogEntryModel)? onLogTap;
   final Function(NetworkRequestModel)? onRequestTap;
 
@@ -26,6 +28,9 @@ class NetworkList extends StatelessWidget {
     required this.scrollController,
     required this.isLoading,
     this.error,
+    this.hasActiveFilters = false,
+    this.onClearFilters,
+    this.onRetry,
     this.onLogTap,
     this.onRequestTap,
   }) : assert(
@@ -39,20 +44,30 @@ class NetworkList extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const EnhancedEmptyState(type: EmptyStateType.connecting);
     }
 
     if (error != null) {
-      return ErrorPlaceholder(error: 'Error loading network data\n$error');
+      return EnhancedEmptyState.error(
+        message: 'Error loading network data: $error',
+        onRetry: onRetry,
+      );
     }
 
     // Handle new request-based interface
     if (requests != null && onRequestTap != null) {
       if (requests!.isEmpty) {
-        return const VooEmptyState(
-          icon: Icons.wifi_off_outlined,
+        if (hasActiveFilters) {
+          return EnhancedEmptyState.filteredEmpty(
+            title: 'No Matching Requests',
+            message: 'No network requests match your current filters.',
+            onClearFilters: onClearFilters,
+          );
+        }
+        return EnhancedEmptyState.noData(
           title: 'No Network Requests',
-          message: 'Network requests will appear here when made',
+          message: 'Network requests will appear here as your app makes HTTP calls.',
+          icon: Icons.wifi_outlined,
         );
       }
 
@@ -79,10 +94,17 @@ class NetworkList extends StatelessWidget {
     // Handle legacy log-based interface
     if (logs != null && onLogTap != null) {
       if (logs!.isEmpty) {
-        return const VooEmptyState(
-          icon: Icons.wifi_off_outlined,
+        if (hasActiveFilters) {
+          return EnhancedEmptyState.filteredEmpty(
+            title: 'No Matching Requests',
+            message: 'No network requests match your current filters.',
+            onClearFilters: onClearFilters,
+          );
+        }
+        return EnhancedEmptyState.noData(
           title: 'No Network Requests',
-          message: 'Network requests will appear here when made',
+          message: 'Network requests will appear here as your app makes HTTP calls.',
+          icon: Icons.wifi_outlined,
         );
       }
 
@@ -105,10 +127,10 @@ class NetworkList extends StatelessWidget {
       );
     }
 
-    return const VooEmptyState(
-      icon: Icons.wifi_off_outlined,
+    return EnhancedEmptyState.noData(
       title: 'No Network Requests',
-      message: 'Network requests will appear here when made',
+      message: 'Network requests will appear here as your app makes HTTP calls.',
+      icon: Icons.wifi_outlined,
     );
   }
 }

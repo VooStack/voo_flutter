@@ -48,6 +48,7 @@ class PerformanceListTile extends StatelessWidget {
       accentColor: color,
       icon: _getOperationIcon(operationType),
       showTimestamp: true,
+      semanticHint: '$performanceLabel performance. Duration: ${_formatDuration(durationMs)}',
     );
   }
 

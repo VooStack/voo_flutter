@@ -42,6 +42,7 @@ class LogListTile extends StatelessWidget {
       onTap: onTap,
       accentColor: levelColor,
       icon: _getLogIcon(log.level),
+      semanticHint: '${log.level.name} log entry',
     );
   }
 
