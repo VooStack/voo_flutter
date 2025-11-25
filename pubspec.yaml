@@ -24,6 +24,8 @@ workspace:
   - packages/ui/voo_navigation
   - packages/ui/voo_navigation/example
   - packages/ui/voo_node_canvas
+  - packages/ui/voo_terminal
+  - packages/ui/voo_terminal/example
   - packages/ui/voo_node_canvas/example
   - packages/dev/voo_performance
   - packages/dev/voo_performance/example
