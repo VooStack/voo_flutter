@@ -34,7 +34,7 @@ class VooLoggingPlugin extends VooPlugin {
   String get name => 'voo_logging';
 
   @override
-  String get version => '0.4.6';
+  String get version => '0.4.7';
 
   bool get isInitialized => _initialized;
 
