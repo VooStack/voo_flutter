@@ -1,3 +1,60 @@
+## 0.1.1
+
+### Added
+- **Theme Preset System**: Introduced comprehensive visual theme presets for navigation components
+  - `VooNavigationTheme` entity with factory constructors for 4 distinct visual styles:
+    - `glassmorphism()` - Frosted glass effect with blur and translucent surfaces
+    - `neomorphism()` - Soft embossed effect with dual shadow system
+    - `material3Enhanced()` - Polished Material 3 with richer animations
+    - `minimalModern()` - Clean flat design with minimal styling
+  - `VooNavigationPreset` enum for preset identification
+  - `VooThemeIndicatorStyle` enum for indicator styles (pill, glow, line, embossed, background, none)
+  - Responsive scaling support via `responsive()` method
+
+- **New Atom Widgets**:
+  - `VooGlassSurface` - Glassmorphism surface with BackdropFilter blur
+  - `VooGlassSurfaceInteractive` - Interactive version with hover states
+  - `VooNeomorphSurface` - Neomorphism surface with dual shadow system
+  - `VooNeomorphSurfaceInteractive` - Interactive version with press states
+  - `VooNeomorphInset` - Inset/pressed variant for neomorphism
+  - `VooThemedIndicator` - Unified indicator supporting all theme styles
+  - `VooSlidingPillIndicator` - Animated sliding pill for bottom navigation
+  - `VooEdgeBarIndicator` - Vertical edge indicator for navigation rails
+
+- **New Molecule Widgets**:
+  - `VooThemedNavContainer` - Theme-aware container with preset-specific styling
+  - `VooThemedBottomNavContainer` - Specialized container for bottom navigation
+  - `VooThemedRailContainer` - Specialized container for navigation rails
+  - `VooThemedDrawerContainer` - Specialized container for navigation drawers
+  - `VooThemedNavItem` - Theme-aware navigation item with animations
+  - `VooThemedRailItem` - Rail-specific themed item with edge indicator
+  - `VooThemedDrawerItem` - Drawer-specific themed item
+
+- **Factory Constructors on VooNavigationConfig**:
+  - `VooNavigationConfig.glassmorphism()` - Quick glassmorphism setup
+  - `VooNavigationConfig.neomorphism()` - Quick neomorphism setup
+  - `VooNavigationConfig.material3Enhanced()` - Quick Material 3 enhanced setup
+  - `VooNavigationConfig.minimalModern()` - Quick minimal modern setup
+
+- **Enhanced Example App**:
+  - Theme Showcase demonstrating all 4 theme presets
+  - Navigation Style selector (Adaptive, Bottom Nav, Floating, Rail, Drawer)
+  - Live preset switching with property display
+  - Code examples for each preset
+
+### Fixed
+- **VooAdaptiveScaffold**: Fixed "No element" error when selecting nested items in sections
+  - Added recursive `_findItemById` helper to search through children
+  - Now properly finds items nested inside `VooNavigationItem.section()` containers
+
+- **VooFloatingBottomNavigation**: Fixed missing floating effect when voo_tokens not configured
+  - Added hardcoded fallbacks (16px margin, 24px bottom margin, 28px radius)
+  - Ensures proper floating appearance regardless of token provider setup
+
+### Changed
+- `VooNavigationConfig` now includes optional `navigationTheme` field
+- Added `effectiveTheme` getter that defaults to `material3Enhanced` when no theme specified
+
 ## 0.1.0
 
 ### BREAKING CHANGES

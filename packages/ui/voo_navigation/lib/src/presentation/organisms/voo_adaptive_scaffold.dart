@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_config.dart';
+import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
 import 'package:voo_navigation/src/presentation/organisms/voo_scaffold_builder.dart';
 import 'package:voo_navigation/src/presentation/utils/voo_navigation_inherited.dart';
@@ -142,10 +143,25 @@ class _VooAdaptiveScaffoldState extends State<VooAdaptiveScaffold>
     super.dispose();
   }
 
-  void _onNavigationItemSelected(String itemId) {
-    final item = widget.config.items.firstWhere((item) => item.id == itemId);
+  /// Recursively finds an item by ID, including items nested in sections
+  VooNavigationItem? _findItemById(
+    List<VooNavigationItem> items,
+    String itemId,
+  ) {
+    for (final item in items) {
+      if (item.id == itemId) return item;
+      if (item.children != null) {
+        final found = _findItemById(item.children!, itemId);
+        if (found != null) return found;
+      }
+    }
+    return null;
+  }
 
-    if (!item.isEnabled) return;
+  void _onNavigationItemSelected(String itemId) {
+    final item = _findItemById(widget.config.items, itemId);
+
+    if (item == null || !item.isEnabled) return;
 
     if (widget.config.enableHapticFeedback) {
       HapticFeedback.lightImpact();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_navigation/src/domain/entities/breakpoint.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_item.dart';
+import 'package:voo_navigation/src/domain/entities/navigation_theme.dart';
 import 'package:voo_navigation/src/domain/entities/navigation_type.dart';
 import 'package:voo_navigation/src/presentation/organisms/voo_adaptive_bottom_navigation.dart';
 import 'package:voo_tokens/voo_tokens.dart';
@@ -154,6 +155,41 @@ class VooNavigationConfig {
   /// Type of bottom navigation bar to use
   final VooNavigationBarType bottomNavigationType;
 
+  /// Whether to use floating style for bottom navigation
+  final bool floatingBottomNav;
+
+  /// Horizontal margin for floating bottom navigation
+  final double? floatingBottomNavMargin;
+
+  /// Bottom margin for floating bottom navigation
+  final double? floatingBottomNavBottomMargin;
+
+  /// Whether to show user profile in drawer/rail footer
+  final bool showUserProfile;
+
+  /// User profile widget for drawer/rail footer
+  final Widget? userProfileWidget;
+
+  /// Whether the rail/drawer supports collapsing
+  final bool enableCollapsibleRail;
+
+  /// Custom collapse toggle builder
+  final Widget Function(bool isExpanded, VoidCallback onToggle)?
+      collapseToggleBuilder;
+
+  /// Visual theme for navigation styling
+  ///
+  /// Use preset themes via factory constructors:
+  /// - [VooNavigationConfig.glassmorphism]
+  /// - [VooNavigationConfig.neomorphism]
+  /// - [VooNavigationConfig.material3Enhanced]
+  /// - [VooNavigationConfig.minimalModern]
+  final VooNavigationTheme? navigationTheme;
+
+  /// Gets the effective theme, defaulting to Material 3 Enhanced
+  VooNavigationTheme get effectiveTheme =>
+      navigationTheme ?? VooNavigationTheme.material3Enhanced();
+
   VooNavigationConfig({
     required this.items,
     this.selectedId,
@@ -201,6 +237,14 @@ class VooNavigationConfig {
     this.errorBuilder,
     this.loadingWidget,
     this.bottomNavigationType = VooNavigationBarType.custom,
+    this.floatingBottomNav = false,
+    this.floatingBottomNavMargin,
+    this.floatingBottomNavBottomMargin,
+    this.showUserProfile = false,
+    this.userProfileWidget,
+    this.enableCollapsibleRail = false,
+    this.collapseToggleBuilder,
+    this.navigationTheme,
     double? navigationRailMargin,
   }) : breakpoints = breakpoints ?? VooBreakpoint.material3Breakpoints,
        animationDuration = animationDuration ?? _animationTokens.durationNormal,
@@ -258,6 +302,15 @@ class VooNavigationConfig {
     Widget Function(Object error)? errorBuilder,
     Widget? loadingWidget,
     VooNavigationBarType? bottomNavigationType,
+    bool? floatingBottomNav,
+    double? floatingBottomNavMargin,
+    double? floatingBottomNavBottomMargin,
+    bool? showUserProfile,
+    Widget? userProfileWidget,
+    bool? enableCollapsibleRail,
+    Widget Function(bool isExpanded, VoidCallback onToggle)?
+        collapseToggleBuilder,
+    VooNavigationTheme? navigationTheme,
     double? navigationRailMargin,
   }) => VooNavigationConfig(
     items: items ?? this.items,
@@ -317,6 +370,16 @@ class VooNavigationConfig {
     errorBuilder: errorBuilder ?? this.errorBuilder,
     loadingWidget: loadingWidget ?? this.loadingWidget,
     bottomNavigationType: bottomNavigationType ?? this.bottomNavigationType,
+    floatingBottomNav: floatingBottomNav ?? this.floatingBottomNav,
+    floatingBottomNavMargin:
+        floatingBottomNavMargin ?? this.floatingBottomNavMargin,
+    floatingBottomNavBottomMargin:
+        floatingBottomNavBottomMargin ?? this.floatingBottomNavBottomMargin,
+    showUserProfile: showUserProfile ?? this.showUserProfile,
+    userProfileWidget: userProfileWidget ?? this.userProfileWidget,
+    enableCollapsibleRail: enableCollapsibleRail ?? this.enableCollapsibleRail,
+    collapseToggleBuilder: collapseToggleBuilder ?? this.collapseToggleBuilder,
+    navigationTheme: navigationTheme ?? this.navigationTheme,
     navigationRailMargin: navigationRailMargin ?? this.navigationRailMargin,
   );
 
@@ -369,5 +432,453 @@ class VooNavigationConfig {
     } catch (e) {
       return null;
     }
+  }
+
+  // ============================================================================
+  // THEME PRESET FACTORY CONSTRUCTORS
+  // ============================================================================
+
+  /// Creates a glassmorphism-themed navigation configuration
+  ///
+  /// Features frosted glass effect with blur, translucent surfaces,
+  /// subtle borders, and glow indicators.
+  ///
+  /// ```dart
+  /// VooNavigationConfig.glassmorphism(
+  ///   items: navigationItems,
+  ///   selectedId: 'home',
+  ///   onNavigationItemSelected: (id) => handleNavigation(id),
+  /// )
+  /// ```
+  factory VooNavigationConfig.glassmorphism({
+    required List<VooNavigationItem> items,
+    String? selectedId,
+    void Function(String itemId)? onNavigationItemSelected,
+    List<VooBreakpoint>? breakpoints,
+    bool isAdaptive = true,
+    VooNavigationType? forcedNavigationType,
+    ThemeData? theme,
+    NavigationRailLabelType railLabelType = NavigationRailLabelType.selected,
+    bool useExtendedRail = true,
+    Widget? drawerHeader,
+    Widget? drawerFooter,
+    Widget? Function(String? selectedId)? appBarLeadingBuilder,
+    List<Widget>? Function(String? selectedId)? appBarActionsBuilder,
+    Widget? Function(String? selectedId)? appBarTitleBuilder,
+    bool centerAppBarTitle = false,
+    bool appBarAlongsideRail = true,
+    Widget? floatingActionButton,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
+    bool showFloatingActionButton = true,
+    Color? backgroundColor,
+    Color? navigationBackgroundColor,
+    Color? selectedItemColor,
+    Color? unselectedItemColor,
+    Color? indicatorColor,
+    bool showNavigationRailDivider = false,
+    double? navigationRailWidth,
+    double? extendedNavigationRailWidth,
+    double? navigationDrawerWidth,
+    bool enableHapticFeedback = true,
+    bool enableAnimations = true,
+    bool persistNavigationState = true,
+    bool showNotificationBadges = true,
+    bool groupItemsBySections = false,
+    VooNavigationBarType bottomNavigationType = VooNavigationBarType.custom,
+    bool floatingBottomNav = true,
+    double? floatingBottomNavMargin,
+    double? floatingBottomNavBottomMargin,
+    bool showUserProfile = false,
+    Widget? userProfileWidget,
+    bool enableCollapsibleRail = false,
+    double? navigationRailMargin,
+    // Glassmorphism-specific options
+    double surfaceOpacity = 0.75,
+    double blurSigma = 16,
+  }) {
+    return VooNavigationConfig(
+      items: items,
+      selectedId: selectedId,
+      onNavigationItemSelected: onNavigationItemSelected,
+      breakpoints: breakpoints,
+      isAdaptive: isAdaptive,
+      forcedNavigationType: forcedNavigationType,
+      theme: theme,
+      railLabelType: railLabelType,
+      useExtendedRail: useExtendedRail,
+      drawerHeader: drawerHeader,
+      drawerFooter: drawerFooter,
+      appBarLeadingBuilder: appBarLeadingBuilder,
+      appBarActionsBuilder: appBarActionsBuilder,
+      appBarTitleBuilder: appBarTitleBuilder,
+      centerAppBarTitle: centerAppBarTitle,
+      appBarAlongsideRail: appBarAlongsideRail,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
+      showFloatingActionButton: showFloatingActionButton,
+      backgroundColor: backgroundColor,
+      navigationBackgroundColor: navigationBackgroundColor,
+      selectedItemColor: selectedItemColor,
+      unselectedItemColor: unselectedItemColor,
+      indicatorColor: indicatorColor,
+      indicatorShape: const StadiumBorder(),
+      elevation: 0,
+      showNavigationRailDivider: showNavigationRailDivider,
+      navigationRailWidth: navigationRailWidth,
+      extendedNavigationRailWidth: extendedNavigationRailWidth,
+      navigationDrawerWidth: navigationDrawerWidth,
+      animationDuration: _animationTokens.durationNormal,
+      animationCurve: Curves.easeInOut,
+      enableHapticFeedback: enableHapticFeedback,
+      enableAnimations: enableAnimations,
+      persistNavigationState: persistNavigationState,
+      showNotificationBadges: showNotificationBadges,
+      groupItemsBySections: groupItemsBySections,
+      bottomNavigationType: bottomNavigationType,
+      floatingBottomNav: floatingBottomNav,
+      floatingBottomNavMargin: floatingBottomNavMargin ?? _spacingTokens.md,
+      floatingBottomNavBottomMargin:
+          floatingBottomNavBottomMargin ?? _spacingTokens.lg,
+      showUserProfile: showUserProfile,
+      userProfileWidget: userProfileWidget,
+      enableCollapsibleRail: enableCollapsibleRail,
+      navigationRailMargin: navigationRailMargin,
+      navigationTheme: VooNavigationTheme.glassmorphism(
+        surfaceOpacity: surfaceOpacity,
+        blurSigma: blurSigma,
+        indicatorColor: indicatorColor,
+      ),
+    );
+  }
+
+  /// Creates a neomorphism-themed navigation configuration
+  ///
+  /// Features soft embossed/debossed effect with dual shadows,
+  /// no visible borders, and pressed-in indicators.
+  ///
+  /// ```dart
+  /// VooNavigationConfig.neomorphism(
+  ///   items: navigationItems,
+  ///   selectedId: 'home',
+  ///   onNavigationItemSelected: (id) => handleNavigation(id),
+  /// )
+  /// ```
+  factory VooNavigationConfig.neomorphism({
+    required List<VooNavigationItem> items,
+    String? selectedId,
+    void Function(String itemId)? onNavigationItemSelected,
+    List<VooBreakpoint>? breakpoints,
+    bool isAdaptive = true,
+    VooNavigationType? forcedNavigationType,
+    ThemeData? theme,
+    NavigationRailLabelType railLabelType = NavigationRailLabelType.selected,
+    bool useExtendedRail = true,
+    Widget? drawerHeader,
+    Widget? drawerFooter,
+    Widget? Function(String? selectedId)? appBarLeadingBuilder,
+    List<Widget>? Function(String? selectedId)? appBarActionsBuilder,
+    Widget? Function(String? selectedId)? appBarTitleBuilder,
+    bool centerAppBarTitle = false,
+    bool appBarAlongsideRail = true,
+    Widget? floatingActionButton,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
+    bool showFloatingActionButton = true,
+    Color? backgroundColor,
+    Color? navigationBackgroundColor,
+    Color? selectedItemColor,
+    Color? unselectedItemColor,
+    Color? indicatorColor,
+    bool showNavigationRailDivider = false,
+    double? navigationRailWidth,
+    double? extendedNavigationRailWidth,
+    double? navigationDrawerWidth,
+    bool enableHapticFeedback = true,
+    bool enableAnimations = true,
+    bool persistNavigationState = true,
+    bool showNotificationBadges = true,
+    bool groupItemsBySections = false,
+    VooNavigationBarType bottomNavigationType = VooNavigationBarType.custom,
+    bool floatingBottomNav = false,
+    double? floatingBottomNavMargin,
+    double? floatingBottomNavBottomMargin,
+    bool showUserProfile = false,
+    Widget? userProfileWidget,
+    bool enableCollapsibleRail = false,
+    double? navigationRailMargin,
+    // Neomorphism-specific options
+    double shadowBlur = 12,
+    double shadowOffset = 6,
+  }) {
+    return VooNavigationConfig(
+      items: items,
+      selectedId: selectedId,
+      onNavigationItemSelected: onNavigationItemSelected,
+      breakpoints: breakpoints,
+      isAdaptive: isAdaptive,
+      forcedNavigationType: forcedNavigationType,
+      theme: theme,
+      railLabelType: railLabelType,
+      useExtendedRail: useExtendedRail,
+      drawerHeader: drawerHeader,
+      drawerFooter: drawerFooter,
+      appBarLeadingBuilder: appBarLeadingBuilder,
+      appBarActionsBuilder: appBarActionsBuilder,
+      appBarTitleBuilder: appBarTitleBuilder,
+      centerAppBarTitle: centerAppBarTitle,
+      appBarAlongsideRail: appBarAlongsideRail,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
+      showFloatingActionButton: showFloatingActionButton,
+      backgroundColor: backgroundColor,
+      navigationBackgroundColor: navigationBackgroundColor,
+      selectedItemColor: selectedItemColor,
+      unselectedItemColor: unselectedItemColor,
+      indicatorColor: indicatorColor,
+      indicatorShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 0,
+      showNavigationRailDivider: showNavigationRailDivider,
+      navigationRailWidth: navigationRailWidth,
+      extendedNavigationRailWidth: extendedNavigationRailWidth,
+      navigationDrawerWidth: navigationDrawerWidth,
+      animationDuration: _animationTokens.durationFast,
+      animationCurve: Curves.easeOut,
+      enableHapticFeedback: enableHapticFeedback,
+      enableAnimations: enableAnimations,
+      persistNavigationState: persistNavigationState,
+      showNotificationBadges: showNotificationBadges,
+      groupItemsBySections: groupItemsBySections,
+      bottomNavigationType: bottomNavigationType,
+      floatingBottomNav: floatingBottomNav,
+      floatingBottomNavMargin: floatingBottomNavMargin,
+      floatingBottomNavBottomMargin: floatingBottomNavBottomMargin,
+      showUserProfile: showUserProfile,
+      userProfileWidget: userProfileWidget,
+      enableCollapsibleRail: enableCollapsibleRail,
+      navigationRailMargin: navigationRailMargin ?? _spacingTokens.lg,
+      navigationTheme: VooNavigationTheme.neomorphism(
+        shadowBlur: shadowBlur,
+        shadowOffset: shadowOffset,
+        indicatorColor: indicatorColor,
+      ),
+    );
+  }
+
+  /// Creates a Material 3 Enhanced themed navigation configuration
+  ///
+  /// Features polished Material 3 styling with richer animations,
+  /// animated pill indicators, and subtle glow effects.
+  ///
+  /// ```dart
+  /// VooNavigationConfig.material3Enhanced(
+  ///   items: navigationItems,
+  ///   selectedId: 'home',
+  ///   onNavigationItemSelected: (id) => handleNavigation(id),
+  /// )
+  /// ```
+  factory VooNavigationConfig.material3Enhanced({
+    required List<VooNavigationItem> items,
+    String? selectedId,
+    void Function(String itemId)? onNavigationItemSelected,
+    List<VooBreakpoint>? breakpoints,
+    bool isAdaptive = true,
+    VooNavigationType? forcedNavigationType,
+    ThemeData? theme,
+    NavigationRailLabelType railLabelType = NavigationRailLabelType.all,
+    bool useExtendedRail = true,
+    Widget? drawerHeader,
+    Widget? drawerFooter,
+    Widget? Function(String? selectedId)? appBarLeadingBuilder,
+    List<Widget>? Function(String? selectedId)? appBarActionsBuilder,
+    Widget? Function(String? selectedId)? appBarTitleBuilder,
+    bool centerAppBarTitle = false,
+    bool appBarAlongsideRail = true,
+    Widget? floatingActionButton,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
+    bool showFloatingActionButton = true,
+    Color? backgroundColor,
+    Color? navigationBackgroundColor,
+    Color? selectedItemColor,
+    Color? unselectedItemColor,
+    Color? indicatorColor,
+    bool showNavigationRailDivider = true,
+    double? navigationRailWidth,
+    double? extendedNavigationRailWidth,
+    double? navigationDrawerWidth,
+    bool enableHapticFeedback = true,
+    bool enableAnimations = true,
+    bool persistNavigationState = true,
+    bool showNotificationBadges = true,
+    bool groupItemsBySections = false,
+    VooNavigationBarType bottomNavigationType = VooNavigationBarType.custom,
+    bool floatingBottomNav = false,
+    double? floatingBottomNavMargin,
+    double? floatingBottomNavBottomMargin,
+    bool showUserProfile = false,
+    Widget? userProfileWidget,
+    bool enableCollapsibleRail = false,
+    double? navigationRailMargin,
+  }) {
+    return VooNavigationConfig(
+      items: items,
+      selectedId: selectedId,
+      onNavigationItemSelected: onNavigationItemSelected,
+      breakpoints: breakpoints,
+      isAdaptive: isAdaptive,
+      forcedNavigationType: forcedNavigationType,
+      theme: theme,
+      railLabelType: railLabelType,
+      useExtendedRail: useExtendedRail,
+      drawerHeader: drawerHeader,
+      drawerFooter: drawerFooter,
+      appBarLeadingBuilder: appBarLeadingBuilder,
+      appBarActionsBuilder: appBarActionsBuilder,
+      appBarTitleBuilder: appBarTitleBuilder,
+      centerAppBarTitle: centerAppBarTitle,
+      appBarAlongsideRail: appBarAlongsideRail,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
+      showFloatingActionButton: showFloatingActionButton,
+      backgroundColor: backgroundColor,
+      navigationBackgroundColor: navigationBackgroundColor,
+      selectedItemColor: selectedItemColor,
+      unselectedItemColor: unselectedItemColor,
+      indicatorColor: indicatorColor,
+      indicatorShape: const StadiumBorder(),
+      elevation: 2,
+      showNavigationRailDivider: showNavigationRailDivider,
+      navigationRailWidth: navigationRailWidth,
+      extendedNavigationRailWidth: extendedNavigationRailWidth,
+      navigationDrawerWidth: navigationDrawerWidth,
+      animationDuration: _animationTokens.durationNormal,
+      animationCurve: Curves.easeOutBack,
+      enableHapticFeedback: enableHapticFeedback,
+      enableAnimations: enableAnimations,
+      persistNavigationState: persistNavigationState,
+      showNotificationBadges: showNotificationBadges,
+      groupItemsBySections: groupItemsBySections,
+      bottomNavigationType: bottomNavigationType,
+      floatingBottomNav: floatingBottomNav,
+      floatingBottomNavMargin: floatingBottomNavMargin,
+      floatingBottomNavBottomMargin: floatingBottomNavBottomMargin,
+      showUserProfile: showUserProfile,
+      userProfileWidget: userProfileWidget,
+      enableCollapsibleRail: enableCollapsibleRail,
+      navigationRailMargin: navigationRailMargin,
+      navigationTheme: VooNavigationTheme.material3Enhanced(
+        indicatorColor: indicatorColor,
+      ),
+    );
+  }
+
+  /// Creates a minimal modern themed navigation configuration
+  ///
+  /// Features clean flat design with no shadows, thin line indicators,
+  /// and fast linear animations.
+  ///
+  /// ```dart
+  /// VooNavigationConfig.minimalModern(
+  ///   items: navigationItems,
+  ///   selectedId: 'home',
+  ///   onNavigationItemSelected: (id) => handleNavigation(id),
+  /// )
+  /// ```
+  factory VooNavigationConfig.minimalModern({
+    required List<VooNavigationItem> items,
+    String? selectedId,
+    void Function(String itemId)? onNavigationItemSelected,
+    List<VooBreakpoint>? breakpoints,
+    bool isAdaptive = true,
+    VooNavigationType? forcedNavigationType,
+    ThemeData? theme,
+    NavigationRailLabelType railLabelType = NavigationRailLabelType.none,
+    bool useExtendedRail = false,
+    Widget? drawerHeader,
+    Widget? drawerFooter,
+    Widget? Function(String? selectedId)? appBarLeadingBuilder,
+    List<Widget>? Function(String? selectedId)? appBarActionsBuilder,
+    Widget? Function(String? selectedId)? appBarTitleBuilder,
+    bool centerAppBarTitle = false,
+    bool appBarAlongsideRail = true,
+    Widget? floatingActionButton,
+    FloatingActionButtonLocation? floatingActionButtonLocation,
+    bool showFloatingActionButton = true,
+    Color? backgroundColor,
+    Color? navigationBackgroundColor,
+    Color? selectedItemColor,
+    Color? unselectedItemColor,
+    Color? indicatorColor,
+    bool showNavigationRailDivider = false,
+    double? navigationRailWidth,
+    double? extendedNavigationRailWidth,
+    double? navigationDrawerWidth,
+    bool enableHapticFeedback = true,
+    bool enableAnimations = true,
+    bool persistNavigationState = true,
+    bool showNotificationBadges = true,
+    bool groupItemsBySections = false,
+    VooNavigationBarType bottomNavigationType = VooNavigationBarType.custom,
+    bool floatingBottomNav = false,
+    double? floatingBottomNavMargin,
+    double? floatingBottomNavBottomMargin,
+    bool showUserProfile = false,
+    Widget? userProfileWidget,
+    bool enableCollapsibleRail = false,
+    double? navigationRailMargin,
+    // Minimal-specific options
+    double borderWidth = 1,
+  }) {
+    return VooNavigationConfig(
+      items: items,
+      selectedId: selectedId,
+      onNavigationItemSelected: onNavigationItemSelected,
+      breakpoints: breakpoints,
+      isAdaptive: isAdaptive,
+      forcedNavigationType: forcedNavigationType,
+      theme: theme,
+      railLabelType: railLabelType,
+      useExtendedRail: useExtendedRail,
+      drawerHeader: drawerHeader,
+      drawerFooter: drawerFooter,
+      appBarLeadingBuilder: appBarLeadingBuilder,
+      appBarActionsBuilder: appBarActionsBuilder,
+      appBarTitleBuilder: appBarTitleBuilder,
+      centerAppBarTitle: centerAppBarTitle,
+      appBarAlongsideRail: appBarAlongsideRail,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
+      showFloatingActionButton: showFloatingActionButton,
+      backgroundColor: backgroundColor,
+      navigationBackgroundColor: navigationBackgroundColor,
+      selectedItemColor: selectedItemColor,
+      unselectedItemColor: unselectedItemColor,
+      indicatorColor: indicatorColor,
+      indicatorShape: const RoundedRectangleBorder(),
+      elevation: 0,
+      showNavigationRailDivider: showNavigationRailDivider,
+      navigationRailWidth: navigationRailWidth,
+      extendedNavigationRailWidth: extendedNavigationRailWidth,
+      navigationDrawerWidth: navigationDrawerWidth,
+      animationDuration: _animationTokens.durationFast,
+      animationCurve: Curves.linear,
+      enableHapticFeedback: enableHapticFeedback,
+      enableAnimations: enableAnimations,
+      persistNavigationState: persistNavigationState,
+      showNotificationBadges: showNotificationBadges,
+      groupItemsBySections: groupItemsBySections,
+      bottomNavigationType: bottomNavigationType,
+      floatingBottomNav: floatingBottomNav,
+      floatingBottomNavMargin: floatingBottomNavMargin,
+      floatingBottomNavBottomMargin: floatingBottomNavBottomMargin,
+      showUserProfile: showUserProfile,
+      userProfileWidget: userProfileWidget,
+      enableCollapsibleRail: enableCollapsibleRail,
+      navigationRailMargin: navigationRailMargin ?? _spacingTokens.xl,
+      navigationTheme: VooNavigationTheme.minimalModern(
+        borderWidth: borderWidth,
+        indicatorColor: indicatorColor,
+      ),
+    );
   }
 }

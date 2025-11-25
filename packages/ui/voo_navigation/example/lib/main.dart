@@ -2,18 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:voo_navigation/voo_navigation.dart';
 
+import 'theme_showcase_example.dart';
+
 void main() {
   runApp(const VooNavigationExampleApp());
 }
 
-class VooNavigationExampleApp extends StatelessWidget {
+class VooNavigationExampleApp extends StatefulWidget {
   const VooNavigationExampleApp({super.key});
+
+  @override
+  State<VooNavigationExampleApp> createState() => _VooNavigationExampleAppState();
+}
+
+class _VooNavigationExampleAppState extends State<VooNavigationExampleApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'VooNavigation Demo',
       debugShowCheckedModeBanner: false,
+      themeMode: _themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF4F75FF),
@@ -28,7 +46,186 @@ class VooNavigationExampleApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const NavigationExample(),
+      home: ExampleSelector(onToggleTheme: _toggleTheme),
+    );
+  }
+}
+
+/// Landing page to select between examples
+class ExampleSelector extends StatelessWidget {
+  final VoidCallback onToggleTheme;
+
+  const ExampleSelector({super.key, required this.onToggleTheme});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('VooNavigation Examples'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: onToggleTheme,
+            tooltip: 'Toggle theme',
+          ),
+        ],
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  Icons.navigation,
+                  size: 64,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'VooNavigation',
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Adaptive Navigation Package',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 48),
+                _buildExampleCard(
+                  context,
+                  title: 'Theme Showcase',
+                  description: 'Explore all 4 visual theme presets: Glassmorphism, Neomorphism, Material 3 Enhanced, and Minimal Modern',
+                  icon: Icons.palette,
+                  isPrimary: true,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ThemeShowcaseExample(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildExampleCard(
+                  context,
+                  title: 'Full Feature Demo',
+                  description: 'Complete navigation example with sections, badges, custom headers, and responsive layouts',
+                  icon: Icons.dashboard,
+                  isPrimary: false,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NavigationExample(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExampleCard(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required IconData icon,
+    required bool isPrimary,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: isPrimary ? 4 : 1,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: isPrimary
+              ? BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primaryContainer,
+                      theme.colorScheme.secondaryContainer,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                )
+              : null,
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isPrimary
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: isPrimary
+                      ? theme.colorScheme.onPrimary
+                      : theme.colorScheme.onSurfaceVariant,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isPrimary
+                            ? theme.colorScheme.onPrimaryContainer
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: isPrimary
+                            ? theme.colorScheme.onPrimaryContainer
+                                .withValues(alpha: 0.8)
+                            : theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: isPrimary
+                    ? theme.colorScheme.onPrimaryContainer
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -44,14 +241,14 @@ class _NavigationExampleState extends State<NavigationExample> {
   String _selectedId = 'dashboard';
 
   // Create navigation items with various features
-  final List<VooNavigationItem> _navigationItems = [
+  List<VooNavigationItem> get _navigationItems => [
     VooNavigationItem(
       id: 'dashboard',
       label: 'Dashboard',
       mobilePriority: true,
       icon: Icons.dashboard_outlined,
       selectedIcon: Icons.dashboard,
-      route: '/dashboard',
+      onTap: () {},
       tooltip: 'View your dashboard',
       badgeCount: 3,
     ),
@@ -61,7 +258,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       mobilePriority: true,
       icon: Icons.analytics_outlined,
       selectedIcon: Icons.analytics,
-      route: '/analytics',
+      onTap: () {},
       tooltip: 'View analytics',
       showDot: true,
       badgeColor: Colors.green,
@@ -72,7 +269,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       mobilePriority: true,
       icon: Icons.folder_outlined,
       selectedIcon: Icons.folder,
-      route: '/projects',
+      onTap: () {},
       tooltip: 'Manage projects',
       badgeText: 'NEW',
       badgeColor: Colors.orange,
@@ -88,7 +285,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           mobilePriority: true,
           icon: Icons.message_outlined,
           selectedIcon: Icons.message,
-          route: '/messages',
+          onTap: () {},
           badgeCount: 12,
         ),
         VooNavigationItem(
@@ -96,7 +293,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           label: 'Notifications',
           icon: Icons.notifications_outlined,
           selectedIcon: Icons.notifications,
-          route: '/notifications',
+          onTap: () {},
           badgeCount: 5,
         ),
         VooNavigationItem(
@@ -104,7 +301,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           label: 'Email',
           icon: Icons.email_outlined,
           selectedIcon: Icons.email,
-          route: '/email',
+          onTap: () {},
           showDot: true,
         ),
       ],
@@ -115,7 +312,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       label: 'Calendar',
       icon: Icons.calendar_today_outlined,
       selectedIcon: Icons.calendar_today,
-      route: '/calendar',
+      onTap: () {},
       tooltip: 'View calendar',
     ),
     VooNavigationItem(
@@ -123,7 +320,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       label: 'Team',
       icon: MdiIcons.accountGroupOutline,
       selectedIcon: MdiIcons.accountGroup,
-      route: '/team',
+      onTap: () {},
       tooltip: 'Manage team',
     ),
     VooNavigationItem(
@@ -131,7 +328,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       label: 'Settings',
       icon: Icons.settings_outlined,
       selectedIcon: Icons.settings,
-      route: '/settings',
+      onTap: () {},
       tooltip: 'App settings',
     ),
     VooNavigationItem(
@@ -139,7 +336,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       label: 'Help & Support',
       icon: Icons.help_outline,
       selectedIcon: Icons.help,
-      route: '/help',
+      onTap: () {},
       tooltip: 'Get help',
       isEnabled: true,
     ),
