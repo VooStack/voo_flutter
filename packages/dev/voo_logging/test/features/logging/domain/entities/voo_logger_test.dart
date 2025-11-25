@@ -16,9 +16,9 @@ void main() {
       await VooLogger.instance.clearLogs();
     });
 
-    group('shouldNotify parameter', () {
-      test('verbose should not show toast even with shouldNotify true', () async {
-        await VooLogger.verbose('Test verbose message', shouldNotify: true);
+    group('logging methods', () {
+      test('verbose logs correctly (no shouldNotify - too low level)', () async {
+        await VooLogger.verbose('Test verbose message');
 
         final logs = await VooLogger.instance.getLogs();
         expect(logs.length, greaterThan(0));
@@ -26,8 +26,8 @@ void main() {
         expect(logs.first.level, LogLevel.verbose);
       });
 
-      test('debug should not show toast even with shouldNotify true', () async {
-        await VooLogger.debug('Test debug message', shouldNotify: true);
+      test('debug logs correctly (no shouldNotify - too low level)', () async {
+        await VooLogger.debug('Test debug message');
 
         final logs = await VooLogger.instance.getLogs();
         expect(logs.length, greaterThan(0));
@@ -35,7 +35,7 @@ void main() {
         expect(logs.first.level, LogLevel.debug);
       });
 
-      test('info should accept shouldNotify parameter', () async {
+      test('info accepts shouldNotify parameter', () async {
         await VooLogger.info('Test info message');
 
         final logs = await VooLogger.instance.getLogs();
@@ -44,7 +44,7 @@ void main() {
         expect(logs.first.level, LogLevel.info);
       });
 
-      test('warning should accept shouldNotify parameter', () async {
+      test('warning accepts shouldNotify parameter', () async {
         await VooLogger.warning('Test warning message');
 
         final logs = await VooLogger.instance.getLogs();
@@ -53,7 +53,7 @@ void main() {
         expect(logs.first.level, LogLevel.warning);
       });
 
-      test('error should accept shouldNotify parameter', () async {
+      test('error accepts shouldNotify parameter', () async {
         await VooLogger.error('Test error message', error: Exception('Test exception'));
 
         final logs = await VooLogger.instance.getLogs();
@@ -63,7 +63,7 @@ void main() {
         expect(logs.first.error, isNotNull);
       });
 
-      test('fatal should accept shouldNotify parameter', () async {
+      test('fatal accepts shouldNotify parameter', () async {
         await VooLogger.fatal('Test fatal message', error: Exception('Fatal exception'));
 
         final logs = await VooLogger.instance.getLogs();

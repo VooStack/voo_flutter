@@ -1,3 +1,18 @@
+## 0.4.6
+
+ - **FEAT**: Zero-config initialization - VooLogger now auto-initializes on first use with smart defaults
+ - **FEAT**: Add `LoggingConfig.minimal()` factory that auto-detects debug/release mode
+ - **FEAT**: Add log retention settings (`maxLogs`, `retentionDays`, `autoCleanup`) to prevent unbounded storage growth
+ - **FEAT**: Add automatic log cleanup on initialization based on retention settings
+ - **FEAT**: Add `VooLogger.ensureInitialized()` for explicit initialization when custom config is needed
+ - **FEAT**: Add `VooLogger.isInitialized` getter to check initialization status
+ - **ENHANCEMENT**: VooCore is now optional - VooLogger works standalone without `Voo.initializeApp()`
+ - **ENHANCEMENT**: Updated `LoggingConfig.development()` and `LoggingConfig.production()` with sensible retention defaults
+ - **ENHANCEMENT**: Improved VooDioInterceptor documentation with clearer usage examples
+ - **FIX**: Fixed version mismatch in VooLoggingPlugin (was reporting 0.2.0, now correctly reports 0.4.6)
+ - **FIX**: Removed unused `shouldNotify` parameter from `verbose()` and `debug()` methods
+ - **DEPRECATION**: `VooLoggingPlugin.initialize()` parameters (`maxEntries`, `enableConsoleOutput`, `enableFileStorage`) are deprecated - use `config` parameter instead
+
 ## 0.4.5
 
  - **FEAT**: Add per-type logging configuration for granular control over different log categories

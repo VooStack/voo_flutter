@@ -1,9 +1,3 @@
 {"version":1,"sembast":1}
 {"key":"created_at","store":"metadata","value":{"timestamp":"2025-09-24T11:22:33.711002"}}
 {"key":"schema_version","store":"metadata","value":{"version":1}}
-{"key":1758938926384569,"store":"logs","value":{"id":"1758938926384_39_48","timestamp":"2025-09-26T21:08:46.384569","message":"VooLogger initialized","level":"info","category":"System","tag":"Init","metadata":{"appName":"TestApp","timestamp":"2025-09-26T21:08:46.384570","minimumLevel":"verbose","userId":null,"sessionId":"1758938926384_268","appVersion":null,"prettyLogs":false},"error":null,"stackTrace":null,"userId":null,"sessionId":"1758938926384_268"}}
-{"key":1758938926385369,"store":"logs","value":{"id":"1758938926385_40_956","timestamp":"2025-09-26T21:08:46.385369","message":"Log to be cleared","level":"info","category":null,"tag":null,"metadata":{"appName":"TestApp","timestamp":"2025-09-26T21:08:46.385371"},"error":null,"stackTrace":null,"userId":null,"sessionId":"1758938926384_268"}}
-{"key":1758938926385879,"store":"logs","value":{"id":"1758938926385_41_554","timestamp":"2025-09-26T21:08:46.385879","message":"Another log to be cleared","level":"warning","category":null,"tag":null,"metadata":{"appName":"TestApp","timestamp":"2025-09-26T21:08:46.385880"},"error":null,"stackTrace":null,"userId":null,"sessionId":"1758938926384_268"}}
-{"key":1758938926384569,"deleted":true,"store":"logs"}
-{"key":1758938926385369,"deleted":true,"store":"logs"}
-{"key":1758938926385879,"deleted":true,"store":"logs"}

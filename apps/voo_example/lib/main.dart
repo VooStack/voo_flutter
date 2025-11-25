@@ -7,8 +7,7 @@ import 'package:voo_performance/voo_performance.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Step 1: Initialize Voo Core (like Firebase Core)
-  // This acts as the central initialization point for all Voo packages
+  // Step 1: Initialize Voo Core (optional for VooLogging, required for other plugins)
   await Voo.initializeApp(
     options: VooOptions.development(
       appName: 'VooExample',
@@ -21,12 +20,12 @@ void main() async {
     ),
   );
 
-  // Step 2: Initialize local packages (work without cloud)
-  // These packages provide local functionality
+  // Step 2: Initialize plugins
+  // Note: VooLogging now works without explicit initialization!
+  // Just call VooLogger.info() etc. and it auto-initializes.
+  // Use VooLoggingPlugin.initialize() only for VooCore integration or custom config.
   await VooLoggingPlugin.initialize(
-    maxEntries: 10000,
-    enableConsoleOutput: true,
-    enableFileStorage: true,
+    config: LoggingConfig.development(), // Smart defaults with auto-cleanup
   );
 
   await VooAnalyticsPlugin.initialize(
@@ -42,13 +41,9 @@ void main() async {
   );
 
   // Step 3: Optionally initialize VooTelemetry for cloud syncing
-  // This is only needed if you want to sync data to the cloud
-  const enableCloudSync = false; // Set to true to enable cloud syncing
+  const enableCloudSync = false;
 
-  // Step 4: Use the packages normally
-  // The packages work locally whether or not cloud syncing is enabled
-
-  // Example: Logging (works locally, syncs to cloud if telemetry is enabled)
+  // Step 4: Use logging - zero-config, auto-initializes if needed
   await VooLogger.verbose('VooExample app starting up...');
   await VooLogger.debug('Debug mode enabled');
   await VooLogger.info('VooExample app initialized successfully');

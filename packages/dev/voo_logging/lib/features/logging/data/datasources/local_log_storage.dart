@@ -25,6 +25,7 @@ import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart
 class LocalLogStorage {
   static LocalLogStorage? _instance;
   static Database? _database;
+  static bool _webStorageError = false;
 
   // Store references - think of these as "tables" in SQL
   static final _logsStore = intMapStoreFactory.store('logs');
@@ -38,6 +39,25 @@ class LocalLogStorage {
 
   // Private constructor prevents external instantiation
   LocalLogStorage._internal();
+
+  /// Check if web storage has encountered an error
+  bool get hasWebStorageError => _webStorageError;
+
+  /// Helper to safely find records with web error handling
+  Future<List<RecordSnapshot<int, Map<String, Object?>>>> _safeFindLogs(
+    Database db, {
+    Finder? finder,
+  }) async {
+    try {
+      return await _logsStore.find(db, finder: finder);
+    } catch (e) {
+      if (kIsWeb && (e.toString().contains('IdbCursor') || e.toString().contains('LegacyJavaScriptObject'))) {
+        _webStorageError = true;
+        return [];
+      }
+      rethrow;
+    }
+  }
 
   /// Get database instance (lazy initialization)
   /// Why lazy? We don't want to open DB until we actually need it
@@ -229,8 +249,8 @@ class LocalLogStorage {
       offset: offset,
     );
 
-    // Execute query
-    final records = await _logsStore.find(db, finder: finder);
+    // Execute query with error handling for web IndexedDB issues
+    final records = await _safeFindLogs(db, finder: finder);
 
     // Convert records back to LogEntry objects
     return records.map((record) {
@@ -244,9 +264,8 @@ class LocalLogStorage {
   Future<LogStatistics> getLogStatistics() async {
     final db = await database;
 
-    // Get all records for analysis
-    // In a real production app, you might want to sample or use more efficient queries
-    final allRecords = await _logsStore.find(db);
+    // Get all records for analysis with web error handling
+    final allRecords = await _safeFindLogs(db);
 
     // Count by level
     final levelCounts = <String, int>{};
@@ -296,7 +315,7 @@ class LocalLogStorage {
     // Find all records with non-null categories
     final finder = Finder(filter: Filter.notEquals('category', null));
 
-    final records = await _logsStore.find(db, finder: finder);
+    final records = await _safeFindLogs(db, finder: finder);
 
     // Extract unique categories
     final categories = records.map((record) => record.value['category']! as String).toSet().toList();
@@ -310,7 +329,7 @@ class LocalLogStorage {
 
     final finder = Finder(filter: Filter.notEquals('tag', null));
 
-    final records = await _logsStore.find(db, finder: finder);
+    final records = await _safeFindLogs(db, finder: finder);
 
     final tags = records.map((record) => record.value['tag']! as String).toSet().toList();
 
@@ -327,7 +346,7 @@ class LocalLogStorage {
       limit: 50, // Don't overwhelm the UI
     );
 
-    final records = await _logsStore.find(db, finder: finder);
+    final records = await _safeFindLogs(db, finder: finder);
 
     // Get unique session IDs while preserving recent-first order
     final sessionIds = <String>[];
@@ -422,5 +441,67 @@ class LocalLogStorage {
       'platform': kIsWeb ? 'web' : 'mobile',
       'metadata': Map.fromEntries(metadata.map((record) => MapEntry(record.key, record.value))),
     };
+  }
+
+  /// Perform automatic cleanup based on retention settings.
+  ///
+  /// - [maxLogs]: Maximum number of logs to retain. Oldest logs are deleted first.
+  /// - [retentionDays]: Maximum age of logs in days. Logs older than this are deleted.
+  Future<int> performCleanup({int? maxLogs, int? retentionDays}) async {
+    final db = await database;
+    int totalDeleted = 0;
+
+    // First, delete logs older than retention period
+    if (retentionDays != null && retentionDays > 0) {
+      final cutoffDate = DateTime.now().subtract(Duration(days: retentionDays));
+      final cutoffTimestamp = cutoffDate.millisecondsSinceEpoch;
+
+      // Find logs older than cutoff using custom filter on parsed timestamp
+      final oldLogsFinder = Finder(
+        filter: Filter.custom((record) {
+          final data = record.value as Map<String, dynamic>?;
+          if (data == null) return false;
+          final timestampStr = data['timestamp'] as String?;
+          if (timestampStr == null) return false;
+          try {
+            final timestamp = DateTime.parse(timestampStr);
+            return timestamp.millisecondsSinceEpoch < cutoffTimestamp;
+          } catch (_) {
+            return false;
+          }
+        }),
+      );
+
+      final deletedByAge = await _logsStore.delete(db, finder: oldLogsFinder);
+      totalDeleted += deletedByAge;
+    }
+
+    // Then, enforce maxLogs limit by deleting oldest entries
+    if (maxLogs != null && maxLogs > 0) {
+      final currentCount = await _logsStore.count(db);
+      if (currentCount > maxLogs) {
+        final excessCount = currentCount - maxLogs;
+
+        // Find the oldest logs (sorted by key ascending, which is timestamp-based)
+        final oldestLogsFinder = Finder(
+          sortOrders: [SortOrder(Field.key, true)], // Ascending = oldest first
+          limit: excessCount,
+        );
+
+        final oldestRecords = await _safeFindLogs(db, finder: oldestLogsFinder);
+        for (final record in oldestRecords) {
+          await _logsStore.record(record.key).delete(db);
+          totalDeleted++;
+        }
+      }
+    }
+
+    return totalDeleted;
+  }
+
+  /// Get the current log count
+  Future<int> getLogCount() async {
+    final db = await database;
+    return await _logsStore.count(db);
   }
 }

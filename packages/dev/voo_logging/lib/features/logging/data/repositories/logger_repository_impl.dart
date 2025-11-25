@@ -79,6 +79,15 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
     _storage = LocalLogStorage();
 
+    // Perform automatic cleanup if enabled
+    int cleanedLogs = 0;
+    if (_config.autoCleanup && (_config.maxLogs != null || _config.retentionDays != null)) {
+      cleanedLogs = await _storage!.performCleanup(
+        maxLogs: _config.maxLogs,
+        retentionDays: _config.retentionDays,
+      );
+    }
+
     await _logInternal(
       'VooLogger initialized',
       category: 'System',
@@ -90,6 +99,10 @@ class LoggerRepositoryImpl extends LoggerRepository {
         'appName': appName,
         'appVersion': appVersion,
         'prettyLogs': _config.enablePrettyLogs,
+        'maxLogs': _config.maxLogs,
+        'retentionDays': _config.retentionDays,
+        'autoCleanup': _config.autoCleanup,
+        if (cleanedLogs > 0) 'cleanedLogs': cleanedLogs,
       },
     );
   }

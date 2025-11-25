@@ -1,23 +1,34 @@
 import 'package:voo_logging/features/logging/domain/interceptors/network_interceptor.dart';
 
-/// Dio interceptor for automatic network logging
+/// Dio interceptor for automatic network request/response logging.
 ///
-/// This is a template that shows how to integrate VooLogger with Dio.
-/// You'll need to adapt this to your specific Dio version and setup.
+/// Automatically logs all HTTP requests and responses with timing information.
+/// Works with any Dio version and auto-initializes VooLogger if needed.
 ///
-/// Usage example:
+/// ## Simple Usage
 /// ```dart
 /// import 'package:dio/dio.dart';
+/// import 'package:voo_logging/voo_logging.dart';
 ///
 /// final dio = Dio();
-/// final interceptor = VooDioInterceptor();
+/// final vooInterceptor = VooDioInterceptor();
 ///
 /// dio.interceptors.add(InterceptorsWrapper(
-///   onRequest: (options, handler) => interceptor.onRequest(options, handler),
-///   onResponse: (response, handler) => interceptor.onResponse(response, handler),
-///   onError: (error, handler) => interceptor.onError(error, handler),
+///   onRequest: vooInterceptor.onRequest,
+///   onResponse: vooInterceptor.onResponse,
+///   onError: vooInterceptor.onError,
 /// ));
+///
+/// // Now all requests are automatically logged!
+/// await dio.get('https://api.example.com/data');
 /// ```
+///
+/// ## What Gets Logged
+/// - **Requests**: Method, URL, headers, timeouts
+/// - **Responses**: Status code, duration, content length
+/// - **Errors**: Error type, message, stack trace
+///
+/// Logs appear in the 'Network' category and are visible in DevTools.
 class VooDioInterceptor {
   final NetworkInterceptor interceptor;
 

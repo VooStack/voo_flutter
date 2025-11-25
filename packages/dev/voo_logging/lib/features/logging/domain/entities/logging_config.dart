@@ -15,6 +15,16 @@ class LoggingConfig {
   final bool enableDevToolsJson;
   final Map<LogType, LogTypeConfig> logTypeConfigs;
 
+  /// Maximum number of logs to retain. Set to null for unlimited.
+  final int? maxLogs;
+
+  /// Maximum age of logs in days. Logs older than this will be cleaned up.
+  /// Set to null to keep logs forever.
+  final int? retentionDays;
+
+  /// Whether to automatically clean up old logs on initialization.
+  final bool autoCleanup;
+
   const LoggingConfig({
     this.enablePrettyLogs = true,
     this.showEmojis = true,
@@ -26,12 +36,18 @@ class LoggingConfig {
     this.enabled = true,
     this.enableDevToolsJson = false,
     this.logTypeConfigs = const {},
+    this.maxLogs,
+    this.retentionDays,
+    this.autoCleanup = true,
   });
 
   factory LoggingConfig.production() => const LoggingConfig(
     minimumLevel: LogLevel.warning,
     enablePrettyLogs: false,
     showEmojis: false,
+    maxLogs: 5000,
+    retentionDays: 3,
+    autoCleanup: true,
     logTypeConfigs: {
       LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info),
       LogType.analytics: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true),
@@ -43,11 +59,28 @@ class LoggingConfig {
     minimumLevel: LogLevel.verbose,
     enablePrettyLogs: true,
     showEmojis: true,
+    maxLogs: 10000,
+    retentionDays: 7,
+    autoCleanup: true,
     logTypeConfigs: {
       LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.debug),
       LogType.analytics: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info),
       LogType.performance: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info),
     },
+  );
+
+  /// Zero-config preset that works out of the box.
+  /// Automatically detects debug/release mode and configures accordingly.
+  factory LoggingConfig.minimal() => LoggingConfig(
+    enablePrettyLogs: kDebugMode,
+    showEmojis: kDebugMode,
+    showTimestamp: true,
+    showColors: kDebugMode,
+    showBorders: kDebugMode,
+    minimumLevel: kDebugMode ? LogLevel.verbose : LogLevel.warning,
+    maxLogs: 10000,
+    retentionDays: 7,
+    autoCleanup: true,
   );
 
   PrettyLogFormatter get formatter => PrettyLogFormatter(
@@ -98,6 +131,9 @@ class LoggingConfig {
     bool? enabled,
     bool? enableDevToolsJson,
     Map<LogType, LogTypeConfig>? logTypeConfigs,
+    int? maxLogs,
+    int? retentionDays,
+    bool? autoCleanup,
   }) => LoggingConfig(
     enablePrettyLogs: enablePrettyLogs ?? this.enablePrettyLogs,
     showEmojis: showEmojis ?? this.showEmojis,
@@ -109,6 +145,9 @@ class LoggingConfig {
     enabled: enabled ?? this.enabled,
     enableDevToolsJson: enableDevToolsJson ?? this.enableDevToolsJson,
     logTypeConfigs: logTypeConfigs ?? this.logTypeConfigs,
+    maxLogs: maxLogs ?? this.maxLogs,
+    retentionDays: retentionDays ?? this.retentionDays,
+    autoCleanup: autoCleanup ?? this.autoCleanup,
   );
 
   LoggingConfig withLogTypeConfig(LogType type, LogTypeConfig config) {
@@ -130,10 +169,26 @@ class LoggingConfig {
         other.minimumLevel == minimumLevel &&
         other.enabled == enabled &&
         other.enableDevToolsJson == enableDevToolsJson &&
-        mapEquals(other.logTypeConfigs, logTypeConfigs);
+        mapEquals(other.logTypeConfigs, logTypeConfigs) &&
+        other.maxLogs == maxLogs &&
+        other.retentionDays == retentionDays &&
+        other.autoCleanup == autoCleanup;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(enablePrettyLogs, showEmojis, showTimestamp, showColors, showBorders, lineLength, minimumLevel, enabled, enableDevToolsJson, logTypeConfigs);
+  int get hashCode => Object.hash(
+    enablePrettyLogs,
+    showEmojis,
+    showTimestamp,
+    showColors,
+    showBorders,
+    lineLength,
+    minimumLevel,
+    enabled,
+    enableDevToolsJson,
+    logTypeConfigs,
+    maxLogs,
+    retentionDays,
+    autoCleanup,
+  );
 }

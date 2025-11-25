@@ -3,36 +3,34 @@ import 'package:voo_logging/voo_logging.dart';
 
 void main() {
   group('VooLogger Integration Tests', () {
-    test('shouldNotify parameter works correctly for each log level', () async {
+    test('logging methods work correctly for each log level', () async {
       // Initialize VooLogger
       await VooLogger.initialize(appName: 'TestApp', config: const LoggingConfig(enablePrettyLogs: false));
 
-      // Test verbose - shouldNotify defaults to false
+      // Test verbose (no shouldNotify - too low level for toasts)
       await VooLogger.verbose('Verbose message');
-      await VooLogger.verbose('Verbose with notify', shouldNotify: true);
 
-      // Test debug - shouldNotify defaults to false
+      // Test debug (no shouldNotify - too low level for toasts)
       await VooLogger.debug('Debug message');
-      await VooLogger.debug('Debug with notify', shouldNotify: true);
 
-      // Test info - shouldNotify defaults to false
+      // Test info - shouldNotify available
       await VooLogger.info('Info message');
       await VooLogger.info('Info with notify', shouldNotify: true);
 
-      // Test warning - shouldNotify defaults to false
+      // Test warning - shouldNotify available
       await VooLogger.warning('Warning message');
       await VooLogger.warning('Warning with notify', shouldNotify: true);
 
-      // Test error - shouldNotify defaults to false
+      // Test error - shouldNotify available
       await VooLogger.error('Error message');
       await VooLogger.error('Error with notify', shouldNotify: true);
 
-      // Test fatal - shouldNotify defaults to false
+      // Test fatal - shouldNotify available
       await VooLogger.fatal('Fatal message');
       await VooLogger.fatal('Fatal with notify', shouldNotify: true);
 
-      // Verify all methods accept the shouldNotify parameter without errors
-      expect(true, isTrue); // If we get here, all calls succeeded
+      // Verify all methods work without errors
+      expect(true, isTrue);
     });
 
     test('LoggingConfig no longer has shouldNotify field', () {
