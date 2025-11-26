@@ -105,6 +105,22 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
   Offset? _marqueeEndScreen;
   bool _isMarqueeSelecting = false;
 
+  // Direct node interaction state (bypasses Flutter's hit testing)
+  // This handles nodes that are outside the constrained hit test bounds
+  String? _directDragNodeId;
+  Offset? _directDragOffset; // Offset from cursor to node origin at drag start
+  bool _directDragStarted = false;
+
+  // Direct port interaction state (bypasses Flutter's hit testing)
+  String? _directPortNodeId;
+  String? _directPortId;
+  bool _directPortDragStarted = false;
+
+  // Hover tracking (bypasses Flutter's hit testing for distant nodes)
+  String? _hoveredNodeId;
+  String? _hoveredPortNodeId;
+  String? _hoveredPortId;
+
   @override
   void initState() {
     super.initState();
@@ -145,16 +161,28 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
       focusNode: _focusNode,
       autofocus: true,
       onKeyEvent: _handleKeyEvent,
-      child: Listener(
-          onPointerSignal: _handlePointerSignal,
-          onPointerDown: (event) {
-            _focusNode.requestFocus();
-            _handlePointerDown(event);
-          },
-          onPointerMove: _handlePointerMove,
-          onPointerUp: _handlePointerUp,
-          onPointerCancel: _handlePointerCancel,
-          child: ClipRect(
+      child: MouseRegion(
+        onHover: _handlePointerHover,
+        onExit: (_) => setState(() {
+          _hoveredNodeId = null;
+          _hoveredPortNodeId = null;
+          _hoveredPortId = null;
+        }),
+        cursor: _hoveredPortId != null
+            ? SystemMouseCursors.click
+            : (_hoveredNodeId != null
+                ? SystemMouseCursors.grab
+                : SystemMouseCursors.basic),
+        child: Listener(
+            onPointerSignal: _handlePointerSignal,
+            onPointerDown: (event) {
+              _focusNode.requestFocus();
+              _handlePointerDown(event);
+            },
+            onPointerMove: _handlePointerMove,
+            onPointerUp: _handlePointerUp,
+            onPointerCancel: _handlePointerCancel,
+            child: ClipRect(
             child: Container(
               color: config.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
               child: Stack(
@@ -173,33 +201,68 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
                     ),
 
                   // Transform layer for pan/zoom with nodes
-                  Transform(
-                    transform: viewport.transformMatrix,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        // Connection layer - doesn't block gestures
-                        IgnorePointer(
-                          child: ConnectionLayer(
-                            connections: state.connections,
-                            nodes: state.nodes,
-                            viewport: viewport.transformMatrix,
-                            selectedColor: config.selectedColor,
-                            onConnectionTap: _handleConnectionTap,
-                            pendingConnection: state.isConnecting
-                                ? (
-                                    nodeId: state.connectingFromNodeId!,
-                                    portId: state.connectingFromPortId!,
-                                  )
-                                : null,
-                            pendingConnectionEnd: _pendingConnectionEnd,
+                  // Use LayoutBuilder to calculate proper canvas size for hit testing.
+                  // The inner Stack must be large enough to cover:
+                  // 1. The visible canvas area (accounting for zoom and pan offset)
+                  // 2. All actual node positions
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final effectiveZoom = viewport.zoom.clamp(0.1, 10.0);
+
+                      // Calculate the visible canvas area bounds.
+                      // Screen point (0,0) maps to canvas: -offset / zoom
+                      // Screen point (width,height) maps to canvas: (screen - offset) / zoom
+                      final visibleRight =
+                          (constraints.maxWidth - viewport.offset.dx) / effectiveZoom;
+                      final visibleBottom =
+                          (constraints.maxHeight - viewport.offset.dy) / effectiveZoom;
+
+                      // Start with visible area (from origin to visible edge)
+                      var canvasWidth = visibleRight.abs() + 1000;
+                      var canvasHeight = visibleBottom.abs() + 1000;
+
+                      // Expand to include all node positions
+                      for (final node in state.nodes) {
+                        final nodeRight = node.position.dx + node.size.width + 500;
+                        final nodeBottom = node.position.dy + node.size.height + 500;
+                        if (nodeRight > canvasWidth) canvasWidth = nodeRight;
+                        if (nodeBottom > canvasHeight) canvasHeight = nodeBottom;
+                      }
+
+                      return Transform(
+                        transform: viewport.transformMatrix,
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
+                          width: canvasWidth,
+                          height: canvasHeight,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              // Connection layer - doesn't block gestures
+                              IgnorePointer(
+                                child: ConnectionLayer(
+                                  connections: state.connections,
+                                  nodes: state.nodes,
+                                  viewport: viewport.transformMatrix,
+                                  selectedColor: config.selectedColor,
+                                  onConnectionTap: _handleConnectionTap,
+                                  pendingConnection: state.isConnecting
+                                      ? (
+                                          nodeId: state.connectingFromNodeId!,
+                                          portId: state.connectingFromPortId!,
+                                        )
+                                      : null,
+                                  pendingConnectionEnd: _pendingConnectionEnd,
+                                ),
+                              ),
+
+                              // Node widgets - these capture their own gestures
+                              ...state.nodes.map(_buildNodeWidget),
+                            ],
                           ),
                         ),
-
-                        // Node widgets - these capture their own gestures
-                        ...state.nodes.map(_buildNodeWidget),
-                      ],
-                    ),
+                      );
+                    },
                   ),
 
                   // Marquee selection overlay (rendered in screen space)
@@ -227,6 +290,7 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
               ),
             ),
           ),
+        ),
       ),
     );
   }
@@ -408,8 +472,35 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
     if (_panningPointerId != null) return;
     if (widget.controller.state.draggingNodeId != null) return;
 
-    // Check if the pointer is over a node - if so, don't start canvas operations
-    if (_isPointerOverNode(event.localPosition)) return;
+    // Check ports first (they're smaller and should take priority)
+    final portUnderPointer = _findPortAtScreenPosition(event.localPosition);
+    if (portUnderPointer != null) {
+      // Start tracking this port for direct interaction
+      _panningPointerId = event.pointer;
+      _directPortNodeId = portUnderPointer.node.id;
+      _directPortId = portUnderPointer.port.id;
+      _directPortDragStarted = false;
+      _lastPanPosition = event.localPosition;
+      return;
+    }
+
+    // Check if the pointer is over a node
+    final nodeUnderPointer = _findNodeAtScreenPosition(event.localPosition);
+    if (nodeUnderPointer != null) {
+      // Start tracking this node for direct interaction
+      // This bypasses Flutter's hit testing which may fail for distant nodes
+      _panningPointerId = event.pointer;
+      _directDragNodeId = nodeUnderPointer.id;
+      _directDragStarted = false;
+
+      // Calculate offset from cursor to node origin (in canvas coordinates)
+      // This offset stays constant during the drag
+      final viewport = widget.controller.state.viewport;
+      final cursorCanvas = viewport.screenToCanvas(event.localPosition);
+      _directDragOffset = cursorCanvas - nodeUnderPointer.position;
+      _lastPanPosition = event.localPosition; // For detecting drag threshold
+      return;
+    }
 
     // Start tracking this pointer for potential panning or marquee selection
     _panningPointerId = event.pointer;
@@ -417,27 +508,152 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
     _marqueeStartScreen = event.localPosition;
   }
 
-  /// Checks if the given screen position is over any node.
-  bool _isPointerOverNode(Offset screenPosition) {
+  /// Finds a node at the given screen position.
+  /// Returns the node if found, null otherwise.
+  CanvasNode? _findNodeAtScreenPosition(Offset screenPosition) {
     final viewport = widget.controller.state.viewport;
-
-    // Convert screen position to canvas coordinates
     final canvasPosition = viewport.screenToCanvas(screenPosition);
 
-    // Check if the position is inside any node's bounds
     for (final node in widget.controller.state.nodes) {
       if (node.bounds.contains(canvasPosition)) {
-        return true;
+        return node;
       }
     }
-    return false;
+    return null;
+  }
+
+  /// Finds a port at the given screen position.
+  /// Returns a record with the node and port if found, null otherwise.
+  ({CanvasNode node, NodePort port})? _findPortAtScreenPosition(
+      Offset screenPosition) {
+    final viewport = widget.controller.state.viewport;
+    final canvasPosition = viewport.screenToCanvas(screenPosition);
+    const portRadius = 6.0;
+    const portHitTolerance = 20.0;
+
+    for (final node in widget.controller.state.nodes) {
+      // Group ports by their effective position (same logic as NodeWidget)
+      final portsByPosition = <PortPosition, List<NodePort>>{};
+      for (final port in node.ports) {
+        final position = port.effectivePosition;
+        portsByPosition.putIfAbsent(position, () => []).add(port);
+      }
+
+      // Check each port
+      for (final entry in portsByPosition.entries) {
+        final position = entry.key;
+        final ports = entry.value;
+
+        for (var i = 0; i < ports.length; i++) {
+          final port = ports[i];
+
+          // Calculate port center position (same logic as NodeWidget)
+          double xPosition, yPosition;
+          switch (position) {
+            case PortPosition.left:
+              xPosition = -portRadius;
+              yPosition = (node.size.height / (ports.length + 1)) * (i + 1) -
+                  portRadius;
+            case PortPosition.right:
+              xPosition = node.size.width - portRadius;
+              yPosition = (node.size.height / (ports.length + 1)) * (i + 1) -
+                  portRadius;
+            case PortPosition.top:
+              xPosition =
+                  (node.size.width / (ports.length + 1)) * (i + 1) - portRadius;
+              yPosition = -portRadius;
+            case PortPosition.bottom:
+              xPosition =
+                  (node.size.width / (ports.length + 1)) * (i + 1) - portRadius;
+              yPosition = node.size.height - portRadius;
+          }
+
+          // Port center in canvas coordinates
+          final portCenterX =
+              node.position.dx + xPosition + portRadius + port.offset.dx;
+          final portCenterY =
+              node.position.dy + yPosition + portRadius + port.offset.dy;
+          final portCenter = Offset(portCenterX, portCenterY);
+
+          // Check if click is within hit tolerance
+          final distance = (canvasPosition - portCenter).distance;
+          if (distance <= portHitTolerance / 2) {
+            return (node: node, port: port);
+          }
+        }
+      }
+    }
+    return null;
   }
 
   void _handlePointerMove(PointerMoveEvent event) {
+    // Update hover state for any pointer movement (not just tracked pointer)
+    _updateHoverState(event.localPosition);
+
     if (_panningPointerId != event.pointer) return;
+
+    // Handle direct port dragging (for creating connections)
+    if (_directPortNodeId != null && _directPortId != null) {
+      final distance = _lastPanPosition != null
+          ? (event.localPosition - _lastPanPosition!).distance
+          : 0.0;
+
+      // Start connection drag after small movement threshold
+      if (!_directPortDragStarted && distance > 5) {
+        _directPortDragStarted = true;
+        // Start a connection from this port
+        widget.controller.startConnection(_directPortNodeId!, _directPortId!);
+      }
+
+      if (_directPortDragStarted) {
+        // Update pending connection end position
+        final viewport = widget.controller.state.viewport;
+        final canvasPosition = viewport.screenToCanvas(event.localPosition);
+        setState(() {
+          _pendingConnectionEnd = canvasPosition;
+        });
+      }
+      return;
+    }
+
+    // Handle direct node dragging (bypasses Flutter hit testing)
+    if (_directDragNodeId != null && _directDragOffset != null) {
+      final distance = _lastPanPosition != null
+          ? (event.localPosition - _lastPanPosition!).distance
+          : 0.0;
+
+      // Start dragging after small movement threshold
+      if (!_directDragStarted && distance > 5) {
+        if (widget.config.enableNodeDrag) {
+          _directDragStarted = true;
+          widget.controller.startDraggingNode(_directDragNodeId!);
+          widget.controller.selectNode(_directDragNodeId!);
+          widget.onNodeDragStart?.call(_directDragNodeId!);
+        }
+      }
+
+      if (_directDragStarted && widget.config.enableNodeDrag) {
+        // Calculate new node position: cursor position minus the fixed offset
+        // This makes the node follow the cursor exactly at the grab point
+        final viewport = widget.controller.state.viewport;
+        final cursorCanvas = viewport.screenToCanvas(event.localPosition);
+        final newNodePosition = cursorCanvas - _directDragOffset!;
+
+        widget.controller.moveNode(_directDragNodeId!, newNodePosition);
+
+        // Report the actual (possibly snapped) position to the callback
+        final updatedNode =
+            widget.controller.state.getNodeById(_directDragNodeId!);
+        if (updatedNode != null) {
+          widget.onNodeMoved?.call(_directDragNodeId!, updatedNode.position);
+        }
+      }
+      return;
+    }
+
     if (_lastPanPosition == null) return;
 
-    // If a node drag started, stop canvas operations
+    // If a node drag started via GestureDetector, stop canvas operations
     if (widget.controller.state.draggingNodeId != null) {
       _cancelCanvasOperation();
       return;
@@ -480,6 +696,57 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
 
   void _handlePointerUp(PointerUpEvent event) {
     if (_panningPointerId == event.pointer) {
+      // Handle direct port interaction completion
+      if (_directPortNodeId != null && _directPortId != null) {
+        if (_directPortDragStarted) {
+          // End connection drag - check if we're over a valid target port
+          final targetPort = _findPortAtScreenPosition(event.localPosition);
+          if (targetPort != null &&
+              targetPort.node.id != _directPortNodeId) {
+            // Complete the connection to the target port
+            widget.controller
+                .completeConnection(targetPort.node.id, targetPort.port.id);
+          } else {
+            // Cancel the connection
+            widget.controller.cancelConnection();
+          }
+          setState(() => _pendingConnectionEnd = null);
+        } else {
+          // This was a tap on a port (no significant movement)
+          // Port taps can be used to start/complete connections
+          final node =
+              widget.controller.state.getNodeById(_directPortNodeId!);
+          if (node != null) {
+            final port =
+                node.ports.where((p) => p.id == _directPortId).firstOrNull;
+            if (port != null) {
+              _handlePortTap(node, port);
+            }
+          }
+        }
+        _cancelCanvasOperation();
+        return;
+      }
+
+      // Handle direct node interaction completion
+      if (_directDragNodeId != null) {
+        if (_directDragStarted) {
+          // End drag
+          widget.controller.endDraggingNode();
+          widget.onNodeDragEnd?.call(_directDragNodeId!);
+        } else {
+          // This was a tap on a node (no significant movement)
+          final node = widget.controller.state.getNodeById(_directDragNodeId!);
+          if (node != null) {
+            final addToSelection = HardwareKeyboard.instance.isShiftPressed;
+            widget.controller.selectNode(node.id, addToSelection: addToSelection);
+            widget.onNodeTap?.call(node);
+          }
+        }
+        _cancelCanvasOperation();
+        return;
+      }
+
       // Finalize marquee selection if active
       if (_isMarqueeSelecting) {
         _updateMarqueeSelection();
@@ -502,6 +769,15 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
 
   void _handlePointerCancel(PointerCancelEvent event) {
     if (_panningPointerId == event.pointer) {
+      // Cancel any in-progress direct drag
+      if (_directDragStarted && _directDragNodeId != null) {
+        widget.controller.endDraggingNode();
+      }
+      // Cancel any in-progress connection
+      if (_directPortDragStarted) {
+        widget.controller.cancelConnection();
+        setState(() => _pendingConnectionEnd = null);
+      }
       _cancelCanvasOperation();
     }
   }
@@ -514,7 +790,42 @@ class _VooNodeCanvasState extends State<VooNodeCanvas> {
       _lastPanPosition = null;
       _marqueeStartScreen = null;
       _marqueeEndScreen = null;
+      _directDragNodeId = null;
+      _directDragOffset = null;
+      _directDragStarted = false;
+      _directPortNodeId = null;
+      _directPortId = null;
+      _directPortDragStarted = false;
     });
+  }
+
+  /// Updates the hover state based on the current pointer position.
+  /// This is called on every pointer move to track which node/port is hovered.
+  void _updateHoverState(Offset screenPosition) {
+    // Check ports first (they take priority)
+    final portUnderPointer = _findPortAtScreenPosition(screenPosition);
+    final newHoveredPortNodeId = portUnderPointer?.node.id;
+    final newHoveredPortId = portUnderPointer?.port.id;
+
+    // Only check node if not over a port
+    final nodeUnderPointer =
+        portUnderPointer == null ? _findNodeAtScreenPosition(screenPosition) : null;
+    final newHoveredNodeId = nodeUnderPointer?.id;
+
+    if (newHoveredPortNodeId != _hoveredPortNodeId ||
+        newHoveredPortId != _hoveredPortId ||
+        newHoveredNodeId != _hoveredNodeId) {
+      setState(() {
+        _hoveredPortNodeId = newHoveredPortNodeId;
+        _hoveredPortId = newHoveredPortId;
+        _hoveredNodeId = newHoveredNodeId;
+      });
+    }
+  }
+
+  /// Handles pointer hover events (mouse move without buttons pressed).
+  void _handlePointerHover(PointerHoverEvent event) {
+    _updateHoverState(event.localPosition);
   }
 
   /// Updates the selection based on the current marquee rectangle.

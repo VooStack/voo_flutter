@@ -1,6 +1,6 @@
 name: voo_node_canvas
 description: 'A node-based canvas widget for creating visual node graphs with draggable nodes and connections'
-version: 0.1.2
+version: 0.1.3
 repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_node_canvas
 homepage: https://voostack.com/packages/voo_node_canvas
 issue_tracker: https://github.com/VooStack/VooFlutter/issues

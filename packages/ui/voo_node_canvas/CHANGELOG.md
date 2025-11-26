@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2025-11-26
+
+### Fixed
+- Fixed hit testing for nodes and ports positioned far from the canvas origin
+- Nodes and ports now remain interactive regardless of zoom level or position
+- Fixed node dragging lag when zoomed out by using offset-based positioning
+- Added direct pointer handling that bypasses Flutter's constraint-limited hit testing
+- Added manual hover tracking for nodes and ports at any canvas position
+- Transform alignment now correctly uses top-left origin for coordinate transforms
+
 ## [0.1.2] - 2025-11-26
 
 ### Added
