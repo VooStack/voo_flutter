@@ -21,13 +21,20 @@ class CanvasConfig extends Equatable {
     this.connectionStyle = ConnectionStyle.bezier,
     this.connectionColor,
     this.connectionStrokeWidth = 2.0,
+    this.connectionHitTolerance = 10.0,
     this.portRadius = 6.0,
     this.portColor,
     this.selectedColor,
     this.enablePan = true,
     this.enableZoom = true,
     this.enableNodeDrag = true,
+    this.enableMarqueeSelection = true,
+    this.marqueeColor,
+    this.marqueeRequiresContain = false,
+    this.portHitTolerance = 20.0,
+    this.portHighlightColor,
   }) : assert(minZoom > 0 && minZoom <= maxZoom, 'Invalid zoom range'),
+       assert(portHitTolerance > 0, 'Port hit tolerance must be positive'),
        assert(initialZoom >= minZoom && initialZoom <= maxZoom,
            'Initial zoom must be within min/max range'),
        assert(gridSize > 0, 'Grid size must be positive'),
@@ -67,6 +74,12 @@ class CanvasConfig extends Equatable {
   /// The default stroke width for connections.
   final double connectionStrokeWidth;
 
+  /// The hit tolerance for detecting clicks on connections.
+  ///
+  /// Larger values make it easier to click on thin connection lines.
+  /// Default is 10.0 pixels.
+  final double connectionHitTolerance;
+
   /// The radius of port indicators.
   final double portRadius;
 
@@ -85,6 +98,34 @@ class CanvasConfig extends Equatable {
   /// Whether dragging nodes is enabled.
   final bool enableNodeDrag;
 
+  /// Whether marquee (drag-to-select) selection is enabled.
+  ///
+  /// When enabled, dragging on empty canvas creates a selection rectangle
+  /// that selects all nodes and connections within it.
+  final bool enableMarqueeSelection;
+
+  /// The color of the marquee selection rectangle.
+  ///
+  /// If null, uses the theme's primary color with reduced opacity.
+  final Color? marqueeColor;
+
+  /// Whether marquee selection requires nodes to be fully contained.
+  ///
+  /// If true, nodes must be fully inside the selection rectangle.
+  /// If false (default), nodes only need to intersect the rectangle.
+  final bool marqueeRequiresContain;
+
+  /// The hit detection tolerance for ports in logical pixels.
+  ///
+  /// Larger values make it easier to click on ports.
+  /// Default is 20.0 pixels.
+  final double portHitTolerance;
+
+  /// The color used for port highlight effects (hover, valid connection target).
+  ///
+  /// If null, uses a lighter version of the port color.
+  final Color? portHighlightColor;
+
   /// Creates a copy of this config with optional new values.
   CanvasConfig copyWith({
     double? gridSize,
@@ -98,12 +139,18 @@ class CanvasConfig extends Equatable {
     ConnectionStyle? connectionStyle,
     Color? connectionColor,
     double? connectionStrokeWidth,
+    double? connectionHitTolerance,
     double? portRadius,
     Color? portColor,
     Color? selectedColor,
     bool? enablePan,
     bool? enableZoom,
     bool? enableNodeDrag,
+    bool? enableMarqueeSelection,
+    Color? marqueeColor,
+    bool? marqueeRequiresContain,
+    double? portHitTolerance,
+    Color? portHighlightColor,
   }) =>
       CanvasConfig(
         gridSize: gridSize ?? this.gridSize,
@@ -117,12 +164,21 @@ class CanvasConfig extends Equatable {
         connectionStyle: connectionStyle ?? this.connectionStyle,
         connectionColor: connectionColor ?? this.connectionColor,
         connectionStrokeWidth: connectionStrokeWidth ?? this.connectionStrokeWidth,
+        connectionHitTolerance:
+            connectionHitTolerance ?? this.connectionHitTolerance,
         portRadius: portRadius ?? this.portRadius,
         portColor: portColor ?? this.portColor,
         selectedColor: selectedColor ?? this.selectedColor,
         enablePan: enablePan ?? this.enablePan,
         enableZoom: enableZoom ?? this.enableZoom,
         enableNodeDrag: enableNodeDrag ?? this.enableNodeDrag,
+        enableMarqueeSelection:
+            enableMarqueeSelection ?? this.enableMarqueeSelection,
+        marqueeColor: marqueeColor ?? this.marqueeColor,
+        marqueeRequiresContain:
+            marqueeRequiresContain ?? this.marqueeRequiresContain,
+        portHitTolerance: portHitTolerance ?? this.portHitTolerance,
+        portHighlightColor: portHighlightColor ?? this.portHighlightColor,
       );
 
   @override
@@ -138,11 +194,17 @@ class CanvasConfig extends Equatable {
         connectionStyle,
         connectionColor,
         connectionStrokeWidth,
+        connectionHitTolerance,
         portRadius,
         portColor,
         selectedColor,
         enablePan,
         enableZoom,
         enableNodeDrag,
+        enableMarqueeSelection,
+        marqueeColor,
+        marqueeRequiresContain,
+        portHitTolerance,
+        portHighlightColor,
       ];
 }

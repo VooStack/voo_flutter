@@ -4,6 +4,8 @@ import 'package:voo_node_canvas/src/domain/entities/canvas_config.dart';
 import 'package:voo_node_canvas/src/domain/entities/canvas_node.dart';
 import 'package:voo_node_canvas/src/domain/entities/canvas_viewport.dart';
 import 'package:voo_node_canvas/src/domain/entities/node_connection.dart';
+import 'package:voo_node_canvas/src/domain/entities/node_port.dart';
+import 'package:voo_node_canvas/src/domain/enums/port_position.dart';
 import 'package:voo_node_canvas/src/domain/enums/port_type.dart';
 import 'package:voo_node_canvas/src/presentation/state/canvas_state.dart';
 
@@ -11,18 +13,37 @@ import 'package:voo_node_canvas/src/presentation/state/canvas_state.dart';
 ///
 /// This controller provides methods for manipulating nodes, connections,
 /// and the viewport, while maintaining immutable state updates.
+///
+/// Supports undo/redo for operations that modify nodes and connections.
 class CanvasController extends ChangeNotifier {
   /// Creates a canvas controller with an optional initial state.
   CanvasController({
     CanvasState? initialState,
+    this.maxHistorySize = 50,
   }) : _state = initialState ?? const CanvasState();
 
   CanvasState _state;
 
+  /// Maximum number of states to keep in history.
+  final int maxHistorySize;
+
+  /// History stack for undo operations.
+  final List<CanvasState> _undoStack = [];
+
+  /// Redo stack for redo operations.
+  final List<CanvasState> _redoStack = [];
+
   /// The current canvas state.
   CanvasState get state => _state;
 
+  /// Whether undo is available.
+  bool get canUndo => _undoStack.isNotEmpty;
+
+  /// Whether redo is available.
+  bool get canRedo => _redoStack.isNotEmpty;
+
   /// Updates the canvas state and notifies listeners.
+  /// Does NOT save to history - use for viewport/selection changes.
   void _updateState(CanvasState newState) {
     if (_state != newState) {
       _state = newState;
@@ -30,18 +51,78 @@ class CanvasController extends ChangeNotifier {
     }
   }
 
+  /// Updates the canvas state with history support for undo/redo.
+  /// Use for operations that modify nodes or connections.
+  void _updateStateWithHistory(CanvasState newState) {
+    if (_state != newState) {
+      // Save current state to undo stack
+      _undoStack.add(_state);
+
+      // Limit history size
+      if (_undoStack.length > maxHistorySize) {
+        _undoStack.removeAt(0);
+      }
+
+      // Clear redo stack when new action is performed
+      _redoStack.clear();
+
+      _state = newState;
+      notifyListeners();
+    }
+  }
+
+  /// Undoes the last operation.
+  ///
+  /// Returns true if undo was performed, false if nothing to undo.
+  bool undo() {
+    if (_undoStack.isEmpty) return false;
+
+    // Save current state to redo stack
+    _redoStack.add(_state);
+
+    // Restore previous state
+    _state = _undoStack.removeLast();
+    notifyListeners();
+    return true;
+  }
+
+  /// Redoes the last undone operation.
+  ///
+  /// Returns true if redo was performed, false if nothing to redo.
+  bool redo() {
+    if (_redoStack.isEmpty) return false;
+
+    // Save current state to undo stack
+    _undoStack.add(_state);
+
+    // Restore redo state
+    _state = _redoStack.removeLast();
+    notifyListeners();
+    return true;
+  }
+
+  /// Clears all undo/redo history.
+  void clearHistory() {
+    _undoStack.clear();
+    _redoStack.clear();
+  }
+
   // ---------------------------------------------------------------------------
   // Node Operations
   // ---------------------------------------------------------------------------
 
   /// Adds a node to the canvas.
+  ///
+  /// This operation supports undo/redo.
   void addNode(CanvasNode node) {
-    _updateState(_state.copyWith(
+    _updateStateWithHistory(_state.copyWith(
       nodes: [..._state.nodes, node],
     ));
   }
 
   /// Removes a node and all its connections from the canvas.
+  ///
+  /// This operation supports undo/redo.
   void removeNode(String nodeId) {
     final updatedNodes =
         _state.nodes.where((n) => n.id != nodeId).toList();
@@ -51,7 +132,7 @@ class CanvasController extends ChangeNotifier {
     final updatedSelectedNodeIds = Set<String>.from(_state.selectedNodeIds)
       ..remove(nodeId);
 
-    _updateState(_state.copyWith(
+    _updateStateWithHistory(_state.copyWith(
       nodes: updatedNodes,
       connections: updatedConnections,
       selectedNodeIds: updatedSelectedNodeIds,
@@ -135,6 +216,56 @@ class CanvasController extends ChangeNotifier {
     ));
   }
 
+  /// Sets the selected nodes to the given set.
+  ///
+  /// This method is typically used for marquee (drag-to-select) operations
+  /// where multiple nodes need to be selected at once.
+  void setSelectedNodes(Set<String> nodeIds) {
+    // Update node selection state
+    final updatedNodes = _state.nodes.map((node) {
+      return node.copyWith(isSelected: nodeIds.contains(node.id));
+    }).toList();
+
+    _updateState(_state.copyWith(
+      nodes: updatedNodes,
+      selectedNodeIds: nodeIds,
+      selectedConnectionIds: {},
+    ));
+  }
+
+  /// Selects all nodes on the canvas.
+  void selectAllNodes() {
+    final allNodeIds = _state.nodes.map((n) => n.id).toSet();
+    setSelectedNodes(allNodeIds);
+  }
+
+  /// Sets the selection for both nodes and connections.
+  ///
+  /// This method is typically used for marquee (drag-to-select) operations
+  /// where multiple items need to be selected at once.
+  void setSelection({
+    Set<String> nodeIds = const {},
+    Set<String> connectionIds = const {},
+  }) {
+    // Update node selection state
+    final updatedNodes = _state.nodes.map((node) {
+      return node.copyWith(isSelected: nodeIds.contains(node.id));
+    }).toList();
+
+    // Update connection selection state
+    final updatedConnections = _state.connections.map((connection) {
+      return connection.copyWith(
+          isSelected: connectionIds.contains(connection.id));
+    }).toList();
+
+    _updateState(_state.copyWith(
+      nodes: updatedNodes,
+      connections: updatedConnections,
+      selectedNodeIds: nodeIds,
+      selectedConnectionIds: connectionIds,
+    ));
+  }
+
   /// Deselects all nodes.
   void deselectAllNodes() {
     final updatedNodes = _state.nodes.map((node) {
@@ -148,8 +279,18 @@ class CanvasController extends ChangeNotifier {
   }
 
   /// Starts dragging a node.
+  ///
+  /// Saves state to history so the move can be undone.
   void startDraggingNode(String nodeId) {
     final node = _state.getNodeById(nodeId);
+
+    // Save state to history BEFORE drag starts (so undo restores original position)
+    _undoStack.add(_state);
+    if (_undoStack.length > maxHistorySize) {
+      _undoStack.removeAt(0);
+    }
+    _redoStack.clear();
+
     updateNode(nodeId, (node) => node.copyWith(isDragging: true));
     _updateState(_state.copyWith(
       draggingNodeId: nodeId,
@@ -171,6 +312,8 @@ class CanvasController extends ChangeNotifier {
   // ---------------------------------------------------------------------------
 
   /// Adds a connection between two ports.
+  ///
+  /// This operation supports undo/redo.
   void addConnection(NodeConnection connection) {
     // Validate that both nodes exist
     final sourceNode = _state.getNodeById(connection.sourceNodeId);
@@ -200,22 +343,93 @@ class CanvasController extends ChangeNotifier {
         c.targetPortId == connection.targetPortId);
     if (exists) return;
 
-    _updateState(_state.copyWith(
+    _updateStateWithHistory(_state.copyWith(
       connections: [..._state.connections, connection],
     ));
   }
 
   /// Removes a connection.
+  ///
+  /// This operation supports undo/redo.
   void removeConnection(String connectionId) {
     final updatedConnections =
         _state.connections.where((c) => c.id != connectionId).toList();
     final updatedSelectedConnectionIds =
         Set<String>.from(_state.selectedConnectionIds)..remove(connectionId);
 
-    _updateState(_state.copyWith(
+    _updateStateWithHistory(_state.copyWith(
       connections: updatedConnections,
       selectedConnectionIds: updatedSelectedConnectionIds,
     ));
+  }
+
+  /// Removes all connections from/to a specific port.
+  ///
+  /// This operation supports undo/redo.
+  /// Returns the list of removed connection IDs.
+  List<String> disconnectPort(String nodeId, String portId) {
+    final removedIds = <String>[];
+    final updatedConnections = _state.connections.where((c) {
+      final isConnected = (c.sourceNodeId == nodeId && c.sourcePortId == portId) ||
+          (c.targetNodeId == nodeId && c.targetPortId == portId);
+      if (isConnected) {
+        removedIds.add(c.id);
+        return false;
+      }
+      return true;
+    }).toList();
+
+    if (removedIds.isNotEmpty) {
+      final updatedSelectedConnectionIds =
+          Set<String>.from(_state.selectedConnectionIds)
+            ..removeAll(removedIds);
+
+      _updateStateWithHistory(_state.copyWith(
+        connections: updatedConnections,
+        selectedConnectionIds: updatedSelectedConnectionIds,
+      ));
+    }
+
+    return removedIds;
+  }
+
+  /// Removes all connections for a node without removing the node itself.
+  ///
+  /// This operation supports undo/redo.
+  /// Returns the list of removed connection IDs.
+  List<String> disconnectNode(String nodeId) {
+    final removedIds = <String>[];
+    final updatedConnections = _state.connections.where((c) {
+      final isConnected =
+          c.sourceNodeId == nodeId || c.targetNodeId == nodeId;
+      if (isConnected) {
+        removedIds.add(c.id);
+        return false;
+      }
+      return true;
+    }).toList();
+
+    if (removedIds.isNotEmpty) {
+      final updatedSelectedConnectionIds =
+          Set<String>.from(_state.selectedConnectionIds)
+            ..removeAll(removedIds);
+
+      _updateStateWithHistory(_state.copyWith(
+        connections: updatedConnections,
+        selectedConnectionIds: updatedSelectedConnectionIds,
+      ));
+    }
+
+    return removedIds;
+  }
+
+  /// Gets all connections for a specific port.
+  List<NodeConnection> getConnectionsForPort(String nodeId, String portId) {
+    return _state.connections
+        .where((c) =>
+            (c.sourceNodeId == nodeId && c.sourcePortId == portId) ||
+            (c.targetNodeId == nodeId && c.targetPortId == portId))
+        .toList();
   }
 
   /// Selects a connection.
@@ -399,7 +613,19 @@ class CanvasController extends ChangeNotifier {
   }
 
   /// Deletes all selected items.
-  void deleteSelected() {
+  ///
+  /// This operation supports undo/redo.
+  /// Returns a record containing:
+  /// - `deletedConnectionIds`: IDs of all deleted connections (including those
+  ///   attached to deleted nodes)
+  /// - `deletedNodeIds`: IDs of all deleted nodes
+  ({List<String> deletedConnectionIds, List<String> deletedNodeIds}) deleteSelected() {
+    final deletedConnectionIds = <String>[];
+    final deletedNodeIds = List<String>.from(_state.selectedNodeIds);
+
+    // Track directly selected connections
+    deletedConnectionIds.addAll(_state.selectedConnectionIds);
+
     // Remove selected connections
     final updatedConnections = _state.connections
         .where((c) => !_state.selectedConnectionIds.contains(c.id))
@@ -409,18 +635,28 @@ class CanvasController extends ChangeNotifier {
     final selectedNodeIds = _state.selectedNodeIds;
     final updatedNodes =
         _state.nodes.where((n) => !selectedNodeIds.contains(n.id)).toList();
-    final finalConnections = updatedConnections
-        .where((c) =>
-            !selectedNodeIds.contains(c.sourceNodeId) &&
-            !selectedNodeIds.contains(c.targetNodeId))
-        .toList();
+    final finalConnections = updatedConnections.where((c) {
+      final isConnectedToDeletedNode =
+          selectedNodeIds.contains(c.sourceNodeId) ||
+          selectedNodeIds.contains(c.targetNodeId);
+      if (isConnectedToDeletedNode) {
+        deletedConnectionIds.add(c.id);
+        return false;
+      }
+      return true;
+    }).toList();
 
-    _updateState(_state.copyWith(
+    _updateStateWithHistory(_state.copyWith(
       nodes: updatedNodes,
       connections: finalConnections,
       selectedNodeIds: {},
       selectedConnectionIds: {},
     ));
+
+    return (
+      deletedConnectionIds: deletedConnectionIds,
+      deletedNodeIds: deletedNodeIds,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -437,6 +673,9 @@ class CanvasController extends ChangeNotifier {
   // ---------------------------------------------------------------------------
 
   /// Calculates the position of a port in canvas coordinates.
+  ///
+  /// Ports can be positioned on any side of the node (left, right, top, bottom).
+  /// Multiple ports on the same side are evenly distributed along that edge.
   Offset? getPortPosition(String nodeId, String portId) {
     final node = _state.getNodeById(nodeId);
     if (node == null) return null;
@@ -444,22 +683,41 @@ class CanvasController extends ChangeNotifier {
     final port = node.ports.where((p) => p.id == portId).firstOrNull;
     if (port == null) return null;
 
-    // Calculate port position based on port type and index
-    final portIndex = node.ports
-        .where((p) => p.type == port.type)
-        .toList()
-        .indexOf(port);
-    final portsOfType = node.ports.where((p) => p.type == port.type).length;
+    return calculatePortPosition(node, port);
+  }
+
+  /// Calculates the position of a port on a node in canvas coordinates.
+  ///
+  /// This is a static utility that can be used without accessing state.
+  static Offset calculatePortPosition(CanvasNode node, NodePort port) {
+    final position = port.effectivePosition;
+
+    // Group ports by their effective position
+    final portsOnSameSide = node.ports
+        .where((p) => p.effectivePosition == position)
+        .toList();
+    final portIndex = portsOnSameSide.indexOf(port);
+    final portCount = portsOnSameSide.length;
 
     double x, y;
-    if (port.type == PortType.input) {
-      x = node.position.dx;
-      y = node.position.dy +
-          (node.size.height / (portsOfType + 1)) * (portIndex + 1);
-    } else {
-      x = node.position.dx + node.size.width;
-      y = node.position.dy +
-          (node.size.height / (portsOfType + 1)) * (portIndex + 1);
+
+    switch (position) {
+      case PortPosition.left:
+        x = node.position.dx;
+        y = node.position.dy +
+            (node.size.height / (portCount + 1)) * (portIndex + 1);
+      case PortPosition.right:
+        x = node.position.dx + node.size.width;
+        y = node.position.dy +
+            (node.size.height / (portCount + 1)) * (portIndex + 1);
+      case PortPosition.top:
+        x = node.position.dx +
+            (node.size.width / (portCount + 1)) * (portIndex + 1);
+        y = node.position.dy;
+      case PortPosition.bottom:
+        x = node.position.dx +
+            (node.size.width / (portCount + 1)) * (portIndex + 1);
+        y = node.position.dy + node.size.height;
     }
 
     return Offset(x, y) + port.offset;

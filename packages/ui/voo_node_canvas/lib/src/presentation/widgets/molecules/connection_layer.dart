@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:voo_node_canvas/src/domain/entities/canvas_node.dart';
 import 'package:voo_node_canvas/src/domain/entities/node_connection.dart';
-import 'package:voo_node_canvas/src/domain/enums/port_type.dart';
+import 'package:voo_node_canvas/src/domain/enums/port_position.dart';
+import 'package:voo_node_canvas/src/presentation/state/canvas_controller.dart';
 import 'package:voo_node_canvas/src/presentation/widgets/atoms/connection_painter.dart';
 
 /// A widget that renders all connections on the canvas.
@@ -52,29 +53,25 @@ class ConnectionLayer extends StatelessWidget {
         selectedColor: selectedColor ?? Theme.of(context).colorScheme.primary,
         pendingConnection: pendingConnection,
         pendingConnectionEnd: pendingConnectionEnd,
-        getPortPosition: _getPortPosition,
+        getPortInfo: _getPortInfo,
       ),
       size: Size.infinite,
     );
   }
 
-  Offset? _getPortPosition(String nodeId, String portId) {
+  /// Gets the position and port position for a port.
+  ({Offset position, PortPosition portPosition})? _getPortInfo(
+    String nodeId,
+    String portId,
+  ) {
     final node = nodes.where((n) => n.id == nodeId).firstOrNull;
     if (node == null) return null;
 
     final port = node.ports.where((p) => p.id == portId).firstOrNull;
     if (port == null) return null;
 
-    final portsOfType = node.ports.where((p) => p.type == port.type).toList();
-    final portIndex = portsOfType.indexOf(port);
-
-    final yPosition =
-        node.position.dy + (node.size.height / (portsOfType.length + 1)) * (portIndex + 1);
-    final xPosition = port.type == PortType.input
-        ? node.position.dx
-        : node.position.dx + node.size.width;
-
-    return Offset(xPosition, yPosition) + port.offset;
+    final position = CanvasController.calculatePortPosition(node, port);
+    return (position: position, portPosition: port.effectivePosition);
   }
 }
 
@@ -84,7 +81,7 @@ class _ConnectionLayerPainter extends CustomPainter {
     required this.connections,
     required this.nodes,
     required this.selectedColor,
-    required this.getPortPosition,
+    required this.getPortInfo,
     this.pendingConnection,
     this.pendingConnectionEnd,
   });
@@ -92,7 +89,10 @@ class _ConnectionLayerPainter extends CustomPainter {
   final List<NodeConnection> connections;
   final List<CanvasNode> nodes;
   final Color selectedColor;
-  final Offset? Function(String nodeId, String portId) getPortPosition;
+  final ({Offset position, PortPosition portPosition})? Function(
+    String nodeId,
+    String portId,
+  ) getPortInfo;
   final ({String nodeId, String portId})? pendingConnection;
   final Offset? pendingConnectionEnd;
 
@@ -100,19 +100,23 @@ class _ConnectionLayerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Draw all established connections
     for (final connection in connections) {
-      final start = getPortPosition(connection.sourceNodeId, connection.sourcePortId);
-      final end = getPortPosition(connection.targetNodeId, connection.targetPortId);
+      final sourceInfo =
+          getPortInfo(connection.sourceNodeId, connection.sourcePortId);
+      final targetInfo =
+          getPortInfo(connection.targetNodeId, connection.targetPortId);
 
-      if (start == null || end == null) continue;
+      if (sourceInfo == null || targetInfo == null) continue;
 
       final painter = ConnectionPainter(
-        start: start,
-        end: end,
+        start: sourceInfo.position,
+        end: targetInfo.position,
         style: connection.style,
         color: connection.color,
         strokeWidth: connection.strokeWidth,
         isSelected: connection.isSelected,
         selectedColor: selectedColor,
+        sourcePosition: sourceInfo.portPosition,
+        targetPosition: targetInfo.portPosition,
       );
 
       painter.paint(canvas, size);
@@ -120,12 +124,14 @@ class _ConnectionLayerPainter extends CustomPainter {
 
     // Draw pending connection if one is being created
     if (pendingConnection != null && pendingConnectionEnd != null) {
-      final start = getPortPosition(pendingConnection!.nodeId, pendingConnection!.portId);
-      if (start != null) {
+      final sourceInfo =
+          getPortInfo(pendingConnection!.nodeId, pendingConnection!.portId);
+      if (sourceInfo != null) {
         final painter = ConnectionPainter(
-          start: start,
+          start: sourceInfo.position,
           end: pendingConnectionEnd!,
           isDragging: true,
+          sourcePosition: sourceInfo.portPosition,
         );
         painter.paint(canvas, size);
       }

@@ -64,6 +64,7 @@ library;
 
 // Domain - Enums
 export 'src/domain/enums/connection_style.dart';
+export 'src/domain/enums/port_position.dart';
 export 'src/domain/enums/port_type.dart';
 
 // Domain - Entities

@@ -3,11 +3,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'package:voo_node_canvas/src/domain/enums/connection_style.dart';
+import 'package:voo_node_canvas/src/domain/enums/port_position.dart';
 
 /// A custom painter that draws a connection line between two points.
 ///
 /// Supports multiple connection styles including straight, bezier,
-/// and stepped connections.
+/// and stepped connections. The bezier curves adapt based on the
+/// port positions to create natural-looking connections.
 class ConnectionPainter extends CustomPainter {
   /// Creates a connection painter.
   const ConnectionPainter({
@@ -19,6 +21,8 @@ class ConnectionPainter extends CustomPainter {
     this.isSelected = false,
     this.selectedColor,
     this.isDragging = false,
+    this.sourcePosition,
+    this.targetPosition,
   });
 
   /// The starting point of the connection.
@@ -44,6 +48,18 @@ class ConnectionPainter extends CustomPainter {
 
   /// Whether this connection is being drawn (during drag).
   final bool isDragging;
+
+  /// The position of the source port (which side of the node it's on).
+  ///
+  /// Used to determine the direction of bezier control points.
+  /// If null, defaults to [PortPosition.right] for the source.
+  final PortPosition? sourcePosition;
+
+  /// The position of the target port (which side of the node it's on).
+  ///
+  /// Used to determine the direction of bezier control points.
+  /// If null, defaults to [PortPosition.left] for the target.
+  final PortPosition? targetPosition;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -78,38 +94,101 @@ class ConnectionPainter extends CustomPainter {
 
       case ConnectionStyle.bezier:
         path.moveTo(start.dx, start.dy);
-        final controlOffset = (end.dx - start.dx).abs() / 2;
+
+        // Calculate control points based on port positions
+        final sourcePos = sourcePosition ?? PortPosition.right;
+        final targetPos = targetPosition ?? PortPosition.left;
+
+        final sourceControl = _getControlPoint(start, sourcePos, true);
+        final targetControl = _getControlPoint(end, targetPos, false);
+
         path.cubicTo(
-          start.dx + controlOffset,
-          start.dy,
-          end.dx - controlOffset,
-          end.dy,
+          sourceControl.dx,
+          sourceControl.dy,
+          targetControl.dx,
+          targetControl.dy,
           end.dx,
           end.dy,
         );
 
       case ConnectionStyle.stepped:
         path.moveTo(start.dx, start.dy);
-        final midX = (start.dx + end.dx) / 2;
-        path.lineTo(midX, start.dy);
-        path.lineTo(midX, end.dy);
-        path.lineTo(end.dx, end.dy);
+        _createSteppedPath(path);
     }
 
     return path;
   }
 
+  /// Gets the control point offset for a bezier curve based on port position.
+  Offset _getControlPoint(Offset point, PortPosition position, bool isSource) {
+    // Distance for the control point from the port
+    final distance = (end - start).distance.clamp(50.0, 150.0) * 0.4;
+
+    switch (position) {
+      case PortPosition.left:
+        return Offset(point.dx - distance, point.dy);
+      case PortPosition.right:
+        return Offset(point.dx + distance, point.dy);
+      case PortPosition.top:
+        return Offset(point.dx, point.dy - distance);
+      case PortPosition.bottom:
+        return Offset(point.dx, point.dy + distance);
+    }
+  }
+
+  /// Creates a stepped path that handles all port position combinations.
+  void _createSteppedPath(ui.Path path) {
+    final sourcePos = sourcePosition ?? PortPosition.right;
+    final targetPos = targetPosition ?? PortPosition.left;
+
+    // Horizontal source, horizontal target
+    if (_isHorizontal(sourcePos) && _isHorizontal(targetPos)) {
+      final midX = (start.dx + end.dx) / 2;
+      path.lineTo(midX, start.dy);
+      path.lineTo(midX, end.dy);
+      path.lineTo(end.dx, end.dy);
+    }
+    // Vertical source, vertical target
+    else if (_isVertical(sourcePos) && _isVertical(targetPos)) {
+      final midY = (start.dy + end.dy) / 2;
+      path.lineTo(start.dx, midY);
+      path.lineTo(end.dx, midY);
+      path.lineTo(end.dx, end.dy);
+    }
+    // Horizontal source, vertical target
+    else if (_isHorizontal(sourcePos) && _isVertical(targetPos)) {
+      path.lineTo(end.dx, start.dy);
+      path.lineTo(end.dx, end.dy);
+    }
+    // Vertical source, horizontal target
+    else {
+      path.lineTo(start.dx, end.dy);
+      path.lineTo(end.dx, end.dy);
+    }
+  }
+
+  bool _isHorizontal(PortPosition pos) =>
+      pos == PortPosition.left || pos == PortPosition.right;
+
+  bool _isVertical(PortPosition pos) =>
+      pos == PortPosition.top || pos == PortPosition.bottom;
+
   void _drawArrow(Canvas canvas, Paint paint) {
     const arrowSize = 8.0;
 
-    // Calculate the direction at the end of the path
+    // Calculate the direction at the end of the path based on target port position
+    final targetPos = targetPosition ?? PortPosition.left;
     Offset direction;
+
     switch (style) {
       case ConnectionStyle.straight:
-      case ConnectionStyle.bezier:
         direction = (end - start).normalize();
+      case ConnectionStyle.bezier:
+        // Use the direction the connection approaches the target
+        direction = _getArrowDirection(targetPos);
       case ConnectionStyle.stepped:
-        direction = const Offset(1, 0); // Arrow always points right for stepped
+        // Arrow direction based on target position
+        direction = _getArrowDirection(targetPos);
     }
 
     final arrowPoint1 = end -
@@ -131,6 +210,20 @@ class ConnectionPainter extends CustomPainter {
     );
   }
 
+  /// Gets the arrow direction based on target port position.
+  Offset _getArrowDirection(PortPosition targetPos) {
+    switch (targetPos) {
+      case PortPosition.left:
+        return const Offset(-1, 0); // Arrow points left (into left port)
+      case PortPosition.right:
+        return const Offset(1, 0); // Arrow points right (into right port)
+      case PortPosition.top:
+        return const Offset(0, -1); // Arrow points up (into top port)
+      case PortPosition.bottom:
+        return const Offset(0, 1); // Arrow points down (into bottom port)
+    }
+  }
+
   @override
   bool shouldRepaint(covariant ConnectionPainter oldDelegate) =>
       start != oldDelegate.start ||
@@ -139,7 +232,9 @@ class ConnectionPainter extends CustomPainter {
       color != oldDelegate.color ||
       strokeWidth != oldDelegate.strokeWidth ||
       isSelected != oldDelegate.isSelected ||
-      isDragging != oldDelegate.isDragging;
+      isDragging != oldDelegate.isDragging ||
+      sourcePosition != oldDelegate.sourcePosition ||
+      targetPosition != oldDelegate.targetPosition;
 }
 
 /// Extension to normalize an Offset.
@@ -165,6 +260,8 @@ class ConnectionWidget extends StatelessWidget {
     this.selectedColor,
     this.isDragging = false,
     this.onTap,
+    this.sourcePosition,
+    this.targetPosition,
     super.key,
   });
 
@@ -195,6 +292,12 @@ class ConnectionWidget extends StatelessWidget {
   /// Called when the connection is tapped.
   final VoidCallback? onTap;
 
+  /// The position of the source port.
+  final PortPosition? sourcePosition;
+
+  /// The position of the target port.
+  final PortPosition? targetPosition;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -210,6 +313,8 @@ class ConnectionWidget extends StatelessWidget {
           isSelected: isSelected,
           selectedColor: selectedColor,
           isDragging: isDragging,
+          sourcePosition: sourcePosition,
+          targetPosition: targetPosition,
         ),
         size: Size.infinite,
       ),

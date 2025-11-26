@@ -16,6 +16,9 @@ class CanvasNode extends Equatable {
   /// The [size] defines the dimensions of the node.
   /// The [ports] define the connection points available on this node.
   /// The [child] is the widget to display as the node content.
+  /// The [backgroundColor] overrides the default node background color.
+  /// The [borderColor] overrides the default node border color.
+  /// The [borderRadius] overrides the default node border radius.
   /// The [metadata] stores custom serializable data.
   const CanvasNode({
     required this.id,
@@ -25,6 +28,9 @@ class CanvasNode extends Equatable {
     this.child,
     this.isSelected = false,
     this.isDragging = false,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderRadius,
     this.metadata,
   });
 
@@ -48,6 +54,15 @@ class CanvasNode extends Equatable {
                 ?.map((p) => NodePort.fromJson(p as Map<String, dynamic>))
                 .toList() ??
             const [],
+        backgroundColor: json['backgroundColor'] != null
+            ? Color(json['backgroundColor'] as int)
+            : null,
+        borderColor: json['borderColor'] != null
+            ? Color(json['borderColor'] as int)
+            : null,
+        borderRadius: json['borderRadius'] != null
+            ? (json['borderRadius'] as num).toDouble()
+            : null,
         metadata: json['metadata'] as Map<String, dynamic>?,
       );
 
@@ -74,6 +89,21 @@ class CanvasNode extends Equatable {
 
   /// Whether this node is currently being dragged.
   final bool isDragging;
+
+  /// Optional custom background color for this node.
+  ///
+  /// If null, uses the theme's surface color.
+  final Color? backgroundColor;
+
+  /// Optional custom border color for this node.
+  ///
+  /// If null, uses the theme's outline color (or selected color when selected).
+  final Color? borderColor;
+
+  /// Optional custom border radius for this node.
+  ///
+  /// If null, uses the default border radius of 8.0.
+  final double? borderRadius;
 
   /// Optional custom metadata associated with this node.
   ///
@@ -106,6 +136,10 @@ class CanvasNode extends Equatable {
         if (size != const Size(150, 100))
           'size': {'width': size.width, 'height': size.height},
         if (ports.isNotEmpty) 'ports': ports.map((p) => p.toJson()).toList(),
+        if (backgroundColor != null)
+          'backgroundColor': backgroundColor!.toARGB32(),
+        if (borderColor != null) 'borderColor': borderColor!.toARGB32(),
+        if (borderRadius != null) 'borderRadius': borderRadius,
         if (metadata != null) 'metadata': metadata,
       };
 
@@ -118,6 +152,9 @@ class CanvasNode extends Equatable {
     Widget? child,
     bool? isSelected,
     bool? isDragging,
+    Color? backgroundColor,
+    Color? borderColor,
+    double? borderRadius,
     Map<String, dynamic>? metadata,
   }) =>
       CanvasNode(
@@ -128,6 +165,9 @@ class CanvasNode extends Equatable {
         child: child ?? this.child,
         isSelected: isSelected ?? this.isSelected,
         isDragging: isDragging ?? this.isDragging,
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        borderColor: borderColor ?? this.borderColor,
+        borderRadius: borderRadius ?? this.borderRadius,
         metadata: metadata ?? this.metadata,
       );
 
@@ -139,6 +179,9 @@ class CanvasNode extends Equatable {
         ports,
         isSelected,
         isDragging,
+        backgroundColor,
+        borderColor,
+        borderRadius,
         metadata,
       ];
 }

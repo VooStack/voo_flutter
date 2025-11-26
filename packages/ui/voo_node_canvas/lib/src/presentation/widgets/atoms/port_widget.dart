@@ -7,7 +7,7 @@ import 'package:voo_node_canvas/src/domain/enums/port_type.dart';
 ///
 /// Ports are the visual indicators where connections can be made.
 /// They respond to tap and drag gestures for creating connections.
-class PortWidget extends StatelessWidget {
+class PortWidget extends StatefulWidget {
   /// Creates a port widget.
   const PortWidget({
     required this.port,
@@ -16,8 +16,11 @@ class PortWidget extends StatelessWidget {
     required this.onDragUpdate,
     required this.onDragEnd,
     this.radius = 6.0,
+    this.hitTolerance = 20.0,
     this.color,
+    this.highlightColor,
     this.isHighlighted = false,
+    this.isConnected = false,
     super.key,
   });
 
@@ -39,49 +42,115 @@ class PortWidget extends StatelessWidget {
   /// The radius of the port indicator.
   final double radius;
 
+  /// The hit tolerance for detecting taps/drags on the port.
+  ///
+  /// This creates an invisible hit area larger than the visual port,
+  /// making it easier to interact with small ports. Defaults to 20.0.
+  final double hitTolerance;
+
   /// The color of the port indicator.
   final Color? color;
+
+  /// The color to use when the port is highlighted.
+  final Color? highlightColor;
 
   /// Whether this port is highlighted (e.g., as a valid drop target).
   final bool isHighlighted;
 
+  /// Whether this port has an active connection.
+  final bool isConnected;
+
+  @override
+  State<PortWidget> createState() => _PortWidgetState();
+}
+
+class _PortWidgetState extends State<PortWidget> {
+  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveColor = port.color ??
-        color ??
-        (port.type == PortType.input
+
+    // Determine base color: port-specific > widget-provided > type-based default
+    final baseColor = widget.port.color ??
+        widget.color ??
+        (widget.port.type == PortType.input
             ? theme.colorScheme.primary
             : theme.colorScheme.secondary);
 
+    // Determine connected color
+    final connectedColor = widget.port.connectedColor ?? baseColor;
+
+    // Determine highlight color
+    final highlightColor = widget.port.highlightColor ??
+        widget.highlightColor ??
+        HSLColor.fromColor(baseColor).withLightness(0.7).toColor();
+
+    // Calculate effective display color based on state
+    Color effectiveColor;
+    if (widget.isHighlighted) {
+      effectiveColor = highlightColor;
+    } else if (_isHovered) {
+      effectiveColor =
+          HSLColor.fromColor(baseColor).withLightness(0.6).toColor();
+    } else if (widget.isConnected) {
+      effectiveColor = connectedColor;
+    } else {
+      effectiveColor = baseColor;
+    }
+
+    // Border color for highlighted/hovered states
+    final borderColor = widget.isHighlighted
+        ? highlightColor
+        : (_isHovered ? baseColor : null);
+
+    // Calculate hit area size (minimum of hit tolerance or visual size)
+    final hitSize = widget.hitTolerance.clamp(widget.radius * 2, double.infinity);
+
     return GestureDetector(
-      onTap: onTap,
-      onPanStart: (_) => onDragStart(),
-      onPanUpdate: onDragUpdate,
-      onPanEnd: (_) => onDragEnd(),
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      onPanStart: (_) => widget.onDragStart(),
+      onPanUpdate: widget.onDragUpdate,
+      onPanEnd: (_) => widget.onDragEnd(),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
         child: Container(
-          width: radius * 2,
-          height: radius * 2,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: effectiveColor,
-            border: isHighlighted
-                ? Border.all(
-                    color: theme.colorScheme.primary,
-                    width: 2,
-                  )
-                : null,
-            boxShadow: isHighlighted
-                ? [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.4),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : null,
+          // Larger hit area with transparent padding
+          width: hitSize,
+          height: hitSize,
+          color: Colors.transparent,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: _isHovered || widget.isHighlighted
+                  ? widget.radius * 2.5
+                  : widget.radius * 2,
+              height: _isHovered || widget.isHighlighted
+                  ? widget.radius * 2.5
+                  : widget.radius * 2,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: effectiveColor,
+                border: borderColor != null
+                    ? Border.all(
+                        color: borderColor,
+                        width: 2,
+                      )
+                    : null,
+                boxShadow: widget.isHighlighted || _isHovered
+                    ? [
+                        BoxShadow(
+                          color: effectiveColor.withValues(alpha: 0.5),
+                          blurRadius: _isHovered ? 12 : 8,
+                          spreadRadius: _isHovered ? 3 : 2,
+                        ),
+                      ]
+                    : null,
+              ),
+            ),
           ),
         ),
       ),

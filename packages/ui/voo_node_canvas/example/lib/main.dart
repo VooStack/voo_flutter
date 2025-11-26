@@ -46,6 +46,7 @@ class NodeCanvasExample extends StatefulWidget {
 
 class _NodeCanvasExampleState extends State<NodeCanvasExample> {
   late final CanvasController _controller;
+  bool _isRunning = false;
 
   /// Node templates available in the palette.
   final List<NodeTemplate> _templates = [
@@ -143,6 +144,31 @@ class _NodeCanvasExampleState extends State<NodeCanvasExample> {
         NodePort(id: 'in1', type: PortType.input),
         NodePort(id: 'in2', type: PortType.input),
         NodePort(id: 'out1', type: PortType.output),
+      ],
+    ),
+    // Multi-directional ports demo (new feature!)
+    NodeTemplate(
+      type: 'hub',
+      label: 'Hub',
+      description: 'Multi-directional hub',
+      icon: Icons.hub_outlined,
+      color: Colors.purple,
+      category: 'Logic',
+      defaultSize: const Size(100, 100),
+      defaultPorts: const [
+        // Ports on all 4 sides!
+        NodePort(id: 'top', type: PortType.input, position: PortPosition.top),
+        NodePort(
+          id: 'bottom',
+          type: PortType.output,
+          position: PortPosition.bottom,
+        ),
+        NodePort(id: 'left', type: PortType.input, position: PortPosition.left),
+        NodePort(
+          id: 'right',
+          type: PortType.output,
+          position: PortPosition.right,
+        ),
       ],
     ),
 
@@ -295,6 +321,200 @@ class _NodeCanvasExampleState extends State<NodeCanvasExample> {
     );
   }
 
+  /// Simulates running the flow by highlighting nodes in sequence.
+  Future<void> _handleRun() async {
+    if (_isRunning) {
+      _stopSimulation();
+      return;
+    }
+
+    final nodes = _controller.state.nodes;
+    if (nodes.isEmpty) {
+      _showSnackBar('Add some nodes first!');
+      return;
+    }
+
+    // Find start nodes (nodes with only output ports or nodes with 'start' type)
+    final startNodes = nodes.where((n) {
+      final type = n.metadata?['type'] as String?;
+      if (type == 'start') return true;
+      // Or nodes with no input connections
+      final hasInputConnections = _controller.state.connections
+          .any((c) => c.targetNodeId == n.id);
+      return !hasInputConnections;
+    }).toList();
+
+    if (startNodes.isEmpty) {
+      _showSnackBar('No start node found!');
+      return;
+    }
+
+    setState(() => _isRunning = true);
+
+    _showSnackBar('Running flow simulation...');
+
+    // Build execution order based on connections
+    final executionOrder = _buildExecutionOrder(startNodes.first);
+
+    // Execute nodes in order with visual feedback
+    for (var i = 0; i < executionOrder.length && _isRunning; i++) {
+      final nodeId = executionOrder[i];
+
+      // Highlight current node with color
+      _controller.updateNode(nodeId, (node) {
+        return node.copyWith(
+          backgroundColor: Colors.green.withValues(alpha: 0.8),
+          borderColor: Colors.greenAccent,
+        );
+      });
+
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      // Dim the previous node (mark as completed)
+      if (_isRunning) {
+        _controller.updateNode(nodeId, (node) {
+          return node.copyWith(
+            backgroundColor: Colors.grey.withValues(alpha: 0.5),
+            borderColor: Colors.grey,
+          );
+        });
+      }
+    }
+
+    if (_isRunning) {
+      _showSnackBar('Flow completed!');
+
+      // Reset all node colors after a brief pause
+      await Future.delayed(const Duration(seconds: 1));
+      _resetNodeColors();
+    }
+
+    setState(() => _isRunning = false);
+  }
+
+  void _stopSimulation() {
+    setState(() => _isRunning = false);
+    _resetNodeColors();
+    _showSnackBar('Simulation stopped');
+  }
+
+  void _resetNodeColors() {
+    for (final node in _controller.state.nodes) {
+      _controller.updateNode(node.id, (n) {
+        // Clear custom colors to revert to default
+        return CanvasNode(
+          id: n.id,
+          position: n.position,
+          size: n.size,
+          ports: n.ports,
+          child: n.child,
+          isSelected: n.isSelected,
+          isDragging: n.isDragging,
+          metadata: n.metadata,
+          // Reset colors to null (defaults)
+        );
+      });
+    }
+  }
+
+  /// Builds an execution order by traversing connections from start node.
+  List<String> _buildExecutionOrder(CanvasNode startNode) {
+    final order = <String>[];
+    final visited = <String>{};
+    final queue = [startNode.id];
+
+    while (queue.isNotEmpty) {
+      final nodeId = queue.removeAt(0);
+      if (visited.contains(nodeId)) continue;
+
+      visited.add(nodeId);
+      order.add(nodeId);
+
+      // Find connected nodes (outputs of this node)
+      final connections = _controller.state.connections
+          .where((c) => c.sourceNodeId == nodeId);
+
+      for (final conn in connections) {
+        if (!visited.contains(conn.targetNodeId)) {
+          queue.add(conn.targetNodeId);
+        }
+      }
+    }
+
+    return order;
+  }
+
+  /// Cycles the color of selected nodes.
+  void _handleColorCycle() {
+    final selectedNodes = _controller.state.nodes
+        .where((n) => n.isSelected)
+        .toList();
+
+    if (selectedNodes.isEmpty) {
+      _showSnackBar('Select a node first!');
+      return;
+    }
+
+    const colors = [
+      Colors.blue,
+      Colors.purple,
+      Colors.pink,
+      Colors.red,
+      Colors.orange,
+      Colors.amber,
+      Colors.green,
+      Colors.teal,
+      Colors.cyan,
+    ];
+
+    for (final node in selectedNodes) {
+      // Get current color index
+      final currentColor = node.backgroundColor;
+      var colorIndex = 0;
+      if (currentColor != null) {
+        for (var i = 0; i < colors.length; i++) {
+          if (colors[i].toARGB32() == currentColor.toARGB32()) {
+            colorIndex = (i + 1) % colors.length;
+            break;
+          }
+        }
+      }
+
+      _controller.updateNode(node.id, (n) {
+        return n.copyWith(
+          backgroundColor: colors[colorIndex].withValues(alpha: 0.7),
+          borderColor: colors[colorIndex],
+        );
+      });
+    }
+
+    _showSnackBar('Color cycled!');
+  }
+
+  /// Disconnects all connections from selected nodes.
+  void _handleDisconnectSelected() {
+    final selectedNodes = _controller.state.nodes
+        .where((n) => n.isSelected)
+        .toList();
+
+    if (selectedNodes.isEmpty) {
+      _showSnackBar('Select a node first!');
+      return;
+    }
+
+    var totalDisconnected = 0;
+    for (final node in selectedNodes) {
+      final disconnected = _controller.disconnectNode(node.id);
+      totalDisconnected += disconnected.length;
+    }
+
+    if (totalDisconnected > 0) {
+      _showSnackBar('Disconnected $totalDisconnected connection(s)');
+    } else {
+      _showSnackBar('No connections to disconnect');
+    }
+  }
+
   /// Rebuilds a node's widget content from its metadata.
   CanvasNode _rebuildNodeWidget(CanvasNode node) {
     final nodeType = node.metadata?['type'] as String?;
@@ -324,6 +544,26 @@ class _NodeCanvasExampleState extends State<NodeCanvasExample> {
       appBar: AppBar(
         title: const Text('VooNodeCanvas Editor'),
         actions: [
+          // Run/Stop simulation
+          IconButton(
+            icon: Icon(_isRunning ? Icons.stop : Icons.play_arrow),
+            tooltip: _isRunning ? 'Stop Simulation' : 'Run Flow',
+            onPressed: _handleRun,
+            color: _isRunning ? Colors.red : null,
+          ),
+          // Color cycle for selected nodes
+          IconButton(
+            icon: const Icon(Icons.palette),
+            tooltip: 'Cycle Color (select a node)',
+            onPressed: _handleColorCycle,
+          ),
+          // Disconnect selected nodes
+          IconButton(
+            icon: const Icon(Icons.link_off),
+            tooltip: 'Disconnect Selected',
+            onPressed: _handleDisconnectSelected,
+          ),
+          const VerticalDivider(),
           IconButton(
             icon: const Icon(Icons.download),
             tooltip: 'Load Sample',
@@ -367,8 +607,14 @@ class _NodeCanvasExampleState extends State<NodeCanvasExample> {
             'Connected: ${connection.sourceNodeId} → ${connection.targetNodeId}',
           );
         },
+        onConnectionRemoved: (connectionId) {
+          // Connection was removed (via Delete key or disconnect)
+          debugPrint('Connection removed: $connectionId');
+        },
         onConnectionTap: (connection) {
-          _showSnackBar('Connection: ${connection.id}');
+          _showSnackBar(
+            'Connection selected (press Delete/Backspace to remove)',
+          );
         },
       ),
     );
