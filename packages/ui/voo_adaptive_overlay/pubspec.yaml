@@ -6,7 +6,7 @@ repository: https://github.com/voostack/voo_flutter/tree/main/packages/ui/voo_ad
 resolution: workspace
 
 environment:
-  sdk: '>=3.8.1 <4.0.0'
+  sdk: '>=3.9.2 <4.0.0'
   flutter: '>=3.0.0'
 
 dependencies:

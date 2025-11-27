@@ -3,7 +3,7 @@ description: Demonstrates the voo_adaptive_overlay package.
 publish_to: 'none'
 
 environment:
-  sdk: '>=3.8.1 <4.0.0'
+  sdk: '>=3.9.2 <4.0.0'
   flutter: '>=3.0.0'
 
 dependencies:

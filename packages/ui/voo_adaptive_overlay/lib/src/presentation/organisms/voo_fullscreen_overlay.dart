@@ -4,7 +4,6 @@ import 'package:voo_adaptive_overlay/src/domain/entities/overlay_behavior.dart';
 import 'package:voo_adaptive_overlay/src/domain/enums/overlay_style.dart';
 import 'package:voo_adaptive_overlay/src/domain/enums/overlay_type.dart';
 import 'package:voo_adaptive_overlay/src/presentation/molecules/overlay_action_bar.dart';
-import 'package:voo_adaptive_overlay/src/presentation/molecules/overlay_header.dart';
 import 'package:voo_adaptive_overlay/src/presentation/styles/base_overlay_style.dart';
 
 /// A fullscreen overlay that covers the entire screen.
@@ -78,7 +77,10 @@ class VooFullscreenOverlay extends StatelessWidget {
                   padding: EdgeInsets.symmetric(
                     horizontal: style == VooOverlayStyle.material ? 24 : 16,
                   ),
-                  child: content,
+                  child: DefaultTextStyle.merge(
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    child: content!,
+                  ),
                 ),
               ),
             if (builder != null)

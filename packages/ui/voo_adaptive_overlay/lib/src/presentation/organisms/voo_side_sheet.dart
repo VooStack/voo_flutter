@@ -105,7 +105,10 @@ class VooSideSheet extends StatelessWidget {
                   padding: EdgeInsets.symmetric(
                     horizontal: style == VooOverlayStyle.material ? 24 : 16,
                   ),
-                  child: content,
+                  child: DefaultTextStyle.merge(
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    child: content!,
+                  ),
                 ),
               ),
             if (builder != null)

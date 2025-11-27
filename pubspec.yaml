@@ -4,6 +4,7 @@ environment:
 dev_dependencies:
   melos: ^7.1.1
 workspace:
+  - packages/ui/voo_adaptive_overlay
   - packages/ui/voo_forms/example
   - packages/dev/voo_analytics
   - packages/dev/voo_analytics/example

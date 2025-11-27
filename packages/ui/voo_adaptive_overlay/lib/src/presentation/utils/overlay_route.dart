@@ -54,7 +54,11 @@ class VooOverlayRoute<T> extends PopupRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return builder(context);
+    // Wrap in Material to provide DefaultTextStyle for text widgets
+    return Material(
+      type: MaterialType.transparency,
+      child: builder(context),
+    );
   }
 
   @override
