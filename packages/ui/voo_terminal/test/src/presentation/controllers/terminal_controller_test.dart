@@ -8,6 +8,8 @@ import 'package:voo_terminal/src/domain/enums/line_type.dart';
 import 'package:voo_terminal/src/presentation/controllers/terminal_controller.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('TerminalController', () {
     late TerminalController controller;
 

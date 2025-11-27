@@ -1,6 +1,6 @@
 name: voo_terminal
 description: 'A powerful terminal/console UI component for Flutter with multiple display modes, theming, and command support'
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/VooStack/VooFlutter/tree/main/packages/ui/voo_terminal
 homepage: https://github.com/VooStack/VooFlutter
 issue_tracker: https://github.com/VooStack/VooFlutter/issues
