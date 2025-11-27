@@ -28,7 +28,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  voo_adaptive_overlay: ^0.0.1
+  voo_adaptive_overlay: ^0.0.2
 ```
 
 Then run:
