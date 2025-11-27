@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Custom route that displays content as a side panel on XL screens
 /// Follows atomic design and KISS principle
@@ -20,48 +21,53 @@ class VooSidePanelRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => dismissible;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => Stack(
-    children: [
-      // Tap area for dismissing
-      if (dismissible)
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            behavior: HitTestBehavior.opaque,
-            child: Container(color: Colors.transparent),
-          ),
-        ),
-      // Side panel
-      Positioned(
-        right: 0,
-        top: 0,
-        bottom: 0,
-        child: SlideTransition(
-          position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-          child: Container(
-            width: width,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(-2, 0))],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (title != null) _buildHeader(context),
-                Expanded(child: form),
-              ],
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    final elevation = context.vooElevation;
+
+    return Stack(
+      children: [
+        // Tap area for dismissing
+        if (dismissible)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              behavior: HitTestBehavior.opaque,
+              child: Container(color: Colors.transparent),
             ),
           ),
+        // Side panel
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          child: SlideTransition(
+            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+            child: Container(
+              width: width,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: elevation.menu, offset: const Offset(-2, 0))],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (title != null) _buildHeader(context),
+                  Expanded(child: form),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(spacing.md),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
       ),

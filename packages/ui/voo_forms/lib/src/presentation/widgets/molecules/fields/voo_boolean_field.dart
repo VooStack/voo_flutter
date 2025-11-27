@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_switch_input.dart';
 import 'package:voo_forms/voo_forms.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Boolean field molecule that composes atoms to create a complete switch field
 /// Uses VooSwitchInput atom for the actual switch control
@@ -33,6 +34,8 @@ class VooBooleanField extends VooFieldBase<bool> {
     if (isHidden) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
     final currentValue = initialValue ?? false;
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
@@ -66,7 +69,7 @@ class VooBooleanField extends VooFieldBase<bool> {
                 children: [
                   if (labelWidget != null) labelWidget! else buildLabel(context),
                   if (helper != null) ...[
-                    const SizedBox(height: 4),
+                    SizedBox(height: spacing.xs),
                     Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                   ],
                 ],
@@ -75,16 +78,16 @@ class VooBooleanField extends VooFieldBase<bool> {
           ),
         ],
         VooSwitchInput(value: currentValue, onChanged: enabled && !effectiveReadOnly ? handleChanged : null, enabled: enabled && !effectiveReadOnly),
-        if (actions != null && actions!.isNotEmpty) ...[const SizedBox(width: 8), ...actions!],
+        if (actions != null && actions!.isNotEmpty) ...[SizedBox(width: spacing.sm), ...actions!],
       ],
     );
 
     // Wrap in a card-like container for better visual separation
     Widget container = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: spacing.md, vertical: spacing.inputPadding),
       decoration: BoxDecoration(
         color: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.input,
         border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       child: switchRow,

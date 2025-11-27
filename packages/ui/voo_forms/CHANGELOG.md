@@ -1,3 +1,34 @@
+## 0.4.0
+
+### Breaking Changes
+- **VooFileField API Change**: `allowCompression` parameter replaced with `compressionQuality`
+  - Old: `allowCompression: true` (boolean)
+  - New: `compressionQuality: 30` (int?, 0-100, null for no compression)
+  - Default behavior preserved with `compressionQuality ?? 30`
+
+### Fixed
+- **Deprecated Radio API**: Replaced deprecated `Radio` widget with custom radio indicator in `VooOption`
+  - Removed usage of deprecated `groupValue` and `onChanged` parameters
+  - Custom radio indicator provides identical visual appearance
+  - Follows Flutter's deprecation of Radio API in favor of RadioGroup
+- **Deprecated FilePicker API**: Updated `VooFileField` to use `compressionQuality` instead of deprecated `allowCompression`
+  - Aligns with file_picker v10.x API changes
+
+### Improved
+- **Example App**: Comprehensive example application with multiple demos
+  - Basic Form example with validation and submission
+  - Field Types example showcasing all available field widgets
+  - Validation example demonstrating built-in and custom validators
+  - Layout example with vertical, horizontal, and grid layouts
+  - Read-Only example with edit mode toggle
+  - Form Actions example with field-level actions
+  - File Upload example with drag-drop, size limits, and type restrictions
+  - Address Forms example with billing/shipping and US state dropdown
+  - Registration example with multi-section form and comprehensive validation
+- **Design Tokens Integration**: Updated widgets to use voo_tokens design tokens
+  - Consistent spacing, radius, and sizing across all components
+  - Improved Material 3 compliance
+
 ## 0.3.47
 
  - Patch version bump for package maintenance

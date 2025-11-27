@@ -328,12 +328,16 @@ class _VooFormState extends State<VooForm> {
     }
 
     // Show the form with controller in scope
-    return VooFormScope(
-      isReadOnly: widget.isReadOnly,
-      isLoading: widget.isLoading,
-      controller: _controller,
-      rebuildKey: _rebuildKey,
-      child: _buildFormContent(),
+    // Wrap in Material to ensure TextField widgets have Material ancestor
+    return Material(
+      type: MaterialType.transparency,
+      child: VooFormScope(
+        isReadOnly: widget.isReadOnly,
+        isLoading: widget.isLoading,
+        controller: _controller,
+        rebuildKey: _rebuildKey,
+        child: _buildFormContent(),
+      ),
     );
   }
 }

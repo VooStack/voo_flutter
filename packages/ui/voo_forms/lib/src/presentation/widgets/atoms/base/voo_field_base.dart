@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/domain/entities/validation_rule.dart';
-import 'package:voo_forms/src/domain/utils/screen_size.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
 import 'package:voo_forms/src/presentation/widgets/organisms/forms/voo_form.dart';
+import 'package:voo_responsive/voo_responsive.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Base abstract class for all form fields following atomic design
 /// Contains all common field properties and methods to ensure zero code duplication
@@ -102,16 +103,18 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
 
   /// Get responsive padding based on screen size
   EdgeInsets getFieldPadding(BuildContext context) {
-    final screenType = VooScreenSize.getType(context);
+    final screenSize = ResponsiveHelper.getScreenSize(context);
+    final spacing = context.vooSpacing;
 
-    switch (screenType) {
-      case ScreenType.mobile:
-        return const EdgeInsets.symmetric(vertical: 6.0);
-      case ScreenType.tablet:
-        return const EdgeInsets.symmetric(vertical: 8.0);
-      case ScreenType.desktop:
-      case ScreenType.extraLarge:
-        return const EdgeInsets.symmetric(vertical: 10.0);
+    switch (screenSize) {
+      case ScreenSize.extraSmall:
+      case ScreenSize.small:
+        return EdgeInsets.symmetric(vertical: spacing.xs);
+      case ScreenSize.medium:
+        return EdgeInsets.symmetric(vertical: spacing.sm);
+      case ScreenSize.large:
+      case ScreenSize.extraLarge:
+        return EdgeInsets.symmetric(vertical: spacing.sm + spacing.xxs);
     }
   }
 
@@ -152,12 +155,14 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   Widget buildWithLabel(BuildContext context, Widget child) {
     if (label == null && labelWidget == null && (actions == null || actions!.isEmpty)) return child;
 
+    final spacing = context.vooSpacing;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (labelWidget != null || label != null || (actions != null && actions!.isNotEmpty)) buildLabelWithActions(context),
-        if (labelWidget != null || label != null) const SizedBox(height: 8),
+        if (labelWidget != null || label != null) SizedBox(height: spacing.sm),
         child,
       ],
     );
@@ -227,10 +232,12 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     final fieldError = getFieldError(context);
     if (!showError || fieldError == null) return child;
 
+    final spacing = context.vooSpacing;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [child, const SizedBox(height: 4), buildError(context)],
+      children: [child, SizedBox(height: spacing.xs), buildError(context)],
     );
   }
 
@@ -240,8 +247,9 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     if (fieldError == null || !showError) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
     return Padding(
-      padding: const EdgeInsets.only(left: 12),
+      padding: EdgeInsets.only(left: spacing.inputPadding),
       child: Text(fieldError, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
     );
   }
@@ -250,10 +258,12 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   Widget buildWithHelper(BuildContext context, Widget child) {
     if (helper == null) return child;
 
+    final spacing = context.vooSpacing;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [child, const SizedBox(height: 4), buildHelper(context)],
+      children: [child, SizedBox(height: spacing.xs), buildHelper(context)],
     );
   }
 
@@ -262,8 +272,9 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
     if (helper == null) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
     return Padding(
-      padding: const EdgeInsets.only(left: 12),
+      padding: EdgeInsets.only(left: spacing.inputPadding),
       child: Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
     );
   }
@@ -275,6 +286,7 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
   /// Standard decoration for input fields
   InputDecoration getInputDecoration(BuildContext context) {
     final theme = Theme.of(context);
+    final radius = context.vooRadius;
 
     return InputDecoration(
       hintText: placeholder ?? hint,
@@ -286,23 +298,23 @@ abstract class VooFieldBase<T> extends StatelessWidget implements VooFormFieldWi
       filled: true,
       fillColor: enabled ? theme.colorScheme.surface : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.input,
         borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.input,
         borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.input,
         borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.input,
         borderSide: BorderSide(color: theme.colorScheme.error),
       ),
       disabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.input,
         borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// A container widget for organizing form fields into logical sections
 /// Provides visual grouping with optional title, description, and styling
@@ -160,6 +161,8 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
 
   Widget _buildTitle(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
 
     if (widget.titleWidget == null && widget.title == null) {
       return const SizedBox.shrink();
@@ -175,7 +178,7 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
     // Build the title row with optional leading/trailing widgets
     Widget titleRow = Row(
       children: [
-        if (widget.leading != null) ...[widget.leading!, const SizedBox(width: 12)],
+        if (widget.leading != null) ...[widget.leading!, SizedBox(width: spacing.inputPadding)],
         Expanded(child: titleContent),
         if (widget.isCollapsible && widget.trailing == null)
           RotationTransition(
@@ -191,8 +194,8 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
     if (widget.isCollapsible) {
       titleRow = InkWell(
         onTap: _toggleExpansion,
-        borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-        child: Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: titleRow),
+        borderRadius: widget.borderRadius ?? radius.card,
+        child: Padding(padding: EdgeInsets.symmetric(vertical: spacing.xs), child: titleRow),
       );
     }
 
@@ -203,8 +206,9 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
     if (widget.description == null) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
     return Padding(
-      padding: const EdgeInsets.only(top: 4),
+      padding: EdgeInsets.only(top: spacing.xs),
       child: Text(widget.description!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
     );
   }
@@ -223,11 +227,13 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
 
     // Determine effective values
-    final effectivePadding = widget.padding ?? const EdgeInsets.all(16);
-    final effectiveMargin = widget.margin ?? const EdgeInsets.symmetric(vertical: 8);
-    final effectiveBorderRadius = widget.borderRadius ?? BorderRadius.circular(12);
+    final effectivePadding = widget.padding ?? EdgeInsets.all(spacing.md);
+    final effectiveMargin = widget.margin ?? EdgeInsets.symmetric(vertical: spacing.sm);
+    final effectiveBorderRadius = widget.borderRadius ?? radius.card;
     final effectiveBackgroundColor = widget.backgroundColor ?? (widget.elevation > 0 ? theme.colorScheme.surface : Colors.transparent);
 
     Widget content = Column(
@@ -236,11 +242,11 @@ class _VooFormSectionState extends State<VooFormSection> with SingleTickerProvid
         _buildTitle(context),
         _buildDescription(context),
         if (widget.showTitleDivider && (widget.title != null || widget.titleWidget != null) && (!widget.isCollapsible || _isExpanded)) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: spacing.inputPadding),
           Divider(height: 1, color: theme.colorScheme.outline.withValues(alpha: 0.2)),
-          const SizedBox(height: 16),
+          SizedBox(height: spacing.md),
         ] else if (widget.title != null || widget.titleWidget != null)
-          const SizedBox(height: 16),
+          SizedBox(height: spacing.md),
 
         // Animated expansion for children
         if (widget.isCollapsible) SizeTransition(sizeFactor: _expandAnimation, child: _buildChildren()) else _buildChildren(),

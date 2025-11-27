@@ -4,7 +4,6 @@ import 'package:voo_forms/src/domain/enums/error_display_mode.dart';
 import 'package:voo_forms/src/domain/enums/field_variant.dart';
 import 'package:voo_forms/src/domain/enums/label_position.dart';
 import 'package:voo_forms/src/domain/enums/label_style.dart';
-import 'package:voo_forms/src/domain/utils/screen_size.dart' as voo_screen;
 import 'package:voo_forms/src/presentation/config/options/voo_field_options.dart';
 import 'package:voo_ui_core/voo_ui_core.dart';
 
@@ -162,14 +161,15 @@ class VooFormConfig {
 
   /// Get responsive column count based on screen context
   int getColumnCount(BuildContext context) {
-    final screenType = voo_screen.VooScreenSize.getType(context);
-    switch (screenType) {
-      case voo_screen.ScreenType.mobile:
+    final screenSize = ResponsiveHelper.getScreenSize(context);
+    switch (screenSize) {
+      case ScreenSize.extraSmall:
+      case ScreenSize.small:
         return gridColumns.mobile;
-      case voo_screen.ScreenType.tablet:
+      case ScreenSize.medium:
         return gridColumns.tablet;
-      case voo_screen.ScreenType.desktop:
-      case voo_screen.ScreenType.extraLarge:
+      case ScreenSize.large:
+      case ScreenSize.extraLarge:
         return gridColumns.desktop;
     }
   }

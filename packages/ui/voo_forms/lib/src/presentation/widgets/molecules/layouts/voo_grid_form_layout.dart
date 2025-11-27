@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Grid layout for form fields - displays fields in a responsive grid
 class VooGridFormLayout extends StatelessWidget {
   final List<VooFormFieldWidget> fields;
   final int columns;
-  final double spacing;
-  final double horizontalSpacing;
+  final double? spacing;
+  final double? horizontalSpacing;
   final CrossAxisAlignment crossAxisAlignment;
   final MainAxisAlignment mainAxisAlignment;
   final MainAxisSize mainAxisSize;
@@ -15,8 +16,8 @@ class VooGridFormLayout extends StatelessWidget {
     super.key,
     required this.fields,
     this.columns = 2,
-    this.spacing = 20.0,
-    this.horizontalSpacing = 24.0,
+    this.spacing,
+    this.horizontalSpacing,
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
@@ -24,6 +25,10 @@ class VooGridFormLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gap = context.vooGap;
+    final effectiveSpacing = spacing ?? gap.formFields;
+    final effectiveHorizontalSpacing = horizontalSpacing ?? gap.gridItems;
+
     final rows = <Widget>[];
     int i = 0;
 
@@ -35,7 +40,7 @@ class VooGridFormLayout extends StatelessWidget {
         // Add full width field on its own row
         rows.add(field);
         if (i < fields.length - 1) {
-          rows.add(SizedBox(height: spacing));
+          rows.add(SizedBox(height: effectiveSpacing));
         }
         i++;
         continue;
@@ -67,8 +72,8 @@ class VooGridFormLayout extends StatelessWidget {
             flex: currentSpan,
             child: Padding(
               padding: EdgeInsets.only(
-                right: columnsUsed + currentSpan >= columns ? 0 : horizontalSpacing / 2,
-                left: columnsUsed == 0 ? 0 : horizontalSpacing / 2,
+                right: columnsUsed + currentSpan >= columns ? 0 : effectiveHorizontalSpacing / 2,
+                left: columnsUsed == 0 ? 0 : effectiveHorizontalSpacing / 2,
               ),
               child: currentField,
             ),
@@ -92,7 +97,7 @@ class VooGridFormLayout extends StatelessWidget {
         );
 
         if (i < fields.length) {
-          rows.add(SizedBox(height: spacing));
+          rows.add(SizedBox(height: effectiveSpacing));
         }
       }
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_form_field_widget.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Section divider for forms - provides visual separation between form sections
 /// Implements VooFormFieldWidget so it can be used in VooForm fields list
@@ -82,6 +83,7 @@ class VooFormSectionDivider extends StatelessWidget implements VooFormFieldWidge
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
 
     return Padding(
       padding: EdgeInsets.only(top: topSpacing, bottom: bottomSpacing),
@@ -98,7 +100,7 @@ class VooFormSectionDivider extends StatelessWidget implements VooFormFieldWidge
               children: [
                 if (label != null)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+                    padding: EdgeInsets.only(bottom: spacing.xs),
                     child: Text(
                       label!,
                       style:
@@ -106,7 +108,7 @@ class VooFormSectionDivider extends StatelessWidget implements VooFormFieldWidge
                     ),
                   ),
                 if (subtitle != null) ...[
-                  if (label != null) const SizedBox(height: 2),
+                  if (label != null) SizedBox(height: spacing.xxs),
                   Text(
                     subtitle!,
                     style: subtitleStyle ?? theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8), height: 1.4),
@@ -117,7 +119,7 @@ class VooFormSectionDivider extends StatelessWidget implements VooFormFieldWidge
 
           // Show divider line if enabled
           if (showLine) ...[
-            if (label != null || subtitle != null || customWidget != null) const SizedBox(height: 16),
+            if (label != null || subtitle != null || customWidget != null) SizedBox(height: spacing.md),
             Container(
               margin: EdgeInsets.only(left: indent, right: endIndent),
               height: thickness,

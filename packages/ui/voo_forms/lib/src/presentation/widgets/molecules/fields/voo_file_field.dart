@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/voo_forms.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// File field molecule that handles file selection
 /// Supports mobile and web platforms via file_picker
@@ -24,8 +25,9 @@ class VooFileField extends VooFieldBase<VooFile?> {
   /// Whether to allow multiple files
   final bool allowMultiple;
 
-  /// Whether to allow compression (images/videos)
-  final bool allowCompression;
+  /// Compression quality for images (0-100). Set to null for no compression.
+  /// Only applies when fileType is FileType.image.
+  final int? compressionQuality;
 
   /// Whether to show file preview
   final bool showPreview;
@@ -81,7 +83,7 @@ class VooFileField extends VooFieldBase<VooFile?> {
     this.allowedExtensions,
     this.fileType = FileType.any,
     this.allowMultiple = false,
-    this.allowCompression = true,
+    this.compressionQuality,
     this.showPreview = true,
     this.buttonText,
     this.buttonIcon,
@@ -160,7 +162,7 @@ class VooFileField extends VooFieldBase<VooFile?> {
     allowedExtensions: allowedExtensions,
     fileType: fileType,
     allowMultiple: allowMultiple,
-    allowCompression: allowCompression,
+    compressionQuality: compressionQuality,
     showPreview: showPreview,
     buttonText: buttonText,
     buttonIcon: buttonIcon,
@@ -193,6 +195,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
     final hasFile = widget.fieldState.value != null;
     final effectiveReadOnly = widget.field.getEffectiveReadOnly(context);
 
@@ -204,7 +207,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
 
         // Action buttons (only show in edit mode)
         if (hasFile && widget.field.enabled && !effectiveReadOnly) ...[
-          const SizedBox(height: 8),
+          SizedBox(height: spacing.sm),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -213,7 +216,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
                 icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
                 label: Text('Remove', style: TextStyle(color: theme.colorScheme.error)),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: spacing.sm),
               TextButton.icon(onPressed: () => _pickFile(context), icon: const Icon(Icons.refresh), label: const Text('Change')),
             ],
           ),
@@ -252,6 +255,9 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
   }
 
   Widget _buildFileSelectionArea(BuildContext context, ThemeData theme, bool hasFile, bool effectiveReadOnly) {
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
+
     // Determine the border and background colors based on state
     Color borderColor;
     Color backgroundColor;
@@ -279,13 +285,13 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
 
     return InkWell(
       onTap: widget.field.enabled && !effectiveReadOnly ? () => _pickFile(context) : null,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: radius.input,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(spacing.md),
         decoration: BoxDecoration(
           border: Border.all(color: borderColor, width: borderWidth, style: _isDragging ? BorderStyle.solid : BorderStyle.solid),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: radius.input,
           color: backgroundColor,
         ),
         child: hasFile ? _buildFilePreview(context) : _buildPlaceholder(context, effectiveReadOnly),
@@ -295,12 +301,14 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
 
   Widget _buildPlaceholder(BuildContext context, bool effectiveReadOnly) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
+    final size = context.vooSize;
 
     if (effectiveReadOnly) {
       return Row(
         children: [
-          Icon(Icons.attach_file, size: 24, color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
-          const SizedBox(width: 12),
+          Icon(Icons.attach_file, size: size.iconMedium, color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+          SizedBox(width: spacing.inputPadding),
           Text('No file attached', style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5))),
         ],
       );
@@ -311,21 +319,21 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
       children: [
         Icon(
           _isDragging ? Icons.file_download : (widget.field.buttonIcon != null ? null : Icons.cloud_upload_outlined),
-          size: 48,
+          size: size.iconLarge * 2,
           color: _isDragging ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         ),
         if (widget.field.buttonIcon != null && !_isDragging) widget.field.buttonIcon!,
-        const SizedBox(height: 8),
+        SizedBox(height: spacing.sm),
         Text(
           _isDragging ? 'Drop file here' : (widget.field.buttonText ?? 'Click to select file'),
           style: theme.textTheme.bodyLarge?.copyWith(color: _isDragging ? theme.colorScheme.primary : theme.colorScheme.primary, fontWeight: FontWeight.w500),
         ),
         if (!_isDragging && _canDragDrop) ...[
-          const SizedBox(height: 4),
+          SizedBox(height: spacing.xs),
           Text('or drag and drop', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6))),
         ],
         if (widget.field.placeholder != null && !_isDragging) ...[
-          const SizedBox(height: 4),
+          SizedBox(height: spacing.xs),
           Text(
             widget.field.placeholder!,
             style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
@@ -333,7 +341,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
           ),
         ],
         if (widget.field.allowedExtensions != null && widget.field.allowedExtensions!.isNotEmpty && !_isDragging) ...[
-          const SizedBox(height: 4),
+          SizedBox(height: spacing.xs),
           Text(
             'Allowed: ${widget.field.allowedExtensions!.join(', ')}',
             style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
@@ -345,6 +353,8 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
 
   Widget _buildFilePreview(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
     final file = widget.fieldState.value!;
     final isImageFile = _isImageFile(file.fileExtension);
 
@@ -357,7 +367,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(radius.sm),
               border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
             ),
             clipBehavior: Clip.antiAlias,
@@ -385,12 +395,12 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
         ] else ...[
           // Show file icon
           Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(8)),
+            padding: EdgeInsets.all(spacing.sm),
+            decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(radius.sm)),
             child: Icon(_getFileIcon(file.fileExtension), color: theme.colorScheme.onPrimaryContainer),
           ),
         ],
-        const SizedBox(width: 12),
+        SizedBox(width: spacing.inputPadding),
 
         // File info
         Expanded(
@@ -403,16 +413,16 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
                     child: Text(file.name, style: theme.textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
                   if (file.isFromUrl) ...[
-                    const SizedBox(width: 8),
+                    SizedBox(width: spacing.sm),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(12)),
+                      padding: EdgeInsets.symmetric(horizontal: spacing.sm, vertical: spacing.xxs),
+                      decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: radius.input),
                       child: Text('Uploaded', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
                     ),
                   ],
                 ],
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: spacing.xxs),
               Text(
                 file.fileSize > 0 ? _formatFileSize(file.fileSize) : 'Unknown size',
                 style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
@@ -498,7 +508,7 @@ class _VooFileFieldContentState extends State<_VooFileFieldContent> {
       final result = await FilePicker.platform.pickFiles(
         type: widget.field.fileType,
         allowedExtensions: widget.field.fileType == FileType.custom ? widget.field.allowedExtensions : null,
-        allowCompression: widget.field.allowCompression,
+        compressionQuality: widget.field.compressionQuality ?? 30,
       );
 
       if (result != null && result.files.isNotEmpty) {

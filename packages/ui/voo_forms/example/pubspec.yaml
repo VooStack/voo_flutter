@@ -15,7 +15,10 @@ dependencies:
 
   voo_forms:
     path: ../
+  voo_tokens:
+    path: ../../voo_tokens
   intl: ^0.20.1
+  file_picker: ^10.3.7
 
 dev_dependencies:
   flutter_test:

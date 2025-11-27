@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
-import 'client_form_page_example.dart';
-import 'readonly_form_example.dart';
-import 'voo_form_field_action_example.dart';
+import 'package:voo_tokens/voo_tokens.dart';
+
+import 'examples/address_form_example.dart';
+import 'examples/basic_form_example.dart';
+import 'examples/field_types_example.dart';
+import 'examples/file_upload_example.dart';
+import 'examples/form_actions_example.dart';
+import 'examples/layout_example.dart';
+import 'examples/read_only_example.dart';
+import 'examples/registration_example.dart';
+import 'examples/validation_example.dart';
 
 void main() {
   runApp(const VooFormsExampleApp());
@@ -14,123 +22,128 @@ class VooFormsExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'VooForms Examples',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6366F1),
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
-      home: const VooFormsHomePage(),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6366F1),
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      home: const ExampleHomePage(),
     );
   }
 }
 
-class VooFormsHomePage extends StatelessWidget {
-  const VooFormsHomePage({super.key});
+class ExampleHomePage extends StatelessWidget {
+  const ExampleHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.vooSpacing;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('VooForms Examples'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          _buildExampleCard(
-            context,
-            title: 'Client Form Page',
-            description:
-                'Example showing a form with client selection and nested form modals',
-            icon: Icons.business,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ClientFormPageExample(),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            title: const Text('VooForms'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () => _showAboutDialog(context),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 12),
-          _buildExampleCard(
-            context,
-            title: 'Form Field Actions',
-            description:
-                'Demonstrates form field actions with adaptive UI for different screen sizes',
-            icon: Icons.touch_app,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const VooFormFieldActionExample(),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildExampleCard(
-            context,
-            title: 'Read-Only Forms',
-            description:
-                'Shows how to use the isReadOnly parameter to display forms in view-only mode',
-            icon: Icons.visibility,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ReadOnlyFormExample(),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Card(
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'About VooForms',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'VooForms is a comprehensive, type-safe forms package for Flutter following clean architecture, '
-                    'atomic design pattern, and Material 3 design.',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Features:',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 4),
-                  ...[
-                    '• Type-safe field widgets',
-                    '• Rich validation system',
-                    '• Custom formatters',
-                    '• Responsive layouts',
-                    '• Read-only mode support',
-                    '• Form field actions',
-                  ].map((feature) => Padding(
-                        padding: const EdgeInsets.only(left: 8.0, top: 2.0),
-                        child: Text(
-                          feature,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      )),
-                ],
-              ),
+          SliverPadding(
+            padding: EdgeInsets.all(spacing.md),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _SectionHeader(title: 'Getting Started'),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Basic Form',
+                  description: 'Simple form with text fields, validation, and submission',
+                  icon: Icons.article_outlined,
+                  color: Colors.blue,
+                  onTap: () => _navigateTo(context, const BasicFormExample()),
+                ),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Field Types',
+                  description: 'All available field types: text, email, phone, dropdown, etc.',
+                  icon: Icons.input,
+                  color: Colors.green,
+                  onTap: () => _navigateTo(context, const FieldTypesExample()),
+                ),
+                SizedBox(height: spacing.lg),
+                _SectionHeader(title: 'Features'),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Validation',
+                  description: 'Built-in and custom validators with real-time feedback',
+                  icon: Icons.check_circle_outline,
+                  color: Colors.orange,
+                  onTap: () => _navigateTo(context, const ValidationExample()),
+                ),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Layouts',
+                  description: 'Vertical, horizontal, grid, and dynamic layouts',
+                  icon: Icons.grid_view,
+                  color: Colors.purple,
+                  onTap: () => _navigateTo(context, const LayoutExample()),
+                ),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Read-Only Mode',
+                  description: 'Display forms in view-only mode for detail pages',
+                  icon: Icons.visibility,
+                  color: Colors.teal,
+                  onTap: () => _navigateTo(context, const ReadOnlyExample()),
+                ),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Form Actions',
+                  description: 'Add buttons to fields for related actions',
+                  icon: Icons.touch_app,
+                  color: Colors.pink,
+                  onTap: () => _navigateTo(context, const FormActionsExample()),
+                ),
+                SizedBox(height: spacing.lg),
+                _SectionHeader(title: 'Advanced Examples'),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'File Uploads',
+                  description: 'File picker with drag-drop, size limits, and type restrictions',
+                  icon: Icons.upload_file,
+                  color: Colors.indigo,
+                  onTap: () => _navigateTo(context, const FileUploadExample()),
+                ),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Address Forms',
+                  description: 'Billing and shipping address forms with state dropdown',
+                  icon: Icons.location_on,
+                  color: Colors.red,
+                  onTap: () => _navigateTo(context, const AddressFormExample()),
+                ),
+                SizedBox(height: spacing.sm),
+                _ExampleCard(
+                  title: 'Registration',
+                  description: 'Complete user registration with sections and validation',
+                  icon: Icons.person_add,
+                  color: Colors.cyan,
+                  onTap: () => _navigateTo(context, const RegistrationExample()),
+                ),
+                SizedBox(height: spacing.xl),
+              ]),
             ),
           ),
         ],
@@ -138,60 +151,117 @@ class VooFormsHomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildExampleCard(
-    BuildContext context, {
-    required String title,
-    required String description,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+  }
+
+  void _showAboutDialog(BuildContext context) {
+    showAboutDialog(
+      context: context,
+      applicationName: 'VooForms',
+      applicationVersion: '0.2.3',
+      applicationLegalese: 'A comprehensive forms package for Flutter',
+      children: [
+        const SizedBox(height: 16),
+        const Text(
+          'VooForms provides type-safe, validated form fields with '
+          'Material 3 design and responsive layouts.',
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 8),
+      child: Text(
+        title,
+        style: theme.textTheme.titleSmall?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+}
+
+class _ExampleCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ExampleCard({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
+
     return Card(
-      elevation: 2,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: radius.card,
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: radius.card,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(spacing.md),
           child: Row(
             children: [
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
+                child: Icon(icon, color: color),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: spacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: spacing.xxs),
                     Text(
                       description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
               ),
               Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                Icons.chevron_right,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ],
           ),

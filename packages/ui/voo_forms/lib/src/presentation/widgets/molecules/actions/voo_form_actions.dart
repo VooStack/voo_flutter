@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/enums/button_type.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/buttons/voo_form_button.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Molecule component for form action buttons
 /// Provides submit and cancel buttons with customizable appearance
@@ -27,8 +28,8 @@ class VooFormActions extends StatelessWidget {
   /// Main axis alignment for button row
   final MainAxisAlignment alignment;
 
-  /// Spacing between buttons
-  final double spacing;
+  /// Spacing between buttons (uses VooGapTokens.buttonGroup if null)
+  final double? spacing;
 
   /// Whether submit button should be enabled
   final bool submitEnabled;
@@ -54,7 +55,7 @@ class VooFormActions extends StatelessWidget {
     this.showSubmit = true,
     this.showCancel = false,
     this.alignment = MainAxisAlignment.end,
-    this.spacing = 8.0,
+    this.spacing,
     this.submitEnabled = true,
     this.cancelEnabled = true,
     this.isLoading = false,
@@ -69,11 +70,14 @@ class VooFormActions extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final gap = context.vooGap;
+    final effectiveSpacing = spacing ?? gap.buttonGroup;
+
     return Row(
       mainAxisAlignment: alignment,
       children: [
         if (showCancel) VooFormButton(text: cancelText, onPressed: onCancel, enabled: cancelEnabled && !isLoading, type: cancelButtonType),
-        if (showCancel && showSubmit) SizedBox(width: spacing),
+        if (showCancel && showSubmit) SizedBox(width: effectiveSpacing),
         if (showSubmit)
           VooFormButton(text: submitText, onPressed: onSubmit, enabled: submitEnabled && !isLoading, type: submitButtonType, showLoading: isLoading),
       ],

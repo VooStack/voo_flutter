@@ -4,6 +4,7 @@ import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dar
 import 'package:voo_forms/src/presentation/widgets/atoms/inputs/voo_date_input.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
 import 'package:voo_forms/voo_forms.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Date field molecule that composes atoms to create a complete date picker field
 /// Extends VooFieldBase to inherit all common field functionality
@@ -53,6 +54,7 @@ class VooDateField extends VooFieldBase<DateTime> {
     // Return empty widget if hidden
     if (isHidden) return const SizedBox.shrink();
 
+    final spacing = context.vooSpacing;
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
     // Get the form controller from scope if available
@@ -80,9 +82,9 @@ class VooDateField extends VooFieldBase<DateTime> {
           mainAxisSize: MainAxisSize.min,
           children: [
             readOnlyContent,
-            const SizedBox(height: 4),
+            SizedBox(height: spacing.xs),
             Padding(
-              padding: const EdgeInsets.only(left: 12.0),
+              padding: EdgeInsets.only(left: spacing.inputPadding),
               child: Text(fieldError, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error)),
             ),
           ],
@@ -136,9 +138,9 @@ class VooDateField extends VooFieldBase<DateTime> {
         mainAxisSize: MainAxisSize.min,
         children: [
           dateInput,
-          const SizedBox(height: 4),
+          SizedBox(height: spacing.xs),
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: EdgeInsets.only(left: spacing.inputPadding),
             child: Text(fieldError, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error)),
           ),
         ],

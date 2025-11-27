@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voo_forms/src/domain/utils/screen_size.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/routes/voo_side_panel_route.dart';
+import 'package:voo_responsive/voo_responsive.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Atomic form field action button that opens a form in different ways based on screen size
 /// - XL screens: Opens form in a side panel
@@ -79,19 +80,20 @@ class VooFormFieldAction extends StatelessWidget {
   }
 
   Future<void> _handleAction(BuildContext context) async {
-    final screenType = VooScreenSize.getType(context);
+    final screenSize = ResponsiveHelper.getScreenSize(context);
 
-    switch (screenType) {
-      case ScreenType.extraLarge:
+    switch (screenSize) {
+      case ScreenSize.extraLarge:
         // Open in side panel (requires parent to handle)
         await _openSidePanel(context);
         break;
-      case ScreenType.desktop:
-      case ScreenType.tablet:
+      case ScreenSize.large:
+      case ScreenSize.medium:
         // Open in dialog
         await _openDialog(context);
         break;
-      case ScreenType.mobile:
+      case ScreenSize.small:
+      case ScreenSize.extraSmall:
         // Open in bottom sheet
         await _openBottomSheet(context);
         break;
@@ -104,59 +106,69 @@ class VooFormFieldAction extends StatelessWidget {
       // Use Navigator to push a side panel route
       Navigator.of(context).push(VooSidePanelRoute(form: formBuilder(context), title: title, width: sidePanelWidth, dismissible: isDismissible));
 
-  Future<dynamic> _openDialog(BuildContext context) async => showDialog(
-    context: context,
-    barrierDismissible: isDismissible,
-    builder: (context) => Dialog(
-      child: Container(
-        constraints: BoxConstraints(maxWidth: 600, maxHeight: MediaQuery.of(context).size.height * 0.8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (title != null) _buildHeader(context),
-              Expanded(child: formBuilder(context)),
-            ],
+  Future<dynamic> _openDialog(BuildContext context) async {
+    final radius = context.vooRadius;
+
+    return showDialog(
+      context: context,
+      barrierDismissible: isDismissible,
+      builder: (context) => Dialog(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 600, maxHeight: MediaQuery.of(context).size.height * 0.8),
+          child: ClipRRect(
+            borderRadius: radius.dialog,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (title != null) _buildHeader(context),
+                Expanded(child: formBuilder(context)),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
-  Future<dynamic> _openBottomSheet(BuildContext context) async => showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    isDismissible: isDismissible,
-    backgroundColor: Colors.transparent,
-    builder: (context) => Container(
-      height: MediaQuery.of(context).size.height * bottomSheetHeightFactor,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+  Future<dynamic> _openBottomSheet(BuildContext context) async {
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
+
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: isDismissible,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * bottomSheetHeightFactor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radius.xl)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              margin: EdgeInsets.only(top: spacing.inputPadding),
+              width: 40,
+              height: spacing.xs,
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(spacing.xxs)),
+            ),
+            if (title != null) _buildHeader(context),
+            Expanded(child: formBuilder(context)),
+          ],
+        ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Drag handle
-          Container(
-            margin: const EdgeInsets.only(top: 12),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
-          ),
-          if (title != null) _buildHeader(context),
-          Expanded(child: formBuilder(context)),
-        ],
-      ),
-    ),
-  );
+    );
+  }
 
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(spacing.md),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
       ),

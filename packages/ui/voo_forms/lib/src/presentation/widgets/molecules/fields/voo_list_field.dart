@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_forms/src/domain/entities/field_layout.dart';
 import 'package:voo_forms/src/presentation/widgets/atoms/base/voo_field_base.dart';
 import 'package:voo_forms/src/presentation/widgets/molecules/fields/voo_read_only_field.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// List field molecule that displays a list of items
 /// IMPORTANT: This widget does NOT manage state internally
@@ -110,6 +111,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     if (isHidden) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
+    final spacing = context.vooSpacing;
     final effectiveReadOnly = getEffectiveReadOnly(context);
 
     // Get the error for this field using the base class method
@@ -129,7 +131,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                     label!,
                     style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                   ),
-              const SizedBox(height: 8),
+              SizedBox(height: spacing.sm),
             ],
             if (items.isEmpty)
               VooReadOnlyField(value: placeholder ?? 'No items', showBorder: false)
@@ -138,14 +140,14 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                 final index = entry.key;
                 final item = entry.value;
                 return Padding(
-                  padding: EdgeInsets.only(bottom: index < items.length - 1 ? 8 : 0),
+                  padding: EdgeInsets.only(bottom: index < items.length - 1 ? spacing.sm : 0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (showItemNumbers) ...[
                         Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.all(4),
+                          margin: EdgeInsets.only(right: spacing.sm),
+                          padding: EdgeInsets.all(spacing.xs),
                           decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, shape: BoxShape.circle),
                           child: Text(
                             '${index + 1}',
@@ -159,7 +161,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                 );
               }).toList(),
             if (helper != null) ...[
-              const SizedBox(height: 8),
+              SizedBox(height: spacing.sm),
               Text(helper!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
           ],
@@ -168,6 +170,8 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     }
 
     Widget listContent;
+    final radius = context.vooRadius;
+    final size = context.vooSize;
 
     // Show empty state if no items
     if (items.isEmpty && emptyStateWidget != null) {
@@ -175,7 +179,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     } else if (items.isEmpty) {
       listContent = Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(spacing.lg),
           child: Text(
             placeholder ?? 'No items added yet',
             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
@@ -191,7 +195,7 @@ class VooListField<T> extends VooFieldBase<List<T>> {
         onReorder: onReorder!,
         proxyDecorator: (child, index, animation) => AnimatedBuilder(
           animation: animation,
-          builder: (context, child) => Material(elevation: 8, color: Colors.transparent, borderRadius: BorderRadius.circular(12), child: child),
+          builder: (context, child) => Material(elevation: 8, color: Colors.transparent, borderRadius: radius.card, child: child),
           child: child,
         ),
         itemBuilder: (context, index) => Container(
@@ -202,21 +206,21 @@ class VooListField<T> extends VooFieldBase<List<T>> {
               // Item number if enabled
               if (showItemNumbers) ...[
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: size.iconLarge,
+                  height: size.iconLarge,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(16)),
+                  decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(size.iconLarge / 2)),
                   child: Text(
                     '${index + 1}',
                     style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: spacing.inputPadding),
               ],
               // Main item content
               Expanded(child: itemBuilder(context, items[index], index)),
               // Drag handle for reordering
-              const SizedBox(width: 8),
+              SizedBox(width: spacing.sm),
               Icon(Icons.drag_indicator, color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
             ],
           ),
@@ -234,16 +238,16 @@ class VooListField<T> extends VooFieldBase<List<T>> {
                       children: [
                         // Item number
                         Container(
-                          width: 32,
-                          height: 32,
+                          width: size.iconLarge,
+                          height: size.iconLarge,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(16)),
+                          decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(size.iconLarge / 2)),
                           child: Text(
                             '${i + 1}',
                             style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: spacing.inputPadding),
                         // Main item content
                         Expanded(child: itemBuilder(context, items[i], i)),
                       ],
@@ -281,20 +285,25 @@ class VooListField<T> extends VooFieldBase<List<T>> {
     return result;
   }
 
-  Widget _buildAddButton(BuildContext context, ThemeData theme) => SizedBox(
-    width: double.infinity,
-    child: OutlinedButton.icon(
-      onPressed: enabled && !getEffectiveReadOnly(context) ? onAddPressed : null,
-      icon: addButtonIcon ?? const Icon(Icons.add),
-      label: Text(addButtonText ?? 'Add Item'),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: theme.colorScheme.primary,
-        side: BorderSide(color: enabled ? theme.colorScheme.outline.withValues(alpha: 0.5) : theme.colorScheme.outline.withValues(alpha: 0.3)),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  Widget _buildAddButton(BuildContext context, ThemeData theme) {
+    final spacing = context.vooSpacing;
+    final radius = context.vooRadius;
+
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: enabled && !getEffectiveReadOnly(context) ? onAddPressed : null,
+        icon: addButtonIcon ?? const Icon(Icons.add),
+        label: Text(addButtonText ?? 'Add Item'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: theme.colorScheme.primary,
+          side: BorderSide(color: enabled ? theme.colorScheme.outline.withValues(alpha: 0.5) : theme.colorScheme.outline.withValues(alpha: 0.3)),
+          padding: EdgeInsets.symmetric(vertical: spacing.inputPadding, horizontal: spacing.md),
+          shape: RoundedRectangleBorder(borderRadius: radius.input),
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   @override
   String? validate(List<T>? value) {

@@ -109,11 +109,26 @@ class VooOption extends StatelessWidget {
     if (showCheckbox) {
       effectiveLeading = Checkbox(value: isSelected, onChanged: enabled ? (_) => onTap?.call() : null, materialTapTargetSize: MaterialTapTargetSize.shrinkWrap);
     } else if (showRadio) {
-      effectiveLeading = Radio<bool>(
-        value: true,
-        groupValue: isSelected,
-        onChanged: enabled ? (_) => onTap?.call() : null,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      // Custom radio indicator to avoid deprecated Radio API
+      effectiveLeading = GestureDetector(
+        onTap: enabled ? onTap : null,
+        child: Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: isSelected ? colorScheme.primary : colorScheme.outline, width: 2),
+          ),
+          child: isSelected
+              ? Center(
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: colorScheme.primary),
+                  ),
+                )
+              : null,
+        ),
       );
     }
 
