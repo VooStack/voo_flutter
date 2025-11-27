@@ -76,6 +76,15 @@ class VooTerminal extends StatefulWidget {
   /// Whether to show window controls in the header.
   final bool showWindowControls;
 
+  /// Callback when the close button is pressed.
+  final VoidCallback? onClose;
+
+  /// Callback when the minimize button is pressed.
+  final VoidCallback? onMinimize;
+
+  /// Callback when the maximize button is pressed.
+  final VoidCallback? onMaximize;
+
   /// Custom header widget.
   final Widget? header;
 
@@ -92,6 +101,9 @@ class VooTerminal extends StatefulWidget {
     this.title,
     this.showHeader = false,
     this.showWindowControls = false,
+    this.onClose,
+    this.onMinimize,
+    this.onMaximize,
     this.header,
   });
 
@@ -102,6 +114,10 @@ class VooTerminal extends StatefulWidget {
     VooTerminalTheme? theme,
     String? title,
     bool showHeader = false,
+    bool showWindowControls = false,
+    VoidCallback? onClose,
+    VoidCallback? onMinimize,
+    VoidCallback? onMaximize,
   }) {
     return VooTerminal(
       key: key,
@@ -110,6 +126,10 @@ class VooTerminal extends StatefulWidget {
       initialLines: lines,
       title: title,
       showHeader: showHeader,
+      showWindowControls: showWindowControls,
+      onClose: onClose,
+      onMinimize: onMinimize,
+      onMaximize: onMaximize,
     );
   }
 
@@ -123,6 +143,10 @@ class VooTerminal extends StatefulWidget {
     void Function(String command, List<String> args)? onCommand,
     String? title,
     bool showHeader = false,
+    bool showWindowControls = false,
+    VoidCallback? onClose,
+    VoidCallback? onMinimize,
+    VoidCallback? onMaximize,
   }) {
     return VooTerminal(
       key: key,
@@ -133,6 +157,10 @@ class VooTerminal extends StatefulWidget {
       onCommand: onCommand,
       title: title,
       showHeader: showHeader,
+      showWindowControls: showWindowControls,
+      onClose: onClose,
+      onMinimize: onMinimize,
+      onMaximize: onMaximize,
     );
   }
 
@@ -144,6 +172,10 @@ class VooTerminal extends StatefulWidget {
     LineType lineType = LineType.output,
     String? title,
     bool showHeader = false,
+    bool showWindowControls = false,
+    VoidCallback? onClose,
+    VoidCallback? onMinimize,
+    VoidCallback? onMaximize,
   }) {
     final controller = TerminalController(
       config: TerminalConfig.preview(),
@@ -157,6 +189,10 @@ class VooTerminal extends StatefulWidget {
       theme: theme,
       title: title,
       showHeader: showHeader,
+      showWindowControls: showWindowControls,
+      onClose: onClose,
+      onMinimize: onMinimize,
+      onMaximize: onMaximize,
     );
   }
 
@@ -259,6 +295,9 @@ class _VooTerminalState extends State<VooTerminal> {
                       theme: effectiveTheme,
                       title: widget.title,
                       showWindowControls: widget.showWindowControls,
+                      onClose: widget.onClose,
+                      onMinimize: widget.onMinimize,
+                      onMaximize: widget.onMaximize,
                     ),
               Expanded(
                 child: _buildBody(effectiveTheme),

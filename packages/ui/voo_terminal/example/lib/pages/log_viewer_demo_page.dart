@@ -70,8 +70,7 @@ class _LogViewerDemoPageState extends State<LogViewerDemoPage> {
     final log = _logMessages[_random.nextInt(_logMessages.length)];
     final (type, message) = log;
     final timestamp = DateTime.now();
-    final formattedTime =
-        '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}:${timestamp.second.toString().padLeft(2, '0')}';
+    final formattedTime = '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}:${timestamp.second.toString().padLeft(2, '0')}';
 
     switch (type) {
       case 'info':
@@ -167,10 +166,7 @@ class _LogViewerDemoPageState extends State<LogViewerDemoPage> {
                     return Text(
                       '${_controller.lineCount} lines',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.7),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                     );
                   },
