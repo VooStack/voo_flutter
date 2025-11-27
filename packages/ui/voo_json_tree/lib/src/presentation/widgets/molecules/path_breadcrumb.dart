@@ -5,14 +5,7 @@ import 'package:voo_json_tree/src/domain/entities/json_tree_theme.dart';
 /// A breadcrumb navigation widget for displaying JSON paths.
 class PathBreadcrumb extends StatelessWidget {
   /// Creates a new [PathBreadcrumb].
-  const PathBreadcrumb({
-    super.key,
-    required this.path,
-    required this.theme,
-    this.onSegmentTap,
-    this.showCopyButton = true,
-    this.onCopy,
-  });
+  const PathBreadcrumb({super.key, required this.path, required this.theme, this.onSegmentTap, this.showCopyButton = true, this.onCopy});
 
   /// The full JSON path to display.
   final String path;
@@ -35,29 +28,19 @@ class PathBreadcrumb extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: theme.backgroundColor?.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(4),
-      ),
+      decoration: BoxDecoration(color: theme.backgroundColor?.withOpacity(0.5), borderRadius: BorderRadius.circular(4)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Path icon
-          Icon(
-            Icons.route,
-            size: 14,
-            color: theme.nullColor,
-          ),
+          Icon(Icons.route, size: 14, color: theme.nullColor),
           const SizedBox(width: 8),
 
           // Segments
           Flexible(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: _buildSegments(segments),
-              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: _buildSegments(segments)),
             ),
           ),
 
@@ -69,11 +52,7 @@ class PathBreadcrumb extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Icon(
-                  Icons.copy,
-                  size: 14,
-                  color: theme.expandIconColor,
-                ),
+                child: Icon(Icons.copy, size: 14, color: theme.expandIconColor),
               ),
             ),
           ],
@@ -93,38 +72,22 @@ class PathBreadcrumb extends StatelessWidget {
 
       if (char == '[') {
         if (buffer.isNotEmpty) {
-          currentPath = currentPath.isEmpty
-              ? buffer.toString()
-              : '$currentPath.${buffer.toString()}';
-          segments.add(_PathSegment(
-            text: buffer.toString(),
-            fullPath: currentPath,
-            isIndex: false,
-          ));
+          currentPath = currentPath.isEmpty ? buffer.toString() : '$currentPath.${buffer.toString()}';
+          segments.add(_PathSegment(text: buffer.toString(), fullPath: currentPath, isIndex: false));
           buffer.clear();
         }
         inBracket = true;
       } else if (char == ']') {
         if (buffer.isNotEmpty) {
           currentPath = '$currentPath[${buffer.toString()}]';
-          segments.add(_PathSegment(
-            text: '[${buffer.toString()}]',
-            fullPath: currentPath,
-            isIndex: true,
-          ));
+          segments.add(_PathSegment(text: '[${buffer.toString()}]', fullPath: currentPath, isIndex: true));
           buffer.clear();
         }
         inBracket = false;
       } else if (char == '.' && !inBracket) {
         if (buffer.isNotEmpty) {
-          currentPath = currentPath.isEmpty
-              ? buffer.toString()
-              : '$currentPath.${buffer.toString()}';
-          segments.add(_PathSegment(
-            text: buffer.toString(),
-            fullPath: currentPath,
-            isIndex: false,
-          ));
+          currentPath = currentPath.isEmpty ? buffer.toString() : '$currentPath.${buffer.toString()}';
+          segments.add(_PathSegment(text: buffer.toString(), fullPath: currentPath, isIndex: false));
           buffer.clear();
         }
       } else {
@@ -133,14 +96,8 @@ class PathBreadcrumb extends StatelessWidget {
     }
 
     if (buffer.isNotEmpty) {
-      currentPath = currentPath.isEmpty
-          ? buffer.toString()
-          : '$currentPath.${buffer.toString()}';
-      segments.add(_PathSegment(
-        text: buffer.toString(),
-        fullPath: currentPath,
-        isIndex: false,
-      ));
+      currentPath = currentPath.isEmpty ? buffer.toString() : '$currentPath.${buffer.toString()}';
+      segments.add(_PathSegment(text: buffer.toString(), fullPath: currentPath, isIndex: false));
     }
 
     return segments;
@@ -154,32 +111,24 @@ class PathBreadcrumb extends StatelessWidget {
 
       // Add separator (except for first segment and array indices)
       if (i > 0 && !segment.isIndex) {
-        widgets.add(Text(
-          '.',
-          style: TextStyle(
-            fontFamily: theme.fontFamily,
-            fontSize: theme.fontSize * 0.9,
-            color: theme.nullColor,
+        widgets.add(
+          Text(
+            '.',
+            style: TextStyle(fontFamily: theme.fontFamily, fontSize: theme.fontSize * 0.9, color: theme.nullColor),
           ),
-        ));
+        );
       }
 
       // Add segment
       widgets.add(
         InkWell(
-          onTap: onSegmentTap != null
-              ? () => onSegmentTap!(segment.fullPath)
-              : null,
+          onTap: onSegmentTap != null ? () => onSegmentTap!(segment.fullPath) : null,
           borderRadius: BorderRadius.circular(2),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: Text(
               segment.text,
-              style: TextStyle(
-                fontFamily: theme.fontFamily,
-                fontSize: theme.fontSize * 0.9,
-                color: segment.isIndex ? theme.numberColor : theme.keyColor,
-              ),
+              style: TextStyle(fontFamily: theme.fontFamily, fontSize: theme.fontSize * 0.9, color: segment.isIndex ? theme.numberColor : theme.keyColor),
             ),
           ),
         ),
@@ -191,11 +140,7 @@ class PathBreadcrumb extends StatelessWidget {
 }
 
 class _PathSegment {
-  const _PathSegment({
-    required this.text,
-    required this.fullPath,
-    required this.isIndex,
-  });
+  const _PathSegment({required this.text, required this.fullPath, required this.isIndex});
 
   final String text;
   final String fullPath;

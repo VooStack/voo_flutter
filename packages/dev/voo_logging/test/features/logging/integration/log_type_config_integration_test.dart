@@ -3,9 +3,7 @@ import 'package:voo_logging/voo_logging.dart';
 import '../../../test_utils.dart';
 
 void main() {
-  setUpAll(() {
-    setUpTestEnvironment();
-  });
+  setUpAll(setUpTestEnvironment);
 
   group('LogTypeConfig Integration Tests', () {
     group('Network logs configuration', () {
@@ -14,9 +12,7 @@ void main() {
           appName: 'TestApp',
           config: const LoggingConfig(
             enablePrettyLogs: false,
-            logTypeConfigs: {
-              LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, enableStorage: true, minimumLevel: LogLevel.info),
-            },
+            logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info)},
           ),
         );
 
@@ -48,7 +44,7 @@ void main() {
           appName: 'TestApp',
           config: const LoggingConfig(
             enablePrettyLogs: false,
-            logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.debug)},
+            logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.debug)},
           ),
         );
 
@@ -73,9 +69,7 @@ void main() {
           appName: 'TestApp',
           config: const LoggingConfig(
             enablePrettyLogs: false,
-            logTypeConfigs: {
-              LogType.analytics: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, enableStorage: false, minimumLevel: LogLevel.info),
-            },
+            logTypeConfigs: {LogType.analytics: LogTypeConfig(enableConsoleOutput: false, enableStorage: false, minimumLevel: LogLevel.info)},
           ),
         );
 
@@ -101,12 +95,7 @@ void main() {
 
         await VooLogger.initialize(
           appName: 'TestApp',
-          config: const LoggingConfig(
-            enablePrettyLogs: false,
-            logTypeConfigs: {
-              LogType.error: LogTypeConfig(enableConsoleOutput: true, enableDevToolsOutput: true, enableStorage: true, minimumLevel: LogLevel.warning),
-            },
-          ),
+          config: const LoggingConfig(enablePrettyLogs: false, logTypeConfigs: {LogType.error: LogTypeConfig(minimumLevel: LogLevel.warning)}),
         );
 
         // Info level with Error category - should be filtered out
@@ -146,7 +135,7 @@ void main() {
             logTypeConfigs: {
               LogType.network: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info),
               LogType.analytics: LogTypeConfig(enableStorage: false, minimumLevel: LogLevel.warning),
-              LogType.error: LogTypeConfig(enableConsoleOutput: true, minimumLevel: LogLevel.error),
+              LogType.error: LogTypeConfig(minimumLevel: LogLevel.error),
             },
           ),
         );

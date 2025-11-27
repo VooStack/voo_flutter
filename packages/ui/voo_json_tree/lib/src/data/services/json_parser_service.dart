@@ -17,27 +17,12 @@ class JsonParserService {
   }
 
   /// Parses a dynamic value (Map, List, or primitive) into a tree of [JsonNode]s.
-  JsonNode parse(dynamic data, {String rootName = 'root'}) {
-    return _parseValue(data, rootName, rootName, 0, null);
-  }
+  JsonNode parse(dynamic data, {String rootName = 'root'}) => _parseValue(data, rootName, rootName, 0, null);
 
   /// Recursively parses a value into a [JsonNode].
-  JsonNode _parseValue(
-    dynamic value,
-    String key,
-    String path,
-    int depth,
-    int? index,
-  ) {
+  JsonNode _parseValue(dynamic value, String key, String path, int depth, int? index) {
     if (value == null) {
-      return JsonNode(
-        key: key,
-        value: null,
-        type: JsonNodeType.nullValue,
-        path: path,
-        depth: depth,
-        index: index,
-      );
+      return JsonNode(key: key, value: null, type: JsonNodeType.nullValue, path: path, depth: depth, index: index);
     }
 
     if (value is Map<String, dynamic>) {
@@ -55,121 +40,49 @@ class JsonParserService {
     }
 
     if (value is String) {
-      return JsonNode(
-        key: key,
-        value: value,
-        type: JsonNodeType.string,
-        path: path,
-        depth: depth,
-        index: index,
-      );
+      return JsonNode(key: key, value: value, type: JsonNodeType.string, path: path, depth: depth, index: index);
     }
 
     if (value is num) {
-      return JsonNode(
-        key: key,
-        value: value,
-        type: JsonNodeType.number,
-        path: path,
-        depth: depth,
-        index: index,
-      );
+      return JsonNode(key: key, value: value, type: JsonNodeType.number, path: path, depth: depth, index: index);
     }
 
     if (value is bool) {
-      return JsonNode(
-        key: key,
-        value: value,
-        type: JsonNodeType.boolean,
-        path: path,
-        depth: depth,
-        index: index,
-      );
+      return JsonNode(key: key, value: value, type: JsonNodeType.boolean, path: path, depth: depth, index: index);
     }
 
     // Fallback: treat as string
-    return JsonNode(
-      key: key,
-      value: value.toString(),
-      type: JsonNodeType.string,
-      path: path,
-      depth: depth,
-      index: index,
-    );
+    return JsonNode(key: key, value: value.toString(), type: JsonNodeType.string, path: path, depth: depth, index: index);
   }
 
   /// Parses a Map into an object [JsonNode] with children.
-  JsonNode _parseObject(
-    Map<String, dynamic> map,
-    String key,
-    String path,
-    int depth,
-    int? index,
-  ) {
+  JsonNode _parseObject(Map<String, dynamic> map, String key, String path, int depth, int? index) {
     final children = <JsonNode>[];
 
     for (final entry in map.entries) {
       final childPath = '$path.${entry.key}';
-      final childNode = _parseValue(
-        entry.value,
-        entry.key,
-        childPath,
-        depth + 1,
-        null,
-      );
+      final childNode = _parseValue(entry.value, entry.key, childPath, depth + 1, null);
       children.add(childNode);
     }
 
-    return JsonNode(
-      key: key,
-      value: map,
-      type: JsonNodeType.object,
-      path: path,
-      children: children,
-      depth: depth,
-      index: index,
-    );
+    return JsonNode(key: key, value: map, type: JsonNodeType.object, path: path, children: children, depth: depth, index: index);
   }
 
   /// Parses a List into an array [JsonNode] with children.
-  JsonNode _parseArray(
-    List<dynamic> list,
-    String key,
-    String path,
-    int depth,
-    int? index,
-  ) {
+  JsonNode _parseArray(List<dynamic> list, String key, String path, int depth, int? index) {
     final children = <JsonNode>[];
 
     for (var i = 0; i < list.length; i++) {
       final childPath = '$path[$i]';
-      final childNode = _parseValue(
-        list[i],
-        '[$i]',
-        childPath,
-        depth + 1,
-        i,
-      );
+      final childNode = _parseValue(list[i], '[$i]', childPath, depth + 1, i);
       children.add(childNode);
     }
 
-    return JsonNode(
-      key: key,
-      value: list,
-      type: JsonNodeType.array,
-      path: path,
-      children: children,
-      depth: depth,
-      index: index,
-    );
+    return JsonNode(key: key, value: list, type: JsonNodeType.array, path: path, children: children, depth: depth, index: index);
   }
 
   /// Flattens a tree into a list of all nodes (for virtualized rendering).
-  List<JsonNode> flatten(
-    JsonNode root, {
-    required Set<String> expandedPaths,
-    bool includeRoot = true,
-  }) {
+  List<JsonNode> flatten(JsonNode root, {required Set<String> expandedPaths, bool includeRoot = true}) {
     final result = <JsonNode>[];
 
     void traverse(JsonNode node, bool shouldInclude) {

@@ -72,9 +72,7 @@ class JsonTreeState extends Equatable {
   }
 
   /// Returns true if a path matches the current search.
-  bool isSearchMatch(String path) {
-    return searchResults.any((r) => r.path == path);
-  }
+  bool isSearchMatch(String path) => searchResults.any((r) => r.path == path);
 
   /// Creates a copy with the given fields replaced.
   JsonTreeState copyWith({
@@ -92,37 +90,33 @@ class JsonTreeState extends Equatable {
     bool clearHoveredPath = false,
     bool clearError = false,
     bool clearEditingPath = false,
-  }) {
-    return JsonTreeState(
-      rootNode: rootNode ?? this.rootNode,
-      expandedPaths: expandedPaths ?? this.expandedPaths,
-      selectedPath: clearSelectedPath ? null : (selectedPath ?? this.selectedPath),
-      hoveredPath: clearHoveredPath ? null : (hoveredPath ?? this.hoveredPath),
-      searchQuery: searchQuery ?? this.searchQuery,
-      searchResults: searchResults ?? this.searchResults,
-      currentSearchIndex: currentSearchIndex ?? this.currentSearchIndex,
-      isLoading: isLoading ?? this.isLoading,
-      error: clearError ? null : (error ?? this.error),
-      editingPath: clearEditingPath ? null : (editingPath ?? this.editingPath),
-    );
-  }
+  }) => JsonTreeState(
+    rootNode: rootNode ?? this.rootNode,
+    expandedPaths: expandedPaths ?? this.expandedPaths,
+    selectedPath: clearSelectedPath ? null : (selectedPath ?? this.selectedPath),
+    hoveredPath: clearHoveredPath ? null : (hoveredPath ?? this.hoveredPath),
+    searchQuery: searchQuery ?? this.searchQuery,
+    searchResults: searchResults ?? this.searchResults,
+    currentSearchIndex: currentSearchIndex ?? this.currentSearchIndex,
+    isLoading: isLoading ?? this.isLoading,
+    error: clearError ? null : (error ?? this.error),
+    editingPath: clearEditingPath ? null : (editingPath ?? this.editingPath),
+  );
 
   /// Creates an initial empty state.
-  factory JsonTreeState.initial() {
-    return const JsonTreeState();
-  }
+  factory JsonTreeState.initial() => const JsonTreeState();
 
   @override
   List<Object?> get props => [
-        rootNode,
-        expandedPaths,
-        selectedPath,
-        hoveredPath,
-        searchQuery,
-        searchResults,
-        currentSearchIndex,
-        isLoading,
-        error,
-        editingPath,
-      ];
+    rootNode,
+    expandedPaths,
+    selectedPath,
+    hoveredPath,
+    searchQuery,
+    searchResults,
+    currentSearchIndex,
+    isLoading,
+    error,
+    editingPath,
+  ];
 }

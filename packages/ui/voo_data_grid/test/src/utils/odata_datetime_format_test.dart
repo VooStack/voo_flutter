@@ -5,21 +5,13 @@ void main() {
   group('OData DateTime Format Tests', () {
     group('DateTime Object Formatting', () {
       test('should format DateTime with UTC format (Z suffix)', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utc,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
         final dateTime = DateTime(2024, 9, 30, 15, 15, 30);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: dateTime,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.equals, value: dateTime)},
           sorts: const [],
         );
 
@@ -32,21 +24,13 @@ void main() {
       });
 
       test('should format DateTime with unspecified format (no timezone)', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.unspecified,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.unspecified);
 
         final dateTime = DateTime(2024, 9, 30, 15, 15, 30);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: dateTime,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.equals, value: dateTime)},
           sorts: const [],
         );
 
@@ -60,21 +44,13 @@ void main() {
       });
 
       test('should format DateTime with utcOffset format (+00:00 suffix)', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
         final dateTime = DateTime(2024, 9, 30, 15, 15, 30);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: dateTime,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.equals, value: dateTime)},
           sorts: const [],
         );
 
@@ -90,20 +66,12 @@ void main() {
 
     group('String Date Formatting', () {
       test('should format string date with UTC format (Z suffix)', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utc,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: '2024-09-30T15:15:30',
-            ),
-          },
+          filters: {'createdDate': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-09-30T15:15:30')},
           sorts: const [],
         );
 
@@ -116,20 +84,12 @@ void main() {
       });
 
       test('should format string date with unspecified format (no timezone)', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.unspecified,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.unspecified);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: '2024-09-30T15:15:30',
-            ),
-          },
+          filters: {'createdDate': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-09-30T15:15:30')},
           sorts: const [],
         );
 
@@ -143,20 +103,12 @@ void main() {
       });
 
       test('should format string date with utcOffset format (+00:00 suffix)', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: '2024-09-30T15:15:30',
-            ),
-          },
+          filters: {'createdDate': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-09-30T15:15:30')},
           sorts: const [],
         );
 
@@ -170,20 +122,12 @@ void main() {
       });
 
       test('should handle string date with existing Z suffix', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: '2024-09-30T15:15:30Z',
-            ),
-          },
+          filters: {'createdDate': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-09-30T15:15:30Z')},
           sorts: const [],
         );
 
@@ -196,20 +140,12 @@ void main() {
       });
 
       test('should handle date-only string', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': const VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: '2024-09-30',
-            ),
-          },
+          filters: {'createdDate': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-09-30')},
           sorts: const [],
         );
 
@@ -224,24 +160,15 @@ void main() {
 
     group('Between Filter DateTime Formatting', () {
       test('should format between dates with utcOffset format', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
-        final startDate = DateTime(2024, 1, 1);
+        final startDate = DateTime(2024);
         final endDate = DateTime(2024, 12, 31);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: startDate,
-              valueTo: endDate,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.between, value: startDate, valueTo: endDate)},
           sorts: const [],
         );
 
@@ -255,24 +182,15 @@ void main() {
       });
 
       test('should format between dates with UTC format', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utc,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
-        final startDate = DateTime(2024, 1, 1);
+        final startDate = DateTime(2024);
         final endDate = DateTime(2024, 12, 31);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.between,
-              value: startDate,
-              valueTo: endDate,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.between, value: startDate, valueTo: endDate)},
           sorts: const [],
         );
 
@@ -288,26 +206,17 @@ void main() {
 
     group('Complex Scenario with Multiple DateTime Filters', () {
       test('should handle multiple DateTime filters with utcOffset format', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
-        final startDate = DateTime(2024, 1, 1);
+        final startDate = DateTime(2024);
         final createdDate = DateTime(2024, 6, 15);
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.greaterThanOrEqual,
-              value: startDate,
-            ),
-            'updatedDate': VooDataFilter(
-              operator: VooFilterOperator.lessThan,
-              value: createdDate,
-            ),
+            'createdDate': VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: startDate),
+            'updatedDate': VooDataFilter(operator: VooFilterOperator.lessThan, value: createdDate),
           },
           sorts: const [],
         );
@@ -324,20 +233,13 @@ void main() {
 
     group('Default DateTime Format', () {
       test('should default to UTC format when not specified', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
         final dateTime = DateTime(2024, 9, 30);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdDate': VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: dateTime,
-            ),
-          },
+          filters: {'createdDate': VooDataFilter(operator: VooFilterOperator.equals, value: dateTime)},
           sorts: const [],
         );
 
@@ -352,21 +254,13 @@ void main() {
     group('Real-world .NET OData + PostgreSQL Scenarios', () {
       test('should format for .NET DateTimeOffset with PostgreSQL timestamptz', () {
         // This is the format that works with .NET OData DateTimeOffset + PostgreSQL
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
         final dateTime = DateTime(2024, 9, 30, 15, 15, 30);
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
-          filters: {
-            'createdAt': VooDataFilter(
-              operator: VooFilterOperator.equals,
-              value: dateTime,
-            ),
-          },
+          filters: {'createdAt': VooDataFilter(operator: VooFilterOperator.equals, value: dateTime)},
           sorts: const [],
         );
 
@@ -380,26 +274,17 @@ void main() {
       });
 
       test('should handle mixed DateTime and string dates consistently', () {
-        const builder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utcOffset,
-        );
+        const builder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.utcOffset);
 
-        final dateTimeObj = DateTime(2024, 1, 1);
+        final dateTimeObj = DateTime(2024);
         const dateTimeStr = '2024-12-31T23:59:59';
 
         final result = builder.buildRequest(
           page: 0,
           pageSize: 20,
           filters: {
-            'startDate': VooDataFilter(
-              operator: VooFilterOperator.greaterThanOrEqual,
-              value: dateTimeObj,
-            ),
-            'endDate': const VooDataFilter(
-              operator: VooFilterOperator.lessThanOrEqual,
-              value: dateTimeStr,
-            ),
+            'startDate': VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: dateTimeObj),
+            'endDate': const VooDataFilter(operator: VooFilterOperator.lessThanOrEqual, value: dateTimeStr),
           },
           sorts: const [],
         );

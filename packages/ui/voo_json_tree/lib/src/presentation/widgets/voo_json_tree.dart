@@ -59,10 +59,7 @@ class VooJsonTree extends StatefulWidget {
     this.onNodeTap,
     this.onNodeDoubleTap,
     this.onValueChanged,
-  }) : assert(
-          data != null || controller != null,
-          'Either data or controller must be provided',
-        );
+  }) : assert(data != null || controller != null, 'Either data or controller must be provided');
 
   /// The JSON data to display.
   ///
@@ -132,68 +129,20 @@ class VooJsonTree extends StatefulWidget {
     final controller = JsonTreeController(config: config);
     controller.setDataFromString(jsonString, rootName: rootName);
 
-    return VooJsonTree(
-      key: key,
-      controller: controller,
-      theme: theme,
-      config: config,
-      showToolbar: showToolbar,
-      rootName: rootName,
-    );
+    return VooJsonTree(key: key, controller: controller, theme: theme, config: config, showToolbar: showToolbar, rootName: rootName);
   }
 
   /// Creates a read-only VooJsonTree.
-  factory VooJsonTree.readOnly({
-    Key? key,
-    required dynamic data,
-    VooJsonTreeTheme? theme,
-    bool showToolbar = false,
-    String rootName = 'root',
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: theme,
-      config: JsonTreeConfig.readOnly(),
-      showToolbar: showToolbar,
-      rootName: rootName,
-    );
-  }
+  factory VooJsonTree.readOnly({Key? key, required dynamic data, VooJsonTreeTheme? theme, bool showToolbar = false, String rootName = 'root'}) =>
+      VooJsonTree(key: key, data: data, theme: theme, config: JsonTreeConfig.readOnly(), showToolbar: showToolbar, rootName: rootName);
 
   /// Creates a VooJsonTree with search enabled.
-  factory VooJsonTree.searchable({
-    Key? key,
-    required dynamic data,
-    VooJsonTreeTheme? theme,
-    JsonTreeConfig? config,
-    String rootName = 'root',
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: theme,
-      config: (config ?? const JsonTreeConfig()).copyWith(enableSearch: true),
-      showToolbar: true,
-      rootName: rootName,
-    );
-  }
+  factory VooJsonTree.searchable({Key? key, required dynamic data, VooJsonTreeTheme? theme, JsonTreeConfig? config, String rootName = 'root'}) =>
+      VooJsonTree(key: key, data: data, theme: theme, config: (config ?? const JsonTreeConfig()).copyWith(enableSearch: true), rootName: rootName);
 
   /// Creates a compact VooJsonTree with minimal UI.
-  factory VooJsonTree.compact({
-    Key? key,
-    required dynamic data,
-    VooJsonTreeTheme? theme,
-    String rootName = 'root',
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: theme,
-      config: JsonTreeConfig.compact(),
-      showToolbar: false,
-      rootName: rootName,
-    );
-  }
+  factory VooJsonTree.compact({Key? key, required dynamic data, VooJsonTreeTheme? theme, String rootName = 'root'}) =>
+      VooJsonTree(key: key, data: data, theme: theme, config: JsonTreeConfig.compact(), showToolbar: false, rootName: rootName);
 
   /// Creates a minimal VooJsonTree with only essential features.
   ///
@@ -209,24 +158,8 @@ class VooJsonTree extends StatefulWidget {
   /// ```dart
   /// VooJsonTree.minimal(data: jsonData)
   /// ```
-  factory VooJsonTree.minimal({
-    Key? key,
-    required dynamic data,
-    VooJsonTreeTheme? theme,
-    String rootName = 'root',
-    void Function(JsonNode node)? onNodeTap,
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: theme,
-      config: JsonTreeConfig.minimal(),
-      showToolbar: false,
-      showPathBreadcrumb: false,
-      rootName: rootName,
-      onNodeTap: onNodeTap,
-    );
-  }
+  factory VooJsonTree.minimal({Key? key, required dynamic data, VooJsonTreeTheme? theme, String rootName = 'root', void Function(JsonNode node)? onNodeTap}) =>
+      VooJsonTree(key: key, data: data, theme: theme, config: JsonTreeConfig.minimal(), showToolbar: false, rootName: rootName, onNodeTap: onNodeTap);
 
   /// Creates a VooJsonTree with transparent background and no container styling.
   ///
@@ -248,19 +181,16 @@ class VooJsonTree extends StatefulWidget {
     String rootName = 'root',
     void Function(JsonNode node)? onNodeTap,
     void Function(JsonNode node)? onNodeDoubleTap,
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: VooJsonTreeTheme.transparent(),
-      config: config ?? const JsonTreeConfig(),
-      showToolbar: false,
-      showPathBreadcrumb: false,
-      rootName: rootName,
-      onNodeTap: onNodeTap,
-      onNodeDoubleTap: onNodeDoubleTap,
-    );
-  }
+  }) => VooJsonTree(
+    key: key,
+    data: data,
+    theme: VooJsonTreeTheme.transparent(),
+    config: config ?? const JsonTreeConfig(),
+    showToolbar: false,
+    rootName: rootName,
+    onNodeTap: onNodeTap,
+    onNodeDoubleTap: onNodeDoubleTap,
+  );
 
   /// Creates a developer-friendly VooJsonTree for debugging.
   ///
@@ -277,18 +207,7 @@ class VooJsonTree extends StatefulWidget {
     VooJsonTreeTheme? theme,
     String rootName = 'root',
     void Function(JsonNode node)? onNodeTap,
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: theme,
-      config: JsonTreeConfig.developer(),
-      showToolbar: true,
-      showPathBreadcrumb: true,
-      rootName: rootName,
-      onNodeTap: onNodeTap,
-    );
-  }
+  }) => VooJsonTree(key: key, data: data, theme: theme, config: JsonTreeConfig.developer(), showPathBreadcrumb: true, rootName: rootName, onNodeTap: onNodeTap);
 
   /// Creates an editable VooJsonTree.
   ///
@@ -308,19 +227,16 @@ class VooJsonTree extends StatefulWidget {
     String rootName = 'root',
     void Function(String path, dynamic newValue)? onValueChanged,
     void Function(JsonNode node)? onNodeTap,
-  }) {
-    return VooJsonTree(
-      key: key,
-      data: data,
-      theme: theme,
-      config: JsonTreeConfig.editable(),
-      showToolbar: true,
-      showPathBreadcrumb: true,
-      rootName: rootName,
-      onValueChanged: onValueChanged,
-      onNodeTap: onNodeTap,
-    );
-  }
+  }) => VooJsonTree(
+    key: key,
+    data: data,
+    theme: theme,
+    config: JsonTreeConfig.editable(),
+    showPathBreadcrumb: true,
+    rootName: rootName,
+    onValueChanged: onValueChanged,
+    onNodeTap: onNodeTap,
+  );
 
   @override
   State<VooJsonTree> createState() => _VooJsonTreeState();
@@ -395,102 +311,93 @@ class _VooJsonTreeState extends State<VooJsonTree> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: _theme.backgroundColor,
-        borderRadius: BorderRadius.circular(_theme.borderRadius),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Toolbar
-          if (widget.showToolbar && _config.enableSearch)
-            ListenableBuilder(
-              listenable: _controller,
-              builder: (context, _) => JsonTreeToolbar(
-                theme: _theme,
-                onSearch: _controller.search,
-                onSearchClear: _controller.clearSearch,
-                onNextResult: _controller.nextSearchResult,
-                onPreviousResult: _controller.previousSearchResult,
-                onExpandAll: _controller.expandAll,
-                onCollapseAll: _controller.collapseAll,
-                searchResultCount: _controller.searchResults.length,
-                currentSearchIndex: _controller.state.currentSearchIndex,
-              ),
-            ),
-
-          // Path breadcrumb
-          if (widget.showPathBreadcrumb)
-            ListenableBuilder(
-              listenable: _controller,
-              builder: (context, _) {
-                final selectedPath = _controller.selectedPath;
-                if (selectedPath == null) return const SizedBox.shrink();
-
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PathBreadcrumb(
-                    path: selectedPath,
-                    theme: _theme,
-                    onSegmentTap: (path) {
-                      _controller.selectNode(path);
-                      _controller.revealNode(path);
-                    },
-                  ),
-                );
-              },
-            ),
-
-          // Tree view
-          Expanded(
-            child: Padding(
-              padding: _theme.padding,
-              child: JsonTreeView(
-                controller: _controller,
-                theme: _theme,
-                config: _config,
-                builders: widget.builders,
-                onNodeTap: widget.onNodeTap,
-                onNodeDoubleTap: widget.onNodeDoubleTap,
-                onValueChanged: widget.onValueChanged,
-              ),
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(color: _theme.backgroundColor, borderRadius: BorderRadius.circular(_theme.borderRadius)),
+    clipBehavior: Clip.antiAlias,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Toolbar
+        if (widget.showToolbar && _config.enableSearch)
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) => JsonTreeToolbar(
+              theme: _theme,
+              onSearch: _controller.search,
+              onSearchClear: _controller.clearSearch,
+              onNextResult: _controller.nextSearchResult,
+              onPreviousResult: _controller.previousSearchResult,
+              onExpandAll: _controller.expandAll,
+              onCollapseAll: _controller.collapseAll,
+              searchResultCount: _controller.searchResults.length,
+              currentSearchIndex: _controller.state.currentSearchIndex,
             ),
           ),
 
-          // Error display
+        // Path breadcrumb
+        if (widget.showPathBreadcrumb)
           ListenableBuilder(
             listenable: _controller,
             builder: (context, _) {
-              final error = _controller.error;
-              if (error == null) return const SizedBox.shrink();
+              final selectedPath = _controller.selectedPath;
+              if (selectedPath == null) return const SizedBox.shrink();
 
-              return Container(
+              return Padding(
                 padding: const EdgeInsets.all(8.0),
-                color: Colors.red.withOpacity(0.1),
-                child: Row(
-                  children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        error,
-                        style: TextStyle(
-                          fontFamily: _theme.fontFamily,
-                          fontSize: _theme.fontSize * 0.9,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                  ],
+                child: PathBreadcrumb(
+                  path: selectedPath,
+                  theme: _theme,
+                  onSegmentTap: (path) {
+                    _controller.selectNode(path);
+                    _controller.revealNode(path);
+                  },
                 ),
               );
             },
           ),
-        ],
-      ),
-    );
-  }
+
+        // Tree view
+        Expanded(
+          child: Padding(
+            padding: _theme.padding,
+            child: JsonTreeView(
+              controller: _controller,
+              theme: _theme,
+              config: _config,
+              builders: widget.builders,
+              onNodeTap: widget.onNodeTap,
+              onNodeDoubleTap: widget.onNodeDoubleTap,
+              onValueChanged: widget.onValueChanged,
+            ),
+          ),
+        ),
+
+        // Error display
+        ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) {
+            final error = _controller.error;
+            if (error == null) return const SizedBox.shrink();
+
+            return Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.red.withOpacity(0.1),
+              child: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 16),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      error,
+                      style: TextStyle(fontFamily: _theme.fontFamily, fontSize: _theme.fontSize * 0.9, color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+  );
 }

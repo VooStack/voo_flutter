@@ -26,15 +26,13 @@ class Breakpoint extends Equatable {
     return minCheck && maxCheck;
   }
 
-  Breakpoint copyWith({String? name, double? minWidth, double? maxWidth, DeviceType? deviceType, Map<String, dynamic>? metadata}) {
-    return Breakpoint(
-      name: name ?? this.name,
-      minWidth: minWidth ?? this.minWidth,
-      maxWidth: maxWidth ?? this.maxWidth,
-      deviceType: deviceType ?? this.deviceType,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  Breakpoint copyWith({String? name, double? minWidth, double? maxWidth, DeviceType? deviceType, Map<String, dynamic>? metadata}) => Breakpoint(
+    name: name ?? this.name,
+    minWidth: minWidth ?? this.minWidth,
+    maxWidth: maxWidth ?? this.maxWidth,
+    deviceType: deviceType ?? this.deviceType,
+    metadata: metadata ?? this.metadata,
+  );
 
   @override
   List<Object?> get props => [name, minWidth, maxWidth, deviceType, metadata];

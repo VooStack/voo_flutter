@@ -39,17 +39,15 @@ class ResponsiveConfig extends Equatable {
     double? baseFontSize,
     double? baseSpacing,
     Map<String, dynamic>? customSettings,
-  }) {
-    return ResponsiveConfig(
-      breakpoints: breakpoints ?? this.breakpoints,
-      enableAdaptiveLayout: enableAdaptiveLayout ?? this.enableAdaptiveLayout,
-      enableOrientationChanges: enableOrientationChanges ?? this.enableOrientationChanges,
-      enableDensityScaling: enableDensityScaling ?? this.enableDensityScaling,
-      baseFontSize: baseFontSize ?? this.baseFontSize,
-      baseSpacing: baseSpacing ?? this.baseSpacing,
-      customSettings: customSettings ?? this.customSettings,
-    );
-  }
+  }) => ResponsiveConfig(
+    breakpoints: breakpoints ?? this.breakpoints,
+    enableAdaptiveLayout: enableAdaptiveLayout ?? this.enableAdaptiveLayout,
+    enableOrientationChanges: enableOrientationChanges ?? this.enableOrientationChanges,
+    enableDensityScaling: enableDensityScaling ?? this.enableDensityScaling,
+    baseFontSize: baseFontSize ?? this.baseFontSize,
+    baseSpacing: baseSpacing ?? this.baseSpacing,
+    customSettings: customSettings ?? this.customSettings,
+  );
 
   @override
   List<Object?> get props => [breakpoints, enableAdaptiveLayout, enableOrientationChanges, enableDensityScaling, baseFontSize, baseSpacing, customSettings];

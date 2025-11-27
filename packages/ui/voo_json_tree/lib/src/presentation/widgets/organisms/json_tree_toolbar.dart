@@ -63,68 +63,43 @@ class JsonTreeToolbar extends StatelessWidget {
   final List<Widget>? additionalActions;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.indentGuideColor,
-            width: 1,
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      border: Border(bottom: BorderSide(color: theme.indentGuideColor)),
+    ),
+    child: Row(
+      children: [
+        // Search bar
+        if (showSearch)
+          Expanded(
+            child: JsonSearchBar(
+              theme: theme,
+              onSearch: onSearch,
+              onClear: onSearchClear,
+              onNext: onNextResult,
+              onPrevious: onPreviousResult,
+              resultCount: searchResultCount,
+              currentIndex: currentSearchIndex,
+            ),
           ),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Search bar
-          if (showSearch)
-            Expanded(
-              child: JsonSearchBar(
-                theme: theme,
-                onSearch: onSearch,
-                onClear: onSearchClear,
-                onNext: onNextResult,
-                onPrevious: onPreviousResult,
-                resultCount: searchResultCount,
-                currentIndex: currentSearchIndex,
-              ),
-            ),
 
-          if (showSearch && (showExpandAll || showCollapseAll))
-            const SizedBox(width: 8),
+        if (showSearch && (showExpandAll || showCollapseAll)) const SizedBox(width: 8),
 
-          // Expand/Collapse buttons
-          if (showExpandAll)
-            _ToolbarButton(
-              icon: Icons.unfold_more,
-              tooltip: 'Expand all',
-              onPressed: onExpandAll,
-              color: theme.expandIconColor,
-            ),
+        // Expand/Collapse buttons
+        if (showExpandAll) _ToolbarButton(icon: Icons.unfold_more, tooltip: 'Expand all', onPressed: onExpandAll, color: theme.expandIconColor),
 
-          if (showCollapseAll)
-            _ToolbarButton(
-              icon: Icons.unfold_less,
-              tooltip: 'Collapse all',
-              onPressed: onCollapseAll,
-              color: theme.expandIconColor,
-            ),
+        if (showCollapseAll) _ToolbarButton(icon: Icons.unfold_less, tooltip: 'Collapse all', onPressed: onCollapseAll, color: theme.expandIconColor),
 
-          // Additional actions
-          if (additionalActions != null) ...additionalActions!,
-        ],
-      ),
-    );
-  }
+        // Additional actions
+        if (additionalActions != null) ...additionalActions!,
+      ],
+    ),
+  );
 }
 
 class _ToolbarButton extends StatelessWidget {
-  const _ToolbarButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-    required this.color,
-  });
+  const _ToolbarButton({required this.icon, required this.tooltip, required this.onPressed, required this.color});
 
   final IconData icon;
   final String tooltip;
@@ -132,21 +107,15 @@ class _ToolbarButton extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(4),
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Icon(
-            icon,
-            size: 20,
-            color: color,
-          ),
-        ),
+  Widget build(BuildContext context) => Tooltip(
+    message: tooltip,
+    child: InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Icon(icon, size: 20, color: color),
       ),
-    );
-  }
+    ),
+  );
 }

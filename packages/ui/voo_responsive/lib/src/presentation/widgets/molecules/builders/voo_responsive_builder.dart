@@ -7,12 +7,10 @@ class VooResponsiveBuilder extends StatelessWidget {
   const VooResponsiveBuilder({super.key, required this.builder});
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final screenInfo = ScreenInfo.fromContext(context);
-        return builder(context, screenInfo);
-      },
-    );
-  }
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final screenInfo = ScreenInfo.fromContext(context);
+      return builder(context, screenInfo);
+    },
+  );
 }

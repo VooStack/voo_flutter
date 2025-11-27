@@ -44,10 +44,7 @@ class LocalLogStorage {
   bool get hasWebStorageError => _webStorageError;
 
   /// Helper to safely find records with web error handling
-  Future<List<RecordSnapshot<int, Map<String, Object?>>>> _safeFindLogs(
-    Database db, {
-    Finder? finder,
-  }) async {
+  Future<List<RecordSnapshot<int, Map<String, Object?>>>> _safeFindLogs(Database db, {Finder? finder}) async {
     try {
       return await _logsStore.find(db, finder: finder);
     } catch (e) {
@@ -484,7 +481,7 @@ class LocalLogStorage {
 
         // Find the oldest logs (sorted by key ascending, which is timestamp-based)
         final oldestLogsFinder = Finder(
-          sortOrders: [SortOrder(Field.key, true)], // Ascending = oldest first
+          sortOrders: [SortOrder(Field.key)], // Ascending = oldest first
           limit: excessCount,
         );
 
@@ -502,6 +499,6 @@ class LocalLogStorage {
   /// Get the current log count
   Future<int> getLogCount() async {
     final db = await database;
-    return await _logsStore.count(db);
+    return _logsStore.count(db);
   }
 }

@@ -56,47 +56,43 @@ class VooSpacingTokens extends Equatable {
     double? gapSmall,
     double? gapMedium,
     double? gapLarge,
-  }) {
-    return VooSpacingTokens(
-      xxs: xxs ?? this.xxs,
-      xs: xs ?? this.xs,
-      sm: sm ?? this.sm,
-      md: md ?? this.md,
-      lg: lg ?? this.lg,
-      xl: xl ?? this.xl,
-      xxl: xxl ?? this.xxl,
-      xxxl: xxxl ?? this.xxxl,
-      buttonPadding: buttonPadding ?? this.buttonPadding,
-      cardPadding: cardPadding ?? this.cardPadding,
-      listItemPadding: listItemPadding ?? this.listItemPadding,
-      inputPadding: inputPadding ?? this.inputPadding,
-      dialogPadding: dialogPadding ?? this.dialogPadding,
-      gapSmall: gapSmall ?? this.gapSmall,
-      gapMedium: gapMedium ?? this.gapMedium,
-      gapLarge: gapLarge ?? this.gapLarge,
-    );
-  }
+  }) => VooSpacingTokens(
+    xxs: xxs ?? this.xxs,
+    xs: xs ?? this.xs,
+    sm: sm ?? this.sm,
+    md: md ?? this.md,
+    lg: lg ?? this.lg,
+    xl: xl ?? this.xl,
+    xxl: xxl ?? this.xxl,
+    xxxl: xxxl ?? this.xxxl,
+    buttonPadding: buttonPadding ?? this.buttonPadding,
+    cardPadding: cardPadding ?? this.cardPadding,
+    listItemPadding: listItemPadding ?? this.listItemPadding,
+    inputPadding: inputPadding ?? this.inputPadding,
+    dialogPadding: dialogPadding ?? this.dialogPadding,
+    gapSmall: gapSmall ?? this.gapSmall,
+    gapMedium: gapMedium ?? this.gapMedium,
+    gapLarge: gapLarge ?? this.gapLarge,
+  );
 
-  VooSpacingTokens scale(double factor) {
-    return VooSpacingTokens(
-      xxs: xxs * factor,
-      xs: xs * factor,
-      sm: sm * factor,
-      md: md * factor,
-      lg: lg * factor,
-      xl: xl * factor,
-      xxl: xxl * factor,
-      xxxl: xxxl * factor,
-      buttonPadding: buttonPadding * factor,
-      cardPadding: cardPadding * factor,
-      listItemPadding: listItemPadding * factor,
-      inputPadding: inputPadding * factor,
-      dialogPadding: dialogPadding * factor,
-      gapSmall: gapSmall * factor,
-      gapMedium: gapMedium * factor,
-      gapLarge: gapLarge * factor,
-    );
-  }
+  VooSpacingTokens scale(double factor) => VooSpacingTokens(
+    xxs: xxs * factor,
+    xs: xs * factor,
+    sm: sm * factor,
+    md: md * factor,
+    lg: lg * factor,
+    xl: xl * factor,
+    xxl: xxl * factor,
+    xxxl: xxxl * factor,
+    buttonPadding: buttonPadding * factor,
+    cardPadding: cardPadding * factor,
+    listItemPadding: listItemPadding * factor,
+    inputPadding: inputPadding * factor,
+    dialogPadding: dialogPadding * factor,
+    gapSmall: gapSmall * factor,
+    gapMedium: gapMedium * factor,
+    gapLarge: gapLarge * factor,
+  );
 
   @override
   List<Object?> get props => [

@@ -8,29 +8,16 @@ void main() {
     late DataGridRequestBuilder builder;
 
     setUp(() {
-      builder = const DataGridRequestBuilder(
-        standard: ApiFilterStandard.odata,
-        odataDateTimeFormat: ODataDateTimeFormat.unspecified,
-      );
+      builder = const DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.unspecified);
     });
 
     group('DateTime objects without Z suffix', () {
       test('should format DateTime without Z suffix', () {
         final localDateTime = DateTime(2024, 9, 30, 10, 15, 30);
 
-        final filters = {
-          'createdDate': VooDataFilter(
-            operator: VooFilterOperator.greaterThanOrEqual,
-            value: localDateTime,
-          ),
-        };
+        final filters = {'createdDate': VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: localDateTime)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -43,21 +30,11 @@ void main() {
 
       test('should maintain UTC conversion but remove Z suffix', () {
         // Create a local DateTime
-        final localDateTime = DateTime(2024, 1, 15, 10, 30, 0);
+        final localDateTime = DateTime(2024, 1, 15, 10, 30);
 
-        final filters = {
-          'timestamp': VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: localDateTime,
-          ),
-        };
+        final filters = {'timestamp': VooDataFilter(operator: VooFilterOperator.equals, value: localDateTime)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -71,19 +48,9 @@ void main() {
       test('should handle DateTime at midnight without Z', () {
         final midnight = DateTime.utc(2024, 1, 15);
 
-        final filters = {
-          'date': VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: midnight,
-          ),
-        };
+        final filters = {'date': VooDataFilter(operator: VooFilterOperator.equals, value: midnight)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -94,19 +61,9 @@ void main() {
       test('should handle DateTime with milliseconds without Z', () {
         final dateTimeWithMillis = DateTime.utc(2024, 1, 15, 10, 30, 45, 123);
 
-        final filters = {
-          'timestamp': VooDataFilter(
-            operator: VooFilterOperator.lessThan,
-            value: dateTimeWithMillis,
-          ),
-        };
+        final filters = {'timestamp': VooDataFilter(operator: VooFilterOperator.lessThan, value: dateTimeWithMillis)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -117,19 +74,9 @@ void main() {
 
     group('String date values without Z suffix', () {
       test('should parse date-only string and format without Z', () {
-        final filters = {
-          'birthDate': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: '2024-01-15',
-          ),
-        };
+        final filters = {'birthDate': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-01-15')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -139,19 +86,9 @@ void main() {
       });
 
       test('should parse datetime string and format without Z', () {
-        final filters = {
-          'appointmentTime': const VooDataFilter(
-            operator: VooFilterOperator.greaterThanOrEqual,
-            value: '2024-01-15T14:30:00',
-          ),
-        };
+        final filters = {'appointmentTime': const VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: '2024-01-15T14:30:00')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -161,19 +98,9 @@ void main() {
       });
 
       test('should strip Z suffix from string with Z', () {
-        final filters = {
-          'timestamp': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: '2024-01-15T14:30:00.000Z',
-          ),
-        };
+        final filters = {'timestamp': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-01-15T14:30:00.000Z')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -183,19 +110,9 @@ void main() {
       });
 
       test('should handle datetime string with timezone offset and remove Z', () {
-        final filters = {
-          'scheduledAt': const VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: '2024-01-15T14:30:00+05:00',
-          ),
-        };
+        final filters = {'scheduledAt': const VooDataFilter(operator: VooFilterOperator.equals, value: '2024-01-15T14:30:00+05:00')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -208,23 +125,12 @@ void main() {
 
     group('Between operator with dates without Z', () {
       test('should format both date values without Z in between filter', () {
-        final startDate = DateTime(2024, 1, 1);
+        final startDate = DateTime(2024);
         final endDate = DateTime(2024, 1, 31, 23, 59, 59);
 
-        final filters = {
-          'createdDate': VooDataFilter(
-            operator: VooFilterOperator.between,
-            value: startDate,
-            valueTo: endDate,
-          ),
-        };
+        final filters = {'createdDate': VooDataFilter(operator: VooFilterOperator.between, value: startDate, valueTo: endDate)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -236,20 +142,9 @@ void main() {
       });
 
       test('should handle string date ranges without Z', () {
-        final filters = {
-          'eventDate': const VooDataFilter(
-            operator: VooFilterOperator.between,
-            value: '2024-01-01',
-            valueTo: '2024-12-31',
-          ),
-        };
+        final filters = {'eventDate': const VooDataFilter(operator: VooFilterOperator.between, value: '2024-01-01', valueTo: '2024-12-31')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -261,40 +156,19 @@ void main() {
 
     group('Comparison with UTC format', () {
       test('should show difference between UTC and unspecified format', () {
-        final dateTime = DateTime.utc(2024, 1, 15, 10, 30, 0);
+        final dateTime = DateTime.utc(2024, 1, 15, 10, 30);
 
         // UTC format builder
-        const utcBuilder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.utc,
-        );
+        const utcBuilder = DataGridRequestBuilder(standard: ApiFilterStandard.odata);
 
         // Unspecified format builder
-        const unspecifiedBuilder = DataGridRequestBuilder(
-          standard: ApiFilterStandard.odata,
-          odataDateTimeFormat: ODataDateTimeFormat.unspecified,
-        );
+        const unspecifiedBuilder = DataGridRequestBuilder(standard: ApiFilterStandard.odata, odataDateTimeFormat: ODataDateTimeFormat.unspecified);
 
-        final filters = {
-          'timestamp': VooDataFilter(
-            operator: VooFilterOperator.equals,
-            value: dateTime,
-          ),
-        };
+        final filters = {'timestamp': VooDataFilter(operator: VooFilterOperator.equals, value: dateTime)};
 
-        final utcResult = utcBuilder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final utcResult = utcBuilder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
-        final unspecifiedResult = unspecifiedBuilder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final unspecifiedResult = unspecifiedBuilder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final utcFilter = utcResult['params']['\$filter'] as String;
         final unspecifiedFilter = unspecifiedResult['params']['\$filter'] as String;
@@ -313,19 +187,9 @@ void main() {
         // DateTime with Kind=Unspecified
         final userCreatedDate = DateTime(2024, 9, 30, 10, 15, 30);
 
-        final filters = {
-          'createdAt': VooDataFilter(
-            operator: VooFilterOperator.greaterThan,
-            value: userCreatedDate,
-          ),
-        };
+        final filters = {'createdAt': VooDataFilter(operator: VooFilterOperator.greaterThan, value: userCreatedDate)};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 
@@ -337,19 +201,9 @@ void main() {
       });
 
       test('should work with .NET DateTime columns without timezone', () {
-        final filters = {
-          'lastLogin': const VooDataFilter(
-            operator: VooFilterOperator.lessThanOrEqual,
-            value: '2024-12-31T23:59:59',
-          ),
-        };
+        final filters = {'lastLogin': const VooDataFilter(operator: VooFilterOperator.lessThanOrEqual, value: '2024-12-31T23:59:59')};
 
-        final result = builder.buildRequest(
-          page: 0,
-          pageSize: 20,
-          filters: filters,
-          sorts: [],
-        );
+        final result = builder.buildRequest(page: 0, pageSize: 20, filters: filters, sorts: []);
 
         final filterString = result['params']['\$filter'] as String;
 

@@ -47,8 +47,8 @@ void main() {
 
     group('equality', () {
       test('should be equal when all properties match', () {
-        const config1 = LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, enableStorage: false, minimumLevel: LogLevel.info);
-        const config2 = LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, enableStorage: false, minimumLevel: LogLevel.info);
+        const config1 = LogTypeConfig(enableConsoleOutput: false, enableStorage: false, minimumLevel: LogLevel.info);
+        const config2 = LogTypeConfig(enableConsoleOutput: false, enableStorage: false, minimumLevel: LogLevel.info);
 
         expect(config1, equals(config2));
         expect(config1.hashCode, equals(config2.hashCode));
@@ -64,14 +64,14 @@ void main() {
 
     group('use cases', () {
       test('should disable console output for network logs', () {
-        const networkConfig = LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info);
+        const networkConfig = LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info);
 
         expect(networkConfig.enableConsoleOutput, false);
         expect(networkConfig.enableDevToolsOutput, true);
       });
 
       test('should enable all outputs for error logs', () {
-        const errorConfig = LogTypeConfig(enableConsoleOutput: true, enableDevToolsOutput: true, enableStorage: true, minimumLevel: LogLevel.warning);
+        const errorConfig = LogTypeConfig(minimumLevel: LogLevel.warning);
 
         expect(errorConfig.enableConsoleOutput, true);
         expect(errorConfig.enableDevToolsOutput, true);

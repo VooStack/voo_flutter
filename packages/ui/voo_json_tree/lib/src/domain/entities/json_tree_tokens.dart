@@ -144,12 +144,8 @@ class JsonTreeTokens {
   }
 
   /// Creates spacing tokens with custom scale factor.
-  static VooSpacingTokens scaledSpacing(double factor) {
-    return _spacing.scale(factor);
-  }
+  static VooSpacingTokens scaledSpacing(double factor) => _spacing.scale(factor);
 
   /// Creates radius tokens with custom scale factor.
-  static VooRadiusTokens scaledRadius(double factor) {
-    return _radius.scale(factor);
-  }
+  static VooRadiusTokens scaledRadius(double factor) => _radius.scale(factor);
 }

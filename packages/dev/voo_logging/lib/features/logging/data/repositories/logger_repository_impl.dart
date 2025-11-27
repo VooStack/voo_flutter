@@ -82,10 +82,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
     // Perform automatic cleanup if enabled
     int cleanedLogs = 0;
     if (_config.autoCleanup && (_config.maxLogs != null || _config.retentionDays != null)) {
-      cleanedLogs = await _storage!.performCleanup(
-        maxLogs: _config.maxLogs,
-        retentionDays: _config.retentionDays,
-      );
+      cleanedLogs = await _storage!.performCleanup(maxLogs: _config.maxLogs, retentionDays: _config.retentionDays);
     }
 
     await _logInternal(
@@ -428,13 +425,10 @@ class LoggerRepositoryImpl extends LoggerRepository {
         endTime: filter.endTime,
         userId: filter.userId,
         sessionId: filter.sessionId,
-        limit: 1000,
-        offset: 0,
-        ascending: false,
       );
     } else {
       // Return all logs if no filter provided
-      return _storage!.queryLogs(limit: 1000);
+      return _storage!.queryLogs();
     }
   }
 

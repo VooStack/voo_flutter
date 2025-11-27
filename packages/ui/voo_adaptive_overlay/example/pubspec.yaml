@@ -1,0 +1,21 @@
+name: voo_adaptive_overlay_example
+description: Demonstrates the voo_adaptive_overlay package.
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voo_adaptive_overlay:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

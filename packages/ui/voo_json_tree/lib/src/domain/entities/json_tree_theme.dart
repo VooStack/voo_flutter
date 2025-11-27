@@ -119,74 +119,48 @@ class VooJsonTreeTheme {
   final EdgeInsets padding;
 
   /// Creates a dark theme preset.
-  factory VooJsonTreeTheme.dark() {
-    return const VooJsonTreeTheme(
-      backgroundColor: Color(0xFF1E1E1E),
-      keyColor: Color(0xFF9CDCFE),
-      stringColor: Color(0xFFCE9178),
-      numberColor: Color(0xFFB5CEA8),
-      booleanColor: Color(0xFF569CD6),
-      nullColor: Color(0xFF808080),
-      bracketColor: Color(0xFFFFD700),
-      expandIconColor: Color(0xFFCCCCCC),
-      indentGuideColor: Color(0xFF404040),
-      hoverColor: Color(0xFF2A2D2E),
-      selectedColor: Color(0xFF094771),
-    );
-  }
+  factory VooJsonTreeTheme.dark() =>
+      const VooJsonTreeTheme(backgroundColor: Color(0xFF1E1E1E), expandIconColor: Color(0xFFCCCCCC), hoverColor: Color(0xFF2A2D2E));
 
   /// Creates a light theme preset.
-  factory VooJsonTreeTheme.light() {
-    return const VooJsonTreeTheme(
-      backgroundColor: Color(0xFFFFFFFF),
-      keyColor: Color(0xFF0451A5),
-      stringColor: Color(0xFFA31515),
-      numberColor: Color(0xFF098658),
-      booleanColor: Color(0xFF0000FF),
-      nullColor: Color(0xFF808080),
-      bracketColor: Color(0xFF000000),
-      expandIconColor: Color(0xFF424242),
-      indentGuideColor: Color(0xFFE0E0E0),
-      hoverColor: Color(0xFFF5F5F5),
-      selectedColor: Color(0xFFADD6FF),
-      searchMatchColor: Color(0xFFFFEB3B),
-      searchMatchTextColor: Color(0xFF000000),
-    );
-  }
+  factory VooJsonTreeTheme.light() => const VooJsonTreeTheme(
+    backgroundColor: Color(0xFFFFFFFF),
+    keyColor: Color(0xFF0451A5),
+    stringColor: Color(0xFFA31515),
+    numberColor: Color(0xFF098658),
+    booleanColor: Color(0xFF0000FF),
+    bracketColor: Color(0xFF000000),
+    expandIconColor: Color(0xFF424242),
+    indentGuideColor: Color(0xFFE0E0E0),
+    hoverColor: Color(0xFFF5F5F5),
+    selectedColor: Color(0xFFADD6FF),
+    searchMatchColor: Color(0xFFFFEB3B),
+  );
 
   /// Creates a VS Code-inspired dark theme.
-  factory VooJsonTreeTheme.vscode() {
-    return const VooJsonTreeTheme(
-      backgroundColor: Color(0xFF1E1E1E),
-      keyColor: Color(0xFF9CDCFE),
-      stringColor: Color(0xFFCE9178),
-      numberColor: Color(0xFFB5CEA8),
-      booleanColor: Color(0xFF569CD6),
-      nullColor: Color(0xFF569CD6),
-      bracketColor: Color(0xFFD4D4D4),
-      expandIconColor: Color(0xFFCCCCCC),
-      indentGuideColor: Color(0xFF404040),
-      hoverColor: Color(0xFF2A2D2E),
-      selectedColor: Color(0xFF264F78),
-    );
-  }
+  factory VooJsonTreeTheme.vscode() => const VooJsonTreeTheme(
+    backgroundColor: Color(0xFF1E1E1E),
+    nullColor: Color(0xFF569CD6),
+    bracketColor: Color(0xFFD4D4D4),
+    expandIconColor: Color(0xFFCCCCCC),
+    hoverColor: Color(0xFF2A2D2E),
+    selectedColor: Color(0xFF264F78),
+  );
 
   /// Creates a Monokai-inspired theme.
-  factory VooJsonTreeTheme.monokai() {
-    return const VooJsonTreeTheme(
-      backgroundColor: Color(0xFF272822),
-      keyColor: Color(0xFFF92672),
-      stringColor: Color(0xFFE6DB74),
-      numberColor: Color(0xFFAE81FF),
-      booleanColor: Color(0xFFAE81FF),
-      nullColor: Color(0xFFAE81FF),
-      bracketColor: Color(0xFFF8F8F2),
-      expandIconColor: Color(0xFF75715E),
-      indentGuideColor: Color(0xFF3E3D32),
-      hoverColor: Color(0xFF3E3D32),
-      selectedColor: Color(0xFF49483E),
-    );
-  }
+  factory VooJsonTreeTheme.monokai() => const VooJsonTreeTheme(
+    backgroundColor: Color(0xFF272822),
+    keyColor: Color(0xFFF92672),
+    stringColor: Color(0xFFE6DB74),
+    numberColor: Color(0xFFAE81FF),
+    booleanColor: Color(0xFFAE81FF),
+    nullColor: Color(0xFFAE81FF),
+    bracketColor: Color(0xFFF8F8F2),
+    expandIconColor: Color(0xFF75715E),
+    indentGuideColor: Color(0xFF3E3D32),
+    hoverColor: Color(0xFF3E3D32),
+    selectedColor: Color(0xFF49483E),
+  );
 
   /// Creates a theme using voo_tokens design system values.
   ///
@@ -221,32 +195,30 @@ class VooJsonTreeTheme {
     double? fontSize,
     double? lineHeight,
     bool? showIndentGuides,
-  }) {
-    return VooJsonTreeTheme(
-      backgroundColor: backgroundColor ?? const Color(0xFF1E1E1E),
-      keyColor: keyColor,
-      keyFontWeight: keyFontWeight,
-      stringColor: stringColor,
-      numberColor: numberColor,
-      booleanColor: booleanColor,
-      nullColor: nullColor,
-      bracketColor: bracketColor,
-      expandIconColor: expandIconColor,
-      indentGuideColor: indentGuideColor,
-      hoverColor: hoverColor,
-      selectedColor: selectedColor,
-      searchMatchColor: searchMatchColor,
-      searchMatchTextColor: searchMatchTextColor,
-      fontFamily: fontFamily ?? JsonTreeTokens.fontFamily,
-      fontSize: fontSize ?? JsonTreeTokens.fontSize,
-      lineHeight: lineHeight ?? JsonTreeTokens.lineHeight,
-      indentWidth: JsonTreeTokens.indentWidth,
-      nodeSpacing: JsonTreeTokens.nodeSpacing,
-      showIndentGuides: showIndentGuides ?? true,
-      borderRadius: JsonTreeTokens.containerRadius,
-      padding: JsonTreeTokens.containerPadding,
-    );
-  }
+  }) => VooJsonTreeTheme(
+    backgroundColor: backgroundColor ?? const Color(0xFF1E1E1E),
+    keyColor: keyColor,
+    keyFontWeight: keyFontWeight,
+    stringColor: stringColor,
+    numberColor: numberColor,
+    booleanColor: booleanColor,
+    nullColor: nullColor,
+    bracketColor: bracketColor,
+    expandIconColor: expandIconColor,
+    indentGuideColor: indentGuideColor,
+    hoverColor: hoverColor,
+    selectedColor: selectedColor,
+    searchMatchColor: searchMatchColor,
+    searchMatchTextColor: searchMatchTextColor,
+    fontFamily: fontFamily ?? JsonTreeTokens.fontFamily,
+    fontSize: fontSize ?? JsonTreeTokens.fontSize,
+    lineHeight: lineHeight ?? JsonTreeTokens.lineHeight,
+    indentWidth: JsonTreeTokens.indentWidth,
+    nodeSpacing: JsonTreeTokens.nodeSpacing,
+    showIndentGuides: showIndentGuides ?? true,
+    borderRadius: JsonTreeTokens.containerRadius,
+    padding: JsonTreeTokens.containerPadding,
+  );
 
   /// Creates a theme that inherits colors from the current Material theme.
   ///
@@ -267,12 +239,8 @@ class VooJsonTreeTheme {
       backgroundColor: colorScheme.surface,
       keyColor: colorScheme.primary,
       keyFontWeight: FontWeight.w500,
-      stringColor: isDark
-          ? const Color(0xFFCE9178)
-          : const Color(0xFFA31515),
-      numberColor: isDark
-          ? const Color(0xFFB5CEA8)
-          : const Color(0xFF098658),
+      stringColor: isDark ? const Color(0xFFCE9178) : const Color(0xFFA31515),
+      numberColor: isDark ? const Color(0xFFB5CEA8) : const Color(0xFF098658),
       booleanColor: colorScheme.tertiary,
       nullColor: colorScheme.outline,
       bracketColor: colorScheme.onSurface,
@@ -282,12 +250,8 @@ class VooJsonTreeTheme {
       selectedColor: colorScheme.primaryContainer,
       searchMatchColor: colorScheme.tertiaryContainer,
       searchMatchTextColor: colorScheme.onTertiaryContainer,
-      fontFamily: JsonTreeTokens.fontFamily,
-      fontSize: JsonTreeTokens.fontSize,
-      lineHeight: JsonTreeTokens.lineHeight,
       indentWidth: JsonTreeTokens.indentWidth,
       nodeSpacing: JsonTreeTokens.nodeSpacing,
-      showIndentGuides: true,
       borderRadius: JsonTreeTokens.containerRadius,
       padding: JsonTreeTokens.containerPadding,
     );
@@ -307,28 +271,15 @@ class VooJsonTreeTheme {
   ///   ),
   /// )
   /// ```
-  factory VooJsonTreeTheme.transparent() {
-    return VooJsonTreeTheme(
-      backgroundColor: Colors.transparent,
-      keyColor: const Color(0xFF9CDCFE),
-      stringColor: const Color(0xFFCE9178),
-      numberColor: const Color(0xFFB5CEA8),
-      booleanColor: const Color(0xFF569CD6),
-      nullColor: const Color(0xFF808080),
-      bracketColor: const Color(0xFFD4D4D4),
-      expandIconColor: const Color(0xFFCCCCCC),
-      indentGuideColor: const Color(0xFF404040),
-      hoverColor: const Color(0x1AFFFFFF),
-      selectedColor: const Color(0xFF094771),
-      fontFamily: JsonTreeTokens.fontFamily,
-      fontSize: JsonTreeTokens.fontSize,
-      lineHeight: JsonTreeTokens.lineHeight,
-      indentWidth: JsonTreeTokens.indentWidth,
-      nodeSpacing: JsonTreeTokens.nodeSpacing,
-      borderRadius: 0,
-      padding: EdgeInsets.zero,
-    );
-  }
+  factory VooJsonTreeTheme.transparent() => VooJsonTreeTheme(
+    backgroundColor: Colors.transparent,
+    bracketColor: const Color(0xFFD4D4D4),
+    expandIconColor: const Color(0xFFCCCCCC),
+    indentWidth: JsonTreeTokens.indentWidth,
+    nodeSpacing: JsonTreeTokens.nodeSpacing,
+    borderRadius: 0,
+    padding: EdgeInsets.zero,
+  );
 
   /// Creates a copy with the given fields replaced.
   VooJsonTreeTheme copyWith({
@@ -354,30 +305,28 @@ class VooJsonTreeTheme {
     bool? showIndentGuides,
     double? borderRadius,
     EdgeInsets? padding,
-  }) {
-    return VooJsonTreeTheme(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      keyColor: keyColor ?? this.keyColor,
-      keyFontWeight: keyFontWeight ?? this.keyFontWeight,
-      stringColor: stringColor ?? this.stringColor,
-      numberColor: numberColor ?? this.numberColor,
-      booleanColor: booleanColor ?? this.booleanColor,
-      nullColor: nullColor ?? this.nullColor,
-      bracketColor: bracketColor ?? this.bracketColor,
-      expandIconColor: expandIconColor ?? this.expandIconColor,
-      indentGuideColor: indentGuideColor ?? this.indentGuideColor,
-      hoverColor: hoverColor ?? this.hoverColor,
-      selectedColor: selectedColor ?? this.selectedColor,
-      searchMatchColor: searchMatchColor ?? this.searchMatchColor,
-      searchMatchTextColor: searchMatchTextColor ?? this.searchMatchTextColor,
-      fontFamily: fontFamily ?? this.fontFamily,
-      fontSize: fontSize ?? this.fontSize,
-      lineHeight: lineHeight ?? this.lineHeight,
-      indentWidth: indentWidth ?? this.indentWidth,
-      nodeSpacing: nodeSpacing ?? this.nodeSpacing,
-      showIndentGuides: showIndentGuides ?? this.showIndentGuides,
-      borderRadius: borderRadius ?? this.borderRadius,
-      padding: padding ?? this.padding,
-    );
-  }
+  }) => VooJsonTreeTheme(
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    keyColor: keyColor ?? this.keyColor,
+    keyFontWeight: keyFontWeight ?? this.keyFontWeight,
+    stringColor: stringColor ?? this.stringColor,
+    numberColor: numberColor ?? this.numberColor,
+    booleanColor: booleanColor ?? this.booleanColor,
+    nullColor: nullColor ?? this.nullColor,
+    bracketColor: bracketColor ?? this.bracketColor,
+    expandIconColor: expandIconColor ?? this.expandIconColor,
+    indentGuideColor: indentGuideColor ?? this.indentGuideColor,
+    hoverColor: hoverColor ?? this.hoverColor,
+    selectedColor: selectedColor ?? this.selectedColor,
+    searchMatchColor: searchMatchColor ?? this.searchMatchColor,
+    searchMatchTextColor: searchMatchTextColor ?? this.searchMatchTextColor,
+    fontFamily: fontFamily ?? this.fontFamily,
+    fontSize: fontSize ?? this.fontSize,
+    lineHeight: lineHeight ?? this.lineHeight,
+    indentWidth: indentWidth ?? this.indentWidth,
+    nodeSpacing: nodeSpacing ?? this.nodeSpacing,
+    showIndentGuides: showIndentGuides ?? this.showIndentGuides,
+    borderRadius: borderRadius ?? this.borderRadius,
+    padding: padding ?? this.padding,
+  );
 }

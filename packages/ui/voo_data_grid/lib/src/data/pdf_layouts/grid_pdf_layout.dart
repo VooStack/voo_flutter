@@ -20,9 +20,7 @@ class GridPdfLayout extends PdfLayoutStrategy {
   }
 
   @override
-  PdfPageFormat getPageFormat(ExportConfig config) {
-    return config.isLandscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;
-  }
+  PdfPageFormat getPageFormat(ExportConfig config) => config.isLandscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;
 
   @override
   List<pw.Widget> buildContent({
@@ -47,9 +45,7 @@ class GridPdfLayout extends PdfLayoutStrategy {
   }
 
   pw.Widget _buildFilterInfo(Map<String, dynamic> filters, ExportConfig config) {
-    final filterTexts = filters.entries.map((entry) {
-      return '${entry.key}: ${entry.value}';
-    }).toList();
+    final filterTexts = filters.entries.map((entry) => '${entry.key}: ${entry.value}').toList();
 
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),

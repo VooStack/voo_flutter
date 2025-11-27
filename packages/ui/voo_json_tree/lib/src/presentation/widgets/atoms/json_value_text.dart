@@ -46,11 +46,7 @@ class JsonValueText extends StatelessWidget {
     if (!hasHighlight) {
       return Text(
         displayText,
-        style: TextStyle(
-          fontFamily: theme.fontFamily,
-          fontSize: theme.fontSize,
-          color: _getColor(),
-        ),
+        style: TextStyle(fontFamily: theme.fontFamily, fontSize: theme.fontSize, color: _getColor()),
       );
     }
 
@@ -64,17 +60,10 @@ class JsonValueText extends StatelessWidget {
           if (adjustedStart > 0)
             TextSpan(
               text: displayText.substring(0, adjustedStart.clamp(0, displayText.length)),
-              style: TextStyle(
-                fontFamily: theme.fontFamily,
-                fontSize: theme.fontSize,
-                color: _getColor(),
-              ),
+              style: TextStyle(fontFamily: theme.fontFamily, fontSize: theme.fontSize, color: _getColor()),
             ),
           TextSpan(
-            text: displayText.substring(
-              adjustedStart.clamp(0, displayText.length),
-              adjustedEnd.clamp(0, displayText.length),
-            ),
+            text: displayText.substring(adjustedStart.clamp(0, displayText.length), adjustedEnd.clamp(0, displayText.length)),
             style: TextStyle(
               fontFamily: theme.fontFamily,
               fontSize: theme.fontSize,
@@ -86,11 +75,7 @@ class JsonValueText extends StatelessWidget {
           if (adjustedEnd < displayText.length)
             TextSpan(
               text: displayText.substring(adjustedEnd),
-              style: TextStyle(
-                fontFamily: theme.fontFamily,
-                fontSize: theme.fontSize,
-                color: _getColor(),
-              ),
+              style: TextStyle(fontFamily: theme.fontFamily, fontSize: theme.fontSize, color: _getColor()),
             ),
         ],
       ),
@@ -102,7 +87,7 @@ class JsonValueText extends StatelessWidget {
       case JsonNodeType.string:
         var str = value.toString();
         if (maxLength != null && str.length > maxLength!) {
-          str = '${str.substring(0, maxLength!)}...';
+          str = '${str.substring(0, maxLength)}...';
         }
         return '"$str"';
       case JsonNodeType.number:

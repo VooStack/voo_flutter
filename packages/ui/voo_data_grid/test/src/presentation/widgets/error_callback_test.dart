@@ -11,20 +11,14 @@ void main() {
     });
 
     testWidgets('VooDataGridStateless should call onError when error is present in state', (WidgetTester tester) async {
-      const state = VooDataGridState<Map<String, dynamic>>(
-        rows: [],
-        totalRows: 0,
-        error: 'Network connection failed',
-      );
+      const state = VooDataGridState<Map<String, dynamic>>(rows: [], error: 'Network connection failed');
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: VooDataGridStateless<Map<String, dynamic>>(
               state: state,
-              columns: const [
-                VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name'),
-              ],
+              columns: const [VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name')],
               onError: (error) => errorLog.add(error),
             ),
           ),
@@ -40,19 +34,14 @@ void main() {
     testWidgets('VooDataGrid should call onError when data source has error', (WidgetTester tester) async {
       final dataSource = _ErrorDataSource<Map<String, dynamic>>();
       final controller = VooDataGridController<Map<String, dynamic>>(
-        columns: const [
-          VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name'),
-        ],
+        columns: const [VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name')],
         dataSource: dataSource,
       );
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooDataGrid<Map<String, dynamic>>(
-              controller: controller,
-              onError: (error) => errorLog.add(error),
-            ),
+            body: VooDataGrid<Map<String, dynamic>>(controller: controller, onError: (error) => errorLog.add(error)),
           ),
         ),
       );
@@ -66,10 +55,7 @@ void main() {
     });
 
     testWidgets('onError should only be called when error changes', (WidgetTester tester) async {
-      var state = const VooDataGridState<Map<String, dynamic>>(
-        rows: [],
-        totalRows: 0,
-      );
+      var state = const VooDataGridState<Map<String, dynamic>>(rows: []);
 
       late StateSetter setState;
 
@@ -81,9 +67,7 @@ void main() {
                 setState = stateSetter;
                 return VooDataGridStateless<Map<String, dynamic>>(
                   state: state,
-                  columns: const [
-                    VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name'),
-                  ],
+                  columns: const [VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name')],
                   onError: (error) => errorLog.add(error),
                 );
               },
@@ -99,11 +83,7 @@ void main() {
 
       // Set error
       setState(() {
-        state = const VooDataGridState<Map<String, dynamic>>(
-          rows: [],
-          totalRows: 0,
-          error: 'Error 1',
-        );
+        state = const VooDataGridState<Map<String, dynamic>>(rows: [], error: 'Error 1');
       });
       await tester.pump();
       expect(errorLog, ['Error 1']);
@@ -112,7 +92,6 @@ void main() {
       setState(() {
         state = const VooDataGridState<Map<String, dynamic>>(
           rows: [],
-          totalRows: 0,
           error: 'Error 1', // Same error
         );
       });
@@ -121,32 +100,21 @@ void main() {
 
       // Change to different error
       setState(() {
-        state = const VooDataGridState<Map<String, dynamic>>(
-          rows: [],
-          totalRows: 0,
-          error: 'Error 2',
-        );
+        state = const VooDataGridState<Map<String, dynamic>>(rows: [], error: 'Error 2');
       });
       await tester.pump();
       expect(errorLog, ['Error 1', 'Error 2']);
 
       // Clear error
       setState(() {
-        state = const VooDataGridState<Map<String, dynamic>>(
-          rows: [],
-          totalRows: 0,
-        );
+        state = const VooDataGridState<Map<String, dynamic>>(rows: []);
       });
       await tester.pump();
       expect(errorLog, ['Error 1', 'Error 2']); // No new calls
 
       // Set error again after clearing
       setState(() {
-        state = const VooDataGridState<Map<String, dynamic>>(
-          rows: [],
-          totalRows: 0,
-          error: 'Error 3',
-        );
+        state = const VooDataGridState<Map<String, dynamic>>(rows: [], error: 'Error 3');
       });
       await tester.pump();
       expect(errorLog, ['Error 1', 'Error 2', 'Error 3']);
@@ -155,9 +123,7 @@ void main() {
     testWidgets('onError should not be called if callback is not provided', (WidgetTester tester) async {
       final dataSource = _ErrorDataSource<Map<String, dynamic>>();
       final controller = VooDataGridController<Map<String, dynamic>>(
-        columns: const [
-          VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name'),
-        ],
+        columns: const [VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name')],
         dataSource: dataSource,
       );
 
@@ -183,9 +149,7 @@ void main() {
     testWidgets('errorBuilder and onError should both work together', (WidgetTester tester) async {
       final dataSource = _ErrorDataSource<Map<String, dynamic>>();
       final controller = VooDataGridController<Map<String, dynamic>>(
-        columns: const [
-          VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name'),
-        ],
+        columns: const [VooDataColumn<Map<String, dynamic>>(field: 'name', label: 'Name')],
         dataSource: dataSource,
       );
 

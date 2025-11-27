@@ -3,19 +3,13 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 
 class MockPathProviderPlatform extends PathProviderPlatform {
   @override
-  Future<String?> getApplicationDocumentsPath() async {
-    return '.';
-  }
+  Future<String?> getApplicationDocumentsPath() async => '.';
 
   @override
-  Future<String?> getTemporaryPath() async {
-    return '.';
-  }
+  Future<String?> getTemporaryPath() async => '.';
 
   @override
-  Future<String?> getApplicationSupportPath() async {
-    return '.';
-  }
+  Future<String?> getApplicationSupportPath() async => '.';
 }
 
 void setUpTestEnvironment() {

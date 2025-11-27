@@ -54,10 +54,7 @@ class VooJsonTreeResponsive extends StatelessWidget {
     this.onNodeTap,
     this.onNodeDoubleTap,
     this.onValueChanged,
-  }) : assert(
-          data != null || controller != null,
-          'Either data or controller must be provided',
-        );
+  }) : assert(data != null || controller != null, 'Either data or controller must be provided');
 
   /// The JSON data to display.
   final dynamic data;
@@ -99,27 +96,25 @@ class VooJsonTreeResponsive extends StatelessWidget {
   final void Function(String path, dynamic newValue)? onValueChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return VooResponsiveBuilder(
-      builder: (context, screenInfo) {
-        final config = _getConfigForScreenSize(screenInfo.screenSize);
-        final adaptedTheme = _getThemeForScreenSize(context, screenInfo);
+  Widget build(BuildContext context) => VooResponsiveBuilder(
+    builder: (context, screenInfo) {
+      final config = _getConfigForScreenSize(screenInfo.screenSize);
+      final adaptedTheme = _getThemeForScreenSize(context, screenInfo);
 
-        return VooJsonTree(
-          data: data,
-          controller: controller,
-          theme: adaptedTheme,
-          config: config,
-          showToolbar: showToolbar && _shouldShowToolbar(screenInfo.screenSize),
-          showPathBreadcrumb: showPathBreadcrumb,
-          rootName: rootName,
-          onNodeTap: onNodeTap,
-          onNodeDoubleTap: onNodeDoubleTap,
-          onValueChanged: onValueChanged,
-        );
-      },
-    );
-  }
+      return VooJsonTree(
+        data: data,
+        controller: controller,
+        theme: adaptedTheme,
+        config: config,
+        showToolbar: showToolbar && _shouldShowToolbar(screenInfo.screenSize),
+        showPathBreadcrumb: showPathBreadcrumb,
+        rootName: rootName,
+        onNodeTap: onNodeTap,
+        onNodeDoubleTap: onNodeDoubleTap,
+        onValueChanged: onValueChanged,
+      );
+    },
+  );
 
   /// Gets the appropriate config for the current screen size.
   JsonTreeConfig _getConfigForScreenSize(ScreenSize screenSize) {
@@ -136,10 +131,7 @@ class VooJsonTreeResponsive extends StatelessWidget {
   }
 
   /// Gets the appropriate theme for the current screen size.
-  VooJsonTreeTheme _getThemeForScreenSize(
-    BuildContext context,
-    ScreenInfo screenInfo,
-  ) {
+  VooJsonTreeTheme _getThemeForScreenSize(BuildContext context, ScreenInfo screenInfo) {
     final baseTheme = theme ?? VooJsonTreeTheme.fromTokens();
     final screenWidth = screenInfo.width;
 
@@ -161,59 +153,21 @@ class VooJsonTreeResponsive extends StatelessWidget {
   }
 
   /// Default mobile configuration with touch-friendly settings.
-  static JsonTreeConfig get _defaultMobileConfig {
-    return const JsonTreeConfig(
-      expandDepth: 1,
-      showArrayIndices: true,
-      showNodeCount: false, // Save space
-      showRootNode: false, // Save space
-      enableSearch: true,
-      enableCopy: true,
-      enableEditing: false,
-      enableSelection: true,
-      enableHover: false, // No hover on touch
-      enableContextMenu: false, // Use tap actions instead
-      enableKeyboardNavigation: false, // No keyboard on mobile
-      animateExpansion: true,
-      maxDisplayStringLength: 50, // Shorter for small screens
-    );
-  }
+  static JsonTreeConfig get _defaultMobileConfig => const JsonTreeConfig(
+    showNodeCount: false, // Save space
+    showRootNode: false, // Save space
+    enableHover: false, // No hover on touch
+    enableContextMenu: false, // Use tap actions instead
+    enableKeyboardNavigation: false, // No keyboard on mobile
+    maxDisplayStringLength: 50, // Shorter for small screens
+  );
 
   /// Default tablet configuration.
-  static JsonTreeConfig get _defaultTabletConfig {
-    return const JsonTreeConfig(
-      expandDepth: 1,
-      showArrayIndices: true,
-      showNodeCount: true,
-      showRootNode: true,
-      enableSearch: true,
-      enableCopy: true,
-      enableEditing: false,
-      enableSelection: true,
-      enableHover: true,
-      enableContextMenu: true,
-      enableKeyboardNavigation: true,
-      animateExpansion: true,
-      maxDisplayStringLength: 100,
-    );
-  }
+  static JsonTreeConfig get _defaultTabletConfig => const JsonTreeConfig();
 
   /// Default desktop configuration with full features.
-  static JsonTreeConfig get _defaultDesktopConfig {
-    return const JsonTreeConfig(
-      expandDepth: 2,
-      showArrayIndices: true,
-      showNodeCount: true,
-      showRootNode: true,
-      enableSearch: true,
-      enableCopy: true,
-      enableEditing: false,
-      enableSelection: true,
-      enableHover: true,
-      enableContextMenu: true,
-      enableKeyboardNavigation: true,
-      animateExpansion: true,
-      maxDisplayStringLength: 150, // More space for content
-    );
-  }
+  static JsonTreeConfig get _defaultDesktopConfig => const JsonTreeConfig(
+    expandDepth: 2,
+    maxDisplayStringLength: 150, // More space for content
+  );
 }

@@ -63,7 +63,7 @@ class _JsonTreeViewState extends State<JsonTreeView> {
     super.dispose();
   }
 
-  void _handleContextMenu(JsonNode node, Offset position) async {
+  Future<void> _handleContextMenu(JsonNode node, Offset position) async {
     if (!widget.config.enableContextMenu) return;
 
     final action = await showNodeContextMenu(
@@ -109,9 +109,7 @@ class _JsonTreeViewState extends State<JsonTreeView> {
     final selectedPath = widget.controller.selectedPath;
     if (selectedPath == null) return;
 
-    final nodes = widget.controller.getVisibleNodes(
-      includeRoot: widget.config.showRootNode,
-    );
+    final nodes = widget.controller.getVisibleNodes(includeRoot: widget.config.showRootNode);
 
     final currentIndex = nodes.indexWhere((n) => n.path == selectedPath);
     if (currentIndex < 0) return;
@@ -156,19 +154,14 @@ class _JsonTreeViewState extends State<JsonTreeView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return KeyboardListener(
-      focusNode: _focusNode,
-      onKeyEvent: _handleKeyEvent,
-      child: GestureDetector(
-        onTap: () => _focusNode.requestFocus(),
-        child: ListenableBuilder(
-          listenable: widget.controller,
-          builder: (context, _) => _buildTree(),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => KeyboardListener(
+    focusNode: _focusNode,
+    onKeyEvent: _handleKeyEvent,
+    child: GestureDetector(
+      onTap: _focusNode.requestFocus,
+      child: ListenableBuilder(listenable: widget.controller, builder: (context, _) => _buildTree()),
+    ),
+  );
 
   Widget _buildTree() {
     final rootNode = widget.controller.rootNode;
@@ -176,18 +169,12 @@ class _JsonTreeViewState extends State<JsonTreeView> {
       return Center(
         child: Text(
           'No data',
-          style: TextStyle(
-            fontFamily: widget.theme.fontFamily,
-            fontSize: widget.theme.fontSize,
-            color: widget.theme.nullColor,
-          ),
+          style: TextStyle(fontFamily: widget.theme.fontFamily, fontSize: widget.theme.fontSize, color: widget.theme.nullColor),
         ),
       );
     }
 
-    final visibleNodes = widget.controller.getVisibleNodes(
-      includeRoot: widget.config.showRootNode,
-    );
+    final visibleNodes = widget.controller.getVisibleNodes(includeRoot: widget.config.showRootNode);
 
     // Build the list of widgets including closing brackets
     final items = <Widget>[];
@@ -198,12 +185,7 @@ class _JsonTreeViewState extends State<JsonTreeView> {
       while (expandedContainers.isNotEmpty) {
         final lastContainer = expandedContainers.last;
         if (!node.path.startsWith(lastContainer.path)) {
-          items.add(ClosingBracket(
-            key: ValueKey('close_${lastContainer.path}'),
-            node: lastContainer,
-            theme: widget.theme,
-            config: widget.config,
-          ));
+          items.add(ClosingBracket(key: ValueKey('close_${lastContainer.path}'), node: lastContainer, theme: widget.theme, config: widget.config));
           expandedContainers.removeLast();
         } else {
           break;
@@ -262,18 +244,9 @@ class _JsonTreeViewState extends State<JsonTreeView> {
     // Add remaining closing brackets
     while (expandedContainers.isNotEmpty) {
       final container = expandedContainers.removeLast();
-      items.add(ClosingBracket(
-        key: ValueKey('close_${container.path}'),
-        node: container,
-        theme: widget.theme,
-        config: widget.config,
-      ));
+      items.add(ClosingBracket(key: ValueKey('close_${container.path}'), node: container, theme: widget.theme, config: widget.config));
     }
 
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: items.length,
-      itemBuilder: (context, index) => items[index],
-    );
+    return ListView.builder(controller: _scrollController, itemCount: items.length, itemBuilder: (context, index) => items[index]);
   }
 }

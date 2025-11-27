@@ -11,10 +11,7 @@ void main() {
 
       test('should initialize with custom log type configs', () {
         const config = LoggingConfig(
-          logTypeConfigs: {
-            LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true),
-            LogType.analytics: LogTypeConfig(enableStorage: false),
-          },
+          logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: false), LogType.analytics: LogTypeConfig(enableStorage: false)},
         );
 
         expect(config.logTypeConfigs.length, 2);
@@ -120,7 +117,7 @@ void main() {
       test('should replace existing log type config', () {
         const original = LoggingConfig(logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info)});
 
-        final updated = original.withLogTypeConfig(LogType.network, const LogTypeConfig(enableConsoleOutput: true, minimumLevel: LogLevel.debug));
+        final updated = original.withLogTypeConfig(LogType.network, const LogTypeConfig(minimumLevel: LogLevel.debug));
 
         expect(updated.logTypeConfigs.length, 1);
         expect(updated.logTypeConfigs[LogType.network]?.enableConsoleOutput, true);
@@ -253,7 +250,7 @@ void main() {
 
       test('should not be equal with different logTypeConfigs', () {
         const config1 = LoggingConfig(logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: false)});
-        const config2 = LoggingConfig(logTypeConfigs: {LogType.network: LogTypeConfig(enableConsoleOutput: true)});
+        const config2 = LoggingConfig(logTypeConfigs: {LogType.network: LogTypeConfig()});
 
         expect(config1, isNot(equals(config2)));
       });

@@ -40,24 +40,22 @@ class VooRadiusTokens extends Equatable {
        chip = chip ?? BorderRadius.circular(9999),
        tooltip = tooltip ?? BorderRadius.circular(8);
 
-  VooRadiusTokens scale(double factor) {
-    return VooRadiusTokens(
-      none: none,
-      xs: xs * factor,
-      sm: sm * factor,
-      md: md * factor,
-      lg: lg * factor,
-      xl: xl * factor,
-      xxl: xxl * factor,
-      full: full,
-      button: BorderRadius.circular(md * factor),
-      card: BorderRadius.circular(lg * factor),
-      input: BorderRadius.circular(md * factor),
-      dialog: BorderRadius.circular(xl * factor),
-      chip: BorderRadius.circular(full),
-      tooltip: BorderRadius.circular(md * factor),
-    );
-  }
+  VooRadiusTokens scale(double factor) => VooRadiusTokens(
+    none: none,
+    xs: xs * factor,
+    sm: sm * factor,
+    md: md * factor,
+    lg: lg * factor,
+    xl: xl * factor,
+    xxl: xxl * factor,
+    full: full,
+    button: BorderRadius.circular(md * factor),
+    card: BorderRadius.circular(lg * factor),
+    input: BorderRadius.circular(md * factor),
+    dialog: BorderRadius.circular(xl * factor),
+    chip: BorderRadius.circular(full),
+    tooltip: BorderRadius.circular(md * factor),
+  );
 
   @override
   List<Object?> get props => [none, xs, sm, md, lg, xl, xxl, full, button, card, input, dialog, chip, tooltip];

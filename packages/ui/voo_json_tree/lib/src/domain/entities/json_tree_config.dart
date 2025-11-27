@@ -94,30 +94,13 @@ class JsonTreeConfig {
   final int searchDebounceMs;
 
   /// Creates a read-only configuration preset.
-  factory JsonTreeConfig.readOnly() {
-    return const JsonTreeConfig(
-      enableEditing: false,
-      enableContextMenu: false,
-    );
-  }
+  factory JsonTreeConfig.readOnly() => const JsonTreeConfig(enableContextMenu: false);
 
   /// Creates a compact configuration preset.
-  factory JsonTreeConfig.compact() {
-    return const JsonTreeConfig(
-      showNodeCount: false,
-      showRootNode: false,
-      animateExpansion: false,
-    );
-  }
+  factory JsonTreeConfig.compact() => const JsonTreeConfig(showNodeCount: false, showRootNode: false, animateExpansion: false);
 
   /// Creates a fully-featured configuration preset.
-  factory JsonTreeConfig.full() {
-    return const JsonTreeConfig(
-      expandDepth: 2,
-      enableEditing: true,
-      enableContextMenu: true,
-    );
-  }
+  factory JsonTreeConfig.full() => const JsonTreeConfig(expandDepth: 2, enableEditing: true);
 
   /// Creates a minimal configuration with only essential features.
   ///
@@ -139,22 +122,16 @@ class JsonTreeConfig {
   ///   showToolbar: false,
   /// )
   /// ```
-  factory JsonTreeConfig.minimal() {
-    return const JsonTreeConfig(
-      expandDepth: 1,
-      showArrayIndices: true,
-      showNodeCount: false,
-      showRootNode: true,
-      enableSearch: false,
-      enableCopy: false,
-      enableEditing: false,
-      enableSelection: false,
-      enableHover: false,
-      enableContextMenu: false,
-      enableKeyboardNavigation: false,
-      animateExpansion: false,
-    );
-  }
+  factory JsonTreeConfig.minimal() => const JsonTreeConfig(
+    showNodeCount: false,
+    enableSearch: false,
+    enableCopy: false,
+    enableSelection: false,
+    enableHover: false,
+    enableContextMenu: false,
+    enableKeyboardNavigation: false,
+    animateExpansion: false,
+  );
 
   /// Creates a developer-friendly configuration for debugging.
   ///
@@ -172,24 +149,11 @@ class JsonTreeConfig {
   ///   config: JsonTreeConfig.developer(),
   /// )
   /// ```
-  factory JsonTreeConfig.developer() {
-    return JsonTreeConfig(
-      expandDepth: -1, // Expand all
-      showArrayIndices: true,
-      showNodeCount: true,
-      showRootNode: true,
-      enableSearch: true,
-      enableCopy: true,
-      enableEditing: false, // Read-only for safety
-      enableSelection: true,
-      enableHover: true,
-      enableContextMenu: true,
-      enableKeyboardNavigation: true,
-      animateExpansion: true,
-      expansionAnimationDuration: JsonTreeTokens.expansionDuration,
-      maxDisplayStringLength: 200, // Show more content
-    );
-  }
+  factory JsonTreeConfig.developer() => JsonTreeConfig(
+    expandDepth: -1, // Expand all
+    expansionAnimationDuration: JsonTreeTokens.expansionDuration,
+    maxDisplayStringLength: 200, // Show more content
+  );
 
   /// Creates an editing-focused configuration.
   ///
@@ -206,23 +170,7 @@ class JsonTreeConfig {
   ///   onValueChanged: (path, value) => updateData(path, value),
   /// )
   /// ```
-  factory JsonTreeConfig.editable() {
-    return JsonTreeConfig(
-      expandDepth: 2,
-      showArrayIndices: true,
-      showNodeCount: true,
-      showRootNode: true,
-      enableSearch: true,
-      enableCopy: true,
-      enableEditing: true,
-      enableSelection: true,
-      enableHover: true,
-      enableContextMenu: true,
-      enableKeyboardNavigation: true,
-      animateExpansion: true,
-      expansionAnimationDuration: JsonTreeTokens.expansionDuration,
-    );
-  }
+  factory JsonTreeConfig.editable() => JsonTreeConfig(expandDepth: 2, enableEditing: true, expansionAnimationDuration: JsonTreeTokens.expansionDuration);
 
   /// Creates a copy with the given fields replaced.
   JsonTreeConfig copyWith({
@@ -242,24 +190,22 @@ class JsonTreeConfig {
     Duration? expansionAnimationDuration,
     int? maxDisplayStringLength,
     int? searchDebounceMs,
-  }) {
-    return JsonTreeConfig(
-      expandDepth: expandDepth ?? this.expandDepth,
-      showArrayIndices: showArrayIndices ?? this.showArrayIndices,
-      showNodeCount: showNodeCount ?? this.showNodeCount,
-      showRootNode: showRootNode ?? this.showRootNode,
-      rootNodeName: rootNodeName ?? this.rootNodeName,
-      enableSearch: enableSearch ?? this.enableSearch,
-      enableCopy: enableCopy ?? this.enableCopy,
-      enableEditing: enableEditing ?? this.enableEditing,
-      enableSelection: enableSelection ?? this.enableSelection,
-      enableHover: enableHover ?? this.enableHover,
-      enableContextMenu: enableContextMenu ?? this.enableContextMenu,
-      enableKeyboardNavigation: enableKeyboardNavigation ?? this.enableKeyboardNavigation,
-      animateExpansion: animateExpansion ?? this.animateExpansion,
-      expansionAnimationDuration: expansionAnimationDuration ?? this.expansionAnimationDuration,
-      maxDisplayStringLength: maxDisplayStringLength ?? this.maxDisplayStringLength,
-      searchDebounceMs: searchDebounceMs ?? this.searchDebounceMs,
-    );
-  }
+  }) => JsonTreeConfig(
+    expandDepth: expandDepth ?? this.expandDepth,
+    showArrayIndices: showArrayIndices ?? this.showArrayIndices,
+    showNodeCount: showNodeCount ?? this.showNodeCount,
+    showRootNode: showRootNode ?? this.showRootNode,
+    rootNodeName: rootNodeName ?? this.rootNodeName,
+    enableSearch: enableSearch ?? this.enableSearch,
+    enableCopy: enableCopy ?? this.enableCopy,
+    enableEditing: enableEditing ?? this.enableEditing,
+    enableSelection: enableSelection ?? this.enableSelection,
+    enableHover: enableHover ?? this.enableHover,
+    enableContextMenu: enableContextMenu ?? this.enableContextMenu,
+    enableKeyboardNavigation: enableKeyboardNavigation ?? this.enableKeyboardNavigation,
+    animateExpansion: animateExpansion ?? this.animateExpansion,
+    expansionAnimationDuration: expansionAnimationDuration ?? this.expansionAnimationDuration,
+    maxDisplayStringLength: maxDisplayStringLength ?? this.maxDisplayStringLength,
+    searchDebounceMs: searchDebounceMs ?? this.searchDebounceMs,
+  );
 }

@@ -34,14 +34,12 @@ class ResponsiveValue<T> extends Equatable {
     return mobile;
   }
 
-  ResponsiveValue<T> copyWith({T? mobile, T? tablet, T? desktop, T? widescreen}) {
-    return ResponsiveValue<T>(
-      mobile: mobile ?? this.mobile,
-      tablet: tablet ?? this.tablet,
-      desktop: desktop ?? this.desktop,
-      widescreen: widescreen ?? this.widescreen,
-    );
-  }
+  ResponsiveValue<T> copyWith({T? mobile, T? tablet, T? desktop, T? widescreen}) => ResponsiveValue<T>(
+    mobile: mobile ?? this.mobile,
+    tablet: tablet ?? this.tablet,
+    desktop: desktop ?? this.desktop,
+    widescreen: widescreen ?? this.widescreen,
+  );
 
   @override
   List<Object?> get props => [mobile, tablet, desktop, widescreen];

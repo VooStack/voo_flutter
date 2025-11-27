@@ -78,17 +78,11 @@ class TreeNode extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: Container(
           height: rowHeight,
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(),
-          ),
+          decoration: BoxDecoration(color: _getBackgroundColor()),
           child: Row(
             children: [
               // Indentation with guides
-              IndentGuide(
-                depth: node.depth,
-                theme: theme,
-                height: rowHeight,
-              ),
+              IndentGuide(depth: node.depth, theme: theme, height: rowHeight),
 
               // Expand/collapse icon or spacer
               SizedBox(
@@ -98,37 +92,21 @@ class TreeNode extends StatelessWidget {
                         isExpanded: isExpanded,
                         onPressed: () => onToggle?.call(),
                         color: theme.expandIconColor,
-                        size: 16,
-                        duration: config.animateExpansion
-                            ? config.expansionAnimationDuration
-                            : Duration.zero,
+                        duration: config.animateExpansion ? config.expansionAnimationDuration : Duration.zero,
                       )
                     : const SizedBox.shrink(),
               ),
 
               // Node content
               Expanded(
-                child: TreeNodeContent(
-                  node: node,
-                  theme: theme,
-                  config: config,
-                  builders: builders,
-                  isExpanded: isExpanded,
-                  searchResult: searchResult,
-                ),
+                child: TreeNodeContent(node: node, theme: theme, config: config, builders: builders, isExpanded: isExpanded, searchResult: searchResult),
               ),
 
               // Copy button (shown on hover)
               if (config.enableCopy && isHovered)
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: CopyButton(
-                    content: _getCopyContent(),
-                    color: theme.expandIconColor,
-                    size: 14,
-                    tooltip: 'Copy value',
-                    onCopied: onCopy,
-                  ),
+                  child: CopyButton(content: _getCopyContent(), color: theme.expandIconColor, tooltip: 'Copy value', onCopied: onCopy),
                 ),
             ],
           ),
@@ -159,29 +137,28 @@ class TreeNode extends StatelessWidget {
 
     if (value is Map) {
       if (value.isEmpty) return '{}';
-      final entries = value.entries.map((e) {
-        final val = _formatJson(e.value, indent + 1);
-        return '$nextIndent"${e.key}": $val';
-      }).join(',\n');
+      final entries = value.entries
+          .map((e) {
+            final val = _formatJson(e.value, indent + 1);
+            return '$nextIndent"${e.key}": $val';
+          })
+          .join(',\n');
       return '{\n$entries\n$currentIndent}';
     }
 
     if (value is List) {
       if (value.isEmpty) return '[]';
-      final items = value.map((e) {
-        final val = _formatJson(e, indent + 1);
-        return '$nextIndent$val';
-      }).join(',\n');
+      final items = value
+          .map((e) {
+            final val = _formatJson(e, indent + 1);
+            return '$nextIndent$val';
+          })
+          .join(',\n');
       return '[\n$items\n$currentIndent]';
     }
 
     if (value is String) {
-      final escaped = value
-          .replaceAll('\\', '\\\\')
-          .replaceAll('"', '\\"')
-          .replaceAll('\n', '\\n')
-          .replaceAll('\r', '\\r')
-          .replaceAll('\t', '\\t');
+      final escaped = value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r').replaceAll('\t', '\\t');
       return '"$escaped"';
     }
 

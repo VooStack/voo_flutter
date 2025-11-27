@@ -74,9 +74,7 @@ class ListPdfLayout extends PdfLayoutStrategy {
   }
 
   pw.Widget _buildFilterInfo(Map<String, dynamic> filters, ExportConfig config) {
-    final filterTexts = filters.entries.map((entry) {
-      return '${entry.key}: ${entry.value}';
-    }).toList();
+    final filterTexts = filters.entries.map((entry) => '${entry.key}: ${entry.value}').toList();
 
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),

@@ -8,15 +8,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooCircularProgress(
-              rings: [
-                const ProgressRing(
-                  current: 50,
-                  goal: 100,
-                  color: Colors.blue,
-                ),
-              ],
-            ),
+            body: VooCircularProgress(rings: const [ProgressRing(current: 50, goal: 100, color: Colors.blue)]),
           ),
         ),
       );
@@ -29,17 +21,9 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooCircularProgress(
-              rings: [
-                const ProgressRing(
-                  current: 50,
-                  goal: 100,
-                  color: Colors.blue,
-                ),
-                const ProgressRing(
-                  current: 75,
-                  goal: 100,
-                  color: Colors.green,
-                ),
+              rings: const [
+                ProgressRing(current: 50, goal: 100, color: Colors.blue),
+                ProgressRing(current: 75, goal: 100, color: Colors.green),
               ],
             ),
           ),
@@ -54,13 +38,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooCircularProgress(
-              rings: [
-                const ProgressRing(
-                  current: 50,
-                  goal: 100,
-                  color: Colors.blue,
-                ),
-              ],
+              rings: const [ProgressRing(current: 50, goal: 100, color: Colors.blue)],
               centerWidget: const Text('Center'),
             ),
           ),
@@ -77,25 +55,14 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: VooCircularProgress(
-              rings: [
-                const ProgressRing(
-                  current: 50,
-                  goal: 100,
-                  color: Colors.blue,
-                ),
-              ],
+              rings: const [ProgressRing(current: 50, goal: 100, color: Colors.blue)],
               size: customSize,
             ),
           ),
         ),
       );
 
-      final sizedBox = tester.widget<SizedBox>(
-        find.descendant(
-          of: find.byType(VooCircularProgress),
-          matching: find.byType(SizedBox),
-        ).first,
-      );
+      final sizedBox = tester.widget<SizedBox>(find.descendant(of: find.byType(VooCircularProgress), matching: find.byType(SizedBox)).first);
 
       expect(sizedBox.width, customSize);
       expect(sizedBox.height, customSize);
@@ -111,18 +78,9 @@ void main() {
               builder: (context, setState) => Column(
                 children: [
                   VooCircularProgress(
-                    rings: [
-                      ProgressRing(
-                        current: progress,
-                        goal: 100,
-                        color: Colors.blue,
-                      ),
-                    ],
+                    rings: [ProgressRing(current: progress, goal: 100, color: Colors.blue)],
                   ),
-                  ElevatedButton(
-                    onPressed: () => setState(() => progress = 75),
-                    child: const Text('Update'),
-                  ),
+                  ElevatedButton(onPressed: () => setState(() => progress = 75), child: const Text('Update')),
                 ],
               ),
             ),
@@ -147,40 +105,16 @@ void main() {
     });
 
     test('asserts on empty rings list', () {
-      expect(
-        () => VooCircularProgress(rings: const []),
-        throwsA(isA<AssertionError>()),
-      );
+      expect(() => VooCircularProgress(rings: const []), throwsA(isA<AssertionError>()));
     });
 
     test('asserts on invalid size', () {
-      expect(
-        () => VooCircularProgress(
-          rings: [
-            const ProgressRing(
-              current: 50,
-              goal: 100,
-              color: Colors.blue,
-            ),
-          ],
-          size: 0,
-        ),
-        throwsA(isA<AssertionError>()),
-      );
+      expect(() => VooCircularProgress(rings: const [ProgressRing(current: 50, goal: 100, color: Colors.blue)], size: 0), throwsA(isA<AssertionError>()));
     });
 
     test('asserts on negative gap', () {
       expect(
-        () => VooCircularProgress(
-          rings: [
-            const ProgressRing(
-              current: 50,
-              goal: 100,
-              color: Colors.blue,
-            ),
-          ],
-          gapBetweenRings: -1,
-        ),
+        () => VooCircularProgress(rings: const [ProgressRing(current: 50, goal: 100, color: Colors.blue)], gapBetweenRings: -1),
         throwsA(isA<AssertionError>()),
       );
     });

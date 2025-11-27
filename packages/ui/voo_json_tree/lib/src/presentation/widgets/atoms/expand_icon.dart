@@ -28,22 +28,16 @@ class ExpandIcon extends StatelessWidget {
   final Duration duration;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: AnimatedRotation(
-          turns: isExpanded ? 0.25 : 0.0,
-          duration: duration,
-          child: Icon(
-            Icons.chevron_right,
-            size: size,
-            color: color ?? Theme.of(context).iconTheme.color,
-          ),
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onPressed,
+    behavior: HitTestBehavior.opaque,
+    child: Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: AnimatedRotation(
+        turns: isExpanded ? 0.25 : 0.0,
+        duration: duration,
+        child: Icon(Icons.chevron_right, size: size, color: color ?? Theme.of(context).iconTheme.color),
       ),
-    );
-  }
+    ),
+  );
 }

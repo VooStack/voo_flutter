@@ -47,41 +47,26 @@ class LoggingConfig {
     showEmojis: false,
     maxLogs: 5000,
     retentionDays: 3,
-    autoCleanup: true,
     logTypeConfigs: {
-      LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info),
-      LogType.analytics: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true),
-      LogType.error: LogTypeConfig(enableConsoleOutput: true, enableDevToolsOutput: true, minimumLevel: LogLevel.warning),
+      LogType.network: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info),
+      LogType.analytics: LogTypeConfig(enableConsoleOutput: false),
+      LogType.error: LogTypeConfig(minimumLevel: LogLevel.warning),
     },
   );
 
   factory LoggingConfig.development() => const LoggingConfig(
-    minimumLevel: LogLevel.verbose,
-    enablePrettyLogs: true,
-    showEmojis: true,
     maxLogs: 10000,
     retentionDays: 7,
-    autoCleanup: true,
     logTypeConfigs: {
-      LogType.network: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.debug),
-      LogType.analytics: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info),
-      LogType.performance: LogTypeConfig(enableConsoleOutput: false, enableDevToolsOutput: true, minimumLevel: LogLevel.info),
+      LogType.network: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.debug),
+      LogType.analytics: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info),
+      LogType.performance: LogTypeConfig(enableConsoleOutput: false, minimumLevel: LogLevel.info),
     },
   );
 
   /// Zero-config preset that works out of the box.
   /// Automatically detects debug/release mode and configures accordingly.
-  factory LoggingConfig.minimal() => LoggingConfig(
-    enablePrettyLogs: kDebugMode,
-    showEmojis: kDebugMode,
-    showTimestamp: true,
-    showColors: kDebugMode,
-    showBorders: kDebugMode,
-    minimumLevel: kDebugMode ? LogLevel.verbose : LogLevel.warning,
-    maxLogs: 10000,
-    retentionDays: 7,
-    autoCleanup: true,
-  );
+  factory LoggingConfig.minimal() => const LoggingConfig(maxLogs: 10000, retentionDays: 7);
 
   PrettyLogFormatter get formatter => PrettyLogFormatter(
     enabled: enablePrettyLogs,
@@ -92,9 +77,7 @@ class LoggingConfig {
     lineLength: lineLength,
   );
 
-  LogTypeConfig getConfigForType(LogType type) {
-    return logTypeConfigs[type] ?? const LogTypeConfig();
-  }
+  LogTypeConfig getConfigForType(LogType type) => logTypeConfigs[type] ?? const LogTypeConfig();
 
   LogTypeConfig getConfigForCategory(String? category) {
     final type = mapCategoryToLogType(category);

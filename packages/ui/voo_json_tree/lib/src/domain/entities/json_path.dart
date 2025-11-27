@@ -6,9 +6,7 @@ class JsonPath {
   JsonPath(this.path);
 
   /// Creates an empty root path.
-  factory JsonPath.root([String rootName = 'root']) {
-    return JsonPath(rootName);
-  }
+  factory JsonPath.root([String rootName = 'root']) => JsonPath(rootName);
 
   /// The full path string.
   final String path;
@@ -72,24 +70,16 @@ class JsonPath {
   }
 
   /// Returns true if this path is an ancestor of [other].
-  bool isAncestorOf(JsonPath other) {
-    return other.path.startsWith('$path.') || other.path.startsWith('$path[');
-  }
+  bool isAncestorOf(JsonPath other) => other.path.startsWith('$path.') || other.path.startsWith('$path[');
 
   /// Returns true if this path is a descendant of [other].
-  bool isDescendantOf(JsonPath other) {
-    return other.isAncestorOf(this);
-  }
+  bool isDescendantOf(JsonPath other) => other.isAncestorOf(this);
 
   /// Creates a child path with the given key.
-  JsonPath child(String key) {
-    return JsonPath('$path.$key');
-  }
+  JsonPath child(String key) => JsonPath('$path.$key');
 
   /// Creates a child path with the given array index.
-  JsonPath index(int index) {
-    return JsonPath('$path[$index]');
-  }
+  JsonPath index(int index) => JsonPath('$path[$index]');
 
   /// Converts segments back to a path string.
   String _segmentsToPath(List<String> segs) {
@@ -116,8 +106,7 @@ class JsonPath {
   String toString() => path;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is JsonPath && path == other.path;
+  bool operator ==(Object other) => identical(this, other) || other is JsonPath && path == other.path;
 
   @override
   int get hashCode => path.hashCode;

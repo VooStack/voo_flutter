@@ -8,15 +8,7 @@ import 'package:voo_json_tree/src/domain/entities/json_node_type.dart';
 /// The [path] property provides the full JSON path from the root.
 class JsonNode extends Equatable {
   /// Creates a new [JsonNode].
-  const JsonNode({
-    required this.key,
-    required this.value,
-    required this.type,
-    required this.path,
-    this.children = const [],
-    this.depth = 0,
-    this.index,
-  });
+  const JsonNode({required this.key, required this.value, required this.type, required this.path, this.children = const [], this.depth = 0, this.index});
 
   /// The key of this node (property name or array index as string).
   final String key;
@@ -82,25 +74,15 @@ class JsonNode extends Equatable {
   }
 
   /// Creates a copy with the given fields replaced.
-  JsonNode copyWith({
-    String? key,
-    dynamic value,
-    JsonNodeType? type,
-    String? path,
-    List<JsonNode>? children,
-    int? depth,
-    int? index,
-  }) {
-    return JsonNode(
-      key: key ?? this.key,
-      value: value ?? this.value,
-      type: type ?? this.type,
-      path: path ?? this.path,
-      children: children ?? this.children,
-      depth: depth ?? this.depth,
-      index: index ?? this.index,
-    );
-  }
+  JsonNode copyWith({String? key, dynamic value, JsonNodeType? type, String? path, List<JsonNode>? children, int? depth, int? index}) => JsonNode(
+    key: key ?? this.key,
+    value: value ?? this.value,
+    type: type ?? this.type,
+    path: path ?? this.path,
+    children: children ?? this.children,
+    depth: depth ?? this.depth,
+    index: index ?? this.index,
+  );
 
   @override
   List<Object?> get props => [key, type, path, depth, index, children.length];

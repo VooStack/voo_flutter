@@ -59,32 +59,30 @@ class VooTypographyTokens extends Equatable {
     this.button = const TextStyle(fontFamily: _fontFamily, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0.5, height: 1.43),
   });
 
-  VooTypographyTokens scale(double factor) {
-    return VooTypographyTokens(
-      fontFamily: fontFamily,
-      monospaceFontFamily: monospaceFontFamily,
-      displayLarge: displayLarge.copyWith(fontSize: displayLarge.fontSize! * factor),
-      displayMedium: displayMedium.copyWith(fontSize: displayMedium.fontSize! * factor),
-      displaySmall: displaySmall.copyWith(fontSize: displaySmall.fontSize! * factor),
-      headlineLarge: headlineLarge.copyWith(fontSize: headlineLarge.fontSize! * factor),
-      headlineMedium: headlineMedium.copyWith(fontSize: headlineMedium.fontSize! * factor),
-      headlineSmall: headlineSmall.copyWith(fontSize: headlineSmall.fontSize! * factor),
-      titleLarge: titleLarge.copyWith(fontSize: titleLarge.fontSize! * factor),
-      titleMedium: titleMedium.copyWith(fontSize: titleMedium.fontSize! * factor),
-      titleSmall: titleSmall.copyWith(fontSize: titleSmall.fontSize! * factor),
-      bodyLarge: bodyLarge.copyWith(fontSize: bodyLarge.fontSize! * factor),
-      bodyMedium: bodyMedium.copyWith(fontSize: bodyMedium.fontSize! * factor),
-      bodySmall: bodySmall.copyWith(fontSize: bodySmall.fontSize! * factor),
-      labelLarge: labelLarge.copyWith(fontSize: labelLarge.fontSize! * factor),
-      labelMedium: labelMedium.copyWith(fontSize: labelMedium.fontSize! * factor),
-      labelSmall: labelSmall.copyWith(fontSize: labelSmall.fontSize! * factor),
-      code: code.copyWith(fontSize: code.fontSize! * factor),
-      codeBlock: codeBlock.copyWith(fontSize: codeBlock.fontSize! * factor),
-      caption: caption.copyWith(fontSize: caption.fontSize! * factor),
-      overline: overline.copyWith(fontSize: overline.fontSize! * factor),
-      button: button.copyWith(fontSize: button.fontSize! * factor),
-    );
-  }
+  VooTypographyTokens scale(double factor) => VooTypographyTokens(
+    fontFamily: fontFamily,
+    monospaceFontFamily: monospaceFontFamily,
+    displayLarge: displayLarge.copyWith(fontSize: displayLarge.fontSize! * factor),
+    displayMedium: displayMedium.copyWith(fontSize: displayMedium.fontSize! * factor),
+    displaySmall: displaySmall.copyWith(fontSize: displaySmall.fontSize! * factor),
+    headlineLarge: headlineLarge.copyWith(fontSize: headlineLarge.fontSize! * factor),
+    headlineMedium: headlineMedium.copyWith(fontSize: headlineMedium.fontSize! * factor),
+    headlineSmall: headlineSmall.copyWith(fontSize: headlineSmall.fontSize! * factor),
+    titleLarge: titleLarge.copyWith(fontSize: titleLarge.fontSize! * factor),
+    titleMedium: titleMedium.copyWith(fontSize: titleMedium.fontSize! * factor),
+    titleSmall: titleSmall.copyWith(fontSize: titleSmall.fontSize! * factor),
+    bodyLarge: bodyLarge.copyWith(fontSize: bodyLarge.fontSize! * factor),
+    bodyMedium: bodyMedium.copyWith(fontSize: bodyMedium.fontSize! * factor),
+    bodySmall: bodySmall.copyWith(fontSize: bodySmall.fontSize! * factor),
+    labelLarge: labelLarge.copyWith(fontSize: labelLarge.fontSize! * factor),
+    labelMedium: labelMedium.copyWith(fontSize: labelMedium.fontSize! * factor),
+    labelSmall: labelSmall.copyWith(fontSize: labelSmall.fontSize! * factor),
+    code: code.copyWith(fontSize: code.fontSize! * factor),
+    codeBlock: codeBlock.copyWith(fontSize: codeBlock.fontSize! * factor),
+    caption: caption.copyWith(fontSize: caption.fontSize! * factor),
+    overline: overline.copyWith(fontSize: overline.fontSize! * factor),
+    button: button.copyWith(fontSize: button.fontSize! * factor),
+  );
 
   @override
   List<Object?> get props => [

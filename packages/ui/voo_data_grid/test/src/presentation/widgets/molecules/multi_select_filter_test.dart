@@ -31,57 +31,36 @@ void main() {
       );
     });
 
-    Widget buildTestWidget({
-      VooDataFilter? currentFilter,
-      required void Function(dynamic) onFilterChanged,
-    }) {
-      return MaterialApp(
-        home: Scaffold(
-          body: MultiSelectFilter<Map<String, dynamic>>(
-            column: column,
-            currentFilter: currentFilter,
-            onFilterChanged: onFilterChanged,
-            getFilterOptions: (col) => col.filterOptions ?? [],
-          ),
+    Widget buildTestWidget({VooDataFilter? currentFilter, required void Function(dynamic) onFilterChanged}) => MaterialApp(
+      home: Scaffold(
+        body: MultiSelectFilter<Map<String, dynamic>>(
+          column: column,
+          currentFilter: currentFilter,
+          onFilterChanged: onFilterChanged,
+          getFilterOptions: (col) => col.filterOptions ?? [],
         ),
-      );
-    }
+      ),
+    );
 
     group('Initial rendering', () {
       testWidgets('should display filter hint when no values selected', (tester) async {
-        await tester.pumpWidget(
-          buildTestWidget(
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(onFilterChanged: (_) {}));
 
         expect(find.text('Select roles...'), findsOneWidget);
         expect(find.text('selected'), findsNothing);
       });
 
       testWidgets('should display count when values are selected', (tester) async {
-        final currentFilter = VooDataFilter(
-          operator: VooFilterOperator.inList,
-          value: ['admin-id', 'user-id'],
-        );
+        const currentFilter = VooDataFilter(operator: VooFilterOperator.inList, value: ['admin-id', 'user-id']);
 
-        await tester.pumpWidget(
-          buildTestWidget(
-            currentFilter: currentFilter,
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(currentFilter: currentFilter, onFilterChanged: (_) {}));
 
         expect(find.text('2 selected'), findsOneWidget);
         expect(find.text('Select roles...'), findsNothing);
       });
 
       testWidgets('should display dropdown icon', (tester) async {
-        await tester.pumpWidget(
-          buildTestWidget(
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(onFilterChanged: (_) {}));
 
         expect(find.byIcon(Icons.arrow_drop_down), findsOneWidget);
       });
@@ -89,11 +68,7 @@ void main() {
 
     group('Popup menu interaction', () {
       testWidgets('should open popup menu when tapped', (tester) async {
-        await tester.pumpWidget(
-          buildTestWidget(
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(onFilterChanged: (_) {}));
 
         await tester.tap(find.text('Select roles...'));
         await tester.pumpAndSettle();
@@ -106,11 +81,7 @@ void main() {
       });
 
       testWidgets('should show checkboxes for all options', (tester) async {
-        await tester.pumpWidget(
-          buildTestWidget(
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(onFilterChanged: (_) {}));
 
         await tester.tap(find.text('Select roles...'));
         await tester.pumpAndSettle();
@@ -119,17 +90,9 @@ void main() {
       });
 
       testWidgets('should show checked state for selected values', (tester) async {
-        final currentFilter = VooDataFilter(
-          operator: VooFilterOperator.inList,
-          value: ['admin-id', 'editor-id'],
-        );
+        const currentFilter = VooDataFilter(operator: VooFilterOperator.inList, value: ['admin-id', 'editor-id']);
 
-        await tester.pumpWidget(
-          buildTestWidget(
-            currentFilter: currentFilter,
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(currentFilter: currentFilter, onFilterChanged: (_) {}));
 
         await tester.tap(find.text('2 selected'));
         await tester.pumpAndSettle();
@@ -161,10 +124,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Tap Admin checkbox
-        await tester.tap(find.ancestor(
-          of: find.text('Admin'),
-          matching: find.byType(CheckboxListTile),
-        ));
+        await tester.tap(find.ancestor(of: find.text('Admin'), matching: find.byType(CheckboxListTile)));
         await tester.pumpAndSettle();
 
         expect(callCount, equals(1));
@@ -187,17 +147,11 @@ void main() {
         await tester.pumpAndSettle();
 
         // Select Admin
-        await tester.tap(find.ancestor(
-          of: find.text('Admin'),
-          matching: find.byType(CheckboxListTile),
-        ));
+        await tester.tap(find.ancestor(of: find.text('Admin'), matching: find.byType(CheckboxListTile)));
         await tester.pumpAndSettle();
 
         // Select User
-        await tester.tap(find.ancestor(
-          of: find.text('User'),
-          matching: find.byType(CheckboxListTile),
-        ));
+        await tester.tap(find.ancestor(of: find.text('User'), matching: find.byType(CheckboxListTile)));
         await tester.pumpAndSettle();
 
         expect((capturedValue as List).length, equals(2));
@@ -206,10 +160,7 @@ void main() {
       });
 
       testWidgets('should remove selection when unchecking', (tester) async {
-        final currentFilter = VooDataFilter(
-          operator: VooFilterOperator.inList,
-          value: ['admin-id', 'user-id'],
-        );
+        const currentFilter = VooDataFilter(operator: VooFilterOperator.inList, value: ['admin-id', 'user-id']);
 
         dynamic capturedValue;
 
@@ -226,10 +177,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Uncheck Admin
-        await tester.tap(find.ancestor(
-          of: find.text('Admin'),
-          matching: find.byType(CheckboxListTile),
-        ));
+        await tester.tap(find.ancestor(of: find.text('Admin'), matching: find.byType(CheckboxListTile)));
         await tester.pumpAndSettle();
 
         expect((capturedValue as List).length, equals(1));
@@ -238,10 +186,7 @@ void main() {
       });
 
       testWidgets('should return null when all selections removed', (tester) async {
-        final currentFilter = VooDataFilter(
-          operator: VooFilterOperator.inList,
-          value: ['admin-id'],
-        );
+        const currentFilter = VooDataFilter(operator: VooFilterOperator.inList, value: ['admin-id']);
 
         dynamic capturedValue = 'initial';
 
@@ -258,10 +203,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Uncheck the only selected item
-        await tester.tap(find.ancestor(
-          of: find.text('Admin'),
-          matching: find.byType(CheckboxListTile),
-        ));
+        await tester.tap(find.ancestor(of: find.text('Admin'), matching: find.byType(CheckboxListTile)));
         await tester.pumpAndSettle();
 
         expect(capturedValue, isNull);
@@ -284,10 +226,7 @@ void main() {
         await tester.tap(find.text('Select roles...'));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.ancestor(
-          of: find.text('Admin'),
-          matching: find.byType(CheckboxListTile),
-        ));
+        await tester.tap(find.ancestor(of: find.text('Admin'), matching: find.byType(CheckboxListTile)));
         await tester.pumpAndSettle();
 
         // Verify Admin was selected
@@ -302,12 +241,7 @@ void main() {
         await tester.pumpWidget(
           ValueListenableBuilder<VooDataFilter?>(
             valueListenable: filterNotifier,
-            builder: (context, filter, _) {
-              return buildTestWidget(
-                currentFilter: filter,
-                onFilterChanged: (_) {},
-              );
-            },
+            builder: (context, filter, _) => buildTestWidget(currentFilter: filter, onFilterChanged: (_) {}),
           ),
         );
 
@@ -315,10 +249,7 @@ void main() {
         expect(find.text('Select roles...'), findsOneWidget);
 
         // Update filter from outside
-        filterNotifier.value = VooDataFilter(
-          operator: VooFilterOperator.inList,
-          value: ['admin-id', 'user-id'],
-        );
+        filterNotifier.value = const VooDataFilter(operator: VooFilterOperator.inList, value: ['admin-id', 'user-id']);
         await tester.pumpAndSettle();
 
         // Should show count
@@ -328,20 +259,12 @@ void main() {
 
     group('Edge cases', () {
       testWidgets('should handle empty filter options list', (tester) async {
-        final emptyColumn = VooDataColumn<Map<String, dynamic>>(
-          field: 'roles',
-          label: 'Roles',
-          filterOptions: [],
-        );
+        const emptyColumn = VooDataColumn<Map<String, dynamic>>(field: 'roles', label: 'Roles', filterOptions: []);
 
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: MultiSelectFilter<Map<String, dynamic>>(
-                column: emptyColumn,
-                onFilterChanged: (_) {},
-                getFilterOptions: (col) => col.filterOptions ?? [],
-              ),
+              body: MultiSelectFilter<Map<String, dynamic>>(column: emptyColumn, onFilterChanged: (_) {}, getFilterOptions: (col) => col.filterOptions ?? []),
             ),
           ),
         );
@@ -354,17 +277,12 @@ void main() {
       });
 
       testWidgets('should handle filter value that is not a list', (tester) async {
-        final currentFilter = VooDataFilter(
+        const currentFilter = VooDataFilter(
           operator: VooFilterOperator.equals,
           value: 'single-value', // Not a list
         );
 
-        await tester.pumpWidget(
-          buildTestWidget(
-            currentFilter: currentFilter,
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(currentFilter: currentFilter, onFilterChanged: (_) {}));
 
         // Should show hint, treating non-list as empty
         expect(find.text('Select roles...'), findsOneWidget);
@@ -373,13 +291,7 @@ void main() {
       testWidgets('should handle rapid consecutive selections', (tester) async {
         final List<dynamic> capturedValues = [];
 
-        await tester.pumpWidget(
-          buildTestWidget(
-            onFilterChanged: (value) {
-              capturedValues.add(value);
-            },
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(onFilterChanged: capturedValues.add));
 
         await tester.tap(find.text('Select roles...'));
         await tester.pumpAndSettle();
@@ -402,15 +314,9 @@ void main() {
       testWidgets('should apply theme colors', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-            ),
+            theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
             home: Scaffold(
-              body: MultiSelectFilter<Map<String, dynamic>>(
-                column: column,
-                onFilterChanged: (_) {},
-                getFilterOptions: (col) => col.filterOptions ?? [],
-              ),
+              body: MultiSelectFilter<Map<String, dynamic>>(column: column, onFilterChanged: (_) {}, getFilterOptions: (col) => col.filterOptions ?? []),
             ),
           ),
         );
@@ -423,27 +329,15 @@ void main() {
 
       testWidgets('should show different text color for hint vs selected', (tester) async {
         // Test with no selection
-        await tester.pumpWidget(
-          buildTestWidget(
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(onFilterChanged: (_) {}));
 
         final hintText = tester.widget<Text>(find.text('Select roles...'));
         final hintStyle = hintText.style;
 
         // Now test with selection
-        final currentFilter = VooDataFilter(
-          operator: VooFilterOperator.inList,
-          value: ['admin-id'],
-        );
+        const currentFilter = VooDataFilter(operator: VooFilterOperator.inList, value: ['admin-id']);
 
-        await tester.pumpWidget(
-          buildTestWidget(
-            currentFilter: currentFilter,
-            onFilterChanged: (_) {},
-          ),
-        );
+        await tester.pumpWidget(buildTestWidget(currentFilter: currentFilter, onFilterChanged: (_) {}));
 
         final selectedText = tester.widget<Text>(find.text('1 selected'));
         final selectedStyle = selectedText.style;
