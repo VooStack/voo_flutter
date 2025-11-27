@@ -2,418 +2,754 @@ import 'package:flutter/material.dart';
 import 'package:voo_toast/voo_toast.dart';
 
 void main() {
-  // Optional: Initialize with custom configuration
+  // Initialize with default config - automatically uses snackbar on mobile!
+  // This is the recommended setup for most apps.
   VooToastController.init(
     config: const ToastConfig(
+      defaultStyle: VooToastStyle.material, // Used on tablet/web
       defaultDuration: Duration(seconds: 4),
-      successColor: Colors.green,
-      errorColor: Colors.red,
-      warningColor: Colors.orange,
-      infoColor: Colors.blue,
+      maxToasts: 5,
+      // useSnackbarOnMobile: true (default) - mobile gets snackbar style
     ),
   );
 
-  runApp(const MyApp());
+  runApp(const VooToastExampleApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// =============================================================================
+// CONFIGURATION EXAMPLES
+// =============================================================================
+//
+// 1. DEFAULT (Adaptive Mobile) - Recommended for most apps
+//    Mobile: snackbar | Tablet/Web: material
+//
+//    VooToastController.init(
+//      config: const ToastConfig(), // or ToastConfig.material()
+//    );
+//
+// 2. CLASSIC (Same style everywhere) - No automatic snackbar
+//    Mobile/Tablet/Web: all use the same style
+//
+//    VooToastController.init(
+//      config: const ToastConfig.classic(defaultStyle: VooToastStyle.glass),
+//    );
+//
+// 3. SNACKBAR ONLY - Snackbar on all platforms
+//    Mobile/Tablet/Web: all use snackbar
+//
+//    VooToastController.init(
+//      config: const ToastConfig.snackbar(),
+//    );
+//
+// 4. CUSTOM MOBILE STYLE - Different style on mobile (not snackbar)
+//    Mobile: cupertino | Tablet/Web: material
+//
+//    VooToastController.init(
+//      config: const ToastConfig.withMobileStyle(
+//        defaultStyle: VooToastStyle.material,
+//        mobileStyle: VooToastStyle.cupertino,
+//      ),
+//    );
+//
+// =============================================================================
+
+class VooToastExampleApp extends StatefulWidget {
+  const VooToastExampleApp({super.key});
+
+  @override
+  State<VooToastExampleApp> createState() => _VooToastExampleAppState();
+}
+
+class _VooToastExampleAppState extends State<VooToastExampleApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'VooToast Example',
+        title: 'VooToast Showcase',
+        debugShowCheckedModeBanner: false,
+        themeMode: _themeMode,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.light,
+          ),
           useMaterial3: true,
         ),
-        home: const VooToastOverlay(
-          child: ToastExamplePage(),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true,
+        ),
+        home: VooToastOverlay(
+          child: ToastShowcasePage(
+            onToggleTheme: _toggleTheme,
+            isDark: _themeMode == ThemeMode.dark,
+          ),
         ),
       );
 }
 
-class ToastExamplePage extends StatelessWidget {
-  const ToastExamplePage({super.key});
+class ToastShowcasePage extends StatefulWidget {
+  const ToastShowcasePage({
+    super.key,
+    required this.onToggleTheme,
+    required this.isDark,
+  });
+
+  final VoidCallback onToggleTheme;
+  final bool isDark;
+
+  @override
+  State<ToastShowcasePage> createState() => _ToastShowcasePageState();
+}
+
+class _ToastShowcasePageState extends State<ToastShowcasePage> {
+  VooToastStyle _selectedStyle = VooToastStyle.material;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('VooToast Example'),
+          title: const Text('VooToast Showcase'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(widget.isDark ? Icons.light_mode : Icons.dark_mode),
+              onPressed: widget.onToggleTheme,
+              tooltip: 'Toggle theme',
+            ),
+          ],
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSection(
-                title: 'Basic Toasts',
-                children: [
-                  _buildButton(
-                    'Show Success',
-                    Colors.green,
-                    () => VooToast.showSuccess(
-                      message: 'Operation completed successfully!',
-                      context: context,
-                    ),
-                  ),
-                  _buildButton(
-                    'Show Error',
-                    Colors.red,
-                    () => VooToast.showError(
-                      message: 'An error occurred. Please try again.',
-                      context: context,
-                    ),
-                  ),
-                  _buildButton(
-                    'Show Warning',
-                    Colors.orange,
-                    () => VooToast.showWarning(
-                      message: 'Please review your input before proceeding.',
-                      context: context,
-                    ),
-                  ),
-                  _buildButton(
-                    'Show Info',
-                    Colors.blue,
-                    () => VooToast.showInfo(
-                      message: 'New updates are available.',
-                      context: context,
-                    ),
-                  ),
-                ],
+              // Adaptive Mobile Section (NEW DEFAULT BEHAVIOR)
+              _SectionHeader(
+                title: 'Adaptive Mobile (Default)',
+                subtitle: 'Toasts automatically use snackbar style on mobile',
               ),
-              const SizedBox(height: 24),
-              _buildSection(
-                title: 'Toasts with Titles',
-                children: [
-                  _buildButton(
-                    'Success with Title',
-                    Colors.green,
-                    () => VooToast.showSuccess(
-                      title: 'Success!',
-                      message: 'Your profile has been updated.',
-                      context: context,
-                    ),
-                  ),
-                  _buildButton(
-                    'Error with Title',
-                    Colors.red,
-                    () => VooToast.showError(
-                      title: 'Error',
-                      message: 'Failed to save changes. Check your connection.',
-                      context: context,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 12),
+              const _AdaptiveMobileShowcase(),
+              const SizedBox(height: 32),
+
+              // Style Selector Section
+              _SectionHeader(
+                title: 'Style Presets',
+                subtitle: 'Select a style and tap toast types below',
               ),
-              const SizedBox(height: 24),
-              _buildSection(
-                title: 'Future Toasts',
-                children: [
-                  _buildButton(
-                    'Success Future (2s)',
-                    Colors.green,
-                    () async {
-                      await VooToast.showFutureToast<String>(
-                        future: Future.delayed(
-                          const Duration(seconds: 2),
-                          () => 'Data loaded successfully!',
-                        ),
-                        loadingMessage: 'Loading data...',
-                        loadingTitle: 'Please wait',
-                        successMessage: (result) => 'Loaded: $result',
-                        successTitle: 'Success',
-                        context: context,
-                      );
-                    },
-                  ),
-                  _buildButton(
-                    'Error Future (2s)',
-                    Colors.red,
-                    () async {
-                      try {
-                        await VooToast.showFutureToast<void>(
-                          future: Future.delayed(
-                            const Duration(seconds: 2),
-                            () => throw Exception('Network error occurred'),
-                          ),
-                          loadingMessage: 'Fetching data from server...',
-                          loadingTitle: 'Loading',
-                          errorMessage: (error) => 'Failed: ${error.toString().replaceAll('Exception: ', '')}',
-                          errorTitle: 'Network Error',
-                          context: context,
-                        );
-                      } catch (e) {
-                        // Expected error: $e
-                      }
-                    },
-                  ),
-                  _buildButton(
-                    'Silent Success Future',
-                    Colors.blue,
-                    () async {
-                      await VooToast.showFutureToast<void>(
-                        future: Future.delayed(
-                          const Duration(seconds: 3),
-                          () {/* Silent operation completed */},
-                        ),
-                        loadingMessage: 'Processing...',
-                        showSuccessToast: false,
-                        context: context,
-                      );
-                    },
-                  ),
-                  _buildButton(
-                    'Custom Loading Icon',
-                    Colors.purple,
-                    () async {
-                      await VooToast.showFutureToast<void>(
-                        future: Future.delayed(const Duration(seconds: 2)),
-                        loadingMessage: 'Uploading file...',
-                        loadingIcon: const Icon(Icons.cloud_upload, color: Colors.white),
-                        successMessage: (_) => 'File uploaded successfully!',
-                        context: context,
-                      );
-                    },
-                  ),
-                  _buildButton(
-                    'With Result Data',
-                    Colors.indigo,
-                    () async {
-                      await VooToast.showFutureToast<Map<String, dynamic>>(
-                        future: Future.delayed(
-                          const Duration(seconds: 2),
-                          () => {'items': 42, 'status': 'active'},
-                        ),
-                        loadingMessage: 'Fetching statistics...',
-                        successMessage: (result) => 'Found ${result['items']} items (${result['status']})',
-                        context: context,
-                      );
-                    },
-                  ),
-                ],
+              const SizedBox(height: 12),
+              _StyleSelector(
+                selectedStyle: _selectedStyle,
+                onStyleSelected: (style) => setState(() => _selectedStyle = style),
               ),
-              const SizedBox(height: 24),
-              _buildSection(
-                title: 'Toasts with Actions',
-                children: [
-                  _buildButton(
-                    'Toast with Undo',
-                    Colors.purple,
-                    () => VooToast.showInfo(
-                      message: 'Item deleted',
-                      context: context,
-                      actions: [
-                        ToastAction(
-                          label: 'UNDO',
-                          onPressed: () {
-                            VooToast.showSuccess(
-                              message: 'Action undone',
-                              context: context,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  _buildButton(
-                    'Toast with Multiple Actions',
-                    Colors.indigo,
-                    () => VooToast.showWarning(
-                      title: 'Confirm Action',
-                      message: 'Are you sure you want to proceed?',
-                      context: context,
-                      duration: const Duration(seconds: 10),
-                      actions: [
-                        ToastAction(
-                          label: 'YES',
-                          onPressed: () {
-                            VooToast.showSuccess(
-                              message: 'Action confirmed',
-                              context: context,
-                            );
-                          },
-                        ),
-                        ToastAction(
-                          label: 'NO',
-                          onPressed: () {
-                            VooToast.showInfo(
-                              message: 'Action cancelled',
-                              context: context,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 32),
+
+              // Snackbar Section (Mobile-optimized)
+              _SectionHeader(
+                title: 'Snackbar Style',
+                subtitle: 'Full-width notifications (default on mobile)',
               ),
-              const SizedBox(height: 24),
-              _buildSection(
-                title: 'Custom Toasts',
-                children: [
-                  _buildButton(
-                    'Custom Content',
-                    Colors.teal,
-                    () => VooToast.showCustom(
-                      context: context,
-                      content: Container(
-                        padding: const EdgeInsets.all(16),
-                        child: const Row(
-                          children: [
-                            CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                            ),
-                            SizedBox(width: 16),
-                            Text(
-                              'Loading...',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      backgroundColor: Colors.black87,
-                      duration: const Duration(seconds: 2),
-                    ),
-                  ),
-                  _buildButton(
-                    'Gradient Toast',
-                    Colors.pink,
-                    () => VooToast.showCustom(
-                      context: context,
-                      content: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Colors.purple, Colors.pink],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'Beautiful gradient toast!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 12),
+              const _SnackbarShowcase(),
+              const SizedBox(height: 32),
+
+              // Toast Types Section
+              _SectionHeader(
+                title: 'Toast Types',
+                subtitle: 'Different notification purposes',
               ),
-              const SizedBox(height: 24),
-              _buildSection(
-                title: 'Different Positions',
-                children: [
-                  _buildButton(
-                    'Top Center',
-                    Colors.cyan,
-                    () => VooToast.showInfo(
-                      message: 'Toast at top center',
-                      position: ToastPosition.topCenter,
-                    ),
-                  ),
-                  _buildButton(
-                    'Center',
-                    Colors.amber,
-                    () => VooToast.showInfo(
-                      message: 'Toast at center',
-                      position: ToastPosition.center,
-                    ),
-                  ),
-                  _buildButton(
-                    'Bottom Right',
-                    Colors.lime,
-                    () => VooToast.showInfo(
-                      message: 'Toast at bottom right',
-                      position: ToastPosition.bottomRight,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 12),
+              _ToastTypeGrid(style: _selectedStyle),
+              const SizedBox(height: 32),
+
+              // Features Section
+              _SectionHeader(
+                title: 'Features',
+                subtitle: 'Advanced toast capabilities',
               ),
-              const SizedBox(height: 24),
-              _buildSection(
-                title: 'Toast Management',
-                children: [
-                  _buildButton(
-                    'Show Multiple',
-                    Colors.deepPurple,
-                    () {
-                      VooToast.showSuccess(
-                        message: 'First toast',
-                        context: context,
-                      );
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                        VooToast.showInfo(
-                          message: 'Second toast',
-                        );
-                      });
-                      Future.delayed(const Duration(seconds: 1), () {
-                        VooToast.showWarning(
-                          message: 'Third toast',
-                        );
-                      });
-                    },
-                  ),
-                  _buildButton(
-                    'Dismiss All',
-                    Colors.grey,
-                    () => VooToast.dismissAll(),
-                  ),
-                  _buildButton(
-                    'Persistent Toast',
-                    Colors.brown,
-                    () => VooToast.showInfo(
-                      message: 'This toast will stay until dismissed',
-                      context: context,
-                      duration: Duration.zero,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 12),
+              _FeatureGrid(style: _selectedStyle),
+              const SizedBox(height: 32),
+
+              // Positions Section
+              _SectionHeader(
+                title: 'Positions',
+                subtitle: 'Toast placement options',
               ),
+              const SizedBox(height: 12),
+              _PositionGrid(style: _selectedStyle),
+              const SizedBox(height: 32),
+
+              // Animations Section
+              _SectionHeader(
+                title: 'Animations',
+                subtitle: 'Entry animation styles',
+              ),
+              const SizedBox(height: 12),
+              _AnimationGrid(style: _selectedStyle),
+              const SizedBox(height: 40),
+
+              // Quick Actions
+              Center(
+                child: FilledButton.tonal(
+                  onPressed: () => VooToast.dismissAll(),
+                  child: const Text('Dismiss All Toasts'),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
       );
+}
 
-  Widget _buildSection({
-    required String title,
-    required List<Widget> children,
-  }) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StyleSelector extends StatelessWidget {
+  const _StyleSelector({
+    required this.selectedStyle,
+    required this.onStyleSelected,
+  });
+
+  final VooToastStyle selectedStyle;
+  final ValueChanged<VooToastStyle> onStyleSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: VooToastStyle.values
+          .where((style) => style != VooToastStyle.custom)
+          .map(
+            (style) => FilterChip(
+              label: Text(style.displayName),
+              selected: selectedStyle == style,
+              onSelected: (_) => onStyleSelected(style),
+              selectedColor: theme.colorScheme.primaryContainer,
+              checkmarkColor: theme.colorScheme.onPrimaryContainer,
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _ToastTypeGrid extends StatelessWidget {
+  const _ToastTypeGrid({required this.style});
+
+  final VooToastStyle style;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+        spacing: 12,
+        runSpacing: 12,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          _ToastButton(
+            label: 'Success',
+            icon: Icons.check_circle,
+            color: Colors.green,
+            onPressed: () => VooToast.showSuccess(
+              title: 'Success!',
+              message: 'Your changes have been saved successfully.',
+              style: style,
+              context: context,
             ),
           ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: children,
+          _ToastButton(
+            label: 'Error',
+            icon: Icons.error,
+            color: Colors.red,
+            onPressed: () => VooToast.showError(
+              title: 'Error',
+              message: 'Something went wrong. Please try again.',
+              style: style,
+              context: context,
+            ),
+          ),
+          _ToastButton(
+            label: 'Warning',
+            icon: Icons.warning,
+            color: Colors.orange,
+            onPressed: () => VooToast.showWarning(
+              title: 'Warning',
+              message: 'Please review your input before continuing.',
+              style: style,
+              context: context,
+            ),
+          ),
+          _ToastButton(
+            label: 'Info',
+            icon: Icons.info,
+            color: Colors.blue,
+            onPressed: () => VooToast.showInfo(
+              title: 'Information',
+              message: 'A new version is available for download.',
+              style: style,
+              context: context,
+            ),
           ),
         ],
       );
+}
 
-  Widget _buildButton(
-    String label,
-    Color color,
-    VoidCallback onPressed,
-  ) =>
-      ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-        ),
-        child: Text(label),
+class _FeatureGrid extends StatelessWidget {
+  const _FeatureGrid({required this.style});
+
+  final VooToastStyle style;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          _ToastButton(
+            label: 'With Actions',
+            icon: Icons.touch_app,
+            color: Colors.purple,
+            onPressed: () => VooToast.showInfo(
+              title: 'File Deleted',
+              message: 'The file has been moved to trash.',
+              style: style,
+              duration: const Duration(seconds: 8),
+              actions: [
+                ToastAction(
+                  label: 'Undo',
+                  onPressed: () => VooToast.showSuccess(
+                    message: 'File restored!',
+                    style: style,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _ToastButton(
+            label: 'With Progress',
+            icon: Icons.hourglass_empty,
+            color: Colors.teal,
+            onPressed: () => VooToast.showInfo(
+              title: 'Uploading...',
+              message: 'Your file is being uploaded.',
+              style: style,
+              showProgressBar: true,
+              duration: const Duration(seconds: 5),
+            ),
+          ),
+          _ToastButton(
+            label: 'Loading State',
+            icon: Icons.sync,
+            color: Colors.indigo,
+            onPressed: () async {
+              await VooToast.showFutureToast<String>(
+                future: Future.delayed(
+                  const Duration(seconds: 2),
+                  () => 'Operation completed!',
+                ),
+                loadingTitle: 'Processing',
+                loadingMessage: 'Please wait...',
+                successTitle: 'Done!',
+                successMessage: (result) => result,
+                style: style,
+                context: context,
+              );
+            },
+          ),
+          _ToastButton(
+            label: 'Persistent',
+            icon: Icons.push_pin,
+            color: Colors.brown,
+            onPressed: () => VooToast.showWarning(
+              title: 'Important',
+              message: 'This notification will stay until dismissed.',
+              style: style,
+              duration: Duration.zero,
+            ),
+          ),
+        ],
       );
+}
+
+class _PositionGrid extends StatelessWidget {
+  const _PositionGrid({required this.style});
+
+  final VooToastStyle style;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          _ToastButton(
+            label: 'Top',
+            icon: Icons.vertical_align_top,
+            color: Colors.cyan,
+            onPressed: () => VooToast.showInfo(
+              message: 'Toast at the top',
+              style: style,
+              position: ToastPosition.topCenter,
+            ),
+          ),
+          _ToastButton(
+            label: 'Center',
+            icon: Icons.center_focus_strong,
+            color: Colors.amber,
+            onPressed: () => VooToast.showInfo(
+              message: 'Toast at the center',
+              style: style,
+              position: ToastPosition.center,
+            ),
+          ),
+          _ToastButton(
+            label: 'Bottom',
+            icon: Icons.vertical_align_bottom,
+            color: Colors.lime,
+            onPressed: () => VooToast.showInfo(
+              message: 'Toast at the bottom',
+              style: style,
+              position: ToastPosition.bottomCenter,
+            ),
+          ),
+          _ToastButton(
+            label: 'Top Right',
+            icon: Icons.north_east,
+            color: Colors.pink,
+            onPressed: () => VooToast.showInfo(
+              message: 'Toast at top right',
+              style: style,
+              position: ToastPosition.topRight,
+            ),
+          ),
+        ],
+      );
+}
+
+class _AnimationGrid extends StatelessWidget {
+  const _AnimationGrid({required this.style});
+
+  final VooToastStyle style;
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          _ToastButton(
+            label: 'Slide',
+            icon: Icons.arrow_downward,
+            color: Colors.deepPurple,
+            onPressed: () => VooToast.showInfo(
+              message: 'Slide animation',
+              style: style,
+              animation: ToastAnimation.slideIn,
+            ),
+          ),
+          _ToastButton(
+            label: 'Fade',
+            icon: Icons.gradient,
+            color: Colors.blueGrey,
+            onPressed: () => VooToast.showInfo(
+              message: 'Fade animation',
+              style: style,
+              animation: ToastAnimation.fade,
+            ),
+          ),
+          _ToastButton(
+            label: 'Scale',
+            icon: Icons.zoom_in,
+            color: Colors.deepOrange,
+            onPressed: () => VooToast.showInfo(
+              message: 'Scale animation',
+              style: style,
+              animation: ToastAnimation.scale,
+            ),
+          ),
+          _ToastButton(
+            label: 'Bounce',
+            icon: Icons.sports_basketball,
+            color: Colors.green,
+            onPressed: () => VooToast.showInfo(
+              message: 'Bounce animation',
+              style: style,
+              animation: ToastAnimation.bounce,
+            ),
+          ),
+        ],
+      );
+}
+
+/// Showcase for the new default adaptive mobile behavior.
+///
+/// On mobile (< 600px), toasts automatically use snackbar style.
+/// On tablet/web, they use the selected style preset.
+class _AdaptiveMobileShowcase extends StatelessWidget {
+  const _AdaptiveMobileShowcase();
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Info card showing current mode
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                isMobile ? Icons.phone_android : Icons.desktop_windows,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  isMobile ? 'Mobile detected (${screenWidth.toInt()}px) - Using snackbar style' : 'Tablet/Web detected (${screenWidth.toInt()}px) - Using selected style',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            _ToastButton(
+              label: 'Auto Style',
+              icon: Icons.auto_awesome,
+              color: Colors.deepPurple,
+              onPressed: () => VooToast.showSuccess(
+                title: 'Adaptive Toast',
+                message: isMobile ? 'This toast uses snackbar style on mobile!' : 'This toast uses material style on tablet/web!',
+                context: context,
+                // No style specified - uses automatic platform detection
+              ),
+            ),
+            _ToastButton(
+              label: 'With Action',
+              icon: Icons.touch_app,
+              color: Colors.teal,
+              onPressed: () => VooToast.showInfo(
+                title: 'File Moved',
+                message: 'Document moved to archive',
+                context: context,
+                duration: const Duration(seconds: 6),
+                actions: [
+                  ToastAction(
+                    label: 'Undo',
+                    onPressed: () => VooToast.showSuccess(
+                      message: 'File restored to original location',
+                      context: context,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _ToastButton(
+              label: 'Error',
+              icon: Icons.error_outline,
+              color: Colors.red,
+              onPressed: () => VooToast.showError(
+                title: 'Connection Failed',
+                message: 'Unable to reach the server',
+                context: context,
+                actions: [
+                  ToastAction(
+                    label: 'Retry',
+                    onPressed: () => VooToast.showInfo(
+                      message: 'Retrying connection...',
+                      context: context,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _ToastButton(
+              label: 'Classic Mode',
+              icon: Icons.style,
+              color: Colors.orange,
+              onPressed: () {
+                // Example of forcing a specific style (bypassing adaptive)
+                VooToast.showInfo(
+                  title: 'Classic Style',
+                  message: 'This uses glass style regardless of screen size',
+                  style: VooToastStyle.glass, // Force specific style
+                  context: context,
+                );
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SnackbarShowcase extends StatelessWidget {
+  const _SnackbarShowcase();
+
+  @override
+  Widget build(BuildContext context) => Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          _ToastButton(
+            label: 'Simple',
+            icon: Icons.message,
+            color: Colors.blueGrey,
+            onPressed: () => VooToast.showInfo(
+              message: 'This is a snackbar message',
+              style: VooToastStyle.snackbar,
+              context: context,
+            ),
+          ),
+          _ToastButton(
+            label: 'With Title',
+            icon: Icons.title,
+            color: Colors.indigo,
+            onPressed: () => VooToast.showSuccess(
+              title: 'Saved',
+              message: 'Your changes have been saved',
+              style: VooToastStyle.snackbar,
+              context: context,
+            ),
+          ),
+          _ToastButton(
+            label: 'With Action',
+            icon: Icons.touch_app,
+            color: Colors.teal,
+            onPressed: () => VooToast.showInfo(
+              message: 'Item deleted',
+              style: VooToastStyle.snackbar,
+              duration: const Duration(seconds: 6),
+              context: context,
+              actions: [
+                ToastAction(
+                  label: 'Undo',
+                  onPressed: () => VooToast.showSuccess(
+                    message: 'Item restored',
+                    style: VooToastStyle.snackbar,
+                    context: context,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _ToastButton(
+            label: 'Error',
+            icon: Icons.error,
+            color: Colors.red,
+            onPressed: () => VooToast.showError(
+              message: 'Failed to connect to server',
+              style: VooToastStyle.snackbar,
+              context: context,
+              actions: [
+                ToastAction(
+                  label: 'Retry',
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+}
+
+class _ToastButton extends StatelessWidget {
+  const _ToastButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onPressed,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: 100,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 28),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

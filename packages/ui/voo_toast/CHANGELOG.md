@@ -1,3 +1,33 @@
+## 0.0.7
+
+### Added
+- **Adaptive Mobile Default**: Toasts now automatically use snackbar style on mobile devices (< 600px) by default
+  - `useSnackbarOnMobile` now defaults to `true`
+  - `mobilePosition` now defaults to `ToastPosition.bottomCenter`
+  - Provides a native-feeling experience on mobile out of the box
+- **New Configuration Constructors**:
+  - `ToastConfig.classic()` - Opt-out of adaptive mobile, uses same style on all platforms
+  - `ToastConfig.withMobileStyle()` - Use a custom style on mobile (not snackbar)
+- **Adaptive Mobile Showcase**: New example section demonstrating platform detection and automatic style switching
+
+### Changed
+- **Snackbar Style Theme Colors**: Snackbar now uses semantic container colors from the theme:
+  - Success: `primaryContainer` / `onPrimaryContainer`
+  - Error: `errorContainer` / `onErrorContainer`
+  - Warning: `tertiaryContainer` / `onTertiaryContainer`
+  - Info: `secondaryContainer` / `onSecondaryContainer`
+  - Custom: `inverseSurface` / `onInverseSurface` (classic snackbar)
+- **Snackbar Border Radius**: Increased from 4px to 8px for a more modern look
+- **Snackbar Shadow**: Softened shadow for better visual appearance
+
+### Migration
+If you want the previous behavior (no automatic snackbar on mobile):
+```dart
+VooToastController.init(
+  config: const ToastConfig.classic(), // Same style on all platforms
+);
+```
+
 ## 0.0.6
 
  - **FEAT**: add example modules and run configurations for VooFlutter packages.

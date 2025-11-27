@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_toast/src/domain/entities/toast.dart';
+import 'package:voo_toast/src/domain/entities/toast_config.dart';
 import 'package:voo_toast/src/domain/enums/toast_animation.dart';
 import 'package:voo_toast/src/domain/enums/toast_position.dart';
 import 'package:voo_toast/src/domain/enums/toast_type.dart';
 import 'package:voo_toast/src/presentation/widgets/molecules/voo_toast_card.dart';
 
 void main() {
+  const defaultConfig = ToastConfig();
+
   group('VooToastCard Widget', () {
     testWidgets('displays basic toast message', (WidgetTester tester) async {
       const toast = Toast(id: 'test-1', message: 'Test message', position: ToastPosition.bottom, animation: ToastAnimation.fade);
@@ -14,7 +17,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -35,7 +38,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -50,7 +53,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -64,7 +67,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -82,6 +85,7 @@ void main() {
           home: Scaffold(
             body: VooToastCard(
               toast: toast,
+              config: defaultConfig,
               onDismiss: () {
                 dismissed = true;
               },
@@ -117,7 +121,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -146,7 +150,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -160,7 +164,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -181,7 +185,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -204,7 +208,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: VooToastCard(toast: toast, onDismiss: () {}),
+              body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
             ),
           ),
         );
@@ -232,7 +236,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -261,7 +265,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -279,7 +283,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: () {}),
+            body: VooToastCard(toast: toast, onDismiss: () {}, config: defaultConfig),
           ),
         ),
       );
@@ -294,7 +298,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: VooToastCard(toast: toast, onDismiss: _dummyCallback, iconSize: 32.0),
+            body: VooToastCard(toast: toast, onDismiss: _dummyCallback, iconSize: 32.0, config: ToastConfig()),
           ),
         ),
       );

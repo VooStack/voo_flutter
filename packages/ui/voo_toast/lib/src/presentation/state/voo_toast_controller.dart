@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:voo_toast/src/data/repositories/toast_repository_impl.dart';
 import 'package:voo_toast/src/domain/entities/toast.dart';
 import 'package:voo_toast/src/domain/entities/toast_config.dart';
+import 'package:voo_toast/src/domain/entities/toast_style_data.dart';
+import 'package:voo_toast/src/domain/enums/toast_animation.dart';
 import 'package:voo_toast/src/domain/enums/toast_position.dart';
+import 'package:voo_toast/src/domain/enums/toast_style.dart';
 import 'package:voo_toast/src/domain/enums/toast_type.dart';
 import 'package:voo_toast/src/domain/repositories/toast_repository.dart';
 import 'package:voo_toast/src/domain/use_cases/dismiss_toast_use_case.dart';
@@ -88,6 +91,10 @@ class VooToastController {
     String? title,
     Duration? duration,
     ToastPosition? position,
+    ToastAnimation? animation,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
+    bool? showProgressBar,
     BuildContext? context,
     VoidCallback? onTap,
     VoidCallback? onDismissed,
@@ -99,6 +106,10 @@ class VooToastController {
       type: ToastType.success,
       duration: duration,
       position: position,
+      animation: animation,
+      style: style,
+      customStyleData: customStyleData,
+      showProgressBar: showProgressBar,
       context: context,
       onTap: onTap,
       onDismissed: onDismissed,
@@ -111,6 +122,10 @@ class VooToastController {
     String? title,
     Duration? duration,
     ToastPosition? position,
+    ToastAnimation? animation,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
+    bool? showProgressBar,
     BuildContext? context,
     VoidCallback? onTap,
     VoidCallback? onDismissed,
@@ -122,6 +137,10 @@ class VooToastController {
       type: ToastType.error,
       duration: duration,
       position: position,
+      animation: animation,
+      style: style,
+      customStyleData: customStyleData,
+      showProgressBar: showProgressBar,
       context: context,
       onTap: onTap,
       onDismissed: onDismissed,
@@ -134,6 +153,10 @@ class VooToastController {
     String? title,
     Duration? duration,
     ToastPosition? position,
+    ToastAnimation? animation,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
+    bool? showProgressBar,
     BuildContext? context,
     VoidCallback? onTap,
     VoidCallback? onDismissed,
@@ -145,6 +168,10 @@ class VooToastController {
       type: ToastType.warning,
       duration: duration,
       position: position,
+      animation: animation,
+      style: style,
+      customStyleData: customStyleData,
+      showProgressBar: showProgressBar,
       context: context,
       onTap: onTap,
       onDismissed: onDismissed,
@@ -157,6 +184,10 @@ class VooToastController {
     String? title,
     Duration? duration,
     ToastPosition? position,
+    ToastAnimation? animation,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
+    bool? showProgressBar,
     BuildContext? context,
     VoidCallback? onTap,
     VoidCallback? onDismissed,
@@ -168,6 +199,10 @@ class VooToastController {
       type: ToastType.info,
       duration: duration,
       position: position,
+      animation: animation,
+      style: style,
+      customStyleData: customStyleData,
+      showProgressBar: showProgressBar,
       context: context,
       onTap: onTap,
       onDismissed: onDismissed,
@@ -218,6 +253,10 @@ class VooToastController {
     required ToastType type,
     Duration? duration,
     ToastPosition? position,
+    ToastAnimation? animation,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
+    bool? showProgressBar,
     BuildContext? context,
     VoidCallback? onTap,
     VoidCallback? onDismissed,
@@ -225,14 +264,27 @@ class VooToastController {
   }) {
     // Get theme-aware colors if context is provided
     final themeConfig = context != null ? ToastConfig.fromTheme(context) : _config;
+    final effectiveDuration = duration ?? themeConfig.defaultDuration;
+
+    // Determine effective style based on platform
+    VooToastStyle effectiveStyle = style ?? _config.defaultStyle;
+    if (style == null && context != null && _config.useSnackbarOnMobile) {
+      final width = MediaQuery.of(context).size.width;
+      if (width < _config.breakpointMobile) {
+        effectiveStyle = _config.mobileStyle ?? VooToastStyle.snackbar;
+      }
+    }
+
     final toast = Toast(
       id: _generateToastId(),
       message: message,
       title: title,
       type: type,
-      duration: duration ?? themeConfig.defaultDuration,
+      style: effectiveStyle,
+      customStyleData: customStyleData ?? _config.defaultCustomStyleData,
+      duration: effectiveDuration,
       position: context != null ? (position ?? _getPositionForPlatform(context)) : (position ?? themeConfig.defaultPosition),
-      animation: themeConfig.defaultAnimation,
+      animation: animation ?? themeConfig.defaultAnimation,
       margin: themeConfig.defaultMargin,
       padding: themeConfig.defaultPadding,
       borderRadius: themeConfig.defaultBorderRadius,
@@ -244,7 +296,7 @@ class VooToastController {
       onTap: onTap,
       onDismissed: onDismissed,
       isDismissible: themeConfig.dismissOnTap,
-      showProgressBar: duration != Duration.zero,
+      showProgressBar: showProgressBar ?? (effectiveDuration != Duration.zero),
     );
 
     _showToastUseCase(toast);
@@ -276,14 +328,21 @@ class VooToastController {
     Duration? successDuration,
     Duration? errorDuration,
     ToastPosition? position,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
     BuildContext? context,
   }) async {
+    final effectiveStyle = style ?? _config.defaultStyle;
+    final effectiveCustomStyleData = customStyleData ?? _config.defaultCustomStyleData;
+
     // Show loading toast
     final loadingToastId = _generateToastId();
     final loadingToast = Toast(
       id: loadingToastId,
       message: loadingMessage,
       title: loadingTitle,
+      style: effectiveStyle,
+      customStyleData: effectiveCustomStyleData,
       duration: Duration.zero, // Infinite duration
       position: context != null ? (position ?? _getPositionForPlatform(context)) : (position ?? _config.defaultPosition),
       animation: _config.defaultAnimation,
@@ -311,9 +370,9 @@ class VooToastController {
         final message = successMessage?.call(result) ?? 'Operation completed successfully';
         // Check if context is still valid before using it
         if (context != null && context.mounted) {
-          showSuccess(message: message, title: successTitle, duration: successDuration, position: position, context: context);
+          showSuccess(message: message, title: successTitle, duration: successDuration, position: position, style: effectiveStyle, customStyleData: effectiveCustomStyleData, context: context);
         } else {
-          showSuccess(message: message, title: successTitle, duration: successDuration, position: position);
+          showSuccess(message: message, title: successTitle, duration: successDuration, position: position, style: effectiveStyle, customStyleData: effectiveCustomStyleData);
         }
       }
 
@@ -327,9 +386,9 @@ class VooToastController {
         final message = errorMessage?.call(error) ?? error.toString();
         // Check if context is still valid before using it
         if (context != null && context.mounted) {
-          showError(message: message, title: errorTitle ?? 'Error', duration: errorDuration, position: position, context: context);
+          showError(message: message, title: errorTitle ?? 'Error', duration: errorDuration, position: position, style: effectiveStyle, customStyleData: effectiveCustomStyleData, context: context);
         } else {
-          showError(message: message, title: errorTitle ?? 'Error', duration: errorDuration, position: position);
+          showError(message: message, title: errorTitle ?? 'Error', duration: errorDuration, position: position, style: effectiveStyle, customStyleData: effectiveCustomStyleData);
         }
       }
 

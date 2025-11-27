@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:voo_toast/src/domain/entities/toast_style_data.dart';
 import 'package:voo_toast/src/domain/enums/toast_animation.dart';
 import 'package:voo_toast/src/domain/enums/toast_position.dart';
+import 'package:voo_toast/src/domain/enums/toast_style.dart';
 import 'package:voo_toast/src/domain/enums/toast_type.dart';
 
 class Toast extends Equatable {
@@ -10,6 +12,8 @@ class Toast extends Equatable {
     required this.message,
     this.title,
     this.type = ToastType.info,
+    this.style,
+    this.customStyleData,
     this.duration = const Duration(seconds: 3),
     this.position = ToastPosition.auto,
     this.animation = ToastAnimation.slideIn,
@@ -41,6 +45,14 @@ class Toast extends Equatable {
   final String message;
   final String? title;
   final ToastType type;
+
+  /// Visual style preset for the toast.
+  /// If null, uses the default style from ToastConfig.
+  final VooToastStyle? style;
+
+  /// Custom style data when [style] is [VooToastStyle.custom].
+  final VooToastStyleData? customStyleData;
+
   final Duration duration;
   final ToastPosition position;
   final ToastAnimation animation;
@@ -72,6 +84,8 @@ class Toast extends Equatable {
     String? message,
     String? title,
     ToastType? type,
+    VooToastStyle? style,
+    VooToastStyleData? customStyleData,
     Duration? duration,
     ToastPosition? position,
     ToastAnimation? animation,
@@ -102,6 +116,8 @@ class Toast extends Equatable {
     message: message ?? this.message,
     title: title ?? this.title,
     type: type ?? this.type,
+    style: style ?? this.style,
+    customStyleData: customStyleData ?? this.customStyleData,
     duration: duration ?? this.duration,
     position: position ?? this.position,
     animation: animation ?? this.animation,
@@ -135,6 +151,8 @@ class Toast extends Equatable {
     message,
     title,
     type,
+    style,
+    customStyleData,
     duration,
     position,
     animation,

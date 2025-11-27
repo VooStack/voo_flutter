@@ -1,10 +1,22 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:voo_toast/src/domain/entities/toast_style_data.dart';
 import 'package:voo_toast/src/domain/enums/toast_animation.dart';
 import 'package:voo_toast/src/domain/enums/toast_position.dart';
+import 'package:voo_toast/src/domain/enums/toast_style.dart';
 
 class ToastConfig extends Equatable {
+  /// Creates a toast configuration with adaptive mobile behavior by default.
+  ///
+  /// By default, toasts automatically use [VooToastStyle.snackbar] on mobile
+  /// devices (screen width < [breakpointMobile]) for a native-feeling experience.
+  /// On tablet and web, the [defaultStyle] is used.
+  ///
+  /// To disable automatic snackbar on mobile, use [ToastConfig.classic] or set
+  /// [useSnackbarOnMobile] to `false`.
   const ToastConfig({
+    this.defaultStyle = VooToastStyle.material,
+    this.defaultCustomStyleData,
     this.defaultDuration = const Duration(seconds: 3),
     this.defaultPosition = ToastPosition.auto,
     this.defaultAnimation = ToastAnimation.slideIn,
@@ -28,18 +40,104 @@ class ToastConfig extends Equatable {
     this.errorColor,
     this.warningColor,
     this.infoColor,
-    this.mobilePosition = ToastPosition.bottom,
+    this.mobilePosition = ToastPosition.bottomCenter,
     this.webPosition = ToastPosition.topRight,
     this.tabletPosition = ToastPosition.topRight,
     this.breakpointMobile = 600,
     this.breakpointTablet = 900,
+    this.useSnackbarOnMobile = true,
+    this.mobileStyle,
   });
 
-  factory ToastConfig.fromTheme(BuildContext context) {
+  /// Creates a material-styled config with adaptive mobile (default behavior).
+  ///
+  /// Uses Material style on tablet/web, automatically switches to snackbar
+  /// on mobile for a native-feeling experience.
+  const ToastConfig.material() : this(defaultStyle: VooToastStyle.material);
+
+  /// Creates a glass/glassmorphism-styled config with adaptive mobile.
+  const ToastConfig.glass() : this(defaultStyle: VooToastStyle.glass);
+
+  /// Creates a cupertino/iOS-styled config with adaptive mobile.
+  const ToastConfig.cupertino() : this(defaultStyle: VooToastStyle.cupertino);
+
+  /// Creates a minimal-styled config with adaptive mobile.
+  const ToastConfig.minimal() : this(defaultStyle: VooToastStyle.minimal);
+
+  /// Creates a dark-themed config with adaptive mobile.
+  const ToastConfig.dark() : this(defaultStyle: VooToastStyle.dark);
+
+  /// Creates a neon/cyberpunk-styled config with adaptive mobile.
+  const ToastConfig.neon() : this(defaultStyle: VooToastStyle.neon);
+
+  /// Creates an elevated-styled config with adaptive mobile.
+  const ToastConfig.elevated() : this(defaultStyle: VooToastStyle.elevated);
+
+  /// Creates a soft pastel-styled config with adaptive mobile.
+  const ToastConfig.soft() : this(defaultStyle: VooToastStyle.soft);
+
+  /// Creates a snackbar-only config.
+  ///
+  /// Uses snackbar style on ALL platforms (mobile, tablet, and web).
+  /// For automatic mobile-only snackbar, use the default [ToastConfig] instead.
+  const ToastConfig.snackbar()
+      : this(
+          defaultStyle: VooToastStyle.snackbar,
+          useSnackbarOnMobile: false, // Already snackbar, no need to switch
+        );
+
+  /// Creates a classic config that uses the same style on all platforms.
+  ///
+  /// Unlike the default [ToastConfig], this does NOT automatically switch to
+  /// snackbar style on mobile. Use this if you want consistent toast appearance
+  /// across all screen sizes.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Use glass style everywhere, including mobile
+  /// VooToastController.init(
+  ///   config: const ToastConfig.classic(defaultStyle: VooToastStyle.glass),
+  /// );
+  /// ```
+  const ToastConfig.classic({
+    VooToastStyle defaultStyle = VooToastStyle.material,
+  }) : this(
+          defaultStyle: defaultStyle,
+          useSnackbarOnMobile: false,
+          mobilePosition: ToastPosition.bottom,
+        );
+
+  /// Creates a config that uses a custom style on mobile instead of snackbar.
+  ///
+  /// By default, mobile devices get [VooToastStyle.snackbar]. Use this
+  /// constructor to specify a different style for mobile while keeping
+  /// the adaptive behavior.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Use material on web/tablet, cupertino on mobile
+  /// VooToastController.init(
+  ///   config: const ToastConfig.withMobileStyle(
+  ///     defaultStyle: VooToastStyle.material,
+  ///     mobileStyle: VooToastStyle.cupertino,
+  ///   ),
+  /// );
+  /// ```
+  const ToastConfig.withMobileStyle({
+    VooToastStyle defaultStyle = VooToastStyle.material,
+    required VooToastStyle mobileStyle,
+  }) : this(
+          defaultStyle: defaultStyle,
+          mobileStyle: mobileStyle,
+          useSnackbarOnMobile: true,
+        );
+
+  factory ToastConfig.fromTheme(BuildContext context, {VooToastStyle style = VooToastStyle.material}) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return ToastConfig(
+      defaultStyle: style,
       defaultMargin: const EdgeInsets.all(16),
       defaultPadding: const EdgeInsets.all(16),
       defaultBorderRadius: BorderRadius.circular(12),
@@ -52,6 +150,12 @@ class ToastConfig extends Equatable {
       infoColor: colorScheme.secondary,
     );
   }
+
+  /// Default visual style for all toasts.
+  final VooToastStyle defaultStyle;
+
+  /// Custom style data when [defaultStyle] is [VooToastStyle.custom].
+  final VooToastStyleData? defaultCustomStyleData;
 
   final Duration defaultDuration;
   final ToastPosition defaultPosition;
@@ -82,7 +186,27 @@ class ToastConfig extends Equatable {
   final double breakpointMobile;
   final double breakpointTablet;
 
+  /// Whether to automatically use a different style on mobile devices.
+  ///
+  /// When `true` (default) and on mobile (screen width < [breakpointMobile]),
+  /// toasts automatically switch to [mobileStyle] or [VooToastStyle.snackbar].
+  /// This provides a native-feeling experience on mobile devices.
+  ///
+  /// Set to `false` to use the same [defaultStyle] on all platforms.
+  /// See [ToastConfig.classic] for a convenient way to disable this.
+  final bool useSnackbarOnMobile;
+
+  /// Override style specifically for mobile devices.
+  ///
+  /// Only applied when [useSnackbarOnMobile] is `true`.
+  /// Defaults to [VooToastStyle.snackbar] when `null`.
+  ///
+  /// Use [ToastConfig.withMobileStyle] to easily configure a custom mobile style.
+  final VooToastStyle? mobileStyle;
+
   ToastConfig copyWith({
+    VooToastStyle? defaultStyle,
+    VooToastStyleData? defaultCustomStyleData,
     Duration? defaultDuration,
     ToastPosition? defaultPosition,
     ToastAnimation? defaultAnimation,
@@ -111,7 +235,11 @@ class ToastConfig extends Equatable {
     ToastPosition? tabletPosition,
     double? breakpointMobile,
     double? breakpointTablet,
+    bool? useSnackbarOnMobile,
+    VooToastStyle? mobileStyle,
   }) => ToastConfig(
+    defaultStyle: defaultStyle ?? this.defaultStyle,
+    defaultCustomStyleData: defaultCustomStyleData ?? this.defaultCustomStyleData,
     defaultDuration: defaultDuration ?? this.defaultDuration,
     defaultPosition: defaultPosition ?? this.defaultPosition,
     defaultAnimation: defaultAnimation ?? this.defaultAnimation,
@@ -140,10 +268,14 @@ class ToastConfig extends Equatable {
     tabletPosition: tabletPosition ?? this.tabletPosition,
     breakpointMobile: breakpointMobile ?? this.breakpointMobile,
     breakpointTablet: breakpointTablet ?? this.breakpointTablet,
+    useSnackbarOnMobile: useSnackbarOnMobile ?? this.useSnackbarOnMobile,
+    mobileStyle: mobileStyle ?? this.mobileStyle,
   );
 
   @override
   List<Object?> get props => [
+    defaultStyle,
+    defaultCustomStyleData,
     defaultDuration,
     defaultPosition,
     defaultAnimation,
@@ -172,5 +304,7 @@ class ToastConfig extends Equatable {
     tabletPosition,
     breakpointMobile,
     breakpointTablet,
+    useSnackbarOnMobile,
+    mobileStyle,
   ];
 }
