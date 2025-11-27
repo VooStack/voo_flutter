@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/toolbar_button.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/view_mode_toggle.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Mobile toolbar widget for data grid
 class MobileToolbar extends StatelessWidget {
@@ -33,11 +33,10 @@ class MobileToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = context.vooDesign;
     final theme = Theme.of(context);
 
     return Container(
-      padding: EdgeInsets.all(design.spacingSm),
+      padding: EdgeInsets.all(context.vooSpacing.sm),
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surface,
         border: Border(bottom: BorderSide(color: borderColor ?? theme.dividerColor)),
@@ -52,12 +51,14 @@ class MobileToolbar extends StatelessWidget {
             isActive: activeFilterCount > 0,
             badgeCount: activeFilterCount > 0 ? activeFilterCount : null,
           ),
-          if (showViewModeToggle && displayMode != null) ViewModeToggle(currentMode: displayMode!, onModeChanged: onDisplayModeChanged),
+          if (showViewModeToggle && displayMode != null)
+            ViewModeToggle(currentMode: displayMode!, onModeChanged: onDisplayModeChanged),
           const Spacer(),
           if (additionalActions != null && additionalActions!.isNotEmpty)
             PopupMenuButton(
               icon: const Icon(Icons.more_vert),
-              itemBuilder: (context) => additionalActions!.map((action) => PopupMenuItem<Widget>(child: action)).toList(),
+              itemBuilder: (context) =>
+                  additionalActions!.map((action) => PopupMenuItem<Widget>(child: action)).toList(),
             ),
         ],
       ),

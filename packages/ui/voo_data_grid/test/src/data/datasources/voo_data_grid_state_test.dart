@@ -4,9 +4,7 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 void main() {
   group('VooDataGridState copyWith Tests', () {
     test('copyWith should preserve error when not specified', () {
-      const initialState = VooDataGridState<String>(
-        error: 'Initial error',
-      );
+      const initialState = VooDataGridState<String>(error: 'Initial error');
 
       final newState = initialState.copyWith(isLoading: true);
 
@@ -15,9 +13,7 @@ void main() {
     });
 
     test('copyWith should clear error when explicitly set to null', () {
-      const initialState = VooDataGridState<String>(
-        error: 'Initial error',
-      );
+      const initialState = VooDataGridState<String>(error: 'Initial error');
 
       final newState = initialState.copyWith(error: null);
 
@@ -33,10 +29,7 @@ void main() {
     });
 
     test('clearError should remove error', () {
-      const initialState = VooDataGridState<String>(
-        error: 'Some error',
-        isLoading: true,
-      );
+      const initialState = VooDataGridState<String>(error: 'Some error', isLoading: true);
 
       final newState = initialState.clearError();
 
@@ -53,9 +46,7 @@ void main() {
     });
 
     test('copyWith should handle primaryFilterField correctly', () {
-      const initialState = VooDataGridState<String>(
-        primaryFilterField: 'status',
-      );
+      const initialState = VooDataGridState<String>(primaryFilterField: 'status');
 
       // Not specifying should keep current value
       final state1 = initialState.copyWith(isLoading: true);
@@ -71,14 +62,9 @@ void main() {
     });
 
     test('copyWith should handle primaryFilter correctly', () {
-      const initialFilter = VooDataFilter(
-        operator: VooFilterOperator.equals,
-        value: 'active',
-      );
+      const initialFilter = VooDataFilter(operator: VooFilterOperator.equals, value: 'active');
 
-      const initialState = VooDataGridState<String>(
-        primaryFilter: initialFilter,
-      );
+      const initialState = VooDataGridState<String>(primaryFilter: initialFilter);
 
       // Not specifying should keep current value
       final state1 = initialState.copyWith(isLoading: true);
@@ -89,26 +75,15 @@ void main() {
       expect(state2.primaryFilter, isNull);
 
       // Setting new value should work
-      const newFilter = VooDataFilter(
-        operator: VooFilterOperator.equals,
-        value: 'inactive',
-      );
+      const newFilter = VooDataFilter(operator: VooFilterOperator.equals, value: 'inactive');
       final state3 = initialState.copyWith(primaryFilter: newFilter);
       expect(state3.primaryFilter, equals(newFilter));
     });
 
     test('copyWith should handle multiple changes at once', () {
-      const initialState = VooDataGridState<String>(
-        error: 'Error message',
-        isLoading: true,
-        currentPage: 0,
-      );
+      const initialState = VooDataGridState<String>(error: 'Error message', isLoading: true);
 
-      final newState = initialState.copyWith(
-        error: null,
-        isLoading: false,
-        currentPage: 1,
-      );
+      final newState = initialState.copyWith(error: null, isLoading: false, currentPage: 1);
 
       expect(newState.error, isNull);
       expect(newState.isLoading, isFalse);
@@ -129,10 +104,7 @@ void main() {
       expect(loadingState.error, isNull);
 
       // Error occurs
-      final errorState = loadingState.copyWith(
-        isLoading: false,
-        error: 'Network error',
-      );
+      final errorState = loadingState.copyWith(isLoading: false, error: 'Network error');
       expect(errorState.isLoading, isFalse);
       expect(errorState.error, equals('Network error'));
 
@@ -142,11 +114,7 @@ void main() {
       expect(retryState.isLoading, isTrue);
 
       // Success
-      final successState = retryState.copyWith(
-        isLoading: false,
-        rows: ['item1', 'item2'],
-        totalRows: 2,
-      );
+      final successState = retryState.copyWith(isLoading: false, rows: ['item1', 'item2'], totalRows: 2);
       expect(successState.error, isNull);
       expect(successState.isLoading, isFalse);
       expect(successState.rows, equals(['item1', 'item2']));

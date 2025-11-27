@@ -4,19 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/data/services/data_grid_export_service.dart';
 import 'package:voo_data_grid/src/domain/entities/export_config.dart';
 import 'package:voo_data_grid/src/presentation/controllers/data_grid_controller.dart';
+import 'package:voo_tokens/voo_tokens.dart';
+
+/// Shows the export dialog using adaptive overlay
+Future<void> showExportDialog<T>({
+  required BuildContext context,
+  required VooDataGridController<T> controller,
+  ExportConfig? initialConfig,
+  Uint8List? companyLogo,
+}) =>
+    showDialog(
+      context: context,
+      builder: (context) => ExportDialog<T>(
+        controller: controller,
+        initialConfig: initialConfig,
+        companyLogo: companyLogo,
+      ),
+    );
 
 /// Advanced export dialog for configuring export options
 class ExportDialog<T> extends StatefulWidget {
-  /// The data grid controller
   final VooDataGridController<T> controller;
-
-  /// Initial export configuration
   final ExportConfig? initialConfig;
-
-  /// Company logo bytes
   final Uint8List? companyLogo;
 
-  const ExportDialog({super.key, required this.controller, this.initialConfig, this.companyLogo});
+  const ExportDialog({
+    super.key,
+    required this.controller,
+    this.initialConfig,
+    this.companyLogo,
+  });
 
   @override
   State<ExportDialog<T>> createState() => _ExportDialogState<T>();
@@ -29,11 +46,11 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
   late TextEditingController _subtitleController;
   late TextEditingController _companyNameController;
   late TextEditingController _filenameController;
+  late TextEditingController _maxRowsController;
   bool _includeFilters = true;
   bool _includeTimestamp = true;
   bool _showRowNumbers = false;
   bool _isLandscape = true;
-  int? _maxRows;
   bool _isExporting = false;
   List<String> _selectedColumns = [];
   bool _selectAllColumns = true;
@@ -48,13 +65,11 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
     _subtitleController = TextEditingController(text: config?.subtitle ?? '');
     _companyNameController = TextEditingController(text: config?.companyName ?? '');
     _filenameController = TextEditingController(text: config?.filename ?? '');
+    _maxRowsController = TextEditingController(text: config?.maxRows?.toString() ?? '');
     _includeFilters = config?.includeFilters ?? true;
     _includeTimestamp = config?.includeTimestamp ?? true;
     _showRowNumbers = config?.showRowNumbers ?? false;
     _isLandscape = config?.isLandscape ?? true;
-    _maxRows = config?.maxRows;
-
-    // Initialize selected columns with all visible columns
     _selectedColumns = widget.controller.columns.where((col) => col.visible).map((col) => col.field).toList();
     _selectAllColumns = true;
   }
@@ -65,264 +80,329 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
     _subtitleController.dispose();
     _companyNameController.dispose();
     _filenameController.dispose();
+    _maxRowsController.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    child: Container(
-      constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
-      padding: const EdgeInsets.all(20),
-      child: SingleChildScrollView(
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 500,
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Icon(Icons.download, size: 28),
-                const SizedBox(width: 12),
-                const Text('Export Data', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                const Spacer(),
-                IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
-              ],
-            ),
-            const Divider(height: 24),
-
-            // Format selection
-            const Text('Export Format', style: TextStyle(fontWeight: FontWeight.w500)),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                _buildFormatChip(ExportFormat.pdf, Icons.picture_as_pdf, 'PDF'),
-                const SizedBox(width: 12),
-                _buildFormatChip(ExportFormat.excel, Icons.table_chart, 'Excel'),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // PDF Layout selection (only for PDF format)
-            if (_selectedFormat == ExportFormat.pdf) ...[
-              const Text('PDF Layout', style: TextStyle(fontWeight: FontWeight.w500)),
-              const SizedBox(height: 8),
-              _buildPdfLayoutSelector(),
-              const SizedBox(height: 16),
-            ],
-
-            // Column Selection
-            const Text('Select Columns to Export', style: TextStyle(fontWeight: FontWeight.w500)),
-            const SizedBox(height: 8),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                children: [
-                  CheckboxListTile(
-                    value: _selectAllColumns,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectAllColumns = value ?? true;
-                        if (_selectAllColumns) {
-                          _selectedColumns = widget.controller.columns.where((col) => col.visible).map((col) => col.field).toList();
-                        } else {
-                          _selectedColumns.clear();
-                        }
-                      });
-                    },
-                    title: const Text('Select All', style: TextStyle(fontWeight: FontWeight.bold)),
-                    dense: true,
-                  ),
-                  const Divider(height: 1),
-                  Container(
-                    constraints: const BoxConstraints(maxHeight: 150),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: widget.controller.columns.where((col) => col.visible).length,
-                      itemBuilder: (context, index) {
-                        final column = widget.controller.columns.where((col) => col.visible).toList()[index];
-                        return CheckboxListTile(
-                          value: _selectedColumns.contains(column.field),
-                          onChanged: (value) {
-                            setState(() {
-                              if (value == true) {
-                                _selectedColumns.add(column.field);
-                              } else {
-                                _selectedColumns.remove(column.field);
-                              }
-                              _selectAllColumns = _selectedColumns.length == widget.controller.columns.where((col) => col.visible).length;
-                            });
-                          },
-                          title: Text(column.label),
-                          dense: true,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Document details
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Document Title', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _subtitleController,
-              decoration: const InputDecoration(labelText: 'Subtitle (Optional)', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _companyNameController,
-              decoration: const InputDecoration(labelText: 'Company Name (Optional)', border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _filenameController,
-              decoration: const InputDecoration(
-                labelText: 'Filename (Optional)',
-                border: OutlineInputBorder(),
-                hintText: 'Leave empty for auto-generated name',
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Options
-            const Text('Options', style: TextStyle(fontWeight: FontWeight.w500)),
-            const SizedBox(height: 8),
-            CheckboxListTile(
-              value: _includeFilters,
-              onChanged: (value) => setState(() => _includeFilters = value ?? true),
-              title: const Text('Include active filters'),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            ),
-            CheckboxListTile(
-              value: _includeTimestamp,
-              onChanged: (value) => setState(() => _includeTimestamp = value ?? true),
-              title: const Text('Include timestamp'),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            ),
-            CheckboxListTile(
-              value: _showRowNumbers,
-              onChanged: (value) => setState(() => _showRowNumbers = value ?? false),
-              title: const Text('Show row numbers'),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            ),
-            if (_selectedFormat == ExportFormat.pdf)
-              CheckboxListTile(
-                value: _isLandscape,
-                onChanged: (value) => setState(() => _isLandscape = value ?? true),
-                title: const Text('Landscape orientation'),
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-              ),
-
-            // Row limit
-            Row(
-              children: [
-                const Text('Max rows to export: '),
-                const SizedBox(width: 12),
-                SizedBox(
-                  width: 100,
-                  child: TextField(
-                    decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'All'),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      setState(() {
-                        _maxRows = value.isEmpty ? null : int.tryParse(value);
-                      });
-                    },
-                  ),
+            // Header
+            _buildHeader(context, theme),
+            const Divider(height: 1),
+            // Content
+            Flexible(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(context.vooSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFormatSection(context, theme),
+                    SizedBox(height: context.vooSpacing.md),
+                    if (_selectedFormat == ExportFormat.pdf) ...[
+                      _buildPdfLayoutSection(context, theme),
+                      SizedBox(height: context.vooSpacing.md),
+                    ],
+                    _buildColumnSelection(context, theme),
+                    SizedBox(height: context.vooSpacing.md),
+                    _buildDocumentDetails(context),
+                    SizedBox(height: context.vooSpacing.md),
+                    _buildOptionsSection(context, theme),
+                  ],
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 24),
-
+            const Divider(height: 1),
             // Actions
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: _isExporting ? null : () => Navigator.of(context).pop(), child: const Text('Cancel')),
-                const SizedBox(width: 12),
-                ElevatedButton.icon(
-                  onPressed: _isExporting ? null : _handleExport,
-                  icon: _isExporting ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.download),
-                  label: Text(_isExporting ? 'Exporting...' : 'Export'),
-                ),
-              ],
-            ),
+            _buildActions(context),
           ],
         ),
       ),
-    ),
-  );
-
-  Widget _buildFormatChip(ExportFormat format, IconData icon, String label) {
-    final isSelected = _selectedFormat == format;
-    return ChoiceChip(
-      selected: isSelected,
-      onSelected: (selected) {
-        if (selected) {
-          setState(() => _selectedFormat = format);
-        }
-      },
-      avatar: Icon(icon, size: 18),
-      label: Text(label),
     );
   }
 
-  Widget _buildPdfLayoutSelector() {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+  Widget _buildHeader(BuildContext context, ThemeData theme) => Padding(
+        padding: EdgeInsets.all(context.vooSpacing.md),
+        child: Row(
+          children: [
+            Icon(Icons.download, size: context.vooSize.iconMedium),
+            SizedBox(width: context.vooSpacing.sm),
+            Text('Export Data', style: context.vooTypography.titleMedium),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.of(context).pop(),
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildFormatSection(BuildContext context, ThemeData theme) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Export Format', style: context.vooTypography.labelMedium),
+          SizedBox(height: context.vooSpacing.xs),
+          Wrap(
+            spacing: context.vooSpacing.sm,
+            children: [
+              _buildFormatChip(ExportFormat.pdf, Icons.picture_as_pdf, 'PDF'),
+              _buildFormatChip(ExportFormat.excel, Icons.table_chart, 'Excel'),
+            ],
+          ),
+        ],
+      );
+
+  Widget _buildFormatChip(ExportFormat format, IconData icon, String label) => ChoiceChip(
+        selected: _selectedFormat == format,
+        onSelected: (selected) {
+          if (selected) setState(() => _selectedFormat = format);
+        },
+        avatar: Icon(icon, size: context.vooSize.iconSmall),
+        label: Text(label),
+      );
+
+  Widget _buildPdfLayoutSection(BuildContext context, ThemeData theme) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('PDF Layout', style: context.vooTypography.labelMedium),
+          SizedBox(height: context.vooSpacing.xs),
+          Wrap(
+            spacing: context.vooSpacing.xs,
+            runSpacing: context.vooSpacing.xs,
+            children: [
+              _buildLayoutChip(PdfLayoutType.grid, Icons.grid_on, 'Grid', 'Traditional table'),
+              _buildLayoutChip(PdfLayoutType.list, Icons.view_list, 'List', 'Card-based'),
+              _buildLayoutChip(PdfLayoutType.compact, Icons.compress, 'Compact', 'Dense'),
+            ],
+          ),
+        ],
+      );
+
+  Widget _buildLayoutChip(PdfLayoutType layout, IconData icon, String label, String tooltip) => Tooltip(
+        message: tooltip,
+        child: ChoiceChip(
+          selected: _selectedPdfLayout == layout,
+          onSelected: (selected) {
+            if (selected) {
+              setState(() {
+                _selectedPdfLayout = layout;
+                if (layout == PdfLayoutType.compact) _isLandscape = true;
+              });
+            }
+          },
+          avatar: Icon(icon, size: context.vooSize.iconSmall),
+          label: Text(label),
+        ),
+      );
+
+  Widget _buildColumnSelection(BuildContext context, ThemeData theme) {
+    final visibleColumns = widget.controller.columns.where((col) => col.visible).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLayoutChip(PdfLayoutType.grid, Icons.grid_on, 'Grid', 'Traditional table layout'),
-        _buildLayoutChip(PdfLayoutType.list, Icons.view_list, 'List', 'Card-based for large datasets'),
-        _buildLayoutChip(PdfLayoutType.compact, Icons.compress, 'Compact', 'Maximum data density'),
+        Text('Columns to Export', style: context.vooTypography.labelMedium),
+        SizedBox(height: context.vooSpacing.xs),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.dividerColor),
+            borderRadius: BorderRadius.circular(context.vooRadius.sm),
+          ),
+          child: Column(
+            children: [
+              CheckboxListTile(
+                value: _selectAllColumns,
+                onChanged: (value) {
+                  setState(() {
+                    _selectAllColumns = value ?? true;
+                    _selectedColumns = _selectAllColumns ? visibleColumns.map((col) => col.field).toList() : [];
+                  });
+                },
+                title: Text('Select All', style: context.vooTypography.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+              const Divider(height: 1),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 120),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: visibleColumns.length,
+                  itemBuilder: (context, index) {
+                    final column = visibleColumns[index];
+                    return CheckboxListTile(
+                      value: _selectedColumns.contains(column.field),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedColumns.add(column.field);
+                          } else {
+                            _selectedColumns.remove(column.field);
+                          }
+                          _selectAllColumns = _selectedColumns.length == visibleColumns.length;
+                        });
+                      },
+                      title: Text(column.label, style: context.vooTypography.labelSmall),
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildLayoutChip(PdfLayoutType layout, IconData icon, String label, String tooltip) {
-    final isSelected = _selectedPdfLayout == layout;
-    return Tooltip(
-      message: tooltip,
-      child: ChoiceChip(
-        selected: isSelected,
-        onSelected: (selected) {
-          if (selected) {
-            setState(() {
-              _selectedPdfLayout = layout;
-              // Auto-adjust orientation based on layout
-              if (layout == PdfLayoutType.compact) {
-                _isLandscape = true;
-              }
-            });
-          }
-        },
-        avatar: Icon(icon, size: 18),
-        label: Text(label),
-      ),
-    );
-  }
+  Widget _buildDocumentDetails(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Document Details', style: context.vooTypography.labelMedium),
+          SizedBox(height: context.vooSpacing.xs),
+          TextField(
+            controller: _titleController,
+            decoration: InputDecoration(
+              labelText: 'Title',
+              border: const OutlineInputBorder(),
+              isDense: true,
+              contentPadding: EdgeInsets.all(context.vooSpacing.sm),
+            ),
+          ),
+          SizedBox(height: context.vooSpacing.sm),
+          TextField(
+            controller: _subtitleController,
+            decoration: InputDecoration(
+              labelText: 'Subtitle',
+              border: const OutlineInputBorder(),
+              isDense: true,
+              contentPadding: EdgeInsets.all(context.vooSpacing.sm),
+            ),
+          ),
+          SizedBox(height: context.vooSpacing.sm),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _companyNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Company',
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(context.vooSpacing.sm),
+                  ),
+                ),
+              ),
+              SizedBox(width: context.vooSpacing.sm),
+              Expanded(
+                child: TextField(
+                  controller: _filenameController,
+                  decoration: InputDecoration(
+                    labelText: 'Filename',
+                    hintText: 'Auto',
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(context.vooSpacing.sm),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+
+  Widget _buildOptionsSection(BuildContext context, ThemeData theme) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Options', style: context.vooTypography.labelMedium),
+          SizedBox(height: context.vooSpacing.xs),
+          Wrap(
+            spacing: context.vooSpacing.md,
+            children: [
+              _buildCheckbox('Include filters', _includeFilters, (v) => setState(() => _includeFilters = v ?? true)),
+              _buildCheckbox('Include timestamp', _includeTimestamp, (v) => setState(() => _includeTimestamp = v ?? true)),
+              _buildCheckbox('Show row numbers', _showRowNumbers, (v) => setState(() => _showRowNumbers = v ?? false)),
+              if (_selectedFormat == ExportFormat.pdf)
+                _buildCheckbox('Landscape', _isLandscape, (v) => setState(() => _isLandscape = v ?? true)),
+            ],
+          ),
+          SizedBox(height: context.vooSpacing.sm),
+          Row(
+            children: [
+              Text('Max rows:', style: context.vooTypography.labelSmall),
+              SizedBox(width: context.vooSpacing.sm),
+              SizedBox(
+                width: 80,
+                child: TextField(
+                  controller: _maxRowsController,
+                  decoration: InputDecoration(
+                    hintText: 'All',
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(context.vooSpacing.xs),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+
+  Widget _buildCheckbox(String label, bool value, ValueChanged<bool?> onChanged) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox(value: value, onChanged: onChanged, visualDensity: VisualDensity.compact),
+          Text(label, style: context.vooTypography.labelSmall),
+        ],
+      );
+
+  Widget _buildActions(BuildContext context) => Padding(
+        padding: EdgeInsets.all(context.vooSpacing.md),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: _isExporting ? null : () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            SizedBox(width: context.vooSpacing.sm),
+            FilledButton.icon(
+              onPressed: _isExporting ? null : _handleExport,
+              icon: _isExporting
+                  ? SizedBox(
+                      width: context.vooSize.iconSmall,
+                      height: context.vooSize.iconSmall,
+                      child: const CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.download),
+              label: Text(_isExporting ? 'Exporting...' : 'Export'),
+            ),
+          ],
+        ),
+      );
 
   Future<void> _handleExport() async {
     setState(() => _isExporting = true);
 
     try {
-      // Get current data from controller
       final data = widget.controller.dataSource.rows;
       final columns = widget.controller.columns;
       final filters = widget.controller.dataSource.filters;
+      final maxRows = _maxRowsController.text.isEmpty ? null : int.tryParse(_maxRowsController.text);
 
-      // Create export configuration
       final config = ExportConfig(
         format: _selectedFormat,
         pdfLayoutType: _selectedPdfLayout,
@@ -336,37 +416,35 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
         includeTimestamp: _includeTimestamp,
         showRowNumbers: _showRowNumbers,
         isLandscape: _isLandscape,
-        maxRows: _maxRows,
+        maxRows: maxRows,
         primaryColor: Theme.of(context).primaryColor,
         accentColor: Theme.of(context).colorScheme.secondary,
       );
 
-      // Create export service
       final exportService = DataGridExportService<T>();
-
-      // Export data
-      final exportedData = await exportService.export(data: data, columns: columns, config: config, activeFilters: filters.isNotEmpty ? filters : null);
-
-      // Get filename
+      final exportedData = await exportService.export(
+        data: data,
+        columns: columns,
+        config: config,
+        activeFilters: filters.isNotEmpty ? filters : null,
+      );
       final filename = exportService.getSuggestedFilename(config);
-
-      // Share or save the file
       await exportService.shareOrPrint(data: exportedData, filename: filename, format: _selectedFormat);
 
-      // Close dialog and show success
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Export completed successfully'), backgroundColor: Colors.green));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Export completed'), backgroundColor: Colors.green),
+        );
       }
     } catch (error) {
-      // Show error
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export failed: $error'), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Export failed: $error'), backgroundColor: Colors.red),
+        );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isExporting = false);
-      }
+      if (mounted) setState(() => _isExporting = false);
     }
   }
 }

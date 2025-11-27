@@ -44,7 +44,7 @@ void main() {
 
     setUp(() {
       testData = [
-        TestEntity(id: 1, name: 'Test Item 1', state: TestState.active, createdAt: DateTime(2024, 1, 1), isActive: true, amount: 100.50),
+        TestEntity(id: 1, name: 'Test Item 1', state: TestState.active, createdAt: DateTime(2024), isActive: true, amount: 100.50),
         TestEntity(id: 2, name: 'Test Item 2', state: TestState.inactive, createdAt: DateTime(2024, 1, 2), isActive: false, amount: 200.75),
         TestEntity(id: 3, name: 'Test Item 3', isActive: true),
       ];

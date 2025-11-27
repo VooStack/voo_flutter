@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/toolbar_button.dart';
 import 'package:voo_data_grid/src/presentation/widgets/atoms/view_mode_toggle.dart';
 import 'package:voo_data_grid/voo_data_grid.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Desktop toolbar widget for data grid
 class DesktopToolbar extends StatelessWidget {
@@ -33,12 +33,11 @@ class DesktopToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = context.vooDesign;
     final theme = Theme.of(context);
 
     return Container(
-      height: 48,
-      padding: EdgeInsets.symmetric(horizontal: design.spacingMd),
+      height: context.vooSize.buttonHeightMedium,
+      padding: EdgeInsets.symmetric(horizontal: context.vooSpacing.md),
       decoration: BoxDecoration(
         color: backgroundColor ?? theme.colorScheme.surface,
         border: Border(bottom: BorderSide(color: borderColor ?? theme.dividerColor)),
@@ -53,7 +52,8 @@ class DesktopToolbar extends StatelessWidget {
             isActive: filtersVisible,
             badgeCount: activeFilterCount > 0 ? activeFilterCount : null,
           ),
-          if (showViewModeToggle && displayMode != null) ViewModeToggle(currentMode: displayMode!, onModeChanged: onDisplayModeChanged),
+          if (showViewModeToggle && displayMode != null)
+            ViewModeToggle(currentMode: displayMode!, onModeChanged: onDisplayModeChanged),
           const Spacer(),
           if (additionalActions != null) ...additionalActions!,
         ],

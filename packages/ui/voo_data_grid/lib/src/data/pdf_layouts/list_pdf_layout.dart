@@ -14,16 +14,12 @@ class ListPdfLayout extends PdfLayoutStrategy {
   String get description => 'Each record displayed as a card with key-value pairs. Ideal for large datasets with many columns.';
 
   @override
-  bool supportsDataSize(int rowCount, int columnCount) {
-    // List layout works well with any size dataset
-    return true;
-  }
+  // List layout works well with any size dataset
+  bool supportsDataSize(int rowCount, int columnCount) => true;
 
   @override
-  PdfPageFormat getPageFormat(ExportConfig config) {
-    // List layout usually works better in portrait
-    return config.isLandscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;
-  }
+  // List layout usually works better in portrait
+  PdfPageFormat getPageFormat(ExportConfig config) => config.isLandscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;
 
   @override
   List<pw.Widget> buildContent({

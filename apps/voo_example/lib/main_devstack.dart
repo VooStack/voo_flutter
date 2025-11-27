@@ -45,11 +45,7 @@ void main() async {
   );
 
   // Initialize individual plugins
-  await VooLoggingPlugin.initialize(
-    maxEntries: 10000,
-    enableConsoleOutput: true,
-    enableFileStorage: true,
-  );
+  await VooLoggingPlugin.initialize();
 
   await VooAnalyticsPlugin.initialize(
     enableTouchTracking: true,

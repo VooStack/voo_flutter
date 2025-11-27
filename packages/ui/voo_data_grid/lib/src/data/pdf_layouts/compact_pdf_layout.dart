@@ -13,16 +13,12 @@ class CompactPdfLayout extends PdfLayoutStrategy {
   String get description => 'Minimal spacing with abbreviated columns for maximum data density. Best for overview reports.';
 
   @override
-  bool supportsDataSize(int rowCount, int columnCount) {
-    // Compact layout can handle any size
-    return true;
-  }
+  // Compact layout can handle any size
+  bool supportsDataSize(int rowCount, int columnCount) => true;
 
   @override
-  PdfPageFormat getPageFormat(ExportConfig config) {
-    // Always use landscape for compact layout to fit more columns
-    return PdfPageFormat.a4.landscape;
-  }
+  // Always use landscape for compact layout to fit more columns
+  PdfPageFormat getPageFormat(ExportConfig config) => PdfPageFormat.a4.landscape;
 
   @override
   List<pw.Widget> buildContent({

@@ -14,10 +14,8 @@ class GridPdfLayout extends PdfLayoutStrategy {
   String get description => 'Traditional table layout with all data in a grid. Best for small to medium datasets.';
 
   @override
-  bool supportsDataSize(int rowCount, int columnCount) {
-    // Grid layout works best with reasonable column counts
-    return columnCount <= 15;
-  }
+  // Grid layout works best with reasonable column counts
+  bool supportsDataSize(int rowCount, int columnCount) => columnCount <= 15;
 
   @override
   PdfPageFormat getPageFormat(ExportConfig config) => config.isLandscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;

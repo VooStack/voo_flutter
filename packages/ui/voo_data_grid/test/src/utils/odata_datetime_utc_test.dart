@@ -192,7 +192,7 @@ void main() {
 
       test('should handle minimum representable datetime', () {
         // Minimum DateTime that can be represented
-        final minDate = DateTime.utc(1970, 1);
+        final minDate = DateTime.utc(1970);
 
         final filters = {'epochStart': VooDataFilter(operator: VooFilterOperator.greaterThanOrEqual, value: minDate)};
 

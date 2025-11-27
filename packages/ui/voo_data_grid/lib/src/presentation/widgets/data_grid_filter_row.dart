@@ -8,8 +8,8 @@ import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_option.dart';
 import 'package:voo_data_grid/src/presentation/controllers/data_grid_controller.dart';
 import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_cell.dart';
-import 'package:voo_data_grid/src/presentation/widgets/molecules/filter_input.dart';
-import 'package:voo_ui_core/voo_ui_core.dart';
+import 'package:voo_data_grid/src/presentation/widgets/molecules/voo_data_grid_filter.dart';
+import 'package:voo_tokens/voo_tokens.dart';
 
 /// Filter row widget for VooDataGrid
 ///
@@ -65,75 +65,66 @@ class _VooDataGridFilterRowState<T> extends State<VooDataGridFilterRow<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final design = context.vooDesign;
-
-    return Container(
-      height: widget.controller.filterHeight,
-      decoration: BoxDecoration(
-        color: widget.theme.headerBackgroundColor.withValues(alpha: 0.5),
-        border: Border(
-          bottom: BorderSide(color: widget.theme.borderColor, width: widget.theme.borderWidth),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Empty space for selection column
-          if (widget.controller.dataSource.selectionMode != VooSelectionMode.none) Container(width: 48),
-
-          // Frozen column filters
-          for (final column in widget.controller.frozenColumns)
-            FilterCell<T>(
-              column: column,
-              width: widget.controller.getColumnWidth(column),
-              gridLineColor: widget.theme.gridLineColor,
-              showGridLines: widget.controller.showGridLines,
-              horizontalPadding: design.spacingXs,
-              child: FilterInput<T>(
-                column: column,
-                currentFilter: widget.controller.dataSource.filters[column.field],
-                onFilterChanged: (value) => _applyFilter(column, value),
-                onFilterCleared: () => _clearFilter(column),
-                textControllers: _textControllers,
-                dropdownValues: _dropdownValues,
-                checkboxValues: _checkboxValues,
-                getFilterOptions: _getFilterOptions,
-              ),
-            ),
-
-          // Scrollable column filters - synchronized with header and body
-          Expanded(
-            child: SingleChildScrollView(
-              controller: widget.controller.filterHorizontalScrollController,
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final column in widget.controller.scrollableColumns)
-                    FilterCell<T>(
-                      column: column,
-                      width: widget.controller.getColumnWidth(column),
-                      gridLineColor: widget.theme.gridLineColor,
-                      showGridLines: widget.controller.showGridLines,
-                      horizontalPadding: design.spacingXs,
-                      child: FilterInput<T>(
-                        column: column,
-                        currentFilter: widget.controller.dataSource.filters[column.field],
-                        onFilterChanged: (value) => _applyFilter(column, value),
-                        onFilterCleared: () => _clearFilter(column),
-                        textControllers: _textControllers,
-                        dropdownValues: _dropdownValues,
-                        checkboxValues: _checkboxValues,
-                        getFilterOptions: _getFilterOptions,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) => Container(
+        height: widget.controller.filterHeight,
+        decoration: BoxDecoration(
+          color: widget.theme.headerBackgroundColor.withValues(alpha: 0.5),
+          border: Border(
+            bottom: BorderSide(color: widget.theme.borderColor, width: widget.theme.borderWidth),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        child: Row(
+          children: [
+            if (widget.controller.dataSource.selectionMode != VooSelectionMode.none) Container(width: 48),
+            for (final column in widget.controller.frozenColumns)
+              FilterCell<T>(
+                column: column,
+                width: widget.controller.getColumnWidth(column),
+                gridLineColor: widget.theme.gridLineColor,
+                showGridLines: widget.controller.showGridLines,
+                horizontalPadding: context.vooSpacing.xs,
+                child: VooDataGridFilter<T>(
+                  column: column,
+                  currentFilter: widget.controller.dataSource.filters[column.field],
+                  onFilterChanged: (value) => _applyFilter(column, value),
+                  onFilterCleared: () => _clearFilter(column),
+                  textControllers: _textControllers,
+                  dropdownValues: _dropdownValues,
+                  checkboxValues: _checkboxValues,
+                  getFilterOptions: _getFilterOptions,
+                ),
+              ),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: widget.controller.filterHorizontalScrollController,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (final column in widget.controller.scrollableColumns)
+                      FilterCell<T>(
+                        column: column,
+                        width: widget.controller.getColumnWidth(column),
+                        gridLineColor: widget.theme.gridLineColor,
+                        showGridLines: widget.controller.showGridLines,
+                        horizontalPadding: context.vooSpacing.xs,
+                        child: VooDataGridFilter<T>(
+                          column: column,
+                          currentFilter: widget.controller.dataSource.filters[column.field],
+                          onFilterChanged: (value) => _applyFilter(column, value),
+                          onFilterCleared: () => _clearFilter(column),
+                          textControllers: _textControllers,
+                          dropdownValues: _dropdownValues,
+                          checkboxValues: _checkboxValues,
+                          getFilterOptions: _getFilterOptions,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   List<VooFilterOption> _getFilterOptions(VooDataColumn<T> column) {
     if (column.filterOptions != null) {
