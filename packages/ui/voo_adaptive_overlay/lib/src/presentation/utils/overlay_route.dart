@@ -101,14 +101,36 @@ class VooOverlayRoute<T> extends PopupRoute<T> {
   ) {
     switch (overlayType) {
       case VooOverlayType.bottomSheet:
+      case VooOverlayType.actionSheet:
         return _buildBottomSheetAnimation(animation, child);
       case VooOverlayType.modal:
+      case VooOverlayType.popup:
+      case VooOverlayType.alert:
         return _buildModalAnimation(animation, child);
       case VooOverlayType.sideSheet:
+      case VooOverlayType.drawer:
         return _buildSideSheetAnimation(context, animation, child);
       case VooOverlayType.fullscreen:
         return _buildFullscreenAnimation(animation, child);
+      case VooOverlayType.snackbar:
+      case VooOverlayType.banner:
+        return _buildTopBottomAnimation(animation, child);
+      case VooOverlayType.tooltip:
+        return _buildModalAnimation(animation, child);
     }
+  }
+
+  Widget _buildTopBottomAnimation(Animation<double> animation, Widget child) {
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, -0.1),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      ),
+    );
   }
 
   Widget _buildBottomSheetAnimation(Animation<double> animation, Widget child) {

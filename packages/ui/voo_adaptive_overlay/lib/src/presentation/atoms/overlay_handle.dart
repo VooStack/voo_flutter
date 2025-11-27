@@ -37,10 +37,23 @@ class OverlayHandle extends StatelessWidget {
     if (width != null) return width!;
     switch (style) {
       case VooOverlayStyle.cupertino:
+      case VooOverlayStyle.soft:
         return 36.0;
+      case VooOverlayStyle.brutalist:
+        return 48.0;
       case VooOverlayStyle.material:
       case VooOverlayStyle.glass:
       case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.frosted:
       case VooOverlayStyle.custom:
         return 32.0;
     }
@@ -50,10 +63,23 @@ class OverlayHandle extends StatelessWidget {
     if (height != null) return height!;
     switch (style) {
       case VooOverlayStyle.cupertino:
+      case VooOverlayStyle.soft:
         return 5.0;
+      case VooOverlayStyle.brutalist:
+        return 6.0;
       case VooOverlayStyle.material:
       case VooOverlayStyle.glass:
       case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.frosted:
       case VooOverlayStyle.custom:
         return 4.0;
     }
@@ -67,17 +93,34 @@ class OverlayHandle extends StatelessWidget {
 
     switch (style) {
       case VooOverlayStyle.material:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.custom:
         return theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4);
       case VooOverlayStyle.cupertino:
         return isDark
             ? Colors.grey.shade600
             : Colors.grey.shade400;
       case VooOverlayStyle.glass:
-        return Colors.white.withValues(alpha: 0.5);
+      case VooOverlayStyle.frosted:
+        return isDark
+            ? Colors.white.withValues(alpha: 0.5)
+            : Colors.black.withValues(alpha: 0.3);
       case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
         return theme.colorScheme.outline.withValues(alpha: 0.3);
-      case VooOverlayStyle.custom:
-        return theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4);
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+        return Colors.white.withValues(alpha: 0.4);
+      case VooOverlayStyle.brutalist:
+        return isDark ? Colors.white : Colors.black;
+      case VooOverlayStyle.retro:
+        return const Color(0xFF8B4513).withValues(alpha: 0.5);
+      case VooOverlayStyle.neon:
+        return theme.colorScheme.primary.withValues(alpha: 0.7);
     }
   }
 
@@ -91,9 +134,22 @@ class OverlayHandle extends StatelessWidget {
     switch (style) {
       case VooOverlayStyle.cupertino:
         return const EdgeInsets.symmetric(vertical: 8.0);
+      case VooOverlayStyle.brutalist:
+        return const EdgeInsets.symmetric(vertical: 16.0);
       case VooOverlayStyle.material:
       case VooOverlayStyle.glass:
       case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.frosted:
       case VooOverlayStyle.custom:
         return const EdgeInsets.symmetric(vertical: 12.0);
     }

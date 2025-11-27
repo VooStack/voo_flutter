@@ -41,10 +41,22 @@ class OverlayCloseButton extends StatelessWidget {
     if (icon != null) return icon!;
     switch (style) {
       case VooOverlayStyle.cupertino:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.frosted:
         return Icons.close_rounded;
       case VooOverlayStyle.material:
       case VooOverlayStyle.glass:
       case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.brutalist:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+      case VooOverlayStyle.paper:
       case VooOverlayStyle.custom:
         return Icons.close;
     }
@@ -56,13 +68,24 @@ class OverlayCloseButton extends StatelessWidget {
       case VooOverlayStyle.cupertino:
         return 18.0;
       case VooOverlayStyle.material:
-        return 24.0;
-      case VooOverlayStyle.glass:
-        return 20.0;
-      case VooOverlayStyle.minimal:
-        return 20.0;
+      case VooOverlayStyle.elevated:
       case VooOverlayStyle.custom:
         return 24.0;
+      case VooOverlayStyle.glass:
+      case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.frosted:
+        return 20.0;
+      case VooOverlayStyle.brutalist:
+        return 22.0;
     }
   }
 
@@ -70,16 +93,33 @@ class OverlayCloseButton extends StatelessWidget {
     if (iconColor != null) return iconColor!;
 
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     switch (style) {
       case VooOverlayStyle.material:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.paper:
         return theme.colorScheme.onSurfaceVariant;
       case VooOverlayStyle.cupertino:
         return Colors.grey.shade600;
       case VooOverlayStyle.glass:
-        return Colors.white.withValues(alpha: 0.9);
+      case VooOverlayStyle.frosted:
+        return isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black87;
       case VooOverlayStyle.minimal:
         return theme.colorScheme.onSurface.withValues(alpha: 0.6);
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+        return Colors.white.withValues(alpha: 0.9);
+      case VooOverlayStyle.brutalist:
+        return isDark ? Colors.white : Colors.black;
+      case VooOverlayStyle.retro:
+        return const Color(0xFF8B4513);
+      case VooOverlayStyle.neon:
+        return theme.colorScheme.primary;
       case VooOverlayStyle.custom:
         return null;
     }
@@ -93,17 +133,37 @@ class OverlayCloseButton extends StatelessWidget {
 
     switch (style) {
       case VooOverlayStyle.material:
+      case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.custom:
         return null;
       case VooOverlayStyle.cupertino:
         return isDark
             ? Colors.grey.shade800
             : Colors.grey.shade200;
       case VooOverlayStyle.glass:
+      case VooOverlayStyle.frosted:
         return Colors.white.withValues(alpha: 0.15);
-      case VooOverlayStyle.minimal:
-        return null;
-      case VooOverlayStyle.custom:
-        return null;
+      case VooOverlayStyle.soft:
+        return theme.colorScheme.primaryContainer.withValues(alpha: 0.3);
+      case VooOverlayStyle.dark:
+        return Colors.white.withValues(alpha: 0.1);
+      case VooOverlayStyle.gradient:
+        return Colors.white.withValues(alpha: 0.2);
+      case VooOverlayStyle.neumorphic:
+        return isDark ? const Color(0xFF3D3D3D) : const Color(0xFFD8D8D8);
+      case VooOverlayStyle.fluent:
+        return isDark
+            ? Colors.white.withValues(alpha: 0.08)
+            : Colors.black.withValues(alpha: 0.05);
+      case VooOverlayStyle.brutalist:
+        return isDark ? Colors.white : Colors.black;
+      case VooOverlayStyle.retro:
+        return const Color(0xFF8B4513).withValues(alpha: 0.1);
+      case VooOverlayStyle.neon:
+        return theme.colorScheme.primary.withValues(alpha: 0.2);
     }
   }
 

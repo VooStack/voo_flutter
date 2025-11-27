@@ -50,13 +50,26 @@ class OverlayHeader extends StatelessWidget {
       case VooOverlayStyle.cupertino:
         return const EdgeInsets.fromLTRB(16, 12, 8, 12);
       case VooOverlayStyle.material:
-        return const EdgeInsets.fromLTRB(24, 16, 8, 8);
-      case VooOverlayStyle.glass:
-        return const EdgeInsets.fromLTRB(20, 16, 12, 12);
-      case VooOverlayStyle.minimal:
-        return const EdgeInsets.fromLTRB(16, 12, 8, 8);
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.neumorphic:
       case VooOverlayStyle.custom:
         return const EdgeInsets.fromLTRB(24, 16, 8, 8);
+      case VooOverlayStyle.glass:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.frosted:
+        return const EdgeInsets.fromLTRB(20, 16, 12, 12);
+      case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.paper:
+        return const EdgeInsets.fromLTRB(16, 12, 8, 8);
+      case VooOverlayStyle.brutalist:
+        return const EdgeInsets.fromLTRB(20, 20, 12, 12);
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+        return const EdgeInsets.fromLTRB(20, 14, 10, 10);
     }
   }
 
@@ -64,28 +77,56 @@ class OverlayHeader extends StatelessWidget {
     if (titleStyle != null) return titleStyle!;
 
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     switch (style) {
       case VooOverlayStyle.material:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.custom:
         return theme.textTheme.headlineSmall ?? const TextStyle(fontSize: 24);
       case VooOverlayStyle.cupertino:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.frosted:
         return theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ) ??
             const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
       case VooOverlayStyle.glass:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
         return theme.textTheme.titleLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
             ) ??
             const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
       case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.paper:
         return theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ) ??
             const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
-      case VooOverlayStyle.custom:
-        return theme.textTheme.headlineSmall ?? const TextStyle(fontSize: 24);
+      case VooOverlayStyle.brutalist:
+        return theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: isDark ? Colors.white : Colors.black,
+            ) ??
+            const TextStyle(fontSize: 18, fontWeight: FontWeight.w900);
+      case VooOverlayStyle.retro:
+        return theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: isDark ? const Color(0xFFFFF8E7) : const Color(0xFF3D2B1F),
+            ) ??
+            const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
+      case VooOverlayStyle.neon:
+        return theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ) ??
+            const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
     }
   }
 

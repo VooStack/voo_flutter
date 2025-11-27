@@ -52,11 +52,28 @@ class OverlayBarrier extends StatelessWidget {
       case VooOverlayStyle.cupertino:
         return Colors.black.withValues(alpha: 0.4);
       case VooOverlayStyle.glass:
+      case VooOverlayStyle.frosted:
         return Colors.black.withValues(alpha: 0.3);
       case VooOverlayStyle.minimal:
         return Colors.black.withValues(alpha: 0.3);
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.neon:
+        return Colors.black.withValues(alpha: 0.8);
+      case VooOverlayStyle.brutalist:
+        return Colors.black.withValues(alpha: 0.85);
+      case VooOverlayStyle.soft:
+        return theme.colorScheme.primary.withValues(alpha: 0.2);
+      case VooOverlayStyle.retro:
+        return const Color(0xFF8B4513).withValues(alpha: 0.3);
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.fluent:
       case VooOverlayStyle.custom:
         return Colors.black.withValues(alpha: 0.54);
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.paper:
+        return Colors.black.withValues(alpha: 0.35);
     }
   }
 
@@ -66,9 +83,25 @@ class OverlayBarrier extends StatelessWidget {
     switch (style) {
       case VooOverlayStyle.glass:
         return 10.0;
+      case VooOverlayStyle.frosted:
+        return 25.0;
+      case VooOverlayStyle.fluent:
+        return 30.0;
       case VooOverlayStyle.cupertino:
         return 5.0;
-      default:
+      case VooOverlayStyle.material:
+      case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.brutalist:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+      case VooOverlayStyle.paper:
+      case VooOverlayStyle.custom:
         return 0.0;
     }
   }

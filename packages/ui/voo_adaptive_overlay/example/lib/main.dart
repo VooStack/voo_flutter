@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voo_adaptive_overlay_example/pages/basic_demo_page.dart';
 import 'package:voo_adaptive_overlay_example/pages/custom_content_demo_page.dart';
+import 'package:voo_adaptive_overlay_example/pages/notifications_demo_page.dart';
 import 'package:voo_adaptive_overlay_example/pages/styles_demo_page.dart';
 
 void main() {
@@ -88,6 +89,17 @@ class HomePage extends StatelessWidget {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const CustomContentDemoPage()),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildDemoCard(
+                  context,
+                  title: 'Notifications & Popups',
+                  description: 'Snackbars, banners, alerts, and popups.',
+                  icon: Icons.notifications_outlined,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NotificationsDemoPage()),
                   ),
                 ),
               ],

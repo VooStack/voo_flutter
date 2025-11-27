@@ -36,15 +36,29 @@ class OverlayActionBar extends StatelessWidget {
     if (padding != null) return padding!;
     switch (style) {
       case VooOverlayStyle.cupertino:
+      case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.paper:
         return const EdgeInsets.fromLTRB(16, 8, 16, 16);
       case VooOverlayStyle.material:
-        return const EdgeInsets.fromLTRB(24, 8, 24, 24);
-      case VooOverlayStyle.glass:
-        return const EdgeInsets.fromLTRB(20, 12, 20, 20);
-      case VooOverlayStyle.minimal:
-        return const EdgeInsets.fromLTRB(16, 8, 16, 16);
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.neumorphic:
       case VooOverlayStyle.custom:
         return const EdgeInsets.fromLTRB(24, 8, 24, 24);
+      case VooOverlayStyle.glass:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.frosted:
+        return const EdgeInsets.fromLTRB(20, 12, 20, 20);
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.neon:
+        return const EdgeInsets.fromLTRB(20, 12, 20, 20);
+      case VooOverlayStyle.fluent:
+        return const EdgeInsets.fromLTRB(16, 12, 16, 16);
+      case VooOverlayStyle.brutalist:
+        return const EdgeInsets.fromLTRB(20, 16, 20, 20);
+      case VooOverlayStyle.retro:
+        return const EdgeInsets.fromLTRB(20, 12, 20, 16);
     }
   }
 
@@ -52,15 +66,26 @@ class OverlayActionBar extends StatelessWidget {
     if (spacing != null) return spacing!;
     switch (style) {
       case VooOverlayStyle.cupertino:
-        return 8.0;
       case VooOverlayStyle.material:
-        return 8.0;
-      case VooOverlayStyle.glass:
-        return 12.0;
       case VooOverlayStyle.minimal:
-        return 8.0;
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.neumorphic:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.paper:
       case VooOverlayStyle.custom:
         return 8.0;
+      case VooOverlayStyle.glass:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.frosted:
+        return 12.0;
+      case VooOverlayStyle.brutalist:
+      case VooOverlayStyle.neon:
+        return 16.0;
+      case VooOverlayStyle.retro:
+        return 10.0;
     }
   }
 
@@ -85,23 +110,39 @@ class OverlayActionBar extends StatelessWidget {
     if (action.isDestructive && buttonStyle == null) {
       switch (style) {
         case VooOverlayStyle.material:
+        case VooOverlayStyle.elevated:
+        case VooOverlayStyle.soft:
+        case VooOverlayStyle.outlined:
+        case VooOverlayStyle.minimal:
+        case VooOverlayStyle.neumorphic:
+        case VooOverlayStyle.fluent:
+        case VooOverlayStyle.paper:
+        case VooOverlayStyle.custom:
           buttonStyle = TextButton.styleFrom(
             foregroundColor: theme.colorScheme.error,
           );
-          break;
         case VooOverlayStyle.cupertino:
+        case VooOverlayStyle.frosted:
           buttonStyle = TextButton.styleFrom(
             foregroundColor: Colors.red,
           );
-          break;
         case VooOverlayStyle.glass:
+        case VooOverlayStyle.dark:
+        case VooOverlayStyle.gradient:
           buttonStyle = TextButton.styleFrom(
             foregroundColor: Colors.red.shade300,
           );
-          break;
-        default:
+        case VooOverlayStyle.brutalist:
           buttonStyle = TextButton.styleFrom(
-            foregroundColor: theme.colorScheme.error,
+            foregroundColor: Colors.red,
+          );
+        case VooOverlayStyle.retro:
+          buttonStyle = TextButton.styleFrom(
+            foregroundColor: const Color(0xFFB22222),
+          );
+        case VooOverlayStyle.neon:
+          buttonStyle = TextButton.styleFrom(
+            foregroundColor: Colors.red.shade400,
           );
       }
     }
@@ -124,13 +165,24 @@ class OverlayActionBar extends StatelessWidget {
     if (action.isPrimary) {
       switch (style) {
         case VooOverlayStyle.cupertino:
+        case VooOverlayStyle.material:
+        case VooOverlayStyle.minimal:
+        case VooOverlayStyle.outlined:
+        case VooOverlayStyle.elevated:
+        case VooOverlayStyle.soft:
+        case VooOverlayStyle.neumorphic:
+        case VooOverlayStyle.fluent:
+        case VooOverlayStyle.paper:
+        case VooOverlayStyle.frosted:
+        case VooOverlayStyle.custom:
           button = FilledButton(
             onPressed: onPressed,
             style: buttonStyle,
             child: buttonChild,
           );
-          break;
         case VooOverlayStyle.glass:
+        case VooOverlayStyle.dark:
+        case VooOverlayStyle.gradient:
           button = FilledButton(
             onPressed: onPressed,
             style: buttonStyle ??
@@ -140,20 +192,46 @@ class OverlayActionBar extends StatelessWidget {
                 ),
             child: buttonChild,
           );
-          break;
-        case VooOverlayStyle.material:
-        case VooOverlayStyle.minimal:
-        case VooOverlayStyle.custom:
+        case VooOverlayStyle.brutalist:
           button = FilledButton(
             onPressed: onPressed,
-            style: buttonStyle,
+            style: buttonStyle ??
+                FilledButton.styleFrom(
+                  backgroundColor:
+                      theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+                  foregroundColor:
+                      theme.brightness == Brightness.dark ? Colors.black : Colors.white,
+                  shape: const RoundedRectangleBorder(),
+                ),
             child: buttonChild,
           );
-          break;
+        case VooOverlayStyle.retro:
+          button = FilledButton(
+            onPressed: onPressed,
+            style: buttonStyle ??
+                FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF8B4513),
+                  foregroundColor: const Color(0xFFFFF8E7),
+                ),
+            child: buttonChild,
+          );
+        case VooOverlayStyle.neon:
+          button = FilledButton(
+            onPressed: onPressed,
+            style: buttonStyle ??
+                FilledButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: Colors.white,
+                ),
+            child: buttonChild,
+          );
       }
     } else {
       switch (style) {
         case VooOverlayStyle.glass:
+        case VooOverlayStyle.dark:
+        case VooOverlayStyle.gradient:
+        case VooOverlayStyle.frosted:
           button = OutlinedButton(
             onPressed: onPressed,
             style: buttonStyle ??
@@ -165,17 +243,46 @@ class OverlayActionBar extends StatelessWidget {
                 ),
             child: buttonChild,
           );
-          break;
+        case VooOverlayStyle.outlined:
+        case VooOverlayStyle.brutalist:
+          button = OutlinedButton(
+            onPressed: onPressed,
+            style: buttonStyle ??
+                OutlinedButton.styleFrom(
+                  side: BorderSide(
+                    color: theme.colorScheme.outline,
+                    width: style == VooOverlayStyle.brutalist ? 2 : 1,
+                  ),
+                ),
+            child: buttonChild,
+          );
+        case VooOverlayStyle.neon:
+          button = OutlinedButton(
+            onPressed: onPressed,
+            style: buttonStyle ??
+                OutlinedButton.styleFrom(
+                  foregroundColor: theme.colorScheme.primary,
+                  side: BorderSide(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+            child: buttonChild,
+          );
         case VooOverlayStyle.cupertino:
         case VooOverlayStyle.material:
         case VooOverlayStyle.minimal:
+        case VooOverlayStyle.elevated:
+        case VooOverlayStyle.soft:
+        case VooOverlayStyle.neumorphic:
+        case VooOverlayStyle.fluent:
+        case VooOverlayStyle.retro:
+        case VooOverlayStyle.paper:
         case VooOverlayStyle.custom:
           button = TextButton(
             onPressed: onPressed,
             style: buttonStyle,
             child: buttonChild,
           );
-          break;
       }
     }
 

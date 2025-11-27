@@ -57,6 +57,18 @@ class VooOverlayStyleData extends Equatable {
   /// Whether to apply a gradient to the background.
   final Gradient? backgroundGradient;
 
+  /// Text color for content text.
+  final Color? textColor;
+
+  /// Icon color for icons in the overlay.
+  final Color? iconColor;
+
+  /// Primary button style.
+  final ButtonStyle? primaryButtonStyle;
+
+  /// Secondary button style.
+  final ButtonStyle? secondaryButtonStyle;
+
   const VooOverlayStyleData({
     this.backgroundColor,
     this.barrierColor,
@@ -75,6 +87,10 @@ class VooOverlayStyleData extends Equatable {
     this.titleStyle,
     this.blurSigma,
     this.backgroundGradient,
+    this.textColor,
+    this.iconColor,
+    this.primaryButtonStyle,
+    this.secondaryButtonStyle,
   });
 
   VooOverlayStyleData copyWith({
@@ -95,6 +111,10 @@ class VooOverlayStyleData extends Equatable {
     TextStyle? titleStyle,
     double? blurSigma,
     Gradient? backgroundGradient,
+    Color? textColor,
+    Color? iconColor,
+    ButtonStyle? primaryButtonStyle,
+    ButtonStyle? secondaryButtonStyle,
   }) {
     return VooOverlayStyleData(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -110,10 +130,15 @@ class VooOverlayStyleData extends Equatable {
       handleBorderRadius: handleBorderRadius ?? this.handleBorderRadius,
       closeButtonColor: closeButtonColor ?? this.closeButtonColor,
       closeButtonSize: closeButtonSize ?? this.closeButtonSize,
-      closeButtonBackgroundColor: closeButtonBackgroundColor ?? this.closeButtonBackgroundColor,
+      closeButtonBackgroundColor:
+          closeButtonBackgroundColor ?? this.closeButtonBackgroundColor,
       titleStyle: titleStyle ?? this.titleStyle,
       blurSigma: blurSigma ?? this.blurSigma,
       backgroundGradient: backgroundGradient ?? this.backgroundGradient,
+      textColor: textColor ?? this.textColor,
+      iconColor: iconColor ?? this.iconColor,
+      primaryButtonStyle: primaryButtonStyle ?? this.primaryButtonStyle,
+      secondaryButtonStyle: secondaryButtonStyle ?? this.secondaryButtonStyle,
     );
   }
 
@@ -136,5 +161,9 @@ class VooOverlayStyleData extends Equatable {
         titleStyle,
         blurSigma,
         backgroundGradient,
+        textColor,
+        iconColor,
+        primaryButtonStyle,
+        secondaryButtonStyle,
       ];
 }

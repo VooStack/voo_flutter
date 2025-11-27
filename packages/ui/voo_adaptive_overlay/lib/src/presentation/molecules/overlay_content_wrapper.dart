@@ -35,15 +35,26 @@ class OverlayContentWrapper extends StatelessWidget {
     if (padding != null) return padding!;
     switch (style) {
       case VooOverlayStyle.cupertino:
+      case VooOverlayStyle.minimal:
+      case VooOverlayStyle.outlined:
+      case VooOverlayStyle.fluent:
+      case VooOverlayStyle.paper:
         return const EdgeInsets.symmetric(horizontal: 16);
       case VooOverlayStyle.material:
-        return const EdgeInsets.symmetric(horizontal: 24);
-      case VooOverlayStyle.glass:
-        return const EdgeInsets.symmetric(horizontal: 20);
-      case VooOverlayStyle.minimal:
-        return const EdgeInsets.symmetric(horizontal: 16);
+      case VooOverlayStyle.elevated:
+      case VooOverlayStyle.neumorphic:
       case VooOverlayStyle.custom:
         return const EdgeInsets.symmetric(horizontal: 24);
+      case VooOverlayStyle.glass:
+      case VooOverlayStyle.soft:
+      case VooOverlayStyle.dark:
+      case VooOverlayStyle.gradient:
+      case VooOverlayStyle.frosted:
+        return const EdgeInsets.symmetric(horizontal: 20);
+      case VooOverlayStyle.brutalist:
+      case VooOverlayStyle.retro:
+      case VooOverlayStyle.neon:
+        return const EdgeInsets.symmetric(horizontal: 20);
     }
   }
 

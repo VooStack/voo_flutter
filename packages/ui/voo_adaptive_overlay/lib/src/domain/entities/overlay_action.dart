@@ -121,6 +121,129 @@ class VooOverlayAction extends Equatable {
     );
   }
 
+  /// Creates a done action.
+  factory VooOverlayAction.done({
+    String label = 'Done',
+    VoidCallback? onPressed,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: true,
+      icon: Icons.check,
+      autoPop: true,
+    );
+  }
+
+  /// Creates an edit action.
+  factory VooOverlayAction.edit({
+    String label = 'Edit',
+    VoidCallback? onPressed,
+    bool autoPop = false,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: false,
+      icon: Icons.edit_outlined,
+      autoPop: autoPop,
+    );
+  }
+
+  /// Creates a share action.
+  factory VooOverlayAction.share({
+    String label = 'Share',
+    VoidCallback? onPressed,
+    bool autoPop = true,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: false,
+      icon: Icons.share_outlined,
+      autoPop: autoPop,
+    );
+  }
+
+  /// Creates a copy action.
+  factory VooOverlayAction.copy({
+    String label = 'Copy',
+    VoidCallback? onPressed,
+    bool autoPop = true,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: false,
+      icon: Icons.copy_outlined,
+      autoPop: autoPop,
+    );
+  }
+
+  /// Creates a retry action.
+  factory VooOverlayAction.retry({
+    String label = 'Retry',
+    VoidCallback? onPressed,
+    bool autoPop = false,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: true,
+      icon: Icons.refresh,
+      autoPop: autoPop,
+    );
+  }
+
+  /// Creates a settings action.
+  factory VooOverlayAction.settings({
+    String label = 'Settings',
+    VoidCallback? onPressed,
+    bool autoPop = true,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: false,
+      icon: Icons.settings_outlined,
+      autoPop: autoPop,
+    );
+  }
+
+  /// Creates a learn more action.
+  factory VooOverlayAction.learnMore({
+    String label = 'Learn More',
+    VoidCallback? onPressed,
+    bool autoPop = true,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: false,
+      icon: Icons.info_outline,
+      autoPop: autoPop,
+    );
+  }
+
+  /// Creates a custom action with icon.
+  factory VooOverlayAction.withIcon({
+    required String label,
+    required IconData icon,
+    VoidCallback? onPressed,
+    bool isPrimary = false,
+    bool isDestructive = false,
+    bool autoPop = true,
+  }) {
+    return VooOverlayAction(
+      label: label,
+      onPressed: onPressed,
+      isPrimary: isPrimary,
+      isDestructive: isDestructive,
+      icon: icon,
+      autoPop: autoPop,
+    );
+  }
+
   VooOverlayAction copyWith({
     String? label,
     VoidCallback? onPressed,

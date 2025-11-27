@@ -31,13 +31,29 @@
 /// - **Tablet (600-1024px)**: Shows as a centered modal dialog
 /// - **Desktop (>1024px)**: Shows as a side sheet or modal (configurable)
 ///
+/// ## Overlay Types
+///
+/// - `bottomSheet` - Slides up from the bottom
+/// - `modal` - Centered dialog
+/// - `sideSheet` - Slides in from the side
+/// - `fullscreen` - Covers the entire screen
+/// - `drawer` - Slides in from left/right
+/// - `actionSheet` - iOS-style action list
+/// - `snackbar` - Bottom notification with action
+///
 /// ## Style Presets
 ///
-/// - `VooOverlayStyle.material` - Standard Material Design 3
-/// - `VooOverlayStyle.cupertino` - iOS-style with blur and rounded corners
-/// - `VooOverlayStyle.glass` - Glassmorphism with frosted glass effect
-/// - `VooOverlayStyle.minimal` - Clean, borderless design
-/// - `VooOverlayStyle.custom` - Full customization via VooOverlayStyleData
+/// - `material` - Standard Material Design 3
+/// - `cupertino` - iOS-style with blur and rounded corners
+/// - `glass` - Glassmorphism with frosted glass effect
+/// - `minimal` - Clean, borderless design
+/// - `outlined` - Modern outlined style
+/// - `elevated` - Strong shadow elevation
+/// - `soft` - Soft pastel colors
+/// - `dark` - Dark mode optimized
+/// - `gradient` - Gradient background
+/// - `neumorphic` - Soft 3D shadows
+/// - `custom` - Full customization
 library voo_adaptive_overlay;
 
 // Domain - Enums
@@ -54,11 +70,21 @@ export 'package:voo_adaptive_overlay/src/domain/entities/overlay_constraints.dar
 export 'package:voo_adaptive_overlay/src/domain/entities/overlay_style_data.dart';
 
 // Presentation - Organisms (Main widgets)
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_action_sheet.dart';
 export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_adaptive_overlay.dart';
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_alert.dart';
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_banner.dart';
 export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_bottom_sheet.dart';
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_drawer.dart';
 export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_fullscreen_overlay.dart';
 export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_modal_dialog.dart';
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_popup.dart';
 export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_side_sheet.dart';
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_snackbar.dart';
+export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_tooltip.dart';
+
+// Presentation - Styles
+export 'package:voo_adaptive_overlay/src/presentation/styles/base_overlay_style.dart';
 
 // Presentation - Utilities
 export 'package:voo_adaptive_overlay/src/presentation/utils/overlay_extensions.dart';
