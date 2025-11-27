@@ -325,11 +325,11 @@ void main() {
       expect(controller.state.sorts.length, 0);
     });
 
-    test('should handle row selection', () {
+    test('should handle row selection', () async {
       final dataSource = TestDataSource();
-      final controller = VooDataGridStateController(dataSource: dataSource);
+      final controller = VooDataGridStateController(dataSource: dataSource, mode: VooDataGridMode.local);
 
-      controller.setLocalData([
+      await controller.setLocalDataAsync([
         {'id': 1},
         {'id': 2},
         {'id': 3},
@@ -358,11 +358,11 @@ void main() {
       expect(controller.state.selectedRows.length, 0);
     });
 
-    test('should handle local data with filtering and sorting', () {
+    test('should handle local data with filtering and sorting', () async {
       final dataSource = TestDataSource();
       final controller = VooDataGridStateController(dataSource: dataSource, mode: VooDataGridMode.local, pageSize: 2);
 
-      controller.setLocalData([
+      await controller.setLocalDataAsync([
         {'id': 1, 'name': 'Apple', 'price': 100},
         {'id': 2, 'name': 'Banana', 'price': 50},
         {'id': 3, 'name': 'Cherry', 'price': 150},
@@ -373,14 +373,17 @@ void main() {
       expect(controller.state.totalRows, 4);
       expect(controller.state.rows.length, 2);
 
-      // Test filtering
+      // Test filtering - applyFilter calls loadData internally
       controller.applyFilter('name', const VooDataFilter(operator: VooFilterOperator.contains, value: 'a'));
+      await controller.loadData(); // Wait for async processing
 
       expect(controller.state.totalRows, 3); // Apple, Banana, Date
       expect(controller.state.rows.length, 2);
 
-      // Test sorting
+      // Test sorting - applySort calls loadData internally
       controller.applySort('price', VooSortDirection.ascending);
+      await controller.loadData(); // Wait for async processing
+
       expect(controller.state.rows.first['name'], 'Banana'); // price: 50
       expect(controller.state.rows.last['name'], 'Date'); // price: 75
     });

@@ -152,7 +152,7 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Test 1: Verify initial rendering
       expect(find.text('ID'), findsOneWidget);
@@ -163,18 +163,18 @@ void main() {
 
       // Test 2: Sorting functionality
       await tester.tap(find.text('Name'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(lastSortField, equals('name'));
       expect(lastSortDirection, equals(VooSortDirection.ascending));
 
       // Click again for descending
       await tester.tap(find.text('Name'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(lastSortDirection, equals(VooSortDirection.descending));
 
       // Click again for no sort
       await tester.tap(find.text('Name'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(lastSortDirection, equals(VooSortDirection.none));
 
       // Test 3: Filter toggle (only on desktop width)
@@ -220,13 +220,13 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find and click filter toggle button
       final filterToggle = find.byIcon(Icons.filter_list);
       if (filterToggle.evaluate().isNotEmpty) {
         await tester.tap(filterToggle);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
         expect(toggleFiltersCalled, isTrue);
       }
 
@@ -234,7 +234,7 @@ void main() {
       final nextPageButton = find.byIcon(Icons.navigate_next);
       if (nextPageButton.evaluate().isNotEmpty) {
         await tester.tap(nextPageButton);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
         expect(lastPage, equals(1));
       }
 
@@ -272,13 +272,13 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find and click select all checkbox (in header)
       final checkboxes = find.byType(Checkbox);
       if (checkboxes.evaluate().isNotEmpty) {
         await tester.tap(checkboxes.first);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
         expect(selectAllCalled, isTrue);
       }
 
@@ -310,7 +310,7 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Check that filter row is rendered - it should be present when filters are visible
       final filterRow = find.byType(VooDataGridFilterRow<Map<String, dynamic>>);
@@ -347,7 +347,7 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Check if filter row exists first
       final filterRowFinder = find.byType(VooDataGridFilterRow<Map<String, dynamic>>);

@@ -219,9 +219,11 @@ class _DataGridCoreState<T> extends State<DataGridCore<T>> {
   }
 
   void _showExportDialog(BuildContext context) {
-    showDialog(
+    showExportDialog<T>(
       context: context,
-      builder: (context) => ExportDialog<T>(controller: widget.controller, initialConfig: widget.exportConfig, companyLogo: widget.companyLogo),
+      controller: widget.controller,
+      initialConfig: widget.exportConfig,
+      companyLogo: widget.companyLogo,
     );
   }
 

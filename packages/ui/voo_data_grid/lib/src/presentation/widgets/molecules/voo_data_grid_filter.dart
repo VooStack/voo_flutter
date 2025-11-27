@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:voo_adaptive_overlay/voo_adaptive_overlay.dart';
 import 'package:voo_data_grid/src/domain/entities/data_grid_column.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_data_filter.dart';
 import 'package:voo_data_grid/src/domain/entities/voo_filter_operator.dart';
@@ -94,7 +95,6 @@ class _VooDataGridFilterState<T> extends State<VooDataGridFilter<T>> {
   Widget _filterContainer({
     required BuildContext context,
     required Widget child,
-    bool isFocused = false,
   }) {
     final theme = Theme.of(context);
     return Container(
@@ -102,8 +102,7 @@ class _VooDataGridFilterState<T> extends State<VooDataGridFilter<T>> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         border: Border.all(
-          color: isFocused ? theme.colorScheme.primary : theme.colorScheme.outline.withValues(alpha: 0.3),
-          width: isFocused ? 1.5 : 1,
+          color: theme.colorScheme.outline.withValues(alpha: 0.3),
         ),
         borderRadius: BorderRadius.circular(_borderRadius),
       ),
@@ -391,6 +390,14 @@ class _VooDataGridFilterState<T> extends State<VooDataGridFilter<T>> {
     );
   }
 
+  /// Get the anchor rect for popup positioning
+  Rect _getAnchorRect(BuildContext context) {
+    final box = context.findRenderObject();
+    if (box is! RenderBox) return Rect.zero;
+    final position = box.localToGlobal(Offset.zero);
+    return Rect.fromLTWH(position.dx, position.dy, box.size.width, box.size.height);
+  }
+
   Widget _buildDropdownFilter(BuildContext context) {
     final theme = Theme.of(context);
     final options = widget.getFilterOptions(widget.column);
@@ -406,45 +413,53 @@ class _VooDataGridFilterState<T> extends State<VooDataGridFilter<T>> {
 
     return _filterContainer(
       context: context,
-      child: PopupMenuButton<dynamic>(
-        tooltip: '',
-        padding: EdgeInsets.zero,
-        position: PopupMenuPosition.under,
-        constraints: const BoxConstraints(minWidth: 140),
-        onSelected: (value) {
-          setState(() {
-            widget.dropdownValues[widget.column.field] = value;
-          });
-          widget.onFilterChanged(value);
-        },
-        itemBuilder: (context) => options
-            .map((option) => PopupMenuItem<dynamic>(
-                  value: option.value,
-                  height: 40,
-                  child: Text(option.label, style: _filterTextStyle(context)),
-                ))
-            .toList(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  selectedLabel ?? widget.column.filterHint ?? 'Filter...',
-                  style: _filterTextStyle(context, isHint: !hasValue),
-                  overflow: TextOverflow.ellipsis,
+      child: Builder(
+        builder: (buttonContext) => InkWell(
+          onTap: () async {
+            final result = await VooAdaptiveOverlay.showPopup<dynamic>(
+              context: buttonContext,
+              anchorRect: _getAnchorRect(buttonContext),
+              position: VooPopupPosition.below,
+              maxHeight: 300,
+              showArrow: false,
+              actions: options
+                  .map((option) => VooOverlayAction(
+                        label: option.label,
+                        onPressed: () => Navigator.pop(buttonContext, option.value),
+                      ))
+                  .toList(),
+            );
+
+            if (result != null) {
+              setState(() {
+                widget.dropdownValues[widget.column.field] = result;
+              });
+              widget.onFilterChanged(result);
+            }
+          },
+          borderRadius: BorderRadius.circular(_borderRadius),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    selectedLabel ?? widget.column.filterHint ?? 'Filter...',
+                    style: _filterTextStyle(context, isHint: !hasValue),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              if (hasValue)
-                _buildClearButton(context, () {
-                  setState(() {
-                    widget.dropdownValues.remove(widget.column.field);
-                  });
-                  widget.onFilterCleared();
-                })
-              else
-                Icon(Icons.arrow_drop_down, size: 20, color: theme.hintColor),
-            ],
+                if (hasValue)
+                  _buildClearButton(context, () {
+                    setState(() {
+                      widget.dropdownValues.remove(widget.column.field);
+                    });
+                    widget.onFilterCleared();
+                  })
+                else
+                  Icon(Icons.arrow_drop_down, size: 20, color: theme.hintColor),
+              ],
+            ),
           ),
         ),
       ),
@@ -461,62 +476,70 @@ class _VooDataGridFilterState<T> extends State<VooDataGridFilter<T>> {
 
     return _filterContainer(
       context: context,
-      child: PopupMenuButton<dynamic>(
-        tooltip: '',
-        padding: EdgeInsets.zero,
-        position: PopupMenuPosition.under,
-        onSelected: (_) {},
-        itemBuilder: (context) => options
-            .map((option) => PopupMenuItem<dynamic>(
-                  onTap: () {},
-                  height: 40,
-                  child: StatefulBuilder(
-                    builder: (context, setMenuState) {
-                      final isSelected = selectedValues.contains(option.value);
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: Checkbox(
-                              value: isSelected,
+      child: Builder(
+        builder: (buttonContext) => InkWell(
+          onTap: () async {
+            // Show multi-select popup with checkboxes
+            await VooAdaptiveOverlay.show(
+              context: buttonContext,
+              title: Text(widget.column.label),
+              config: const VooOverlayConfig(
+                forceType: VooOverlayType.popup,
+              ),
+              builder: (ctx, scrollController) => SizedBox(
+                width: 200,
+                child: StatefulBuilder(
+                  builder: (context, setDialogState) => ListView(
+                    controller: scrollController,
+                    shrinkWrap: true,
+                    children: options
+                        .map((option) => CheckboxListTile(
+                              dense: true,
+                              title: Text(option.label, style: _filterTextStyle(context)),
+                              value: selectedValues.contains(option.value),
                               onChanged: (checked) {
-                                setState(() {
+                                setDialogState(() {
                                   if (checked == true) {
                                     selectedValues.add(option.value);
                                   } else {
                                     selectedValues.remove(option.value);
                                   }
                                 });
-                                setMenuState(() {});
+                                setState(() {});
                                 widget.onFilterChanged(selectedValues.isEmpty ? null : selectedValues);
                               },
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(option.label, style: _filterTextStyle(context)),
-                        ],
-                      );
-                    },
+                            ))
+                        .toList(),
                   ),
-                ))
-            .toList(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  hasValue ? '${selectedValues.length} selected' : widget.column.filterHint ?? 'Filter...',
-                  style: _filterTextStyle(context, isHint: !hasValue),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (hasValue)
-                _buildClearButton(context, widget.onFilterCleared)
-              else
-                Icon(Icons.arrow_drop_down, size: 20, color: theme.hintColor),
-            ],
+              actions: [
+                VooOverlayAction(
+                  label: 'Done',
+                  isPrimary: true,
+                  onPressed: () => Navigator.pop(buttonContext),
+                ),
+              ],
+            );
+          },
+          borderRadius: BorderRadius.circular(_borderRadius),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    hasValue ? '${selectedValues.length} selected' : widget.column.filterHint ?? 'Filter...',
+                    style: _filterTextStyle(context, isHint: !hasValue),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (hasValue)
+                  _buildClearButton(context, widget.onFilterCleared)
+                else
+                  Icon(Icons.arrow_drop_down, size: 20, color: theme.hintColor),
+              ],
+            ),
           ),
         ),
       ),

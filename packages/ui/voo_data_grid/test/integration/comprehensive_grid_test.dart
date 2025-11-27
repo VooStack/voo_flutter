@@ -117,7 +117,7 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Verify header columns are rendered
         expect(find.text('Site Number'), findsOneWidget);
@@ -146,11 +146,11 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Click on Site Number header to trigger sort
         await tester.tap(find.text('Site Number'));
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         expect(sortedField, equals('site_number'));
         expect(sortDirection, equals(VooSortDirection.ascending));
@@ -181,17 +181,17 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Find and interact with the jurisdiction dropdown filter
         final dropdowns = find.byType(DropdownButton<dynamic>);
         if (dropdowns.evaluate().isNotEmpty) {
           await tester.tap(dropdowns.at(2)); // Jurisdiction dropdown
-          await tester.pumpAndSettle();
+          await tester.pump(const Duration(milliseconds: 500));
 
           // Select City A
           await tester.tap(find.text('City A').last);
-          await tester.pumpAndSettle();
+          await tester.pump(const Duration(milliseconds: 500));
 
           expect(filteredField, equals('jurisdiction'));
           expect(filterValue?.value, equals('City A'));
@@ -217,13 +217,13 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Find and click next page button
         final nextButton = find.byIcon(Icons.navigate_next);
         if (nextButton.evaluate().isNotEmpty) {
           await tester.tap(nextButton);
-          await tester.pumpAndSettle();
+          await tester.pump(const Duration(milliseconds: 500));
 
           expect(newPage, equals(1));
         }
@@ -255,7 +255,7 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Test that the callback can be triggered programmatically
         // This simulates what would happen when a checkbox is tapped
@@ -283,7 +283,7 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Verify data is rendered
         expect(find.text('SITE001'), findsOneWidget);
@@ -301,11 +301,11 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Click on Site Number header to sort
         await tester.tap(find.text('Site Number'));
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Verify sort was applied
         expect(controller.dataSource.sorts.length, equals(1));
@@ -326,15 +326,15 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Toggle filters
         controller.toggleFilters();
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Apply filter
         dataSource.applyFilter('jurisdiction', const VooDataFilter(operator: VooFilterOperator.equals, value: 'City A'));
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Verify filter was applied
         expect(controller.dataSource.filters.length, equals(1));
@@ -352,14 +352,14 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Verify initial page
         expect(dataSource.currentPage, equals(0));
 
         // Change page
         dataSource.changePage(1);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         expect(dataSource.currentPage, equals(1));
       });
@@ -378,7 +378,7 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Ensure data is loaded
         expect(dataSource.rows, isNotEmpty);
@@ -386,20 +386,20 @@ void main() {
         // Select a row - use the actual row from dataSource.rows
         final firstRow = dataSource.rows.first;
         dataSource.toggleRowSelection(firstRow);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         expect(dataSource.selectedRows.length, equals(1));
         expect(dataSource.selectedRows.first, equals(firstRow));
 
         // Select all
         dataSource.selectAll();
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         expect(dataSource.selectedRows.length, equals(dataSource.rows.length));
 
         // Clear selection
         dataSource.clearSelection();
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         expect(dataSource.selectedRows.length, equals(0));
       });
@@ -419,11 +419,11 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Toggle filters to show filter row
         controller.toggleFilters();
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Find filter row - after toggling, it should exist
         final filterRow = find.byType(VooDataGridFilterRow<Map<String, dynamic>>);
@@ -467,7 +467,7 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
         expect(find.byType(VooDataGridHeader<Map<String, dynamic>>), findsOneWidget);
 
         // Test mobile layout
@@ -483,7 +483,7 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
         // Cards view should be shown on mobile
         expect(find.byType(DataGridCardView<Map<String, dynamic>>), findsOneWidget);
       });

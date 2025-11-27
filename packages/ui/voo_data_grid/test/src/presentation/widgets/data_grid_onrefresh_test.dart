@@ -41,7 +41,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find the refresh button
       final refreshButton = find.byIcon(Icons.refresh);
@@ -49,7 +49,7 @@ void main() {
 
       // Tap the refresh button
       await tester.tap(refreshButton);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify the callback was called
       expect(refreshCalled, true);
@@ -73,14 +73,14 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find and tap the refresh button
       final refreshButton = find.byIcon(Icons.refresh);
       expect(refreshButton, findsOneWidget);
 
       await tester.tap(refreshButton);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify the dataSource.refresh was called (it triggers loadData which notifies listeners)
       expect(refreshCount >= 1, true);
@@ -114,7 +114,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find the refresh button
       final refreshButton = find.byIcon(Icons.refresh);
@@ -122,7 +122,7 @@ void main() {
 
       // Tap the refresh button
       await tester.tap(refreshButton);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify the callback was called
       expect(refreshCalled, true);
@@ -136,7 +136,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify refresh button is visible
       expect(find.byIcon(Icons.refresh), findsOneWidget);
@@ -150,7 +150,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify refresh button is not visible
       expect(find.byIcon(Icons.refresh), findsNothing);
@@ -175,7 +175,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find the refresh button (should be in mobile toolbar)
       final refreshButton = find.byIcon(Icons.refresh);
@@ -183,7 +183,7 @@ void main() {
 
       // Tap the refresh button
       await tester.tap(refreshButton);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify the callback was called
       expect(refreshCalled, true);

@@ -47,7 +47,7 @@ void main() {
       );
 
       // Wait for initial data load to complete (which will fail)
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Error callback should be called
       expect(errorLog.length, greaterThan(0));
@@ -140,7 +140,7 @@ void main() {
       );
 
       // Wait for data load (which will fail)
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Test passes if no exception is thrown
       expect(true, isTrue);
@@ -166,7 +166,7 @@ void main() {
       );
 
       // Wait for data load
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // onError callback should be called
       expect(errorLog.length, greaterThan(0));

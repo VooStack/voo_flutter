@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:voo_adaptive_overlay/voo_adaptive_overlay.dart';
 import 'package:voo_data_grid/src/data/services/data_grid_export_service.dart';
 import 'package:voo_data_grid/src/domain/entities/export_config.dart';
 import 'package:voo_data_grid/src/presentation/controllers/data_grid_controller.dart';
@@ -13,33 +14,48 @@ Future<void> showExportDialog<T>({
   ExportConfig? initialConfig,
   Uint8List? companyLogo,
 }) =>
-    showDialog(
+    VooAdaptiveOverlay.show(
       context: context,
-      builder: (context) => ExportDialog<T>(
+      title: const Row(
+        children: [
+          Icon(Icons.download),
+          SizedBox(width: 8),
+          Text('Export Data'),
+        ],
+      ),
+      builder: (ctx, scrollController) => _ExportDialogContent<T>(
         controller: controller,
         initialConfig: initialConfig,
         companyLogo: companyLogo,
+        scrollController: scrollController,
+      ),
+      config: const VooOverlayConfig(
+        constraints: VooOverlayConstraints(
+          maxWidth: 500,
+          maxHeight: 600,
+        ),
       ),
     );
 
-/// Advanced export dialog for configuring export options
-class ExportDialog<T> extends StatefulWidget {
+/// Export dialog content widget
+class _ExportDialogContent<T> extends StatefulWidget {
   final VooDataGridController<T> controller;
   final ExportConfig? initialConfig;
   final Uint8List? companyLogo;
+  final ScrollController? scrollController;
 
-  const ExportDialog({
-    super.key,
+  const _ExportDialogContent({
     required this.controller,
     this.initialConfig,
     this.companyLogo,
+    this.scrollController,
   });
 
   @override
-  State<ExportDialog<T>> createState() => _ExportDialogState<T>();
+  State<_ExportDialogContent<T>> createState() => _ExportDialogContentState<T>();
 }
 
-class _ExportDialogState<T> extends State<ExportDialog<T>> {
+class _ExportDialogContentState<T> extends State<_ExportDialogContent<T>> {
   late ExportFormat _selectedFormat;
   late PdfLayoutType _selectedPdfLayout;
   late TextEditingController _titleController;
@@ -88,65 +104,37 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Dialog(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 500,
-          maxHeight: MediaQuery.of(context).size.height * 0.85,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            _buildHeader(context, theme),
-            const Divider(height: 1),
-            // Content
-            Flexible(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(context.vooSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildFormatSection(context, theme),
-                    SizedBox(height: context.vooSpacing.md),
-                    if (_selectedFormat == ExportFormat.pdf) ...[
-                      _buildPdfLayoutSection(context, theme),
-                      SizedBox(height: context.vooSpacing.md),
-                    ],
-                    _buildColumnSelection(context, theme),
-                    SizedBox(height: context.vooSpacing.md),
-                    _buildDocumentDetails(context),
-                    SizedBox(height: context.vooSpacing.md),
-                    _buildOptionsSection(context, theme),
-                  ],
-                ),
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: SingleChildScrollView(
+            controller: widget.scrollController,
+            padding: EdgeInsets.symmetric(horizontal: context.vooSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildFormatSection(context, theme),
+                SizedBox(height: context.vooSpacing.md),
+                if (_selectedFormat == ExportFormat.pdf) ...[
+                  _buildPdfLayoutSection(context, theme),
+                  SizedBox(height: context.vooSpacing.md),
+                ],
+                _buildColumnSelection(context, theme),
+                SizedBox(height: context.vooSpacing.md),
+                _buildDocumentDetails(context),
+                SizedBox(height: context.vooSpacing.md),
+                _buildOptionsSection(context, theme),
+                SizedBox(height: context.vooSpacing.md),
+              ],
             ),
-            const Divider(height: 1),
-            // Actions
-            _buildActions(context),
-          ],
+          ),
         ),
-      ),
+        const Divider(height: 1),
+        _buildActions(context),
+      ],
     );
   }
-
-  Widget _buildHeader(BuildContext context, ThemeData theme) => Padding(
-        padding: EdgeInsets.all(context.vooSpacing.md),
-        child: Row(
-          children: [
-            Icon(Icons.download, size: context.vooSize.iconMedium),
-            SizedBox(width: context.vooSpacing.sm),
-            Text('Export Data', style: context.vooTypography.titleMedium),
-            const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => Navigator.of(context).pop(),
-              visualDensity: VisualDensity.compact,
-            ),
-          ],
-        ),
-      );
 
   Widget _buildFormatSection(BuildContext context, ThemeData theme) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -446,5 +434,35 @@ class _ExportDialogState<T> extends State<ExportDialog<T>> {
     } finally {
       if (mounted) setState(() => _isExporting = false);
     }
+  }
+}
+
+/// Legacy export dialog class for backwards compatibility
+@Deprecated('Use showExportDialog instead')
+class ExportDialog<T> extends StatelessWidget {
+  final VooDataGridController<T> controller;
+  final ExportConfig? initialConfig;
+  final Uint8List? companyLogo;
+
+  const ExportDialog({
+    super.key,
+    required this.controller,
+    this.initialConfig,
+    this.companyLogo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Redirect to adaptive overlay
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pop();
+      showExportDialog(
+        context: context,
+        controller: controller,
+        initialConfig: initialConfig,
+        companyLogo: companyLogo,
+      );
+    });
+    return const SizedBox.shrink();
   }
 }

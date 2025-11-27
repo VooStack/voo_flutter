@@ -4,9 +4,14 @@ import 'package:voo_data_grid/voo_data_grid.dart';
 
 // Test implementation of VooDataGridSource
 class TestDataGridSource extends VooDataGridSource {
-  TestDataGridSource({super.mode = VooDataGridMode.local, List<dynamic>? data}) {
-    if (data != null) {
-      setLocalData(data);
+  final List<dynamic>? _initialData;
+
+  TestDataGridSource({super.mode = VooDataGridMode.local, List<dynamic>? data}) : _initialData = data;
+
+  /// Initialize data - call this after widget is pumped
+  Future<void> initializeData() async {
+    if (_initialData != null) {
+      await setLocalDataAsync(_initialData);
     }
   }
 
@@ -78,9 +83,6 @@ void main() {
 
       final dataSource = TestDataGridSource(data: testData);
 
-      // Load the data initially
-      dataSource.loadData();
-
       controller = VooDataGridController(
         dataSource: dataSource,
         columns: columns,
@@ -101,7 +103,10 @@ void main() {
         ),
       );
 
-      // Wait for the widget to build
+      // Initialize data using runAsync to properly process async operations
+      await tester.runAsync(() async {
+        await (controller.dataSource as TestDataGridSource).initializeData();
+      });
       await tester.pump();
 
       // Check if header is rendered with column labels
@@ -124,14 +129,18 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      // Initialize data using runAsync
+      await tester.runAsync(() async {
+        await (controller.dataSource as TestDataGridSource).initializeData();
+      });
+      await tester.pump();
 
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(0));
 
       // Directly toggle selection using the data source
       controller.dataSource.toggleRowSelection(controller.dataSource.rows[0]);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(controller.dataSource.selectedRows.length, 1);
     });
@@ -145,7 +154,11 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      // Initialize data using runAsync
+      await tester.runAsync(() async {
+        await (controller.dataSource as TestDataGridSource).initializeData();
+      });
+      await tester.pump();
 
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(1));
@@ -153,7 +166,7 @@ void main() {
       // Directly toggle selection using the data source
       controller.dataSource.toggleRowSelection(controller.dataSource.rows[0]);
       controller.dataSource.toggleRowSelection(controller.dataSource.rows[1]);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(controller.dataSource.selectedRows.length, 2);
     });
@@ -204,12 +217,15 @@ void main() {
         ),
       );
 
-      // Wait for initial render
-      await tester.pumpAndSettle();
+      // Initialize data using runAsync
+      await tester.runAsync(() async {
+        await (controller.dataSource as TestDataGridSource).initializeData();
+      });
+      await tester.pump();
 
       // Toggle filters after widget is built
       controller.toggleFilters();
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // Check for filter row - on desktop it should show inline
       expect(find.byType(VooDataGridFilterRow), findsOneWidget);
@@ -275,7 +291,11 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      // Initialize data using runAsync
+      await tester.runAsync(() async {
+        await (controller.dataSource as TestDataGridSource).initializeData();
+      });
+      await tester.pump();
 
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(0));
@@ -304,7 +324,11 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      // Initialize data using runAsync
+      await tester.runAsync(() async {
+        await (controller.dataSource as TestDataGridSource).initializeData();
+      });
+      await tester.pump();
 
       // Verify data is loaded
       expect(controller.dataSource.rows.length, greaterThan(0));

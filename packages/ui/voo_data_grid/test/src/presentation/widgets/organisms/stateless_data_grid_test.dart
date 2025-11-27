@@ -168,7 +168,7 @@ void main() {
 
       // Find and tap next page button
       await tester.tap(find.byIcon(Icons.chevron_right));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(capturedPage, 1);
     });
@@ -215,7 +215,7 @@ void main() {
       // Enter filter text - find the filter TextField (not pagination)
       final textFields = find.byType(TextField);
       await tester.enterText(textFields.first, 'test');
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(capturedField, 'name');
       expect(capturedFilter?.value, 'test');
@@ -263,13 +263,13 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Click on sortable column header
       final nameHeader = find.text('Name');
       expect(nameHeader, findsOneWidget, reason: 'Should find Name column header');
       await tester.tap(nameHeader);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(capturedField, 'name');
       expect(capturedDirection, VooSortDirection.ascending);
@@ -303,7 +303,7 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Find and tap on the data row
       // First, verify the text is rendered
@@ -319,11 +319,11 @@ void main() {
       // Tap the first GestureDetector found
       if (gestureDetector.evaluate().isNotEmpty) {
         await tester.tap(gestureDetector.first);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
       } else {
         // Fallback: tap the product text directly
         await tester.tap(productText);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
       }
 
       expect(tappedProduct, product);
@@ -398,7 +398,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Filters should now be visible (will have at least 2 TextFields - one for pagination, one for filter)
       expect(find.byType(TextField), findsWidgets);

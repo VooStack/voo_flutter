@@ -1,3 +1,33 @@
+## 0.8.0
+
+* **Comprehensive Custom Filter Examples**
+  * Added `StringOperatorFilter` - custom text search filter with operator selection:
+    - Contains, Not contains, Starts with, Ends with, Exactly, Not exactly
+    - Uses VooAdaptiveOverlay for responsive popup
+    - Perfect for text columns requiring precise control over matching behavior
+  * Added `OperatorSelectFilter` - numeric filter with comparison operators:
+    - Equals (=), Greater than (>), Greater or equal (>=), Less than (<), Less or equal (<=), Between (↔)
+    - Chip-based operator selection UI
+  * Added `StarRatingFilter` - clickable star rating filter for filtering by minimum rating
+    - Visual star selection (1-5 stars)
+    - Includes matching cell renderer for displaying ratings
+  * Added `StatusBadgeFilter` - colored badge filter for status fields
+    - Pill-style badges with color coding (Active/Pending/Inactive/Archived)
+    - Includes matching cell renderer for status display
+  * Added `ProductCatalogExample` - complete working example combining all filter types
+  * Added helper functions: `stringOperatorFilterColumn()`, `starRatingFilterColumn()`, `statusBadgeFilterColumn()`
+  * Demonstrates proper integration with DataGridRequestBuilder for all API standards
+
+* **Simplified Filter Widget Types**
+  * Removed `advancedNumber` from `VooFilterWidgetType` enum in favor of custom filters
+  * Custom filters provide more flexibility and better UX for complex filtering scenarios
+  * Users can implement any filtering logic using `VooFilterWidgetType.custom` with `filterBuilder`
+
+* **Comprehensive DataGridRequestBuilder Test Suite**
+  * Added 104 tests covering all API standards (OData v4, Simple REST, JSON:API, MongoDB, GraphQL, Voo API)
+  * Tests cover pagination, all filter operators, sorting, and static parsing methods
+  * Ensures reliability of request building for enterprise integrations
+
 ## 0.7.19
 
 * **Made VooUnsetValue Public for State Extension**

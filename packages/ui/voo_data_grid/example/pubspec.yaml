@@ -40,6 +40,8 @@ dependencies:
   voo_data_grid:
     path: ../
   voo_ui_core: ^0.1.3
+  voo_adaptive_overlay:
+    path: ../../voo_adaptive_overlay
 
 dev_dependencies:
   flutter_test:
