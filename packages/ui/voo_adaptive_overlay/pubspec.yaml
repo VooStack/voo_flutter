@@ -1,9 +1,17 @@
 name: voo_adaptive_overlay
-description: Adaptive overlay system for Flutter that automatically shows modals, bottom sheets, or side sheets based on screen size.
+description: Adaptive overlay system for Flutter that automatically shows modals, bottom sheets, or side sheets based on screen size. Supports Material, Cupertino, Glass, and custom styles.
 version: 0.0.1
 homepage: https://github.com/voostack/voo_flutter
 repository: https://github.com/voostack/voo_flutter/tree/main/packages/ui/voo_adaptive_overlay
+issue_tracker: https://github.com/voostack/voo_flutter/issues
 resolution: workspace
+
+topics:
+  - ui
+  - modal
+  - bottom-sheet
+  - responsive
+  - overlay
 
 environment:
   sdk: '>=3.9.2 <4.0.0'
