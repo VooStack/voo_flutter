@@ -11,10 +11,7 @@ import 'package:voo_adaptive_overlay/src/domain/enums/overlay_type.dart';
 /// implementation that returns appropriate styling for the current theme.
 abstract class BaseOverlayStyle {
   /// Creates the appropriate style instance for the given preset.
-  factory BaseOverlayStyle.fromPreset(
-    VooOverlayStyle style, {
-    VooOverlayStyleData? customData,
-  }) {
+  factory BaseOverlayStyle.fromPreset(VooOverlayStyle style, {VooOverlayStyleData? customData}) {
     switch (style) {
       case VooOverlayStyle.material:
         return MaterialOverlayStyle();
@@ -119,13 +116,7 @@ class MaterialOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.15),
-          blurRadius: 20,
-          offset: const Offset(0, -4),
-        ),
-      ];
+  List<BoxShadow> getBoxShadow(BuildContext context) => [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 20, offset: const Offset(0, -4))];
 
   @override
   Border? getBorder(BuildContext context) => null;
@@ -135,11 +126,7 @@ class MaterialOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -157,8 +144,7 @@ class CupertinoOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.4);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.4);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -184,13 +170,7 @@ class CupertinoOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 16,
-          offset: const Offset(0, -2),
-        ),
-      ];
+  List<BoxShadow> getBoxShadow(BuildContext context) => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 16, offset: const Offset(0, -2))];
 
   @override
   Border? getBorder(BuildContext context) => null;
@@ -200,11 +180,7 @@ class CupertinoOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -218,14 +194,11 @@ class GlassOverlayStyle implements BaseOverlayStyle {
   @override
   Color getBackgroundColor(BuildContext context, VooOverlayType type) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? Colors.white.withValues(alpha: 0.1)
-        : Colors.white.withValues(alpha: 0.7);
+    return isDark ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.7);
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.3);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.3);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -251,36 +224,24 @@ class GlassOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.1),
-          blurRadius: 30,
-          offset: const Offset(0, -5),
-        ),
-      ];
+  List<BoxShadow> getBoxShadow(BuildContext context) => [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 30, offset: const Offset(0, -5))];
 
   @override
   Border? getBorder(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Border.all(
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.2)
-          : Colors.white.withValues(alpha: 0.5),
-      width: 1.5,
-    );
+    return Border.all(color: isDark ? Colors.white.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.5), width: 1.5);
   }
 
   @override
   double getBlurSigma() => 15;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+  );
 
   @override
   Color? getTextColor(BuildContext context) {
@@ -304,8 +265,7 @@ class MinimalOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.3);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.3);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -334,7 +294,7 @@ class MinimalOverlayStyle implements BaseOverlayStyle {
   @override
   Border? getBorder(BuildContext context) {
     final theme = Theme.of(context);
-    return Border.all(color: theme.colorScheme.outlineVariant, width: 1);
+    return Border.all(color: theme.colorScheme.outlineVariant);
   }
 
   @override
@@ -342,11 +302,7 @@ class MinimalOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), border: getBorder(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -364,8 +320,7 @@ class OutlinedOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.4);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.4);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -403,11 +358,7 @@ class OutlinedOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), border: getBorder(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -425,8 +376,7 @@ class ElevatedOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.5);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.5);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -452,22 +402,10 @@ class ElevatedOverlayStyle implements BaseOverlayStyle {
 
   @override
   List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.12),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.16),
-          blurRadius: 48,
-          offset: const Offset(0, 16),
-        ),
-      ];
+    BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 8, offset: const Offset(0, 2)),
+    BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 24, offset: const Offset(0, 8)),
+    BoxShadow(color: Colors.black.withValues(alpha: 0.16), blurRadius: 48, offset: const Offset(0, 16)),
+  ];
 
   @override
   Border? getBorder(BuildContext context) => null;
@@ -477,11 +415,7 @@ class ElevatedOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -533,13 +467,7 @@ class SoftOverlayStyle implements BaseOverlayStyle {
   @override
   List<BoxShadow> getBoxShadow(BuildContext context) {
     final theme = Theme.of(context);
-    return [
-      BoxShadow(
-        color: theme.colorScheme.primary.withValues(alpha: 0.1),
-        blurRadius: 20,
-        offset: const Offset(0, 4),
-      ),
-    ];
+    return [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 4))];
   }
 
   @override
@@ -550,11 +478,7 @@ class SoftOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -566,12 +490,10 @@ class SoftOverlayStyle implements BaseOverlayStyle {
 /// Dark mode optimized style.
 class DarkOverlayStyle implements BaseOverlayStyle {
   @override
-  Color getBackgroundColor(BuildContext context, VooOverlayType type) =>
-      const Color(0xFF1E1E1E);
+  Color getBackgroundColor(BuildContext context, VooOverlayType type) => const Color(0xFF1E1E1E);
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.7);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.7);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -596,31 +518,21 @@ class DarkOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.4),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-      ];
+  List<BoxShadow> getBoxShadow(BuildContext context) => [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 24, offset: const Offset(0, 8))];
 
   @override
-  Border? getBorder(BuildContext context) => Border.all(
-        color: Colors.white.withValues(alpha: 0.1),
-        width: 1,
-      );
+  Border? getBorder(BuildContext context) => Border.all(color: Colors.white.withValues(alpha: 0.1));
 
   @override
   double getBlurSigma() => 0;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+  );
 
   @override
   Color? getTextColor(BuildContext context) => Colors.white;
@@ -632,12 +544,10 @@ class DarkOverlayStyle implements BaseOverlayStyle {
 /// Gradient background style.
 class GradientOverlayStyle implements BaseOverlayStyle {
   @override
-  Color getBackgroundColor(BuildContext context, VooOverlayType type) =>
-      Colors.transparent;
+  Color getBackgroundColor(BuildContext context, VooOverlayType type) => Colors.transparent;
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.5);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.5);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -662,43 +572,22 @@ class GradientOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.2),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-      ];
+  List<BoxShadow> getBoxShadow(BuildContext context) => [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 24, offset: const Offset(0, 8))];
 
   @override
-  Border? getBorder(BuildContext context) => Border.all(
-        color: Colors.white.withValues(alpha: 0.2),
-        width: 1,
-      );
+  Border? getBorder(BuildContext context) => Border.all(color: Colors.white.withValues(alpha: 0.2));
 
   @override
   double getBlurSigma() => 0;
 
   LinearGradient getGradient(BuildContext context) {
     final theme = Theme.of(context);
-    return LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        theme.colorScheme.primary,
-        theme.colorScheme.secondary,
-      ],
-    );
+    return LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [theme.colorScheme.primary, theme.colorScheme.secondary]);
   }
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        gradient: getGradient(context),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(gradient: getGradient(context), borderRadius: getBorderRadius(context, type), border: getBorder(context), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => Colors.white;
@@ -717,8 +606,7 @@ class NeumorphicOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.3);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.3);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -747,29 +635,13 @@ class NeumorphicOverlayStyle implements BaseOverlayStyle {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (isDark) {
       return [
-        const BoxShadow(
-          color: Color(0xFF3D3D3D),
-          blurRadius: 15,
-          offset: Offset(-5, -5),
-        ),
-        const BoxShadow(
-          color: Color(0xFF1D1D1D),
-          blurRadius: 15,
-          offset: Offset(5, 5),
-        ),
+        const BoxShadow(color: Color(0xFF3D3D3D), blurRadius: 15, offset: Offset(-5, -5)),
+        const BoxShadow(color: Color(0xFF1D1D1D), blurRadius: 15, offset: Offset(5, 5)),
       ];
     }
     return [
-      const BoxShadow(
-        color: Colors.white,
-        blurRadius: 15,
-        offset: Offset(-5, -5),
-      ),
-      const BoxShadow(
-        color: Color(0xFFD0D0D0),
-        blurRadius: 15,
-        offset: Offset(5, 5),
-      ),
+      const BoxShadow(color: Colors.white, blurRadius: 15, offset: Offset(-5, -5)),
+      const BoxShadow(color: Color(0xFFD0D0D0), blurRadius: 15, offset: Offset(5, 5)),
     ];
   }
 
@@ -781,11 +653,7 @@ class NeumorphicOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -801,12 +669,10 @@ class CustomOverlayStyle implements BaseOverlayStyle {
   CustomOverlayStyle(this.data);
 
   @override
-  Color getBackgroundColor(BuildContext context, VooOverlayType type) =>
-      data.backgroundColor ?? Theme.of(context).colorScheme.surface;
+  Color getBackgroundColor(BuildContext context, VooOverlayType type) => data.backgroundColor ?? Theme.of(context).colorScheme.surface;
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      data.barrierColor ?? Colors.black.withValues(alpha: 0.54);
+  Color getBarrierColor(BuildContext context) => data.barrierColor ?? Colors.black.withValues(alpha: 0.54);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -840,14 +706,13 @@ class CustomOverlayStyle implements BaseOverlayStyle {
   double getBlurSigma() => data.blurSigma ?? 0;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-        gradient: data.backgroundGradient,
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+    gradient: data.backgroundGradient,
+  );
 
   @override
   Color? getTextColor(BuildContext context) => data.textColor;
@@ -861,14 +726,11 @@ class FluentOverlayStyle implements BaseOverlayStyle {
   @override
   Color getBackgroundColor(BuildContext context, VooOverlayType type) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? const Color(0xFF2D2D2D).withValues(alpha: 0.85)
-        : const Color(0xFFF3F3F3).withValues(alpha: 0.85);
+    return isDark ? const Color(0xFF2D2D2D).withValues(alpha: 0.85) : const Color(0xFFF3F3F3).withValues(alpha: 0.85);
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.4);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.4);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -894,40 +756,26 @@ class FluentOverlayStyle implements BaseOverlayStyle {
 
   @override
   List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.14),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.12),
-          blurRadius: 32,
-          offset: const Offset(0, 8),
-        ),
-      ];
+    BoxShadow(color: Colors.black.withValues(alpha: 0.14), blurRadius: 8, offset: const Offset(0, 2)),
+    BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 32, offset: const Offset(0, 8)),
+  ];
 
   @override
   Border? getBorder(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Border.all(
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.08)
-          : Colors.black.withValues(alpha: 0.05),
-      width: 1,
-    );
+    return Border.all(color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05));
   }
 
   @override
   double getBlurSigma() => 30;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+  );
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -945,12 +793,10 @@ class BrutalistOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.8);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.8);
 
   @override
-  BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) =>
-      BorderRadius.zero;
+  BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) => BorderRadius.zero;
 
   @override
   List<BoxShadow> getBoxShadow(BuildContext context) => [];
@@ -958,10 +804,7 @@ class BrutalistOverlayStyle implements BaseOverlayStyle {
   @override
   Border? getBorder(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Border.all(
-      color: isDark ? Colors.white : Colors.black,
-      width: 3,
-    );
+    return Border.all(color: isDark ? Colors.white : Colors.black, width: 3);
   }
 
   @override
@@ -969,11 +812,7 @@ class BrutalistOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), border: getBorder(context));
 
   @override
   Color? getTextColor(BuildContext context) {
@@ -994,8 +833,7 @@ class RetroOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      const Color(0xFF8B4513).withValues(alpha: 0.3);
+  Color getBarrierColor(BuildContext context) => const Color(0xFF8B4513).withValues(alpha: 0.3);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -1021,35 +859,23 @@ class RetroOverlayStyle implements BaseOverlayStyle {
 
   @override
   List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: const Color(0xFF8B4513).withValues(alpha: 0.2),
-          blurRadius: 0,
-          offset: const Offset(4, 4),
-        ),
-        BoxShadow(
-          color: const Color(0xFF8B4513).withValues(alpha: 0.1),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(color: const Color(0xFF8B4513).withValues(alpha: 0.2), offset: const Offset(4, 4)),
+    BoxShadow(color: const Color(0xFF8B4513).withValues(alpha: 0.1), blurRadius: 16, offset: const Offset(0, 4)),
+  ];
 
   @override
-  Border? getBorder(BuildContext context) => Border.all(
-        color: const Color(0xFF8B4513).withValues(alpha: 0.3),
-        width: 2,
-      );
+  Border? getBorder(BuildContext context) => Border.all(color: const Color(0xFF8B4513).withValues(alpha: 0.3), width: 2);
 
   @override
   double getBlurSigma() => 0;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+  );
 
   @override
   Color? getTextColor(BuildContext context) {
@@ -1058,19 +884,16 @@ class RetroOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color? getIconColor(BuildContext context) =>
-      const Color(0xFF8B4513);
+  Color? getIconColor(BuildContext context) => const Color(0xFF8B4513);
 }
 
 /// Glowing neon borders on dark backgrounds.
 class NeonOverlayStyle implements BaseOverlayStyle {
   @override
-  Color getBackgroundColor(BuildContext context, VooOverlayType type) =>
-      const Color(0xFF0A0A0F);
+  Color getBackgroundColor(BuildContext context, VooOverlayType type) => const Color(0xFF0A0A0F);
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.85);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.85);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -1099,46 +922,33 @@ class NeonOverlayStyle implements BaseOverlayStyle {
     final theme = Theme.of(context);
     final glowColor = theme.colorScheme.primary;
     return [
-      BoxShadow(
-        color: glowColor.withValues(alpha: 0.6),
-        blurRadius: 20,
-        spreadRadius: -2,
-      ),
-      BoxShadow(
-        color: glowColor.withValues(alpha: 0.3),
-        blurRadius: 40,
-        spreadRadius: -5,
-      ),
+      BoxShadow(color: glowColor.withValues(alpha: 0.6), blurRadius: 20, spreadRadius: -2),
+      BoxShadow(color: glowColor.withValues(alpha: 0.3), blurRadius: 40, spreadRadius: -5),
     ];
   }
 
   @override
   Border? getBorder(BuildContext context) {
     final theme = Theme.of(context);
-    return Border.all(
-      color: theme.colorScheme.primary,
-      width: 2,
-    );
+    return Border.all(color: theme.colorScheme.primary, width: 2);
   }
 
   @override
   double getBlurSigma() => 0;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+  );
 
   @override
   Color? getTextColor(BuildContext context) => Colors.white;
 
   @override
-  Color? getIconColor(BuildContext context) =>
-      Theme.of(context).colorScheme.primary;
+  Color? getIconColor(BuildContext context) => Theme.of(context).colorScheme.primary;
 }
 
 /// Paper/card-like appearance with subtle texture.
@@ -1150,8 +960,7 @@ class PaperOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.35);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.35);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -1177,22 +986,10 @@ class PaperOverlayStyle implements BaseOverlayStyle {
 
   @override
   List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
-          blurRadius: 1,
-          offset: const Offset(0, 1),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
-          blurRadius: 3,
-          offset: const Offset(0, 2),
-        ),
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 1, offset: const Offset(0, 1)),
+    BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 3, offset: const Offset(0, 2)),
+    BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 4)),
+  ];
 
   @override
   Border? getBorder(BuildContext context) => null;
@@ -1202,11 +999,7 @@ class PaperOverlayStyle implements BaseOverlayStyle {
 
   @override
   BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        boxShadow: getBoxShadow(context),
-      );
+      BoxDecoration(color: getBackgroundColor(context, type), borderRadius: getBorderRadius(context, type), boxShadow: getBoxShadow(context));
 
   @override
   Color? getTextColor(BuildContext context) => null;
@@ -1220,14 +1013,11 @@ class FrostedOverlayStyle implements BaseOverlayStyle {
   @override
   Color getBackgroundColor(BuildContext context, VooOverlayType type) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? Colors.black.withValues(alpha: 0.5)
-        : Colors.white.withValues(alpha: 0.6);
+    return isDark ? Colors.black.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.6);
   }
 
   @override
-  Color getBarrierColor(BuildContext context) =>
-      Colors.black.withValues(alpha: 0.2);
+  Color getBarrierColor(BuildContext context) => Colors.black.withValues(alpha: 0.2);
 
   @override
   BorderRadius getBorderRadius(BuildContext context, VooOverlayType type) {
@@ -1252,36 +1042,24 @@ class FrostedOverlayStyle implements BaseOverlayStyle {
   }
 
   @override
-  List<BoxShadow> getBoxShadow(BuildContext context) => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.1),
-          blurRadius: 20,
-          offset: const Offset(0, 4),
-        ),
-      ];
+  List<BoxShadow> getBoxShadow(BuildContext context) => [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 20, offset: const Offset(0, 4))];
 
   @override
   Border? getBorder(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Border.all(
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.15)
-          : Colors.white.withValues(alpha: 0.6),
-      width: 1.5,
-    );
+    return Border.all(color: isDark ? Colors.white.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.6), width: 1.5);
   }
 
   @override
   double getBlurSigma() => 25;
 
   @override
-  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) =>
-      BoxDecoration(
-        color: getBackgroundColor(context, type),
-        borderRadius: getBorderRadius(context, type),
-        border: getBorder(context),
-        boxShadow: getBoxShadow(context),
-      );
+  BoxDecoration getDecoration(BuildContext context, VooOverlayType type) => BoxDecoration(
+    color: getBackgroundColor(context, type),
+    borderRadius: getBorderRadius(context, type),
+    border: getBorder(context),
+    boxShadow: getBoxShadow(context),
+  );
 
   @override
   Color? getTextColor(BuildContext context) {

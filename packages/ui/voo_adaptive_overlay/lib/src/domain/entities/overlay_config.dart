@@ -65,9 +65,9 @@ class VooOverlayConfig extends Equatable {
   const VooOverlayConfig({
     this.style = VooOverlayStyle.material,
     this.customStyle,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
     this.constraints = const VooOverlayConstraints(),
-    this.breakpoints = const VooOverlayBreakpoints(),
+    this.breakpoints = VooOverlayBreakpoints.material,
     this.forceType,
     this.animationDuration,
     this.enterCurve,
@@ -84,26 +84,16 @@ class VooOverlayConfig extends Equatable {
   static const VooOverlayConfig material = VooOverlayConfig();
 
   /// Configuration with Cupertino/iOS style.
-  static const VooOverlayConfig cupertino = VooOverlayConfig(
-    style: VooOverlayStyle.cupertino,
-  );
+  static const VooOverlayConfig cupertino = VooOverlayConfig(style: VooOverlayStyle.cupertino);
 
   /// Configuration with glassmorphism style.
-  static const VooOverlayConfig glass = VooOverlayConfig(
-    style: VooOverlayStyle.glass,
-  );
+  static const VooOverlayConfig glass = VooOverlayConfig(style: VooOverlayStyle.glass);
 
   /// Configuration with minimal style.
-  static const VooOverlayConfig minimal = VooOverlayConfig(
-    style: VooOverlayStyle.minimal,
-  );
+  static const VooOverlayConfig minimal = VooOverlayConfig(style: VooOverlayStyle.minimal);
 
   /// Configuration that always shows a bottom sheet.
-  static const VooOverlayConfig bottomSheet = VooOverlayConfig(
-    forceType: VooOverlayType.bottomSheet,
-    behavior: VooOverlayBehavior.bottomSheet,
-    constraints: VooOverlayConstraints.bottomSheet,
-  );
+  static const VooOverlayConfig bottomSheet = VooOverlayConfig(forceType: VooOverlayType.bottomSheet, constraints: VooOverlayConstraints.bottomSheet);
 
   /// Configuration that always shows a modal dialog.
   static const VooOverlayConfig modal = VooOverlayConfig(
@@ -135,42 +125,40 @@ class VooOverlayConfig extends Equatable {
     bool? useRootNavigator,
     bool? anchorRight,
     String? semanticLabel,
-  }) {
-    return VooOverlayConfig(
-      style: style ?? this.style,
-      customStyle: customStyle ?? this.customStyle,
-      behavior: behavior ?? this.behavior,
-      constraints: constraints ?? this.constraints,
-      breakpoints: breakpoints ?? this.breakpoints,
-      forceType: forceType ?? this.forceType,
-      animationDuration: animationDuration ?? this.animationDuration,
-      enterCurve: enterCurve ?? this.enterCurve,
-      exitCurve: exitCurve ?? this.exitCurve,
-      routeSettings: routeSettings ?? this.routeSettings,
-      useSafeArea: useSafeArea ?? this.useSafeArea,
-      clipBehavior: clipBehavior ?? this.clipBehavior,
-      useRootNavigator: useRootNavigator ?? this.useRootNavigator,
-      anchorRight: anchorRight ?? this.anchorRight,
-      semanticLabel: semanticLabel ?? this.semanticLabel,
-    );
-  }
+  }) => VooOverlayConfig(
+    style: style ?? this.style,
+    customStyle: customStyle ?? this.customStyle,
+    behavior: behavior ?? this.behavior,
+    constraints: constraints ?? this.constraints,
+    breakpoints: breakpoints ?? this.breakpoints,
+    forceType: forceType ?? this.forceType,
+    animationDuration: animationDuration ?? this.animationDuration,
+    enterCurve: enterCurve ?? this.enterCurve,
+    exitCurve: exitCurve ?? this.exitCurve,
+    routeSettings: routeSettings ?? this.routeSettings,
+    useSafeArea: useSafeArea ?? this.useSafeArea,
+    clipBehavior: clipBehavior ?? this.clipBehavior,
+    useRootNavigator: useRootNavigator ?? this.useRootNavigator,
+    anchorRight: anchorRight ?? this.anchorRight,
+    semanticLabel: semanticLabel ?? this.semanticLabel,
+  );
 
   @override
   List<Object?> get props => [
-        style,
-        customStyle,
-        behavior,
-        constraints,
-        breakpoints,
-        forceType,
-        animationDuration,
-        enterCurve,
-        exitCurve,
-        routeSettings,
-        useSafeArea,
-        clipBehavior,
-        useRootNavigator,
-        anchorRight,
-        semanticLabel,
-      ];
+    style,
+    customStyle,
+    behavior,
+    constraints,
+    breakpoints,
+    forceType,
+    animationDuration,
+    enterCurve,
+    exitCurve,
+    routeSettings,
+    useSafeArea,
+    clipBehavior,
+    useRootNavigator,
+    anchorRight,
+    semanticLabel,
+  ];
 }

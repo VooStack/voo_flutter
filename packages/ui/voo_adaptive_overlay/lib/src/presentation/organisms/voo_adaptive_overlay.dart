@@ -58,25 +58,17 @@ class VooAdaptiveOverlay {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
+    VooOverlayConfig config = VooOverlayConfig.material,
   }) {
     final screenInfo = ScreenInfo.fromContext(context);
     final overlayType = _determineOverlayType(screenInfo, config);
 
-    return Navigator.of(context, rootNavigator: config.useRootNavigator)
-        .push<T>(
+    return Navigator.of(context, rootNavigator: config.useRootNavigator).push<T>(
       VooOverlayRoute<T>(
         config: config,
         overlayType: overlayType,
-        builder: (context) => _buildOverlay(
-          context: context,
-          title: title,
-          content: content,
-          builder: builder,
-          actions: actions,
-          config: config,
-          overlayType: overlayType,
-        ),
+        builder: (context) =>
+            _buildOverlay(context: context, title: title, content: content, builder: builder, actions: actions, config: config, overlayType: overlayType),
       ),
     );
   }
@@ -88,17 +80,15 @@ class VooAdaptiveOverlay {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return show<T>(
-      context: context,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config.copyWith(forceType: VooOverlayType.bottomSheet),
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) => show<T>(
+    context: context,
+    title: title,
+    content: content,
+    builder: builder,
+    actions: actions,
+    config: config.copyWith(forceType: VooOverlayType.bottomSheet),
+  );
 
   /// Shows a modal dialog overlay regardless of screen size.
   static Future<T?> showModal<T>({
@@ -107,17 +97,15 @@ class VooAdaptiveOverlay {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return show<T>(
-      context: context,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config.copyWith(forceType: VooOverlayType.modal),
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) => show<T>(
+    context: context,
+    title: title,
+    content: content,
+    builder: builder,
+    actions: actions,
+    config: config.copyWith(forceType: VooOverlayType.modal),
+  );
 
   /// Shows a side sheet overlay regardless of screen size.
   static Future<T?> showSideSheet<T>({
@@ -126,17 +114,15 @@ class VooAdaptiveOverlay {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return show<T>(
-      context: context,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config.copyWith(forceType: VooOverlayType.sideSheet),
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) => show<T>(
+    context: context,
+    title: title,
+    content: content,
+    builder: builder,
+    actions: actions,
+    config: config.copyWith(forceType: VooOverlayType.sideSheet),
+  );
 
   /// Shows a fullscreen overlay regardless of screen size.
   static Future<T?> showFullscreen<T>({
@@ -145,17 +131,15 @@ class VooAdaptiveOverlay {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return show<T>(
-      context: context,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config.copyWith(forceType: VooOverlayType.fullscreen),
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) => show<T>(
+    context: context,
+    title: title,
+    content: content,
+    builder: builder,
+    actions: actions,
+    config: config.copyWith(forceType: VooOverlayType.fullscreen),
+  );
 
   /// Shows a drawer overlay from the left or right.
   static Future<T?> showDrawer<T>({
@@ -167,28 +151,25 @@ class VooAdaptiveOverlay {
     bool anchorRight = false,
     Widget? leading,
     List<Widget>? trailing,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return Navigator.of(context, rootNavigator: config.useRootNavigator)
-        .push<T>(
-      VooOverlayRoute<T>(
-        config: config.copyWith(anchorRight: anchorRight),
-        overlayType: VooOverlayType.drawer,
-        builder: (context) => VooDrawer(
-          title: title,
-          content: content,
-          builder: builder,
-          actions: actions,
-          style: config.style,
-          behavior: config.behavior,
-          constraints: config.constraints,
-          anchorRight: anchorRight,
-          leading: leading,
-          trailing: trailing,
-        ),
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) => Navigator.of(context, rootNavigator: config.useRootNavigator).push<T>(
+    VooOverlayRoute<T>(
+      config: config.copyWith(anchorRight: anchorRight),
+      overlayType: VooOverlayType.drawer,
+      builder: (context) => VooDrawer(
+        title: title,
+        content: content,
+        builder: builder,
+        actions: actions,
+        style: config.style,
+        behavior: config.behavior,
+        constraints: config.constraints,
+        anchorRight: anchorRight,
+        leading: leading,
+        trailing: trailing,
       ),
-    );
-  }
+    ),
+  );
 
   /// Shows an action sheet with a list of options.
   ///
@@ -211,14 +192,11 @@ class VooAdaptiveOverlay {
     required List<VooOverlayAction> actions,
     VooOverlayAction? cancelAction,
     VooOverlayStyle? style,
-    VooOverlayConfig config = const VooOverlayConfig(
-      style: VooOverlayStyle.cupertino,
-    ),
+    VooOverlayConfig config = VooOverlayConfig.cupertino,
   }) {
     final effectiveStyle = style ?? config.style;
     final effectiveConfig = style != null ? config.copyWith(style: style) : config;
-    return Navigator.of(context, rootNavigator: effectiveConfig.useRootNavigator)
-        .push<T>(
+    return Navigator.of(context, rootNavigator: effectiveConfig.useRootNavigator).push<T>(
       VooOverlayRoute<T>(
         config: effectiveConfig,
         overlayType: VooOverlayType.actionSheet,
@@ -277,7 +255,7 @@ class VooAdaptiveOverlay {
     final overlay = Overlay.of(context, rootOverlay: useRootNavigator);
     overlay.insert(overlayEntry);
 
-    await Future.delayed(duration);
+    await Future<void>.delayed(duration);
     overlayEntry.remove();
   }
 
@@ -307,26 +285,24 @@ class VooAdaptiveOverlay {
     Color? backgroundColor,
     Offset offset = Offset.zero,
     bool useRootNavigator = true,
-  }) {
-    return Navigator.of(context, rootNavigator: useRootNavigator).push<T>(
-      VooOverlayRoute<T>(
-        config: VooOverlayConfig(style: style),
-        overlayType: VooOverlayType.popup,
-        builder: (context) => VooPopup(
-          content: content,
-          actions: actions,
-          style: style,
-          position: position,
-          anchorRect: anchorRect,
-          maxWidth: maxWidth,
-          maxHeight: maxHeight,
-          showArrow: showArrow,
-          backgroundColor: backgroundColor,
-          offset: offset,
-        ),
+  }) => Navigator.of(context, rootNavigator: useRootNavigator).push<T>(
+    VooOverlayRoute<T>(
+      config: VooOverlayConfig(style: style),
+      overlayType: VooOverlayType.popup,
+      builder: (context) => VooPopup(
+        content: content,
+        actions: actions,
+        style: style,
+        position: position,
+        anchorRect: anchorRect,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+        showArrow: showArrow,
+        backgroundColor: backgroundColor,
+        offset: offset,
       ),
-    );
-  }
+    ),
+  );
 
   /// Shows a banner notification at the top or bottom of the screen.
   ///
@@ -375,7 +351,7 @@ class VooAdaptiveOverlay {
     overlay.insert(overlayEntry);
 
     if (duration != null) {
-      await Future.delayed(duration);
+      await Future<void>.delayed(duration);
       overlayEntry.remove();
     }
   }
@@ -423,7 +399,7 @@ class VooAdaptiveOverlay {
     final overlay = Overlay.of(context, rootOverlay: useRootNavigator);
     overlay.insert(overlayEntry);
 
-    await Future.delayed(duration);
+    await Future<void>.delayed(duration);
     overlayEntry.remove();
   }
 
@@ -448,33 +424,27 @@ class VooAdaptiveOverlay {
     IconData? icon,
     Color? iconColor,
     double maxWidth = 340,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return Navigator.of(context, rootNavigator: config.useRootNavigator)
-        .push<T>(
-      VooOverlayRoute<T>(
-        config: config.copyWith(style: style),
-        overlayType: VooOverlayType.alert,
-        builder: (context) => VooAlert(
-          title: title,
-          message: message,
-          content: content,
-          type: type,
-          style: style,
-          actions: actions,
-          icon: icon,
-          iconColor: iconColor,
-          maxWidth: maxWidth,
-        ),
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) => Navigator.of(context, rootNavigator: config.useRootNavigator).push<T>(
+    VooOverlayRoute<T>(
+      config: config.copyWith(style: style),
+      overlayType: VooOverlayType.alert,
+      builder: (context) => VooAlert(
+        title: title,
+        message: message,
+        content: content,
+        type: type,
+        style: style,
+        actions: actions,
+        icon: icon,
+        iconColor: iconColor,
+        maxWidth: maxWidth,
       ),
-    );
-  }
+    ),
+  );
 
   /// Determines the appropriate overlay type based on screen info and config.
-  static VooOverlayType _determineOverlayType(
-    ScreenInfo screenInfo,
-    VooOverlayConfig config,
-  ) {
+  static VooOverlayType _determineOverlayType(ScreenInfo screenInfo, VooOverlayConfig config) {
     // If forced type is specified, use it
     if (config.forceType != null) {
       return config.forceType!;
@@ -484,8 +454,7 @@ class VooAdaptiveOverlay {
     final breakpoints = config.breakpoints;
 
     // Check for fullscreen on very small screens
-    if (breakpoints.useFullscreenForCompact &&
-        width < breakpoints.fullscreenThreshold) {
+    if (breakpoints.useFullscreenForCompact && width < breakpoints.fullscreenThreshold) {
       return VooOverlayType.fullscreen;
     }
 
@@ -550,14 +519,7 @@ class VooAdaptiveOverlay {
           anchorRight: config.anchorRight,
         );
       case VooOverlayType.fullscreen:
-        return VooFullscreenOverlay(
-          title: title,
-          content: content,
-          builder: builder,
-          actions: actions,
-          style: config.style,
-          behavior: config.behavior,
-        );
+        return VooFullscreenOverlay(title: title, content: content, builder: builder, actions: actions, style: config.style, behavior: config.behavior);
       case VooOverlayType.drawer:
         return VooDrawer(
           title: title,
@@ -570,12 +532,7 @@ class VooAdaptiveOverlay {
           anchorRight: config.anchorRight,
         );
       case VooOverlayType.actionSheet:
-        return VooActionSheet(
-          title: title,
-          actions: actions ?? [],
-          style: config.style,
-          behavior: config.behavior,
-        );
+        return VooActionSheet(title: title, actions: actions ?? [], style: config.style, behavior: config.behavior);
       case VooOverlayType.snackbar:
       case VooOverlayType.popup:
       case VooOverlayType.banner:
@@ -584,8 +541,8 @@ class VooAdaptiveOverlay {
         return const SizedBox.shrink();
       case VooOverlayType.alert:
         return VooAlert(
-          title: title is Text ? (title as Text).data ?? '' : 'Alert',
-          message: content is Text ? (content as Text).data ?? '' : '',
+          title: title is Text ? title.data ?? '' : 'Alert',
+          message: content is Text ? content.data ?? '' : '',
           content: content is Text ? null : content,
           style: config.style,
           actions: actions ?? [],
@@ -622,8 +579,7 @@ class _SnackbarOverlay extends StatefulWidget {
   State<_SnackbarOverlay> createState() => _SnackbarOverlayState();
 }
 
-class _SnackbarOverlayState extends State<_SnackbarOverlay>
-    with SingleTickerProviderStateMixin {
+class _SnackbarOverlayState extends State<_SnackbarOverlay> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -631,19 +587,11 @@ class _SnackbarOverlayState extends State<_SnackbarOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -655,25 +603,23 @@ class _SnackbarOverlayState extends State<_SnackbarOverlay>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: VooSnackbar(
-          message: widget.message,
-          icon: widget.icon,
-          action: widget.action,
-          showCloseButton: widget.showCloseButton,
-          style: widget.style,
-          floating: widget.floating,
-          backgroundColor: widget.backgroundColor,
-          textColor: widget.textColor,
-          onClose: widget.onClose,
-        ),
+  Widget build(BuildContext context) => FadeTransition(
+    opacity: _fadeAnimation,
+    child: SlideTransition(
+      position: _slideAnimation,
+      child: VooSnackbar(
+        message: widget.message,
+        icon: widget.icon,
+        action: widget.action,
+        showCloseButton: widget.showCloseButton,
+        style: widget.style,
+        floating: widget.floating,
+        backgroundColor: widget.backgroundColor,
+        textColor: widget.textColor,
+        onClose: widget.onClose,
       ),
-    );
-  }
+    ),
+  );
 }
 
 /// Internal banner overlay widget with animation.
@@ -708,8 +654,7 @@ class _BannerOverlay extends StatefulWidget {
   State<_BannerOverlay> createState() => _BannerOverlayState();
 }
 
-class _BannerOverlayState extends State<_BannerOverlay>
-    with SingleTickerProviderStateMixin {
+class _BannerOverlayState extends State<_BannerOverlay> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -717,21 +662,13 @@ class _BannerOverlayState extends State<_BannerOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 250), vsync: this);
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    final slideBegin = widget.position == VooBannerPosition.top
-        ? const Offset(0, -1)
-        : const Offset(0, 1);
+    final slideBegin = widget.position == VooBannerPosition.top ? const Offset(0, -1) : const Offset(0, 1);
 
-    _slideAnimation = Tween<Offset>(begin: slideBegin, end: Offset.zero)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _slideAnimation = Tween<Offset>(begin: slideBegin, end: Offset.zero).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -743,27 +680,25 @@ class _BannerOverlayState extends State<_BannerOverlay>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: VooBanner(
-          message: widget.message,
-          title: widget.title,
-          icon: widget.icon,
-          type: widget.type,
-          position: widget.position,
-          action: widget.action,
-          showCloseButton: widget.showCloseButton,
-          style: widget.style,
-          backgroundColor: widget.backgroundColor,
-          textColor: widget.textColor,
-          onClose: widget.onClose,
-        ),
+  Widget build(BuildContext context) => FadeTransition(
+    opacity: _fadeAnimation,
+    child: SlideTransition(
+      position: _slideAnimation,
+      child: VooBanner(
+        message: widget.message,
+        title: widget.title,
+        icon: widget.icon,
+        type: widget.type,
+        position: widget.position,
+        action: widget.action,
+        showCloseButton: widget.showCloseButton,
+        style: widget.style,
+        backgroundColor: widget.backgroundColor,
+        textColor: widget.textColor,
+        onClose: widget.onClose,
       ),
-    );
-  }
+    ),
+  );
 }
 
 /// Internal tooltip overlay widget with animation.
@@ -796,8 +731,7 @@ class _TooltipOverlay extends StatefulWidget {
   State<_TooltipOverlay> createState() => _TooltipOverlayState();
 }
 
-class _TooltipOverlayState extends State<_TooltipOverlay>
-    with SingleTickerProviderStateMixin {
+class _TooltipOverlayState extends State<_TooltipOverlay> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -805,18 +739,11 @@ class _TooltipOverlayState extends State<_TooltipOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 150), vsync: this);
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -828,24 +755,22 @@ class _TooltipOverlayState extends State<_TooltipOverlay>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: VooTooltip(
-          message: widget.message,
-          content: widget.content,
-          style: widget.style,
-          position: widget.position,
-          anchorRect: widget.anchorRect,
-          maxWidth: widget.maxWidth,
-          showArrow: widget.showArrow,
-          backgroundColor: widget.backgroundColor,
-          textColor: widget.textColor,
-          offset: widget.offset,
-        ),
+  Widget build(BuildContext context) => FadeTransition(
+    opacity: _fadeAnimation,
+    child: ScaleTransition(
+      scale: _scaleAnimation,
+      child: VooTooltip(
+        message: widget.message,
+        content: widget.content,
+        style: widget.style,
+        position: widget.position,
+        anchorRect: widget.anchorRect,
+        maxWidth: widget.maxWidth,
+        showArrow: widget.showArrow,
+        backgroundColor: widget.backgroundColor,
+        textColor: widget.textColor,
+        offset: widget.offset,
       ),
-    );
-  }
+    ),
+  );
 }

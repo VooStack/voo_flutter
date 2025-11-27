@@ -39,7 +39,7 @@ class VooFullscreenOverlay extends StatelessWidget {
     this.builder,
     this.actions,
     this.style = VooOverlayStyle.material,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
     this.onClose,
     this.scrollController,
   });
@@ -58,12 +58,7 @@ class VooFullscreenOverlay extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: title,
         actions: [
-          if (behavior.showCloseButton)
-            IconButton(
-              onPressed: onClose ?? () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.close),
-              tooltip: 'Close',
-            ),
+          if (behavior.showCloseButton) IconButton(onPressed: onClose ?? () => Navigator.of(context).pop(), icon: const Icon(Icons.close), tooltip: 'Close'),
         ],
       ),
       body: SafeArea(
@@ -74,24 +69,12 @@ class VooFullscreenOverlay extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: style == VooOverlayStyle.material ? 24 : 16,
-                  ),
-                  child: DefaultTextStyle.merge(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    child: content!,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: style == VooOverlayStyle.material ? 24 : 16),
+                  child: DefaultTextStyle.merge(style: Theme.of(context).textTheme.bodyLarge, child: content!),
                 ),
               ),
-            if (builder != null)
-              Expanded(
-                child: builder!(context, scrollController),
-              ),
-            if (actions != null && actions!.isNotEmpty)
-              OverlayActionBar(
-                actions: actions!,
-                style: style,
-              ),
+            if (builder != null) Expanded(child: builder!(context, scrollController)),
+            if (actions != null && actions!.isNotEmpty) OverlayActionBar(actions: actions!, style: style),
           ],
         ),
       ),

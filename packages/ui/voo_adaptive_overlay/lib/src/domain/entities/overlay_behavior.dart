@@ -57,25 +57,13 @@ class VooOverlayBehavior extends Equatable {
   });
 
   /// Default behavior for bottom sheets.
-  static const VooOverlayBehavior bottomSheet = VooOverlayBehavior(
-    enableDrag: true,
-    swipeDirection: VooSwipeDirection.down,
-    showDragHandle: true,
-  );
+  static const VooOverlayBehavior bottomSheet = VooOverlayBehavior();
 
   /// Default behavior for modal dialogs.
-  static const VooOverlayBehavior modal = VooOverlayBehavior(
-    enableDrag: false,
-    swipeDirection: VooSwipeDirection.none,
-    showDragHandle: false,
-  );
+  static const VooOverlayBehavior modal = VooOverlayBehavior(enableDrag: false, swipeDirection: VooSwipeDirection.none, showDragHandle: false);
 
   /// Default behavior for side sheets.
-  static const VooOverlayBehavior sideSheet = VooOverlayBehavior(
-    enableDrag: true,
-    swipeDirection: VooSwipeDirection.left,
-    showDragHandle: false,
-  );
+  static const VooOverlayBehavior sideSheet = VooOverlayBehavior(swipeDirection: VooSwipeDirection.left, showDragHandle: false);
 
   /// Non-dismissible behavior for important dialogs.
   static const VooOverlayBehavior nonDismissible = VooOverlayBehavior(
@@ -97,32 +85,30 @@ class VooOverlayBehavior extends Equatable {
     bool? showDragHandle,
     bool? avoidKeyboard,
     bool? maintainState,
-  }) {
-    return VooOverlayBehavior(
-      isDismissible: isDismissible ?? this.isDismissible,
-      enableDrag: enableDrag ?? this.enableDrag,
-      swipeDirection: swipeDirection ?? this.swipeDirection,
-      dismissOnEscape: dismissOnEscape ?? this.dismissOnEscape,
-      dismissOnBack: dismissOnBack ?? this.dismissOnBack,
-      useSpringPhysics: useSpringPhysics ?? this.useSpringPhysics,
-      showCloseButton: showCloseButton ?? this.showCloseButton,
-      showDragHandle: showDragHandle ?? this.showDragHandle,
-      avoidKeyboard: avoidKeyboard ?? this.avoidKeyboard,
-      maintainState: maintainState ?? this.maintainState,
-    );
-  }
+  }) => VooOverlayBehavior(
+    isDismissible: isDismissible ?? this.isDismissible,
+    enableDrag: enableDrag ?? this.enableDrag,
+    swipeDirection: swipeDirection ?? this.swipeDirection,
+    dismissOnEscape: dismissOnEscape ?? this.dismissOnEscape,
+    dismissOnBack: dismissOnBack ?? this.dismissOnBack,
+    useSpringPhysics: useSpringPhysics ?? this.useSpringPhysics,
+    showCloseButton: showCloseButton ?? this.showCloseButton,
+    showDragHandle: showDragHandle ?? this.showDragHandle,
+    avoidKeyboard: avoidKeyboard ?? this.avoidKeyboard,
+    maintainState: maintainState ?? this.maintainState,
+  );
 
   @override
   List<Object?> get props => [
-        isDismissible,
-        enableDrag,
-        swipeDirection,
-        dismissOnEscape,
-        dismissOnBack,
-        useSpringPhysics,
-        showCloseButton,
-        showDragHandle,
-        avoidKeyboard,
-        maintainState,
-      ];
+    isDismissible,
+    enableDrag,
+    swipeDirection,
+    dismissOnEscape,
+    dismissOnBack,
+    useSpringPhysics,
+    showCloseButton,
+    showDragHandle,
+    avoidKeyboard,
+    maintainState,
+  ];
 }

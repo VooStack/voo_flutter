@@ -23,11 +23,9 @@ class VooOverlayRoute<T> extends PopupRoute<T> {
     required this.builder,
   }) : super(settings: config.routeSettings);
 
+  // Barrier is handled by OverlayBarrier widget
   @override
-  Color? get barrierColor {
-    // Barrier is handled by OverlayBarrier widget
-    return null;
-  }
+  Color? get barrierColor => null;
 
   @override
   bool get barrierDismissible => config.behavior.isDismissible;
@@ -36,30 +34,27 @@ class VooOverlayRoute<T> extends PopupRoute<T> {
   String? get barrierLabel => config.semanticLabel ?? 'Dismiss';
 
   @override
-  Duration get transitionDuration {
-    return config.animationDuration ?? const Duration(milliseconds: 250);
-  }
+  Duration get transitionDuration =>
+      config.animationDuration ?? const Duration(milliseconds: 250);
 
   @override
-  Duration get reverseTransitionDuration {
-    return config.animationDuration ?? const Duration(milliseconds: 200);
-  }
+  Duration get reverseTransitionDuration =>
+      config.animationDuration ?? const Duration(milliseconds: 200);
 
   Curve get _enterCurve => config.enterCurve ?? Curves.easeOutCubic;
   Curve get _exitCurve => config.exitCurve ?? Curves.easeInCubic;
 
+  // Wrap in Material to provide DefaultTextStyle for text widgets
   @override
   Widget buildPage(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
-  ) {
-    // Wrap in Material to provide DefaultTextStyle for text widgets
-    return Material(
-      type: MaterialType.transparency,
-      child: builder(context),
-    );
-  }
+  ) =>
+      Material(
+        type: MaterialType.transparency,
+        child: builder(context),
+      );
 
   @override
   Widget buildTransitions(
@@ -120,41 +115,41 @@ class VooOverlayRoute<T> extends PopupRoute<T> {
     }
   }
 
-  Widget _buildTopBottomAnimation(Animation<double> animation, Widget child) {
-    return FadeTransition(
-      opacity: animation,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, -0.1),
-          end: Offset.zero,
-        ).animate(animation),
-        child: child,
-      ),
-    );
-  }
+  Widget _buildTopBottomAnimation(Animation<double> animation, Widget child) =>
+      FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, -0.1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+      );
 
-  Widget _buildBottomSheetAnimation(Animation<double> animation, Widget child) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 1),
-          end: Offset.zero,
-        ).animate(animation),
-        child: child,
-      ),
-    );
-  }
+  Widget _buildBottomSheetAnimation(
+    Animation<double> animation,
+    Widget child,
+  ) =>
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+      );
 
-  Widget _buildModalAnimation(Animation<double> animation, Widget child) {
-    return FadeTransition(
-      opacity: animation,
-      child: ScaleTransition(
-        scale: Tween<double>(begin: 0.9, end: 1.0).animate(animation),
-        child: child,
-      ),
-    );
-  }
+  Widget _buildModalAnimation(Animation<double> animation, Widget child) =>
+      FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.9, end: 1.0).animate(animation),
+          child: child,
+        ),
+      );
 
   Widget _buildSideSheetAnimation(
     BuildContext context,
@@ -174,16 +169,15 @@ class VooOverlayRoute<T> extends PopupRoute<T> {
     );
   }
 
-  Widget _buildFullscreenAnimation(Animation<double> animation, Widget child) {
-    return FadeTransition(
-      opacity: animation,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.02),
-          end: Offset.zero,
-        ).animate(animation),
-        child: child,
-      ),
-    );
-  }
+  Widget _buildFullscreenAnimation(Animation<double> animation, Widget child) =>
+      FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.02),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+      );
 }

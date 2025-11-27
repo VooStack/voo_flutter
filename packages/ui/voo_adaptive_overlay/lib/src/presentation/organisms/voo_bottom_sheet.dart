@@ -47,7 +47,7 @@ class VooBottomSheet extends StatelessWidget {
     this.builder,
     this.actions,
     this.style = VooOverlayStyle.material,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
     this.constraints = const VooOverlayConstraints(),
     this.onClose,
     this.scrollController,
@@ -59,7 +59,7 @@ class VooBottomSheet extends StatelessWidget {
     final decoration = overlayStyle.getDecoration(context, VooOverlayType.bottomSheet);
     final blurSigma = overlayStyle.getBlurSigma();
 
-    Widget sheet = Container(
+    Widget sheet = DecoratedBox(
       decoration: decoration,
       child: SafeArea(
         top: false,
@@ -67,37 +67,19 @@ class VooBottomSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (behavior.showDragHandle)
-              OverlayHandle(style: style),
+            if (behavior.showDragHandle) OverlayHandle(style: style),
             if (title != null || behavior.showCloseButton)
-              OverlayHeader(
-                title: title,
-                showCloseButton: behavior.showCloseButton,
-                onClose: onClose ?? () => Navigator.of(context).pop(),
-                style: style,
-              ),
+              OverlayHeader(title: title, showCloseButton: behavior.showCloseButton, onClose: onClose ?? () => Navigator.of(context).pop(), style: style),
             if (content != null)
               Flexible(
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: style == VooOverlayStyle.material ? 24 : 16,
-                  ),
-                  child: DefaultTextStyle.merge(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    child: content!,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: style == VooOverlayStyle.material ? 24 : 16),
+                  child: DefaultTextStyle.merge(style: Theme.of(context).textTheme.bodyLarge, child: content!),
                 ),
               ),
-            if (builder != null)
-              Flexible(
-                child: builder!(context, scrollController),
-              ),
-            if (actions != null && actions!.isNotEmpty)
-              OverlayActionBar(
-                actions: actions!,
-                style: style,
-              ),
+            if (builder != null) Flexible(child: builder!(context, scrollController)),
+            if (actions != null && actions!.isNotEmpty) OverlayActionBar(actions: actions!, style: style),
           ],
         ),
       ),

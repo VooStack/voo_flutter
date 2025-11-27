@@ -46,7 +46,7 @@ class VooModalDialog extends StatelessWidget {
     this.builder,
     this.actions,
     this.style = VooOverlayStyle.material,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
     this.constraints = const VooOverlayConstraints(),
     this.onClose,
     this.scrollController,
@@ -74,46 +74,24 @@ class VooModalDialog extends StatelessWidget {
     maxHeight ??= mediaQuery.size.height * 0.9;
 
     Widget dialog = Container(
-      constraints: BoxConstraints(
-        minWidth: constraints.minWidth,
-        maxWidth: maxWidth,
-        minHeight: constraints.minHeight,
-        maxHeight: maxHeight,
-      ),
+      constraints: BoxConstraints(minWidth: constraints.minWidth, maxWidth: maxWidth, minHeight: constraints.minHeight, maxHeight: maxHeight),
       decoration: decoration,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (title != null || behavior.showCloseButton)
-            OverlayHeader(
-              title: title,
-              showCloseButton: behavior.showCloseButton,
-              onClose: onClose ?? () => Navigator.of(context).pop(),
-              style: style,
-            ),
+            OverlayHeader(title: title, showCloseButton: behavior.showCloseButton, onClose: onClose ?? () => Navigator.of(context).pop(), style: style),
           if (content != null)
             Flexible(
               child: SingleChildScrollView(
                 controller: scrollController,
-                padding: EdgeInsets.symmetric(
-                  horizontal: style == VooOverlayStyle.material ? 24 : 16,
-                ),
-                child: DefaultTextStyle.merge(
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  child: content!,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: style == VooOverlayStyle.material ? 24 : 16),
+                child: DefaultTextStyle.merge(style: Theme.of(context).textTheme.bodyLarge, child: content!),
               ),
             ),
-          if (builder != null)
-            Flexible(
-              child: builder!(context, scrollController),
-            ),
-          if (actions != null && actions!.isNotEmpty)
-            OverlayActionBar(
-              actions: actions!,
-              style: style,
-            ),
+          if (builder != null) Flexible(child: builder!(context, scrollController)),
+          if (actions != null && actions!.isNotEmpty) OverlayActionBar(actions: actions!, style: style),
         ],
       ),
     );

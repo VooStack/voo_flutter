@@ -59,7 +59,7 @@ class VooDrawer extends StatelessWidget {
     this.builder,
     this.actions,
     this.style = VooOverlayStyle.material,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
     this.constraints = const VooOverlayConstraints(),
     this.onClose,
     this.scrollController,
@@ -85,23 +85,12 @@ class VooDrawer extends StatelessWidget {
     // Adjust border radius based on anchor side
     BorderRadius borderRadius;
     if (anchorRight) {
-      borderRadius = BorderRadius.horizontal(
-        left: overlayStyle
-            .getBorderRadius(context, VooOverlayType.drawer)
-            .topLeft,
-      );
+      borderRadius = BorderRadius.horizontal(left: overlayStyle.getBorderRadius(context, VooOverlayType.drawer).topLeft);
     } else {
-      borderRadius = BorderRadius.horizontal(
-        right: overlayStyle
-            .getBorderRadius(context, VooOverlayType.drawer)
-            .topLeft,
-      );
+      borderRadius = BorderRadius.horizontal(right: overlayStyle.getBorderRadius(context, VooOverlayType.drawer).topLeft);
     }
 
-    final decoration =
-        overlayStyle.getDecoration(context, VooOverlayType.drawer).copyWith(
-              borderRadius: borderRadius,
-            );
+    final decoration = overlayStyle.getDecoration(context, VooOverlayType.drawer).copyWith(borderRadius: borderRadius);
 
     Widget drawer = Container(
       width: maxWidth,
@@ -125,24 +114,12 @@ class VooDrawer extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: style == VooOverlayStyle.material ? 24 : 16,
-                  ),
-                  child: DefaultTextStyle.merge(
-                    style: theme.textTheme.bodyLarge,
-                    child: content!,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: style == VooOverlayStyle.material ? 24 : 16),
+                  child: DefaultTextStyle.merge(style: theme.textTheme.bodyLarge, child: content!),
                 ),
               ),
-            if (builder != null)
-              Expanded(
-                child: builder!(context, scrollController),
-              ),
-            if (actions != null && actions!.isNotEmpty)
-              OverlayActionBar(
-                actions: actions!,
-                style: style,
-              ),
+            if (builder != null) Expanded(child: builder!(context, scrollController)),
+            if (actions != null && actions!.isNotEmpty) OverlayActionBar(actions: actions!, style: style),
           ],
         ),
       ),
@@ -158,9 +135,6 @@ class VooDrawer extends StatelessWidget {
       );
     }
 
-    return Align(
-      alignment: anchorRight ? Alignment.centerRight : Alignment.centerLeft,
-      child: drawer,
-    );
+    return Align(alignment: anchorRight ? Alignment.centerRight : Alignment.centerLeft, child: drawer);
   }
 }

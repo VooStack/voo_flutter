@@ -35,14 +35,10 @@ class VooOverlayBreakpoints extends Equatable {
   static const VooOverlayBreakpoints material = VooOverlayBreakpoints();
 
   /// Breakpoints that always prefer modals over side sheets.
-  static const VooOverlayBreakpoints modalPreferred = VooOverlayBreakpoints(
-    preferSideSheetOnDesktop: false,
-  );
+  static const VooOverlayBreakpoints modalPreferred = VooOverlayBreakpoints(preferSideSheetOnDesktop: false);
 
   /// Breakpoints that always prefer bottom sheets on mobile/tablet.
-  static const VooOverlayBreakpoints bottomSheetPreferred = VooOverlayBreakpoints(
-    bottomSheetMaxWidth: 1024,
-  );
+  static const VooOverlayBreakpoints bottomSheetPreferred = VooOverlayBreakpoints(bottomSheetMaxWidth: 1024);
 
   VooOverlayBreakpoints copyWith({
     double? bottomSheetMaxWidth,
@@ -50,22 +46,14 @@ class VooOverlayBreakpoints extends Equatable {
     bool? preferSideSheetOnDesktop,
     bool? useFullscreenForCompact,
     double? fullscreenThreshold,
-  }) {
-    return VooOverlayBreakpoints(
-      bottomSheetMaxWidth: bottomSheetMaxWidth ?? this.bottomSheetMaxWidth,
-      modalMaxWidth: modalMaxWidth ?? this.modalMaxWidth,
-      preferSideSheetOnDesktop: preferSideSheetOnDesktop ?? this.preferSideSheetOnDesktop,
-      useFullscreenForCompact: useFullscreenForCompact ?? this.useFullscreenForCompact,
-      fullscreenThreshold: fullscreenThreshold ?? this.fullscreenThreshold,
-    );
-  }
+  }) => VooOverlayBreakpoints(
+    bottomSheetMaxWidth: bottomSheetMaxWidth ?? this.bottomSheetMaxWidth,
+    modalMaxWidth: modalMaxWidth ?? this.modalMaxWidth,
+    preferSideSheetOnDesktop: preferSideSheetOnDesktop ?? this.preferSideSheetOnDesktop,
+    useFullscreenForCompact: useFullscreenForCompact ?? this.useFullscreenForCompact,
+    fullscreenThreshold: fullscreenThreshold ?? this.fullscreenThreshold,
+  );
 
   @override
-  List<Object?> get props => [
-        bottomSheetMaxWidth,
-        modalMaxWidth,
-        preferSideSheetOnDesktop,
-        useFullscreenForCompact,
-        fullscreenThreshold,
-      ];
+  List<Object?> get props => [bottomSheetMaxWidth, modalMaxWidth, preferSideSheetOnDesktop, useFullscreenForCompact, fullscreenThreshold];
 }

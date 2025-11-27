@@ -48,28 +48,16 @@ class VooOverlayConstraints extends Equatable {
   });
 
   /// Default constraints for modal dialogs.
-  static const VooOverlayConstraints modal = VooOverlayConstraints(
-    maxWidth: 560,
-    maxHeight: 0.9,
-  );
+  static const VooOverlayConstraints modal = VooOverlayConstraints(maxWidth: 560, maxHeight: 0.9);
 
   /// Default constraints for side sheets.
-  static const VooOverlayConstraints sideSheet = VooOverlayConstraints(
-    maxWidth: 400,
-    maxHeight: 1.0,
-  );
+  static const VooOverlayConstraints sideSheet = VooOverlayConstraints(maxWidth: 400, maxHeight: 1.0);
 
   /// Default constraints for bottom sheets.
-  static const VooOverlayConstraints bottomSheet = VooOverlayConstraints(
-    maxWidth: 1.0,
-    maxHeight: 0.95,
-  );
+  static const VooOverlayConstraints bottomSheet = VooOverlayConstraints(maxWidth: 1.0, maxHeight: 0.95);
 
   /// Constraints for fullscreen overlays.
-  static const VooOverlayConstraints fullscreen = VooOverlayConstraints(
-    maxWidth: 1.0,
-    maxHeight: 1.0,
-  );
+  static const VooOverlayConstraints fullscreen = VooOverlayConstraints(maxWidth: 1.0, maxHeight: 1.0);
 
   VooOverlayConstraints copyWith({
     double? maxWidth,
@@ -79,26 +67,16 @@ class VooOverlayConstraints extends Equatable {
     double? initialHeightFraction,
     double? maxSnapPoint,
     double? minSnapPoint,
-  }) {
-    return VooOverlayConstraints(
-      maxWidth: maxWidth ?? this.maxWidth,
-      maxHeight: maxHeight ?? this.maxHeight,
-      minWidth: minWidth ?? this.minWidth,
-      minHeight: minHeight ?? this.minHeight,
-      initialHeightFraction: initialHeightFraction ?? this.initialHeightFraction,
-      maxSnapPoint: maxSnapPoint ?? this.maxSnapPoint,
-      minSnapPoint: minSnapPoint ?? this.minSnapPoint,
-    );
-  }
+  }) => VooOverlayConstraints(
+    maxWidth: maxWidth ?? this.maxWidth,
+    maxHeight: maxHeight ?? this.maxHeight,
+    minWidth: minWidth ?? this.minWidth,
+    minHeight: minHeight ?? this.minHeight,
+    initialHeightFraction: initialHeightFraction ?? this.initialHeightFraction,
+    maxSnapPoint: maxSnapPoint ?? this.maxSnapPoint,
+    minSnapPoint: minSnapPoint ?? this.minSnapPoint,
+  );
 
   @override
-  List<Object?> get props => [
-        maxWidth,
-        maxHeight,
-        minWidth,
-        minHeight,
-        initialHeightFraction,
-        maxSnapPoint,
-        minSnapPoint,
-      ];
+  List<Object?> get props => [maxWidth, maxHeight, minWidth, minHeight, initialHeightFraction, maxSnapPoint, minSnapPoint];
 }

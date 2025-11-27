@@ -49,7 +49,7 @@ class VooSideSheet extends StatelessWidget {
     this.builder,
     this.actions,
     this.style = VooOverlayStyle.material,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
     this.constraints = const VooOverlayConstraints(),
     this.onClose,
     this.scrollController,
@@ -73,13 +73,9 @@ class VooSideSheet extends StatelessWidget {
     // Adjust border radius based on anchor side
     BorderRadius borderRadius;
     if (anchorRight) {
-      borderRadius = BorderRadius.horizontal(
-        left: overlayStyle.getBorderRadius(context, VooOverlayType.sideSheet).topLeft,
-      );
+      borderRadius = BorderRadius.horizontal(left: overlayStyle.getBorderRadius(context, VooOverlayType.sideSheet).topLeft);
     } else {
-      borderRadius = BorderRadius.horizontal(
-        right: overlayStyle.getBorderRadius(context, VooOverlayType.sideSheet).topLeft,
-      );
+      borderRadius = BorderRadius.horizontal(right: overlayStyle.getBorderRadius(context, VooOverlayType.sideSheet).topLeft);
     }
 
     Widget sheet = Container(
@@ -92,34 +88,17 @@ class VooSideSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (title != null || behavior.showCloseButton)
-              OverlayHeader(
-                title: title,
-                showCloseButton: behavior.showCloseButton,
-                onClose: onClose ?? () => Navigator.of(context).pop(),
-                style: style,
-              ),
+              OverlayHeader(title: title, showCloseButton: behavior.showCloseButton, onClose: onClose ?? () => Navigator.of(context).pop(), style: style),
             if (content != null)
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: style == VooOverlayStyle.material ? 24 : 16,
-                  ),
-                  child: DefaultTextStyle.merge(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    child: content!,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: style == VooOverlayStyle.material ? 24 : 16),
+                  child: DefaultTextStyle.merge(style: Theme.of(context).textTheme.bodyLarge, child: content!),
                 ),
               ),
-            if (builder != null)
-              Expanded(
-                child: builder!(context, scrollController),
-              ),
-            if (actions != null && actions!.isNotEmpty)
-              OverlayActionBar(
-                actions: actions!,
-                style: style,
-              ),
+            if (builder != null) Expanded(child: builder!(context, scrollController)),
+            if (actions != null && actions!.isNotEmpty) OverlayActionBar(actions: actions!, style: style),
           ],
         ),
       ),
@@ -135,9 +114,6 @@ class VooSideSheet extends StatelessWidget {
       );
     }
 
-    return Align(
-      alignment: anchorRight ? Alignment.centerRight : Alignment.centerLeft,
-      child: sheet,
-    );
+    return Align(alignment: anchorRight ? Alignment.centerRight : Alignment.centerLeft, child: sheet);
   }
 }

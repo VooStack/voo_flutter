@@ -20,17 +20,16 @@ extension VooAdaptiveOverlayExtension on BuildContext {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return VooAdaptiveOverlay.show<T>(
-      context: this,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      VooAdaptiveOverlay.show<T>(
+        context: this,
+        title: title,
+        content: content,
+        builder: builder,
+        actions: actions,
+        config: config,
+      );
 
   /// Shows a confirmation dialog with Yes/No actions.
   Future<bool?> showConfirmation({
@@ -39,43 +38,41 @@ extension VooAdaptiveOverlayExtension on BuildContext {
     String confirmLabel = 'Confirm',
     String cancelLabel = 'Cancel',
     bool isDestructive = false,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return showAdaptiveOverlay<bool>(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        VooOverlayAction.cancel(label: cancelLabel),
-        isDestructive
-            ? VooOverlayAction.destructive(
-                label: confirmLabel,
-                onPressed: () => Navigator.of(this).pop(true),
-              )
-            : VooOverlayAction.confirm(
-                label: confirmLabel,
-                onPressed: () => Navigator.of(this).pop(true),
-              ),
-      ],
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      showAdaptiveOverlay<bool>(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          VooOverlayAction.cancel(label: cancelLabel),
+          isDestructive
+              ? VooOverlayAction.destructive(
+                  label: confirmLabel,
+                  onPressed: () => Navigator.of(this).pop(true),
+                )
+              : VooOverlayAction.confirm(
+                  label: confirmLabel,
+                  onPressed: () => Navigator.of(this).pop(true),
+                ),
+        ],
+        config: config,
+      );
 
   /// Shows an alert dialog with just an OK button.
   Future<void> showAlert({
     required String message,
     String title = 'Alert',
     String buttonLabel = 'OK',
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return showAdaptiveOverlay<void>(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        VooOverlayAction.ok(label: buttonLabel),
-      ],
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      showAdaptiveOverlay<void>(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          VooOverlayAction.ok(label: buttonLabel),
+        ],
+        config: config,
+      );
 
   /// Shows a bottom sheet overlay.
   Future<T?> showBottomSheet<T>({
@@ -83,17 +80,16 @@ extension VooAdaptiveOverlayExtension on BuildContext {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return VooAdaptiveOverlay.showBottomSheet<T>(
-      context: this,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      VooAdaptiveOverlay.showBottomSheet<T>(
+        context: this,
+        title: title,
+        content: content,
+        builder: builder,
+        actions: actions,
+        config: config,
+      );
 
   /// Shows a modal dialog overlay.
   Future<T?> showModal<T>({
@@ -101,17 +97,16 @@ extension VooAdaptiveOverlayExtension on BuildContext {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return VooAdaptiveOverlay.showModal<T>(
-      context: this,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      VooAdaptiveOverlay.showModal<T>(
+        context: this,
+        title: title,
+        content: content,
+        builder: builder,
+        actions: actions,
+        config: config,
+      );
 
   /// Shows a side sheet overlay.
   Future<T?> showSideSheet<T>({
@@ -119,17 +114,16 @@ extension VooAdaptiveOverlayExtension on BuildContext {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return VooAdaptiveOverlay.showSideSheet<T>(
-      context: this,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      VooAdaptiveOverlay.showSideSheet<T>(
+        context: this,
+        title: title,
+        content: content,
+        builder: builder,
+        actions: actions,
+        config: config,
+      );
 
   /// Shows a fullscreen overlay.
   Future<T?> showFullscreenOverlay<T>({
@@ -137,15 +131,14 @@ extension VooAdaptiveOverlayExtension on BuildContext {
     Widget? content,
     Widget Function(BuildContext, ScrollController?)? builder,
     List<VooOverlayAction>? actions,
-    VooOverlayConfig config = const VooOverlayConfig(),
-  }) {
-    return VooAdaptiveOverlay.showFullscreen<T>(
-      context: this,
-      title: title,
-      content: content,
-      builder: builder,
-      actions: actions,
-      config: config,
-    );
-  }
+    VooOverlayConfig config = VooOverlayConfig.material,
+  }) =>
+      VooAdaptiveOverlay.showFullscreen<T>(
+        context: this,
+        title: title,
+        content: content,
+        builder: builder,
+        actions: actions,
+        config: config,
+      );
 }

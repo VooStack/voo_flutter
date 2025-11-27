@@ -56,35 +56,26 @@
 /// - `custom` - Full customization
 library voo_adaptive_overlay;
 
-// Domain - Enums
-export 'package:voo_adaptive_overlay/src/domain/enums/overlay_style.dart';
-export 'package:voo_adaptive_overlay/src/domain/enums/overlay_type.dart';
-export 'package:voo_adaptive_overlay/src/domain/enums/swipe_direction.dart';
-
-// Domain - Entities
-export 'package:voo_adaptive_overlay/src/domain/entities/overlay_action.dart';
-export 'package:voo_adaptive_overlay/src/domain/entities/overlay_behavior.dart';
-export 'package:voo_adaptive_overlay/src/domain/entities/overlay_breakpoints.dart';
-export 'package:voo_adaptive_overlay/src/domain/entities/overlay_config.dart';
-export 'package:voo_adaptive_overlay/src/domain/entities/overlay_constraints.dart';
-export 'package:voo_adaptive_overlay/src/domain/entities/overlay_style_data.dart';
-
-// Presentation - Organisms (Main widgets)
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_action_sheet.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_adaptive_overlay.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_alert.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_banner.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_bottom_sheet.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_drawer.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_fullscreen_overlay.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_modal_dialog.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_popup.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_side_sheet.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_snackbar.dart';
-export 'package:voo_adaptive_overlay/src/presentation/organisms/voo_tooltip.dart';
-
-// Presentation - Styles
-export 'package:voo_adaptive_overlay/src/presentation/styles/base_overlay_style.dart';
-
-// Presentation - Utilities
-export 'package:voo_adaptive_overlay/src/presentation/utils/overlay_extensions.dart';
+export 'src/domain/entities/overlay_action.dart';
+export 'src/domain/entities/overlay_behavior.dart';
+export 'src/domain/entities/overlay_breakpoints.dart';
+export 'src/domain/entities/overlay_config.dart';
+export 'src/domain/entities/overlay_constraints.dart';
+export 'src/domain/entities/overlay_style_data.dart';
+export 'src/domain/enums/overlay_style.dart';
+export 'src/domain/enums/overlay_type.dart';
+export 'src/domain/enums/swipe_direction.dart';
+export 'src/presentation/organisms/voo_action_sheet.dart';
+export 'src/presentation/organisms/voo_adaptive_overlay.dart';
+export 'src/presentation/organisms/voo_alert.dart';
+export 'src/presentation/organisms/voo_banner.dart';
+export 'src/presentation/organisms/voo_bottom_sheet.dart';
+export 'src/presentation/organisms/voo_drawer.dart';
+export 'src/presentation/organisms/voo_fullscreen_overlay.dart';
+export 'src/presentation/organisms/voo_modal_dialog.dart';
+export 'src/presentation/organisms/voo_popup.dart';
+export 'src/presentation/organisms/voo_side_sheet.dart';
+export 'src/presentation/organisms/voo_snackbar.dart';
+export 'src/presentation/organisms/voo_tooltip.dart';
+export 'src/presentation/styles/base_overlay_style.dart';
+export 'src/presentation/utils/overlay_extensions.dart';

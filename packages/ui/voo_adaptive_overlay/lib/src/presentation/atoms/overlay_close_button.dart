@@ -140,9 +140,7 @@ class OverlayCloseButton extends StatelessWidget {
       case VooOverlayStyle.custom:
         return null;
       case VooOverlayStyle.cupertino:
-        return isDark
-            ? Colors.grey.shade800
-            : Colors.grey.shade200;
+        return isDark ? Colors.grey.shade800 : Colors.grey.shade200;
       case VooOverlayStyle.glass:
       case VooOverlayStyle.frosted:
         return Colors.white.withValues(alpha: 0.15);
@@ -155,9 +153,7 @@ class OverlayCloseButton extends StatelessWidget {
       case VooOverlayStyle.neumorphic:
         return isDark ? const Color(0xFF3D3D3D) : const Color(0xFFD8D8D8);
       case VooOverlayStyle.fluent:
-        return isDark
-            ? Colors.white.withValues(alpha: 0.08)
-            : Colors.black.withValues(alpha: 0.05);
+        return isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05);
       case VooOverlayStyle.brutalist:
         return isDark ? Colors.white : Colors.black;
       case VooOverlayStyle.retro:
@@ -183,46 +179,26 @@ class OverlayCloseButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           child: Padding(
             padding: const EdgeInsets.all(6.0),
-            child: Icon(
-              _getIcon(),
-              size: _getIconSize(),
-              color: _getIconColor(context),
-            ),
+            child: Icon(_getIcon(), size: _getIconSize(), color: _getIconColor(context)),
           ),
         ),
       );
     } else if (style == VooOverlayStyle.glass && bgColor != null) {
-      button = Container(
-        decoration: BoxDecoration(
-          color: bgColor,
-          shape: BoxShape.circle,
-        ),
+      button = DecoratedBox(
+        decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
         child: IconButton(
           onPressed: onPressed,
           icon: Icon(_getIcon()),
           iconSize: _getIconSize(),
           color: _getIconColor(context),
           padding: const EdgeInsets.all(8.0),
-          constraints: const BoxConstraints(
-            minWidth: 36,
-            minHeight: 36,
-          ),
+          constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
         ),
       );
     } else {
-      button = IconButton(
-        onPressed: onPressed,
-        icon: Icon(_getIcon()),
-        iconSize: _getIconSize(),
-        color: _getIconColor(context),
-        tooltip: tooltip ?? 'Close',
-      );
+      button = IconButton(onPressed: onPressed, icon: Icon(_getIcon()), iconSize: _getIconSize(), color: _getIconColor(context), tooltip: tooltip ?? 'Close');
     }
 
-    return Semantics(
-      label: tooltip ?? 'Close',
-      button: true,
-      child: button,
-    );
+    return Semantics(label: tooltip ?? 'Close', button: true, child: button);
   }
 }

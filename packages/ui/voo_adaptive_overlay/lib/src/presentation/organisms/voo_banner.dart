@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:voo_adaptive_overlay/src/domain/entities/overlay_action.dart';
 import 'package:voo_adaptive_overlay/src/domain/enums/overlay_style.dart';
-import 'package:voo_adaptive_overlay/src/domain/enums/overlay_type.dart';
 import 'package:voo_adaptive_overlay/src/presentation/styles/base_overlay_style.dart';
 
 /// The position of the banner on the screen.
@@ -158,9 +157,7 @@ class VooBanner extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 8,
-            offset: position == VooBannerPosition.top
-                ? const Offset(0, 2)
-                : const Offset(0, -2),
+            offset: position == VooBannerPosition.top ? const Offset(0, 2) : const Offset(0, -2),
           ),
         ],
       ),
@@ -173,14 +170,7 @@ class VooBanner extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              if (bannerIcon != null) ...[
-                Icon(
-                  bannerIcon,
-                  color: iconColor ?? fgColor,
-                  size: 24,
-                ),
-                const SizedBox(width: 12),
-              ],
+              if (bannerIcon != null) ...[Icon(bannerIcon, color: iconColor ?? fgColor, size: 24), const SizedBox(width: 12)],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,19 +179,11 @@ class VooBanner extends StatelessWidget {
                     if (title != null) ...[
                       Text(
                         title!,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: fgColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme.textTheme.titleSmall?.copyWith(color: fgColor, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 2),
                     ],
-                    Text(
-                      message,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: fgColor,
-                      ),
-                    ),
+                    Text(message, style: theme.textTheme.bodyMedium?.copyWith(color: fgColor)),
                   ],
                 ),
               ),
@@ -214,15 +196,8 @@ class VooBanner extends StatelessWidget {
                       Navigator.of(context).pop();
                     }
                   },
-                  style: TextButton.styleFrom(
-                    foregroundColor: fgColor,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  ),
-                  child: Text(
-                    action!.label.toUpperCase(),
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
+                  style: TextButton.styleFrom(foregroundColor: fgColor, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
+                  child: Text(action!.label.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ],
               if (showCloseButton) ...[
@@ -249,11 +224,6 @@ class VooBanner extends StatelessWidget {
       );
     }
 
-    return Align(
-      alignment: position == VooBannerPosition.top
-          ? Alignment.topCenter
-          : Alignment.bottomCenter,
-      child: banner,
-    );
+    return Align(alignment: position == VooBannerPosition.top ? Alignment.topCenter : Alignment.bottomCenter, child: banner);
   }
 }

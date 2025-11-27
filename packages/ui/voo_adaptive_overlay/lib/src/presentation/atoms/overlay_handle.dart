@@ -23,15 +23,7 @@ class OverlayHandle extends StatelessWidget {
   /// Padding around the handle.
   final EdgeInsets? padding;
 
-  const OverlayHandle({
-    super.key,
-    this.width,
-    this.height,
-    this.color,
-    this.borderRadius,
-    this.style = VooOverlayStyle.material,
-    this.padding,
-  });
+  const OverlayHandle({super.key, this.width, this.height, this.color, this.borderRadius, this.style = VooOverlayStyle.material, this.padding});
 
   double _getWidth() {
     if (width != null) return width!;
@@ -101,14 +93,10 @@ class OverlayHandle extends StatelessWidget {
       case VooOverlayStyle.custom:
         return theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4);
       case VooOverlayStyle.cupertino:
-        return isDark
-            ? Colors.grey.shade600
-            : Colors.grey.shade400;
+        return isDark ? Colors.grey.shade600 : Colors.grey.shade400;
       case VooOverlayStyle.glass:
       case VooOverlayStyle.frosted:
-        return isDark
-            ? Colors.white.withValues(alpha: 0.5)
-            : Colors.black.withValues(alpha: 0.3);
+        return isDark ? Colors.white.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.3);
       case VooOverlayStyle.minimal:
       case VooOverlayStyle.outlined:
         return theme.colorScheme.outline.withValues(alpha: 0.3);
@@ -156,23 +144,18 @@ class OverlayHandle extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: 'Drag handle',
-      hint: 'Drag to resize or dismiss',
-      child: Padding(
-        padding: _getPadding(),
-        child: Center(
-          child: Container(
-            width: _getWidth(),
-            height: _getHeight(),
-            decoration: BoxDecoration(
-              color: _getColor(context),
-              borderRadius: _getBorderRadius(),
-            ),
-          ),
+  Widget build(BuildContext context) => Semantics(
+    label: 'Drag handle',
+    hint: 'Drag to resize or dismiss',
+    child: Padding(
+      padding: _getPadding(),
+      child: Center(
+        child: Container(
+          width: _getWidth(),
+          height: _getHeight(),
+          decoration: BoxDecoration(color: _getColor(context), borderRadius: _getBorderRadius()),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

@@ -38,14 +38,13 @@ class VooActionSheet extends StatelessWidget {
     required this.actions,
     this.cancelAction,
     this.style = VooOverlayStyle.cupertino,
-    this.behavior = const VooOverlayBehavior(),
+    this.behavior = VooOverlayBehavior.bottomSheet,
   });
 
   @override
   Widget build(BuildContext context) {
     final overlayStyle = BaseOverlayStyle.fromPreset(style);
-    final decoration =
-        overlayStyle.getDecoration(context, VooOverlayType.actionSheet);
+    final decoration = overlayStyle.getDecoration(context, VooOverlayType.actionSheet);
     final blurSigma = overlayStyle.getBlurSigma();
     final theme = Theme.of(context);
 
@@ -68,20 +67,14 @@ class VooActionSheet extends StatelessWidget {
                   children: [
                     if (title != null)
                       DefaultTextStyle(
-                        style: theme.textTheme.titleSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ) ??
-                            const TextStyle(),
+                        style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant) ?? const TextStyle(),
                         textAlign: TextAlign.center,
                         child: title!,
                       ),
                     if (message != null) ...[
                       const SizedBox(height: 4),
                       DefaultTextStyle(
-                        style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ) ??
-                            const TextStyle(),
+                        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant) ?? const TextStyle(),
                         textAlign: TextAlign.center,
                         child: message!,
                       ),
@@ -91,8 +84,7 @@ class VooActionSheet extends StatelessWidget {
               ),
 
             // Divider after header
-            if (title != null || message != null)
-              Divider(height: 1, color: theme.dividerColor),
+            if (title != null || message != null) Divider(height: 1, color: theme.dividerColor),
 
             // Action items
             ...actions.asMap().entries.map((entry) {
@@ -103,12 +95,8 @@ class VooActionSheet extends StatelessWidget {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _ActionItem(
-                    action: action,
-                    style: style,
-                  ),
-                  if (!isLast)
-                    Divider(height: 1, color: theme.dividerColor),
+                  _ActionItem(action: action, style: style),
+                  if (!isLast) Divider(height: 1, color: theme.dividerColor),
                 ],
               );
             }),
@@ -123,18 +111,13 @@ class VooActionSheet extends StatelessWidget {
       cancelButton = Container(
         margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         decoration: decoration,
-        child: _ActionItem(
-          action: cancelAction!,
-          style: style,
-          isBold: true,
-        ),
+        child: _ActionItem(action: cancelAction!, style: style, isBold: true),
       );
     }
 
     if (blurSigma > 0) {
       sheet = ClipRRect(
-        borderRadius:
-            overlayStyle.getBorderRadius(context, VooOverlayType.actionSheet),
+        borderRadius: overlayStyle.getBorderRadius(context, VooOverlayType.actionSheet),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
           child: sheet,
@@ -142,13 +125,7 @@ class VooActionSheet extends StatelessWidget {
       );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        sheet,
-        if (cancelButton != null) cancelButton,
-      ],
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: [sheet, if (cancelButton != null) cancelButton]);
   }
 }
 
@@ -157,11 +134,7 @@ class _ActionItem extends StatelessWidget {
   final VooOverlayStyle style;
   final bool isBold;
 
-  const _ActionItem({
-    required this.action,
-    required this.style,
-    this.isBold = false,
-  });
+  const _ActionItem({required this.action, required this.style, this.isBold = false});
 
   @override
   Widget build(BuildContext context) {
@@ -188,16 +161,10 @@ class _ActionItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (action.icon != null) ...[
-              Icon(action.icon, color: textColor, size: 20),
-              const SizedBox(width: 8),
-            ],
+            if (action.icon != null) ...[Icon(action.icon, color: textColor, size: 20), const SizedBox(width: 8)],
             Text(
               action.label,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: textColor,
-                fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
-              ),
+              style: theme.textTheme.bodyLarge?.copyWith(color: textColor, fontWeight: isBold ? FontWeight.w600 : FontWeight.normal),
             ),
           ],
         ),
