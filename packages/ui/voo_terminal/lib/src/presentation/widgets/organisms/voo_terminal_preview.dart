@@ -51,6 +51,15 @@ class VooTerminalPreview extends StatefulWidget {
   /// Whether to show window controls in the header.
   final bool showWindowControls;
 
+  /// Callback when the close button is pressed.
+  final VoidCallback? onClose;
+
+  /// Callback when the minimize button is pressed.
+  final VoidCallback? onMinimize;
+
+  /// Callback when the maximize button is pressed.
+  final VoidCallback? onMaximize;
+
   /// Custom header widget.
   final Widget? header;
 
@@ -66,6 +75,9 @@ class VooTerminalPreview extends StatefulWidget {
     this.title,
     this.showHeader = false,
     this.showWindowControls = false,
+    this.onClose,
+    this.onMinimize,
+    this.onMaximize,
     this.header,
   });
 
@@ -126,6 +138,9 @@ class _VooTerminalPreviewState extends State<VooTerminalPreview> {
                       theme: effectiveTheme,
                       title: widget.title,
                       showWindowControls: widget.showWindowControls,
+                      onClose: widget.onClose,
+                      onMinimize: widget.onMinimize,
+                      onMaximize: widget.onMaximize,
                     ),
               Expanded(
                 child: _buildBody(effectiveTheme),

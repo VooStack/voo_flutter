@@ -58,17 +58,24 @@ class TerminalOutput extends StatelessWidget {
             theme: theme,
             showTimestamp: showTimestamps,
             timestampFormat: timestampFormat,
-            enableSelection: enableSelection,
+            enableSelection: false,
           ),
         );
       },
     );
 
-    return TerminalScrollbar(
+    Widget content = TerminalScrollbar(
       controller: scrollController,
       theme: theme,
       child: listView,
     );
+
+    // Wrap in SelectionArea for multi-line text selection
+    if (enableSelection) {
+      content = SelectionArea(child: content);
+    }
+
+    return content;
   }
 }
 

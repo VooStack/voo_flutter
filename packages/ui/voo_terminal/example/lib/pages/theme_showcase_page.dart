@@ -11,6 +11,10 @@ class ThemeShowcasePage extends StatefulWidget {
 
 class _ThemeShowcasePageState extends State<ThemeShowcasePage> {
   int _selectedThemeIndex = 0;
+  bool _showHeader = true;
+  bool _showWindowControls = true;
+  bool _showTimestamps = false;
+  bool _enableSelection = true;
 
   final List<_ThemeOption> _themes = [
     _ThemeOption('Classic', 'Green phosphor', VooTerminalTheme.classic()),
@@ -42,6 +46,15 @@ class _ThemeShowcasePageState extends State<ThemeShowcasePage> {
         TerminalLine.system('Ready.'),
       ];
 
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedTheme = _themes[_selectedThemeIndex];
@@ -49,6 +62,28 @@ class _ThemeShowcasePageState extends State<ThemeShowcasePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Theme Showcase'),
+        actions: [
+          IconButton(
+            icon: Icon(_showHeader ? Icons.visibility : Icons.visibility_off),
+            tooltip: 'Toggle Header',
+            onPressed: () => setState(() => _showHeader = !_showHeader),
+          ),
+          IconButton(
+            icon: Icon(_showWindowControls ? Icons.circle : Icons.circle_outlined),
+            tooltip: 'Toggle Window Controls',
+            onPressed: () => setState(() => _showWindowControls = !_showWindowControls),
+          ),
+          IconButton(
+            icon: Icon(_showTimestamps ? Icons.schedule : Icons.schedule_outlined),
+            tooltip: 'Toggle Timestamps',
+            onPressed: () => setState(() => _showTimestamps = !_showTimestamps),
+          ),
+          IconButton(
+            icon: Icon(_enableSelection ? Icons.select_all : Icons.deselect),
+            tooltip: 'Toggle Selection',
+            onPressed: () => setState(() => _enableSelection = !_enableSelection),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -58,9 +93,14 @@ class _ThemeShowcasePageState extends State<ThemeShowcasePage> {
               child: VooTerminalPreview(
                 lines: _demoLines,
                 theme: selectedTheme.theme,
-                showHeader: true,
-                showWindowControls: true,
+                showHeader: _showHeader,
+                showWindowControls: _showWindowControls,
+                showTimestamps: _showTimestamps,
+                enableSelection: _enableSelection,
                 title: selectedTheme.name,
+                onClose: () => _showSnackBar('Close pressed'),
+                onMinimize: () => _showSnackBar('Minimize pressed'),
+                onMaximize: () => _showSnackBar('Maximize pressed'),
               ),
             ),
           ),
